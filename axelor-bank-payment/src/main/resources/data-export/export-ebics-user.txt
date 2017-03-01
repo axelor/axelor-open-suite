@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ebics-users>
-<% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.account.db.repo.EbicsUserRepository' as Class).find(it)
+<% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.bank.payment.db.repo.EbicsUserRepository' as Class).find(it)
 	
 	bankCerts = "" 
 	u.ebicsPartner?.ebicsBank?.ebicsCertificateList.each( {c->

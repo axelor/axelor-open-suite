@@ -45,6 +45,7 @@ import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
 import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
 import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
 import com.axelor.apps.bank.payment.db.BankOrder;
+import com.axelor.apps.bank.payment.db.BankOrderLine;
 import com.axelor.apps.bank.payment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;

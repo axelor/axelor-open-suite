@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bank.payment.service.bankorder.file.cfonb;
+package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -49,7 +49,6 @@ public class CfonbImportService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected CfonbConfigService cfonbConfigService;
-	protected CfonbToolService cfonbToolService;
 	protected PaymentModeRepository paymentModeRepo;
 	protected GeneralService generalService;
 	
@@ -57,10 +56,9 @@ public class CfonbImportService {
 	protected List<String> importFile;
 
 	@Inject
-	public CfonbImportService(CfonbConfigService cfonbConfigService, CfonbToolService cfonbToolService, PaymentModeRepository paymentModeRepo, GeneralService generalService)  {
+	public CfonbImportService(CfonbConfigService cfonbConfigService, PaymentModeRepository paymentModeRepo, GeneralService generalService)  {
 		
 		this.cfonbConfigService = cfonbConfigService;
-		this.cfonbToolService = cfonbToolService;
 		this.paymentModeRepo = paymentModeRepo;
 		this.generalService = generalService;
 		
@@ -330,11 +328,11 @@ public class CfonbImportService {
 
 
 	private void testLength(String headerCFONB, List<String> multiDetailsCFONB, String endingCFONB, Company company) throws AxelorException  {
-		cfonbToolService.testLength(headerCFONB, 240);
-		cfonbToolService.testLength(endingCFONB, 240);
-		for(String detailCFONB : multiDetailsCFONB)  {
-			cfonbToolService.testLength(detailCFONB, 240);
-		}
+//		cfonbToolService.testLength(headerCFONB, 240);
+//		cfonbToolService.testLength(endingCFONB, 240);
+//		for(String detailCFONB : multiDetailsCFONB)  {
+//			cfonbToolService.testLength(detailCFONB, 240);
+//		}
 	}
 
 

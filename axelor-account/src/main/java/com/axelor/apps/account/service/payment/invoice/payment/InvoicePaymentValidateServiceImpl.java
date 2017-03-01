@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
@@ -31,10 +30,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.bankorder.BankOrderCreateService;
-import com.axelor.apps.account.service.bankorder.BankOrderService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -55,16 +51,13 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	protected InvoicePaymentRepository invoicePaymentRepository;
 	protected MoveCancelService moveCancelService;
 	protected ReconcileService reconcileService;
-	protected BankOrderCreateService bankOrderCreateService;
-	protected BankOrderService bankOrderService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	
 	@Inject
 	public InvoicePaymentValidateServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
 			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, MoveCancelService moveCancelService, 
-			ReconcileService reconcileService, BankOrderCreateService bankOrderCreateService,  
-			BankOrderService bankOrderService, InvoicePaymentToolService invoicePaymentToolService)  {
+			ReconcileService reconcileService, InvoicePaymentToolService invoicePaymentToolService)  {
 		
 		this.paymentModeService = paymentModeService;
 		this.moveService = moveService;
@@ -73,8 +66,6 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		this.invoicePaymentRepository = invoicePaymentRepository;
 		this.moveCancelService = moveCancelService;
 		this.reconcileService = reconcileService;
-		this.bankOrderCreateService = bankOrderCreateService;
-		this.bankOrderService = bankOrderService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
 		
 	}
@@ -99,25 +90,14 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		
 		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
 		
-		PaymentMode paymentMode = invoicePayment.getPaymentMode();
-		int typeSelect = paymentMode.getTypeSelect();
-		int inOutSelect = paymentMode.getInOutSelect();
-		
-		if( (typeSelect == PaymentModeRepository.TYPE_DD || typeSelect == PaymentModeRepository.TYPE_TRANSFER) && inOutSelect == PaymentModeRepository.OUT){
-			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-		}else{
-			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-		}
+		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 		
 		//TODO assign an automatic reference
 		
 		Company company = invoicePayment.getInvoice().getCompany();
 				
-		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment() && !paymentMode.getGenerateBankOrder())  {
+		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment())  {
 			this.createMoveForInvoicePayment(invoicePayment);
-		}
-		if(paymentMode.getGenerateBankOrder())  {
-			this.createBankOrder(invoicePayment);
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
@@ -173,30 +153,6 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		invoicePaymentRepository.save(invoicePayment);
 		
 		return move;
-	}
-	
-	
-	/**
-	 * Method to create a bank order for an invoice Payment
-	 * 
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * 		
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException  {
-		
-		BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
-		
-		bankOrderService.confirm(bankOrder);
-		
-		invoicePayment.setBankOrder(bankOrder);
-		
-		invoicePaymentRepository.save(invoicePayment);
-		
 	}
 	
 	

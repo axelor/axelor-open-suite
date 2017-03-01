@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bank.payment.service.bankorder.file.cfonb;
+package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
@@ -55,7 +54,6 @@ import com.google.inject.Inject;
 public class CfonbExportService {
 
 	protected CfonbConfig cfonbConfig;
-	protected CfonbToolService cfonbToolService;
 	protected CfonbConfigService cfonbConfigService;
 	protected ReimbursementRepository reimbursementRepo;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
@@ -64,11 +62,10 @@ public class CfonbExportService {
 	private boolean sepa;
 
 	@Inject
-	public CfonbExportService(CfonbToolService cfonbToolService, CfonbConfigService cfonbConfigService,
+	public CfonbExportService(CfonbConfigService cfonbConfigService,
 			ReimbursementRepository reimbursementRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo,
 			PartnerService partnerService)  {
 
-		this.cfonbToolService = cfonbToolService;
 		this.cfonbConfigService = cfonbConfigService;
 		this.reimbursementRepo = reimbursementRepo;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
@@ -370,10 +367,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a, "");
-		cfonbToolService.testDigital(b1, "");
-		cfonbToolService.testDigital(d3, "");
-		cfonbToolService.testDigital(g1, "");
+//		cfonbToolService.testDigital(a, "");
+//		cfonbToolService.testDigital(b1, "");
+//		cfonbToolService.testDigital(d3, "");
+//		cfonbToolService.testDigital(g1, "");
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c1Three+c2+d1One+d1Two+d2One+d2Two+d2Three+d3+d4+e+f+g1+g2;
@@ -435,10 +432,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a, "");
-		cfonbToolService.testDigital(b1, "");
-		cfonbToolService.testDigital(d3, "");
-		cfonbToolService.testDigital(g1, "");
+//		cfonbToolService.testDigital(a, "");
+//		cfonbToolService.testDigital(b1, "");
+//		cfonbToolService.testDigital(d3, "");
+//		cfonbToolService.testDigital(g1, "");
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c2+d1One+d1Two+d2+d3+d4+e+f+g1+g2;

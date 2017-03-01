@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
  	
    <input file="ebics-user.xml" root="ebics-users" >
-  	<bind node="ebics-user" type="com.axelor.apps.account.db.EbicsUser"  call="com.axelor.apps.account.ebics.script.EbicsUserImport:importEbicsUser">
+  	<bind node="ebics-user" type="com.axelor.apps.bank.payment.db.EbicsUser"  call="com.axelor.apps.bank.payment.ebics.script.EbicsUserImport:importEbicsUser">
       <bind node="name" to="name" />
       <bind node="userId" to="userId" />
       <bind node="password" to="password" />

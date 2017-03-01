@@ -1,6 +1,8 @@
 package com.axelor.apps.bank.payment.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bank.payment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bank.payment.db.repo.BankOrderRepository;
 import com.axelor.apps.bank.payment.db.repo.BankStatementManagementRepository;
@@ -17,6 +19,8 @@ import com.axelor.apps.bank.payment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bank.payment.service.bankorder.BankOrderMoveServiceImpl;
 import com.axelor.apps.bank.payment.service.bankorder.BankOrderService;
 import com.axelor.apps.bank.payment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bank.payment.service.invoice.payment.InvoicePaymentCancelServiceBankPayImpl;
+import com.axelor.apps.bank.payment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 
 public class BankPaymentModule extends AxelorModule {
 
@@ -39,6 +43,11 @@ public class BankPaymentModule extends AxelorModule {
 	        
 	     bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
 	    
+	     bind(InvoicePaymentCancelServiceImpl.class).to(InvoicePaymentCancelServiceBankPayImpl.class);
+	     
+	     bind(InvoicePaymentValidateServiceImpl.class).to(InvoicePaymentValidateServiceBankPayImpl.class);
+
+	     
 	}
 
 }
