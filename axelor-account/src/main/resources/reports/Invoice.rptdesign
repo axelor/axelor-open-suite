@@ -3605,6 +3605,7 @@ row["partnerFirstName"]
                                         </column>
                                         <header>
                                             <row id="3428">
+                                                <property name="height">0.4270833333333333in</property>
                                                 <cell id="3996">
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
@@ -3937,7 +3938,7 @@ row["partnerFirstName"]
                                                         </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I></SUB>]]></text-property>
+<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB><br>]]></text-property>
                                                     </text>
                                                     <text id="4005">
                                                         <property name="fontWeight">bold</property>
@@ -3949,7 +3950,7 @@ row["partnerFirstName"]
                                                         </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I></SUB>]]></text-property>
+<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB><br>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3436">

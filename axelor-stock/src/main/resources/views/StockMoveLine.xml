@@ -46,6 +46,20 @@
         </panel>
     </form>
     
+    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock Move line">
+    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+        <field name="productName" required="true" />
+        <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
+        <field name="productModel" form-view="product-form" grid-view="product-grid"/>
+        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
+        <field name="realQty" aggregate="sum"/>
+        <field name="unitPriceUntaxed"/>
+        <field name="unitPriceTaxed" hidden="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="trackingNumber"/>
+        <field name="accordanceSelect"/>
+    </grid>
+    
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     	<field name="stockMove.stockMoveSeq"/>
     	<field name="stockMove.realDate"/>

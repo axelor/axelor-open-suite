@@ -132,7 +132,7 @@
   		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain"/>
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
-  		    <panel-dashlet action="action-view-show-stock-move-line" title="Stock movement" colSpan="12" if-module="axelor-supplychain"/>
+  		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" if-module="axelor-supplychain"/>
       	</panel>
 	      
 	    
@@ -194,13 +194,13 @@
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
 	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.taxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.amountInvoiced}}  {{record.currency.symbol}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
@@ -380,13 +380,13 @@
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
 	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Total V.A.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.taxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.amountInvoiced}} {{record.currency.symbol}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
@@ -651,8 +651,8 @@
 	  	<context name="_saleOrder" expr="eval: __this__"/>
     </action-view>
 	
-	<action-view name="action-view-show-stock-move-line" title="Stock movement" model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-grid"/>
+	<action-view name="action-view-show-stock-move-line" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-sale-order-grid"/>
 		<view type="form" name="stock-move-line-form"/>
 		<domain>self.stockMove.saleOrder = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__"/>
