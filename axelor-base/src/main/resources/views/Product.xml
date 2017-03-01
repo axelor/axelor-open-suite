@@ -21,8 +21,8 @@
 	    <field name="code" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
-	    <field name="costPrice" width="120"/>
-	    <field name="salePrice" width="120"/>
+	    <field name="costPrice" width="120" x-scale="2"/>
+	    <field name="salePrice" width="120" x-scale="2"/>
     </grid>
 
 	<form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
