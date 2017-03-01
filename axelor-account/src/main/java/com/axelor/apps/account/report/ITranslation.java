@@ -97,6 +97,11 @@ public interface ITranslation {
 	public static final String MOVE_LINE_REPORT_2_DEBIT = /*$$(*/ "MoveLineReportType2.debit"; /*)*/
 	public static final String MOVE_LINE_REPORT_2_CREDIT = /*$$(*/ "MoveLineReportType2.credit"; /*)*/
 	public static final String MOVE_LINE_REPORT_2_GENERAL_BALANCE = /*$$(*/ "MoveLineReportType2.generalBalance"; /*)*/
+    
+	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
 	
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "PurchaseInvoicesDetails.invoiced"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "PurchaseInvoicesDetails.ordered"; /*)*/
 
 }
