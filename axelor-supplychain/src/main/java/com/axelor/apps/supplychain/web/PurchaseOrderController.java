@@ -119,7 +119,7 @@ public class PurchaseOrderController {
 	}
 	
 	//Generate single purchase order from several
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergePurchaseOrder(ActionRequest request, ActionResponse response)  {
 		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
 		List<Long> purchaseOrderIdList = new ArrayList<Long>();

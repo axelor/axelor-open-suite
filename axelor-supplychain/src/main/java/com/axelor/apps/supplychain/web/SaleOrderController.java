@@ -107,6 +107,7 @@ public class SaleOrderController{
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -281,6 +282,7 @@ public class SaleOrderController{
 	            .map());
 	}
 
+	@SuppressWarnings("unchecked")
 	public void invoiceSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
 		if(listSelectedSaleOrder != null){
