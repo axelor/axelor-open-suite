@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.utils.IgnoreAllErrorHandler;
+import org.apache.xpath.XPathAPI;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -46,7 +47,6 @@ import com.axelor.app.AppSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.sun.org.apache.xpath.internal.XPathAPI;
 
 
 /**
