@@ -476,8 +476,8 @@ WHERE (Invoice.status_select = 2 OR Invoice.status_select = 3) AND Company.id = 
         AND Invoice.operation_type_select = 1
         AND Invoice.invoice_date BETWEEN Assistant.from_date AND Assistant.to_date
         AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
-        AND ((AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
-         OR (AssistantProductCategories.product_category_set is null or Product.id IN (AssistantProductCategories.product_category_set)))
+        AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
+        AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 Group by Invoice.invoice_date, Product.name, Partner.name, LangTranslate.message_value
 
 UNION
@@ -503,8 +503,8 @@ WHERE Company.id = ?
 		AND (LangTranslate1.language = ? OR LangTranslate1.language is null )
         AND PurchaseOrder.order_date BETWEEN Assistant.from_date AND Assistant.to_date
         AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
-        AND ((AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
-         OR (AssistantProductCategories.product_category_set is null or Product.id IN (AssistantProductCategories.product_category_set)))
+        AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
+        AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
         AND (PurchaseOrder.status_select = 3 OR PurchaseOrder.status_select = 4)
 Group by PurchaseOrder.order_date, Product.name, Partner.name, LangTranslate1.message_value]]></xml-property>
         </oda-data-set>
