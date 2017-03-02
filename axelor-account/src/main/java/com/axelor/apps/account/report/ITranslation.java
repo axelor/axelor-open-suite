@@ -61,7 +61,8 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 
-	
+	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
+
 	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
 	public static final String MOVE_LINE_REPORT_1_JOURNAL = /*$$(*/ "MoveLineReportType1.journal"; /*)*/
 	public static final String MOVE_LINE_REPORT_1_COMPANY = /*$$(*/ "MoveLineReportType1.company"; /*)*/
