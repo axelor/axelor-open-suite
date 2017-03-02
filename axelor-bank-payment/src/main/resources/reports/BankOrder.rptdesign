@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -152,7 +152,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -161,83 +161,62 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">status_select</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">status_select</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">status_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_order_date</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_order_date</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bank_order_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_order_seq</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_order_seq</text-property>
                     <text-property name="heading">bank_order_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bankordertype</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bankordertype</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bankordertype</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bankorderpartnertype</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bankorderpartnertype</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bankorderpartnertype</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">payment_mode_name</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">payment_mode_name</text-property>
                     <text-property name="heading">payment_mode_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">companyname</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">companyname</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">companyname</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_details</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_details</text-property>
                     <text-property name="heading">bank_details</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sender_reference</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">sender_reference</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">sender_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sender_label</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">sender_label</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">sender_label</text-property>
                 </structure>
             </list-property>
@@ -410,13 +389,13 @@ bankOrder.status_select,
 bankOrder.bank_order_date,
 bankOrder.bank_order_seq,
 
-(CASE WHEN bankOrder.order_type = 0 THEN '' 
-	 WHEN bankOrder.order_type = 1 THEN 'Bank to Bank Transfer'
-	 WHEN bankOrder.order_type = 2 THEN 'SEPA Credit Transfer'
-	 WHEN bankOrder.order_type = 3 THEN 'SEPA Direct Debit'
-	 WHEN bankOrder.order_type = 4 THEN 'International Credit Transfer'
-	 WHEN bankOrder.order_type = 5 THEN 'International Direct Debit'
-	 WHEN bankOrder.order_type IS NULL THEN '' END ) AS bankOrderType,
+(CASE WHEN bankOrder.order_type_select = 0 THEN '' 
+	 WHEN bankOrder.order_type_select = 1 THEN 'Bank to Bank Transfer'
+	 WHEN bankOrder.order_type_select = 2 THEN 'SEPA Credit Transfer'
+	 WHEN bankOrder.order_type_select = 3 THEN 'SEPA Direct Debit'
+	 WHEN bankOrder.order_type_select = 4 THEN 'International Credit Transfer'
+	 WHEN bankOrder.order_type_select = 5 THEN 'International Direct Debit'
+	 WHEN bankOrder.order_type_select IS NULL THEN '' END ) AS bankOrderType,
 	 
 (CASE WHEN bankOrder.partner_type_select = 0 THEN ''
 	 WHEN bankOrder.partner_type_select = 1 THEN 'Supplier'
@@ -428,14 +407,14 @@ paymentMode.name as payment_mode_name,
 currency.code as currency,
 company.name as companyName,
 bankDetails.full_name AS bank_details,
-bankOrder.amount,
+bankOrder.bank_order_total_amount as "amount",
 bankOrder.sender_reference,
 bankOrder.sender_label
 
-FROM account_bank_order bankOrder
+FROM payment_bank_order bankOrder
 LEFT JOIN account_payment_mode paymentMode ON paymentMode.id =  bankOrder.payment_mode
 LEFT JOIN base_company company ON company.id = bankOrder.sender_company
-LEFT JOIN base_currency currency ON currency.id = bankOrder.currency
+LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrder.sender_bank_details  
 WHERE bankOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -683,84 +662,61 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">amount</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">is_rejected</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">is_rejected</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">is_rejected</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reject_date</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">reject_date</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">reject_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reject_amount</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">reject_amount</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">reject_amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sequence</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">sequence</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">sequence</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">receiver_reference</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">receiver_reference</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">receiver_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">receiver_label</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">receiver_label</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">receiver_label</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">company_name</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">company_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">company_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_name</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_details</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_details</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bank_details</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
@@ -930,7 +886,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-bankOrderLine.amount,
+bankOrderLine.bank_order_amount as "amount",
 bankOrderLine.is_rejected,
 bankOrderLine.reject_date,
 bankOrderLine.reject_amount,
@@ -943,13 +899,13 @@ bankDetails.full_name AS bank_details,
 interbank.name,
 currency.code AS currency
 
-FROM account_bank_order_line bankOrderLine
+FROM payment_bank_order_line bankOrderLine
 LEFT JOIN account_interbank_code_line interbank ON interbank.id = bankOrderLine.interbank_code_line
 LEFT JOIN base_company company ON company.id = bankOrderLine.receiver_company
 LEFT JOIN base_partner partner ON partner.id = bankOrderLine.partner
 LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrderLine.receiver_bank_details
-LEFT JOIN account_bank_order bankOrder ON bankOrder.id = bankOrderLine.bank_order
-LEFT JOIN base_currency currency ON currency.id = bankOrder.currency
+LEFT JOIN payment_bank_order bankOrder ON bankOrder.id = bankOrderLine.bank_order
+LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 WHERE bankOrderLine.bank_order = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

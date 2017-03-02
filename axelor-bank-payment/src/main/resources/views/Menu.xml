@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 	<menuitem name="account-root-bank-orders" parent="account-root"
-		title="Bank Orders"/>
+		title="Bank Orders" order="26"/>
 		
 	<menuitem name="account-root-bank-order-direct-debit"
 		parent="account-root-bank-orders" title="Direct Debits"/>
@@ -112,7 +112,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-bank-statement" parent="account-root"
-		title="Bank Statement" />
+		title="Bank Statement" order="27"/>
 
 	<menuitem name="account-root-bank-statement-bank-statement"
 		parent="account-root-bank-statement" title="Bank Statement"

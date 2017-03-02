@@ -140,7 +140,7 @@
 
 
 	<menuitem name="account-root-move" parent="account-root"
-		title="Moves" />
+		title="Moves" order="0"/>
 
 	<menuitem name="account-root-move-move" parent="account-root-move"
 		title="Moves" action="account.root.move.move" />
@@ -164,7 +164,7 @@
 	
 	
 	<menuitem name="account-root-payments" parent="account-root"
-		title="Payments" />
+		title="Payments" order="5"/>
 
 	<menuitem name="account-root-payments-payment-voucher"
 		parent="account-root-payments" title="Payment vouchers"
@@ -226,7 +226,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-periodic-processing" parent="account-root"
-		title="Periodical processing" />
+		title="Periodical processing" order="10"/>
 
 	<menuitem name="account-root-periodic-processing-reconcile"
 		parent="account-root-periodic-processing" title="Reconcilations"
@@ -283,7 +283,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-debt-recovery" parent="account-root"
-		title="Debt recovery"  />
+		title="Debt recovery" order="15" />
 
 	<menuitem name="debt-recovery-root-reminders"
 		parent="account-root-debt-recovery" title="Reminders history"
@@ -320,7 +320,7 @@
 
 	
 	<menuitem name="account-root-accounting" parent="account-root"
-		title="Accounting Exports/Reports"  />
+		title="Accounting Exports/Reports" order="20" />
 
 	<menuitem name="account-root-accounting-reimbursement" parent="account-root-accounting"
 		title="Reimbursements" action="account.root.accounting.reimbursement" />
@@ -353,7 +353,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"
-		title="Budget Preparation"/>
+		title="Budget Preparation" order="25"/>
 	
 		<menuitem name="account-root-budget-management-my-budgets" parent="account-root-budget-management"
 			title="My budgets" action="account.root.budget.management.my.budgets" />
@@ -376,10 +376,10 @@
 		</action-view>
 	
 	<menuitem name="account-root-report" parent="account-root"
-		title="Reportings"/>
+		title="Reportings" order="30"/>
 	
 	
-	<menuitem name="account-conf" parent="account-root" title="Configuration"/>
+	<menuitem name="account-conf" parent="account-root" title="Configuration" order="50"/>
 
 	<menuitem name="account-conf-financial" parent="account-conf"
 		title="Financial" />
