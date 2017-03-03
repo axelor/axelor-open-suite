@@ -48,16 +48,24 @@
 	    
 	</form>
 	
-	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	<form name="incl-customer-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+		<panel title="Customer balance" colSpan="12">
+			<field name="accountingSituationList" colSpan="12" widget="MasterDetail" title="Customer balance" hideIf="isContact"
+					grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
+					onSelect="action-account-accounting-situation-method-update-customer-account"/>
+		</panel>
 	</form>
 	
 	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
+	     <panel title="Blockings" colSpan="12">
+	     	<field name="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
+	     </panel>
 	</form>
 	
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
+		<panel title="Reported balance" colSpan="12">
+			<field name="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
+		</panel>
 	</form>
 	
 	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
