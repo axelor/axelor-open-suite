@@ -18,20 +18,20 @@
 package com.axelor.apps.bank.payment.web;
 
 import com.axelor.apps.bank.payment.db.BankStatement;
-import com.axelor.apps.bank.payment.db.repo.BankStatementRepository;
-import com.axelor.apps.bank.payment.service.BankStatementService;
+import com.axelor.apps.bank.payment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bank.payment.service.BankReconciliationService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class BankStatementController {
+public class BankReconciliationController {
 
 	@Inject
-	BankStatementService bankStatementService;
+	BankReconciliationService bankReconciliationService;
 	
 	@Inject
-	BankStatementRepository bankStatementRepo;
+	BankReconciliationRepository bankReconciliationRepo;
 	
 	public void compute(ActionRequest request, ActionResponse response) {
 		
@@ -39,7 +39,7 @@ public class BankStatementController {
 
 		try {
 			
-			bankStatementService.compute(bankStatementRepo.find(bankStatement.getId()));
+			bankReconciliationService.compute(bankReconciliationRepo.find(bankStatement.getId()));
 			response.setReload(true);
 			
 		}
@@ -52,7 +52,7 @@ public class BankStatementController {
 		
 		try {
 			
-			bankStatementService.validate(bankStatementRepo.find(bankStatement.getId()));
+			bankReconciliationService.validate(bankReconciliationRepo.find(bankStatement.getId()));
 			response.setReload(true);
 			
 		}

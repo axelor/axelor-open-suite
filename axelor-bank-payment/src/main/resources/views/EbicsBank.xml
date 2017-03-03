@@ -33,4 +33,6 @@
 		<view name="bank-details-form" type="form"/>
 		<domain>self.bank = :bank</domain>
 	</action-view>
+	
+	
 </object-views>

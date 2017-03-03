@@ -20,5 +20,7 @@
 	<string name="languageSelect" title="Language" selection="select.language" />
 	
 	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
+	
+	
   </entity>
 </domain-models>

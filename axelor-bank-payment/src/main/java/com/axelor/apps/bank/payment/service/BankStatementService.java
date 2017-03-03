@@ -17,152 +17,82 @@
  */
 package com.axelor.apps.bank.payment.service;
 
-import java.math.BigDecimal;
+import java.io.File;
+import java.io.IOException;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bank.payment.db.BankStatement;
-import com.axelor.apps.bank.payment.db.BankStatementLine;
+import com.axelor.apps.bank.payment.db.BankStatementFileFormat;
+import com.axelor.apps.bank.payment.db.EbicsPartner;
+import com.axelor.apps.bank.payment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bank.payment.db.repo.BankStatementRepository;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class BankStatementService {
 
 	protected MoveService moveService;
 	protected MoveRepository moveRepository;
 	protected MoveLineService moveLineService;
-	protected BankStatementRepository bankStatementRepository;
+	protected BankReconciliationRepository bankReconciliationRepository;
 	
 	@Inject
-	public BankStatementService(MoveService moveService, MoveRepository moveRepository, MoveLineService moveLineService, BankStatementRepository bankStatementRepository)  {
+	public BankStatementService(MoveService moveService, MoveRepository moveRepository, MoveLineService moveLineService, BankReconciliationRepository bankReconciliationRepository)  {
 		
 		this.moveService = moveService;
 		this.moveRepository = moveRepository;
 		this.moveLineService = moveLineService;
-		this.bankStatementRepository = bankStatementRepository;
+		this.bankReconciliationRepository = bankReconciliationRepository;
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(BankStatement bankStatement) throws AxelorException  {
-
-		BigDecimal computedBalance = bankStatement.getStartingBalance();
-
-		for(BankStatementLine bankStatementLine : bankStatement.getBankStatementLineList())  {
-
-			computedBalance = computedBalance.add(bankStatementLine.getAmount());
-
-		}
-
-		bankStatement.setComputedBalance(computedBalance);
-
-		bankStatementRepository.save(bankStatement);
+	public BankStatement createBankStatement(File file, LocalDate fromDate, LocalDate toDate, 
+			BankStatementFileFormat bankStatementFileFormat, EbicsPartner ebicsPartner, LocalDateTime executionDateTime) throws IOException  {
+		
+		BankStatement bankStatement = new BankStatement();
+		bankStatement.setFromDate(fromDate);
+		bankStatement.setToDate(toDate);
+		bankStatement.setBankStatementFileFormat(bankStatementFileFormat);
+		bankStatement.setEbicsPartner(ebicsPartner);
+		bankStatement.setGetDateTime(executionDateTime);
+		bankStatement.setBankStatementFile(Beans.get(MetaFiles.class).upload(file));
+		bankStatement.setName(this.computeName(bankStatement));
+		bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
+		return bankStatement;
+		
 	}
+	
+	private String computeName(BankStatement bankStatement)  {
+		
+		String name = "";
 
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(BankStatement bankStatement) throws AxelorException  {
-
-		this.checkBalance(bankStatement);
-
-		for(BankStatementLine bankStatementLine : bankStatement.getBankStatementLineList())  {
-
-			if(!bankStatementLine.getIsPosted())  {
-
-				if(bankStatementLine.getMoveLine() == null)  {
-					this.validate(bankStatementLine);
-				}
-				else  {
-					this.checkAmount(bankStatementLine);
-				}
-			}
+		if(bankStatement.getEbicsPartner() != null)  {
+			name += bankStatement.getEbicsPartner().getPartnerId();
 		}
-
-		bankStatement.setStatusSelect(BankStatementRepository.STATUS_VALIDATED);
-
-		bankStatementRepository.save(bankStatement);
+		
+		if(bankStatement.getBankStatementFileFormat() != null)  {
+			if(name != "")  {  name += "-";  }
+			name += bankStatement.getBankStatementFileFormat().getName();
+		}
+		
+		if(bankStatement.getFromDate() != null)  {
+			if(name != "")  {  name += "-";  }
+			name += bankStatement.getFromDate().toString("YYYY/MM/DD");
+		}
+		if(bankStatement.getToDate() != null)  {
+			if(name != "")  {  name += "-";  }
+			name += bankStatement.getToDate().toString("YYYY/MM/DD");
+		}
+		
+		return name;
+		
 	}
-
-	public void checkBalance(BankStatement bankStatement) throws AxelorException  {
-
-		if(bankStatement.getComputedBalance().compareTo(bankStatement.getEndingBalance()) != 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-
-	public void validate(BankStatementLine bankStatementLine) throws AxelorException  {
-
-		BigDecimal amount = bankStatementLine.getAmount();
-
-		//TODO add currency conversion
-
-		if(amount.compareTo(BigDecimal.ZERO) == 0)  {
-
-			return;
-
-		}
-
-		BankStatement bankStatement = bankStatementLine.getBankStatement();
-
-		Partner partner = bankStatementLine.getPartner();
-
-		LocalDate effectDate = bankStatementLine.getEffectDate();
-
-		String name = bankStatementLine.getName();
-
-		Move move = moveService.getMoveCreateService().createMove(bankStatement.getJournal(), bankStatement.getCompany(), null, partner, effectDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-
-		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
-
-		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankStatementLine.getAccount(), amount,
-				isNegate, effectDate, effectDate, 1, name);
-		move.addMoveLineListItem(partnerMoveLine);
-
-		move.addMoveLineListItem(
-				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount,
-						!isNegate, effectDate, effectDate, 1, name));
-
-		moveRepository.save(move);
-
-		moveService.getMoveValidateService().validateMove(move);
-
-		bankStatementLine.setMoveLine(partnerMoveLine);
-
-		bankStatementLine.setIsPosted(true);
-
-	}
-
-	public void checkAmount(BankStatementLine bankStatementLine) throws AxelorException  {
-
-		MoveLine moveLine = bankStatementLine.getMoveLine();
-
-		if(bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) == 0 )  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-					GeneralServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
-		}
-
-		if((bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankStatementLine.getAmount().compareTo(moveLine.getCredit()) != 0 )
-				|| (bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankStatementLine.getAmount().compareTo(moveLine.getDebit()) != 0 ) )  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-					GeneralServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
+	
+	
 
 }

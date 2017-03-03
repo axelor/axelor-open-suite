@@ -11,4 +11,5 @@ public class EbicsBankServiceImpl implements EbicsBankService {
 		ebicsBank.setHostId(ebicsBank.getBank().getCode());
 	}
 
+	
 }

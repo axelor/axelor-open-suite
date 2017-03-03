@@ -41,10 +41,10 @@
  	<extra-code><![CDATA[
 	
 	   	// BANK ORDER FILE FORMAT SELECT
-		public static final String FILE_FORMAT_pain_001_001_02_SCT = "pain.001.001.02.sct";
-		public static final String FILE_FORMAT_pain_001_001_03_SCT = "pain.001.001.03.sct";
-		public static final String FILE_FORMAT_pain_XXX_CFONB320_XCT = "pain.xxx.cfonb320.xct";
-		public static final String FILE_FORMAT_pain_XXX_CFONB160_ICT = "pain.xxx.cfonb160.ict";
+		public static final String FILE_FORMAT_PAIN_001_001_02_SCT = "pain.001.001.02.sct";
+		public static final String FILE_FORMAT_PAIN_001_001_03_SCT = "pain.001.001.03.sct";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB320_XCT = "pain.xxx.cfonb320.xct";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_ICT = "pain.xxx.cfonb160.ict";
 		
 	]]></extra-code>
     

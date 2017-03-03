@@ -310,22 +310,22 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		File file = null;
 		
 		switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
-		case BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02_SCT :
+		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT :
 			
 			file = new BankOrderFile00100102Service(bankOrder).generateFile();
 			break;
 			
-		case BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_03_SCT :
+		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT :
 			
 			file = new BankOrderFile00100103Service(bankOrder).generateFile();
 			break;
 			
-		case BankOrderFileFormatRepository.FILE_FORMAT_pain_XXX_CFONB320_XCT :
+		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT :
 			
 			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
 			break;
 			
-		case BankOrderFileFormatRepository.FILE_FORMAT_pain_XXX_CFONB160_ICT :
+		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT :
 			
 			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
 			break;

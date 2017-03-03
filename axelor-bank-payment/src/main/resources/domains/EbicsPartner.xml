@@ -10,6 +10,24 @@
     <many-to-one name="ebicsBank" ref="com.axelor.apps.bank.payment.db.EbicsBank" title="Ebics bank" required="true"/>
     <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
     
+    <many-to-many name="bankStatementFileFormatSet" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="Supported file formats"/>
+	<datetime name="bankStatementLastExeDateT" title="Date of last execution"/>
+	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bank.payment.ebics.bank.bank.statement.period.mode.select" default="1"/>
+	<date name="bankStatementStartDate" title="Start date"/>
+	<date name="bankStatementEndDate" title="End date"/>
+	<many-to-one name="bankStatementEbicsUser" ref="com.axelor.apps.bank.payment.db.EbicsUser" title="Ebics user for get the bank statements"/>
+	
+	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
+	
+	<extra-code><![CDATA[
+	
+	   	// BANK STATEMENT GET MODE SELECT
+		public static final int GET_MODE_AUTOMATIC = 1;
+		public static final int GET_MODE_PERIOD = 2;
+		
+		
+	]]></extra-code>
+    
   </entity>
   
 </domain-models>

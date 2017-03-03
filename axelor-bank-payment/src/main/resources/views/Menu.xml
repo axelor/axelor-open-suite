@@ -203,4 +203,13 @@
 		<view type="form" name="ebics-certificate-form"/>
 	</action-view>	
 	
+	<menuitem name="account-conf-ebics-bank-statement-file-format" parent="account-conf-ebics"
+		title="Bank statements file formats" action="account.conf.ebics.bank.statement.file.format" />
+	
+	<action-view name="account.conf.ebics.bank.statement.file.format" title="Bank statements file formats"
+		model="com.axelor.apps.bank.payment.db.BankStatementFileFormat" >
+		<view type="grid" name="bank-statement-file-format-grid"/>
+		<view type="form" name="bank-statement-file-format-form"/>
+	</action-view>
+	
 </object-views>

@@ -5,14 +5,16 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bank.payment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bank.payment.db.repo.BankOrderRepository;
-import com.axelor.apps.bank.payment.db.repo.BankStatementManagementRepository;
-import com.axelor.apps.bank.payment.db.repo.BankStatementRepository;
+import com.axelor.apps.bank.payment.db.repo.BankReconciliationManagementRepository;
+import com.axelor.apps.bank.payment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsBankAccountRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsCertificateAccountRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bank.payment.ebics.service.EbicsBankService;
 import com.axelor.apps.bank.payment.ebics.service.EbicsBankServiceImpl;
+import com.axelor.apps.bank.payment.ebics.service.EbicsPartnerService;
+import com.axelor.apps.bank.payment.ebics.service.EbicsPartnerServiceImpl;
 import com.axelor.apps.bank.payment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bank.payment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bank.payment.service.bankorder.BankOrderMoveService;
@@ -27,13 +29,15 @@ public class BankPaymentModule extends AxelorModule {
 	@Override
 	protected void configure() {
 		
-		 bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
+		 bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
 		 
 		 bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
 		 
 		 bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
 	        
 		 bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
+		 
+		 bind(EbicsPartnerService.class).to(EbicsPartnerServiceImpl.class);
         
 		 bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
 		 

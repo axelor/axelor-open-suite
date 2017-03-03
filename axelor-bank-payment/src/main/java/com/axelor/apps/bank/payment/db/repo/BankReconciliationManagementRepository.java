@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.bank.payment.db.repo;
 
-import com.axelor.apps.bank.payment.db.BankStatement;
+import com.axelor.apps.bank.payment.db.BankReconciliation;
 
-public class BankStatementManagementRepository extends BankStatementRepository {
+public class BankReconciliationManagementRepository extends BankReconciliationRepository {
 	@Override
-	public BankStatement copy(BankStatement entity, boolean deep) {
-		entity.setStatusSelect(1);
+	public BankReconciliation copy(BankReconciliation entity, boolean deep) {
+		entity.setStatusSelect(STATUS_DRAFT);
 		entity.setStartingBalance(null);
 		entity.setEndingBalance(null);
 		entity.setComputedBalance(null);
-		entity.setBankStatementLineList(null);
+		entity.setBankReconciliationLineList(null);
 		
 		return super.copy(entity, deep);
 	}

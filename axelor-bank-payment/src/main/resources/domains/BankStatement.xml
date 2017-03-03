@@ -6,23 +6,19 @@
   <entity name="BankStatement" lang="java">
 
 	<string name="name" title="Label" namecolumn="true"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <date name="fromDate" title="From Date" />
     <date name="toDate" title="To Date" />
-    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" required="true"/>
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"  title="Currency" />
-    <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"  title="Cash account" required="true"/>
-    <decimal name="startingBalance" title="Starting Balance" /> 
-    <decimal name="endingBalance" title="Ending Balance" /> 
-    <one-to-many name="bankStatementLineList" ref="com.axelor.apps.bank.payment.db.BankStatementLine" mappedBy="bankStatement" title="Bank Statement Lines"/>
-    <decimal name="computedBalance" title="Computed Balance" readonly="true"/> 
     <integer name="statusSelect" title="Status" selection="bank.payment.bank.statement.status.select" readonly="true" default="1"/>
+	<many-to-one name="ebicsPartner" ref="com.axelor.apps.bank.payment.db.EbicsPartner" title="Ebics Partner"/>
+	<many-to-one name="bankStatementFileFormat" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="File format"/>
+	<many-to-one name="bankStatementFile" ref="com.axelor.meta.db.MetaFile" title="File" />
+	<datetime name="getDateTime" title="Get date"/>
 
 	<extra-code><![CDATA[
 	
 	   	// Status select
-		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_RECEIVED = 1;
+		public static final int STATUS_CHECKED = 2;
 	
 	]]></extra-code>
 
