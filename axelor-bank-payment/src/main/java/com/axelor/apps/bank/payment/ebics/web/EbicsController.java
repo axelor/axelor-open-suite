@@ -394,7 +394,7 @@ public class EbicsController {
 		
 		String title = I18n.get("EbicsCertificate");
 		
-		ReportSettings report = ReportFactory.createReport(IReport.EBICS_CERTIFICATE, title + "-${date}");
+		ReportSettings report = ReportFactory.createReport(IReport.EBICS_CERTIFICATE, title + "-${date}${time}");
 		report.addParam("CertificateId", Joiner.on(",").join(certIds));
 		report.addParam("EbicsUserId", ebicsUser.getId());
 		report.toAttach(ebicsUser);
