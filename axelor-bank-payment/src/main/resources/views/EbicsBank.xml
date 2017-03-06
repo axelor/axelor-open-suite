@@ -12,6 +12,7 @@
 		<panel title="General informations">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large" hideIf="!fullName" readonly="true"/>
 			<field name="bank"/>
+			<field name="hostId"/>
 			<field name="fax" placeholder="+33000000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-ebics-bank-record-normalize-fax-phone-number"/>
 			<field name="url" colSpan="12"/>
 			<field name="languageSelect" />

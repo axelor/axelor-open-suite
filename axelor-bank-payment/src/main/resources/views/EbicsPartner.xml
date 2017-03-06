@@ -18,7 +18,7 @@
 		
 		<panel title="Bank statements" colSpan="12">
 			<field name="bankStatementFileFormatSet" widget="TagSelect" canNew="false" canEdit="false" colSpan="6" form-view="bank-statement-file-format-form" grid-view="bank-statement-file-format-grid"/>
-			<field name="bankStatementEbicsUser" colSpan="6" domain="self.ebicsPartner.ebicsBank.id = :id" form-view="ebics-user-form" grid-view="ebics-user-grid"/>
+			<field name="bankStatementEbicsUser" colSpan="6" domain="self.ebicsPartner.id = :id" form-view="ebics-user-form" grid-view="ebics-user-grid"/>
 			<field name="bankStatementGetModeSelect" colSpan="6" widget="radio-select" x-direction="horizontal"/>
 			<field name="bankStatementLastExeDateT" readonly="true" colSpan="6"/>
 			<field name="bankStatementStartDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
