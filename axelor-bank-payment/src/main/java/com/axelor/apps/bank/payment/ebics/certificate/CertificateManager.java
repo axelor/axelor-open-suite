@@ -39,6 +39,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import com.axelor.apps.bank.payment.db.EbicsCertificate;
 import com.axelor.apps.bank.payment.db.EbicsUser;
 import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
+import com.axelor.apps.bank.payment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bank.payment.ebics.service.EbicsCertificateService;
 import com.axelor.inject.Beans;
 
@@ -70,7 +71,9 @@ public class CertificateManager {
     org.apache.xml.security.Init.init();
     java.security.Security.addProvider(new BouncyCastleProvider());
     
-    createA005Certificate(new Date(calendar.getTimeInMillis()));
+    if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
+    	createA005Certificate(new Date(calendar.getTimeInMillis()));
+    }
     createX002Certificate(new Date(calendar.getTimeInMillis()));
     createE002Certificate(new Date(calendar.getTimeInMillis()));
     setUserCertificates();
@@ -83,7 +86,9 @@ public class CertificateManager {
    */
   private void setUserCertificates() throws IOException, CertificateEncodingException {
 	
-	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_SIGNATURE));
+    if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
+    	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_SIGNATURE));
+    }   
     
 	user.setX002Certificate(updateCertificate(x002Certificate, user.getX002Certificate(), x002PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_AUTHENTICATION));
     
