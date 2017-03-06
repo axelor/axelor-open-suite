@@ -20,12 +20,12 @@
 		<panel title="General informations" colSpan="12">
 			<field name="name" />
 			<field name="password" />
-			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$'/>
-			<field name="ebicsTypeSelect" widget="RadioSelect"/>
-			<field name="securityMedium" />
+			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
+			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
+			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="associatedUser"/>
-			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
-			<field name="nextOrderId" />
+			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
+			<field name="nextOrderId"/>
 			<field name="ebicsPartner.ebicsBank"/>
 			<field name="statusSelect" colSpan="12"/>
 		</panel>
@@ -49,7 +49,7 @@
 		</panel-tabs>
 		
 		<panel sidebar="true">
-			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="ebicsTypeSelect == 0 &amp;&amp; dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
+			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
 			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
 			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
 			<button name="printCertificates" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-method-print-certificates" showIf="statusSelect >= 3"/>
