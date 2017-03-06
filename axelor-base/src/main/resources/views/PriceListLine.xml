@@ -23,7 +23,7 @@
 		</panel>
 		<panel name="calculationMethod" title="Calculation method" colSpan="12" >
 			<field name="typeSelect" hideIf="productCategory" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
-			<field name="typeSelect" hideIf="!productCategory" selection="base.price.list.line.type.select.product.category.selected" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
+			<field name="typeSelect" hideIf="!productCategory" selection-in="[1,2]" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>
 			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
 			<field name="minQty" colSpan="12"/>
