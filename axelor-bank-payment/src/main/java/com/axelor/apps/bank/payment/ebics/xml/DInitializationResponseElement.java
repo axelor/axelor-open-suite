@@ -54,10 +54,13 @@ public class DInitializationResponseElement extends InitializationResponseElemen
     bodyRetCode = response.getBody().getReturnCode().getStringValue();
     returnCode = ReturnCode.toReturnCode(bodyRetCode, "");
     numSegments = (int)response.getHeader().getStatic().getNumSegments();
-    segmentNumber = (int)response.getHeader().getMutable().getSegmentNumber().getLongValue();
-    lastSegment = response.getHeader().getMutable().getSegmentNumber().getLastSegment();
-    transactionKey = response.getBody().getDataTransfer().getDataEncryptionInfo().getTransactionKey();
-    orderData = response.getBody().getDataTransfer().getOrderData().getByteArrayValue();
+    if (numSegments > 0) {
+    	segmentNumber = (int)response.getHeader().getMutable().getSegmentNumber().getLongValue();
+    	lastSegment = response.getHeader().getMutable().getSegmentNumber().getLastSegment();
+    	transactionKey = response.getBody().getDataTransfer().getDataEncryptionInfo().getTransactionKey();
+        orderData = response.getBody().getDataTransfer().getOrderData().getByteArrayValue();
+    }
+    
   }
 
   /**
