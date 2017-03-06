@@ -36,10 +36,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.HRConfigRepository;
-import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
-import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
+import com.axelor.apps.hr.db.repo.*;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -88,20 +85,41 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		HRConfig hrConfig = hrConfigService.getHRConfig(company);
 		
 		List<Employee> employeeList = Beans.get(EmployeeRepository.class).all().filter("self.mainEmploymentContract.payCompany = ?1", company).fetch();
-		
-		for (Employee employee : employeeList) {
-			if (employee != null) {
-				LunchVoucherMgtLine LunchVoucherMgtLine = lunchVoucherMgtLineService.create(employee, lunchVoucherMgt);
-				lunchVoucherMgt.addLunchVoucherMgtLineListItem(LunchVoucherMgtLine);
-			}
-		}
-		
-		lunchVoucherMgt.setStatusSelect(LunchVoucherMgtRepository.STATUS_CALCULATED);
+
+        for (Employee employee : employeeList) {
+            if (employee != null) {
+            	LunchVoucherMgtLine lunchVoucherMgtLine = obtainLineFromEmployee(employee, lunchVoucherMgt);
+            	//the employee doesn't have a line, create it
+            	if (lunchVoucherMgtLine == null) {
+					lunchVoucherMgtLine = lunchVoucherMgtLineService.create(employee, lunchVoucherMgt);
+					lunchVoucherMgt.addLunchVoucherMgtLineListItem(lunchVoucherMgtLine);
+				}
+				//the line exist and is not already calculated, update it
+				else {
+            		if (lunchVoucherMgtLine.getStatusSelect() != LunchVoucherMgtLineRepository.STATUS_CALCULATED) {
+						lunchVoucherMgtLineService.computeAllAttrs(
+								employee, lunchVoucherMgt, lunchVoucherMgtLine);
+					}
+				}
+            }
+        }
+
+        lunchVoucherMgt.setStatusSelect(LunchVoucherMgtRepository.STATUS_CALCULATED);
+
 		lunchVoucherMgt.setStockQuantityStatus(hrConfig.getAvailableStockLunchVoucher());
 		
 		calculateTotal(lunchVoucherMgt);
 		
 		lunchVoucherMgtRepository.save(lunchVoucherMgt);
+	}
+
+	protected LunchVoucherMgtLine obtainLineFromEmployee(Employee employee, LunchVoucherMgt lunchVoucherMgt) {
+		for (LunchVoucherMgtLine line : lunchVoucherMgt.getLunchVoucherMgtLineList() ) {
+			if (line.getEmployee() == employee) {
+				return line;
+			}
+		}
+		return null;
 	}
 	
 	@Override

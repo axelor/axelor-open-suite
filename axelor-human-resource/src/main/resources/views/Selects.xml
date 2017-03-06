@@ -145,6 +145,11 @@
 		<option value="2">Anomaly</option>
 	</selection>
 
+	<selection name="hr.lunch.voucher.line.status.select">
+		<option value="1">Calculated</option>
+		<option value="2">Anomaly</option>
+	</selection>
+
 	<selection name="account.analytic.move.line.status.select" id="hr.analytic.move.line.status.select">
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>

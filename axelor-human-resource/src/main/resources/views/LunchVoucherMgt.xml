@@ -28,7 +28,7 @@
 		        	<field name="leavePeriod"/>
   				</panel>
 	        	<panel colSpan="12">
-	        		<button name="calculateBtn" title="Calculate" colSpan="6" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect == 1" hidden="true"/>
+	        		<button name="calculateBtn" title="Calculate" colSpan="6" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect != 3" hidden="true"/>
 		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="save,action-lunch-voucher-method-validate" showIf="statusSelect == 2" hidden="true"/>
 	        	</panel>
 	        	<panel title="Export" colSpan="12" readonly="true" hidden="true" showIf="csvFile != null">

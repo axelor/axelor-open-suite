@@ -27,26 +27,52 @@ import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
+import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 	
 	@Inject
 	protected EmployeeService employeeService;
-	
+
+	/*
+	 * Create a new line from employee and lunchVoucherMgt
+	 */
 	@Override
 	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
 		LunchVoucherMgtLine lunchVoucherMgtLine = new LunchVoucherMgtLine();
-		
 		lunchVoucherMgtLine.setEmployee(employee);
-		lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
-		lunchVoucherMgtLine.setDaysWorkedNbr(employeeService.getDaysWorkedInPeriod(employee, lunchVoucherMgt.getLeavePeriod().getFromDate(), lunchVoucherMgt.getLeavePeriod().getToDate()).setScale(0, RoundingMode.HALF_UP).intValue());
-		
-		compute(lunchVoucherMgtLine);
-		
+		computeAllAttrs(employee, lunchVoucherMgt, lunchVoucherMgtLine);
 		return lunchVoucherMgtLine;
+	}
+
+	/*
+	 * Try to set the line attributes: if an exception occurs, the line status
+	 * is anomaly.
+	 */
+	@Override
+	public void computeAllAttrs(Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine) {
+		Integer lineStatus = LunchVoucherMgtLineRepository.STATUS_CALCULATED;
+		try {
+			lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
+			lunchVoucherMgtLine.setDaysWorkedNbr(
+					employeeService.getDaysWorkedInPeriod(
+							employee,
+							lunchVoucherMgt.getLeavePeriod().getFromDate(),
+							lunchVoucherMgt.getLeavePeriod().getToDate()
+
+					).setScale(0, RoundingMode.HALF_UP).intValue()
+			);
+            compute(lunchVoucherMgtLine);
+		}
+		catch (AxelorException e) {
+			TraceBackService.trace(e);
+			lineStatus = LunchVoucherMgtLineRepository.STATUS_ANOMALY;
+		}
+		lunchVoucherMgtLine.setStatusSelect(lineStatus);
 	}
 
 	private Integer computeEmployeeLunchVoucherAdvance(Employee employee) {
