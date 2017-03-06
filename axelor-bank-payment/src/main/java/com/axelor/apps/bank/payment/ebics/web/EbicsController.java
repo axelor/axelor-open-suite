@@ -40,6 +40,7 @@ import com.axelor.apps.bank.payment.db.EbicsBank;
 import com.axelor.apps.bank.payment.db.EbicsCertificate;
 import com.axelor.apps.bank.payment.db.EbicsUser;
 import com.axelor.apps.bank.payment.db.repo.BankOrderFileFormatRepository;
+import com.axelor.apps.bank.payment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsUserRepository;
@@ -223,7 +224,7 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		try {
-			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT);
+			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
