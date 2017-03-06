@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -1103,7 +1103,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'Certificate issued to'</value>
+                                                                <value type="javascript">'EbicsCertificateReport.issuedTo'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                         <structure>
@@ -1142,7 +1142,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'Certificate issued by'</value>
+                                                                <value type="javascript">'EbicsCertificateReport.issuedBy'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                         <structure>
