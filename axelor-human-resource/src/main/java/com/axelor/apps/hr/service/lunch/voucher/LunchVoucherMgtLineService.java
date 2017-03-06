@@ -27,5 +27,6 @@ public interface LunchVoucherMgtLineService {
 	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 	
 	public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
-	
+
+	public void computeAllAttrs(Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine);
 }

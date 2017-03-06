@@ -202,7 +202,7 @@
    	</action-record>
    	
 	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">
-		<attribute name="hidden" for="payboxEmail" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.email != null &amp;&amp; !partner.email.isEmpty())"/>
+		<attribute name="hidden" for="payboxEmail" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.emailAddress != null &amp;&amp; !partner.emailAddress.isEmpty())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-payment-voucher-hidden-fields-if-purchase">

@@ -111,7 +111,11 @@ public class PaymentVoucherLoadService {
 		if (paymentVoucher.getPayVoucherElementToPayList() != null)  {
 			paymentVoucher.getPayVoucherElementToPayList().clear();
 		}
-		
+
+		if (paymentVoucher.getPayVoucherDueElementList() != null)  {
+			paymentVoucher.getPayVoucherDueElementList().clear();
+		}
+
 		for (MoveLine moveLine : this.getMoveLines(paymentVoucher))  {
 			
 			paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
