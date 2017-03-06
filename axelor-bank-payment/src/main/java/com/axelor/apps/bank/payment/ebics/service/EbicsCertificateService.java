@@ -243,7 +243,7 @@ public class EbicsCertificateService {
 	public void computeFullName(EbicsCertificate entity) {
 		
 		StringBuilder fullName = new StringBuilder();
-		Option item = MetaStore.getSelectionItem("account.ebics.certificate.type.select", entity.getTypeSelect());
+		Option item = MetaStore.getSelectionItem("bank.payment.ebics.certificate.type.select", entity.getTypeSelect());
 		if (item != null) {
 			fullName.append(I18n.get(item.getTitle()));
 		}
