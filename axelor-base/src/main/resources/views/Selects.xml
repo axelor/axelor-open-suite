@@ -446,7 +446,12 @@
 		<option value="2">Additionnal</option>
 		<option value="3">Replace</option>
 	</selection>
-	
+
+	<selection name="base.price.list.line.type.select.product.category.selected">
+		<option value="1">Discount</option>
+		<option value="2">Additionnal</option>
+	</selection>
+
 	<selection name="base.price.list.line.amount.type.select">
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
