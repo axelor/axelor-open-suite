@@ -1,0 +1,11 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-talent"
+	version "5.0.0"
+	title "Axelor Talent"
+
+	//module dependencies
+	module "modules:axelor-human-resource"
+	
+}

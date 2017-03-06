@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form name="talent-employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		<panel title="Skills">
+			<field name="trainingSkillSet" colSpan="12" />
+			<field name="experienceSkillSet" colSpan="12" />
+			<field name="tagSkillSet" colSpan="12" />
+		</panel>
+		<panel title="Training">
+			<panel-dashlet action="action-dashlet-employee-training-register" colSpan="12"/>
+			<panel-dashlet action="chart:chart.employee.training.per.category" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<action-view name="action-dashlet-employee-training-register" title="Training Register" model="com.axelor.apps.talent.db.TrainingRegister">
+		<view type="grid" name="training-register-grid"/>
+		<view type="form" name="training-register-form"/>
+		<domain>self.employee = :__self__</domain>
+	</action-view>
+	
+	
+</object-views>

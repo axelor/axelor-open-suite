@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')" title="Training"/>
+    
+	<menuitem name="my-training-register" parent="training-root" title="My trainings" action="my.training.register" groups="users,MNGT,admins"/>
+
+	<action-view name="my.training.register" model="com.axelor.apps.talent.db.TrainingRegister"	title="My trainings">
+		<view name="training-register-grid" type="grid" />
+		<view name="training-register-calendar" type="calendar" />
+		<view name="training-register-form" type="form" />
+		<domain>self.employee.id = :_employeeId and self.statusSelect != 3</domain>
+		<context name="_employeeId" expr="eval:__user__.employee?.id" />
+	</action-view>
+	
+	<menuitem name="my-team-training-register" parent="training-root" title="My team trainings" action="my.team.training.register" groups="MNGT,admins"/>	
+	
+	<action-view name="my.team.training.register" model="com.axelor.apps.talent.db.TrainingRegister" title="My team trainings">
+		<view name="training-register-grid" type="grid" />
+		<view name="training-register-calendar" type="calendar" />
+		<view name="training-register-form" type="form" />
+		<domain>self.employee.id in :_employeeList and self.statusSelect != 3</domain>
+		<context name="_employeeList" expr="eval:(__user__.teamSet.userSet.employee.id).flatten()" />
+	</action-view>
+	
+	<menuitem name="training-register-all" parent="training-root" title="All trainings" action="training.register.all" groups="admins"/>	
+	
+	<action-view name="training.register.all" model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
+		<view name="training-register-grid" type="grid" />
+		<view name="training-register-form" type="form" />
+	</action-view>
+	
+	<menuitem name="training-dashboard" parent="training-root" title="Training dashboard" action="training.dashboard" groups="MNGT,admins"/>
+	
+	<action-view name="training.dashboard" title="Training dashboard">
+		<view type="dashboard" name="training.dashboard"/>
+	</action-view>
+	
+	<menuitem name="training-conf" parent="training-root" title="Configuration" groups="MNGT,admins"/>
+	
+	<menuitem name="training-category-all" parent="training-conf" title="Categories" action="training.category.all" groups="MNGT,admins"/>	
+	
+	<action-view name="training.category.all" model="com.axelor.apps.talent.db.TrainingCategory" title="Categories">
+		<view name="training-category-grid" type="grid" />
+		<view name="training-category-form" type="form" />
+	</action-view>
+	
+	<menuitem name="training-training-all" parent="training-conf" title="Trainings" action="training.training.all" groups="MNGT,admins"/>	
+	
+	<action-view name="training.training.all" model="com.axelor.apps.talent.db.Training" title="Trainings">
+		<view name="training-grid" type="grid" />
+		<view name="training-form" type="form" />
+	</action-view>
+	
+	<menuitem name="training-session-all" parent="training-conf" title="Training sessions" action="training.session.all" groups="MNGT,admins"/>	
+	
+	<action-view name="training.session.all" model="com.axelor.apps.talent.db.TrainingSession" title="Training sessions">
+		<view name="training-session-grid" type="grid" />
+		<view name="training-session-form" type="form" />
+	</action-view>
+	
+</object-views>
