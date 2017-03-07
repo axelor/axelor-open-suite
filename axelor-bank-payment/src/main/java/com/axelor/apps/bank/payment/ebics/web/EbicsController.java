@@ -38,11 +38,13 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.bank.payment.db.EbicsBank;
 import com.axelor.apps.bank.payment.db.EbicsCertificate;
+import com.axelor.apps.bank.payment.db.EbicsRequestLog;
 import com.axelor.apps.bank.payment.db.EbicsUser;
 import com.axelor.apps.bank.payment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bank.payment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
+import com.axelor.apps.bank.payment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bank.payment.ebics.certificate.CertificateManager;
 import com.axelor.apps.bank.payment.ebics.service.EbicsCertificateService;
@@ -81,6 +83,9 @@ public class EbicsController {
 	
 	@Inject
 	private EbicsCertificateRepository certificateRepo;
+	
+	@Inject
+	private EbicsRequestLogRepository logRepo;
 	
 	@Transactional
 	public void generateCertificate(ActionRequest request, ActionResponse response){
@@ -201,11 +206,9 @@ public class EbicsController {
 		
 		try {
 			
-			EbicsBank ebicsBank = ebicsUser.getEbicsPartner().getEbicsBank();
+			MetaFile testMetaFile = ebicsUser.getTestFile();
 			
-			MetaFile testMetaFile = ebicsBank.getTestFile();
-			
-			if(ebicsBank.getTestMode() && testMetaFile != null)  { 
+			if(ebicsUser.getEbicsPartner().getTestMode() && testMetaFile != null)  { 
 				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testMetaFile).toFile(), BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT);
 			}
 			else  {
@@ -225,6 +228,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM);
+			downloadFile(response, "FDL", ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -238,6 +242,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendHTDRequest(ebicsUser, null, null, null);
+			downloadFile(response, "HTD", ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -251,6 +256,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendPTKRequest(ebicsUser, null, null, null);
+			downloadFile(response, "PTK", ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -403,6 +409,19 @@ public class EbicsController {
 		response.setView(ActionView
 				.define(title)
 				.add("html", report.getFileLink()).map());
+		
+	}
+	
+	private void downloadFile(ActionResponse response, String title, EbicsUser user) {
+		
+		EbicsRequestLog requestLog = logRepo.all().filter("self.ebicsUser = ?1", user).order("-id").fetchOne();
+		
+		if (requestLog != null && requestLog.getResponseFile() != null) {
+			response.setView(ActionView.define(title)
+					.add("html", "ws/rest/" + EbicsRequestLog.class.getCanonicalName() + "/" + requestLog.getId() + "/responseFile/download")
+					.param("download", "dtrue")
+					.map());
+		}
 		
 	}
 	

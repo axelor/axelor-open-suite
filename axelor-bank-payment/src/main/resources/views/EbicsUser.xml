@@ -27,7 +27,9 @@
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner.ebicsBank"/>
+			<field name="testFile" widget="binary-link" showIf="ebicsPartner.testMode"/>
 			<field name="statusSelect" colSpan="12"/>
+			<field name="ebicsPartner.testMode" hidden="true"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Certificates">

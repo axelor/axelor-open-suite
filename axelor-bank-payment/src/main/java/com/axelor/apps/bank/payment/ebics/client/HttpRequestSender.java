@@ -26,6 +26,11 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLException;
 
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -85,33 +90,75 @@ public class HttpRequestSender {
   public final int send(ContentFactory request) throws IOException, AxelorException {
 	  
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
-    X509Certificate certificate = EbicsCertificateService.getBankCertificate(bank, "ssl");
-    DefaultHttpClient client = getSecuredHttpClient(certificate, bank.getUrl());
+    String url = bank.getUrl();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    	throw new AxelorException(I18n.get("Invalid bank url. It must be start with http:// or http://"),1);
+    }
+    
+    if (bank.getProtocolSelect().equals("ssl")) {
+    	return sendSSL(request, bank);
+    }
+    else {
+    	return sendTLS(request, bank);
+    }
+  }
+  
+  public final int sendSSL(ContentFactory request, EbicsBank bank) throws AxelorException, IOException {
+    String url = bank.getUrl();
+  	X509Certificate certificate = EbicsCertificateService.getBankCertificate(bank, "ssl");
+	DefaultHttpClient client = getSecuredHttpClient(certificate, url);
+	String proxyConfiguration =  AppSettings.get().get("http.proxy.host");
+	
+	if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
+	  setProxy(client);
+	}
+	
+	InputStream input = request.getContent();
+	int retCode = -1;
+	log.debug("Bank url: {}", url);
+	HttpPost post = new HttpPost(url);
+	ContentType type = ContentType.TEXT_XML;
+	HttpEntity entity = new InputStreamEntity(input, retCode, type);
+	post.setEntity(entity);
+	
+	try {
+		HttpResponse responseHttp = client.execute(post);
+		retCode = responseHttp.getStatusLine().getStatusCode();
+		log.debug("Http reason phrase: {}" , responseHttp.getStatusLine().getReasonPhrase());
+		response = new InputStreamContentFactory(responseHttp.getEntity().getContent());
+	} catch (IOException e) {
+		e.printStackTrace();
+		throw new AxelorException(I18n.get("Connection error: %s"), 1, e.getMessage());
+	}
+	
+	return retCode;
+  }
+  
+  public final int sendTLS(ContentFactory request, EbicsBank bank) throws IOException {
+    HttpClient			httpClient;
+    PostMethod			method;
+    RequestEntity		requestEntity;
+    InputStream			input;
+    int				retCode;
+    httpClient = new HttpClient();
     String proxyConfiguration =  AppSettings.get().get("http.proxy.host");
+	
+	if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
+	  setProxy(httpClient);
+	}
+    input = request.getContent();
+    method = new PostMethod(bank.getUrl());
+    method.getParams().setSoTimeout(30000);
+    requestEntity = new InputStreamRequestEntity(input);
+    method.setRequestEntity(requestEntity);
+    method.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
+    retCode = -1;
+    retCode = httpClient.executeMethod(method);
+    response = new InputStreamContentFactory(method.getResponseBodyAsStream());
 
-    if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
-      setProxy(client);
-    }
-    
-    InputStream input = request.getContent();
-    int retCode = -1;
-    HttpPost post = new HttpPost(bank.getUrl());
-    ContentType type = ContentType.TEXT_XML;
-    HttpEntity entity = new InputStreamEntity(input, retCode, type);
-    post.setEntity(entity);
-    
-    try {
-    	HttpResponse responseHttp = client.execute(post);
-    	retCode = responseHttp.getStatusLine().getStatusCode();
-    	log.debug("Http reason phrase: {}" , responseHttp.getStatusLine().getReasonPhrase());
-    	response = new InputStreamContentFactory(responseHttp.getEntity().getContent());
-    } catch (IOException e) {
-    	e.printStackTrace();
-    	throw new AxelorException(I18n.get("Connection error: %s"), 1, e.getMessage());
-    }
-    
     return retCode;
   }
+
 
   private void setProxy(DefaultHttpClient client) {
 	  
@@ -133,6 +180,28 @@ public class HttpRequestSender {
 		client.getCredentialsProvider().setCredentials(authscope, credentials);
       }
   }
+  
+  private void setProxy(HttpClient httpClient) {
+	  
+      String proxyHost =  AppSettings.get().get("http.proxy.host").trim();
+      Integer proxyPort = Integer.parseInt(AppSettings.get().get("http.proxy.port").trim());
+      HostConfiguration hostConfig = httpClient.getHostConfiguration();
+      hostConfig.setProxy(proxyHost, proxyPort);
+      if (! AppSettings.get().get("http.proxy.user").equals("")) {
+		String				user;
+		String				pwd;
+		org.apache.commons.httpclient.UsernamePasswordCredentials	credentials;
+		org.apache.commons.httpclient.auth.AuthScope authscope;
+	
+		user =  AppSettings.get().get("http.proxy.user").trim();
+		pwd =  AppSettings.get().get("http.proxy.password").trim();
+		credentials = new org.apache.commons.httpclient.UsernamePasswordCredentials(user, pwd);
+		authscope = new org.apache.commons.httpclient.auth.AuthScope(proxyHost, proxyPort);
+		httpClient.getState().setProxyCredentials(authscope, credentials);
+      }
+
+  }
+
 
   private DefaultHttpClient getSecuredHttpClient(Certificate cert, String bankURL) throws AxelorException {
     

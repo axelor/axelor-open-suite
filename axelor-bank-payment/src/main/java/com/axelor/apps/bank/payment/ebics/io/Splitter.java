@@ -19,8 +19,8 @@ package com.axelor.apps.bank.payment.ebics.io;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.apps.bank.payment.ebics.interfaces.ContentFactory;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -70,9 +70,9 @@ public class Splitter {
   {
     try {
       if (isCompressionEnabled) {
-	input = Utils.zip(input);
+	input = EbicsUtils.zip(input);
       }
-      content = Utils.encrypt(input, keySpec);
+      content = EbicsUtils.encrypt(input, keySpec);
       segmentation();
     } catch (Exception e) {
       throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);

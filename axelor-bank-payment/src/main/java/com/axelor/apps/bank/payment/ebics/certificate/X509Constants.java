@@ -38,11 +38,6 @@ public interface X509Constants {
   String		SIGNATURE_ALGORITHM			= "SHA256WithRSAEncryption";
 
   /**
-   * Default days validity of a certificate
-   */
-  int			DEFAULT_DURATION			= 365;
-
-  /**
    * EBICS key size
    */
   int			EBICS_KEY_SIZE				= 2048;

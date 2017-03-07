@@ -45,9 +45,9 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
 import com.axelor.apps.bank.payment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bank.payment.ebics.client.EbicsSession;
+import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.apps.bank.payment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bank.payment.ebics.io.Splitter;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 
 /**
@@ -161,7 +161,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest("E002",
 								          "http://www.w3.org/2001/04/xmlenc#sha256",
 								          decodeHex(KeyUtil.getKeyDigest(session.getBankE002Key())));
-    signatureData = EbicsXmlFactory.createSignatureData(true, Utils.encrypt(Utils.zip(userSignature.prettyPrint()), keySpec));
+    signatureData = EbicsXmlFactory.createSignatureData(true, EbicsUtils.encrypt(EbicsUtils.zip(userSignature.prettyPrint()), keySpec));
     dataEncryptionInfo = EbicsXmlFactory.createDataEncryptionInfo(true,
 	                                                          encryptionPubKeyDigest,
 	                                                          generateTransactionKey());
