@@ -16,6 +16,8 @@
 	
 	<string name="languageSelect" title="Language" selection="select.language" />
 	
+	<integer name="certValidityPeriodSelect" title="Certificate validity period(Years)" default="5" selection="bank.payment.ebics.bank.certificate.validity.period.select" />
+	
 	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
 	
 	

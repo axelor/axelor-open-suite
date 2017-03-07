@@ -66,7 +66,7 @@ public class CertificateManager {
 	  Calendar calendar;
 
     calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_YEAR, X509Constants.DEFAULT_DURATION);
+    calendar.add(Calendar.YEAR, user.getEbicsPartner().getEbicsBank().getCertValidityPeriodSelect());
 
     org.apache.xml.security.Init.init();
     java.security.Security.addProvider(new BouncyCastleProvider());
