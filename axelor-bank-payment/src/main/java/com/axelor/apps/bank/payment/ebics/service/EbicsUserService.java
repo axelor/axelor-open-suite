@@ -33,7 +33,7 @@ import com.axelor.apps.bank.payment.db.EbicsRequestLog;
 import com.axelor.apps.bank.payment.db.EbicsUser;
 import com.axelor.apps.bank.payment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsUserRepository;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
+import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -106,7 +106,7 @@ public class EbicsUserService {
 	}
 	
 	private byte[] decryptData(byte[] input, byte[] key) throws AxelorException { 
-		 return Utils.decrypt(input, new SecretKeySpec(key, "EAS"));
+		 return EbicsUtils.decrypt(input, new SecretKeySpec(key, "EAS"));
 	}
 	
 	@Transactional

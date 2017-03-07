@@ -22,8 +22,8 @@ import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 
 import com.axelor.apps.bank.payment.db.EbicsUser;
+import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.apps.bank.payment.ebics.service.EbicsUserService;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
@@ -70,7 +70,7 @@ public class Joiner {
 
       buffer.close();
       decrypted = Beans.get(EbicsUserService.class).decrypt(user, buffer.toByteArray(), transactionKey);
-      output.write(Utils.unzip(decrypted));
+      output.write(EbicsUtils.unzip(decrypted));
       output.close();
     } catch (GeneralSecurityException e) {
       throw new AxelorException(e.getMessage(), IException.INCONSISTENCY);

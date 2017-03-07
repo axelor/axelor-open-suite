@@ -25,7 +25,6 @@ import com.axelor.apps.bank.payment.db.EbicsTransferState;
 import com.axelor.apps.bank.payment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bank.payment.ebics.io.ByteArrayContentFactory;
 import com.axelor.apps.bank.payment.ebics.io.Joiner;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.apps.bank.payment.ebics.xml.DInitializationRequestElement;
 import com.axelor.apps.bank.payment.ebics.xml.DInitializationResponseElement;
 import com.axelor.apps.bank.payment.ebics.xml.DTransferRequestElement;
@@ -103,7 +102,7 @@ public class FileTransfer {
     initializer.build();
     initializer.validate();
     httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     response = new InitializationResponseElement(sender.getResponseBody(),
 	                                         orderType,
 	                                         DefaultEbicsRootElement.generateName(orderType),
@@ -160,7 +159,7 @@ public class FileTransfer {
     uploader.build();
     uploader.validate();
     httpCode = sender.send(new ByteArrayContentFactory(uploader.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     response = new TransferResponseElement(sender.getResponseBody(),
 	                                   DefaultEbicsRootElement.generateName(orderType),
 	                                   session.getUser());
@@ -203,7 +202,7 @@ public class FileTransfer {
     initializer.build();
     initializer.validate();
     httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     response = new DInitializationResponseElement(sender.getResponseBody(),
 	                                          orderType,
 	                                          DefaultEbicsRootElement.generateName(orderType),
@@ -235,7 +234,7 @@ public class FileTransfer {
     receipt.build();
     receipt.validate();
     httpCode = sender.send(new ByteArrayContentFactory(receipt.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     receiptResponse = new ReceiptResponseElement(sender.getResponseBody(),
 	                                         DefaultEbicsRootElement.generateName(orderType),
 	                                         session.getUser());
@@ -274,7 +273,7 @@ public class FileTransfer {
     downloader.build();
     downloader.validate();
     httpCode = sender.send(new ByteArrayContentFactory(downloader.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     response = new DTransferResponseElement(sender.getResponseBody(),
 	                                    orderType,
 	                                    DefaultEbicsRootElement.generateName(orderType),

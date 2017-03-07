@@ -85,8 +85,14 @@ public class HttpRequestSender {
   public final int send(ContentFactory request) throws IOException, AxelorException {
 	  
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
+    String url = bank.getUrl();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    	throw new AxelorException(I18n.get("Invalid bank url. It must be start with http:// or http://"),1);
+    }
+    
+    
     X509Certificate certificate = EbicsCertificateService.getBankCertificate(bank, "ssl");
-    DefaultHttpClient client = getSecuredHttpClient(certificate, bank.getUrl());
+    DefaultHttpClient client = getSecuredHttpClient(certificate, url);
     String proxyConfiguration =  AppSettings.get().get("http.proxy.host");
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
@@ -95,7 +101,8 @@ public class HttpRequestSender {
     
     InputStream input = request.getContent();
     int retCode = -1;
-    HttpPost post = new HttpPost(bank.getUrl());
+    log.debug("Bank url: {}", url);
+    HttpPost post = new HttpPost(url);
     ContentType type = ContentType.TEXT_XML;
     HttpEntity entity = new InputStreamEntity(input, retCode, type);
     post.setEntity(entity);

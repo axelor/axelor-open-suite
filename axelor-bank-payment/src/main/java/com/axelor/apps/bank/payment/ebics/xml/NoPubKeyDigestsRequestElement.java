@@ -32,8 +32,8 @@ import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
 import com.axelor.apps.bank.payment.ebics.client.EbicsSession;
+import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.apps.bank.payment.ebics.client.OrderType;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -63,7 +63,7 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
 
     try {
-      return MessageDigest.getInstance("SHA-256", "BC").digest(Utils.canonize(toByteArray()));
+      return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException e) {
       throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     } catch (NoSuchProviderException e) {
@@ -100,7 +100,7 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     product = EbicsXmlFactory.creatProductElementType(session.getProduct().getLanguage(), session.getProduct().getName());
     orderDetails = EbicsXmlFactory.createOrderDetailsType("DZHNN", null, OrderType.HPB.getOrderType());
     xstatic = EbicsXmlFactory.createNoPubKeyDigestsRequestStaticHeaderType(session.getBankID(),
-	                                                                   Utils.generateNonce(),
+    																   EbicsUtils.generateNonce(),
 	                                                                   Calendar.getInstance(),
 	                                                                   session.getUser().getEbicsPartner().getPartnerId(),
 	                                                                   session.getUser().getUserId(),

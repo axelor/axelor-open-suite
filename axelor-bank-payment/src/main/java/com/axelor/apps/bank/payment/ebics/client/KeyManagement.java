@@ -30,7 +30,6 @@ import com.axelor.apps.bank.payment.ebics.certificate.KeyStoreManager;
 import com.axelor.apps.bank.payment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bank.payment.ebics.io.ByteArrayContentFactory;
 import com.axelor.apps.bank.payment.ebics.service.EbicsUserService;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.apps.bank.payment.ebics.xml.HIARequestElement;
 import com.axelor.apps.bank.payment.ebics.xml.HPBRequestElement;
 import com.axelor.apps.bank.payment.ebics.xml.HPBResponseOrderDataElement;
@@ -149,12 +148,12 @@ public class KeyManagement {
     request.build();
     request.validate();
     httpCode = sender.send(new ByteArrayContentFactory(request.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     response = new KeyManagementResponseElement(sender.getResponseBody(), "HBPResponse", session.getUser());
     response.build();
     response.report(false);
     EbicsUserService userService = Beans.get(EbicsUserService.class);
-    factory = new ByteArrayContentFactory(Utils.unzip(userService.decrypt(session.getUser(), response.getOrderData(), response.getTransactionKey())));
+    factory = new ByteArrayContentFactory(EbicsUtils.unzip(userService.decrypt(session.getUser(), response.getOrderData(), response.getTransactionKey())));
     orderData = new HPBResponseOrderDataElement(factory, session.getUser());
     orderData.build();
     
@@ -199,7 +198,7 @@ public class KeyManagement {
     request.build();
     request.validate();
     httpCode = sender.send(new ByteArrayContentFactory(request.prettyPrint()));
-    Utils.checkHttpCode(httpCode);
+    EbicsUtils.checkHttpCode(httpCode);
     response = new SPRResponseElement(sender.getResponseBody(), session.getUser());
     response.build();
     response.report(false);

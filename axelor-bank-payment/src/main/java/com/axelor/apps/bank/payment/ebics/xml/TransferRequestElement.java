@@ -23,8 +23,8 @@ import java.security.NoSuchProviderException;
 
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
 import com.axelor.apps.bank.payment.ebics.client.EbicsSession;
+import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.apps.bank.payment.ebics.client.OrderType;
-import com.axelor.apps.bank.payment.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -87,7 +87,7 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
 
     try {
-      return MessageDigest.getInstance("SHA-256", "BC").digest(Utils.canonize(toByteArray()));
+      return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException e) {
       throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
     } catch (NoSuchProviderException e) {
