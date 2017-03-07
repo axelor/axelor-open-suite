@@ -136,7 +136,7 @@ public class SequenceService {
 			seq = seqPrefixe + seqSuffixe;
 
 		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( monthlyResetOk && ((!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH)) || !seq.contains(PATTERN_YEAR)) ){ return false; }
 
 		return true;
 
