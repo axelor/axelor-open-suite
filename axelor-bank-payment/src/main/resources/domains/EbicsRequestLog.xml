@@ -11,6 +11,7 @@
 	<string name="requestType" title="Request type" />
 	<datetime name="requestTime" title="Request time" />
 	<string name="responseCode" title="Response code" />
+	<many-to-one name="responseFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
 
   </entity>
   

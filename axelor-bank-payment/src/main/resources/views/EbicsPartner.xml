@@ -14,6 +14,7 @@
 		<panel title="General informations">
 			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsBank" />
+			<field name="testMode"/>
 		</panel>
 		
 		<panel title="Bank statements" colSpan="12">

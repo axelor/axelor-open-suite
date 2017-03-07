@@ -35,10 +35,10 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.bank.payment.db.EbicsBank;
 import com.axelor.apps.bank.payment.db.EbicsPartner;
+import com.axelor.apps.bank.payment.db.EbicsRequestLog;
 import com.axelor.apps.bank.payment.db.EbicsUser;
-import com.axelor.apps.bank.payment.db.repo.EbicsBankRepository;
+import com.axelor.apps.bank.payment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bank.payment.ebics.client.EbicsProduct;
 import com.axelor.apps.bank.payment.ebics.client.EbicsSession;
@@ -50,7 +50,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -62,7 +61,7 @@ public class EbicsService {
 	private EbicsUserRepository userRepo;
 	
 	@Inject
-	private EbicsBankRepository bankRepo;
+	private EbicsRequestLogRepository logRepo;
 	
 	@Inject
 	private MetaFiles metaFiles;
@@ -341,9 +340,9 @@ public class EbicsService {
 		    
 	    	file = File.createTempFile(user.getName(), "." + orderType.getOrderType());
 			transferManager.fetchFile(orderType, start, end, new FileOutputStream(file));
-			if (test) {
-		    	 updateTestFile(user, file);
-		    }
+			
+			addResponseFile(user, file);
+			
 		} catch (IOException | AxelorException e) {
 			TraceBackService.trace(e);
 			throw new AxelorException(e, IException.TECHNICAL);
@@ -357,31 +356,17 @@ public class EbicsService {
 		
 		EbicsPartner partner = user.getEbicsPartner();
 		
-		if (partner != null) {
-			EbicsBank bank = partner.getEbicsBank();
-			if (bank != null) {
-				if (bank.getTestMode()) {
-					return true;
-				}
-				return false;
-			}
-		}
-		 
-		throw new  AxelorException(I18n.get("Ebics bank configuration error"), 1);
+		return partner.getTestMode();
+		
 	}
 	
 	@Transactional
-	public void updateTestFile(EbicsUser user, File file) throws IOException {
+	public void addResponseFile(EbicsUser user, File file) throws IOException {
 		
-		EbicsBank bank = user.getEbicsPartner().getEbicsBank();
-		
-		if (bank.getTestFile() != null) {
-			bank.getTestFile().setFileName(file.getName());
-			metaFiles.upload(file, bank.getTestFile());
-		}
-		else {
-			bank.setTestFile(metaFiles.upload(file));
-			bankRepo.save(bank);
+		EbicsRequestLog requestLog = logRepo.all().filter("self.ebicsUser = ?1", user).order("-id").fetchOne();
+		if (requestLog != null && file != null && file.length() > 0) {
+			requestLog.setResponseFile(metaFiles.upload(file));
+			logRepo.save(requestLog);
 		}
 		
 	}

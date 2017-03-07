@@ -19,6 +19,8 @@
 	
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 	
+	<boolean name="testMode" title="Test mode"/>
+	
 	<extra-code><![CDATA[
 	
 	   	// BANK STATEMENT GET MODE SELECT

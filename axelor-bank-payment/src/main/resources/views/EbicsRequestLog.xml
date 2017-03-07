@@ -15,6 +15,7 @@
 			<field name="requestType" />
 			<field name="requestTime" />
 			<field name="responseCode" />
+			<field name="responseFile" widget="binary-link" readonly="true" />
 		</panel>
 	</form>
   
