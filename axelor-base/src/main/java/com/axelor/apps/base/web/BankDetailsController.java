@@ -47,7 +47,6 @@ public class BankDetailsController {
 				response.setValue("sortCode", bankDetails.getSortCode());
 				response.setValue("accountNbr", bankDetails.getAccountNbr());
 				response.setValue("bbanKey", bankDetails.getBbanKey());
-				response.setValue("bank", bankDetails.getBank());
 			}
 		}
 	}
