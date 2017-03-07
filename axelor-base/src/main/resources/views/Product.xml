@@ -323,7 +323,7 @@
     </action-record>
 	
 	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
-		<field name="articleVolume" if="diameter > 0.00" expr="eval: (diameter/2)*Math.PI*height"/>
+		<field name="articleVolume" if="diameter > 0.00" expr="eval: (((diameter/2)*(diameter/2))*Math.PI)*height"/>
 	</action-record>
 	
 	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">
