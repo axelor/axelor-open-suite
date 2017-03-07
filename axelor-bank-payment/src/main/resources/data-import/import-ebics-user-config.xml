@@ -28,6 +28,8 @@
 	   			<bind node="typeSelect" to="typeSelect" />
 	   			<bind node="pem" to="pemString" />
 	   		</bind>
+	   		<bind node="certValidityPeriodSelect" to="certValidityPeriodSelect" />
+	   		<bind node="protocolSelect" to="protocolSelect" />
       	</bind>
       </bind>
       <bind node="securityMedium" to="securityMedium" />

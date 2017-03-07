@@ -29,13 +29,15 @@
 		<statusSelect>${u.statusSelect}</statusSelect>
 		<ebicsPartner>
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
+			<testMode>${u.ebicsPartner?.testMode}</testMode>
 			<ebicsBank>
 				<fullName>${u.ebicsPartner?.ebicsBank?.fullName}</fullName>
 				<hostId>${u.ebicsPartner?.ebicsBank?.hostId}</hostId>
 				<name>${u.ebicsPartner?.ebicsBank?.name}</name>
 				<url>${u.ebicsPartner?.ebicsBank?.url}</url>
-				<testMode>${u.ebicsPartner?.ebicsBank?.testMode}</testMode>
 				<languageSelect>${u.ebicsPartner?.ebicsBank?.languageSelect}</languageSelect>
+				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
+				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
 				<bank>
 					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
 					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>
