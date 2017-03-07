@@ -104,6 +104,11 @@
 		<option value="signature">Signature</option>
 	</selection>
 	
+	<selection name="bank.payment.ebics.bank.protocol.select">
+		<option value="ssl">SSL</option>
+		<option value="tls">TLS</option>
+	</selection>
+	
 	<selection name="bank.payment.ebics.bank.certificate.validity.period.select">
 		<option value="1">1</option>
 		<option value="2">2</option>

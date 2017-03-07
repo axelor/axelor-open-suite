@@ -20,6 +20,7 @@
 	
 	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
 	
+	<string name="protocolSelect" title="Protocol" selection="bank.payment.ebics.bank.protocol.select" default="ssl" />
 	
   </entity>
 </domain-models>
