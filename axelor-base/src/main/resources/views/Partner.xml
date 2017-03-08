@@ -603,6 +603,7 @@
 	
 	<action-record name="action-partner-record-empty-freight-carrier-mode" model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrierMode" expr="eval:null"/>
+		<field name="freightCarrier" expr="eval:null"/>
 	</action-record>
 	
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
