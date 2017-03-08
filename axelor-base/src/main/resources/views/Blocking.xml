@@ -48,7 +48,6 @@
     
     <action-record name="action-blocking-record-invoicing-blocking-realized-by" model="com.axelor.apps.base.db.Blocking">
     	<field name="invoicingBlockingByUser" expr="eval: __user__"/>
-    	<field name="reminderBlockingByUser" expr="eval: __user__"/>
     </action-record>
     
     <action-record name="action-blocking-record-debit-blocking-realized-by" model="com.axelor.apps.base.db.Blocking">
