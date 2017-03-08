@@ -51,14 +51,6 @@ public class BankDetailsService {
 			bankDetails.setSortCode(StringTool.extractStringFromRight(bankDetails.getIban(),18,5));
 			bankDetails.setAccountNbr(StringTool.extractStringFromRight(bankDetails.getIban(),13,11));
 			bankDetails.setBbanKey(StringTool.extractStringFromRight(bankDetails.getIban(),2,2));
-			Bank bank = bankRepo.all().filter("self.bankDetails = ?", bankDetails).fetchOne();
-			if(bank != null){
-				bankDetails.setBank(bank);
-			}
-			else{
-				bankDetails.setBank(null);
-			}
-			
 		}
 		return bankDetails;
 	}
