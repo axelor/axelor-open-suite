@@ -172,247 +172,274 @@
                     <property name="columnName">inv_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">inv_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">inv_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_id</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">operation_type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">operation_type_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">operation_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">status_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">status_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">status_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoicecountry</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoicecountry</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoicecountry</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_date</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">partner_type_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partnerName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partnerName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partnerName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partnerFirstName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partnerFirstName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partnerFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">contactName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">contactName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">contactName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">contactFirstName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">contactFirstName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">contactFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">addressl2</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">addressl2</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">addressl2</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">addressl3</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">addressl3</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">addressl3</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">addressl4</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">addressl4</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">addressl4</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">addressl5</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">addressl5</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">addressl5</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">addressl6</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">addressl6</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">addressl6</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">countryName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">countryName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">countryName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">paymentConditionName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">paymentConditionName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">paymentConditionName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">due_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">due_date</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">due_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currencyCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currencyCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">currencyCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_in_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">invoice_in_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_in_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">invoice_ex_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">invoice_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">companyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">companyName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">companyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">iban</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">iban</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">iban</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bic</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bic</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bic</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_address</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bank_address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">note</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">note</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">note</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">internal_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">internal_reference</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">internal_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">external_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">external_reference</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">external_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">header</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">header</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">footer</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">footer</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientBox</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientBox</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientBox</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DisplayDelAddr</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">DisplayDelAddr</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DisplayDelAddr</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayTaxDetailOnPrinting</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayTaxDetailOnPrinting</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">hideDiscount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">hideDiscount</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">hideDiscount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayProductCodeOnPrinting</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayProductCodeOnPrinting</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayProductCodeOnPrinting</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">displayTimesheetOnPrinting</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">displayTimesheetOnPrinting</text-property>
-                    <text-property name="heading">displayTimesheetOnPrinting</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">displayExpenseOnPrinting</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">displayExpenseOnPrinting</text-property>
-                    <text-property name="heading">displayExpenseOnPrinting</text-property>
                 </structure>
             </list-property>
             <list-property name="filter">
@@ -621,16 +648,6 @@
                     <structure>
                         <property name="position">39</property>
                         <property name="name">displayProductCodeOnPrinting</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">40</property>
-                        <property name="name">displayTimesheetOnPrinting</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">41</property>
-                        <property name="name">displayExpenseOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -910,20 +927,6 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
-                <structure>
-                    <property name="position">40</property>
-                    <property name="name">displayTimesheetOnPrinting</property>
-                    <property name="nativeName">displayTimesheetOnPrinting</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">41</property>
-                    <property name="name">displayExpenseOnPrinting</property>
-                    <property name="nativeName">displayExpenseOnPrinting</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
 	MetaFile.file_path as logo_path, 
@@ -952,8 +955,8 @@
 	Invoice.tax_total as "invoice_tax_total", 
 	Company.name as "companyName", 
 	BankDetail.iban, 
-	BankDetail.bic, 
-	BankDetail.bank_address, 
+	Bank.branch_identifier as "bic",
+	Bank.bank_address, 
 	Invoice.note, 
 	Invoice.internal_reference, 
 	Invoice.external_reference, 
@@ -963,9 +966,7 @@
 	AccountConfig.display_del_addr_on_printing as "DisplayDelAddr",
 	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting", 
 	Invoice.hide_discount as "hideDiscount", 
-	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
-	Invoice.display_timesheet_on_printing  as "displayTimesheetOnPrinting",
-	Invoice.display_expense_on_printing as "displayExpenseOnPrinting"
+	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
@@ -977,7 +978,8 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
 left outer join base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)]]></xml-property>
+left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join base_bank as Bank on (BankDetail.bank = Bank.id)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineDS" id="3421">
             <list-property name="computedColumns">
@@ -2105,20 +2107,6 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
-                <structure>
-                    <property name="name">displayTimesheetOnPrinting</property>
-                    <text-property name="displayName">displayTimesheetOnPrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayTimesheetOnPrinting"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">displayExpenseOnPrinting</property>
-                    <text-property name="displayName">displayExpenseOnPrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayExpenseOnPrinting"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
             </list-property>
             <structure name="toc"/>
             <list-property name="sort">
@@ -2412,6 +2400,7 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
+                                    <property name="paddingLeft">6pt</property>
                                     <text id="3423">
                                         <property name="fontWeight">bold</property>
                                         <property name="dataSet">TranslateDS</property>
@@ -4350,26 +4339,6 @@ row["partnerFirstName"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["note"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                            </row>
-                            <row id="4350">
-                                <cell id="4351">
-                                    <label id="4396">
-                                        <property name="pageBreakBefore">always</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["displayTimesheetOnPrinting"] &amp;&amp; !row._outer["displayExpenseOnPrinting"]</expression>
-                                            </structure>
-                                        </list-property>
-                                    </label>
-                                </cell>
-                                <cell id="4352"/>
-                                <cell id="4353"/>
-                                <cell id="4354"/>
-                                <cell id="4355"/>
-                                <cell id="4356"/>
-                                <cell id="4357"/>
-                                <cell id="4358"/>
                             </row>
                         </grid>
                     </cell>

@@ -1,12 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">7</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">7</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">7</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">7</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+    </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="CertificateId" id="9">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="EbicsUserId" id="153">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DBName" id="3673">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3674">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="4003">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
@@ -38,109 +125,12 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="EbicsCertificate" id="31">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">certId</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">certId</text-property>
-                    <text-property name="heading">certId</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">title</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">title</text-property>
-                    <text-property name="heading">title</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">certificate_title</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">certificate_title</text-property>
-                    <text-property name="heading">certificate_title</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">certificate_type</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">certificate_type</text-property>
-                    <text-property name="heading">certificate_type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">certificate_hash</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">certificate_hash</text-property>
-                    <text-property name="heading">certificate_hash</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">host_id</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">host_id</text-property>
-                    <text-property name="heading">host_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">bank_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">bank_name</text-property>
-                    <text-property name="heading">bank_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">language_select</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">language_select</text-property>
-                    <text-property name="heading">language_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">user_id</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">user_id</text-property>
-                    <text-property name="heading">user_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">partner_id</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">partner_id</text-property>
-                    <text-property name="heading">partner_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">version</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">version</text-property>
-                    <text-property name="heading">version</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">pem_string</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">pem_string</text-property>
-                    <text-property name="heading">pem_string</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sha2has</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">sha2has</text-property>
-                    <text-property name="heading">sha2has</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">issuer</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">issuer</text-property>
-                    <text-property name="heading">issuer</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">subject</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">subject</text-property>
-                    <text-property name="heading">subject</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">init_letter_edition_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">init_letter_edition_date</text-property>
-                    <text-property name="heading">init_letter_edition_date</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter">
                 <structure>
                     <property name="operator">in</property>
@@ -150,242 +140,84 @@
                     </simple-property-list>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">certId</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">title</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">certificate_title</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">certificate_type</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">certificate_hash</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">host_id</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">bank_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">language_select</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">user_id</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">partner_id</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
-                        <property name="name">version</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">pem_string</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">sha2has</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">issuer</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">subject</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
-                        <property name="name">init_letter_edition_date</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                </list-property>
-            </structure>
-            <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
+            <list-property name="parameters">
                 <structure>
-                    <property name="position">1</property>
-                    <property name="name">certId</property>
-                    <property name="nativeName">certId</property>
+                    <property name="name">param_1</property>
+                    <property name="paramName">EbicsUserId</property>
+                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">title</property>
-                    <property name="nativeName">title</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">certificate_title</property>
-                    <property name="nativeName">certificate_title</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">certificate_type</property>
-                    <property name="nativeName">certificate_type</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">certificate_hash</property>
-                    <property name="nativeName">certificate_hash</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">host_id</property>
-                    <property name="nativeName">host_id</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">bank_name</property>
-                    <property name="nativeName">bank_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">language_select</property>
-                    <property name="nativeName">language_select</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">user_id</property>
-                    <property name="nativeName">user_id</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">partner_id</property>
-                    <property name="nativeName">partner_id</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">11</property>
-                    <property name="name">version</property>
-                    <property name="nativeName">version</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">12</property>
-                    <property name="name">pem_string</property>
-                    <property name="nativeName">pem_string</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
-                    <property name="name">sha2has</property>
-                    <property name="nativeName">sha2has</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">14</property>
-                    <property name="name">issuer</property>
-                    <property name="nativeName">issuer</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">15</property>
-                    <property name="name">subject</property>
-                    <property name="nativeName">subject</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">16</property>
-                    <property name="name">init_letter_edition_date</property>
-                    <property name="nativeName">init_letter_edition_date</property>
-                    <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
                 </structure>
             </list-property>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[select
 	certificate.id as "certId",
-	case when certificate.type_select = 'signature' then 'Initialization Letter for the certificate with signature of transport'
- 	     when certificate.type_select = 'authentication' then 'Initialization Letter for the authentification certificate'
- 	     when certificate.type_select = 'encryption' then 'Initialization Letter for the encryption certificate'
+	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureTitle'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authenticationTitle'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryptionTitle'
  	end as title,
- 	case when certificate.type_select = 'signature' then 'Signature certificate'
- 	     when certificate.type_select = 'authentication' then 'Authentification Certificate'
- 	     when certificate.type_select = 'encryption' then 'Encryption Certificate'
+ 	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signature'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authentication'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryption'
  	end as certificate_title,
  	case when certificate.type_select = 'signature' then 'A005'
  	     when certificate.type_select = 'authentication' then 'X002'
  	     when certificate.type_select = 'encryption' then 'E002'
  	end as certificate_type,
- 	case when certificate.type_select = 'signature' then 'Hash of the signature certificate'
- 	     when certificate.type_select = 'authentication' then 'Hash of the authentification certificate'
- 	     when certificate.type_select = 'encryption' then 'Hash of the Encryption Certificate'
+ 	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureHash'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authenticationHash'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryptionHash'
  	end as certificate_hash,
  	bank.host_id,
  	bank.name as "bank_name",
  	bank.language_select,
  	ebics_user.user_id,
  	partner.partner_id,
- 	case when certificate.type_select = 'signature' then 'Signature A005'
- 	     when certificate.type_select = 'authentication' then 'Authentication X002'
- 	     when certificate.type_select = 'encryption' then 'Encryption E002'
+ 	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureVersion'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authenticationVersion'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryptionVersion'
  	end as version,
  	certificate.pem_string,
  	certificate.sha2has,
  	certificate.issuer,
  	certificate.subject,
+ 	certificate.private_key,
  	certificate.init_letter_edition_date	       
 from account_ebics_certificate certificate
-left join account_ebics_user ebics_user on (ebics_user.id = (select id from account_ebics_user where (a005certificate = certificate.id or e002certificate = certificate.id or x002certificate = certificate.id)))
+left join account_ebics_user ebics_user on (ebics_user.id = ?)
 left join account_ebics_partner partner on (partner.id = ebics_user.ebics_partner)
-left join account_ebics_bank bank on (bank.id = partner.ebics_bank)]]></xml-property>
+left join account_ebics_bank bank on (bank.id = partner.ebics_bank)
+order by certificate.type_select desc]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Translation" id="34">
             <list-property name="columnHints">
@@ -644,13 +476,22 @@ where message_key = ? and language = ? ]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["init_letter_edition_date"]</expression>
                     <property name="dataType">date-time</property>
                 </structure>
+                <structure>
+                    <property name="name">private_key</property>
+                    <text-property name="displayName">private_key</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["private_key"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="152"/>
             <detail>
                 <row id="148">
+                    <property name="height">100%</property>
                     <cell id="149">
                         <grid id="18">
                             <property name="pageBreakBefore">auto</property>
+                            <property name="canShrink">true</property>
+                            <property name="overflow">visible</property>
                             <property name="height">9.958333333333334in</property>
                             <property name="width">7.677083333333333in</property>
                             <structure name="toc"/>
@@ -724,6 +565,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="140">
+                                        <property name="fontSize">12pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="dd.MM.yyyy">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -742,8 +584,9 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="141">
+                                        <property name="fontSize">12pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="hh:mm:ss">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HH:mm:ss">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -776,7 +619,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Bank'</value>
+                                                    <value type="javascript">'EbicsCertificateReport.bank'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -795,7 +638,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"] == null ? 'Bank' : row["message_value"]</VALUE-OF> :]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"]</VALUE-OF> :]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="106">
@@ -855,10 +698,34 @@ where message_key = ? and language = ? ]]></xml-property>
                                 <cell id="109">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <data id="67">
+                                    <text id="154">
                                         <property name="fontSize">12pt</property>
-                                        <property name="resultSetColumn">version</property>
-                                    </data>
+                                        <property name="dataSet">Translation</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["language_select"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["version"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_value</property>
+                                                <text-property name="displayName">message_value</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_value"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                             <row id="68">
@@ -881,7 +748,8 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <grid id="115">
-                                        <property name="height">6.875in</property>
+                                        <property name="overflow">visible</property>
+                                        <property name="height">6.927083333333333in</property>
                                         <column id="116"/>
                                         <row id="117">
                                             <property name="height">0.3333333333333333in</property>
@@ -934,6 +802,12 @@ where message_key = ? and language = ? ]]></xml-property>
                                                 <text id="125">
                                                     <property name="fontSize">12pt</property>
                                                     <property name="dataSet">Translation</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["private_key"] != null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -957,7 +831,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued to' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["subject"] != null ? (row._outer["subject"].split(',')[0]).substring(3) : ""</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued to' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["subject"] != null ? (row._outer["subject"].split(',')[0]).split('=')[1] : ""</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -967,6 +841,12 @@ where message_key = ? and language = ? ]]></xml-property>
                                                 <text id="128">
                                                     <property name="fontSize">12pt</property>
                                                     <property name="dataSet">Translation</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["private_key"] != null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -990,18 +870,22 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued by' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["issuer"] != null ? (row._outer["issuer"].split(',')[0]).substring(3) : ""</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued by' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["issuer"] != null ? (row._outer["issuer"].split(',')[0]).split('=')[1] : ""</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
                                         <row id="129">
-                                            <property name="height">3.3854166666666665in</property>
+                                            <property name="canShrink">false</property>
+                                            <property name="overflow">visible</property>
                                             <cell id="130">
                                                 <property name="borderBottomStyle">none</property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
+                                                <property name="canShrink">false</property>
+                                                <property name="overflow">auto</property>
                                                 <data id="144">
+                                                    <property name="overflow">auto</property>
                                                     <property name="resultSetColumn">pem_string</property>
                                                 </data>
                                             </cell>

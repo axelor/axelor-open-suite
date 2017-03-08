@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	
 	<grid name="ebics-certificate-grid" title="Ebics certificate" model="com.axelor.apps.account.db.EbicsCertificate" >
@@ -12,10 +12,10 @@
 		<field name="validTo" />
 	</grid>
 	
-	<form name="ebics-certificate-form" title="Ebics certificate" model="com.axelor.apps.account.db.EbicsCertificate">
+	<form name="ebics-certificate-form" title="Ebics certificate" model="com.axelor.apps.account.db.EbicsCertificate" onNew="action-ebics-certificate-record-default">
 		<panel>
 			<field name="typeSelect" />
-			<field name="ebicsBank" />
+			<field name="ebicsBank" hideIf="typeSelect == 'signature'"/>
 			<field name="certificate" colSpan="3"/>
 			<button name="loadCertificate"  onClick="save,action-ebics-certificate-method-load-certificate,save" title="Load certificate" colSpan="3" hideIf="$popup()"/>
 			<panel title="Information" readonly="true" colSpan="12">
@@ -41,14 +41,18 @@
 			<field name="hostId" type="string" title="Host Id" />
 			<field name="e002Hash" type="string" widget="text" title="Hash E002" />
 			<field name="x002Hash" type="string" widget="text" title="Hash X002" />
-			<button name="addCertificates" title="OK" onClick="action-ebics-certificates-method-add-certificates" colSpan="2" />
+			<button name="addCertificates" title="OK" onClick="action-ebics-certificate-method-add-certificates" colSpan="2" />
 			<field name="certificateE002" type="string" hidden="true" />
 			<field name="certificateX002" type="string" hidden="true" />
 			<field name="ebicsBank" type="many-to-one" target="com.axelor.apps.account.db.EbicsBank" hidden="true" />
 		</panel>
 	</form>
 	
-	<action-method name="action-ebics-certificates-method-add-certificates">
+	<action-record name="action-ebics-certificate-record-default" model="com.axelor.apps.account.db.EbicsCertificate">
+		<field name="typeSelect" expr="eval: EbicsCertificateRepository.TYPE_SIGNATURE"/>
+	</action-record>
+	
+	<action-method name="action-ebics-certificate-method-add-certificates">
 		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="addCertificates"/>
 	</action-method>
 	

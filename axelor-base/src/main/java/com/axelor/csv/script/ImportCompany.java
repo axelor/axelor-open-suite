@@ -18,16 +18,21 @@
 package com.axelor.csv.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 
 public class ImportCompany {
+	
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	MetaFiles metaFiles;
@@ -37,18 +42,23 @@ public class ImportCompany {
 		assert bean instanceof Company;
 		
 		Company company = (Company) bean;
+		String fileName = (String) values.get("logo_fileName");
 		
-		final Path path = (Path) values.get("__path__");
-	    final File image = path.resolve((String) values.get("logo_fileName")).toFile(); 
-
-		try {
-			final MetaFile metaFile = metaFiles.upload(image);
-			company.setLogo(metaFile);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!StringUtils.isEmpty(fileName)) {
+			final Path path = (Path) values.get("__path__");
+			
+			try {
+				final File image = path.resolve(fileName).toFile();
+				if(image != null && image.isFile()) {
+					final MetaFile metaFile = metaFiles.upload(image);
+					company.setLogo(metaFile);
+				}
+			} catch (Exception e) {
+				LOG.error("Error when importing product picture : {}", e);
+			}
 		}
 
-		return bean;
+		return company;
 	}
 
 }

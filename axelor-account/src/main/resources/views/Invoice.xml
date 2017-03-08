@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <!-- VUE GENERALE -->
     
@@ -77,6 +77,20 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
+    <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    	<hilite color="info" if="statusSelect == 1"/>
+	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+        <field name="invoiceId"/>
+        <field name="operationTypeSelect" />
+        <field name="invoiceDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
+        <field name="statusSelect"/>
+        <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+    </grid>
+    
 	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
 	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
 	
@@ -131,7 +145,7 @@
 	  
 		<panel-tabs>
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 2 || statusSelect == 3" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 2 || statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
@@ -147,13 +161,13 @@
 				<panel name="refund" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefund" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
-					<panel-related field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-grid"/>
+					<panel-related field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-grid"/>
 				</panel>
 				<panel colSpan="12"  name="irrecoverable" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
 					<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
 					<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
-					<button name="notPassInIrrecoverable" title="Do not shit into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
+					<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
 				</panel>
 			</panel>
 			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" showTitle="false">
@@ -362,6 +376,7 @@
 	
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
+		<action name="action-invoice-method-payment-mode-condition"/>
 	    <action name="action-invoice-record-company-change"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
@@ -380,6 +395,7 @@
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
+		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
     </action-group>
     
@@ -392,6 +408,7 @@
     
     <action-group name="action-group-account-invoice-partner-onchange">
     	<action name="action-invoice-record-partner-change"/>
+		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-due-date"/>
     	<action name="action-invoice-record-estimated-payment-date"/>
     </action-group>
@@ -445,7 +462,6 @@
     </action-record>
     
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
-    	<field name="paymentMode" expr="eval: partner?.paymentMode"/>
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     	<field name="partnerAccount" expr="eval: __repo__.of(AccountingSituation).all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
     	<field name="partnerAccount" expr="eval: __repo__.of(AccountingSituation).all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
@@ -535,7 +551,11 @@
 	</action-validate>
 
 	<!-- ACTION METHOD -->
-	
+
+	<action-method name="action-invoice-method-payment-mode-condition">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="fillPaymentModeAndCondition"/>
+	</action-method>
+
 	<action-method name="action-invoice-method-fill-in-lines">
 		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="fillInLines"/>
 	</action-method>

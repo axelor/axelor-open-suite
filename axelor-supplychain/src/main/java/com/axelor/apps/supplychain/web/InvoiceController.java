@@ -58,7 +58,7 @@ public class InvoiceController {
 	}
 	
 	//Generate single invoice from several
-		@SuppressWarnings("rawtypes")
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public void mergeInvoice(ActionRequest request, ActionResponse response)  {
 			List<Invoice> invoiceList = new ArrayList<Invoice>();
 			List<Long> invoiceIdList = new ArrayList<Long>();

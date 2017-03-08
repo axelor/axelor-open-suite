@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -74,6 +74,13 @@
 				</panel>
 				 <panel name="taxPayment" title="Tax payment" colSpan="12">
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
+				</panel>
+				<panel name="defaultPaymentModes" title="Default Payment Modes" colSpan="12">
+					<field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+					<field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+				</panel>
+				<panel name="defaultPaymentCondition" title="Default Payment Condition" colSpan="12">
+					<field name="defPaymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
 				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>

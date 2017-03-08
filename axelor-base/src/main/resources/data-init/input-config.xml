@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.1.xsd">
   	
   	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId"  />
   	
@@ -75,7 +75,6 @@
         <bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>
-		<bind to="qasWsdlUrl" column="qas_url"/>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
         <bind to="statusSelectBudget" column="statusSelectBudget"/>

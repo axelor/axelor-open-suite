@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
    	<chart name="chart.account.invoice.summary" title="Account Invoice Summary">
 		<dataset type="sql">
@@ -360,9 +360,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)  
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -403,9 +403,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -432,9 +432,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	

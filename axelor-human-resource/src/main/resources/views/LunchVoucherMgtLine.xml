@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="employee">
+        <hilite if="statusSelect==2" color="danger"/>
         <field name="employee"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen" onChange="action-lunch-voucher-mgt-line-compute"/>
         <field name="daysOverseas" aggregate="sum" title="Overseas" onChange="action-lunch-voucher-mgt-line-compute"/>
@@ -12,6 +13,7 @@
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" title="Given"/>
         <field name="employee.lunchVoucherFormatSelect"/>
+        <field name="statusSelect"/>
     </grid>
     
     <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" orderBy="-lunchVoucherMgt.payPeriod.fromDate">

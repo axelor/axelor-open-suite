@@ -17,14 +17,23 @@
  */
 package com.axelor.apps.account.ebics.web;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.xmlbeans.impl.common.IOUtil;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.db.EbicsUser;
@@ -36,7 +45,11 @@ import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.auth.db.User;
+import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.data.Listener;
+import com.axelor.data.xml.XMLImporter;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -46,6 +59,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Joiner;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -91,13 +106,9 @@ public class EbicsController {
 	public void generateDn(ActionRequest request, ActionResponse response){
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
-		User user = ebicsUser.getAssociatedUser();
-		if (user != null){
-			response.setValue("dn", ebicsService.makeDN(ebicsUser.getName(), user.getEmail(), "France", user.getActiveCompany().getCode()) );
-		}else{
-			response.setValue("dn", ebicsService.makeDN(ebicsUser.getName(), null, "France", null) );
-		}
 		
+		response.setValue("dn", ebicsService.makeDN(ebicsUser));
+
 	}
 	
 	public void sendINIRequest(ActionRequest request, ActionResponse response) {
@@ -261,10 +272,10 @@ public class EbicsController {
 		
 		try {
 			X509Certificate certificate =  certificateService.convertToCertificate((String)context.get("certificateE002"));
-			certificateService.createCertificate(certificate, bank, "encryption");
+			certificateService.createCertificate(certificate, bank, EbicsCertificateRepository.TYPE_ENCRYPTION);
 			
 			certificate =  certificateService.convertToCertificate((String)context.get("certificateX002"));
-			certificateService.createCertificate(certificate, bank, "authentication");
+			certificateService.createCertificate(certificate, bank, EbicsCertificateRepository.TYPE_AUTHENTICATION);
 			
 			
 		} catch (CertificateException | IOException e) {
@@ -306,6 +317,91 @@ public class EbicsController {
 		certificateService.updateEditionDate(ebicsUser);
 
 		response.setReload(true);
+		
+	}
+	
+	@Transactional
+	public void importEbicsUsers(ActionRequest request, ActionResponse response) {
+		
+		String config = "/data-import/import-ebics-user-config.xml";
+		
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream(config);
+			File configFile = File.createTempFile("config", ".xml");
+			FileOutputStream fout = new FileOutputStream(configFile);
+			IOUtil.copyCompletely(inputStream, fout);
+			
+			Path path = MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
+			File tempDir = Files.createTempDir();
+			File importFile = new File(tempDir, "ebics-user.xml");
+			Files.copy(path.toFile(), importFile);
+			
+			XMLImporter importer = new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
+			final StringBuilder log = new StringBuilder();
+			Listener listner = new Listener() {
+				
+				@Override
+				public void imported(Integer imported, Integer total) {
+					log.append("Total records: " + total + ", Total imported: " + total);
+					
+				}
+				
+				@Override
+				public void imported(Model arg0) {
+				}
+				
+				@Override
+				public void handle(Model arg0, Exception err) {
+					log.append("Error in import: " + err.getStackTrace().toString());
+				}
+			};
+			
+			importer.addListener(listner);
+			
+			importer.run();
+			
+			FileUtils.forceDelete(configFile);
+			
+			FileUtils.forceDelete(tempDir);
+			
+			response.setValue("importLog", log.toString());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	
+	public void printCertificates(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		EbicsUser ebicsUser = request.getContext().asType(EbicsUser.class);
+		
+		ArrayList<Long> certIds = new ArrayList<Long>();
+		if (ebicsUser.getA005Certificate() != null) {
+			certIds.add(ebicsUser.getA005Certificate().getId());
+		}
+		if (ebicsUser.getE002Certificate() != null) {
+			certIds.add(ebicsUser.getE002Certificate().getId());
+		}
+		if (ebicsUser.getX002Certificate() != null) {
+			certIds.add(ebicsUser.getX002Certificate().getId());
+		}
+		
+		if (certIds.isEmpty()) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES), 1);
+		}
+		
+		String title = I18n.get("EbicsCertificate");
+		
+		ReportSettings report = ReportFactory.createReport(IReport.EBICS_CERTIFICATE, title + "-${date}");
+		report.addParam("CertificateId", Joiner.on(",").join(certIds));
+		report.addParam("EbicsUserId", ebicsUser.getId());
+		report.toAttach(ebicsUser);
+		report.generate();
+		
+		response.setView(ActionView
+				.define(title)
+				.add("html", report.getFileLink()).map());
 		
 	}
 	

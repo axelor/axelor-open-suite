@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -11,18 +11,18 @@
     <one-to-many name="accountingSituationList" ref="com.axelor.apps.account.db.AccountingSituation" mappedBy="partner" title="Accounting situation"/>
    
     <string name="invoiceSendingFormatSelect" title="Invoice sending media" selection="invoice.account.condition.invoice.sending.format.select"/>
-    <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="In Payment Mode"/>
-    <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Out Payment Mode"/>
-    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+    <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="In Payment Mode" index="false"/>
+    <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Out Payment Mode" index="false"/>
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" index="false"/>
    
     <integer name="rejectCounter" title="Reject counter"/>
     <integer name="invoicesCopySelect" title="Invoices copy" selection="grade.0.up.to.10.select"/>
    
 	 <!-- PAGE SEPA -->
 	<one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner" title="UMR List"/>
-	<many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr" title="Active UMR"/>
+	<many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr" title="Active UMR" index="false"/>
 	
-	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
 	
   </entity>
   

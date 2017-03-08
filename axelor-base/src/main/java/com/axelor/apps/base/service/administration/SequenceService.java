@@ -36,7 +36,7 @@ public class SequenceService {
 
 	private final static String
 		PATTERN_FULL_YEAR = "%YYYY",	
-		PATTERN_YEAR = "%Y",
+		PATTERN_YEAR = "%YY",
 		PATTERN_MONTH = "%M",
 		PATTERN_FULL_MONTH ="%FM",
 		PATTERN_DAY = "%D",
@@ -123,13 +123,11 @@ public class SequenceService {
 
 	}
 
-	public static boolean isValid( Sequence sequence ){
+	public static boolean isYearValid( Sequence sequence ){
 
-		boolean
-			monthlyResetOk = sequence.getMonthlyResetOk(),
-			yearlyResetOk = sequence.getYearlyResetOk();
+		boolean yearlyResetOk = sequence.getYearlyResetOk();
 
-		if ( !monthlyResetOk && !yearlyResetOk ){ return true; }
+		if ( !yearlyResetOk ){ return true; }
 
 		String
 			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
@@ -137,7 +135,29 @@ public class SequenceService {
 			seq = seqPrefixe + seqSuffixe;
 
 		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR) ){ return false; }
+
+		return true;
+
+	}
+
+	public static boolean isMonthValid( Sequence sequence ){
+
+		boolean	monthlyResetOk = sequence.getMonthlyResetOk();
+
+		if ( !monthlyResetOk ){ return true; }
+
+		String
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
+			seq = seqPrefixe + seqSuffixe;
+
+		if (
+            monthlyResetOk && (
+				(!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH)) ||
+				(!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR))
+            )
+        )
+		{return false; }
 
 		return true;
 

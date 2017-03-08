@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
     <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
         <field name="name"/>
@@ -21,7 +21,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
 			<label title="The tags below can be used as a prefix or a suffix :" />
 			<label title="%YYYY  : Full Year (2017)" />
-			<label title="%Y  : Year (17)" />
+			<label title="%YY  : Year (17)" />
 			<label title="%M  : Month (1, 2, 3, ...)" />
 			<label title="%FM : Full Month (01, 02, 03, ...)" />
 			<label title="%D  : Day" />
@@ -75,9 +75,10 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     	<attribute name="hidden" for="company" expr="eval: code in ['partner','eventTicket','productTrackingNumber']"/>
     	<attribute name="required" for="company" expr="eval: !(code in ['partner','eventTicket','productTrackingNumber'])"/>
     </action-attrs>
-    
+
     <action-validate name="action-sequence-validate">
-    	<error message="Prefix or suffix must contain %Y if yearly reset is true and %M %Y if monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isValid(__this__)"/>
+    	<error message="Prefix or suffix must contain %YY or %YYYY since yearly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isYearValid(__this__)"/>
+		<error message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
     </action-validate>
-    
+
 </object-views>

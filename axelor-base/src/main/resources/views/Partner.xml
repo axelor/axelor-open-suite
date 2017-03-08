@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	    <toolbar>
@@ -79,7 +79,7 @@
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
-    onNew="action-group-base-partner-onnew" 
+    onNew="action-group-base-partner-onnew"
     onLoad="action-group-partner-onload" 
     onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
@@ -492,6 +492,8 @@
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-record-set-payment-modes"/>
+		<action name="action-partner-record-payment-condition"/>
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -608,6 +610,15 @@
 	
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrier" expr="eval:freightCarrierMode.freightCarrier"/>
+	</action-record>
+
+	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
+		<field name="inPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.inPaymentMode"/>
+		<field name="outPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.outPaymentMode"/>
+	</action-record>
+
+	<action-record name="action-partner-record-payment-condition" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
+		<field name="paymentCondition" expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
 	</action-record>
 
     <action-method name="action-set-partner-seq" >

@@ -467,6 +467,11 @@ public interface IExceptionMessage {
 	static final String BATCH_VENTILATION_2 = /*$$(*/ "Invoice(s) ventilated" /*)*/;
 
 	/**
+	 * Validate state
+	 */
+	static final String INVOICE_VALIDATE_1 = /*$$(*/ "The payment mode is not in adequacy with the invoice type" /*)*/;
+
+	/**
 	 * Cancel state
 	 */
 	static final String MOVE_CANCEL_1 = /*$$(*/ "Move should be unreconcile before to cancel the invoice" /*)*/;
@@ -632,6 +637,7 @@ public interface IExceptionMessage {
 	static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
 	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
 	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
+	static final String EBICS_MISSING_CERTIFICATES = /*$$(*/  "Please add certificates to print" /*)*/;
 
 	
 	

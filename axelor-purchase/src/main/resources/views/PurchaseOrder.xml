@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     	<toolbar>
@@ -170,6 +170,7 @@
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
+		<action name="action-purchase-order-record-payment-mode"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -237,8 +238,10 @@
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
- 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"/>
- 		<field name="paymentMode" expr="eval: supplierPartner?.supplierPaymentMode"/>
+ 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition" if="supplierPartner?.paymentCondition != null"/>
+ 		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
+ 		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
  		<field name="priceList" expr="eval: supplierPartner?.purchasePriceList"/>
  		<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails" 
     		if="supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails != null"/>
@@ -248,6 +251,11 @@
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
  	</action-record>
+
+	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
+	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="3"/>

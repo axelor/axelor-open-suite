@@ -81,6 +81,7 @@ public class ValidateSupplyChain {
 //	@Inject
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 
+	@SuppressWarnings("rawtypes")
 	public Object validateSupplyChain(Object bean, Map values) {
 		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
 		"UNION ALL(SELECT 'so' as type,id,confirmation_date as date from sale_sale_order) " +

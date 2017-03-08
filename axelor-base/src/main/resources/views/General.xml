@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	<grid name="general-grid" title="General admin" model="com.axelor.apps.base.db.General">
        	<toolbar>
@@ -45,6 +45,7 @@
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
 				<field name="manageMultiBanks" if-module="axelor-cash-management" widget="Boolean-switch"/>
+				<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
 				<field name="defaultExemptionTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
@@ -53,6 +54,7 @@
 				<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
 				<field name="manageCustomerCredit" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="allowTimetableInvoicing" if-module="axelor-business-project" widget="Boolean-switch"/>
+				<field name="printReportOnVentilation" if-module="axelor-account" widget="Boolean-switch"/>
 				<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12" if-module="axelor-account">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>

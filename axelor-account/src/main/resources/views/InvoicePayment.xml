@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 	    <field name="paymentDate"/>
@@ -14,7 +14,7 @@
    		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>
     
-	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-record-new">
+	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-group-new">
         <panel name="main" readonlyIf="statusSelect != 0">
 			<field name="amount"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
@@ -30,6 +30,11 @@
  		</panel>
 	</form>
 	
+	<action-group name="action-invoice-payment-group-new">
+		<action name="action-invoice-payment-record-new"/>
+		<action name="action-invoice-payment-method-new"/>
+	</action-group>
+	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>
     	<field name="paymentDate" expr="eval: __date__"/>
@@ -39,6 +44,9 @@
     	<field name="typeSelect" expr="2"/>
     </action-record>
     
+	<action-method name="action-invoice-payment-method-new">
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
+	</action-method>
     <action-method name="action-invoice-payment-method-cancel">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
     </action-method>

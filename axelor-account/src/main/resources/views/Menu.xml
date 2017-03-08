@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 	<menuitem name="invoice-root" title="Invoicing" order="-100"
 		icon="fa-file-text-o" groups="admins,ERP" icon-background="#31b4a9"/>
@@ -343,15 +343,15 @@
 		parent="account-root-bank-orders" title="Bank to Bank Transfers"/>
 	
 	<menuitem name="account-root-bank-order-sepa-bank-to-bank-transfer"
-		parent="account-root-bank-order-bank-to-bank-transfer" title="SEPA Bank to Bank Transfers"
+		parent="account-root-bank-order-bank-to-bank-transfer" title="National Bank to Bank Transfers"
 		action="account.bank.order.sepa.bank.to.bank.transfer" />
 	
 	<action-view name="account.bank.order.sepa.bank.to.bank.transfer"
 		title="SEPA Bank to Bank Transfers" model="com.axelor.apps.account.db.BankOrder" >
 		<view type="grid" name="bank-order-bank-to-bank-grid"/>
 		<view type="form" name="bank-order-form"/>
-	    <domain>self.orderTypeSelect = 1 AND self.partnerTypeSelect = 4</domain>
-   		<context name="_orderTypeSelect" expr="1"/>
+	    <domain>self.orderTypeSelect = 5 AND self.partnerTypeSelect = 4</domain>
+   		<context name="_orderTypeSelect" expr="5"/>
 	    <context name="_partnerTypeSelect" expr="4"/>
 	</action-view>	
 	
@@ -363,8 +363,8 @@
 		title="International Bank to Bank Transfers" model="com.axelor.apps.account.db.BankOrder" >
 		<view type="grid" name="bank-order-bank-to-bank-grid"/>
 		<view type="form" name="bank-order-form"/>
-	     <domain>self.orderTypeSelect = 3 AND self.partnerTypeSelect = 4</domain>
-   		<context name="_orderTypeSelect" expr="3"/>
+	     <domain>self.orderTypeSelect = 6 AND self.partnerTypeSelect = 4</domain>
+   		<context name="_orderTypeSelect" expr="6"/>
 	    <context name="_partnerTypeSelect" expr="4"/>
 	</action-view>
 	

@@ -64,7 +64,7 @@ public class EmployeeAdvanceService {
 				employeeAdvanceRepository.save(advance);
 				
 			}
-			expense.setAdvanceAmount( expense.getInTaxTotal().subtract(currentAmountToRefund) );
+			expense.setAdvanceAmount( expense.getInTaxTotal().subtract(currentAmountToRefund).subtract(expense.getPersonalExpenseAmount()).subtract(expense.getWithdrawnCash()) );
 		}
 		
 	}

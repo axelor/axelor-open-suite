@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -44,8 +44,15 @@
    	<many-to-one name="cashRegisterTemplate" ref="com.axelor.apps.message.db.Template" title="Cashier email template"/>
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
    	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
-   	
-   	<!--  Onglet CFONB -->
+
+	<!-- Default Payment Modes -->
+	<many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Incoming Payment Mode"/>
+	<many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Outgoing Payment Mode"/>
+	
+	<!-- Default Payment Condition -->
+	<many-to-one name="defPaymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"/>
+
+	<!--  Onglet CFONB -->
 	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
    	
    	<!--  Doubtful Cust. -->

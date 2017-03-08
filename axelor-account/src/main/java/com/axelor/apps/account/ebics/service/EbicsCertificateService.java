@@ -28,6 +28,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -170,7 +171,7 @@ public class EbicsCertificateService {
 			        Certificate certificate = certificates[i];
 			        if (certificate instanceof X509Certificate) {
 			        	X509Certificate cert = (X509Certificate) certificate;
-			        	createCertificate(cert, bank, "ssl");
+			        	createCertificate(cert, bank, EbicsCertificateRepository.TYPE_SSL);
 			        	return certificate.getEncoded();
 			        }
 			    }
