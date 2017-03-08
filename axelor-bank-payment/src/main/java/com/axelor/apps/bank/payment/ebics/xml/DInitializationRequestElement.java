@@ -92,7 +92,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
 	                                                  decodeHex(KeyUtil.getKeyDigest(session.getBankX002Key())));
     encryption = EbicsXmlFactory.createEncryption("E002",
 	                                          "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                          decodeHex(KeyUtil.getKeyDigest(session.getBankX002Key())));
+	                                          decodeHex(KeyUtil.getKeyDigest(session.getBankE002Key())));
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     if (type.equals(com.axelor.apps.bank.payment.ebics.client.OrderType.FDL)) {
