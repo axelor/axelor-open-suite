@@ -31,7 +31,7 @@
         	<field name="balanceDue"/>
         	<field name="balanceDueReminder"/>
         	<field name="referenceDate"/>
-        	<field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
+        	<field name="reminderMethodLine" readonlyIf="reminderMethod == null" domain="self.reminderMethod = :reminderMethod" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
         	<field name="reminderDate"/>
     	</panel>
     	<panel name="reminderContent" title="Reminder content">

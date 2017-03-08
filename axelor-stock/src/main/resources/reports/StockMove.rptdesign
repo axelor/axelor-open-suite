@@ -2239,7 +2239,7 @@ row["first_name"]
                                                 <property name="textAlign">left</property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<VALUE-OF format="HTML">row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+<VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                         <cell id="3810">

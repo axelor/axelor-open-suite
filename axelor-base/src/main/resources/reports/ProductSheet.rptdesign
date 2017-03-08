@@ -1004,7 +1004,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="marginRight">4pt</property>
                         <property name="textAlign">justify</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["product_description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["product_description"] != null) row["product_description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
