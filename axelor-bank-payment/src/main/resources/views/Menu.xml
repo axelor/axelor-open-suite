@@ -135,6 +135,30 @@
 		<view type="form" name="bank-statement-line-form" />
 	</action-view>
 	
+	<menuitem name="account-root-bank-reconciliation" parent="account-root"
+		title="Bank Reconciliations" order="27"/>
+
+	<menuitem name="account-root-bank-reconciliation-bank-reconciliation"
+		parent="account-root-bank-reconciliation" title="Bank Reconciliations"
+		action="account.bank.reconciliation" />
+
+	<action-view name="account.bank.reconciliation"
+		title="Bank Reconciliations" model="com.axelor.apps.bank.payment.db.BankReconciliation" >
+		<view type="grid" name="bank-reconciliation-grid"/>
+		<view type="form" name="bank-reconciliation-form"/>
+	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="account-root-bank-reconciliation-bank-reconciliation-line"
+		parent="account-root-bank-reconciliation" title="Bank Reconciliation Line"
+		action="account.bank.reconciliation.line" />
+
+	<action-view name="account.bank.reconciliation.line"
+		title="Bank Reconciliation Line" model="com.axelor.apps.bank.payment.db.BankReconciliationLine" >
+		<view type="grid" name="bank-reconciliation-line-grid" />
+		<view type="form" name="bank-reconciliation-line-form" />
+	</action-view>
+	
 	<menuitem name="account-conf-bank-order" parent="account-conf" title="Bank order" />
 	
 	<menuitem name="account-conf-bank-order-bank-order-file-format" parent="account-conf-bank-order"
