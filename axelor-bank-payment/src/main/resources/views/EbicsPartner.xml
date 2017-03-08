@@ -27,6 +27,11 @@
 			<button name="getBankStatementButton" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bankStatementFileFormatSet"/>
 		</panel>
 		
+		<panel title="Payment Status Report">
+			<field name="usePSR" widget="boolean-switch"/>
+			<field name="pSRBankStatementFileFormat" showIf="usePSR"/>
+		</panel>
+		
 		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
 	
 	</form>

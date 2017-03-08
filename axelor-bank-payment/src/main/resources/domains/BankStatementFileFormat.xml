@@ -23,6 +23,8 @@
 		public static final String FILE_FORMAT_CAMT_054_001_02_ADD = "camt.054.001.02.add";
 		public static final String FILE_FORMAT_CAMT_054_001_02_ABB = "camt.054.001.02.abb";
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_PCO = "camt.xxx.cfonb240.pco";
+		public static final String FILE_FORMAT_PAIN_002_001_02_ACK = "pain.002.001.02.ack";
+		public static final String FILE_FORMAT_PAIN_002_001_02_ARA = "pain.002.001.02.ara";
 		
 		
 	]]></extra-code>

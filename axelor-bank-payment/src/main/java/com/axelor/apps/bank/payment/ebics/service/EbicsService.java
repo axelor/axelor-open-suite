@@ -291,6 +291,14 @@ public class EbicsService {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e,IException.TECHNICAL);
 	    }
+	    
+	    EbicsPartner ebicsPartner = user.getEbicsPartner();
+	    
+	    if(ebicsPartner.getUsePSR())  {
+	    	
+	    	sendFDLRequest(user, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
+	    	
+	    }
 	}
 
 	public File sendFDLRequest( EbicsUser user,
@@ -316,6 +324,14 @@ public class EbicsService {
             Date end) throws AxelorException {
 		
 		return fetchFile(OrderType.PTK, user, product, start, end, null);
+	}
+	
+	public File sendHPDRequest( EbicsUser user,
+            EbicsProduct product,
+            Date start,
+            Date end) throws AxelorException {
+		
+		return fetchFile(OrderType.HPD, user, product, start, end, null);
 	}
 
 	private File fetchFile(OrderType orderType, EbicsUser user, EbicsProduct product, Date start,

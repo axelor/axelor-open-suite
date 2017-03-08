@@ -27,9 +27,9 @@
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner.ebicsBank"/>
+			<field name="ebicsPartner.testMode" showIf="ebicsPartner.testMode"/>
 			<field name="testFile" widget="binary-link" showIf="ebicsPartner.testMode"/>
 			<field name="statusSelect" colSpan="12"/>
-			<field name="ebicsPartner.testMode" hidden="true"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Certificates">
@@ -61,6 +61,7 @@
 			<button name="sendFDL" title="Send file download request (FDL)" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
 			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
 			<button name="sendPTK" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>
+			<button name="sendHPD" title="Get bank parameters (HPD)" onClick="save,action-ebics-user-method-send-hpd" showIf="statusSelect == 3"/>
 		</panel>
 	
 	</form>
@@ -112,6 +113,10 @@
     
     <action-method name="action-ebics-user-method-send-ptk">
   		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendPTKRequest" />
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-send-hpd">
+  		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendHPDRequest" />
     </action-method>
     
     <action-method name="action-ebics-user-method-update-edition-date">

@@ -228,7 +228,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM);
-			downloadFile(response, "FDL", ebicsUser);
+			downloadFile(response, ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -242,7 +242,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendHTDRequest(ebicsUser, null, null, null);
-			downloadFile(response, "HTD", ebicsUser);
+			downloadFile(response, ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -256,7 +256,21 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendPTKRequest(ebicsUser, null, null, null);
-			downloadFile(response, "PTK", ebicsUser);
+			downloadFile(response, ebicsUser);
+		}catch (AxelorException e) {
+			response.setFlash(stripClass(e.getLocalizedMessage()));
+		}
+
+		response.setReload(true);
+	}
+	
+	public void sendHPDRequest(ActionRequest request, ActionResponse response) {
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		try {
+			ebicsService.sendHPDRequest(ebicsUser, null, null, null);
+			downloadFile(response, ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -412,12 +426,12 @@ public class EbicsController {
 		
 	}
 	
-	private void downloadFile(ActionResponse response, String title, EbicsUser user) {
+	private void downloadFile(ActionResponse response, EbicsUser user) {
 		
 		EbicsRequestLog requestLog = logRepo.all().filter("self.ebicsUser = ?1", user).order("-id").fetchOne();
 		
 		if (requestLog != null && requestLog.getResponseFile() != null) {
-			response.setView(ActionView.define(title)
+			response.setView(ActionView.define(requestLog.getRequestType())
 					.add("html", "ws/rest/" + EbicsRequestLog.class.getCanonicalName() + "/" + requestLog.getId() + "/responseFile/download")
 					.param("download", "dtrue")
 					.map());

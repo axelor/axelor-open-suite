@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.bank.payment.db.EbicsBank;
+import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bank.payment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bank.payment.ebics.service.EbicsCertificateService;
 import com.axelor.exception.AxelorException;
@@ -105,7 +106,7 @@ public class HttpRequestSender {
   
   public final int sendSSL(ContentFactory request, EbicsBank bank) throws AxelorException, IOException {
     String url = bank.getUrl();
-  	X509Certificate certificate = EbicsCertificateService.getBankCertificate(bank, "ssl");
+  	X509Certificate certificate = EbicsCertificateService.getBankCertificate(bank, EbicsCertificateRepository.TYPE_SSL);
 	DefaultHttpClient client = getSecuredHttpClient(certificate, url);
 	String proxyConfiguration =  AppSettings.get().get("http.proxy.host");
 	

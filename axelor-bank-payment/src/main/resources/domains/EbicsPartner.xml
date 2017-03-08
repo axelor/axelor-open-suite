@@ -19,6 +19,9 @@
 	
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 	
+    <many-to-one name="pSRBankStatementFileFormat" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="Payment Status Report file format"/>
+	<boolean name="usePSR" title="Enable PSR"/>
+	
 	<boolean name="testMode" title="Test mode"/>
 	
 	<extra-code><![CDATA[

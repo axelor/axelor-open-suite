@@ -13,7 +13,7 @@
 	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bank.payment.db.BankStatement" width="large" readonlyIf="statusSelect == 2">
 		<panel name="main" colSpan="12">
 			<field name="name"/>
-			<field name="bankStatementFile"/>
+			<field name="bankStatementFile" canNew="true" widget="binary-link"/>
 			<field name="fromDate"/>
 			<field name="toDate"/>
 		</panel>

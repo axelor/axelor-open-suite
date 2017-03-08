@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.bank.payment.db.EbicsUser;
+import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bank.payment.ebics.service.EbicsCertificateService;
 import com.axelor.exception.AxelorException;
 
@@ -73,7 +74,7 @@ public class EbicsSession {
 	   */
 	  public RSAPublicKey getBankE002Key() throws AxelorException {
 		
-		  return  (RSAPublicKey) EbicsCertificateService.getBankCertificate(user.getEbicsPartner().getEbicsBank(), "encryption").getPublicKey();
+		  return  (RSAPublicKey) EbicsCertificateService.getBankCertificate(user.getEbicsPartner().getEbicsBank(), EbicsCertificateRepository.TYPE_ENCRYPTION).getPublicKey();
 	  }
 
 	  /**
@@ -84,7 +85,7 @@ public class EbicsSession {
 	   * @throws EbicsException Server error message generated during key retrieval.
 	   */
 	  public RSAPublicKey getBankX002Key() throws AxelorException {
-		  return  (RSAPublicKey) EbicsCertificateService.getBankCertificate(user.getEbicsPartner().getEbicsBank(), "authentication").getPublicKey();
+		  return  (RSAPublicKey) EbicsCertificateService.getBankCertificate(user.getEbicsPartner().getEbicsBank(), EbicsCertificateRepository.TYPE_AUTHENTICATION).getPublicKey();
 	  }
 
 	  /**

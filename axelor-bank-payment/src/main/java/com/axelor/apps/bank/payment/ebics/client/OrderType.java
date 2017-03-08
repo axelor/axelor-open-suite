@@ -69,6 +69,8 @@ public class OrderType {
       return HPD;
     } else if (orderType.equals("PTK")) {
         return PTK;
+    } else if (orderType.equals("SPR")) {
+        return SPR;
     } else {
       throw new IllegalArgumentException("NOT SUPPORTED ORDER TYPE");
     }
