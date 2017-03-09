@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -306,16 +306,7 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">gross_weight</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["StockMoveId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -446,6 +437,7 @@ else row["last_modified_by"]</expression>
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockMoveId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -639,7 +631,7 @@ left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.
 left join base_printing_settings as PrintingSetting on (Company.printing_settings = PrintingSetting.id)
 left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
 left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
- ]]></xml-property>
+where StockMove.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -906,16 +898,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">description</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["stock_move_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["StockMoveId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -961,6 +944,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockMoveId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1027,7 +1011,7 @@ inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move =
 left join base_product as Product on (StockMoveLine.product = Product.id)
 left join base_unit as Unit on (StockMoveLine.unit = Unit.id)
 left join base_tracking_number as TrackingNumber on (StockMoveLine.tracking_number = TrackingNumber.id)
-]]></xml-property>
+where StockMove.id in (@INJECTID)]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>

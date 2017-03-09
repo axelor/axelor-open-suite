@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -351,15 +351,7 @@
                     <text-property name="heading">company_name</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["LeadId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -520,6 +512,7 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["LeadId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -756,7 +749,8 @@ left join base_industry_sector as IndustrySector on (IndustrySector.id = Lead.in
 left join base_source as Source on (Lead.source = Source.id)
 left join base_country as PrimaryCountry on (Lead.primary_country = PrimaryCountry.id)
 left join base_country as OtherCountry on (Lead.other_country = OtherCountry.id)
-left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address]]></xml-property>
+left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address
+where Lead.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
