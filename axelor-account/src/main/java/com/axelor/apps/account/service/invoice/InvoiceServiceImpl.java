@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +49,12 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -212,7 +214,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		invoiceRepo.save(invoice);
 		
 		if(generalService.getGeneral().getPrintReportOnVentilation()){
-			generateInvoice(invoice, invoice.getId().toString(), true);
+			printInvoice(invoice, true);
 		}
 		
 	}
@@ -372,35 +374,56 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			invoiceLine.setInvoice(invoice);
 		}
 	}
-
-	public List<String> generateInvoice(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException {
-		String language;
-		try {
-			language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		} catch (NullPointerException e) {
-			language = "en";
+	
+	private String getDefaultPrintingLocale(Invoice invoice, Company company) {
+		String locale = null;
+		
+		if(invoice != null && invoice.getPartner() != null) {
+			locale = invoice.getPartner().getLanguageSelect();
 		}
-
+		
+		if(locale == null && company != null && company.getPrintingSettings() != null) {
+			locale = company.getPrintingSettings().getLanguageSelect();
+		}
+		
+		User user = AuthUtils.getUser();
+		if(user != null && user.getLanguage() != null) {
+			locale = user.getLanguage();
+		}
+		
+		return locale == null ? "en" : locale;
+	}
+	
+	@Override
+	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
+		String locale = getDefaultPrintingLocale(invoice, invoice.getCompany());
+		
 		String title = I18n.get("Invoice");
-		if(invoice.getInvoiceId() != null) {
-			title += invoice.getInvoiceId();
-		}
-
-		Integer invoicesCopy = invoice.getInvoicesCopySelect();		
-
-		ReportSettings rS = ReportFactory.createReport(IReport.INVOICE, title + "-${date}");
+		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
+		
+		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
 		if (toAttach) {
-			rS.toAttach(invoice);
+			reportSetting.toAttach(invoice);
 		}
-		String fileLink = rS.addParam("InvoiceId", invoiceIds)
-							.addParam("Locale", language)
-							.addParam("InvoicesCopy", invoicesCopy)
-							.generate()
-							.getFileLink();
 		
-		List<String> res = Arrays.asList(title, fileLink);
+		return reportSetting.addParam("InvoiceId", invoice.getId().toString())
+				.addParam("Locale", locale)
+				.addParam("InvoicesCopy", invoice.getInvoicesCopySelect())
+				.generate();
+	}
+	
+	@Override
+	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
+		User user = AuthUtils.getUser();
+		String locale = getDefaultPrintingLocale(null, user == null ? null : user.getActiveCompany());
 		
-		return res;
+		String title = I18n.get("Invoices");
+		
+		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");	
+		return reportSetting.addParam("InvoiceId", Joiner.on(",").join(ids))
+				.addParam("Locale", locale)
+				.addParam("InvoicesCopy", 0)
+				.generate();
 	}
 	
 }

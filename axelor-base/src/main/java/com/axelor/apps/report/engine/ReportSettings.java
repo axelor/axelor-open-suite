@@ -98,15 +98,17 @@ public class ReportSettings {
 		
 	}
 	
+	public String getOutputName()  {
+		return outputName;
+	}
+	
 	/**
 	 * This method get the generated report file.
 	 * @return
 	 * 		The generated report file.
 	 */
 	public File getFile()  {
-		
 		return output;
-		
 	}
 	
 	protected void attach() throws FileNotFoundException, IOException  {

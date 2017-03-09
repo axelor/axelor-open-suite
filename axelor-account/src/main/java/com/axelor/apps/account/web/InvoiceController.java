@@ -17,13 +17,10 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +32,14 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -49,11 +49,13 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class InvoiceController {
 
+	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
@@ -244,46 +246,25 @@ public class InvoiceController {
 
 	/**
 	 * Method to generate invoice as a Pdf
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	public void showInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		Invoice invoice = request.getContext().asType(Invoice.class);
-		String invoiceIds = "";
-
-		@SuppressWarnings("unchecked")
-		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedPartner != null){
-			for(Integer it : lstSelectedPartner) {
-				invoiceIds+= it.toString()+",";
-			}
-		}
-
-		if(!invoiceIds.equals("")){
-			invoiceIds = invoiceIds.substring(0, invoiceIds.length()-1);
-			invoice = invoiceRepo.find(new Long(lstSelectedPartner.get(0)));
-		}else if(invoice.getId() != null){
-			invoiceIds = invoice.getId().toString();
-		}
-
-		if(!invoiceIds.equals("")){
-
-			List<String> strings = invoiceService.generateInvoice(invoice, invoiceIds, false);
-			
-			logger.debug("Printing " + strings.get(0));
+		Context context = request.getContext();
+		ReportSettings reportSetting = null;
 		
-			response.setView(ActionView
-					.define(strings.get(0))
-					.add("html", strings.get(1)).map());
-			
-		}else{
+		if(context.containsKey("_ids") && !ObjectUtils.isEmpty((List<Long>) request.getContext().get("_ids"))) {
+			reportSetting = invoiceService.printInvoices((List<Long>) request.getContext().get("_ids"));
+		} else if(context.containsKey("id")) {
+			reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
+		} else {
 			response.setFlash(I18n.get(IExceptionMessage.INVOICE_3));
+			return;
 		}
+
+		response.setView(ActionView
+				.define(reportSetting.getOutputName())
+				.add("html", reportSetting.getFileLink()).map());
+
 	}
 
 	@SuppressWarnings("unchecked")
