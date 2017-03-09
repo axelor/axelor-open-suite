@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -275,19 +275,7 @@
                     <text-property name="heading">Unit</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">if(!params["ProductIds"].value.equals("")){
-row["id"]}</expression>
-                    <simple-property-list name="value1">
-                        <value>if(!params["ProductIds"].value.equals("")){
-params["ProductIds"].value.split(",")
-}</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -343,6 +331,12 @@ params["ProductIds"].value.split(",")
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[if( (!params["ProductIds"] == null) || !params["ProductIds"].value == ""){
+	this.queryText = this.queryText.replace('@INJECTEDWHERE', "WHERE Product.id IN (" + params["ProductIds"].value + ")");
+}
+else {
+	this.queryText = this.queryText.replace('@INJECTEDWHERE', "")
+}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -425,6 +419,7 @@ left outer join base_product_family as ProductFamily on (Product.product_family 
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (Product.unit = Unit.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+@INJECTEDWHERE
 order by ProductFamily.name, ProductCategory.name
 ]]></xml-property>
         </oda-data-set>

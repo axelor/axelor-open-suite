@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -21,6 +21,26 @@
             <property name="name">odaDriverClass</property>
             <property name="id">7</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -144,8 +164,8 @@
                     <name>disabledContentBidiFormatStr</name>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -154,54 +174,54 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">message_id</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">message_id</text-property>
                     <text-property name="heading">message_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_header</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_header</text-property>
                     <text-property name="heading">pdf_header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">media_type_select</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">media_type_select</text-property>
                     <text-property name="heading">media_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">subject</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">subject</text-property>
                     <text-property name="heading">subject</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">content</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">content</text-property>
                     <text-property name="heading">content</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_footer</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_footer</text-property>
                     <text-property name="heading">pdf_footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">address_block</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">address_block</text-property>
                     <text-property name="heading">address_block</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["message_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["MessageId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -247,6 +267,7 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["MessageId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -320,8 +341,8 @@ FROM
 JOIN base_company AS baseCompany ON baseCompany.id=self.company
 JOIN base_printing_settings AS basePrintingSettings ON basePrintingSettings.id=baseCompany.id
 LEFT JOIN meta_select AS metaSelect ON metaSelect.name='message.media.type.select'
-LEFT JOIN meta_select_item AS metaSelectItem ON metaSelectItem.select_id=metaSelect.id AND metaSelectItem.value= CAST(self.media_type_select AS CHAR)
-WHERE self.media_type_select in (1,2)]]></xml-property>
+LEFT JOIN meta_select_item AS metaSelectItem ON (metaSelectItem.select_id=metaSelect.id AND metaSelectItem.value= CAST(self.media_type_select AS CHAR))
+WHERE self.id IN (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="9">
             <list-property name="columnHints">
