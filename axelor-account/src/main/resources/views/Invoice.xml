@@ -125,7 +125,6 @@
 			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
-			<field name="hideDiscount"/>
 			<field name="isSubscription" hidden="true"/>
 		</panel>
 	  
@@ -197,7 +196,6 @@
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
 				<field name="note" colSpan="12"/>
-				
 			</panel>
 			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12">
 				<field name="displayTimesheetOnPrinting" />
