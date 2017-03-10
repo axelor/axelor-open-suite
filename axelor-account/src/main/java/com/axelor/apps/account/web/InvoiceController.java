@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.db.mapper.Adapter;
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +56,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+
+import javax.annotation.Nullable;
 
 public class InvoiceController {
 
@@ -252,8 +258,15 @@ public class InvoiceController {
 		Context context = request.getContext();
 		ReportSettings reportSetting = null;
 		
-		if(context.containsKey("_ids") && !ObjectUtils.isEmpty((List<Long>) request.getContext().get("_ids"))) {
-			reportSetting = invoiceService.printInvoices((List<Long>) request.getContext().get("_ids"));
+		if(context.containsKey("_ids") && !ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+			List<Long> ids = Lists.transform((List) request.getContext().get("_ids"), new Function<Object, Long>() {
+                @Nullable
+                @Override
+                public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                }
+            });
+            reportSetting = invoiceService.printInvoices(ids);
 		} else if(context.containsKey("id")) {
 			reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
 		} else {
