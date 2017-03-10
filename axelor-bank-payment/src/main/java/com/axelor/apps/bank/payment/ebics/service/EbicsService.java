@@ -64,6 +64,9 @@ public class EbicsService {
 	private EbicsRequestLogRepository logRepo;
 	
 	@Inject
+	private EbicsUserService userService;
+	
+	@Inject
 	private MetaFiles metaFiles;
 	
 	private EbicsProduct defaultProduct;
@@ -158,6 +161,9 @@ public class EbicsService {
 	    }
 	    
 	    try {
+	    	if (ebicsUser.getNextOrderId() == null) {
+	    		userService.getNextOrderId(ebicsUser);
+	    	}
 		    EbicsSession session = new EbicsSession(ebicsUser);
 		    if (product == null) {
 		    	product = defaultProduct;
@@ -165,7 +171,7 @@ public class EbicsService {
 		    session.setProduct(product);
 		    
 		    KeyManagement keyManager = new KeyManagement(session);
-		    keyManager.sendINI(null);
+		    keyManager.sendINI();
 	    
 		    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
 		    userRepo.save(ebicsUser);
@@ -188,6 +194,9 @@ public class EbicsService {
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
 	      return;
 	    }
+	    if (ebicsUser.getNextOrderId() == null) {
+    		userService.getNextOrderId(ebicsUser);
+    	}
 	    
 	    EbicsSession session = new EbicsSession(ebicsUser);
 	    if (product == null) {
@@ -197,7 +206,7 @@ public class EbicsService {
 	    KeyManagement keyManager = new KeyManagement(session);
 
 	    try {
-			keyManager.sendHIA(null);
+			keyManager.sendHIA();
 			ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
 		    userRepo.save(ebicsUser);
 		} catch (IOException | AxelorException | JDOMException e) {
@@ -251,6 +260,7 @@ public class EbicsService {
 	    try {
 	      keyManager.lockAccess();
 	      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
+	      userService.getNextOrderId(ebicsUser);
 		  userRepo.save(ebicsUser);
 	    } catch (Exception e) {
 	    	TraceBackService.trace(e);
@@ -287,6 +297,7 @@ public class EbicsService {
 	    
 	    try {
 	      transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL);
+	      userService.getNextOrderId(user);
 	    } catch (IOException | AxelorException e) {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e,IException.TECHNICAL);
@@ -358,6 +369,8 @@ public class EbicsService {
 			transferManager.fetchFile(orderType, start, end, new FileOutputStream(file));
 			
 			addResponseFile(user, file);
+			
+			userService.getNextOrderId(user);
 			
 		} catch (IOException | AxelorException e) {
 			TraceBackService.trace(e);

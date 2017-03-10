@@ -84,7 +84,7 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
   
   protected void log() {
 	  if (ebicsUser != null && name != null && returnCode != null) {
-		  Beans.get(EbicsUserService.class).logRequest(ebicsUser, name.substring(0,3), returnCode.getSymbolicName());
+		  Beans.get(EbicsUserService.class).logRequest(ebicsUser.getId(), name.substring(0,3), returnCode.getSymbolicName());
 		  ebicsUser = null; // Prevent further log on same request
 	  }
   }

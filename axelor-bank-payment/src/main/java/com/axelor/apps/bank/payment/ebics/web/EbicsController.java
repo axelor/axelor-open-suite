@@ -228,7 +228,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM);
-			downloadFile(response, ebicsUser);
+//			downloadFile(response, ebicsUser);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}

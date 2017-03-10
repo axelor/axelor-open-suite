@@ -18,7 +18,6 @@
 package com.axelor.apps.bank.payment.ebics.xml;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,6 @@ import com.axelor.apps.bank.payment.ebics.client.EbicsSession;
 import com.axelor.apps.bank.payment.ebics.client.EbicsUtils;
 import com.axelor.apps.bank.payment.ebics.client.OrderType;
 import com.axelor.apps.bank.payment.ebics.client.UnsecuredRequestElement;
-import com.axelor.apps.bank.payment.ebics.service.EbicsUserService;
 
 /**
  * The INI request XML element. This root element is to be sent
@@ -45,9 +43,8 @@ public class INIRequestElement extends DefaultEbicsRootElement {
    * @param session the ebics session.
    * @param orderId the order id, if null a random one is generated.
    */
-  public INIRequestElement(EbicsSession session, String orderId) {
+  public INIRequestElement(EbicsSession session) {
     super(session);
-    this.orderId = orderId;
   }
 
   @Override
@@ -65,7 +62,6 @@ public class INIRequestElement extends DefaultEbicsRootElement {
     log.debug("signaturePubKey.build OK");
 	unsecuredRequest = new UnsecuredRequestElement(session,
 	                                           OrderType.INI,
-	                                           orderId == null ? Beans.get(EbicsUserService.class).getNextOrderId(session.getUser(), true) : orderId,
 	                                           EbicsUtils.zip(signaturePubKey.prettyPrint()));
 	
 	log.debug("UnsecuredRequestElement OK");
@@ -89,6 +85,5 @@ public class INIRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private String			orderId;
   private UnsecuredRequestElement	unsecuredRequest;
 }

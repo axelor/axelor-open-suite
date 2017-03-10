@@ -70,14 +70,14 @@ public class KeyManagement {
  * @throws AxelorException 
  * @throws JDOMException 
    */
-  public void sendINI(String orderId) throws IOException, AxelorException, JDOMException {
+  public void sendINI() throws IOException, AxelorException, JDOMException {
     INIRequestElement			request;
     KeyManagementResponseElement	response;
     HttpRequestSender			sender;
     int					httpCode;
     sender = new HttpRequestSender(session);
     log.debug("HttpRequestSender OK");
-    request = new INIRequestElement(session, orderId);
+    request = new INIRequestElement(session);
     log.debug("INIRequestElement OK");
     request.build();
     log.debug("build OK");
@@ -104,14 +104,14 @@ public class KeyManagement {
  * @throws JDOMException 
    * @throws EbicsException server generated error message
    */
-  public void sendHIA(String orderId) throws IOException, AxelorException, JDOMException {
+  public void sendHIA() throws IOException, AxelorException, JDOMException {
     HIARequestElement			request;
     KeyManagementResponseElement	response;
     HttpRequestSender			sender;
     int					httpCode;
 
     sender = new HttpRequestSender(session);
-    request = new HIARequestElement(session, orderId);
+    request = new HIARequestElement(session);
     request.build();
     request.validate();
 //    session.getConfiguration().getTraceManager().trace(request);

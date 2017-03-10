@@ -110,10 +110,10 @@ public class EbicsUserService {
 	}
 	
 	@Transactional
-	public void logRequest(EbicsUser ebicsUser, String requestType, String responseCode) {
+	public void logRequest(long ebicsUserId, String requestType, String responseCode) {
 		
 		EbicsRequestLog requestLog = new EbicsRequestLog();
-		requestLog.setEbicsUser(ebicsUser);
+		requestLog.setEbicsUser(ebicsUserRepo.find(ebicsUserId));
 		requestLog.setRequestTime(new LocalDateTime());
 		requestLog.setRequestType(requestType);
 		requestLog.setResponseCode(responseCode);
@@ -122,7 +122,7 @@ public class EbicsUserService {
 	}
 	
 	@Transactional
-	public String getNextOrderId(EbicsUser user, boolean increment) throws AxelorException {
+	public String getNextOrderId(EbicsUser user) throws AxelorException {
 		
 		String orderId = user.getNextOrderId();
 		
@@ -141,7 +141,7 @@ public class EbicsUserService {
 			user.setNextOrderId(orderId);
 			ebicsUserRepo.save(user);
 		}
-		else if (increment) {
+		else {
 			orderId = getNextOrderNumber(orderId);
 			user.setNextOrderId(orderId);
 			ebicsUserRepo.save(user);

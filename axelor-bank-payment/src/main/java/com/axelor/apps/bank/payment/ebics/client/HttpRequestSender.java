@@ -207,8 +207,8 @@ public class HttpRequestSender {
   private DefaultHttpClient getSecuredHttpClient(Certificate cert, String bankURL) throws AxelorException {
     
 	HttpParams httpParams = new BasicHttpParams();
-	HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
-	HttpConnectionParams.setSoTimeout(httpParams, 5000);
+	HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
+	HttpConnectionParams.setSoTimeout(httpParams, 30000);
 	DefaultHttpClient client = new DefaultHttpClient(httpParams);
 	
 	try {
