@@ -229,6 +229,7 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		try {
+
 			BankStatementFileFormat bankStatementFileFormat = ebicsUser.getTestBankStatementFileFormat();
 			
 			if(ebicsUser.getEbicsPartner().getTestMode() && bankStatementFileFormat != null)  { 
@@ -238,6 +239,7 @@ public class EbicsController {
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
 			}
+
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}

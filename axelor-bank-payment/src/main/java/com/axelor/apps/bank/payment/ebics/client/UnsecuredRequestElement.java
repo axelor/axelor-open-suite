@@ -48,17 +48,15 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
    */
   public UnsecuredRequestElement(EbicsSession session,
                                  OrderType orderType,
-                                 String orderId,
                                  byte[] orderData)
   {
     super(session);
     this.orderType = orderType;
-    this.orderId = orderId;
     this.orderData = orderData;
   }
 
   @Override
-  public void build() {
+  public void build() throws AxelorException {
     Header 					header;
     Body 					body;
     EmptyMutableHeaderType 			mutable;
@@ -70,7 +68,7 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
     EbicsUnsecuredRequest			request;
 
     orderDetails = EbicsXmlFactory.createOrderDetailsType("DZNNN",
-						          orderId == null ? session.getUser().getNextOrderId() : orderId,
+						          					  session.getUser().getNextOrderId(),
 	                                                  orderType.getOrderType());
 
     productType = EbicsXmlFactory.creatProductElementType(AuthUtils.getUser().getLanguage(),
@@ -117,6 +115,5 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
   // --------------------------------------------------------------------
 
   private OrderType			orderType;
-  private String			orderId;
   private byte[]			orderData;
 }

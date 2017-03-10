@@ -38,9 +38,8 @@ public class HIARequestElement extends DefaultEbicsRootElement {
    * @param session the current ebics session
    * @param orderId the order id, if null a random one is generated.
    */
-  public HIARequestElement(EbicsSession session, String orderId) {
+  public HIARequestElement(EbicsSession session) {
     super(session);
-    this.orderId = orderId;
   }
 
   @Override
@@ -58,7 +57,6 @@ public class HIARequestElement extends DefaultEbicsRootElement {
 		
 		unsecuredRequest = new UnsecuredRequestElement(session,
                 OrderType.HIA,
-                orderId == null ? session.getUser().getNextOrderId() : orderId,
                 EbicsUtils.zip(requestOrderData.prettyPrint()));
 				unsecuredRequest.build();
 
@@ -84,6 +82,5 @@ public class HIARequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private String			orderId;
   private UnsecuredRequestElement	unsecuredRequest;
 }
