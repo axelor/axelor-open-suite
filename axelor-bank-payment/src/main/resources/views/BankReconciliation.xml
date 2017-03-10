@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
   
-     <grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bank.payment.db.BankReconciliation">
+     <grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation">
 			<field name="name" />
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -13,7 +13,7 @@
             <field name="statusSelect"/> 
      </grid>
   
-	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bank.payment.db.BankReconciliation" width="large" readonlyIf="statusSelect == 2" 
+	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" readonlyIf="statusSelect == 2" 
 	onNew="action-bank-reconciliation-onnew-group" >
 		<panel name="main" colSpan="12">
 			<field name="name"/>
@@ -63,26 +63,26 @@
    		<action name="action-bank-reconciliation-method-compute"/>
    </action-group>
    	
-   <action-record model="com.axelor.apps.bank.payment.db.BankReconciliation" name="action-bank-reconciliation-active-company">
+   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-active-company">
        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
        <field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
    </action-record>
    
-   <action-record model="com.axelor.apps.bank.payment.db.BankReconciliation" name="action-bank-reconciliation-set-months">
+   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-months">
        <field name="fromDate" expr="eval: LocalDate.parse(todayDate).withDayOfMonth(1)"/>
        <field name="toDate" expr="eval: LocalDate.parse(todayDate).toDateTimeAtCurrentTime().dayOfMonth().withMaximumValue().toLocalDate()"/>
    </action-record>
      
-   <action-record model="com.axelor.apps.bank.payment.db.BankReconciliation" name="action-bank-reconciliation-set-currency">
+   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-currency">
        <field name="currency" expr="eval: company?.currency"/>
    </action-record>
    
 	<action-method name="action-bank-reconciliation-method-compute">
-		<call class="com.axelor.apps.bank.payment.web.BankReconciliationController" method="compute"/>
+		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="compute"/>
 	</action-method>
 	
 	<action-method name="action-bank-reconciliation-method-validate">
-		<call class="com.axelor.apps.bank.payment.web.BankReconciliationController" method="validate"/>
+		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validate"/>
 	</action-method>
 	 
     

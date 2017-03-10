@@ -2,13 +2,13 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.bank.payment.db.EbicsBank">
+	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
 		<field name="hostId"/>
 		<field name="name"/>
 		<field name="url"/>
 	</grid>
 
-	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.bank.payment.db.EbicsBank">
+	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
 		<panel title="General informations">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large" hideIf="!fullName" readonly="true"/>
 			<field name="bank" canNew="true"/>
@@ -25,8 +25,8 @@
 		<panel-dashlet hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
 	</form>
 	
-	<action-record name="action-ebics-bank-record-normalize-fax-phone-number" model="com.axelor.apps.bank.payment.db.EbicsBank">
-		<field name="fax" expr="call:com.axelor.apps.bank.payment.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
+	<action-record name="action-ebics-bank-record-normalize-fax-phone-number" model="com.axelor.apps.bankpayment.db.EbicsBank">
+		<field name="fax" expr="call:com.axelor.apps.bankpayment.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
 	</action-record>
 
 	<action-view name="action-ebics-bank-view-bank-details" model="com.axelor.apps.base.db.BankDetails" title="Bank Details">

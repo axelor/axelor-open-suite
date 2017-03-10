@@ -4,23 +4,23 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 
-	<selection name="bank.payment.bank.reconciliation.type.select">
+	<selection name="bankpayment.bank.reconciliation.type.select">
 		<option value="1">General</option>
 		<option value="2">Customer</option>
 		<option value="3">Supplier</option>
 	</selection>	
 	
-	<selection name="bank.payment.bank.reconciliation.status.select">
+	<selection name="bankpayment.bank.reconciliation.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
 	</selection>
 	
-	<selection name="bank.payment.bank.statement.status.select">
+	<selection name="bankpayment.bank.statement.status.select">
 		<option value="1">Received</option>
 		<option value="2">Checked</option>
 	</selection>
 
-	<selection name="bank.payment.bank.order.type.select">
+	<selection name="bankpayment.bank.order.type.select">
 		<option value="1">SEPA Credit Transfer</option>
 		<option value="2">SEPA Direct Debit</option>
 		<option value="3">International Credit Transfer</option>
@@ -29,14 +29,14 @@
 		<option value="6">International Treasury transfer</option>
 	</selection>
 	
-	<selection name="bank.payment.bank.order.partner.type.select">
+	<selection name="bankpayment.bank.order.partner.type.select">
 		<option value="1">Supplier</option>
 		<option value="2">Employee</option>
 		<option value="3">Customer</option>
 		<option value="4">Company</option>
 	</selection>
 	
-	<selection name="bank.payment.bank.order.status.select">
+	<selection name="bankpayment.bank.order.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Awaiting signature</option>
 		<option value="3">Validated</option>
@@ -45,31 +45,31 @@
 		<option value="6">Canceled</option>		
 	</selection>
 	
-	<selection name="bank.payment.bank.order.reject.status.select">
+	<selection name="bankpayment.bank.order.reject.status.select">
 		<option value="0">Not rejected</option>
 		<option value="1">Partially rejected</option>
 		<option value="2">Totally rejected</option>
 	</selection>
 	
-	<selection name="bank.payment.bank.order.line.fees.imputation.mode.select">
+	<selection name="bankpayment.bank.order.line.fees.imputation.mode.select">
 		<option value="13">Receiver</option>
 		<option value="14">Reveiver and sender</option>
 		<option value="15">Sender</option>
 	</selection>
 	
-	<selection name="bank.payment.bank.order.line.payment.mode.select">
+	<selection name="bankpayment.bank.order.line.payment.mode.select">
 		<option value="0">Transfer or other</option>
 		<option value="1">Cheque</option>
 	</selection>
 	
-	<selection name="bank.payment.order.file.format.select">
+	<selection name="bankpayment.order.file.format.select">
 		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
 		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
 		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
 		<option value="pain.xxx.cfonb160.xct">pain.xxx.cfonb160.ict</option>
 	</selection>
 	
-	<selection name="bank.payment.bank.statement.file.format.statement.file.format.select">
+	<selection name="bankpayment.bank.statement.file.format.statement.file.format.select">
 		<option value="camt.054.001.02.act">camt.054.001.02.act</option>
 		<option value="camt.054.001.02.add">camt.054.001.02.add</option>
 		<option value="camt.054.001.02.abb">camt.054.001.02.abb</option>
@@ -84,18 +84,17 @@
 		<option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
 	</selection>
 	
-	
-	<selection name="bank.payment.ebics.bank.bank.statement.period.mode.select">
+	<selection name="bankpayment.ebics.bank.bank.statement.period.mode.select">
 		<option value="1">Automatic</option>
 		<option value="2">Period</option>
 	</selection>
 	
-	<selection name="bank.payment.ebics.user.ebics.type.select">
+	<selection name="bankpayment.ebics.user.ebics.type.select">
 		<option value="0">Ebics T</option>
 		<option value="1">Ebics TS</option>
 	</selection>
 
-	<selection name="bank.payment.account.ebics.user.status.select">
+	<selection name="bankpayment.account.ebics.user.status.select">
 		<option value="0">Waiting for the certificate configuration</option>
 		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
 		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
@@ -103,19 +102,19 @@
 		<option value="4">Certificates should be renew</option>
 	</selection>
 	
-	<selection name="bank.payment.ebics.certificate.type.select">
+	<selection name="bankpayment.ebics.certificate.type.select">
 		<option value="ssl">SSL</option>
 		<option value="encryption">Encryption</option>
 		<option value="authentication">Authentication</option>
 		<option value="signature">Signature</option>
 	</selection>
 	
-	<selection name="bank.payment.ebics.bank.protocol.select">
+	<selection name="bankpayment.ebics.bank.protocol.select">
 		<option value="ssl">SSL</option>
 		<option value="tls">TLS</option>
 	</selection>
 	
-	<selection name="bank.payment.ebics.bank.certificate.validity.period.select">
+	<selection name="bankpayment.ebics.bank.certificate.validity.period.select">
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>

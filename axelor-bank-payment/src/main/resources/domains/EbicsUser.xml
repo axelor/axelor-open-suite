@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 	
-  <module name="bank-payment" package="com.axelor.apps.bank.payment.db"/>
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
   
   <entity name="EbicsUser" lang="java">
 
@@ -14,24 +14,24 @@
 	 
 	 <string name="password" title="Password" password="true" />
 	 
-	 <integer name="ebicsTypeSelect" title="Type" selection="bank.payment.ebics.user.ebics.type.select"/>
-	 <integer name="statusSelect" title="Status" selection="bank.payment.account.ebics.user.status.select" readonly="true"/>
+	 <integer name="ebicsTypeSelect" title="Type" selection="bankpayment.ebics.user.ebics.type.select"/>
+	 <integer name="statusSelect" title="Status" selection="bankpayment.account.ebics.user.status.select" readonly="true"/>
 	 
- 	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.bank.payment.db.EbicsPartner" title="Ebics partner" required="true"/>
+ 	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner" title="Ebics partner" required="true"/>
  	 
  	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associate user"/>
 	 
 	 <!-- 	 Electronic signature certificate -->
  	 <string name="dn" title="dn" />
- 	 <many-to-one name="a005Certificate" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificate (a005)" />
- 	 <many-to-one name="e002Certificate" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificate (e002)" />
- 	 <many-to-one name="x002Certificate" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificate (x002)" />
+ 	 <many-to-one name="a005Certificate" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificate (a005)" />
+ 	 <many-to-one name="e002Certificate" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificate (e002)" />
+ 	 <many-to-one name="x002Certificate" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificate (x002)" />
 
-	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.bank.payment.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
+	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.bankpayment.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
 	 
 	 <many-to-one name="testFile" ref="com.axelor.meta.db.MetaFile" title="Test file"/>
-     <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="Bank statement file format"/>
-     <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bank.payment.db.BankOrderFileFormat" title="Bank order file format"/>
+     <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Bank statement file format"/>
+     <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="Bank order file format"/>
 	 
 	 
 	 <extra-code><![CDATA[

@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
   
-    <grid name="ebics-transfer-state-grid" title="Ebics transfer state" model="com.axelor.apps.bank.payment.db.EbicsTransferState" >
+    <grid name="ebics-transfer-state-grid" title="Ebics transfer state" model="com.axelor.apps.bankpayment.db.EbicsTransferState" >
 		<field name="transactionId" />
 		<field name="seqmentNumber" />
 		<field name="numSegments" />
 		<field name="lastSegment" />
 	</grid>
 	
-	<form name="ebics-transfer-state-form" title="Ebics transfer state" model="com.axelor.apps.bank.payment.db.EbicsTransferState">
+	<form name="ebics-transfer-state-form" title="Ebics transfer state" model="com.axelor.apps.bankpayment.db.EbicsTransferState">
 	
 		<panel>
 			<field name="transactionId" />

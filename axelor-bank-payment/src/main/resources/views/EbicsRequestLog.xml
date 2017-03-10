@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	
-	<grid name="ebics-request-log-grid" title="Ebics request log" model="com.axelor.apps.bank.payment.db.EbicsRequestLog" orderBy="-requestTime">
+	<grid name="ebics-request-log-grid" title="Ebics request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog" orderBy="-requestTime">
 		<hilite if="['EBICS_OK','EBICS_DOWNLOAD_POSTPROCESS_DONE','EBICS_NO_DOWNLOAD_DATA_AVAILABLE'].indexOf(responseCode) > -1" color="success"/>
 	    <hilite if="['EBICS_OK','EBICS_DOWNLOAD_POSTPROCESS_DONE','EBICS_NO_DOWNLOAD_DATA_AVAILABLE'].indexOf(responseCode) &lt; 0" color="danger"/>
 		<field name="requestType" />
@@ -12,7 +12,7 @@
 		<field name="responseCode" />
 	</grid>
 	
-	<form name="ebics-request-log-form" title="Ebics request log" model="com.axelor.apps.bank.payment.db.EbicsRequestLog">
+	<form name="ebics-request-log-form" title="Ebics request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
 		<panel>
 			<field name="requestType" />
 			<field name="requestTime" />

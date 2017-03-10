@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
-    <grid name="bank-order-file-format-grid" orderBy="orderFileFormatSelect" title="Bank Orders file formats" model="com.axelor.apps.bank.payment.db.BankOrderFileFormat" canDelete="false">
+    <grid name="bank-order-file-format-grid" orderBy="orderFileFormatSelect" title="Bank Orders file formats" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat" canDelete="false">
         <field name="name"/>
         <field name="orderTypeSelect"/>
         <field name="orderFileFormatSelect"/>
     </grid>
     
-	<form name="bank-order-file-format-form" title="Bank Orders file format" model="com.axelor.apps.bank.payment.db.BankOrderFileFormat" canDelete="false"> 
+	<form name="bank-order-file-format-form" title="Bank Orders file format" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat" canDelete="false"> 
   		<panel name="main" colSpan="12">
 	        <field name="orderFileFormatSelect" required="true" onChange="action-bank-order-file-format-record-compute-name"/>
 	        <field name="name" required="true"/>
@@ -37,7 +37,7 @@
 		</panel>
 	</form>
 	
-	<action-record name="action-bank-order-file-format-record-compute-name" model="com.axelor.apps.bank.payment.db.BankOrderFileFormat">
+	<action-record name="action-bank-order-file-format-record-compute-name" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat">
 		<field name="name" expr="eval: orderFileFormatSelect" if="!name"/>
 	</action-record>
 	

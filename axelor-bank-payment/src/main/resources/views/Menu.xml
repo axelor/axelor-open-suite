@@ -14,7 +14,7 @@
 		action="account.bank.order.sepa.direct.debit"/>
 		
 	<action-view name="account.bank.order.sepa.direct.debit"
-		title="SEPA Direct Debits" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="SEPA Direct Debits" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 2</domain>
@@ -26,7 +26,7 @@
 		action="account.bank.order.international.direct.debit"/>
 		
 	<action-view name="account.bank.order.international.direct.debit"
-		title="International Direct Debits" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="International Direct Debits" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 4</domain>
@@ -41,7 +41,7 @@
 		action="account.bank.order.sepa.credit.transfer"/>
 		
 	<action-view name="account.bank.order.sepa.credit.transfer"
-		title="SEPA Credit Transfers" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="SEPA Credit Transfers" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 1</domain>
@@ -53,7 +53,7 @@
 		action="account.bank.order.international.credit.transfer"/>
 		
 	<action-view name="account.bank.order.international.credit.transfer"
-		title="International Credit Transfers" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="International Credit Transfers" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 3</domain>
@@ -68,7 +68,7 @@
 		action="account.bank.order.sepa.bank.to.bank.transfer" />
 	
 	<action-view name="account.bank.order.sepa.bank.to.bank.transfer"
-		title="SEPA Bank to Bank Transfers" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="SEPA Bank to Bank Transfers" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-bank-to-bank-grid"/>
 		<view type="form" name="bank-order-form"/>
 	    <domain>self.orderTypeSelect = 5 AND self.partnerTypeSelect = 4</domain>
@@ -81,7 +81,7 @@
 		action="account.bank.order.international.bank.to.bank.transfer" />
 	
 	<action-view name="account.bank.order.international.bank.to.bank.transfer"
-		title="International Bank to Bank Transfers" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="International Bank to Bank Transfers" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-bank-to-bank-grid"/>
 		<view type="form" name="bank-order-form"/>
 	     <domain>self.orderTypeSelect = 6 AND self.partnerTypeSelect = 4</domain>
@@ -94,7 +94,7 @@
 		action="account.send.bank.order"/>
 		
 	<action-view name="account.send.bank.order"
-		title="Send a Bank Order" model="com.axelor.apps.bank.payment.db.BankOrder">
+		title="Send a Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-send-form"/>
 		<domain>self.fileToSend != NULL</domain>
@@ -105,7 +105,7 @@
 		action="account.bank.order.awaiting.for.signature" />
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
-		title="Bank Orders awaiting for signature" model="com.axelor.apps.bank.payment.db.BankOrder" >
+		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-form"/>
 	    <domain>self.statusSelect = 2</domain>
@@ -119,7 +119,7 @@
 		action="account.bank.statement" />
 
 	<action-view name="account.bank.statement"
-		title="Bank Statement" model="com.axelor.apps.bank.payment.db.BankStatement" >
+		title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" >
 		<view type="grid" name="bank-statement-grid"/>
 		<view type="form" name="bank-statement-form"/>
 	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
@@ -130,7 +130,7 @@
 		action="account.bank.statement.line" />
 
 	<action-view name="account.bank.statement.line"
-		title="Bank Statement Line" model="com.axelor.apps.bank.payment.db.BankStatementLine" >
+		title="Bank Statement Line" model="com.axelor.apps.bankpayment.db.BankStatementLine" >
 		<view type="grid" name="bank-statement-line-grid" />
 		<view type="form" name="bank-statement-line-form" />
 	</action-view>
@@ -143,7 +143,7 @@
 		action="account.bank.reconciliation" />
 
 	<action-view name="account.bank.reconciliation"
-		title="Bank Reconciliations" model="com.axelor.apps.bank.payment.db.BankReconciliation" >
+		title="Bank Reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation" >
 		<view type="grid" name="bank-reconciliation-grid"/>
 		<view type="form" name="bank-reconciliation-form"/>
 	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
@@ -154,7 +154,7 @@
 		action="account.bank.reconciliation.line" />
 
 	<action-view name="account.bank.reconciliation.line"
-		title="Bank Reconciliation Line" model="com.axelor.apps.bank.payment.db.BankReconciliationLine" >
+		title="Bank Reconciliation Line" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" >
 		<view type="grid" name="bank-reconciliation-line-grid" />
 		<view type="form" name="bank-reconciliation-line-form" />
 	</action-view>
@@ -165,7 +165,7 @@
 		title="Bank order file formats" action="account.conf.bank.order.bank.order.file.format" />
 	
 	<action-view name="account.conf.bank.order.bank.order.file.format" title="Bank order file formats"
-		model="com.axelor.apps.bank.payment.db.BankOrderFileFormat" >
+		model="com.axelor.apps.bankpayment.db.BankOrderFileFormat" >
 		<view type="grid" name="bank-order-file-format-grid"/>
 		<view type="form" name="bank-order-file-format-form"/>
 	</action-view>
@@ -174,7 +174,7 @@
 		title="Bank Orders economic reasons" action="account.conf.bank.order.bank.order.economic.reason" />
 	
 	<action-view name="account.conf.bank.order.bank.order.economic.reason" title="Bank Orders economic reasons"
-		model="com.axelor.apps.bank.payment.db.BankOrderEconomicReason" >
+		model="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" >
 		<view type="grid" name="bank-order-economic-reason-grid"/>
 		<view type="form" name="bank-order-economic-reason-form"/>
 	</action-view>
@@ -198,31 +198,31 @@
 		title="Ebics certificates" action="account.conf.ebics.ebics.certificate" />
 		
 	<action-view name="account.conf.ebics.ebics.user" title="Ebics users"
-		model="com.axelor.apps.bank.payment.db.EbicsUser" >
+		model="com.axelor.apps.bankpayment.db.EbicsUser" >
 		<view type="grid" name="ebics-user-grid" />
 		<view type="form" name="ebics-user-form"/>
 	</action-view>
 	
 	<action-view name="account.conf.ebics.ebics.partner" title="Ebics partner"
-		model="com.axelor.apps.bank.payment.db.EbicsPartner" >
+		model="com.axelor.apps.bankpayment.db.EbicsPartner" >
 		<view type="grid" name="ebics-partner-grid" />
 		<view type="form" name="ebics-partner-form"/>
 	</action-view>
 	
 	<action-view name="account.conf.ebics.ebics.bank" title="Ebics bank"
-		model="com.axelor.apps.bank.payment.db.EbicsBank" >
+		model="com.axelor.apps.bankpayment.db.EbicsBank" >
 		<view type="grid" name="ebics-bank-grid" />
 		<view type="form" name="ebics-bank-form"/>
 	</action-view>
 	
 	<action-view name="account.conf.ebics.ebics.transfer.state" title="Ebics transfer state"
-		model="com.axelor.apps.bank.payment.db.EbicsTransferState" >
+		model="com.axelor.apps.bankpayment.db.EbicsTransferState" >
 		<view type="grid" name="ebics-transfer-state-grid" />
 		<view type="form" name="ebics-transfer-state-form"/>
 	</action-view>
 	
 	<action-view name="account.conf.ebics.ebics.certificate" title="Ebics certficate"
-		model="com.axelor.apps.bank.payment.db.EbicsCertificate" >
+		model="com.axelor.apps.bankpayment.db.EbicsCertificate" >
 		<view type="grid" name="ebics-certificate-grid" />
 		<view type="form" name="ebics-certificate-form"/>
 	</action-view>	
@@ -231,7 +231,7 @@
 		title="Bank statements file formats" action="account.conf.ebics.bank.statement.file.format" />
 	
 	<action-view name="account.conf.ebics.bank.statement.file.format" title="Bank statements file formats"
-		model="com.axelor.apps.bank.payment.db.BankStatementFileFormat" >
+		model="com.axelor.apps.bankpayment.db.BankStatementFileFormat" >
 		<view type="grid" name="bank-statement-file-format-grid"/>
 		<view type="form" name="bank-statement-file-format-form"/>
 	</action-view>

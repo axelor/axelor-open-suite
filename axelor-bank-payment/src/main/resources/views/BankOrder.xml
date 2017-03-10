@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
-    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bank.payment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
         <toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-method-bank-order-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -19,7 +19,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bank.payment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-method-bank-order-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -35,7 +35,7 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bank.payment.db.BankOrder" canDelete="false"
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false"
 	onNew="action-group-bank-order-onnew" 
 	onLoad="action-bank-order-line-attrs-on-load"> 
 		<toolbar>
@@ -142,7 +142,7 @@
   		</panel>
 	</form>
 	
-	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 			<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
@@ -162,7 +162,7 @@
   		</panel>
     </form>
 	
-	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.bankpayment.db.BankOrder">
   		<panel colSpan="6">
     		<panel hidden="true" hideIf="isMultiCurrency" readonly="true">
 				<field name="bankOrderTotalAmount" colSpan="8"/>
@@ -209,7 +209,7 @@
     
     	<!-- Actions Records -->
     	
-    <action-record name="action-bank-order-record-default" model="com.axelor.apps.bank.payment.db.BankOrder">
+    <action-record name="action-bank-order-record-default" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="orderTypeSelect" expr="eval: _orderTypeSelect" if="_orderTypeSelect != null"/>
 		<field name="partnerTypeSelect" expr="eval: _partnerTypeSelect" if="_partnerTypeSelect != null"/>
 		<field name="bankOrderDate" expr="eval:__config__.generalService.getTodayDate()"/>
@@ -219,71 +219,71 @@
 		<field name="signatoryUser" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',__user__.activeCompany).fetchOne()?.defaultSignatoryUser"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-sender-company-change" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-sender-company-change" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="companyCurrency" expr="eval: senderCompany?.currency"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-payment-mode-change" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-payment-mode-change" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="bankOrderFileFormat" expr="eval: paymentMode?.bankOrderFileFormat"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-bank-order-file-format-change" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-bank-order-file-format-change" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="bankOrderCurrency" expr="eval: bankOrderFileFormat?.currency"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-carry-out" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-carry-out" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="statusSelect" expr="4"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-reject" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-reject" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="statusSelect" expr="5"/>
 		<field name="rejectStatusSelect" expr="2"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-cancel" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-cancel" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="statusSelect" expr="6"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-partner-type-select-default" model="com.axelor.apps.bank.payment.db.BankOrder">
+	<action-record name="action-bank-order-record-partner-type-select-default" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 2 || orderTypeSelect == 4"/>
 	</action-record>
 	
 		<!-- Actions Methods -->
 	
 	<action-method name="action-method-bank-order-confirm">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="confirm"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="confirm"/>
 	</action-method>
 
 	<action-method name="action-bank-order-method-sign">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="sign"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="sign"/>
 	</action-method>
 	
 	<action-method name="action-bank-order-method-check-lines">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="checkLines"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="checkLines"/>
 	</action-method>
 	
   	<action-method name="action-method-bank-order-validate">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="validate"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="validate"/>
 	</action-method>
 	
 	<action-method name="action-bank-order-method-validate-without-sign">
-		<call class="com.axelor.appsbank.payment.web.BankOrderController" method="validateWithoutSign"/>
+		<call class="com.axelor.appsbankpayment.web.BankOrderController" method="validateWithoutSign"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-payment-validate">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="validatePayment"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="validatePayment"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-payment-cancel">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="cancelPayment"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="cancelPayment"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-merge">
-		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="merge"/>
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="merge"/>
 	</action-method>
 	
 	<action-method name="action-bank-order-method-print">
-    	<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="print"/>
+    	<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="print"/>
     </action-method>
 	
 	<!-- BANK ORDER LINES ACTIONS -->
@@ -311,17 +311,17 @@
     
 		<!-- Actions Records -->
 	
-	<action-record name="action-bank-order-line-record-receiver-company-change" model="com.axelor.apps.bank.payment.db.BankOrderLine">
+	<action-record name="action-bank-order-line-record-receiver-company-change" model="com.axelor.apps.bankpayment.db.BankOrderLine">
     	<field name="partner" expr="eval: receiverCompany.partner"/>
     	<field name="receiverBankDetails" expr="eval: receiverCompany.defaultBankDetails"/>
     </action-record>
     
-    <action-record name="action-bank-order-line-record-partner-onchange" model="com.axelor.apps.bank.payment.db.BankOrderLine">
+    <action-record name="action-bank-order-line-record-partner-onchange" model="com.axelor.apps.bankpayment.db.BankOrderLine">
     	  <field name="receiverBankDetails" expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault } ? partner?.bankDetailsList.find{ it -> it.isDefault } : receiverBankDetails"/>
   		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
     </action-record>
     
-    <action-record name="action-bank-order-line-record-compute-counter" model="com.axelor.apps.bank.payment.db.BankOrderLine">
+    <action-record name="action-bank-order-line-record-compute-counter" model="com.axelor.apps.bankpayment.db.BankOrderLine">
   		<field name="counter" expr="eval: __parent__?.bankOrderLineList?.max { it.counter }?.counter + 1"/>
 	</action-record>
 	

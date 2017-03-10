@@ -3,23 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 	
-  <module name="bank-payment" package="com.axelor.apps.bank.payment.db"/>
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
   
   <entity name="EbicsPartner" lang="java">
   
-    <many-to-one name="ebicsBank" ref="com.axelor.apps.bank.payment.db.EbicsBank" title="Ebics bank" required="true"/>
+    <many-to-one name="ebicsBank" ref="com.axelor.apps.bankpayment.db.EbicsBank" title="Ebics bank" required="true"/>
     <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
     
-    <many-to-many name="bankStatementFileFormatSet" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="Supported file formats"/>
+    <many-to-many name="bankStatementFileFormatSet" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Supported file formats"/>
 	<datetime name="bankStatementLastExeDateT" title="Date of last execution"/>
-	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bank.payment.ebics.bank.bank.statement.period.mode.select" default="1"/>
+	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bankpayment.ebics.bank.bank.statement.period.mode.select" default="1"/>
 	<date name="bankStatementStartDate" title="Start date"/>
 	<date name="bankStatementEndDate" title="End date"/>
-	<many-to-one name="bankStatementEbicsUser" ref="com.axelor.apps.bank.payment.db.EbicsUser" title="Ebics user for get the bank statements"/>
+	<many-to-one name="bankStatementEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics user for get the bank statements"/>
 	
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 	
-    <many-to-one name="pSRBankStatementFileFormat" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="Payment Status Report file format"/>
+    <many-to-one name="pSRBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Payment Status Report file format"/>
 	<boolean name="usePSR" title="Enable PSR"/>
 	
 	<boolean name="testMode" title="Test mode"/>

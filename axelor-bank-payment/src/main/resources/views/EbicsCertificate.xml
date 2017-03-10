@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	
-	<grid name="ebics-certificate-grid" title="Ebics certificate" model="com.axelor.apps.bank.payment.db.EbicsCertificate" >
+	<grid name="ebics-certificate-grid" title="Ebics certificate" model="com.axelor.apps.bankpayment.db.EbicsCertificate" >
 		<field name="typeSelect" />
 		<field name="subject" />
 		<field name="issuer" />
@@ -12,7 +12,7 @@
 		<field name="validTo" />
 	</grid>
 	
-	<form name="ebics-certificate-form" title="Ebics certificate" model="com.axelor.apps.bank.payment.db.EbicsCertificate" onNew="action-ebics-certificate-record-default">
+	<form name="ebics-certificate-form" title="Ebics certificate" model="com.axelor.apps.bankpayment.db.EbicsCertificate" onNew="action-ebics-certificate-record-default">
 		<panel>
 			<field name="typeSelect" />
 			<field name="ebicsBank" hideIf="typeSelect == 'signature'"/>
@@ -34,7 +34,7 @@
 		</panel>
 	</form>
 	
-	<form name="ebics-certificate-confirmation-form" title="Certificate confirmation" model="com.axelor.apps.bank.payment.db.EbicsCertificate"
+	<form name="ebics-certificate-confirmation-form" title="Certificate confirmation" model="com.axelor.apps.bankpayment.db.EbicsCertificate"
 		editable="false" onNew="action-ebics-certificate-confirmation-set-default">
 		<panel>
 			<field name="url" type="string" title="URL" />
@@ -44,20 +44,20 @@
 			<button name="addCertificates" title="OK" onClick="action-ebics-certificate-method-add-certificates" colSpan="2" />
 			<field name="certificateE002" type="string" hidden="true" />
 			<field name="certificateX002" type="string" hidden="true" />
-			<field name="ebicsBank" type="many-to-one" target="com.axelor.apps.bank.payment.db.EbicsBank" hidden="true" />
+			<field name="ebicsBank" type="many-to-one" target="com.axelor.apps.bankpayment.db.EbicsBank" hidden="true" />
 		</panel>
 	</form>
 	
-	<action-record name="action-ebics-certificate-record-default" model="com.axelor.apps.bank.payment.db.EbicsCertificate">
+	<action-record name="action-ebics-certificate-record-default" model="com.axelor.apps.bankpayment.db.EbicsCertificate">
 		<field name="typeSelect" expr="eval: EbicsCertificateRepository.TYPE_SIGNATURE"/>
 	</action-record>
 	
 	<action-method name="action-ebics-certificate-method-add-certificates">
-		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="addCertificates"/>
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="addCertificates"/>
 	</action-method>
 	
 	<action-method name="action-ebics-certificate-method-load-certificate">
-    	<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="loadCertificate" />
+    	<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="loadCertificate" />
     </action-method>
     
 	<action-attrs name="action-ebics-certificate-confirmation-set-default">

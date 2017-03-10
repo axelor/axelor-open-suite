@@ -9,9 +9,9 @@
   
     <boolean name="generateBankOrder" title="Generate Bank order"/>
   	<boolean name="automaticTransmission" title="Transmit automatically to Bank"/>
-  	<integer name="orderTypeSelect" title="Order Type" selection="bank.payment.bank.order.type.select"/>
+  	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<string name="bankOrderExportFolderPath" help="true"/>
-  	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bank.payment.db.BankOrderFileFormat" title="File format"/>
+  	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
     <boolean name="generateMoveAutoFromBankOrder" title="Generate account move from the bank order"/>
   	
   </entity>
