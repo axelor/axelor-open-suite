@@ -17,14 +17,21 @@
 	
 	   	// BANK STATEMENT FILE FORMAT SELECT
 		public static final String FILE_FORMAT_CAMT_054_001_02_ACT = "camt.054.001.02.act";
-		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ACT = "camt.xxx.cfonb240.act";
-		public static final String FILE_FORMAT_CAMT_053_001_02_STM = "camt.053.001.02.stm";
-		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM = "camt.xxx.cfonb120.stm";
 		public static final String FILE_FORMAT_CAMT_054_001_02_ADD = "camt.054.001.02.add";
 		public static final String FILE_FORMAT_CAMT_054_001_02_ABB = "camt.054.001.02.abb";
+		
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ACT = "camt.xxx.cfonb240.act";
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_PCO = "camt.xxx.cfonb240.pco";
-		public static final String FILE_FORMAT_PAIN_002_001_02_ACK = "pain.002.001.02.ack";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_REP = "camt.xxx.cfonb240.rep";
+		
+		public static final String FILE_FORMAT_CAMT_053_001_02_STM = "camt.053.001.02.stm";
+		
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM = "camt.xxx.cfonb120.stm";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY = "camt.xxx.cfonb120.stm.0by";
+
+		public static final String FILE_FORMAT_PAIN_002_001_01_ARA = "pain.002.001.01.ara";
 		public static final String FILE_FORMAT_PAIN_002_001_02_ARA = "pain.002.001.02.ara";
+		public static final String FILE_FORMAT_PAIN_002_001_02_ACK = "pain.002.001.02.ack";
 		
 		
 	]]></extra-code>

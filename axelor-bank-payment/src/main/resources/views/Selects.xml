@@ -71,13 +71,19 @@
 	
 	<selection name="bank.payment.bank.statement.file.format.statement.file.format.select">
 		<option value="camt.054.001.02.act">camt.054.001.02.act</option>
-		<option value="camt.xxx.cfonb240.act">camt.xxx.cfonb240.act</option>
-		<option value="camt.053.001.02.stm">camt.053.001.02.stm</option>
-		<option value="camt.xxx.cfonb120.stm">camt.xxx.cfonb120.stm</option>
 		<option value="camt.054.001.02.add">camt.054.001.02.add</option>
 		<option value="camt.054.001.02.abb">camt.054.001.02.abb</option>
+		<option value="camt.xxx.cfonb240.act">camt.xxx.cfonb240.act</option>
 		<option value="camt.xxx.cfonb240.pco">camt.xxx.cfonb240.pco</option>
+		<option value="camt.xxx.cfonb240.rep">camt.xxx.cfonb240.rep</option>
+		<option value="camt.053.001.02.stm">camt.053.001.02.stm</option>
+		<option value="camt.xxx.cfonb120.stm">camt.xxx.cfonb120.stm</option>
+		<option value="camt.xxx.cfonb120.stm.0by">camt.xxx.cfonb120.stm.0by</option>
+		<option value="pain.002.001.01.ara">pain.002.001.01.ara</option>
+		<option value="pain.002.001.02.ara">pain.002.001.02.ara</option>
+		<option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
 	</selection>
+	
 	
 	<selection name="bank.payment.ebics.bank.bank.statement.period.mode.select">
 		<option value="1">Automatic</option>
