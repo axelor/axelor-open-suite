@@ -375,7 +375,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		}
 	}
 	
-	private String getDefaultPrintingLocale(Invoice invoice, Company company) {
+	protected String getDefaultPrintingLocale(Invoice invoice, Company company) {
 		String locale = null;
 		
 		if(invoice != null && invoice.getPartner() != null) {
@@ -402,9 +402,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
 		
 		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
-		if (toAttach) {
-			reportSetting.toAttach(invoice);
-		}
+		if (toAttach) { reportSetting.toAttach(invoice); }
 		
 		return reportSetting.addParam("InvoiceId", invoice.getId().toString())
 				.addParam("Locale", locale)
