@@ -1,6 +1,6 @@
 "key","message","comment","context"
 "${supplierPartner.purchaseOrderInformation}",,,
-"%s :\n You must configure Purchase module for the company %s","%s :\n Veuillez configurer le module Achat pour la société %s",,
+"%s : You must configure Purchase module for the company %s","%s : Veuillez configurer le module Achat pour la société %s",,
 "50 Latest Supplier Orders","50 dernières commandes clients",,
 "Actions",,,
 "Amount","Montant",,
