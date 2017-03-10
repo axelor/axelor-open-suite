@@ -38,5 +38,5 @@ public interface IExceptionMessage {
 	/**
 	 * Sale Config Service
 	 */
-	static final String SALE_CONFIG_1 = /*$$(*/ "%s :\n You must configure Sales module for company %s" /*)*/ ;
+	static final String SALE_CONFIG_1 = /*$$(*/ "%s : You must configure Sales module for company %s" /*)*/ ;
 }

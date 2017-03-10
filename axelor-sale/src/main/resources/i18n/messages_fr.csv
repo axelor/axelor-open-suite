@@ -1,7 +1,7 @@
 "key","message","comment","context"
 "${clientPartner.saleOrderInformation}",,,
 "${message}",,,
-"%s :\n You must configure Sales module for company %s","%s :\n Veuillez configurer le module vente pour la société %s",,
+"%s : You must configure Sales module for company %s","%s : Veuillez configurer le module vente pour la société %s",,
 "A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,
 "Accepted Credit","Montant encours accepté",,
 "Action","Action",,

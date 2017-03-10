@@ -41,7 +41,7 @@ public interface IExceptionMessage {
 	static final String CURRENCY_5 = /*$$(*/ "Both currencies must be saved before currency rate apply" /*)*/ ;
 	static final String CURRENCY_6 = /*$$(*/ "Currency conversion webservice not working" /*)*/ ;
 	
-	static final String COMPANY_CURRENCY = /*$$(*/ "%s :\n Please, configure a currency for the company %s" /*)*/;
+	static final String COMPANY_CURRENCY = /*$$(*/ "%s : Please, configure a currency for the company %s" /*)*/;
 
 
 	/**

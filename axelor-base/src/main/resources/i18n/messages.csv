@@ -7,7 +7,7 @@
 "%YY  : Year (17)",,,
 "%YYYY  : Full Year (2017)",,,
 "%s : Path to Birt template is incorrect",,,
-"%s :\n Please, configure a currency for the company %s",,,
+"%s : Please, configure a currency for the company %s",,,
 "%s SIRET Number required. Please configure SIRET Number for partner %s",,,
 "(AUX)",,,
 "(L')",,,

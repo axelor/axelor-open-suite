@@ -7,7 +7,7 @@
 "%YY  : Year (17)","%YY Année (17)",,
 "%YYYY  : Full Year (2017)","Année sur 4 chiffres (2017)",,
 "%s : Path to Birt template is incorrect","%s : Le chemin vers le template Birt est incorrect",,
-"%s :\n Please, configure a currency for the company %s",,,
+"%s : Please, configure a currency for the company %s",,,
 "%s SIRET Number required. Please configure SIRET Number for partner %s","%s Numéro SIRET requis, veuillez le configurer pour le Tiers %s",,
 "(AUX)","(AUX)",,
 "(L')","(L')",,
