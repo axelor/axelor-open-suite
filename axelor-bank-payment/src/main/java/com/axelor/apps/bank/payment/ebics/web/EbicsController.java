@@ -36,12 +36,12 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.bank.payment.db.BankOrderFileFormat;
+import com.axelor.apps.bank.payment.db.BankStatementFileFormat;
 import com.axelor.apps.bank.payment.db.EbicsBank;
 import com.axelor.apps.bank.payment.db.EbicsCertificate;
 import com.axelor.apps.bank.payment.db.EbicsRequestLog;
 import com.axelor.apps.bank.payment.db.EbicsUser;
-import com.axelor.apps.bank.payment.db.repo.BankOrderFileFormatRepository;
-import com.axelor.apps.bank.payment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bank.payment.db.repo.EbicsRequestLogRepository;
@@ -208,8 +208,10 @@ public class EbicsController {
 			
 			MetaFile testMetaFile = ebicsUser.getTestFile();
 			
-			if(ebicsUser.getEbicsPartner().getTestMode() && testMetaFile != null)  { 
-				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testMetaFile).toFile(), BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT);
+			BankOrderFileFormat bankOrderFileFormat = ebicsUser.getTestBankOrderFileFormat();
+			
+			if(ebicsUser.getEbicsPartner().getTestMode() && testMetaFile != null && bankOrderFileFormat != null)  { 
+				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect());
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
@@ -227,8 +229,15 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		try {
-			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM);
-			downloadFile(response, ebicsUser);
+			BankStatementFileFormat bankStatementFileFormat = ebicsUser.getTestBankStatementFileFormat();
+			
+			if(ebicsUser.getEbicsPartner().getTestMode() && bankStatementFileFormat != null)  { 
+				ebicsService.sendFDLRequest(ebicsUser, null, null, null, bankStatementFileFormat.getStatementFileFormatSelect());
+				downloadFile(response, ebicsUser);
+			}
+			else  {
+				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+			}
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}

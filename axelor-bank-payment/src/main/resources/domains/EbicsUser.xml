@@ -30,6 +30,9 @@
 	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.bank.payment.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
 	 
 	 <many-to-one name="testFile" ref="com.axelor.meta.db.MetaFile" title="Test file"/>
+     <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bank.payment.db.BankStatementFileFormat" title="Bank statement file format"/>
+     <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bank.payment.db.BankOrderFileFormat" title="Bank order file format"/>
+	 
 	 
 	 <extra-code><![CDATA[
 	  

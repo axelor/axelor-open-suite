@@ -18,6 +18,7 @@
 	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bank.payment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
 		<panel title="General informations" colSpan="12">
+			<field name="statusSelect" colSpan="12"/>
 			<field name="name" />
 			<field name="password" />
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
@@ -27,9 +28,12 @@
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner.ebicsBank"/>
-			<field name="ebicsPartner.testMode" showIf="ebicsPartner.testMode"/>
-			<field name="testFile" widget="binary-link" showIf="ebicsPartner.testMode"/>
-			<field name="statusSelect" colSpan="12"/>
+		</panel>
+		<panel title="Test configuration" colSpan="12" showIf="ebicsPartner.testMode">
+			<field name="ebicsPartner.testMode"/>
+			<field name="testFile" widget="binary-link"/>
+			<field name="testBankStatementFileFormat"/>
+			<field name="testBankOrderFileFormat"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Certificates">
