@@ -6,12 +6,12 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.BankOrderRepository;
-import com.axelor.apps.account.service.bankorder.BankOrderCreateService;
-import com.axelor.apps.account.service.bankorder.BankOrderLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;

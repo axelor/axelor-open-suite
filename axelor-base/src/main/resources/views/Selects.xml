@@ -647,4 +647,21 @@
 		<option value="3">Time unit</option>
 	</selection>
 	
+	<selection name="iaccount.payment.mode.type.select">
+		<option value="1">Other</option>
+		<option value="2">Direct debit</option>
+		<option value="3">IPO</option>
+		<option value="4">IPO + Cheque</option>
+		<option value="5">Cash</option>
+		<option value="6">Bank card</option>
+		<option value="7">Cheque</option>
+		<option value="8">Web</option>
+		<option value="9">Transfer</option>
+	</selection>
+	
+	<selection name="iaccount.payment.mode.in.out.select">
+		<option value="1">In</option>
+		<option value="2">Out</option>
+	</selection>			
+	
 </object-views>

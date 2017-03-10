@@ -884,7 +884,7 @@ public class MoveLineExportService {
 			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
 		}
 			
-		moveLineQueryStr += String.format("AND self.move.accountingOk = false AND self.move.ignoreInAccountingOk = false");
+		moveLineQueryStr += String.format("AND self.move.ignoreInAccountingOk = false");
 		
 		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
 		if(moveLineList.size() > 0) {

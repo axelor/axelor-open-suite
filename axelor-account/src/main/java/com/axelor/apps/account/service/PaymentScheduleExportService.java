@@ -51,12 +51,10 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.account.service.AccountBlockingService;
-import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -79,7 +77,6 @@ public class PaymentScheduleExportService{
 	protected ReconcileService reconcileService;
 	protected SequenceService sequenceService;
 	protected PaymentModeService paymentModeService;
-	protected CfonbExportService cfonbExportService;
 	protected PaymentService paymentService;
 	protected AccountBlockingService blockingService;
 	protected AccountConfigService accountConfigService;
@@ -94,7 +91,7 @@ public class PaymentScheduleExportService{
 
 	@Inject
 	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileService reconcileService,
-			SequenceService sequenceService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, PaymentService paymentService,
+			SequenceService sequenceService, PaymentModeService paymentModeService, PaymentService paymentService,
 			AccountBlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
 			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService, PartnerService partnerService) {
 		
@@ -105,7 +102,6 @@ public class PaymentScheduleExportService{
 		this.reconcileService = reconcileService;
 		this.sequenceService = sequenceService;
 		this.paymentModeService = paymentModeService;
-		this.cfonbExportService = cfonbExportService;
 		this.paymentService = paymentService;
 		this.blockingService = blockingService;
 		this.accountConfigService = accountConfigService;
@@ -144,47 +140,6 @@ public class PaymentScheduleExportService{
 		return move;
 	}
 
-
-	public void testBankDetails(PaymentSchedule paymentSchedule) throws AxelorException  {
-		Partner partner = paymentSchedule.getPartner();
-		BankDetails bankDetails = paymentSchedule.getBankDetails();
-		if(bankDetails == null)  {
-			bankDetails = partnerService.getDefaultBankDetails(partner);
-		}
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_1),
-					GeneralServiceImpl.EXCEPTION,paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
-		}
-		else  {
-			cfonbExportService.testBankDetailsField(bankDetails);
-		}
-	}
-
-
-	public void testBankDetails(Invoice invoice) throws AxelorException  {
-		BankDetails bankDetails = partnerService.getDefaultBankDetails(invoice.getPartner());
-
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceImpl.EXCEPTION, invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
-		}
-		else  {
-			cfonbExportService.testBankDetailsField(bankDetails);
-		}
-	}
-
-
-	public void testBankDetails(Partner partner) throws AxelorException  {
-		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
-
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
-		}
-		else  {
-			cfonbExportService.testBankDetailsField(bankDetails);
-		}
-	}
 
 
 	/**
@@ -255,8 +210,6 @@ public class PaymentScheduleExportService{
 	public PaymentScheduleLine generateExportMensu (PaymentScheduleLine paymentScheduleLine, List<PaymentScheduleLine> paymentScheduleLineList, Company company) throws AxelorException  {
 
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
-
-		this.testBankDetails(paymentSchedule);
 
 		AccountConfig accountConfig = company.getAccountConfig();
 
@@ -536,7 +489,7 @@ public class PaymentScheduleExportService{
 		List<MoveLine> moveLineListResult = moveLineRepo.all().filter("self IN (?1) and self.partner = ?2", moveLineList, partner).fetch();
 
 		for(MoveLine moveLine : moveLineListResult)  {
-			Invoice invoice = cfonbExportService.getInvoice(moveLine);
+			Invoice invoice = invoiceService.getInvoice(moveLine);
 
 			DirectDebitManagement directDebitManagement = invoice.getDirectDebitManagement();
 			if(directDebitManagement != null && directDebitManagement.getId() > directDebitManagementMaxId)  {
@@ -619,8 +572,6 @@ public class PaymentScheduleExportService{
 
 		/** Important : Doit être executé avant la méthode 'createPaymentMove()' afin de récupérer le montant restant à prélever **/
 		BigDecimal amountExported = moveLine.getAmountRemaining();
-
-		this.testBankDetails(moveLine.getPartner());
 
 		// creation d'une ecriture de paiement
 		Invoice invoice = this.updateInvoice(moveLine,
@@ -782,9 +733,7 @@ public class PaymentScheduleExportService{
 	 */
 	public Invoice updateInvoice(MoveLine moveLine, Move paymentMove, List<MoveLine> mlList, BigDecimal amountExported, long directDebitManagementMaxId) throws AxelorException  {
 
-		Invoice invoice = cfonbExportService.getInvoice(moveLine);
-
-		this.testBankDetails(invoice);
+		Invoice invoice = invoiceService.getInvoice(moveLine);
 
 		Company company = invoice.getCompany();
 
