@@ -86,13 +86,25 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		AccountingSituation accountingSituation = new AccountingSituation();
 
 		accountingSituation.setCompany(company);
-		accountingSituation.setCustomerAccount(accountConfigService.getCustomerAccount(accountConfig));
-		accountingSituation.setSupplierAccount(accountConfigService.getSupplierAccount(accountConfig));
-		accountingSituation.setEmployeeAccount(accountConfigService.getEmployeeAccount(accountConfig));
 		accountingSituationRepo.save(accountingSituation);
 
 		return accountingSituation;
 	}
+
+	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
+		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
+
+		if(accountingSituationList == null) {
+			accountingSituationList = new ArrayList<AccountingSituation>();
+		}
+
+		AccountingSituation accountingSituation = this.createAccountingSituation(company);
+		accountingSituation.setPartner(partner);
+		accountingSituation.setCompanyBankDetails(company.getDefaultBankDetails());
+		accountingSituationList.add(accountingSituation);
+		return accountingSituation;
+	}
+
 
 	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
 		if (partner.getAccountingSituationList() == null) {

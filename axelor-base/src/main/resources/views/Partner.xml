@@ -120,10 +120,10 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value"/>
+					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account"/>
 					<field name="hasOrdered" showIf="isCustomer"/>
-					<field name="isSupplier" hideIf="isEmployee"/>
-					<field name="isEmployee" hideIf="isCustomer || isSupplier"/>
+					<field name="isSupplier" hideIf="isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
+					<field name="isEmployee" hideIf="isCustomer || isSupplier" onChange="action-partner-account-attrs-hide-employee-account"/>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" >
@@ -484,6 +484,9 @@
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
+		<action name="action-partner-account-attrs-hide-supplier-account"/>
+		<action name="action-partner-account-attrs-hide-customer-account"/>
+		<action name="action-partner-account-attrs-hide-employee-account"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
