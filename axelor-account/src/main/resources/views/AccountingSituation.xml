@@ -16,7 +16,7 @@
 	</grid>
 
 	<form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation"
-		  onLoad="action-account-accounting-situation-method-update-customer-account"
+		  onLoad="action-accounting-situation-group-form-onload"
 		  onNew="action-account-accounting-situation-default-set" width="large">
 		<panel name="main">
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
@@ -87,7 +87,26 @@
 
 		 <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 	</form>
-    
+
+	<action-group name="action-accounting-situation-group-form-onload">
+		<action name="action-account-accounting-situation-method-update-customer-account"/>
+		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
+		<action name="action-accounting-situation-attrs-hide-customer-account"/>
+		<action name="action-accounting-situation-attrs-hide-employee-account"/>
+	</action-group>
+
+	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
+		<attribute name="hidden" for="supplierAccount" expr="eval: !__parent__?.isSupplier"/>
+	</action-attrs>
+
+	<action-attrs name="action-accounting-situation-attrs-hide-customer-account">
+		<attribute name="hidden" for="customerAccount" expr="eval: !__parent__?.isCustomer"/>
+	</action-attrs>
+
+	<action-attrs name="action-accounting-situation-attrs-hide-employee-account">
+		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
+	</action-attrs>
+
   	<action-method name="action-account-accounting-situation-method-update-customer-account">
 		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>
 	</action-method>
