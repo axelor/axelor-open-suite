@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.account.db.repo.*;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -42,11 +43,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.JournalRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -921,8 +917,10 @@ public class MoveLineExportService {
 					List<String> ReconcileSeqList = new ArrayList<String>();
 					List<String> ReconcileDateList = new ArrayList<String>();
 					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-						ReconcileSeqList.add(reconcile.getReconcileSeq());
-						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+						if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+							ReconcileSeqList.add(reconcile.getReconcileSeq());
+							ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+						}
 					}
 					items[13] = StringUtils.join(ReconcileSeqList, "; ");
 					items[14]= StringUtils.join(ReconcileDateList, "; ");

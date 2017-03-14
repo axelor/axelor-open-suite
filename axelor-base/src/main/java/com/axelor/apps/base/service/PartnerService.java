@@ -276,7 +276,9 @@ public class PartnerService {
 					GeneralServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else {
-			partner.getRegistrationCode().getChars(0, 9, Str, 0);
+            String registrationCode = partner.getRegistrationCode();
+			//remove whitespace in the registration code before using it
+            registrationCode.replaceAll("\\s","").getChars(0, 9, Str, 0);
 		}
 		
 		return new String(Str);
