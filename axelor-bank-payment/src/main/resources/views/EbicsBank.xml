@@ -23,6 +23,8 @@
 		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>
 		
 		<panel-dashlet hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
+		
+		<panel-dashlet action="action-ebics-bank-view-ebics-users"/>
 	</form>
 	
 	<action-record name="action-ebics-bank-record-normalize-fax-phone-number" model="com.axelor.apps.bankpayment.db.EbicsBank">
@@ -33,6 +35,12 @@
 		<view name="bank-details-grid" type="grid"/>
 		<view name="bank-details-form" type="form"/>
 		<domain>self.bank = :bank</domain>
+	</action-view>
+	
+	<action-view name="action-ebics-bank-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">
+		<view name="ebics-user-grid" type="grid"/>
+		<view name="ebics-user-form" type="form"/>
+		<domain>self.ebicsPartner.ebicsBank.id = :id</domain>
 	</action-view>
 	
 	

@@ -8,12 +8,13 @@
   			<button name="exportUsers" title="Export" onClick="action-export-ebics-user" />
     		<button name="importUsers" title="Import" onClick="action-ebics-open-import-ebics-users" />
   		</toolbar>
+		<hilite if="statusSelect &lt; 3" color="primary"/>
+	    <hilite if="statusSelect == 3" color="success"/>
+	    <hilite if="statusSelect == 4" color="danger"/>
 		<field name="name" />
 		<field name="userId" />
 		<field name="ebicsTypeSelect"/>
 		<field name="statusSelect"/>
-		<field name="ebicsPartner"/>
-		<field name="ebicsPartner.ebicsBank"/>
 	</grid>
 	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">

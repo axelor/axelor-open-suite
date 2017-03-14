@@ -33,7 +33,9 @@
 		</panel>
 		
 		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
-	
+		
+		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
+		
 	</form>
 	
 	
@@ -44,5 +46,11 @@
 	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">
 		<attribute name="domain" for="bankDetailsSet" expr="eval: &quot; self.bank.id = ${ebicsBank?.bank?.id}"/>
 	</action-attrs>
+	
+	<action-view name="action-ebics-partner-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">
+		<view name="ebics-user-grid" type="grid"/>
+		<view name="ebics-user-form" type="form"/>
+		<domain>self.ebicsPartner.id = :id</domain>
+	</action-view>
 	
 </object-views>
