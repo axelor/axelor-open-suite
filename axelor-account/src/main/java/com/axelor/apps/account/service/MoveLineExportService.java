@@ -941,7 +941,7 @@ public class MoveLineExportService {
 		new File(filePath).mkdirs();
 		log.debug("Full path to export : {}{}" , filePath, fileName);
 //		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
-		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(moveLineReport.getTypeSelect()), allMoveLineData);
+		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForPayrollJournalEntry(), allMoveLineData);
 		moveLineReportRepo.save(moveLineReport);
 		
 		Path path = Paths.get(filePath+fileName);
@@ -1134,11 +1134,32 @@ public class MoveLineExportService {
 		return sortMoveLineList;
 	}
 
+	public String[] createHeaderForPayrollJournalEntry() {
+		String header = "JournalCode;"+
+                        "JournalLib;"+
+                        "EcritureNum;"+
+                        "EcritureDate;"+
+                        "CompteNum;"+
+                        "CompteLib;"+
+                        "CompAuxNum;"+
+                        "CompAuxLib;"+
+                        "PieceRef;"+
+                        "PieceDate;"+
+                        "EcritureLib;"+
+                        "Debit;"+
+                        "Credit;"+
+                        "EcritureLet;"+
+                        "DateLet;"+
+                        "ValidDate;"+
+                        "Montantdevise;"+
+                        "IdDevise;";
+		return header.split(";");
+	}
 
 	public String[] createHeaderForHeaderFile(int typeSelect)  {
 		String header = null;
 		switch(typeSelect)  {
-			case 6:
+			case MoveLineReportRepository.EXPORT_SALES:
 				header = "Société;"+
 						"Journal de Vente;"+
 						"Numéro d'écriture;"+
@@ -1148,7 +1169,7 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 7:
+			case MoveLineReportRepository.EXPORT_REFUNDS:
 				header = "Société;"+
 						"Journal d'Avoir;"+
 						"Numéro d'écriture;"+
@@ -1158,7 +1179,7 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 8:
+			case MoveLineReportRepository.EXPORT_TREASURY:
 				header = "Société;"+
 						"Journal de Trésorerie;"+
 						"Numéro d'écriture;"+
@@ -1168,7 +1189,7 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 9:
+			case MoveLineReportRepository.EXPORT_PURCHASES:
 				header = "Société;"+
 						"Journal d'Achat;"+
 						"Numéro d'écriture;"+
@@ -1182,26 +1203,6 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 14:
-				header = "JournalCode;"+
-						 "JournalLib;"+
-						 "EcritureNum;"+
-						 "EcritureDate;"+
-						 "CompteNum;"+
-						 "CompteLib;"+
-						 "CompAuxNum;"+
-						 "CompAuxLib;"+
-						 "PieceRef;"+
-						 "PieceDate;"+
-						 "EcritureLib;"+
-						 "Debit;"+
-						 "Credit;"+
-						 "EcritureLet;"+
-						 "DateLet;"+
-						 "ValidDate;"+
-						 "Montantdevise;"+
-						 "IdDevise;";
-				return header.split(";");
 			default:
 				return null;
 		}
@@ -1211,7 +1212,7 @@ public class MoveLineExportService {
 	public String[] createHeaderForDetailFile(int typeSelect)  {
 		String header = "";
 
-		if(typeSelect == 9)  {
+		if(typeSelect == MoveLineReportRepository.EXPORT_PURCHASES)  {
 			header = "Société;"+
 					"Journal;"+
 					"Numéro d'écriture;"+
