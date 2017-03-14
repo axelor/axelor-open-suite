@@ -25,6 +25,7 @@
 			<field name="bankStatementStartDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
 			<field name="bankStatementEndDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
 			<button name="getBankStatementButton" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bankStatementFileFormatSet"/>
+			<button name="showBankStatementButton" title="Show the bank statements" onClick="action-ebics-partner-view-show-bank-statement"/>
 		</panel>
 		
 		<panel title="Payment Status Report">
@@ -35,7 +36,7 @@
 		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
 		
 		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
-		
+
 	</form>
 	
 	
@@ -51,6 +52,13 @@
 		<view name="ebics-user-grid" type="grid"/>
 		<view name="ebics-user-form" type="form"/>
 		<domain>self.ebicsPartner.id = :id</domain>
+	</action-view>
+
+	<action-view name="action-ebics-partner-view-show-bank-statement" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement">
+		<view name="bank-statement-grid" type="grid"/>
+		<view name="bank-statement-form" type="form"/>
+		<domain>self.ebicsPartner.id = :id</domain>
+        <context name="id" expr="eval: id"/>
 	</action-view>
 	
 </object-views>
