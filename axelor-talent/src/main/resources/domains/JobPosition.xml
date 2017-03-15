@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="talent" package="com.axelor.apps.talent.db"/>
+
+	<entity name="JobPosition" lang="java" cachable="true">
+		<string name="jobTitle" title="Job title" required="true"  namecolumn="true"/>
+		<string name="jobReference" title="Job reference" readonly="true"/>
+		<many-to-one name="department" ref="com.axelor.apps.base.db.Department" title="Department" />
+		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Responsible" />
+		<many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />
+		<integer name="experienceSelect" title="Experience" selection="job.position.experience.select" />
+		<string name="salary" title="Salary" />
+		<string name="location" title="Location" />
+		<string name="jobDescription" title="Job description" large="true"/>
+		<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Job email" />
+		<integer name="statusSelect" title="Status" selection="job.position.status.select" />
+		<integer name="nbOpenJob" title="Nb of open job" />
+		<integer name="nbPeopleHired" title="Nb of people hired" readonly="true" />
+		
+		<extra-code>
+	   		<![CDATA[
+	   			public static final Integer STATUS_DRAFT = 0;
+	   			public static final Integer STATUS_OPEN = 1;
+	   			public static final Integer STATUS_ON_HOLD = 2;
+	   			public static final Integer STATUS_CLOSED = 3;
+	   			public static final Integer STATUS_CANCELED = 3;
+	   		]]>
+   		</extra-code>
+	</entity>
+
+</domain-models>

@@ -10,6 +10,7 @@
 			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
 			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
 			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
+    		<button name="mergeCustInvoices" title="Merge Cust. Invoices" onClick="action-invoice-mergecustinvoices" />
     	</toolbar>   
     	<hilite color="info" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
@@ -592,7 +593,9 @@
 	  	<context name="_invoice" expr="eval: __this__"/>
     </action-view>
     
-    
+    <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="customer-invoices-merge-form"/>
+	</action-view>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">

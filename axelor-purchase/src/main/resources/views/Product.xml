@@ -36,5 +36,9 @@
 		<context name="_product" expr="eval:__self__" />
 	</action-view>
 	
+	<action-attrs name="action-product-attrs-readonly-purchasable">
+		<attribute name="readonly" for="purchasable" expr="eval:true"/>
+	</action-attrs>
+	
 	
 </object-views>

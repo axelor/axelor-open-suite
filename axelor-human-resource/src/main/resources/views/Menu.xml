@@ -2,15 +2,118 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
-	    groups="admins,ERP" icon-background="#84429f"/> 
-	    
-	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
-    	title="Timesheets"/>
-    
-    <menuitem name="timesheet-root" parent="hr-root"
-    	title="Timesheets"/>
+	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
+	     icon-background="#84429f"/> 
 	
+	<menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employee Management" icon="fa-address-card-o" icon-background="#84429f"/>
+	
+	<menuitem name="employee-all" parent="hr-root-emp-mgt"
+    	title="List of employees"
+    	action="employee.all"/>
+
+	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
+    	<view type="grid" name="employee-grid"/>
+	    <view type="form" name="employee-form"/>
+	</action-view>
+	
+	<menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt" title="Payroll Preparations" action="payroll.preparation.all"/>
+	
+	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
+    	<view type="grid" name="payroll-preparation-grid"/>
+	    <view type="form" name="payroll-preparation-form"/>
+	</action-view>
+	
+	<menuitem name="all-employment-contract" parent="hr-root-emp-mgt" title="Employment Contracts" action="employment.contracts.all"/>
+	
+	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
+    	<view type="grid" name="employment-contract-grid"/>
+	    <view type="form" name="employment-contract-form"/>
+	</action-view>
+	
+	<menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
+	
+	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
+    	<view type="grid" name="lunch-voucher-mgt-grid"/>
+	    <view type="form" name="lunch-voucher-mgt-form"/>
+	</action-view>
+	
+	<menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
+	
+	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
+    	<view type="grid" name="employee-bonus-mgt-grid"/>
+	    <view type="form" name="employee-bonus-mgt-form"/>
+	</action-view>
+	
+	<menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration"/>
+	
+	<menuitem name="company-department-all" parent="hr-root-emp-mgt-conf"
+    	title="Departments"
+    	action="company.department.all"/>
+
+	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
+    	<view type="grid" name="company-department-grid"/>
+	    <view type="form" name="company-department-form"/>
+	</action-view>
+		
+	<menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf" title="Product Activities" action="conf.product.activity"/>
+	
+	<action-view name="conf.product.activity" title="Product Activities" model="com.axelor.apps.base.db.Product">
+    	<view type="grid" name="product-activity-grid"/>
+	    <view type="form" name="product-activity-form"/>
+	    <domain>self.isActivity = true</domain>
+	</action-view>
+	
+	<menuitem name="end-of-contract-reason-all" parent="hr-root-emp-mgt-conf"
+    	title="End of contract reasons"
+    	action="end.of.contract.reason.all"/>
+
+	<action-view name="end.of.contract.reason.all" title="End of contract reasons" model="com.axelor.apps.hr.db.EndOfContractReason">
+    	<view type="grid" name="end-of-contract-reason-grid"/>
+	    <view type="form" name="end-of-contract-reason-form"/>
+	</action-view>
+	
+	<menuitem name="employment-contract-template-all" parent="hr-root-emp-mgt-conf"
+    	title="Employment Contract Templates"
+    	action="employment.contract.templat.all"/>
+
+	<action-view name="employment.contract.templat.all" title="Employment Contract Templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate">
+    	<view type="grid" name="employment-contract-template-grid"/>
+	    <view type="form" name="employment-contract-template-form"/>
+	</action-view>
+	
+	<menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
+	
+	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
+    	<view type="grid" name="employee-bonus-type-grid"/>
+	    <view type="form" name="employee-bonus-type-form"/>
+	</action-view>
+	
+	<menuitem name="hr-employment-contract-type" parent="hr-root-emp-mgt-conf" title="Employment contract type" action="employment.contract.type.all"/>
+	
+	<action-view name="employment.contract.type.all" title="Employment contract type" model="com.axelor.apps.hr.db.EmploymentContractType">
+		<view type="grid" name="employment-contract-type-grid"/>
+	    <view type="form" name="employment-contract-type-form"/>
+	</action-view>
+	
+	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
+	
+	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
+	
+	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
+    	<view type="grid" name="public-holiday-planning-grid"/>
+	    <view type="form" name="public-holiday-planning-form"/>
+	</action-view>
+	
+	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
+	
+	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
+    	<view type="grid" name="weekly-planning-grid"/>
+	    <view type="form" name="weekly-planning-form"/>
+	</action-view>
+	
+	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
+    	title="Timesheets" icon="fa-clock-o" icon-background="#84429f"/>
+    
 	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
 	
 	<action-method name="edit.timesheet">
@@ -28,14 +131,14 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>	
 	
-	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" order="-3000"/>
+	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
+		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" />
 	
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
 	</action-method>
 	
-	<menuitem name="historic-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Historic colleague Timesheets" action="timesheet.historic"/>
+	<menuitem name="historic-timesheet"  parent="timesheet-root" title="Historic team timesheets" action="timesheet.historic"/>
 	
 	<action-method name="timesheet.historic">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
@@ -47,8 +150,8 @@
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
 	</action-method>
 	
-	<menuitem name="extra-hours-root" parent="hr-root"
-    	title="Extra hours"/>
+	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" 
+    	title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f"/>
 	
 	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Enter extra hours" action="edit.extra.hours"/>
 	
@@ -67,21 +170,21 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" order="-3000"/>
+	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate" icon="fa-flag"
+		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" />
 	
 	<action-method name="extra.hours.validate">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
 	</action-method>
 	
-	<menuitem name="historic-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Historic colleague extra hours" action="extra.hours.historic"/>
+	<menuitem name="historic-extra-hours"  parent="extra-hours-root" title="Historic extra hours" action="extra.hours.historic"/>
 	
 	<action-method name="extra.hours.historic">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="historicExtraHours"/>
 	</action-method>
 	
 	
-	<menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')"
+	<menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"
     	title="Expenses"/>
     
 	<menuitem name="edit-expense" parent="expense-root" title="Complete my expense" action="edit.expense"/>
@@ -101,15 +204,15 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" order="-3000"/>
+	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" />
 	
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
 	
-	<menuitem name="ventilate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" order="-3000"/>
+	<menuitem name="ventilate-expense"  parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" icon="fa-flag"
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" />
 	
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
@@ -117,7 +220,7 @@
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
 	</action-view>
 	
-	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  order="-3000"/>
+	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  />
 	
 	<action-view name="multiple.users.expense" title="Multiple users expenses" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
@@ -126,13 +229,36 @@
 		<context name="setMultipleUsers" expr="eval: true"/>
 	</action-view>
 	
-	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>
+	<menuitem name="historic-expense"  parent="expense-root" title="Historic team Expenses" action="expense.historic"/>
 	
 	<action-method name="expense.historic">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')"
+	<menuitem name="expense-root-conf"  parent="expense-root" title="Configuration" />
+	
+	<menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type" action="conf.expense.type"/>
+	
+	<action-view name="conf.expense.type" title="Expense Type" model="com.axelor.apps.base.db.Product">
+    	<view type="grid" name="product-expense-grid"/>
+	    <view type="form" name="product-expense-form"/>
+	    <view-param name="search-filters" value="products-filters"/>
+	    <view-param name="forceTitle" value="true" />
+		<domain>self.isModel = false AND self.expense = true</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_isModel" expr="false"/>
+	</action-view>
+	
+	<menuitem name="kilometric-allow-param-all" parent="expense-root-conf"
+    	title="Kilometric Allowance Params"
+    	action="kilometric.allow.param.all"/>
+
+	<action-view name="kilometric.allow.param.all" title="Kilometric Allowance Params" model="com.axelor.apps.hr.db.KilometricAllowParam">
+    	<view type="grid" name="kilometric-allow-param-grid"/>
+	    <view type="form" name="kilometric-allow-param-form"/>
+	</action-view>
+	
+	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f"
     	title="Leave Requests"/>
 	
 	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>
@@ -152,14 +278,14 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default" order="-3000"/>
+	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
+		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default"/>
 	
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
 	</action-method>
 	
-	<menuitem name="historic-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Historic colleague Leave Requests" action="leave.historic"/>
+	<menuitem name="historic-leave-request"  parent="leave-request-root" title="Historic team leave requests" action="leave.historic"/>
 	
 	<action-method name="leave.historic">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
@@ -176,102 +302,15 @@
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
 	
-	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
-	
-	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-    	<view type="grid" name="lunch-voucher-mgt-grid"/>
-	    <view type="form" name="lunch-voucher-mgt-form"/>
-	</action-view>
-	
-	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
-	
-	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-    	<view type="grid" name="payroll-preparation-grid"/>
-	    <view type="form" name="payroll-preparation-form"/>
-	</action-view>
-	
-	<menuitem name="all-employment-contract" parent="hr-root" title="Employment Contracts" action="employment.contracts.all"/>
-	
-	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
-    	<view type="grid" name="employment-contract-grid"/>
-	    <view type="form" name="employment-contract-form"/>
-	</action-view>
-	
-	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
-	
-	<menuitem name="employee-all" parent="hr-conf"
-    	title="Employee"
-    	action="employee.all"/>
-
-	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
-    	<view type="grid" name="employee-grid"/>
-	    <view type="form" name="employee-form"/>
-	</action-view>
-	
-	<menuitem name="leave-reason-all" parent="hr-conf"
+	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
+		
+	<menuitem name="leave-reason-all" parent="leave-request-conf"
     	title="Leave reason"
-    	action="leave.reason.all" if="__config__.app.isApp('leave')"/>
+    	action="leave.reason.all"/>
 
 	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>
 	    <view type="form" name="leave-reason-form"/>
-	</action-view>
-	
-	<menuitem name="company-department-all" parent="hr-conf"
-    	title="Departments"
-    	action="company.department.all"/>
-
-	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-    	<view type="grid" name="company-department-grid"/>
-	    <view type="form" name="company-department-form"/>
-	</action-view>
-		
-	<menuitem name="hr-conf-product-activity" parent="hr-conf" title="Product Activities" action="conf.product.activity"/>
-	
-	<action-view name="conf.product.activity" title="Product Activities" model="com.axelor.apps.base.db.Product">
-    	<view type="grid" name="product-activity-grid"/>
-	    <view type="form" name="product-activity-form"/>
-	    <domain>self.isActivity = true</domain>
-	</action-view>
-	
-	<menuitem name="hr-conf-expense-type" parent="hr-conf" title="Expense Type" action="conf.expense.type"/>
-	
-	<action-view name="conf.expense.type" title="Expense Type" model="com.axelor.apps.base.db.Product">
-    	<view type="grid" name="product-expense-grid"/>
-	    <view type="form" name="product-expense-form"/>
-	    <view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.expense = true</domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="false"/>
-	</action-view>
-	
-	<menuitem name="admin-root-conf-hr-config" parent="admin-root-conf"
-		title="Human Resources configurations" action="admin.root.conf.hr.config" />
-		
-	<action-view name="admin.root.conf.hr.config" title="Human Resources configurations"
-		model="com.axelor.apps.hr.db.HRConfig" >
-		<view type="grid" name="hr-config-grid" />
-		<view type="form" name="hr-config-form"/>
-	</action-view>
-	
-	
-	<menuitem name="end-of-contract-reason-all" parent="hr-conf"
-    	title="End of contract reasons"
-    	action="end.of.contract.reason.all"/>
-
-	<action-view name="end.of.contract.reason.all" title="End of contract reasons" model="com.axelor.apps.hr.db.EndOfContractReason">
-    	<view type="grid" name="end-of-contract-reason-grid"/>
-	    <view type="form" name="end-of-contract-reason-form"/>
-	</action-view>
-	
-	
-	<menuitem name="employment-contract-template-all" parent="hr-conf"
-    	title="Employment Contract Templates"
-    	action="employment.contract.templat.all"/>
-
-	<action-view name="employment.contract.templat.all" title="Employment Contract Templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate">
-    	<view type="grid" name="employment-contract-template-grid"/>
-	    <view type="form" name="employment-contract-template-form"/>
 	</action-view>
 	
 	<action-view name="product.root.product" title="Products" id="hr.product.root.product"
@@ -286,15 +325,6 @@
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
 	
-	<menuitem name="kilometric-allow-param-all" parent="hr-conf"
-    	title="Kilometric Allowance Params"
-    	action="kilometric.allow.param.all"/>
-
-	<action-view name="kilometric.allow.param.all" title="Kilometric Allowance Params" model="com.axelor.apps.hr.db.KilometricAllowParam">
-    	<view type="grid" name="kilometric-allow-param-grid"/>
-	    <view type="form" name="kilometric-allow-param-form"/>
-	</action-view>
-	
 	<menuitem name="admin-root-batch-hr" parent="admin-root-batch"
 		title="HR batches" action="admin.root.batch.hr" />
 
@@ -304,9 +334,9 @@
 		<view type="form" name="hr-batch-form"/>
 	</action-view>
 
-	<menuitem name="hr-report-root" parent="hr-root" title="Reportings"/>
+	<menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="300"/>
     	
-    <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager" groups="MNGT,admins"
+    <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager" 
     	action="hr.manager.dashboard.view"/>
     	
 	<action-view name="hr.manager.dashboard.view" title="Human Resource Manager">
@@ -320,31 +350,5 @@
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
 	
-	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
-	<menuitem name="hr-employee-bonus-type" parent="hr-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
-	
-	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
-    	<view type="grid" name="employee-bonus-mgt-grid"/>
-	    <view type="form" name="employee-bonus-mgt-form"/>
-	</action-view>
-	
-	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
-    	<view type="grid" name="employee-bonus-type-grid"/>
-	    <view type="form" name="employee-bonus-type-form"/>
-	</action-view>
-	
-	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />
-	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
-	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
-	
-	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
-    	<view type="grid" name="public-holiday-planning-grid"/>
-	    <view type="form" name="public-holiday-planning-form"/>
-	</action-view>
-	
-	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
-    	<view type="grid" name="weekly-planning-grid"/>
-	    <view type="form" name="weekly-planning-form"/>
-	</action-view>
 
 </object-views>

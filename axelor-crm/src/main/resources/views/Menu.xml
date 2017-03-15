@@ -4,55 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="crm-root" title="CRM" order="-108" if="__config__.app.isApp('crm')"
-		icon="fa-user" groups="admins,ERP,CRM" icon-background="#2fa042"/>
-	
-	<menuitem name="crm-root-create" parent="crm-root"
-		title="Create"/>
-		
-	<menuitem name="crm-root-create-task" parent="crm-root-create"
-		title="Task" action="crm.root.create.task" />
-
-	<action-view name="crm.root.create.task" title="Task"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="form" name="crm-task-form"/>
-		<view type="grid" name="crm-task-grid"/>
-		<context name="_typeSelect" expr="3"/>
-		<context name="_internalUserId" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-create-meeting" parent="crm-root-create"
-		title="Meeting" action="crm.root.create.meeting" />
-
-	<action-view name="crm.root.create.meeting" title="Meeting"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="form" name="meeting-form"/>
-		<view type="grid" name="meeting-grid"/>
-		<context name="_typeSelect" expr="2"/>
-		<context name="_internalUserId" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-create-call" parent="crm-root-create"
-		title="Call" action="crm.root.create.call" />
-
-	<action-view name="crm.root.create.call" title="Call"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="form" name="call-form"/>
-		<view type="grid" name="call-grid"/>
-		<context name="_typeSelect" expr="1"/>
-		<context name="_internalUserId" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
-		title="Ticket" action="crm.root.create.ticket" />
-
-	<action-view name="crm.root.create.ticket" title="Ticket"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="form" name="ticket-form"/>
-		<view type="grid" name="ticket-grid"/>
-		<context name="_typeSelect" expr="5"/>
-		<context name="_prioritySelect" expr="2"/>
-		<context name="_internalUserId" expr="eval: __user__.id"/>
-	</action-view>
+		icon="fa-user" icon-background="#2fa042"/>
 	
 	<menuitem name="crm-root-task" parent="crm-root"
 		title="Tasks" action="crm.root.task" />
@@ -265,16 +217,6 @@
 		<view type="form" name="target-form"/>
 	</action-view>
 	
-	<menuitem name="admin-root-conf-crm-config" parent="admin-root-conf"
-		title="CRM configurations" action="admin.root.conf.crm.config" />
-		
-	<action-view name="admin.root.conf.crm.config" title="CRM configurations"
-		model="com.axelor.apps.crm.db.CrmConfig" >
-		<view type="grid" name="crm-config-grid" />
-		<view type="form" name="crm-config-form"/>
-	</action-view>
-	
-	
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" />
 
@@ -296,21 +238,21 @@
 	
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
 	
-	<menuitem name="top-menu-crm-activities" order="-180" title="Activity" groups="admins,ERP,CRM" top="true" left="false" if="__config__.app.isApp('crm')"/> 	
+	<menuitem name="top-menu-crm-activities" order="-180" title="Activity" top="true" left="false" if="__config__.app.isApp('crm')"/> 	
 
 	<menuitem name="top-menu-activity-my-calendar" order="-90"  parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" top="true" />
 	
 	<menuitem name="top-menu-activity-team-calendar" order="-80"  parent="top-menu-crm-activities" 	title="My Team Calendar" top="true" action="crm.root.meeting.team.calendar" />
 	
-	<menuitem name="top-menu-activity-create-task" order="-70"  parent="top-menu-crm-activities" 	title="Create Task" top="true" action="crm.root.create.task" />
+<!-- 	<menuitem name="top-menu-activity-create-task" order="-70"  parent="top-menu-crm-activities" 	title="Create Task" top="true" action="crm.root.create.task" /> -->
 	
 	<menuitem name="top-menu-activity-view-tasks" order="-60" title="View Tasks" action="crm.root.task" parent="top-menu-crm-activities" top="true"/>
 	
-	<menuitem name="top-menu-activity-create-call" order="-50"  parent="top-menu-crm-activities" top="true"	title="Create Call" action="crm.root.create.call" />
+<!-- 	<menuitem name="top-menu-activity-create-call" order="-50"  parent="top-menu-crm-activities" top="true"	title="Create Call" action="crm.root.create.call" /> -->
 	
 	<menuitem name="top-menu-activity-view-calls" order="-40" title="View Calls" action="crm.root.call" parent="top-menu-crm-activities" top="true"/>
 	
-	<menuitem name="top-menu-activity-create-meeting" order="-30"  parent="top-menu-crm-activities" top="true" title="Create Meeting" action="crm.root.create.meeting" />
+<!-- 	<menuitem name="top-menu-activity-create-meeting" order="-30"  parent="top-menu-crm-activities" top="true" title="Create Meeting" action="crm.root.create.meeting" /> -->
 	
 	<menuitem name="top-menu-activity-view-meetings" order="-20" title="View Meetings" top="true" action="crm.root.meeting" parent="top-menu-crm-activities"/>	
 	
@@ -331,9 +273,9 @@
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
-	<menuitem name="top-prospection" title="Prospection" groups="admins,ERP" top="true" left="false" order="-170" if="__config__.app.isApp('crm')"/>
+	<menuitem name="top-prospection" title="Prospection"  top="true" left="false" order="-170" if="__config__.app.isApp('crm')"/>
 	<menuitem name="top-prospection-create-lead" order="-100" parent="top-prospection" top="true"	title="Create Lead" action="top.new.lead.view"  />
-	<menuitem name="top-prospection-leads" title="View Leads" order="-90" action="top.propsection.leads" parent="top-prospection" groups="admins,ERP,CRM" top="true" left="false"/> 	
+	<menuitem name="top-prospection-leads" title="View Leads" order="-90" action="top.propsection.leads" parent="top-prospection" top="true" left="false"/> 	
 	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
@@ -341,7 +283,7 @@
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	<menuitem name="top-prospection-create-opportunity" order="-80" parent="top-prospection" top="true" title="Create Opportunity"  action="top.new.opportunity.view"  />
-	<menuitem name="top-prospection-opportunity" order="-70" title="View Opportunities" action="top.prospection.opportunity" parent="top-prospection"  groups="admins,ERP,CRM" top="true" left="false"/> 	
+	<menuitem name="top-prospection-opportunity" order="-70" title="View Opportunities" action="top.prospection.opportunity" parent="top-prospection"  top="true" left="false"/> 	
 	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />

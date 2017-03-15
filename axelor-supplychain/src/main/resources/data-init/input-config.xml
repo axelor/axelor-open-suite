@@ -5,6 +5,8 @@
 	
 	<input file="base_appSupplychain.csv" separator=";" type="com.axelor.apps.base.db.AppSupplychain" call="com.axelor.csv.script.ImportApp:importApp"  />
 	
+	<input file="base_appSubscription.csv" separator=";" type="com.axelor.apps.base.db.AppSubscription" call="com.axelor.csv.script.ImportApp:importApp"  />
+	
 	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
   	
   	<input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">

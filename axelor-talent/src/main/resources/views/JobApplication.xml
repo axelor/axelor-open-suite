@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="job-application-grid" title="Job applications" model="com.axelor.apps.talent.db.JobApplication">
+		<field name="lastName" />
+		<field name="firstName" />
+		<field name="emailAddress" />
+		<field name="fixedPhone" />
+		<field name="mobilePhoned" />
+		<field name="jobPosition" />
+		<field name="statusSelect" />
+	</grid>
+	
+	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large">
+		<toolbar>
+			<button name="hire" title="Hire"/>
+		</toolbar>
+		<menubar>
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Create call" action="save,action-job-application-create-call" readonlyIf="id == null"/>
+	            <item title="Schedule meeting" action="save,action-job-application-create-meeting" readonlyIf="id == null"/>
+	        </menu>
+	    </menubar>
+		<panel name="main">
+			<panel title="Contact" colSpan="12">
+				<field name="lastName" />
+				<field name="firstName" />
+				<field name="emailAddress" />
+				<field name="fixedPhone" />
+				<field name="mobilePhoned" />
+				<field name="educationLevel" />
+				<field name="experienceSelect" />
+				<field name="industrySectorSet" widget="TagSelect" />
+				<field name="linkedInProfile" colSpan="10"/>
+				<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				<field name="jobSource" />
+				<field name="referredBy" />
+				<field name="appreciation" widget="SelectProgress"/>
+				<field name="fullName" hidden="true" />
+			</panel>
+			<panel title="Job info" colSpan="12">
+				<field name="jobPosition" />
+				<field name="jobPosition.department" />
+				<field name="employee" />
+			</panel>
+			<panel title="Contract" colSpan="12">
+				<field name="jobPosition.contractType" />
+				<field name="expectedSalary" />
+				<field name="proposedSalary" />
+				<field name="availabilityFrom" />
+				<field name="description" widget="html" colSpan="12" />
+			</panel>
+			<field name="statusSelect" widget="NavSelect" colSpan="12" />
+			<field name="reasonNotHired" colSpan="12" />
+			<panel-dashlet name="plannedEvents" title="Planned events" action="action-job-application-planned-events" colSpan="12" />
+			<panel-dashlet name="previousEvents" title="Previous events" action="action-job-application-previous-events"  colSpan="12" />
+		</panel>
+	</form>
+	
+	<action-view name="action-job-application-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="call-form"/>
+    	<context name="_typeSelect" expr="1"/>
+    	<context name="_relatedToSelect" expr="eval:'com.axelor.apps.talent.db.JobApplication'" />
+    	<context name="_relatedToSelectId" expr="eval:id" />
+    </action-view>
+    
+    <action-view name="action-job-application-create-meeting" title="Create meeting (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="meeting-form"/>
+    	<context name="_typeSelect" expr="2"/>
+    	<context name="_relatedToSelect" expr="eval:'com.axelor.apps.talent.db.JobApplication'" />
+    	<context name="_relatedToSelectId" expr="eval:id" />
+    </action-view>
+    
+    <action-view name="action-job-application-planned-events" model="com.axelor.apps.crm.db.Event" title="Planned events">
+    	<view type="grid" name="event-grid"/>
+    	<view type="form" name="event-form"/>
+    	<domain>self.startDateTime >= :__datetime__</domain>
+    </action-view>
+    
+    <action-view name="action-job-application-previous-events" model="com.axelor.apps.crm.db.Event" title="Previous events">
+    	<view type="grid" name="event-grid"/>
+    	<view type="form" name="event-form"/>
+    	<domain>self.startDateTime &lt; :__datetime__</domain>
+    </action-view>
+	
+</object-views>

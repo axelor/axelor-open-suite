@@ -5,6 +5,7 @@
 	
 	<selection name="app.type.select" id="talent.app.type.select">
 		<option value="training">Training</option>
+		<option value="recruitment">Recruitment</option>
 	</selection>
 
 	<selection name="training.register.rating.select">
@@ -32,6 +33,35 @@
 		<option value="1">Planned</option>
 		<option value="2">Completed</option>
 		<option value="3">Canceled</option>
+	</selection>
+	
+	<selection name="job.position.experience.select">
+		<option value="0">0-2 years</option>
+		<option value="1">2-5 years</option>
+		<option value="2">5-10 years</option>
+		<option value="3">+10 years</option>
+	</selection>
+	
+	<selection name="job.position.status.select">
+		<option value="0">Draft</option>
+		<option value="1">Open</option>
+		<option value="2">On hold</option>
+		<option value="3">Closed</option>
+		<option value="4">Cancel</option>
+	</selection>
+	
+	<selection name="job.application.status.select">
+		<option value="0">Received</option>
+		<option value="1">Interviews</option>
+		<option value="2">Offered</option>
+		<option value="3">Hired</option>
+		<option value="4">Application rejected</option>
+		<option value="5">Offer rejected</option>
+		<option value="6">Cancel/</option>
+	</selection>
+	
+	<selection name="crm.event.related.to.select" id="talent.crm.event.related.to.select">
+		<option value="com.axelor.apps.talent.db.JobApplication">Job Application</option>
 	</selection>
 	
 </object-views>

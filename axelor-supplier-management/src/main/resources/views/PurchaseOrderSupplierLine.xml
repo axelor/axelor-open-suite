@@ -4,6 +4,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="purchase-order-supplier-line-grid" title="suppliers requests" canNew="false" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<hilite if="stateSelect == 1" color="info" />
+		<hilite if="stateSelect == 2" color="primary" />
+		<hilite if="stateSelect == 3" color="success" />
+		<hilite if="stateSelect == 4" color="warning" />
+		<hilite if="stateSelect == 5" color="danger" />
 		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid" />
 		<field name="availableQty" aggregate="sum"/>

@@ -14,7 +14,7 @@
         <integer name="amendmentTypeSelect" selection="hr.employment.contract.amendment.type.select" title="Amendent type"/>
         <date name="amendmentDate" title="Amendment Date"/>
 
-        <integer name="contractTypeSelect" selection="hr.employment.contract.contract.type.select" title="Contract type"/>
+        <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />
         <date name="startDate" title="Start date"/>
         <date name="endDate" title="End date"/>
         <time name="startTime" title="Start time"/>
@@ -39,23 +39,8 @@
         <string name="fullName" namecolumn="true">
             <![CDATA[
             String fullName = "";
-	  		if (contractTypeSelect != null) {
-	  			switch (contractTypeSelect){
-		  			case 1 : 
-		  				fullName += "CDD TC";
-		  				break;
-		  			case 2 : 
-		  				fullName += "CDD TP";
-		  				break;
-		  			case 3 : 
-		  				fullName += "CDI TC";
-		  				break;
-		  			case 4 : 
-		  				fullName += "CDI TP";
-		  				break;
-		  			default:
-		  				break;
-	  			}
+	  		if (contractType != null) {
+	  			fullName += contractType.getName();
 	  		}
 
 	  		if (employee != null) {
