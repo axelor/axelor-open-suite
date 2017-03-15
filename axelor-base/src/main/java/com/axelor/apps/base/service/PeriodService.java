@@ -69,7 +69,7 @@ public class PeriodService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
-		return period;
+		return nextPeriod;
 	}
 	
 	public void testOpenPeriod(Period period) throws AxelorException {

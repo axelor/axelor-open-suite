@@ -49,6 +49,22 @@ public interface ITranslation {
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
 	
+
+	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
+	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
+	
+	public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
+	public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
+	public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
+
+	
+	public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/ "Invoice.expenseTotalAmount"; /*)*/
+	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
+	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
+
+	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
+
+	
 	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
 	public static final String MOVE_LINE_REPORT_1_JOURNAL = /*$$(*/ "MoveLineReportType1.journal"; /*)*/
 	public static final String MOVE_LINE_REPORT_1_COMPANY = /*$$(*/ "MoveLineReportType1.company"; /*)*/
@@ -121,5 +137,17 @@ public interface ITranslation {
 	public static final String EBICS_CERTIFICATE_ENCRYPTION_VERSION = /*$$(*/ "EbicsCertificateReport.encryptionVersion"; /*)*/
 	
 
+    
+	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "SaleInvoicesDetails.sumByPartner"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "SaleInvoicesDetails.sumByProduct"; /*)*/
+
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "PurchaseInvoicesDetails.invoiced"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "PurchaseInvoicesDetails.ordered"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
 
 }

@@ -5,28 +5,31 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" lang="java">
-  	
-	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
-	<date name="shipmentDate" title="Date of shipment" />
-	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
-	<boolean name="subscription" title="Subscription"/>
-	<!-- 	Onglet échéancier -->
-	<one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
-	<integer name="periodicity" selection="product.periodicity.subscription.select"/>
-  	<date name="fromSubDate" title="Date From"/>
-  	<integer name="periodNumber" title="Number of Periods"/>
-  	<date name="toSubDate" title="Date To"/>
-  	<integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
-  	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
-	<date name="expectedRealisationDate" title="Expected realisation date"/>
-	<extra-code>
-   		<![CDATA[
-   			public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;
-   			public static final Integer SUBSCRIPTION_PERIOD_ENDING = 2;
-   		]]>
-   	</extra-code>
+    <entity name="SaleOrder" lang="java">
+
+        <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
+        <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+
+        <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
+        <date name="shipmentDate" title="Date of shipment" />
+        <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+        <boolean name="subscription" title="Subscription"/>
+        <!-- 	Onglet échéancier -->
+        <one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
+        <integer name="periodicity" selection="product.periodicity.subscription.select"/>
+        <date name="fromSubDate" title="Date From"/>
+        <integer name="periodNumber" title="Number of Periods"/>
+        <date name="toSubDate" title="Date To"/>
+        <integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
+        <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
+        <date name="expectedRealisationDate" title="Expected realisation date"/>
+        <extra-code>
+            <![CDATA[
+                public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;
+                public static final Integer SUBSCRIPTION_PERIOD_ENDING = 2;
+            ]]>
+        </extra-code>
 	
-  </entity>
+    </entity>
 
 </domain-models>

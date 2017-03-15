@@ -326,10 +326,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	private BigDecimal getAmountVentilated(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice, int invoiceOperationTypeSelect)  {
 		
 		String query = "SELECT SUM(self.companyExTaxTotal)"
-					+ " FROM InvoiceLine as self"
-					+ " WHERE (self.saleOrderLine.saleOrder.id = :saleOrderId OR self.saleOrder.id = :saleOrderId )"
-						+ " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-						+ " AND self.invoice.statusSelect = :statusVentilated";
+					 + " FROM InvoiceLine as self";
+
+		if (generalService.getGeneral().getManageInvoicedAmountByLine()) {
+			query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
+		} else {
+			query += " WHERE self.saleOrder.id = :saleOrderId";
+		}
+
+		query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
+			   + " AND self.invoice.statusSelect = :statusVentilated";
 		
 		if (currentInvoiceId != null)  {
 			if(excludeCurrentInvoice)  {

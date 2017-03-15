@@ -9,7 +9,7 @@
         <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-        <field name="paymentDateTime"/>
+        <field name="paymentDate"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="paidAmount" aggregate="sum"/>
         <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>

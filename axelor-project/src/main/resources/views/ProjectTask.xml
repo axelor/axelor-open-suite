@@ -59,7 +59,7 @@
 				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
 			</panel>
 			<panel name="relatedProjectsTasks" title="Related Projects/Tasks">
-				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
+				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid" canNew="false"/>
 			</panel>
 			<panel name="otherElementsToInvoice" title="Other elements to invoice" if-module="axelor-business-project">
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
@@ -76,7 +76,7 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
-			<panel name="activity" title="Activities">
+			<panel name="activity" title="Activities" if-module="axelor-human-resource">
 				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>

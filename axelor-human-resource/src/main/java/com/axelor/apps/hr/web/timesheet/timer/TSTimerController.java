@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -54,34 +55,27 @@ public class TSTimerController{
 	}
 	
 	public void editTimesheetTimerFromTimesheet(ActionRequest request, ActionResponse response){
+		
+		ActionViewBuilder actionView = ActionView
+				.define(I18n.get("TSTimer"))
+				.model(TSTimer.class.getName())
+				.add("form", "ts-timer-form")
+				.param("popup", "reload")
+				.param("forceEdit", "true")
+				.param("width", "800")
+				.param("show-confirm", "true")
+				.param("show-toolbar", "false")
+				.param("popup-save", "true");
+		
 		TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
-		if(tsTimer == null){
-			response.setView(ActionView
-									.define(I18n.get("TSTimer"))
-									.model(TSTimer.class.getName())
-									.add("form", "ts-timer-form")
-									.param("popup", "reload")
-									.param("forceEdit", "true")
-									.param("width", "800")
-									.param("show-confirm", "true")
-									.param("show-toolbar", "false")
-									.param("popup-save", "true")
-									.map());
+		if(tsTimer != null){
+			actionView.context("_showRecord", String.valueOf(tsTimer.getId()));
 		}
-		else{
-			response.setView(ActionView
-					.define(I18n.get("TSTimer"))
-					.model(TSTimer.class.getName())
-					.add("form", "ts-timer-form")
-					.param("popup", "reload")
-					.param("forceEdit", "true")
-					.param("width", "800")
-					.param("show-confirm", "true")
-					.param("show-toolbar", "false")
-					.param("popup-save", "true")
-					.context("_showRecord", String.valueOf(tsTimer.getId())).map());
-		}
+		
+		response.setView(actionView.map());
+
 	}
+	
 	
 	public void pause(ActionRequest request, ActionResponse response){
 		TSTimer timerView = request.getContext().asType(TSTimer.class);

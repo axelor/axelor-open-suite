@@ -71,7 +71,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
-		Duration duration = eventService.computeDuration(timer.getStartDateTime(), generalService.getTodayDateTime().toLocalDateTime());
+		Duration duration = eventService.computeDuration(timer.getTimerStartDateT(), generalService.getTodayDateTime().toLocalDateTime());
 		BigDecimal secondes = BigDecimal.valueOf((eventService.getDuration(duration) + currentDuration));
 		timer.setDuration(secondes.longValue());
 	}

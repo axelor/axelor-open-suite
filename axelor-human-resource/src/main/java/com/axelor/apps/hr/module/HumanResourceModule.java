@@ -48,6 +48,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
+import com.axelor.apps.hr.service.user.UserHrService;
+import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 
 
 public class HumanResourceModule extends AxelorModule {
@@ -70,7 +72,7 @@ public class HumanResourceModule extends AxelorModule {
 		bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
 		bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
 		bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
-		
+		bind(UserHrService.class).to(UserHrServiceImpl.class);
 	}
 
 }

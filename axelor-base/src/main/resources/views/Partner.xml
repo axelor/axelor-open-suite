@@ -83,7 +83,7 @@
     onLoad="action-group-partner-onload" 
     onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
+	        <button name="sendByEmail" title="Send an email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"/>
 	    </toolbar>

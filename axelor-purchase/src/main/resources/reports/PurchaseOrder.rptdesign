@@ -22,6 +22,26 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -45,6 +65,7 @@
         <scalar-parameter name="DBName" id="3673">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -57,6 +78,7 @@
         <scalar-parameter name="UserName" id="3674">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -86,6 +108,7 @@
         <scalar-parameter name="Password" id="3675">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -146,7 +169,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -309,15 +332,7 @@
                     <text-property name="heading">price_request</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["purchase_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["PurchaseOrderId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -453,6 +468,7 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["PurchaseOrderId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -656,8 +672,7 @@ left outer join account_payment_condition as PaymentCond on (Partner.payment_con
 left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)
 left outer join base_bank_details as DefBankDetail on (PurchaseOrder.company_bank_details = DefBankDetail.id)
 left outer join account_payment_mode as PaymentMode on (PurchaseOrder.payment_mode = PaymentMode.id)
-
-]]></xml-property>
+where PurchaseOrder.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2169,7 +2184,7 @@ row["first_name"]
                                         <text id="3457">
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<VALUE-OF>if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF>]]></text-property>
+<VALUE-OF>if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3436">
@@ -3031,7 +3046,7 @@ row["first_name"]
                                     <property name="rowSpan">1</property>
                                     <text id="3548">
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["notes"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["notes"] != null) row["notes"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

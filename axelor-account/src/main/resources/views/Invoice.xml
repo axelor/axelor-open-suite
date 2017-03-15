@@ -217,8 +217,8 @@
 	 
 	    <panel sidebar="true" name="actions" title="Actions" >
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
-	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
+	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
       	  	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
 	        <field name="statusSelect"/>
