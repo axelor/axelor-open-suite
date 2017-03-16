@@ -305,7 +305,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
-	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="typeSelect == 'task'"/>
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"
+				   if="(typeSelect == 'task')&amp;&amp;(project?.membersUserSet)&amp;&amp;(!project.membersUserSet.isEmpty())" />
 	</action-attrs>
 	
 	<action-attrs name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
