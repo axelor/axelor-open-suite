@@ -308,10 +308,10 @@
                     <text-property name="heading">bic</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">CopmanyName</property>
+                    <property name="columnName">CompanyName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">CopmanyName</text-property>
-                    <text-property name="heading">CopmanyName</text-property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">notes</property>
@@ -448,7 +448,7 @@
                     </structure>
                     <structure>
                         <property name="position">23</property>
-                        <property name="name">CopmanyName</property>
+                        <property name="name">CompanyName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -627,8 +627,8 @@
                 </structure>
                 <structure>
                     <property name="position">23</property>
-                    <property name="name">CopmanyName</property>
-                    <property name="nativeName">CopmanyName</property>
+                    <property name="name">CompanyName</property>
+                    <property name="nativeName">CompanyName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -659,7 +659,7 @@ Partner.title_select, Partner.name, Partner.first_name, Partner.partner_type_sel
 Address.addressl2, Address.addressl3, Address.addressl4, Address.addressl5, Address.addressl6,
 Country.name as "countryName", PaymentMode.name as "PaymentMode", PaymentCond.name as "PaymentCond",
 PurchaseOrder.ex_tax_total, PurchaseOrder.in_tax_total, PurchaseOrder.tax_total, Currency.code as "CurrencyCode",
-DefBankDetail.iban, DefBankDetail.bic, Company.name as "CopmanyName", PurchaseOrder.notes,
+DefBankDetail.iban, Bank.code as "bic", Company.name as "CompanyName", PurchaseOrder.notes,
 PurchaseOrder.price_display, PurchaseOrder.price_request
 from purchase_purchase_order as PurchaseOrder
 left outer join base_company as Company on (PurchaseOrder.company = Company.id)
@@ -671,6 +671,7 @@ left outer join base_country as Country on (Address.addressl7country = Country.i
 left outer join account_payment_condition as PaymentCond on (Partner.payment_condition = PaymentCond.id)
 left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)
 left outer join base_bank_details as DefBankDetail on (PurchaseOrder.company_bank_details = DefBankDetail.id)
+left outer join base_bank as Bank on (DefBankDetail.bank = Bank.id)
 left outer join account_payment_mode as PaymentMode on (PurchaseOrder.payment_mode = PaymentMode.id)
 where PurchaseOrder.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1398,9 +1399,9 @@ left outer join account_tax_line as TaxLine on (POLineTax.tax_line = TaxLine.id)
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">CopmanyName</property>
-                    <text-property name="displayName">CopmanyName</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["CopmanyName"]</expression>
+                    <property name="name">CompanyName</property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -2408,9 +2409,9 @@ row["first_name"]
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
-                                                    <property name="name">CopmanyName</property>
-                                                    <text-property name="displayName">CopmanyName</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["CopmanyName"]</expression>
+                                                    <property name="name">CompanyName</property>
+                                                    <text-property name="displayName">CompanyName</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -3135,7 +3136,7 @@ row["first_name"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]</VALUE-OF> : </b>labelled to <VALUE-OF>row._outer["CopmanyName"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]</VALUE-OF> : </b>labelled to <VALUE-OF>row._outer["CompanyName"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3563"/>
