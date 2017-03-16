@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -34,6 +34,18 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">4261</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">4261</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">4261</property>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -46,9 +58,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">14</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -415,16 +424,7 @@
                     <text-property name="heading">displayExpenseOnPrinting</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["inv_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -635,6 +635,7 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -952,8 +953,8 @@
 	Invoice.tax_total as "invoice_tax_total", 
 	Company.name as "companyName", 
 	BankDetail.iban, 
-	BankDetail.bic, 
-	BankDetail.bank_address, 
+	Bank.code as "bic",
+	Bank.bank_address, 
 	Invoice.note, 
 	Invoice.internal_reference, 
 	Invoice.external_reference, 
@@ -975,9 +976,11 @@ left outer join base_country as Country on (Address.addressl7country = Country.i
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
+left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
 left outer join base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)]]></xml-property>
+left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+WHERE Invoice.id IN (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineDS" id="3421">
             <list-property name="computedColumns">
@@ -1066,16 +1069,7 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                     <text-property name="heading">is_title_line</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["inv_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1141,6 +1135,7 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1230,7 +1225,7 @@ left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.i
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
 left outer join base_unit as Unit on (InvoiceLine.unit = Unit.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
-]]></xml-property>
+WHERE Invoice.id IN (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxDS" id="3422">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1260,16 +1255,7 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
                     <text-property name="heading">tax_total</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["inv_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1295,6 +1281,7 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1330,7 +1317,7 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 from account_invoice_line_tax as InvoiceLineTax
 inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
-]]></xml-property>
+where Invoice.id in (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1506,15 +1493,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">ts_project_unit_id</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["invoice_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1565,6 +1544,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1652,7 +1632,8 @@ JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
 JOIN base_general general ON general.id = 1
-JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
+JOIN base_unit product_unit ON product_unit.id = product.unit
+WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="UnitCoeffDS" id="4261">
             <list-property name="columnHints">
@@ -1684,15 +1665,7 @@ JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
                     <text-property name="heading">invoice</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["invoice"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1718,6 +1691,7 @@ JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1759,8 +1733,9 @@ JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND sele
 JOIN base_unit project_unit ON project_unit.id = (CASE WHEN select_item.order_seq = 0 THEN general.unit_days 
 	 WHEN select_item.order_seq = 1 THEN general.unit_hours 
 	 WHEN select_item.order_seq = 2 THEN general.unit_minutes END )
-WHERE (conv.start_unit = raw_unit.id AND conv.end_unit = project_unit.id ) 
-OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-property>
+WHERE ((conv.start_unit = raw_unit.id AND conv.end_unit = project_unit.id ) 
+OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id))
+AND (invproj.invoice IN (@INJECTID))]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ExpenseLineDS" id="4269">
             <list-property name="columnHints">
@@ -1795,15 +1770,7 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                     <text-property name="heading">invoice_id</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["invoice_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1834,6 +1801,7 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1880,7 +1848,8 @@ invproj.invoice AS invoice_id
 FROM hr_expense_line line
 JOIN businessproject_invoicing_project_expense_line_set expense_set ON expense_set.expense_line_set = line.id
 JOIN businessproject_invoicing_project invproj ON invproj.id = expense_set.businessproject_invoicing_project
-JOIN base_product product ON product.id = line.expense_product]]></xml-property>
+JOIN base_product product ON product.id = line.expense_product
+WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
