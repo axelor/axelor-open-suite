@@ -1152,7 +1152,7 @@ public class MoveLineExportService {
                         "DateLet;"+
                         "ValidDate;"+
                         "Montantdevise;"+
-                        "IdDevise;";
+                        "IDevise;";
 		return header.split(";");
 	}
 

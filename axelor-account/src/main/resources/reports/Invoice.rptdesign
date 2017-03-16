@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -46,9 +46,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">14</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -161,7 +158,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -442,16 +439,7 @@
                     <text-property name="heading">displayProductCodeOnPrinting</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["inv_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -652,6 +640,7 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -979,7 +968,8 @@ left outer join base_bank_details as BankDetail on (Invoice.company_bank_details
 left outer join base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
-left outer join base_bank as Bank on (BankDetail.bank = Bank.id)]]></xml-property>
+left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
+where Invoice.id in (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineDS" id="3421">
             <list-property name="computedColumns">
@@ -1068,16 +1058,7 @@ left outer join base_bank as Bank on (BankDetail.bank = Bank.id)]]></xml-propert
                     <text-property name="heading">is_title_line</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["inv_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1143,6 +1124,7 @@ left outer join base_bank as Bank on (BankDetail.bank = Bank.id)]]></xml-propert
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1225,14 +1207,15 @@ left outer join base_bank as Bank on (BankDetail.bank = Bank.id)]]></xml-propert
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, InvoiceLine.product_name, InvoiceLine.description, TaxLine.value as "TaxValue",
 InvoiceLine.qty,Unit.label_to_printing as "unitName", InvoiceLine.price, InvoiceLine.ex_tax_total, 
-Currency.code as "currencyCode", InvoiceLine.sequence as "sequence" , InvoiceLine.is_title_line
+Currency.code as "currencyCode", InvoiceLine.sequence as "sequence" , InvoiceLine.is_title_line, 
+InvoiceLine.product_code as "productCode"
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
 left outer join base_product as Product on (InvoiceLine.product = Product.id)
 left outer join base_unit as Unit on (InvoiceLine.unit = Unit.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
-]]></xml-property>
+where Invoice.id in (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxDS" id="3422">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1262,16 +1245,7 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
                     <text-property name="heading">tax_total</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["inv_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1297,6 +1271,7 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1332,7 +1307,7 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 from account_invoice_line_tax as InvoiceLineTax
 inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
-]]></xml-property>
+where Invoice.id in (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1358,6 +1333,7 @@ left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLin
                     <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
@@ -1471,15 +1447,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">invoice</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["invoice"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["InvoiceId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1505,6 +1473,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace("@INJECTID", params["InvoiceId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1546,8 +1515,10 @@ JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND sele
 JOIN base_unit project_unit ON project_unit.id = (CASE WHEN select_item.order_seq = 0 THEN general.unit_days 
 	 WHEN select_item.order_seq = 1 THEN general.unit_hours 
 	 WHEN select_item.order_seq = 2 THEN general.unit_minutes END )
-WHERE (conv.start_unit = raw_unit.id AND conv.end_unit = project_unit.id ) 
-OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-property>
+WHERE ((conv.start_unit = raw_unit.id AND conv.end_unit = project_unit.id ) 
+OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id))
+AND Invoice.id in (@INJECTID)
+]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -2672,7 +2643,7 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                                     <property name="borderTopStyle">none</property>
                                     <text id="3426">
                                         <property name="fontWeight">bold</property>
-                                        <property name="marginLeft">2pt</property>
+                                        <property name="marginLeft">0pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
 	if(row["title_select"] == "1"){"M."}
@@ -3087,6 +3058,13 @@ row["partnerFirstName"]
                                                 </list-property>
                                                 <property name="allowExport">true</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">productCode</property>
+                                                <text-property name="displayName">productCode</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["productCode"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
                                         <list-property name="sort">
                                             <structure>
@@ -3475,7 +3453,7 @@ row["partnerFirstName"]
                                                         </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I></SUB>]]></text-property>
+<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB><br>]]></text-property>
                                                     </text>
                                                     <text id="4005">
                                                         <property name="fontWeight">bold</property>
@@ -3487,7 +3465,7 @@ row["partnerFirstName"]
                                                         </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I></SUB>]]></text-property>
+<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB><br>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3436">
