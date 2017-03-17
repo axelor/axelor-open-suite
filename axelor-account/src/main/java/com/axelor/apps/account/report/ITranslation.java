@@ -120,24 +120,6 @@ public interface ITranslation {
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAxis"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAccount"; /*)*/
 	
-	public static final String EBICS_CERTIFICATE_SIGNATURE_TITLE = /*$$(*/ "EbicsCertificateReport.signatureTitle"; /*)*/
-	public static final String EBICS_CERTIFICATE_AUTHENTICATION_TITLE = /*$$(*/ "EbicsCertificateReport.authenticationTitle"; /*)*/
-	public static final String EBICS_CERTIFICATE_ENCRYPTION_TITLE = /*$$(*/ "EbicsCertificateReport.encryptionTitle"; /*)*/
-	public static final String EBICS_CERTIFICATE_SIGNATURE = /*$$(*/ "EbicsCertificateReport.signature"; /*)*/
-	public static final String EBICS_CERTIFICATE_AUTHENTICATION = /*$$(*/ "EbicsCertificateReport.authentication"; /*)*/
-	public static final String EBICS_CERTIFICATE_ENCRYPTION = /*$$(*/ "EbicsCertificateReport.encryption"; /*)*/
-	public static final String EBICS_CERTIFICATE_SIGNATURE_HASH = /*$$(*/ "EbicsCertificateReport.signatureHash"; /*)*/
-	public static final String EBICS_CERTIFICATE_AUTHENTICATION_HASH = /*$$(*/ "EbicsCertificateReport.authenticationHash"; /*)*/
-	public static final String EBICS_CERTIFICATE_ENCRYPTION_HASH = /*$$(*/ "EbicsCertificateReport.encryptionHash"; /*)*/
-	public static final String EBICS_CERTIFICATE_ISSUED_TO = /*$$(*/ "EbicsCertificateReport.issuedTo"; /*)*/
-	public static final String EBICS_CERTIFICATE_ISSUED_BY = /*$$(*/ "EbicsCertificateReport.issuedBy"; /*)*/
-	public static final String EBICS_CERTIFICATE_BANK = /*$$(*/ "EbicsCertificateReport.bank"; /*)*/
-	public static final String EBICS_CERTIFICATE_SIGNATURE_VERSION = /*$$(*/ "EbicsCertificateReport.signatureVersion"; /*)*/
-	public static final String EBICS_CERTIFICATE_AUTHENTICATION_VERSION = /*$$(*/ "EbicsCertificateReport.authenticationVersion"; /*)*/
-	public static final String EBICS_CERTIFICATE_ENCRYPTION_VERSION = /*$$(*/ "EbicsCertificateReport.encryptionVersion"; /*)*/
-	
-
-    
 	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/

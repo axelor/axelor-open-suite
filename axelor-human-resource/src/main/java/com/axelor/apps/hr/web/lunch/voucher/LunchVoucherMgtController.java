@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherMgt;

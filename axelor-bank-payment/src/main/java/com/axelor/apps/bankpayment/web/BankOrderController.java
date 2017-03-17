@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.auth.AuthUtils;

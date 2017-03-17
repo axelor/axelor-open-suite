@@ -35,7 +35,6 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsBank;
@@ -49,6 +48,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.CertificateManager;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
