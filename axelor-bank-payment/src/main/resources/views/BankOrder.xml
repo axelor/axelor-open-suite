@@ -48,7 +48,7 @@
     		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
     		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
     		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-bank-order-file-format-change"/>
-    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
+    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
     		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6"/>
 	        <field name="fileToSend" showIf="statusSelect == 3"/>
 	        <field name="signatoryUser" requiredIf="statusSelect == 2"/>
@@ -56,7 +56,7 @@
     		<field name="isMultiDate" hidden="true"/>
     		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
-		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 3">
+		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 3" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
 			<field name="senderCompany" grid-view="company-grid" form-view="company-form" onChange="action-bank-order-record-sender-company-change"/>
 			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onSelect="action-bank-order-attrs-bank-details-domain"/>
 			
@@ -72,7 +72,7 @@
 			<field name="senderReference"/>
 			<field name="senderLabel"/>
 		</panel>
-		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3">
+		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3" showIf="senderBankDetails &amp;&amp; senderCompany">
 			<field name="bankOrderLineList" colSpan="12" showTitle="false">
 				<editor x-layout="table" x-viewer="true" onNew="action-bank-order-line-record-compute-counter">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>

@@ -11,6 +11,9 @@
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<string name="orderFileFormatSelect" title="File format" selection="bankpayment.order.file.format.select"/>
 	<string name="name" title="Name"/>
+	<string name="description" title="Description" large="true" multiline="true"/>
+	<boolean name="fileGenerationSupported" title="File generation supported"/>
+	
 	
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
 	
@@ -41,13 +44,36 @@
  	<extra-code><![CDATA[
 	
 	   	// BANK ORDER FILE FORMAT SELECT
+		public static final String FILE_FORMAT_PAIN_001_001_02_ICT = "pain.001.001.02.ict";
+		public static final String FILE_FORMAT_PAIN_001_001_02_MCT = "pain.001.001.02.mct";
+		public static final String FILE_FORMAT_PAIN_001_001_02_RFT = "pain.001.001.02.rft";
 		public static final String FILE_FORMAT_PAIN_001_001_02_SCT = "pain.001.001.02.sct";
+		public static final String FILE_FORMAT_PAIN_001_001_02_XCT = "pain.001.001.02.xct";
 		public static final String FILE_FORMAT_PAIN_001_001_03_SCT = "pain.001.001.03.sct";
-		public static final String FILE_FORMAT_PAIN_XXX_CFONB320_XCT = "pain.xxx.cfonb320.xct";
+		public static final String FILE_FORMAT_PAIN_008_001_01_SBB = "pain.008.001.01.sbb";
+		public static final String FILE_FORMAT_PAIN_008_001_01_SDD = "pain.008.001.01.sdd";
+		public static final String FILE_FORMAT_PAIN_FIN_MT101_DCT = "pain.fin.mt101.dct";
+		public static final String FILE_FORMAT_PAIN_FIN_MT101_MCT = "pain.fin.mt101.mct";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DCO = "pain.xxx.cfonb160.dco";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DCT = "pain.xxx.cfonb160.dct";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DDA = "pain.xxx.cfonb160.dda";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DDD = "pain.xxx.cfonb160.ddd";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DTG = "pain.xxx.cfonb160.dtg";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DVD = "pain.xxx.cfonb160.dvd";
 		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_ICT = "pain.xxx.cfonb160.ict";
-		
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB240_BCO = "pain.xxx.cfonb240.bco";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB240_TCH = "pain.xxx.cfonb240.tch";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB320_RFT = "pain.xxx.cfonb320.rft";
+		public static final String FILE_FORMAT_PAIN_XXX_CFONB320_XCT = "pain.xxx.cfonb320.xct";
+		public static final String FILE_FORMAT_PAIN_XXX_FFF_LCH = "pain.xxx.fff.lch";
+		public static final String FILE_FORMAT_PAIN_XXX_FFF_ECH = "pain.xxx.fff.ech";
+		public static final String FILE_FORMAT_PAIN_XXX_PAYEXT912_VCT = "pain.xxx.payext912.vct";
+		public static final String FILE_FORMAT_PAIN_XXX_PAYEXT96A_VCT = "pain.xxx.payext96a.vct";
+		public static final String FILE_FORMAT_PAIN_XXX_PAYORD912_ICT = "pain.xxx.payord912.ict";
+		public static final String FILE_FORMAT_PAIN_XXX_VCOM400_VCT = "pain.xxx.vcom400.vct";
+
 	]]></extra-code>
-    
+
   </entity>
 
 </domain-models>

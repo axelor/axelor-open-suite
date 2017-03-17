@@ -14,8 +14,12 @@
 	        <field name="orderFileFormatSelect" required="true" onChange="action-bank-order-file-format-record-compute-name"/>
 	        <field name="name" required="true"/>
   		</panel>
+  		<panel name="description" colSpan="12">
+  			<field name="description" colSpan="12"/>
+  		</panel>
 		<panel name="globalAttributes" title="Global attributes">
 			<field name="orderTypeSelect" required="true"/>
+			<field name="fileGenerationSupported"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
 		<panel name="specificAttributes" title="Specific attributes" hidden="true">

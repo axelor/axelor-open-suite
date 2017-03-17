@@ -63,10 +63,34 @@
 	</selection>
 	
 	<selection name="bankpayment.order.file.format.select">
+		<option value="pain.001.001.02.ict">pain.001.001.02.ict</option>
+		<option value="pain.001.001.02.mct">pain.001.001.02.mct</option>
+		<option value="pain.001.001.02.rft">pain.001.001.02.rft</option>
 		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
+		<option value="pain.001.001.02.xct">pain.001.001.02.xct</option>
 		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
+		<option value="pain.008.001.01.sbb">pain.008.001.01.sbb</option>
+		<option value="pain.008.001.01.sdd">pain.008.001.01.sdd</option>
+		<option value="pain.fin.mt101.dct">pain.fin.mt101.dct</option>
+		<option value="pain.fin.mt101.mct">pain.fin.mt101.mct</option>
+		<option value="pain.xxx.cfonb160.dco">pain.xxx.cfonb160.dco</option>
+		<option value="pain.xxx.cfonb160.dct">pain.xxx.cfonb160.dct</option>
+		<option value="pain.xxx.cfonb160.dda">pain.xxx.cfonb160.dda</option>
+		<option value="pain.xxx.cfonb160.ddd">pain.xxx.cfonb160.ddd</option>
+		<option value="pain.xxx.cfonb160.dtg">pain.xxx.cfonb160.dtg</option>
+		<option value="pain.xxx.cfonb160.dvd">pain.xxx.cfonb160.dvd</option>
+		<option value="pain.xxx.cfonb160.ict">pain.xxx.cfonb160.ict</option>
+		<option value="pain.xxx.cfonb240.bco">pain.xxx.cfonb240.bco</option>
+		<option value="pain.xxx.cfonb240.tch">pain.xxx.cfonb240.tch</option>
+		<option value="pain.xxx.cfonb320.dct">pain.xxx.cfonb320.dct</option>
+		<option value="pain.xxx.cfonb320.rft">pain.xxx.cfonb320.rft</option>
 		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
-		<option value="pain.xxx.cfonb160.xct">pain.xxx.cfonb160.ict</option>
+		<option value="pain.xxx.fff.lch">pain.xxx.fff.lch</option>
+		<option value="pain.xxx.fff.ech">pain.xxx.fff.ech</option>
+		<option value="pain.xxx.payext912.vct">pain.xxx.payext912.vct</option>
+		<option value="pain.xxx.payext96a.vct">pain.xxx.payext96a.vct</option>
+		<option value="pain.xxx.payord912.ict">pain.xxx.payord912.ict</option>
+		<option value="pain.xxx.vcom400.vct">pain.xxx.vcom400.vct</option>
 	</selection>
 	
 	<selection name="bankpayment.bank.statement.file.format.statement.file.format.select">
@@ -76,9 +100,25 @@
 		<option value="camt.xxx.cfonb240.act">camt.xxx.cfonb240.act</option>
 		<option value="camt.xxx.cfonb240.pco">camt.xxx.cfonb240.pco</option>
 		<option value="camt.xxx.cfonb240.rep">camt.xxx.cfonb240.rep</option>
+		<option value="camt.xxx.cfonb240.dri">camt.xxx.cfonb240.dri</option>
+		<option value="camt.xxx.cfonb240.rct">camt.xxx.cfonb240.rct</option>
+		<option value="camt.xxx.cfonb240.rsd">camt.xxx.cfonb240.rsd</option>
+		<option value="camt.xxx.cfonb240.rtg">camt.xxx.cfonb240.rtg</option>
+		<option value="camt.xxx.cfonb240.rti">camt.xxx.cfonb240.rti</option>
+		<option value="camt.xxx.cfonb240.rch">camt.xxx.cfonb240.rch</option>
+		<option value="camt.xxx.cfonb240.rco">camt.xxx.cfonb240.rco</option>
+		<option value="camt.xxx.cfonb240.ard">camt.xxx.cfonb240.ard</option>
+		<option value="camt.xxx.cfonb240.atg">camt.xxx.cfonb240.atg</option>
+		<option value="camt.xxx.cfonb240.ati">camt.xxx.cfonb240.ati</option>
+		<option value="camt.xxx.cfonb240.ach">camt.xxx.cfonb240.ach</option>
+		<option value="camt.xxx.cfonb240.cai">camt.xxx.cfonb240.cai</option>
 		<option value="camt.053.001.02.stm">camt.053.001.02.stm</option>
 		<option value="camt.xxx.cfonb120.stm">camt.xxx.cfonb120.stm</option>
 		<option value="camt.xxx.cfonb120.stm.0by">camt.xxx.cfonb120.stm.0by</option>
+		<option value="camt.xxx.cfonb120.rep">camt.xxx.cfonb120.rep</option>
+		<option value="camt.fin.mt940.stm">camt.fin.mt940.stm</option>
+		<option value="camt.fin.mt942.rep">camt.fin.mt942.rep</option>
+		<option value="camt.xxx.cfonb560.ara">camt.xxx.cfonb560.ara</option>
 		<option value="pain.002.001.01.ara">pain.002.001.01.ara</option>
 		<option value="pain.002.001.02.ara">pain.002.001.02.ara</option>
 		<option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
