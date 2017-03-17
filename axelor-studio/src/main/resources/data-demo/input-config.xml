@@ -229,8 +229,6 @@
   		<bind node="mediaTypeSelect" to="mediaTypeSelect" />
   		<bind node="content" to="content" />
   		<bind node="metaModel" to="metaModel" search="self.name = :metaModel" />
-  		<bind node="fromAddress" to="fromAdress" />
-  		<bind node="toRecipients" to="toRecipients" />
   	</bind>
   
   </input>

@@ -5,7 +5,7 @@
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/> 
 	
-	<menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employee Management" icon="fa-address-card-o" icon-background="#84429f"/>
+	<menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management" icon="fa-address-card-o" icon-background="#84429f"/>
 	
 	<menuitem name="employee-all" parent="hr-root-emp-mgt"
     	title="List of employees"
@@ -131,8 +131,7 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>	
 	
-	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" />
+	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" />
 	
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
@@ -170,8 +169,7 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" />
+	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate"/>
 	
 	<action-method name="extra.hours.validate">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
@@ -204,15 +202,13 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" />
+	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" />
 	
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
 	
-	<menuitem name="ventilate-expense"  parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" />
+	<menuitem name="ventilate-expense"  parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate"  />
 	
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
@@ -278,8 +274,7 @@
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default"/>
+	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate"/>
 	
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>

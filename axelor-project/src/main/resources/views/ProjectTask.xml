@@ -80,6 +80,9 @@
 				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
+		<panel>
+			<field name="projectAttrs" colSpan="12" />
+		</panel>
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
@@ -162,6 +165,9 @@
 				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
+		<panel>
+			<field name="taskAttrs" colSpan="12" />
+		</panel>
 	</form>
 	
 	
@@ -253,7 +259,7 @@
 		</panel>
 	</form>
 	
-	<kanban columnBy="statusSelect" sequenceBy="sequence" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="description"/>
@@ -274,7 +280,7 @@
 		</template>
 	</kanban>
 	
-	<kanban columnBy="statusSelect" sequenceBy="sequence" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
 	 name="task-kanban" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="description"/>

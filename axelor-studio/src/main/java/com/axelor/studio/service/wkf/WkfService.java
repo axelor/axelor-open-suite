@@ -121,7 +121,7 @@ public class WkfService {
 			ActionGroup actionGroup = nodeService.process();
 
 			viewBuilder.setEdited(true);
-			addWkfStatusView(viewBuilder, workflow.getDisplayTypeSelect());
+			addWkfStatus(viewBuilder, workflow.getDisplayTypeSelect());
 
 			transitionService.process(actionGroup);
 
@@ -165,8 +165,16 @@ public class WkfService {
 	 * @param navSelect
 	 *            Selection of widget type for 'wkfStatus' field.
 	 */
-	private void addWkfStatusView(ViewBuilder viewBuilder, Integer navSelect) {
-
+	private void addWkfStatus(ViewBuilder viewBuilder, Integer navSelect) {
+		
+		List<ViewPanel> viewPanels = viewBuilder.getViewPanelList();
+		
+		if (viewPanels.isEmpty()) {
+			ViewPanel panel = new ViewPanel();
+			panel.setPanelLevel("0");
+			panel.setNewPanel(true);
+			viewBuilder.addViewPanelListItem(panel);
+		}
 		ViewPanel viewPanel = viewBuilder.getViewPanelList().get(0);
 
 		String selectName = getSelectName();
@@ -182,7 +190,12 @@ public class WkfService {
 						item.setWidget("normal");
 					}
 					item.setMetaSelect(metaSelectRepo.findByName(selectName));
-					item.setDefaultValue("'" + statusField.getDefaultString() + "'");
+					if (statusField.getTypeName().equals("Integer")) {
+						item.setDefaultValue(statusField.getDefaultString());
+					}
+					else {
+						item.setDefaultValue("'" + statusField.getDefaultString() + "'");
+					}
 					item.setColSpan(12);
 					return;
 				}

@@ -26,6 +26,9 @@
       <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event" />
       <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
       
+      <!-- -Json fields -->
+	  <string name="leaveRequestAttrs" title="Fields" json="true" />
+	
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
       		if(this.getUser() != null && this.getCreatedOn() != null)

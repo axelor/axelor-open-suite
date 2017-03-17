@@ -79,6 +79,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -468,8 +469,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expenseLine.setTotalAmount(new BigDecimal(request.getData().get("unTaxTotal").toString()));
 			expenseLine.setTotalTax(new BigDecimal(request.getData().get("taxTotal").toString()));
 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-			if (!request.getData().get("justification").toString().isEmpty()) {
-				expenseLine.setJustification(Base64.decodeBase64(request.getData().get("justification").toString()));
+			String justification  = (String) request.getData().get("justification");
+			if (!Strings.isNullOrEmpty(justification)) {
+				expenseLine.setJustification(Base64.decodeBase64(justification));
 			}
 			expense.addExpenseLineListItem(expenseLine);
 			

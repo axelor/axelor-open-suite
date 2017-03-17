@@ -10,7 +10,9 @@
       <field name="displayTypeSelect" />
   </grid>
     
-  <form name="wkf-form" title="Workflow" model="com.axelor.studio.db.Wkf" width="large" onSave="action-get-wkf-set-view-builder,action-wkf-validate-bpmn-xml,save,action-wfk-method-process-wkf,save">
+  <form name="wkf-form" title="Workflow" model="com.axelor.studio.db.Wkf" width="large" 
+  	onSave="action-get-wkf-set-view-builder,action-wkf-validate-bpmn-xml,save,action-wfk-method-process-wkf,save"
+  	onNew="action-wkf-set-default">
      <panel title="Overview">
         <field name="name"/>
         <field name="metaModel"/>
@@ -22,6 +24,15 @@
       	<field name="$bpmnDefault" hidden="true" type="string" />
       </panel>
   </form>
+  
+  <action-record name="action-wkf-set-default" model="com.axelor.studio.db.Wkf">
+  	<field name="displayTypeSelect" expr="eval:1" />
+  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).findByName(_modelName)" if="_modelName != null"/>
+  	<field name="wkfField" expr="eval:__repo__.of(MetaField).all().filter('self.metaModel.name = ?1 and self.name = ?2',_modelName,_wkfField).fetchOne()" if="_modelName != null &amp;&amp; _wkfField != null"/>
+  	<field name="viewBuilder" expr="eval:__repo__.of(ViewBuilder).all().filter(&quot;self.name = ?1 and self.viewType = 'form'&quot;, _viewBuilder).fetchOne()" if="_viewBuilder != null"/>
+  	<field name="metaModule" expr="eval:__repo__.of(MetaModule).findByName(_module)" if="_module != null"/>
+  	<field name="name" expr="eval:_modelName + ' workflow'" if="_modelName != null"/>
+  </action-record>
   
   <action-attrs name="action-wkf-attrs-for-view-domain" model="com.axelor.studio.db.Wkf">
       <attribute name="domain" for="viewBuilder" expr="eval:&quot;self.viewType = 'form' AND self.model = '${metaModel.fullName}' &quot;" />

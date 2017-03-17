@@ -196,6 +196,10 @@
 		
 	  </panel-tabs>
 	  
+	  <panel>
+			<field name="soAttrs" colSpan="12" />
+	  </panel>
+	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-group-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>

@@ -58,6 +58,9 @@
   	<boolean name="toInvoice"/>
   	<boolean name="isTitleLine" title="Title Line"/>
   	
+  	<!-- -Json fields -->
+	<string name="polAttrs" title="Fields" json="true" />
+  	
   	
   </entity>
 

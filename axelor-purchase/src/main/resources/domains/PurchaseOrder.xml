@@ -60,6 +60,9 @@
   	
   	<string name="priceRequest" title="Price request" large="true"/>
   	
+  	<!-- -Json fields -->
+	<string name="poAttrs" title="Fields" json="true" />
+  	
 	<track>
       <field name="purchaseOrderSeq" />
       <field name="supplierPartner" />

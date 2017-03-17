@@ -84,6 +84,9 @@
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
+	<!-- -Json fields -->
+	<string name="soAttrs" title="Fields" json="true" />
+	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
  	//TODO move into supplychain ?

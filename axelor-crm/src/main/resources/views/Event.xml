@@ -94,6 +94,10 @@
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
 		
+		<panel>
+			<field name="eventAttrs" colSpan="12" />
+		</panel>
+		
 	</form>
 	
 	<action-group name="action-group-crm-event-onnew">

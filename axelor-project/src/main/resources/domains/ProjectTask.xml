@@ -40,9 +40,12 @@
 	  
 	  <many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
 	  
+	  <!-- -Json fields -->
+	  <string name="projectAttrs" title="Fields" json="true" />
+	  <string name="taskAttrs" title="Fields" json="true" />
+	  
 	  <string name="fullName" namecolumn="true" title="Name"/>
 	 
-
 	   <extra-code>
    		<![CDATA[
    			public static final String TYPE_PROJECT = "project";

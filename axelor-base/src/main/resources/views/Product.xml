@@ -207,7 +207,9 @@
 			      </panel>
   			</panel>
   		</panel-tabs>
-  		
+  		<panel>
+  			<field name="productAttrs" colSpan="12" />
+  		</panel>
 	</form>    
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">

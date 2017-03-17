@@ -212,6 +212,9 @@
 				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
 			</panel>
 		</panel-tabs>
+		<panel>
+			<field name="partnerAttrs" colSpan="12" />
+		</panel>
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -336,6 +339,9 @@
 		<panel name="notes" title="Notes" colSpan="12" sidebar="true">
             <field name="description" showTitle="false" colSpan="12" height="6"/>
         </panel>
+        <panel>
+			<field name="contactAttrs" colSpan="12" />
+		</panel>
 	</form>
 	
 	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner"> 

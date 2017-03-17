@@ -125,6 +125,10 @@
 		  <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
 		</panel>
 		
+		<panel>
+			<field name="opportunityAttrs" colSpan="12" />
+		</panel>
+		
 		<panel-mail>
 		  <mail-messages limit="4" />
 		  <mail-followers />

@@ -61,6 +61,11 @@
 			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
+		
+		<panel>
+			<field name="expenseLineAttrs" colSpan="12" />
+		</panel>
+		
 	</form>
 	
 	<form name="expense-line-kilometric-form" title="Kilometric Allowance" model="com.axelor.apps.hr.db.ExpenseLine"

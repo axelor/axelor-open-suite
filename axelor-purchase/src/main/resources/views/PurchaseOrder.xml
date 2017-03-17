@@ -130,7 +130,11 @@
 				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form"/>
 			</panel>		
 		</panel-tabs>
-	  
+	  	
+	  	<panel>
+			<field name="poAttrs" colSpan="12" />
+		</panel>
+		
 		<panel sidebar="true" name="actions" title="Actions">
 			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
