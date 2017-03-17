@@ -45,7 +45,7 @@
 	</action-method>
 	
 	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">
-		<attribute name="domain" for="bankDetailsSet" expr="eval: &quot; self.bank.id = ${ebicsBank?.bank?.id}"/>
+		<attribute name="domain" for="bankDetailsSet" expr="eval: &quot; self.bank.id = ${ebicsBank?.bank?.id} &quot;"/>
 	</action-attrs>
 	
 	<action-view name="action-ebics-partner-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">
