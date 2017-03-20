@@ -198,7 +198,8 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			
 			bankOrderLineService.checkPreconditions(bankOrderLine);
 			totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
-			
+			bankOrderLineService.checkBankDetails(bankOrderLine);
+
 		}
 		if (!totalAmount.equals(arithmeticTotal))  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID), IException.INCONSISTENCY);
@@ -303,15 +304,15 @@ public class BankOrderServiceImpl implements BankOrderService  {
 
 	@Transactional
 	public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails) {
-				EbicsPartner partner = Beans.get(EbicsPartnerRepository.class).all()
-						.filter("? MEMBER OF self.bankDetailsSet", bankDetails)
-						.fetchOne();
-				if (partner != null) {
-					return partner.getDefaultSignatoryEbicsUser();
-				}
-				else {
-					return null;
-				}
+		EbicsPartner partner = Beans.get(EbicsPartnerRepository.class).all()
+				.filter("? MEMBER OF self.bankDetailsSet", bankDetails)
+				.fetchOne();
+		if (partner != null) {
+			return partner.getDefaultSignatoryEbicsUser();
+		}
+		else {
+			return null;
+		}
 	}
 
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {

@@ -28,6 +28,12 @@
 			<button name="getBankStatementButton" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bankStatementFileFormatSet"/>
 			<button name="showBankStatementButton" title="Show the bank statements" onClick="action-ebics-partner-view-show-bank-statement"/>
 		</panel>
+
+		<panel title="Filter Receiver Bank Details">
+			<field name="filterReceiverBD"/>
+			<field name="orderTypeSelect" showIf="filterReceiverBD"/>
+			<field name="receiverBankDetailsSet" colSpan="12" showIf="filterReceiverBD"/>
+		</panel>
 		
 		<panel title="Payment Status Report">
 			<field name="usePSR" widget="boolean-switch"/>

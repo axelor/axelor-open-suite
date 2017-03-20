@@ -236,8 +236,10 @@ public class BankOrderController {
 
 	public void fillSignatoryEbicsUser(ActionRequest request, ActionResponse response) {
 		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-		EbicsUser ebicsUser = bankOrderService.getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
-		bankOrder.setSignatoryEbicsUser(ebicsUser);
-		response.setValues(bankOrder);
+		if (bankOrder.getSenderBankDetails() != null) {
+			EbicsUser ebicsUser = bankOrderService.getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
+			bankOrder.setSignatoryEbicsUser(ebicsUser);
+			response.setValues(bankOrder);
+		}
 	}
 }

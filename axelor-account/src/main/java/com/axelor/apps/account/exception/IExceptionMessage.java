@@ -608,7 +608,8 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_LINE_PARTNER_MISSING = /*$$(*/ "Please select a partner for the bank order lines inserted" /*)*/;
 	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
 	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
-	
+	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
+
 	
 	/**
 	 * BankOrder merge

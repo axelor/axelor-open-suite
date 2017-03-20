@@ -19,6 +19,9 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.inject.Beans;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,6 +149,23 @@ public class BankOrderLineService {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE), IException.INCONSISTENCY);
 		}
 		
+	}
+
+	public void checkBankDetails(BankOrderLine bankOrderLine) throws AxelorException {
+	    BankDetails bankDetails = bankOrderLine.getBankOrder().getSenderBankDetails();
+	    if (bankDetails == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
+		}
+		EbicsPartner partner = Beans.get(EbicsPartnerRepository.class).all()
+				.filter("? MEMBER OF self.bankDetailsSet", bankDetails)
+				.fetchOne();
+	    if (partner.getFilterReceiverBD() &&
+			(partner.getOrderTypeSelect() == bankOrderLine.getBankOrder().getOrderTypeSelect())
+			) {
+			if (!partner.getReceiverBankDetailsSet().contains(bankOrderLine.getReceiverBankDetails())) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN), IException.INCONSISTENCY);
+			}
+		}
 	}
 	
 	
