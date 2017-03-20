@@ -591,8 +591,8 @@ public class EbicsXmlFactory {
   {
     AuthenticationPubKeyInfoType newAuthenticationPubKeyInfoType = AuthenticationPubKeyInfoType.Factory.newInstance();
     newAuthenticationPubKeyInfoType.setAuthenticationVersion(authenticationVersion);
-    newAuthenticationPubKeyInfoType.setPubKeyValue(pubKeyValue);
     newAuthenticationPubKeyInfoType.setX509Data(x509Data);
+    newAuthenticationPubKeyInfoType.setPubKeyValue(pubKeyValue);
 
     return newAuthenticationPubKeyInfoType;
   }
@@ -610,9 +610,9 @@ public class EbicsXmlFactory {
   {
     EncryptionPubKeyInfoType newEncryptionPubKeyInfoType = EncryptionPubKeyInfoType.Factory.newInstance();
     newEncryptionPubKeyInfoType.setEncryptionVersion(encryptionVersion);
-    newEncryptionPubKeyInfoType.setPubKeyValue(pubKeyValue);
     newEncryptionPubKeyInfoType.setX509Data(x509Data);
-
+    newEncryptionPubKeyInfoType.setPubKeyValue(pubKeyValue);
+    
     return newEncryptionPubKeyInfoType;
   }
 
