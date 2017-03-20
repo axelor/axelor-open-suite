@@ -93,7 +93,7 @@ public class HttpRequestSender {
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
     String url = bank.getUrl();
     if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    	throw new AxelorException(I18n.get("Invalid bank url. It must be start with http:// or http://"),1);
+    	throw new AxelorException(I18n.get("Invalid bank url. It must be start with http:// or https://"),1);
     }
     
     if (bank.getProtocolSelect().equals("ssl")) {
