@@ -38,7 +38,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
-import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.openssl.PEMReader;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
@@ -436,9 +436,9 @@ public class PayboxService {
      */
      private PublicKey getPubKey(String pubKeyPath) throws Exception  {
 
- 		PemReader reader = new PemReader(new FileReader(pubKeyPath));
+ 		PEMReader reader = new PEMReader(new FileReader(pubKeyPath));
 
- 		byte[] pubKey = reader.readPemObject().getContent();
+ 		byte[] pubKey = ((X509EncodedKeySpec)reader.readObject()).getEncoded();
 
  		reader.close();
 

@@ -11,3 +11,7 @@ module {
 	// module dependencies
 	module "modules:axelor-account"
 }
+
+dependencies {
+	compile files("src/main/lib/ebics-1.0.2.jar")
+}
