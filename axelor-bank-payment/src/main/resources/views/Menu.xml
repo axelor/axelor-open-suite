@@ -221,7 +221,7 @@
 		<view type="form" name="ebics-transfer-state-form"/>
 	</action-view>
 	
-	<action-view name="account.conf.ebics.ebics.certificate" title="Ebics certficate"
+	<action-view name="account.conf.ebics.ebics.certificate" title="Ebics certificate"
 		model="com.axelor.apps.bankpayment.db.EbicsCertificate" >
 		<view type="grid" name="ebics-certificate-grid" />
 		<view type="form" name="ebics-certificate-form"/>
