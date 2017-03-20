@@ -115,7 +115,6 @@
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
     
       <!--  Bank orders page -->
-  	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
    	<many-to-one name="internalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for internal order (unique company)"/>
     <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (mulitple company)"/>
   	

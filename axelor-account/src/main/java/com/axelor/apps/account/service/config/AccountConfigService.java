@@ -612,15 +612,5 @@ public class AccountConfigService {
 		}
 		return accountConfig.getExportFileName();
 	}
-	
-	
-	/******************************** BANK ORDERS *********************************************/
-	public User getDefaultSignatoryUser(AccountConfig accountConfig) throws AxelorException  {
-		if(accountConfig.getDefaultSignatoryUser() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		return accountConfig.getDefaultSignatoryUser();
-	}
-	
+
 }
