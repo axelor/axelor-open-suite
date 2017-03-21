@@ -89,6 +89,7 @@
 		<panel name="main" >
 			<field name="invoiceId"/>
 			
+	    	<field name="statusSelect" widget="NavSelect"/>
 			<panel itemSpan="12" colSpan="6">
 	    		 <field name="operationTypeSelect" selection="iinvoice.operation.type.select" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange">
 			        <viewer>

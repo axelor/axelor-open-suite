@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -34,28 +34,28 @@ import com.google.inject.persist.Transactional;
 public class SaleOrderProjectService {
 
 	@Inject
-	protected ProjectTaskBusinessService projectTaskBusinessService;
+	protected ProjectBusinessService projectBusinessService;
 	
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
 
 	@Transactional
-	public ProjectTask generateProject(SaleOrder saleOrder){
-		ProjectTask project = projectTaskBusinessService.generateProject(saleOrder);
+	public Project generateProject(SaleOrder saleOrder){
+		Project project = projectBusinessService.generateProject(saleOrder);
 		saleOrderRepo.save(saleOrder);
 		return project;
 	}
 
 	@Transactional
-	public List<Long> generateTasks(SaleOrder saleOrder){
+	public List<Long> generateProjects(SaleOrder saleOrder){
 		List<Long> listId = new ArrayList<Long>();
 		List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 		for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 			Product product = saleOrderLine.getProduct();
 			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE){
-				ProjectTask task = projectTaskBusinessService.generateTask(saleOrderLine, saleOrder.getProject());
+				Project project = projectBusinessService.generate(saleOrderLine, saleOrder.getProject());
 				Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
-				listId.add(task.getId());
+				listId.add(project.getId());
 			}
 		}
 		return listId;

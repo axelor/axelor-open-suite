@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Subscription;
@@ -93,11 +93,11 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 	@Transactional
 	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,
-			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder,ProjectTask project)
+			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder,Project project)
 					throws AxelorException {
 		Invoice invoiceMerged = super.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition,saleOrder);
 		if (project != null){
-			if(!appBusinessProjectService.getAppBusinessProject().getProjectTaskInvoiceLines()){
+			if(!appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()){
 				invoiceMerged.setProject(project);
 				for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()){
 					invoiceLine.setProject(project);

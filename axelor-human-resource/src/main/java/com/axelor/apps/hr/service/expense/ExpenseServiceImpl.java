@@ -69,8 +69,8 @@ import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -449,7 +449,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseType").toString()));
 		if(user != null){
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
@@ -464,7 +464,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseProduct(product);
 			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
-			expenseLine.setProjectTask(projectTask);
+			expenseLine.setProject(project);
 			expenseLine.setUser(user);
 			expenseLine.setTotalAmount(new BigDecimal(request.getData().get("unTaxTotal").toString()));
 			expenseLine.setTotalTax(new BigDecimal(request.getData().get("taxTotal").toString()));
@@ -521,8 +521,8 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	 		}
 	 		ExpenseLine expenseLine = new ExpenseLine();
 	 		if (request.getData().get("project") != null) {
-	 			ProjectTaskRepository projectTaskRepo = Beans.get(ProjectTaskRepository.class);
-	 			expenseLine.setProjectTask(projectTaskRepo.find(Long.parseLong(request.getData().get("project").toString())));
+	 			ProjectRepository projectTaskRepo = Beans.get(ProjectRepository.class);
+	 			expenseLine.setProject(projectTaskRepo.find(Long.parseLong(request.getData().get("project").toString())));
 	 		}
 	 		expenseLine.setDistance(new BigDecimal(request.getData().get("nbrKm").toString()));
 	 		expenseLine.setFromCity(request.getData().get("cityFrom").toString());

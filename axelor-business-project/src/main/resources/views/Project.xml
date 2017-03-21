@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<action-method name="action-project-method-print-project">
+		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printProject"/>
+	</action-method>
+	
+	<action-attrs id="business-project-action-project-project-default" name="action-project-project-default" model="com.axelor.apps.project.db.Project">
+		<attribute name="value" for="typeSelect" expr="eval:'project'" />
+		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>
+		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
+		<attribute name="value" for="product" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()"/>
+		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
+		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+		<attribute name="value" for="price" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
+		<attribute name="value" for="unit" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.unit" />
+		<attribute name="value" for="exTaxTotal" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
+	</action-attrs>
+	
+	<action-record id="business-project-action-project-default" name="action-project-default" model="com.axelor.apps.project.db.Project">
+		<field name="typeSelect" expr="eval:'task'" />
+		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="product" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()" if="projInvTypeSelect != 3 &amp;&amp; project?.projInvTypeSelect != 3"/>
+		<field name="fromDate" expr="eval: __date__"/>
+		<field name="assignedTo" expr="eval: __user__"/>
+		<field name="price" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
+		<field name="unit" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.unit" />
+		<field name="exTaxTotal" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
+	</action-record>
+	
+</object-views>

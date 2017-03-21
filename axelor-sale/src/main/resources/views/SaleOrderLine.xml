@@ -80,7 +80,7 @@
 		  		<field name="amountInvoiced" />
 		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 		   	</panel>
-			<panel name="projectTaskPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectTaskSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
@@ -192,8 +192,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-title-project-task">
-		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project').getProjectTaskLabel())"/>
-		<attribute name="title" for="projectTaskPanel" expr="eval:  __config__.app.getApp('project').getProjectTaskLabel()" if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project').getProjectTaskLabel())"/>
+		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project').getProjectLabel())"/>
+		<attribute name="title" for="projectPanel" expr="eval:  __config__.app.getApp('project').getProjectLabel()" if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project').getProjectLabel())"/>
 	
 	</action-attrs>
 	
@@ -265,7 +265,7 @@
 		<attribute name="hidden" for="subscription" expr="product?.productTypeSelect != 'subscriptable'"/>
 		<attribute name="hidden" for="settingsPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
 		<attribute name="hidden" for="deliveryPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
-		<attribute name="hidden" for="projectTaskPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="hidden" for="projectPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">

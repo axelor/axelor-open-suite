@@ -7,7 +7,7 @@
 
   <entity name="SaleOrderLine" lang="java">
   
-  	<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project" />
+  	<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
   	<integer name="progress" title="Progress"/>
   </entity>
 

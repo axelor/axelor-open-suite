@@ -9,7 +9,7 @@
     	title="Projects"
     	action="project.all"/>
 
-	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.Project">
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
 	    <view type="calendar" name="project-calendar"/>
@@ -18,11 +18,50 @@
 	    <domain>self.typeSelect = 'project'</domain>
 	</action-view>
 	
+	<!--  Team Apps -->
+	<menuitem name="project-folder" parent="menu-project-root" title="Project Folder" action="project.folder"/>
+	<action-view name="project.folder" title="Project Folder" model="com.axelor.apps.project.db.ProjectFolder">
+		<view type="grid" name="project-folder-grid"/>
+		<view type="form" name="project-folder-form"/>
+	</action-view>
+	
+	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks"/>
+	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.apps.project.db.Task">
+		<view type="grid" name="tasks-grid"/>
+		<view type="form" name="tasks-form"/>
+	</action-view>
+	
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations"/>
+	
+	<menuitem name="project-priority" parent="project-configurations" title="Priority" action="project-priority"/>
+	<action-view name="project-priority" title="Project Priority" model="com.axelor.apps.project.db.ProjectPriority">
+		<view type="grid" name="priority-grid"/>
+		<view type="form" name="priority-form"/>
+	</action-view>
+	
+	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
+	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">
+		<view type="grid" name="category-grid"/>
+		<view type="form" name="category-form"/>
+	</action-view>
+	
+	
+	
+	
+	<menuitem name="project-gantt" parent="menu-project-root"
+    	title="Project gantt"
+    	action="project.gantt"/>
+    	
+   	<action-view name="project.gantt" title="Project gantt" model="com.axelor.apps.project.db.Project">
+   		<view type="gantt" name="project-gantt"/>
+   		<view type="form" name="task-form"/>
+	</action-view>
+	
 	<menuitem name="task-all" parent="menu-project-root"
     	title="Tasks"
     	action="task.all"/>
 
-	<action-view name="task.all" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+	<action-view name="task.all" title="Tasks" model="com.axelor.apps.project.db.Project">
     	<view type="kanban" name="task-kanban"/>
     	<view type="grid" name="task-grid"/>
 	    <view type="form" name="task-form"/>

@@ -7,7 +7,7 @@
 
 	<entity name="ElementsToInvoice" cachable="true">
         
-		<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
+		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 		<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"/>
 		<date name="date" column="date_val" title="Date"/>
        	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>

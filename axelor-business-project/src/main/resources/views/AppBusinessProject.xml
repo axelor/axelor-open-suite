@@ -7,11 +7,11 @@
 		<panel>
 			<field name="generateProjectOrder" widget="boolean-switch"/>
 			<field name="automaticProject" widget="boolean-switch"/>
-			<field name="projectTaskSaleOrderLines" widget="boolean-switch"/>
-			<field name="projectTaskPurchaseOrderLines" widget="boolean-switch"/>
-			<field name="projectTaskInvoiceLines" widget="boolean-switch"/>
-			<field name="projectTaskLabel"/>
-			<field name="productInvoicingProjectTask" canNew="true"/>
+			<field name="projectSaleOrderLines" widget="boolean-switch"/>
+			<field name="projectPurchaseOrderLines" widget="boolean-switch"/>
+			<field name="projectInvoiceLines" widget="boolean-switch"/>
+			<field name="projectLabel"/>
+			<field name="productInvoicingProject" canNew="true"/>
 			<field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>

@@ -5,9 +5,9 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-	<entity name="ProjectTask" cachable="true">
+	<entity name="Project" cachable="true">
         
-	  	<one-to-many name="productionOrderList" ref="com.axelor.apps.production.db.ProductionOrder" title="Production orders" mappedBy="projectTask"/>
+	  	<one-to-many name="productionOrderList" ref="com.axelor.apps.production.db.ProductionOrder" title="Production orders" mappedBy="project"/>
 	
 	</entity>
   

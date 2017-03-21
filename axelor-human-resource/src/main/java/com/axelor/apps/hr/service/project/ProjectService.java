@@ -20,12 +20,12 @@ package com.axelor.apps.hr.service.project;
 import java.util.List;
 
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.google.inject.persist.Transactional;
 
-public interface ProjectTaskService {
+public interface ProjectService {
 
 	@Transactional
-	public List<TimesheetLine> computeVisibleDuration(ProjectTask project);
+	public List<TimesheetLine> computeVisibleDuration(Project project);
 	public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList);
 }

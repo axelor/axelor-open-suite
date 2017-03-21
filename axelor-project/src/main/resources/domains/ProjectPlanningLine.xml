@@ -9,7 +9,7 @@
       
      	
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" readonly="true" column="user_id"/>
-      <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task" readonly="true"/>
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" readonly="true"/>
       <integer name="year" title="Year"/>
       <integer name="week" title="Week"/>
       <decimal name="monday" precision="4" scale="1"/>

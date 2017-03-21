@@ -26,17 +26,17 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl  {
 	
 
-	public ProductionOrder createProductionOrder(ProjectTask projectTask, boolean isToInvoice) throws AxelorException  {
+	public ProductionOrder createProductionOrder(Project project, boolean isToInvoice) throws AxelorException  {
 
 		ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
-		productionOrder.setProjectTask(projectTask);
+		productionOrder.setProject(project);
 
 		return productionOrder;
 
@@ -44,9 +44,9 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, ProjectTask projectTask, LocalDateTime startDate) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project project, LocalDateTime startDate) throws AxelorException  {
 
-		ProductionOrder productionOrder = this.createProductionOrder(projectTask, false);
+		ProductionOrder productionOrder = this.createProductionOrder(project, false);
 
 		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
 

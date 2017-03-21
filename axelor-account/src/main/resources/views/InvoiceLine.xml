@@ -53,7 +53,7 @@
     		<panel name="description" title="Description">
     			<field name="description" colSpan="12" widget="html"/>
     		</panel>
-    		<panel name="projectTaskPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project" >
+    		<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Project/Task" if-module="axelor-business-project" >
 				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel name="subscriptionPanel" title="Subscription">
@@ -164,8 +164,8 @@
 	
 	
 	<action-attrs name="action-invoice-line-attrs-show-elements">
-		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
-		<attribute name="title" for="project" expr="eval:  __config__.app.getApp('project').getProjectTaskLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
+		<attribute name="title" for="projectPanel" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+		<attribute name="title" for="project" expr="eval:  __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="hidden" for="subscriptionPanel" expr="eval: _parent?.isSubscription"/>
 		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent?.operationTypeSelect != 3 &amp;&amp; _parent?.operationTypeSelect != 4"/>
 		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2"/>

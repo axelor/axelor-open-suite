@@ -43,8 +43,8 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -73,7 +73,7 @@ public class TimesheetController {
 	@Inject
 	private Provider<ProductRepository> productRepoProvider;
 	@Inject
-	private Provider<ProjectTaskRepository> projectTaskRepoProvider;
+	private Provider<ProjectRepository> projectRepoProvider;
 	
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
@@ -97,8 +97,8 @@ public class TimesheetController {
 		if(context.get("logTime") != null)
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
-		Map<String, Object> projectTaskContext = (Map<String, Object>) context.get("projectTask");
-		ProjectTask projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
+		Project project = projectRepoProvider.get().find(((Integer) projectContext.get("id")).longValue());
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
@@ -106,7 +106,7 @@ public class TimesheetController {
 			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
 			
 		
-		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, projectTask, product);
+		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
 		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
 	}
 

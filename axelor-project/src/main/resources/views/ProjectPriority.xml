@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	
+	<grid name="priority-grid" title="Priority" model="com.axelor.apps.project.db.ProjectPriority">
+		<field name="name"/>
+		<field name="color"/>
+		<field name="priorityNumber"/>
+	</grid>
+	
+	<form title="Priority" name="priority-form"  model="com.axelor.apps.project.db.ProjectPriority">
+		<panel>
+			<field name="name"/>
+		<field name="color"/>
+		<field name="priorityNumber"/>
+		</panel>
+		
+	</form>
+	
+</object-views>

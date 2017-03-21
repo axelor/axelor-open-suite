@@ -24,40 +24,40 @@ import java.time.LocalDateTime;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.inject.Beans;
 
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService{
 	
 	
 	@Override
-	public void setLines(InvoicingProject invoicingProject,ProjectTask projectTask, int counter){
+	public void setLines(InvoicingProject invoicingProject,Project project, int counter){
 		
-		if(counter > ProjectTaskService.MAX_LEVEL_OF_PROJECT)  {  return;  }
+		if(counter > ProjectService.MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
 		
-		this.fillLines(invoicingProject, projectTask);
-		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
+		this.fillLines(invoicingProject, project);
+		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
 
-		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
-			this.setLines(invoicingProject, projectTaskChild, counter);
+		for (Project projectChild : projectChildrenList) {
+			this.setLines(invoicingProject, projectChild, counter);
 		}
 		return;
 	}
 	
 	@Override
-	public void fillLines(InvoicingProject invoicingProject,ProjectTask projectTask){
-		super.fillLines(invoicingProject, projectTask);
-		if(projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE || projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)  { 
+	public void fillLines(InvoicingProject invoicingProject,Project project){
+		super.fillLines(invoicingProject, project);
+		if(project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)  { 
 			LocalDateTime deadlineDateToDateTime = null;
 			
 			if (invoicingProject.getDeadlineDate() != null){
 				deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
 			}
 			invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
-					.all().filter("self.productionOrder.projectTask = ?1 AND (self.realStartDateT < ?2 or ?3 is null)", projectTask, deadlineDateToDateTime, invoicingProject.getDeadlineDate()).fetch());
+					.all().filter("self.productionOrder.project = ?1 AND (self.realStartDateT < ?2 or ?3 is null)", project, deadlineDateToDateTime, invoicingProject.getDeadlineDate()).fetch());
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 		invoicingProject.clearLogTimesSet();
 		invoicingProject.clearExpenseLineSet();
 		invoicingProject.clearElementsToInvoiceSet();
-		invoicingProject.clearProjectTaskSet();
+		invoicingProject.clearProjectSet();
 		invoicingProject.clearManufOrderSet();
 	}
 	

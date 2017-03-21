@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -37,27 +37,27 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class ProjectTaskController {
+public class ProjectController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	
 	@Inject
-	private ProjectTaskService projectTaskService;
+	private ProjectService projectService;
 	
-	public void printProjectTask(ActionRequest request,ActionResponse response) throws AxelorException  {
+	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
 
-		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+		Project project = request.getContext().asType(Project.class);
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
-		String name = I18n.get("Project Task") + " " + projectTask.getCode();
+		String name = I18n.get("Project") + " " + project.getCode();
 		
-		String fileLink = ReportFactory.createReport(IReport.PROJECT_TASK, name+"-${date}")
-				.addParam("ProjectTaskId", projectTask.getId())
+		String fileLink = ReportFactory.createReport(IReport.PROJECT, name+"-${date}")
+				.addParam("ProjectId", project.getId())
 				.addParam("Locale", language)
-				.addModel(projectTask)
+				.addModel(project)
 				.generate()
 				.getFileLink();
 
@@ -70,11 +70,11 @@ public class ProjectTaskController {
 
 	public void computeProgress(ActionRequest request,ActionResponse response){
 
-		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+		Project project = request.getContext().asType(Project.class);
 		
 		BigDecimal duration = BigDecimal.ZERO;
-		if(BigDecimal.ZERO.compareTo(projectTask.getDuration()) != 0){
-			duration = projectTask.getTimeSpent().add(projectTask.getLeadDelay()).divide(projectTask.getDuration(), 2, java.math.RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+		if(BigDecimal.ZERO.compareTo(project.getDuration()) != 0){
+			duration = project.getTimeSpent().add(project.getLeadDelay()).divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP).multiply(new BigDecimal(100));
 		}
 		
 		if(duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1){
@@ -86,9 +86,9 @@ public class ProjectTaskController {
 	}
 
 	public void computeDurationFromChildren(ActionRequest request, ActionResponse response)  {
-		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+		Project project = request.getContext().asType(Project.class);
 
-		BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
+		BigDecimal duration = projectService.computeDurationFromChildren(project.getId());
 
 		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
 
