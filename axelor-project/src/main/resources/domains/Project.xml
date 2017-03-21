@@ -10,7 +10,7 @@
       <integer name="importId"/>
       
       
-      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+     	 <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
       
       
       <many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
@@ -18,7 +18,10 @@
 	  <string name="name" title="Name" required="true"/>
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  <string name="typeSelect" selection="project.task.type.select" title="Type" />
-	  <integer name="statusSelect" selection="project.task.status.select" title="Status" default="1"/>
+	  <integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
+	  <many-to-many name="priorities" ref="com.axelor.apps.project.db.ProjectPriority" title="Priorities"/>
+	  <many-to-many name="categories" ref="com.axelor.apps.project.db.ProjectCategory" title="Categories"/>
+	  
 	  
 	  <string name="code" title="Code" />
 	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>

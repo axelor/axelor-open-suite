@@ -10,25 +10,93 @@
 		<field name="membersUserSet"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
-		<field name="status"/>
+		<field name="statusSelect"/>
 		<field name="priority"/>
+		<field name="category"/>
 	</grid>
 	
-	<form title="Tasks" name="tasks-form"  model="com.axelor.apps.project.db.Task">
-		<panel>
-			<field name="sequence" readonly="true"/>
-			<spacer/>
-			<field name="name"/>
-			<field name="parentTask"/>
-			<field name="status"/>
-			<field name="priority"/>
-			<field name="description" colSpan="12" widget="html"/>
-			<field name="fromDate"/>
-			<field name="toDate"/>
-			
-			<field name="membersUserSet" colSpan="12"/>
+	<form title="Tasks" name="tasks-form"  model="com.axelor.apps.project.db.Task" onLoad="action-task-record-project-configurations">
+		<toolbar>
+			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" />
+			<button name="start" help="Start" icon="fa-play"/>
+			<button name="accept" help="Validate" icon="fa-check"/>
+			<button name="stop" help="Finish" icon="fa-power-off"/>
+		</toolbar>
+		
+		
+		<panel name="main" colSpan="12">
+			<field name="sequence" title="Ticket N°" colSpan="3" readonly="true"/>
+			<field name="name" colSpan="9" placeholder="Subject"/>
+			<field name="parentTask" colSpan="6"/>
+			<field name="project" colSpan="6" onChange="action-task-record-project-configurations"/>
 		</panel>
 		
+		
+		<panel readonlyIf="statusSelect == 25">
+			<panel name="context" title="Context" colSpan="12">
+				<field name="assignedTo" form-view="user-form" grid-view="user-grid" colSpan="6"/>
+				<spacer/>
+				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
+				<field name="createdOn" title="Created on" colSpan="6"/>
+			</panel>
+			<panel title=" " colSpan="12">
+				<field name="fromDate" colSpan="3"/>
+				<field name="duration" colSpan="3" widget="duration" x-big="true"/>
+				<field name="toDate" colSpan="3"/>
+				<field name="limitDateT" colSpan="3"/>
+			</panel>
+			<panel title=" " colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+			</panel>
+		</panel>
+		
+		<panel name="taskTree" title="Task Tree">
+				<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
+			</panel>
+		
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="statusSelect" colSpan="3"/>
+			<field name="priority" colSpan="3"/>
+			<field name="category" colSpan="6"/>
+			<field name="progressSelect" colSpan="12" widget="SelectProgress" />
+	    </panel>
+		
 	</form>
+	
+	
+	
+	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.apps.project.db.Task">	
+		<view type="tree" name="task-tree"/>
+    	<view type="form" name="tasks-form"/>
+    	<domain>self.task.id = :id</domain>
+     	<context name="id" expr="eval: id"/>
+	</action-view>
+	
+	<tree name="task-tree" title="Tasks">
+    	
+    	<column name="name" type="string"/>
+    	<column name="assignedTo" type="reference"/>
+    	<column name="progress" type="decimal"/>
+		
+		<node model="com.axelor.apps.project.db.Task" domain="self.task.id = :id">
+			<field name="name" as="name"/>
+			<field name="assignedTo" as="assignedTo"/>
+			<field name="progress" as="progress"/>
+		</node>    	
+		
+		<node model="com.axelor.apps.project.db.Task" parent="parentTask" draggable="true">
+			<field name="name" as="name"/>
+			<field name="assignedTo" as="assignedTo"/>
+			<field name="progress" as="progress"/>
+		</node>
+    
+	</tree>
+	
+	
+	<action-record name="action-task-record-project-configurations" model="com.axelor.apps.project.db.Task">
+		<field name="priority" expr="eval: __repo__.of(Project).all().filter('self.project = ?', project).fetchAll()"/>
+		<field name="category" expr="eval: self.project.categories"/>
+	</action-record>
+	
 	
 </object-views>

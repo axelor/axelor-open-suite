@@ -5,17 +5,15 @@
 	
 	<grid name="project-folder-grid" title="Projects Folder" model="com.axelor.apps.project.db.ProjectFolder">
 		<field name="name"/>
-		<field name="description"/>
-		<field name="sequence"/>
+		<field name="description" widget="html"/>
 	</grid>
 	
 	<form title="Projects Folder" name="project-folder-form"  model="com.axelor.apps.project.db.ProjectFolder">
 		<panel>
-			<field name="sequence" readonly="true"/>
-			<spacer/>
 			<field name="name"/>
 			<spacer/>
 			<field name="description" colSpan="12" widget="html"/>
+			<spacer/>
 			<field name="membersUserSet" colSpan="12"/>
 			<field name="projectList" colSpan="12"/>
 		</panel>

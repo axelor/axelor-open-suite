@@ -8,7 +8,7 @@
 		<option value="task">Task</option>
 	</selection>
 	
-	<selection name="project.task.status.select">
+	<selection name="project.status.select">
 		<option value="1">Planned</option>
 		<option value="2">In Progress</option>
 		<option value="3">Finished</option>
@@ -25,5 +25,14 @@
 	<selection name="app.type.select" id="project.app.type.select">
 		<option value="project">Project</option>
 	</selection>
+	
+	<selection name="task.status.select">
+		<option value="1">New</option>
+		<option value="2">In Progress</option>
+		<option value="3">Resolved</option>
+		<option value="4">Feedback</option>
+		<option value="5">Closed</option>
+	</selection>
+	
 	
 </object-views>

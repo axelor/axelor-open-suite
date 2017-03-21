@@ -31,17 +31,20 @@
 		<view type="form" name="tasks-form"/>
 	</action-view>
 	
-	<menuitem name="project-status" parent="menu-project-root" title="Status" action="project-status"/>
-	<action-view name="project-status" title="Project Status" model="com.axelor.apps.project.db.ProjectStatus">
-		<view type="grid" name="project-status-grid"/>
-		<view type="form" name="project-status-form"/>
-	</action-view>
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations"/>
 	
-	<menuitem name="project-priority" parent="menu-project-root" title="Priority" action="project-priority"/>
+	<menuitem name="project-priority" parent="project-configurations" title="Priority" action="project-priority"/>
 	<action-view name="project-priority" title="Project Priority" model="com.axelor.apps.project.db.ProjectPriority">
 		<view type="grid" name="priority-grid"/>
 		<view type="form" name="priority-form"/>
 	</action-view>
+	
+	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
+	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">
+		<view type="grid" name="category-grid"/>
+		<view type="form" name="category-form"/>
+	</action-view>
+	
 	
 	
 	
