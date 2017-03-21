@@ -101,7 +101,7 @@ class WkfNodeService {
 	 */
 	protected ActionGroup process() {
 
-		MetaModel metaModel = wkfService.workflow.getMetaModel();
+//		MetaModel metaModel = wkfService.workflow.getMetaModel();
 		MetaField statusField = wkfService.workflow.getWkfField();
 		MetaSelect metaSelect = addMetaSelect(statusField);
 
@@ -109,7 +109,7 @@ class WkfNodeService {
 		String defaultValue = processNodes(metaSelect, statusField);
 		statusField.setDefaultString(defaultValue);
 
-		metaModel = saveModel(metaModel);
+//		metaModel = saveModel(metaModel);
 
 		if (!nodeActions.isEmpty()) {
 			String actionName = "action-group-" + wkfService.dasherizeModel

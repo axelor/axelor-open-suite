@@ -25,7 +25,6 @@ import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

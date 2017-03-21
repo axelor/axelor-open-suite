@@ -111,8 +111,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Inject
 	protected TemplateMessageService  templateMessageService;
 
-
-	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Override
@@ -540,6 +538,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				dataList.add(map);
 			}
 			response.setData(dataList);
+			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);
@@ -559,10 +558,11 @@ public class TimesheetServiceImpl implements TimesheetService{
 			if(timesheet == null){
 				timesheet = createTimesheet(user, date, date);
 			}
-			BigDecimal minutes = new BigDecimal(Duration.between(LocalTime.MIDNIGHT, LocalTime.parse(request.getData().get("duration").toString())).toMinutes());
-			createTimesheetLine(project, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
+			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
+			createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 			
 			Beans.get(TimesheetRepository.class).save(timesheet);
+			response.setTotal(1);
 		}
 	}
 	
@@ -636,6 +636,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		}
 	}
+
+
 }
 
 

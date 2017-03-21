@@ -4,39 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="invoice-root" title="Invoicing" order="-100"  if="__config__.app.isApp('invoice')"
-		icon="fa-file-text-o" groups="admins,ERP" icon-background="#31b4a9" />
+		icon="fa-file-text-o"  icon-background="#31b4a9" />
 		
-	<menuitem name="invoice-root-cust-invoice" parent="invoice-root-sale" order="-50"
-		title="New cust. invoice" action="invoice.root.cust.invoice" />
+	<menuitem name="invoice-root-custinvoices" parent="invoice-root" order="5"
+		title="Cust. Invoices" action="invoice.root.custinvoices" />
 
-	<action-view name="invoice.root.cust.invoice" title="New cust. invoice"
-		model="com.axelor.apps.account.db.Invoice">
-		<view type="form" name="invoice-form"/>
-		<view type="grid" name="invoice-grid"/>
-		<domain>self.operationTypeSelect = 3 OR self.operationTypeSelect = 4</domain>
-		<context name="_operationTypeSelect" expr="eval:3"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	</action-view>	
-	
-	<menuitem name="invoice-root-sup-invoice" parent="invoice-root-purchase"
-		title="New sup. invoice" action="invoice.root.sup.invoice" />
-
-	<action-view name="invoice.root.sup.invoice" title="New sup. invoice"
-		model="com.axelor.apps.account.db.Invoice">
-		<view type="form" name="invoice-form"/>
-		<view type="grid" name="invoice-supplier-grid"/>
-		<domain>self.operationTypeSelect = 1 OR self.operationTypeSelect = 2</domain>
-		<context name="_operationTypeSelect" expr="eval:1"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	</action-view>	
-
-	<menuitem name="invoice-root-sale" parent="invoice-root"
-		title="Sales" />
-		
-	<menuitem name="invoice-root-sale-custinvoices" parent="invoice-root-sale" order="-40"
-		title="Cust. Invoices" action="invoice.root.sale.custinvoices" />
-
-	<action-view name="invoice.root.sale.custinvoices" title="Cust. Invoices"
+	<action-view name="invoice.root.custinvoices" title="Cust. Invoices"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -46,19 +19,10 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
-	<menuitem name="invoice-root-sale-custinvoices-lines" parent="invoice-root-sale" order="-30"
-		title="Cust. Invoices Lines" action="invoice.root.sale.custinvoices.lines" />
+	<menuitem name="invoice-root-custrefunds" parent="invoice-root" order="10"
+		title="Cust. Refunds" action="invoice.root.custrefunds" />
 
-	<action-view name="invoice.root.sale.custinvoices.lines" title="Cust. Invoices Lines"
-		model="com.axelor.apps.account.db.InvoiceLine">
-		<view type="grid" name="invoice-line-menu-grid"/>
-		<view type="form" name="invoice-line-menu-form"/>
-	</action-view>
-
-	<menuitem name="invoice-root-sale-custrefunds" parent="invoice-root-sale" order="-20"
-		title="Cust. Refunds" action="invoice.root.sale.custrefunds" />
-
-	<action-view name="invoice.root.sale.custrefunds" title="Cust. Refunds"
+	<action-view name="invoice.root.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -68,17 +32,7 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 			
-	<menuitem name="invoice-root-sale-mergecustinvoices" parent="invoice-root-sale" order="-10"
-		title="Merge Cust. Invoices" action="invoice.root.sale.mergecustinvoices" />
-		
-	<action-view name="invoice.root.sale.mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="customer-invoices-merge-form"/>
-	</action-view>
-		
-	<menuitem name="invoice-root-purchase" parent="invoice-root"
-		title="Purchases" />	
-		
-	<menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root-purchase"
+	<menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root" order="15"
 		title="Suppl. Invoices" action="invoice.root.purchase.supinvoices" />
 
 	<action-view name="invoice.root.purchase.supinvoices" title="Suppl. Invoices"
@@ -91,7 +45,7 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
-	<menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root-purchase"
+	<menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="20"
 		title="Suppl. Refunds" action="invoice.root.purchase.suprefunds" />
 
 	<action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
@@ -106,7 +60,7 @@
 		
 		
 	
-	<menuitem name="account-root-payment-schedule" parent="invoice-root"
+	<menuitem name="account-root-payment-schedule" parent="invoice-root" hidden="true"
         title="Payment Schedule" />
 
     <menuitem name="account-root-payment-schedule-payment-schedule"
@@ -132,11 +86,11 @@
     </action-view>
 	
 	
-	<menuitem name="invoice-root-report" parent="invoice-root"
+	<menuitem name="invoice-root-report" parent="invoice-root" order="50"
 		title="Reportings"/>
 
 	<menuitem name="account-root" title="Accounting" order="-90"  if="__config__.app.isApp('account')"
-		icon="fa-calculator" groups="admins,ERP" icon-background="#2fa042"/>
+		icon="fa-calculator"  icon-background="#2fa042"/>
 	
 	<menuitem name="account-root-move" parent="account-root"
 		title="Moves" />
@@ -755,22 +709,12 @@
 		<view type="form" name="accounting-batch-form"/>
 	</action-view>
 	
-	<menuitem name="admin-root-conf-account-config" parent="admin-root-conf"
-		title="Account configurations" action="admin.root.conf.account.config" />
-		
-	<action-view name="admin.root.conf.account.config" title="Account configurations"
-		model="com.axelor.apps.account.db.AccountConfig" >
-		<view type="grid" name="account-config-grid"/>
-		<view type="form" name="account-config-form"/>
-	</action-view>
-		
-	
-	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,ERP" top="true" left="false" order="-130" if="__config__.app.isApp('invoice')"/>
+	<menuitem name="top-invoice" title="Invoices/Refunds"  top="true" left="false" order="-130" if="__config__.app.isApp('invoice')"/>
 	<menuitem name="top-invoice-create-invoice" title="Create Invoice" top="true" parent="top-invoice" order="-100" action="top.invoice.new"/>
 	<action-view name="top.invoice.new" title="New Invoice" model="com.axelor.apps.account.db.Invoice">
 		<view type="form" name="invoice-form"/>
 	</action-view>
-	<menuitem name="top-invoice-all" order="-90" title="View Invoices/Refunds" action="top.invoice.all" parent="top-invoice" groups="admins,ERP" top="true" left="false"/>
+	<menuitem name="top-invoice-all" order="-90" title="View Invoices/Refunds" action="top.invoice.all" parent="top-invoice"  top="true" left="false"/>
 	
 	<action-view name="top.invoice.all" title="Invoices/Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -778,7 +722,7 @@
 		<view type="form" name="invoice-form" />
 	</action-view>
 		
-	<menuitem name="top-invoice-custinvoices" order="-80" title="View Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-invoice-custinvoices" order="-80" title="View Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice"  top="true" left="false"/>		
 	
 	<action-view name="top.invoice.custinvoices" title="Cust. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -789,7 +733,7 @@
 		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-custrefunds" order="-70" title="View Cust. Refunds" action="top.invoice.custrefunds" parent="top-invoice" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-invoice-custrefunds" order="-70" title="View Cust. Refunds" action="top.invoice.custrefunds" parent="top-invoice"  top="true" left="false"/>		
 	
 	<action-view name="top.invoice.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -800,7 +744,7 @@
 		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplinvoices" order="-60" title="View Suppl. Invoices" action="top.invoice.supplinvoices" parent="top-invoice" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-invoice-supplinvoices" order="-60" title="View Suppl. Invoices" action="top.invoice.supplinvoices" parent="top-invoice"  top="true" left="false"/>		
 	
 	<action-view name="top.invoice.supplinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -811,7 +755,7 @@
 		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplrefunds" order="-" title="View Suppl. Refunds" action="top.invoice.supplrefunds" parent="top-invoice" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-invoice-supplrefunds" order="-" title="View Suppl. Refunds" action="top.invoice.supplrefunds" parent="top-invoice"  top="true" left="false"/>		
 	
 	<action-view name="top.invoice.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -848,7 +792,7 @@
     title="Advanced" />
     
     <menuitem name="menu-account-sale-invoice-advanced" parent="menu-account-invoice-advanced" 
-    title="Sale Invoices"  action="account.sale.invoice.advanced.view" />
+    title="Turnover"  action="account.sale.invoice.advanced.view" />
     
     <action-view name="account.sale.invoice.advanced.view" title="Sale Invoices Details" model="com.axelor.apps.account.db.AssistantReportInvoice">
         <view type="grid" name="print-sale-invoices-details-grid"/>
@@ -857,15 +801,13 @@
     </action-view>
     
     <menuitem name="menu-account-purchase-invoice-advanced" parent="menu-account-invoice-advanced"
-    title="Purchase Invoices"  action="account.purchase.invoice.advanced.view"/>
+    title="Purchases Invoiced"  action="account.purchase.invoice.advanced.view"/>
     
     <action-view name="account.purchase.invoice.advanced.view" title="Purchase Invoices Details" model="com.axelor.apps.account.db.AssistantReportInvoice">
         <view type="grid" name="print-purchase-invoices-details-grid"/>
         <view type="form" name="print-purchase-invoices-details-form" /> 
         <domain>self.type = 2</domain> 
     </action-view>
-    
-    
     
 	
 	<menuitem name="menu-accounting-dashboard-1" parent="account-root-report" 
@@ -875,15 +817,15 @@
         <view type="dashboard" name="accounting.dashboard.sample" />        
     </action-view>
 	
-	<menuitem name="top-payments" title="Payments" groups="admins,ERP" top="true" left="false" if="__config__.app.isApp('invoice')"/>
+	<menuitem name="top-payments" title="Payments"  top="true" left="false" if="__config__.app.isApp('invoice')"/>
 	
 	<menuitem name="top-payments-create-payment" title="Create Payment" top="true" parent="top-payments" order="-100" action="top.payments.new"/>
 	<action-view name="top.payments.new" title="Create Payment" model="com.axelor.apps.account.db.PaymentVoucher">
 		<view type="form" name="payment-voucher-form"/>
 	</action-view>
-	<menuitem name="top-payments-all" order="-90" title="View Payments" groups="admins,ERP"  parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
+	<menuitem name="top-payments-all" order="-90" title="View Payments"   parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
 			
-	<menuitem name="top-payments-customers" order="-80" title="View Cust. Payments" parent="top-payments" action="top.payments.customers" groups="admins,ERP" top="true" left="false"/>
+	<menuitem name="top-payments-customers" order="-80" title="View Cust. Payments" parent="top-payments" action="top.payments.customers"  top="true" left="false"/>
 	
 	<action-view name="top.payments.customers"
 		title="Cust. Payments" model="com.axelor.apps.account.db.PaymentVoucher">
@@ -893,7 +835,7 @@
 		<domain>self.operationTypeSelect in (3,4)</domain>
 	</action-view>
 	
-	<menuitem name="top-payments-suppliers" order="-70" title="View Supplier Payments" parent="top-payments" action="top.payments.suppliers" groups="admins,ERP" top="true" left="false"/>
+	<menuitem name="top-payments-suppliers" order="-70" title="View Supplier Payments" parent="top-payments" action="top.payments.suppliers"  top="true" left="false"/>
 	
 	<action-view name="top.payments.suppliers"
 		title="Supplier Payments" model="com.axelor.apps.account.db.PaymentVoucher">
@@ -905,7 +847,7 @@
 	
 	<!-- Move template -->
 	
-	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard" groups="admins,ERP" top="true" />
+	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard"  top="true" />
 	
 	<action-view name="move.template.wizard"
 		title="Move From Template" model="com.axelor.apps.base.db.Wizard">
@@ -917,9 +859,9 @@
 	    <view-param name="show-toolbar" value="false" />
 	</action-view>
 	
-	<menuitem name="move-template-root" title="Move Templates" parent="account-conf" groups="admins,ERP" />
+	<menuitem name="move-template-root" title="Move Templates" parent="account-conf"  />
 	
-	<menuitem name="move-template" title="Move Templates" parent="move-template-root" action="move.template" groups="admins,ERP" top="true" />
+	<menuitem name="move-template" title="Move Templates" parent="move-template-root" action="move.template"  top="true" />
 	
 	<action-view name="move.template"
 		title="Move Templates" model="com.axelor.apps.account.db.MoveTemplate">
@@ -929,7 +871,7 @@
 	</action-view>
 
 
-	<menuitem name="move-template-line" title="Move Templates Lines" parent="move-template-root" action="move.template.line" groups="admins,ERP" top="true" />
+	<menuitem name="move-template-line" title="Move Templates Lines" parent="move-template-root" action="move.template.line"  top="true" />
 	
 	<action-view name="move.template.line"
 		title="Move Templates Lines" model="com.axelor.apps.account.db.MoveTemplateLine">
@@ -937,7 +879,7 @@
 		<view type="form" name="move-template-line-form"  />
 	</action-view>
 	
-	<menuitem name="move-template-type" title="Move Template Types" parent="move-template-root" action="move.template.type" groups="admins,ERP" top="true" />
+	<menuitem name="move-template-type" title="Move Template Types" parent="move-template-root" action="move.template.type"  top="true" />
 	
 	<action-view name="move.template.type"
 		title="Move Template Types" model="com.axelor.apps.account.db.MoveTemplateType">

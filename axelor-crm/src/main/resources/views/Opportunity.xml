@@ -125,6 +125,10 @@
 		  <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
 		</panel>
 		
+		<panel>
+			<field name="opportunityAttrs" colSpan="12" />
+		</panel>
+		
 		<panel-mail>
 		  <mail-messages limit="4" />
 		  <mail-followers />
@@ -132,14 +136,14 @@
  
 	</form>
  
-	<kanban columnBy="salesStageSelect" sequenceBy="id" onNew="opportunity.kanban.on.new,action-opportunity-group-new" limit="10"
+	<kanban columnBy="salesStageSelect" sequenceBy="salesStageSelect" onNew="opportunity.kanban.on.new,action-opportunity-group-new" limit="10"
 	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>
 		<field name="description"/>
 		<field name="probability"/>
 		<field name="expectedCloseDate"/>
 		<field name="user"/>
-		<field name="id"/>
+		<field name="salesStageSelect"/>
 		<hilite color="danger" if="probability &lt;= 25"/>
 		<hilite color="success" if="probability &gt;= 75"/>
 		<hilite color="info" if="probability &gt;= 50"/>

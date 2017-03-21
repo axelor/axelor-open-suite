@@ -135,6 +135,7 @@ public class ProjectBusinessService extends ProjectService{
 				}
 			}
 			response.setData(dataList);
+			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);

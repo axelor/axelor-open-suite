@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="forecast-root" title="Forecasts" order="-86"  if="__config__.app.isApp('cash-management')"
-		icon="fa-money" groups="admins,ERP" icon-background="#e0a83c"/>
+		icon="fa-money"  icon-background="#e0a83c"/>
 	
 	<menuitem name="forecast-root-forecast" order="10" parent="forecast-root"
 		title="Forecasts" action="forecast.root.forecast" />

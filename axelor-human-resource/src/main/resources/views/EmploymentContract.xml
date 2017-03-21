@@ -5,7 +5,7 @@
 	<grid name="employment-contract-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
         <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
         <field name="employee"/>
-        <field name="contractTypeSelect"/>
+        <field name="contractType"/>
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="amendmentTypeSelect"/>
@@ -14,7 +14,7 @@
     <grid name="employment-contract-employee-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
         <hilite color="success" if="$moment(todayDate).diff(endDate) &lt; 0"/>
         <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
-        <field name="contractTypeSelect"/>
+        <field name="contractType"/>
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="amendmentTypeSelect"/>
@@ -40,7 +40,7 @@
 		</panel-stack>  
 		<panel name="main">
 			<field name="signatureDate" colSpan="4"/>
-			<field name="contractTypeSelect" onChange="action-employment-contract-record-contract-type-on-change" colSpan="4"/>
+			<field name="contractType" colSpan="4"/>
 			<field name="executiveStatusSelect" colSpan="4"/>
 			<panel name="organization" title="Organization" colSpan="12">
 				<field name="startDate" colSpan="3"/>
@@ -67,9 +67,9 @@
 		</panel>
     </form>
 	
-    <action-record name="action-employment-contract-record-contract-type-on-change" model="com.axelor.apps.hr.db.EmploymentContract">
-        <field name="duration" expr="35" if="!duration &amp;&amp; (contractTypeSelect == 1 || contractTypeSelect == 3)"/>
-    </action-record>
+<!--     <action-record name="action-employment-contract-record-contract-type-on-change" model="com.axelor.apps.hr.db.EmploymentContract"> -->
+<!--         <field name="duration" expr="35" if="!duration &amp;&amp; (contractTypeSelect == 1 || contractTypeSelect == 3)"/> -->
+<!--     </action-record> -->
 
     <action-record name="action-employment-contract-record-on-new" model="com.axelor.apps.hr.db.EmploymentContract">
         <field name="signatureDate" expr="eval: __date__"/>

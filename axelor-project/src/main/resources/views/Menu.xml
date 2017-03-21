@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="menu-project-root" order="-103" title="Project" icon="fa-tasks"  if="__config__.app.isApp('project')"
-	    groups="admins,ERP" icon-background="#3f6bb9"/> 	
+	     icon-background="#3f6bb9"/> 	
 	    
 	<menuitem name="project-all" parent="menu-project-root"
     	title="Projects"
@@ -14,9 +14,9 @@
 	    <view type="form" name="project-form"/>
 	    <view type="calendar" name="project-calendar"/>
 	    <view type="kanban" name="project-kanban"/>
+	    <view type="gantt" name="project-gantt"/>
 	    <domain>self.typeSelect = 'project'</domain>
 	</action-view>
-	
 	
 	<!--  Team Apps -->
 	<menuitem name="project-folder" parent="menu-project-root" title="Project Folder" action="project.folder"/>
@@ -68,9 +68,7 @@
 	    <domain>self.typeSelect = 'task'</domain>
 	</action-view>
 	
-	<menuitem name="menu-project-planning" parent="menu-project-root" title="Project Planning" /> 
-	
-	<menuitem name="my-planning" parent="menu-project-planning"
+	<menuitem name="my-planning" parent="menu-project-root"
     	title="My Planning"
     	action="my.planning"/>
 
@@ -78,7 +76,7 @@
 		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myPlanning"/>
 	</action-method>
 	
-	<menuitem name="my-team-planning" parent="menu-project-planning"
+	<menuitem name="my-team-planning" parent="menu-project-root"
     	title="My Team Planning"
     	action="my.team.planning"/>
 

@@ -125,6 +125,9 @@
 			<field name="budgetDistributionList" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 		</panel>
 	  </panel-tabs>
+	  <panel>
+			<field name="polAttrs" colSpan="12" />
+	  </panel>
 	</form>
 	
 	<form name="purchase-order-line-menu-form" title="PO line" 

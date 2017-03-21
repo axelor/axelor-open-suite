@@ -59,6 +59,9 @@
   	
   	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
   	
+  	<!-- -Json fields -->
+	<string name="eventAttrs" title="Fields" json="true" />
+	
   	<extra-code>
       	<![CDATA[
       		// TYPE SELECT

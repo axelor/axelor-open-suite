@@ -254,6 +254,10 @@ public class WkfDesignerService {
 			instance.getNodes().clear();
 
 			for (WkfTransition transition : transitions) {
+				if (transition.getVersion() == null) {
+					transition.setIsButton(true);
+					transition.setButtonTitle(transition.getName());
+				}
 				instance.addTransition(transition);
 			}
 

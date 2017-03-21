@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="marketing-root" order="-107" title="Marketing" icon="fa-bullhorn" if="__config__.app.isApp('marketing')"
-	    groups="admins,ERP" icon-background="violet"/> 
+	     icon-background="violet"/> 
 	
 	<menuitem name="campaign-all" parent="marketing-root" title="Campaigns" action="campaign.all"/>
 	

@@ -3,8 +3,27 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+    <grid name="purchase-order-quotation-grid" title="Quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     	<toolbar>
+    		<button name="mergeQuotations" title="Merge quotations"  onClick="purchase.order.merge"/>
+    		<button name="seeQuotationLines" title="See quotation lines" onClick="purchase-order-see-quotation-lines" />
+            <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+		</toolbar>
+		<field name="purchaseOrderSeq"/>
+        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="externalReference"/>
+        <field name="orderDate"/>
+        <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
+        <field name="inTaxTotal" aggregate="sum"/>
+        <field name="statusSelect"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+    
+    <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+    	<toolbar>
+    		<button name="mergePO" title="Merge purchase orders" onClick="purchase.order.merge"/>
+    		<button name="seePOLines" title="See purchase order lines" onClick="purchase-order-see-purchase-order-lines" />
             <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		</toolbar>
 		<field name="purchaseOrderSeq"/>
@@ -111,7 +130,11 @@
 				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form"/>
 			</panel>		
 		</panel-tabs>
-	  
+	  	
+	  	<panel>
+			<field name="poAttrs" colSpan="12" />
+		</panel>
+		
 		<panel sidebar="true" name="actions" title="Actions">
 			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
@@ -364,6 +387,26 @@
 		<domain>self.operationTypeSelect = 1 and self.purchaseOrder.id = :poId</domain>
 		<context name="operationTypeSelect" expr="1"/>
 		<context name="poId" expr="eval:id"/>
+	</action-view>
+	
+	<action-view name="purchase-order-see-quotation-lines" title="See quotation lines" 
+		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+		<view type="grid" name="purchase-order-line-grid"/>	
+		<view type="grid" name="purchase-order-line-form"/>
+		<domain>self.purchaseOrder.id in (:_purchaseOrderIds)</domain>
+		<context name="_purchaseOrderIds" expr="eval:[0] + _ids"/>
+	</action-view>
+	
+	<action-view name="purchase-order-see-purchase-order-lines" title="See purchase order lines" 
+		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+		<view type="grid" name="purchase-order-line-grid"/>	
+		<view type="grid" name="purchase-order-line-form"/>
+		<domain>self.purchaseOrder.id in (:_purchaseOrderIds)</domain>
+		<context name="_purchaseOrderIds" expr="eval:[0] + _ids"/>
+	</action-view>
+	
+	<action-view name="purchase.order.merge" title="Merge purchase orders" model="com.axelor.apps.base.db.Wizard">
+	    <view type="form" name="purchase-order-merge-form"/>
 	</action-view>
   
   	<action-validate name="action-purchase-order-validate-location">

@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,18 +38,9 @@ public class AppServiceImpl implements AppService {
 	
 	private static final String DIR_INIT_INPUT = "app";
 	
-	private static Map<String, Long> appsMap = new HashMap<String, Long>();
-	
 	@Inject
 	private AppRepository appRepo;
 	
-	@Inject
-	public AppServiceImpl() {
-		List<App> apps = Beans.get(AppRepository.class).all().fetch();
-		for (App app : apps) {
-			appsMap.put(app.getTypeSelect(), app.getId());
-		}
-	}
 	
 	@Override
 	public String importDataDemo(App app) {
@@ -202,11 +191,10 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public App getApp(String type) {
-		Long appId = appsMap.get(type);
-		if (appId == null) {
+		if (type == null) {
 			return null;
 		}
-		return Beans.get(AppRepository.class).find(appId);
+		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).fetchOne();
 	}
 
 	@Override

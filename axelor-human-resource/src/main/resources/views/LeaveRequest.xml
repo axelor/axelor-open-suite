@@ -70,6 +70,9 @@
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+		<panel>
+			<field name="leaveRequestAttrs" colSpan="12" />
+		</panel>
 	</form>
 	
 	<form name="popup-leave-request-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.LeaveRequest">

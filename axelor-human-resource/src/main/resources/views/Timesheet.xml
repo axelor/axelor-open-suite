@@ -73,6 +73,9 @@
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+		<panel>
+			<field name="timesheetAttrs" colSpan="12" />
+		</panel>
 	</form>
 	
 	<form name="popup-timesheet-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Timesheet">

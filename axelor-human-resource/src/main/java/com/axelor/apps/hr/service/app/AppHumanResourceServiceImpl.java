@@ -1,9 +1,14 @@
 package com.axelor.apps.hr.service.app;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.axelor.apps.base.db.AppTimesheet;
 import com.axelor.apps.base.db.repo.AppTimesheetRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl implements AppHumanResourceService {
@@ -25,6 +30,28 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl implements A
 	@Override
 	public AppTimesheet getAppTimesheet() {
 		return Beans.get(AppTimesheetRepository.class).find(appTimesheetId);
+	}
+
+	@Override
+	public void getHrmAppSettings(ActionRequest request, ActionResponse response) {
+		
+		try {
+			
+			Map<String, Object> map = new HashMap<>();
+			
+			map.put("hasInvoicingAppEnable", isApp("invoice"));
+			map.put("hasLeaveAppEnable", isApp("leave"));
+			map.put("hasExpenseAppEnable", isApp("expense"));
+			map.put("hasTimesheetAppEnable", isApp("timesheet"));
+			map.put("hasProjectAppEnable", isApp("project"));
+
+			response.setData(map);
+			response.setTotal(map.size());
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			response.setException(e);
+		}
 	}
 
 }

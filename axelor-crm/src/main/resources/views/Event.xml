@@ -94,6 +94,10 @@
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
 		
+		<panel>
+			<field name="eventAttrs" colSpan="12" />
+		</panel>
+		
 	</form>
 	
 	<action-group name="action-group-crm-event-onnew">
@@ -556,6 +560,8 @@
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     	<field name="typeSelect" expr="eval: _typeSelect"/>
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
+    	<field name="relatedToSelectId" expr="_relatedToSelectId"/>
+    	<field name="relatedToSelect" expr="_relatedToSelect"/>
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">

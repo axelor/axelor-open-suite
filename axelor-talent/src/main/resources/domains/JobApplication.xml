@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="talent" package="com.axelor.apps.talent.db"/>
+
+	<entity name="JobApplication" lang="java" cachable="true">
+		<string name="lastName" title="Last name" required="true"/>
+		<string name="firstName" title="First name" />
+		<string name="fullName" title="Full name" namecolumn="true" />
+		<one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email" />
+		<string name="fixedPhone" title="Fixed phone" />
+		<string name="mobilePhoned" title="Mobile phone" />
+		<many-to-one name="educationLevel" ref="EducationLevel" title="Level of education" />
+		<integer name="experienceSelect" title="Work experience" selection="jobposition.experience.select" />
+		<many-to-many name="industrySectorSet" title="Business sectors" ref="com.axelor.apps.base.db.IndustrySector"/>
+		<string name="linkedInProfile" title="LinkedIn profile" />
+<!-- 		<many-to-one name="jobSource" ref="JobSource" title="Source" /> -->
+		<string name="referredBy" title="Referred by" />
+		<integer name="appreciation" title="Appreciation" selection="training.register.rating.select" />
+		<many-to-one name="jobPosition" ref="JobPosition"  title="Applied job" />
+		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Responsible" />
+		<string name="expectedSalary" title="Expected salary" />
+		<string name="proposedSalary" title="Proposed salary" />
+		<date name="availabilityFrom" title="Availability from" />
+		<string name="description" title="Description" large="true"/> 
+		<integer name="statusSelect" title="Status" selection="job.application.status.select" />
+		<string name="reasonNotHired" title="Reason not hired" />
+		<many-to-many name="tagSkillSet" title="Skills tag" ref="TagSkill"/>
+		<extra-code>
+	   		<![CDATA[
+	   			public static final Integer STATUS_DRAFT = 0;
+	   			public static final Integer STATUS_OPEN = 1;
+	   			public static final Integer STATUS_ON_HOLD = 2;
+	   			public static final Integer STATUS_CLOSED = 3;
+	   			public static final Integer STATUS_CANCELED = 3;
+	   		]]>
+   		</extra-code>
+	</entity>
+
+</domain-models>
