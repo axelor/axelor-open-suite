@@ -108,7 +108,7 @@ public class FileTransfer {
 	                                         DefaultEbicsRootElement.generateName(orderType),
 	                                         session.getUser());
     response.build();
-    response.report(true);
+    response.report(new EbicsRootElement[]{initializer, response});
     state = new EbicsTransferState();
     state.setNumSegments(initializer.getSegmentNumber());
     state.setTransactionId(response.getTransactionId());
@@ -164,7 +164,7 @@ public class FileTransfer {
 	                                   DefaultEbicsRootElement.generateName(orderType),
 	                                   session.getUser());
     response.build();
-    response.report(false);
+    response.report(new EbicsRootElement[]{uploader, response});
   }
 
   /**
@@ -208,7 +208,7 @@ public class FileTransfer {
 	                                          DefaultEbicsRootElement.generateName(orderType),
 	                                          session.getUser());
     response.build();
-    response.report(true);
+    response.report(new EbicsRootElement[]{initializer, response});
     state = new EbicsTransferState();
     state.setSegmentNumber(response.getSegmentsNumber());
     state.setTransactionId(response.getTransactionId());
@@ -239,7 +239,7 @@ public class FileTransfer {
 	                                         DefaultEbicsRootElement.generateName(orderType),
 	                                         session.getUser());
     receiptResponse.build();
-    receiptResponse.report(false);
+    receiptResponse.report(new EbicsRootElement[]{receipt, receiptResponse});
   }
 
   /**
@@ -279,7 +279,7 @@ public class FileTransfer {
 	                                    DefaultEbicsRootElement.generateName(orderType),
 	                                    session.getUser());
     response.build();
-    response.report(true);
+    response.report(new EbicsRootElement[]{downloader, response});
     joiner.append(response.getOrderData());
   }
 

@@ -19,6 +19,14 @@
 			<field name="responseCode" />
 			<field name="responseFile" widget="binary-link" readonly="true" />
 		</panel>
+		<panel-tabs>
+			<panel title="Request trace">
+				<field name="requestTraceText" colSpan="12" showTitle="false" />
+			</panel>
+			<panel title="Response trace">
+				<field name="responseTraceText"  colSpan="12" showTitle="false" />
+			</panel>
+		</panel-tabs>
 	</form>
   
 </object-views>

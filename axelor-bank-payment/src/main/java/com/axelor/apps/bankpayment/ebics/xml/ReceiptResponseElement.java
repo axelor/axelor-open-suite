@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.ebics.xml;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
@@ -53,17 +54,17 @@ public class ReceiptResponseElement extends DefaultResponseElement {
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
-    report(true);
   }
 
   @Override
-  public void report(boolean fromBuild) throws AxelorException {
-   if (!fromBuild || !returnCode.isOk()) {
-	   log();   
-   }
+  public void report(EbicsRootElement[] rootElements) throws AxelorException {
+   
+   log(rootElements);   
+   
    if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)) {
      returnCode.throwException();
    }
+   
   }
 
   // --------------------------------------------------------------------

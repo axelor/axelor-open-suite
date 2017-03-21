@@ -23,6 +23,7 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
@@ -70,11 +71,9 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    * Reports the return code to the user.
    * @throws EbicsException request fails.
    */
-  public void report(boolean fromBuild) throws AxelorException {
+  public void report(EbicsRootElement[] rootElements) throws AxelorException {
 	  
-	if (!fromBuild ||  !returnCode.isOk()) {
-		log();
-	}
+	log(rootElements);
 	
     if (!returnCode.isOk()) {
       returnCode.throwException();
@@ -82,9 +81,9 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
     
   }
   
-  protected void log() {
+  protected void log(EbicsRootElement[] rootElements) {
 	  if (ebicsUser != null && name != null && returnCode != null) {
-		  Beans.get(EbicsUserService.class).logRequest(ebicsUser.getId(), name.substring(0,3), returnCode.getSymbolicName());
+		  Beans.get(EbicsUserService.class).logRequest(ebicsUser.getId(), name.substring(0,3), returnCode.getSymbolicName(), rootElements);
 		  ebicsUser = null; // Prevent further log on same request
 	  }
   }

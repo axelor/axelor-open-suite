@@ -93,7 +93,7 @@ public class KeyManagement {
     response.build();
     log.debug("build OK");
     //session.getConfiguration().getTraceManager().trace(response);
-    response.report(false);
+    response.report(new EbicsRootElement[]{request, response});
     log.debug("report OK");
   }
 
@@ -120,7 +120,7 @@ public class KeyManagement {
     response = new KeyManagementResponseElement(sender.getResponseBody(), "HIAResponse", session.getUser());
     response.build();
 //    session.getConfiguration().getTraceManager().trace(response);
-    response.report(false);
+    response.report(new EbicsRootElement[]{request, response});
   }
 
   /**
@@ -151,7 +151,7 @@ public class KeyManagement {
     EbicsUtils.checkHttpCode(httpCode);
     response = new KeyManagementResponseElement(sender.getResponseBody(), "HBPResponse", session.getUser());
     response.build();
-    response.report(false);
+    response.report(new EbicsRootElement[]{request, response});
     EbicsUserService userService = Beans.get(EbicsUserService.class);
     factory = new ByteArrayContentFactory(EbicsUtils.unzip(userService.decrypt(session.getUser(), response.getOrderData(), response.getTransactionKey())));
     orderData = new HPBResponseOrderDataElement(factory, session.getUser());
@@ -206,7 +206,7 @@ public class KeyManagement {
     EbicsUtils.checkHttpCode(httpCode);
     response = new SPRResponseElement(sender.getResponseBody(), session.getUser());
     response.build();
-    response.report(false);
+    response.report(new EbicsRootElement[]{request, response});
   }
 
   // --------------------------------------------------------------------

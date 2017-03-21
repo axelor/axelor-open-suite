@@ -26,6 +26,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jdom.JDOMException;
 import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.bankpayment.db.EbicsPartner;
@@ -33,6 +34,7 @@ import com.axelor.apps.bankpayment.db.EbicsRequestLog;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
+import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -49,6 +51,7 @@ public class EbicsUserService {
 	
 	@Inject
 	private EbicsUserRepository ebicsUserRepo;
+	
 	
 	public byte[] sign(EbicsUser ebicsUser, byte[] digest) throws IOException, GeneralSecurityException {
 		
@@ -110,13 +113,20 @@ public class EbicsUserService {
 	}
 	
 	@Transactional
-	public void logRequest(long ebicsUserId, String requestType, String responseCode) {
+	public void logRequest(long ebicsUserId, String requestType, String responseCode, EbicsRootElement[] rootElements) {
 		
 		EbicsRequestLog requestLog = new EbicsRequestLog();
 		requestLog.setEbicsUser(ebicsUserRepo.find(ebicsUserId));
-		requestLog.setRequestTime(new LocalDateTime());
+		LocalDateTime time = new LocalDateTime();
+		requestLog.setRequestTime(time);
 		requestLog.setRequestType(requestType);
 		requestLog.setResponseCode(responseCode);
+		
+		try {
+			trace(requestLog, rootElements);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 		requestLogRepo.save(requestLog);
 	}
@@ -163,6 +173,20 @@ public class EbicsUserService {
 	}
 
 	
+	private void trace(EbicsRequestLog requestLog, EbicsRootElement[] rootElements) throws AxelorException, JDOMException, IOException {
+		
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		rootElements[0].save(bout);
+		requestLog.setRequestTraceText(bout.toString());
+		bout.close();
+		
+		bout = new ByteArrayOutputStream();
+		rootElements[1].save(bout);
+		requestLog.setResponseTraceText(bout.toString());
+		bout.close();
+		
+	}
+
 	
 
 }
