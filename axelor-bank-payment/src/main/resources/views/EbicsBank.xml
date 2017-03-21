@@ -18,6 +18,7 @@
 			<field name="url" colSpan="12" pattern="http(s)?://.+" />
 			<field name="languageSelect" />
 			<field name="certValidityPeriodSelect" />
+			<field name="useX509ExtentionForAutoSignedCert"/>
 		</panel>
 
 		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>

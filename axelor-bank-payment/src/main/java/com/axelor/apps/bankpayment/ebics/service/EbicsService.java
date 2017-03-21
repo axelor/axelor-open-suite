@@ -80,7 +80,7 @@ public class EbicsService {
 	public EbicsService() {
 		
 		AppSettings settings = AppSettings.get();
-		String name = settings.get("application.name") + "-" + settings.get("application.version");
+		String name = settings.get("application.name") + " " + settings.get("application.version");
 		String language = settings.get("application.locale");
 		String instituteID = settings.get("application.author");
 		

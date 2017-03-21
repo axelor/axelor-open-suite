@@ -67,6 +67,7 @@
 			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
 			<button name="sendPTK" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>
 			<button name="sendHPD" title="Get bank parameters (HPD)" onClick="save,action-ebics-user-method-send-hpd" showIf="statusSelect == 3"/>
+			<button name="admin" title="Administration mode" onClick="action-ebics-user-attrs-administration-mode"/>
 		</panel>
 	
 	</form>
@@ -135,6 +136,11 @@
     <action-method name="action-ebics-user-method-print-certificates">
     	<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="printCertificates"/>
     </action-method>
+    
+    <action-attrs name="action-ebics-user-attrs-administration-mode">
+    	<attribute name="readonly" for="statusSelect" expr="false"/>
+    	<attribute name="readonly" for="nextOrderId" expr="false"/>
+    </action-attrs>
     
     <action-view name="action-ebics-open-import-ebics-users" title="Import ebics users" model="com.axelor.apps.bankpayment.db.EbicsUser">
     	<view type="form" name="import-ebics-user-form"/>

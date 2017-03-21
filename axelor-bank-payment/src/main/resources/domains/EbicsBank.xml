@@ -22,5 +22,7 @@
 	
 	<string name="protocolSelect" title="Protocol" selection="bankpayment.ebics.bank.protocol.select" default="ssl" />
 	
+	<boolean name="useX509ExtentionForAutoSignedCert" title="Use X509 extentions for auto signed certificates" default="true"/>
+	
   </entity>
 </domain-models>
