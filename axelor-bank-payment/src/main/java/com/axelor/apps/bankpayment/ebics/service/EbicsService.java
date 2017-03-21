@@ -161,9 +161,7 @@ public class EbicsService {
 	    }
 	    
 	    try {
-	    	if (ebicsUser.getNextOrderId() == null) {
-	    		userService.getNextOrderId(ebicsUser);
-	    	}
+	    	userService.getNextOrderId(ebicsUser);
 		    EbicsSession session = new EbicsSession(ebicsUser);
 		    if (product == null) {
 		    	product = defaultProduct;
@@ -194,9 +192,7 @@ public class EbicsService {
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
 	      return;
 	    }
-	    if (ebicsUser.getNextOrderId() == null) {
-    		userService.getNextOrderId(ebicsUser);
-    	}
+    	userService.getNextOrderId(ebicsUser);
 	    
 	    EbicsSession session = new EbicsSession(ebicsUser);
 	    if (product == null) {
