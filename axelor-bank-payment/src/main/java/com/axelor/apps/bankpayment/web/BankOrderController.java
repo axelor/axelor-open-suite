@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.web;
 
 import java.util.List;
 
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,23 +120,27 @@ public class BankOrderController {
 
 		try {
 			
-			EbicsUser ebicsUser = bankOrder.getEbicsUser();
+			EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
 			
 			if (ebicsUser == null) {
 				response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
 			}  
 			else  {
-				if (context.get("password") == null)  {
-					response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+			    if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
+			    	bankOrderService.validate(bankOrder);
 				}
-				else  {
-					String password = (String)context.get("password");
-					if(!ebicsUser.getPassword().equals(password)){
-						response.setValue("password", "");
+				else {
+					if (context.get("password") == null) {
 						response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
 					}
-					else{
-						bankOrderService.validate(bankOrder);
+					if (context.get("password") != null) {
+						String password = (String) context.get("password");
+						if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
+							response.setValue("password", "");
+							response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+						} else {
+							bankOrderService.validate(bankOrder);
+						}
 					}
 				}
 			}
@@ -227,5 +232,14 @@ public class BankOrderController {
 		}
 		
 		
+	}
+
+	public void fillSignatoryEbicsUser(ActionRequest request, ActionResponse response) {
+		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+		if (bankOrder.getSenderBankDetails() != null) {
+			EbicsUser ebicsUser = bankOrderService.getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
+			bankOrder.setSignatoryEbicsUser(ebicsUser);
+			response.setValues(bankOrder);
+		}
 	}
 }
