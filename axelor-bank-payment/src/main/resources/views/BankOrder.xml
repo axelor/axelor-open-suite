@@ -237,6 +237,7 @@
 	
 	<action-record name="action-bank-order-record-sender-company-change" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="companyCurrency" expr="eval: senderCompany?.currency"/>
+		<field name="senderBankDetails" expr="eval: senderCompany?.defaultBankDetails"/>
 	</action-record>
 	
 	<action-record name="action-bank-order-record-payment-mode-change" model="com.axelor.apps.bankpayment.db.BankOrder">
