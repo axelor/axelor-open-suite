@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-<<<<<<< HEAD
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
-=======
     <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201702020724</property>
->>>>>>> c15058aaa7415b81ae566a8c8a5644574ce54f67
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
