@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -95,6 +95,7 @@ import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.Transp;
+import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.XProperty;
 
 public class CalendarService extends ICalendarService{
@@ -513,7 +514,7 @@ public class CalendarService extends ICalendarService{
 		final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
 
 		final Map<String, VEvent> remoteEvents = new HashMap<>();
-		final List<VEvent> localEvents = new ArrayList<>();
+		final Map<VEvent, Integer> localEvents = new HashMap<>();
 		final Set<String> synced = new HashSet<>();
 		for (VEvent item : ICalendarStore.getEvents(collection)) {
 			remoteEvents.put(item.getUid().getValue(), item);
@@ -565,7 +566,8 @@ public class CalendarService extends ICalendarService{
 						source = tmp;
 					}
 				}
-				localEvents.add(target);
+				Event item2 = (Event) item;
+				localEvents.put(target, item2.getTypeSelect()); // Associate event with typeSelect for further use 
 				synced.add(target.getUid().getValue());
 
 				if (source == target) {
@@ -604,14 +606,24 @@ public class CalendarService extends ICalendarService{
 
 		for (String uid : remoteEvents.keySet()) {
 			if (!synced.contains(uid)) {
-				localEvents.add(remoteEvents.get(uid));
+				VEvent vEvent = remoteEvents.get(uid);
+				// adds startDate of vEvent to the Trigger if it exists in vEvent 
+				if (!vEvent.getAlarms().isEmpty()) {
+					Trigger t = (Trigger) vEvent.getAlarms().getComponent("VALARM").getProperty("TRIGGER");
+					if (t.getDateTime() == null) {
+						DtStart start = (DtStart) vEvent.getProperty("DTSTART");
+						t.setDateTime((DateTime) start.getDate());
+					}
+				}
+				localEvents.put(vEvent, 2); // events imported from remote calendar are by default 'meetings' (typeSelect = 2)
 			}
 		}
 
 		// update local events
 		final List<Event> iEvents = new ArrayList<>();
-		for (VEvent item : localEvents) {
-			Event iEvent = findOrCreateEventCRM(item);
+		for (Map.Entry<VEvent, Integer> item : localEvents.entrySet()) {
+			Event iEvent = findOrCreateEventCRM(item.getKey());
+			iEvent.setTypeSelect(item.getValue()); // set 'typeSelect' to new event created
 			iEvents.add(iEvent);
 		}
 		calendar.getEventsCrm().clear();
@@ -620,7 +632,7 @@ public class CalendarService extends ICalendarService{
 		}
 
 		// update remote events
-		for (VEvent item : localEvents) {
+		for (VEvent item : localEvents.keySet()) {
 			if (!synced.contains(item.getUid().getValue())) {
 				continue;
 			}

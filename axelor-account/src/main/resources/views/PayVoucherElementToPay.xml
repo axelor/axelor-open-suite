@@ -17,13 +17,18 @@
         	<field name="sequence"/>
 	        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	        <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-	        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	        <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="totalAmount"/>
 	        <field name="remainingAmount"/>
 	        <field name="remainingAmountAfterPayment"/>
-	        <field name="amountToPay"/>
+	        <field name="amountToPay" onChange="save, action-method-account-payment-voucher-element-pay-amount"/>
 	        <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"/>
         </panel>
         
     </form>
+
+    <action-method name="action-method-account-payment-voucher-element-pay-amount">
+        <call class="com.axelor.apps.account.web.PayVoucherElementController"
+              method="updateAmountToPayCurrency"/>
+    </action-method>
 </object-views>

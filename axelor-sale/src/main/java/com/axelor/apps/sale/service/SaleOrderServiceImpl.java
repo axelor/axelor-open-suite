@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -141,10 +141,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
+	 * Compute the sale order total amounts
 	 *
 	 * @param invoice
 	 * @param vatLines
@@ -156,20 +153,22 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
 		saleOrder.setTaxTotal(BigDecimal.ZERO);
 		saleOrder.setInTaxTotal(BigDecimal.ZERO);
+		
+		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+			saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add( saleOrderLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
+			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
+		}
 
 		for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
 
-			// Dans la devise de la comptabilité du tiers
-			saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add( saleOrderLineVat.getExTaxBase() ));
+			// In the sale order currency
 			saleOrder.setTaxTotal(saleOrder.getTaxTotal().add( saleOrderLineVat.getTaxTotal() ));
-			saleOrder.setInTaxTotal(saleOrder.getInTaxTotal().add( saleOrderLineVat.getInTaxTotal() ));
 
 		}
-
-		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-			//Into company currency
-			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
-		}
+		
+		saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
 
 		logger.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });
@@ -206,6 +205,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	public String getSequence(Company company) throws AxelorException  {
+
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName()),
@@ -213,6 +213,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		return seq;
 	}
+
 
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
@@ -334,7 +335,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
 				.addParam("Locale", language)
 				.addParam("SaleOrderId", saleOrder.getId())
-				.addModel(saleOrder)
+				.toAttach(saleOrder)
 				.generate()
 				.getFileLink();
 		

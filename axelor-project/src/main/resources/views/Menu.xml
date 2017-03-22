@@ -13,7 +13,6 @@
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
 	    <view type="calendar" name="project-calendar"/>
-	    <view type="kanban" name="project-kanban"/>
 	    <view type="gantt" name="project-gantt"/>
 	    <domain>self.typeSelect = 'project'</domain>
 	</action-view>

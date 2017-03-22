@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,11 @@
 package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
+import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
@@ -44,5 +46,6 @@ public class BusinessProjectModule extends AxelorModule{
 	    	 bind(ProjectTaskService.class).to(ProjectTaskBusinessService.class);
 	    	 bind(InvoicingProjectRepository.class).to(InvoicingProjectManagementRepository.class);
 	    	 bind(AppBusinessProjectService.class).to(AppBusinessProjectServiceImpl.class);
+	    	 //bind(InvoiceServiceImpl.class).to(InvoiceServiceProjectImpl.class);
 	    }
 }

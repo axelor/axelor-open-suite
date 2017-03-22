@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -266,12 +266,12 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		if(costType == IWorkCenter.COST_PER_CYCLE)  {
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, 
-					this.getNbCycle(producedQty, prodProcessLine.getMinCapacityPerCycle()), workCenter.getCostAmount(), cycleUnit);
+					this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()), workCenter.getCostAmount(), cycleUnit);
 
 		}
 		else if(costType == IWorkCenter.COST_PER_HOUR)  {
 
-			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMinCapacityPerCycle()));
+			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, qty, costPrice, hourUnit);

@@ -32,7 +32,7 @@
 	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-extra-hours-group-validate" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-extra-hours-group-refuse" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-extra-hours-record-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+			<button name="cancelButton" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel name="head">
@@ -92,10 +92,6 @@
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 	
-	<action-record name="action-extra-hours-record-cancel" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="5"/>
-	</action-record>
-	
 	<action-record name="action-extra-hours-record-draft" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
@@ -126,6 +122,10 @@
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="refuse"/>
 	</action-method>
 	
+	<action-method name="action-extra-hours-method-cancel">
+	    <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="cancel"/>
+	</action-method>
+
 	<action-view name="action-extra-hours-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.ExtraHours">
     	<view type="form" name="popup-extra-hours-refusal-form"/>
         <view-param name="popup" value="reload"/>

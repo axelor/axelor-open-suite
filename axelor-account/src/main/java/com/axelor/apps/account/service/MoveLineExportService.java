@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.account.db.repo.*;
 import org.apache.commons.lang3.StringUtils;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,11 +44,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.JournalRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -891,7 +887,7 @@ public class MoveLineExportService {
 			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
 		}
 			
-		moveLineQueryStr += String.format("AND self.move.accountingOk = false AND self.move.ignoreInAccountingOk = false");
+		moveLineQueryStr += String.format("AND self.move.ignoreInAccountingOk = false");
 		
 		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
 		if(moveLineList.size() > 0) {
@@ -928,8 +924,10 @@ public class MoveLineExportService {
 					List<String> ReconcileSeqList = new ArrayList<String>();
 					List<String> ReconcileDateList = new ArrayList<String>();
 					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-						ReconcileSeqList.add(reconcile.getReconcileSeq());
-						ReconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.BASIC_ISO_DATE));
+						if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+							ReconcileSeqList.add(reconcile.getReconcileSeq());
+							ReconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.BASIC_ISO_DATE));
+						}
 					}
 					items[13] = StringUtils.join(ReconcileSeqList, "; ");
 					items[14]= StringUtils.join(ReconcileDateList, "; ");
@@ -950,7 +948,7 @@ public class MoveLineExportService {
 		new File(filePath).mkdirs();
 		log.debug("Full path to export : {}{}" , filePath, fileName);
 //		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
-		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(moveLineReport.getTypeSelect()), allMoveLineData);
+		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForPayrollJournalEntry(), allMoveLineData);
 		moveLineReportRepo.save(moveLineReport);
 		
 		Path path = Paths.get(filePath+fileName);
@@ -1143,11 +1141,32 @@ public class MoveLineExportService {
 		return sortMoveLineList;
 	}
 
+	public String[] createHeaderForPayrollJournalEntry() {
+		String header = "JournalCode;"+
+                        "JournalLib;"+
+                        "EcritureNum;"+
+                        "EcritureDate;"+
+                        "CompteNum;"+
+                        "CompteLib;"+
+                        "CompAuxNum;"+
+                        "CompAuxLib;"+
+                        "PieceRef;"+
+                        "PieceDate;"+
+                        "EcritureLib;"+
+                        "Debit;"+
+                        "Credit;"+
+                        "EcritureLet;"+
+                        "DateLet;"+
+                        "ValidDate;"+
+                        "Montantdevise;"+
+                        "IDevise;";
+		return header.split(";");
+	}
 
 	public String[] createHeaderForHeaderFile(int typeSelect)  {
 		String header = null;
 		switch(typeSelect)  {
-			case 6:
+			case MoveLineReportRepository.EXPORT_SALES:
 				header = "Société;"+
 						"Journal de Vente;"+
 						"Numéro d'écriture;"+
@@ -1157,7 +1176,7 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 7:
+			case MoveLineReportRepository.EXPORT_REFUNDS:
 				header = "Société;"+
 						"Journal d'Avoir;"+
 						"Numéro d'écriture;"+
@@ -1167,7 +1186,7 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 8:
+			case MoveLineReportRepository.EXPORT_TREASURY:
 				header = "Société;"+
 						"Journal de Trésorerie;"+
 						"Numéro d'écriture;"+
@@ -1177,7 +1196,7 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 9:
+			case MoveLineReportRepository.EXPORT_PURCHASES:
 				header = "Société;"+
 						"Journal d'Achat;"+
 						"Numéro d'écriture;"+
@@ -1191,26 +1210,6 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
-			case 14:
-				header = "JournalCode;"+
-						 "JournalLib;"+
-						 "EcritureNum;"+
-						 "EcritureDate;"+
-						 "CompteNum;"+
-						 "CompteLib;"+
-						 "CompAuxNum;"+
-						 "CompAuxLib;"+
-						 "PieceRef;"+
-						 "PieceDate;"+
-						 "EcritureLib;"+
-						 "Debit;"+
-						 "Credit;"+
-						 "EcritureLet;"+
-						 "DateLet;"+
-						 "ValidDate;"+
-						 "Montantdevise;"+
-						 "IdDevise;";
-				return header.split(";");
 			default:
 				return null;
 		}
@@ -1220,7 +1219,7 @@ public class MoveLineExportService {
 	public String[] createHeaderForDetailFile(int typeSelect)  {
 		String header = "";
 
-		if(typeSelect == 9)  {
+		if(typeSelect == MoveLineReportRepository.EXPORT_PURCHASES)  {
 			header = "Société;"+
 					"Journal;"+
 					"Numéro d'écriture;"+

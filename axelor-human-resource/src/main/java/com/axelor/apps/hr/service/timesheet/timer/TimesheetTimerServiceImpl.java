@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,7 +71,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
-		Duration duration = eventService.computeDuration(timer.getStartDateTime(), appBaseService.getTodayDateTime().toLocalDateTime());
+		Duration duration = eventService.computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
 		BigDecimal secondes = BigDecimal.valueOf((eventService.getDuration(duration) + currentDuration));
 		timer.setDuration(secondes.longValue());
 	}

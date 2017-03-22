@@ -9,5 +9,6 @@ module {
 	module "modules:axelor-account"
 	module "modules:axelor-project"
 	module "modules:axelor-crm"
+	module "modules:axelor-bank-payment"
 	
 }

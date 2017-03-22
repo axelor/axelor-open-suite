@@ -79,11 +79,11 @@
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
-    onNew="action-group-base-partner-onnew" 
+    onNew="action-group-base-partner-onnew"
     onLoad="action-group-partner-onload" 
     onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
+	        <button name="sendByEmail" title="Send an email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"  if="__config__.app.isApp('account')"/>
 	    </toolbar>
@@ -175,12 +175,8 @@
 				</panel>
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
-				<panel if-module="axelor-cash-management" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('base').getManageMultiBanks()">
-					<field name="bankDetails"/> 
-<!-- 					TODO TO DELETE -->
-				</panel>
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
-				<panel-include if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
+				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
 			<panel name="balance" title="Accounting balance" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 				<panel-include view="incl-customer-balance-partner-form" from="axelor-account" />
@@ -278,7 +274,8 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
-	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner">
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url"
+	onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
@@ -297,9 +294,13 @@
 	        	</panel>
 	      	</panel>
 	        <panel colSpan="9">
-	            <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2" />
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
+				<field name="fullName" css="bold" showTitle="false" colSpan="12">
+					<editor x-show-titles="false">
+			            <field name="titleSelect" placeholder="Civility" colSpan="2"/>
+			            <field name="name" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			            <field name="firstName" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+					</editor>
+				</field>
 	            <panel name="company" title="Company" colSpan="12" >
 	            	<field name="mainPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	           	</panel>
@@ -488,6 +489,8 @@
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-record-set-payment-modes"/>
+		<action name="action-partner-record-payment-condition"/>
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -505,6 +508,10 @@
     <action-method name="action-partner-method-set-social-network-url">
     	<call class="com.axelor.apps.base.web.PartnerController" method="setSocialNetworkUrl" />
     </action-method>
+    
+    <action-method name="action-partner-method-add-contact-partner">
+		<call class="com.axelor.apps.base.web.PartnerController" method="addContactToPartner"/>
+	</action-method>
     
      <action-method name="action-partner-method-set-user-partner">
 		<call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
@@ -599,6 +606,15 @@
 	
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrier" expr="eval:freightCarrierMode.freightCarrier"/>
+	</action-record>
+
+	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
+		<field name="inPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.inPaymentMode"/>
+		<field name="outPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.outPaymentMode"/>
+	</action-record>
+
+	<action-record name="action-partner-record-payment-condition" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
+		<field name="paymentCondition" expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
 	</action-record>
 
     <action-method name="action-set-partner-seq" >

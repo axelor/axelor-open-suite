@@ -39,7 +39,7 @@
 		        <field name="productName" requiredIf="!isTitleLine"/>
 		        <field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
-		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		        <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 		        <field name="priceDiscounted" hidden="true"/>
 		        <field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
@@ -163,7 +163,7 @@
 	</action-attrs>
 	
 	
-	<action-attrs name="action-invoice-line-attrs-show-elements">
+	<action-attrs if-module="axelor-business-project" name="action-invoice-line-attrs-show-elements">
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
 		<attribute name="title" for="project" expr="eval:  __config__.app.getApp('project').getProjectTaskLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
 		<attribute name="hidden" for="subscriptionPanel" expr="eval: _parent?.isSubscription"/>

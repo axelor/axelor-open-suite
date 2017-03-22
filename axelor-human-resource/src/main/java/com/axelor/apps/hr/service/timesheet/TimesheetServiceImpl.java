@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,14 +28,9 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -111,7 +106,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Inject
 	protected TemplateMessageService  templateMessageService;
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Override
 	@Transactional(rollbackOn={Exception.class})
@@ -213,6 +207,20 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 	
+	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
 	@Override
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
 

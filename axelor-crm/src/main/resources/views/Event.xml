@@ -238,6 +238,10 @@
 				<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 				<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			</panel>
+			<panel title="Add Guests" name="addGuests" sidebar="true">
+				<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
+				<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
+			</panel>
 			<panel name="guests" title="Guests" colSpan="12">
 				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
 					<editor layout="table" x-show-titles="false">
@@ -248,14 +252,6 @@
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		<panel title="Add Guests" name="addGuests" sidebar="true">
-			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
-			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
-			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
-			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
-			<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
-			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
 		</panel>
 		<panel name="meetingAttributes" sidebar="true" title="Attributes">
 			<field name="meetingType" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
@@ -273,15 +269,6 @@
 		  <mail-followers />
 	  	</panel-mail>
 	</form>
-    
-    
-    <action-method name="action-event-method-add-user-guest">
-    	<call class="com.axelor.apps.crm.web.EventController" method="addUserGuest"/>
-    </action-method>
-    
-    <action-method name="action-event-method-add-partner-guest">
-    	<call class="com.axelor.apps.crm.web.EventController" method="addPartnerGuest"/>
-    </action-method>
     
     <action-method name="action-event-method-add-email-guest">
     	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>

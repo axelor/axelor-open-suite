@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,9 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -337,6 +339,30 @@ public class PaymentService {
 		log.debug("End useExcessPaymentWithAmount");
 
 		return moveLineNo2;
+	}
+	
+	public BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl)  {
+		BigDecimal amountRemaining = BigDecimal.ZERO;
+		if(psl.getAdvanceOrPaymentMove() != null && psl.getAdvanceOrPaymentMove().getMoveLineList() != null)  {
+			for(MoveLine moveLine : psl.getAdvanceOrPaymentMove().getMoveLineList())  {
+				if(moveLine.getAccount().getReconcileOk())  {
+					amountRemaining = amountRemaining.add(moveLine.getCredit());
+				}
+			}
+		}
+		return amountRemaining;
+	}
+
+	public BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice)  {
+		BigDecimal amountRemaining = BigDecimal.ZERO;
+		if(invoice.getPaymentMove() != null && invoice.getPaymentMove().getMoveLineList() != null)  {
+			for(MoveLine moveLine : invoice.getPaymentMove().getMoveLineList())  {
+				if(moveLine.getAccount().getReconcileOk())  {
+					amountRemaining = amountRemaining.add(moveLine.getCredit());
+				}
+			}
+		}
+		return amountRemaining;
 	}
 
 }

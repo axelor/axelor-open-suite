@@ -14,6 +14,14 @@
 	    <date name="seniorityDate" title="Seniority date" />
 	    <many-to-one name="employeeBonusMgt" ref="com.axelor.apps.hr.db.EmployeeBonusMgt" title="Employee bonus mgt" />
 	     <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation" />
+	    <integer name="statusSelect" title="Status" selection="hr.employee.bonus.mgt.line.status.select" readonly="true"/>
+
+	    <extra-code>
+			<![CDATA[
+				public static final Integer STATUS_CALCULATED = 1;
+				public static final Integer STATUS_ANOMALY = 2;
+			]]>
+		</extra-code>
     </entity>
 
 </domain-models>

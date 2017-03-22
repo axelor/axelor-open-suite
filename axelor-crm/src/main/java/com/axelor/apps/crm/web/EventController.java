@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,12 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.ILead;
@@ -290,33 +287,6 @@ public class EventController {
 			}
 		}
 		
-	}
-	
-	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestUser")){
-			User user = Beans.get(UserService.class).getUser();
-			if(user != null){
-				event = eventRepo.find(event.getId());
-				eventService.addUserGuest(user, event);
-			}
-		}
-		
-		response.setReload(true);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestPartner")){
-			Partner partner = Beans.get(PartnerRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestPartner")).get("id").toString()));
-			if(partner != null){
-				event = eventRepo.find(event.getId());
-				eventService.addPartnerGuest(partner, event);
-			}
-		}
-		
-		response.setReload(true);
 	}
 	
 	@SuppressWarnings("unchecked")

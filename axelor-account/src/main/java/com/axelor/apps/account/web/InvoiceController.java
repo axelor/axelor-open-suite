@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,30 +17,33 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.birt.core.exception.BirtException;
+import com.axelor.db.mapper.Adapter;
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -50,11 +53,15 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
+import javax.annotation.Nullable;
+
 public class InvoiceController {
 
+	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
@@ -90,7 +97,7 @@ public class InvoiceController {
 	 * @param response
 	 * @return
 	 */
-	public void validate(ActionRequest request, ActionResponse response) {
+	public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		invoice = invoiceRepo.find(invoice.getId());
@@ -110,8 +117,9 @@ public class InvoiceController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws AxelorException
 	 */
-	public void ventilate(ActionRequest request, ActionResponse response) {
+	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		invoice = invoiceRepo.find(invoice.getId());
@@ -119,8 +127,7 @@ public class InvoiceController {
 		try {
 			invoiceService.ventilate(invoice);
 			response.setReload(true);
-		}
-		catch(Exception e)  {
+		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
@@ -140,6 +147,22 @@ public class InvoiceController {
 		response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
 		response.setReload(true);
 	}
+	
+	/**
+	 * Function returning both the paymentMode and the paymentCondition
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+
+	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) throws AxelorException {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
+		PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
+		response.setValue("paymentMode", paymentMode);
+		response.setValue("paymentCondition", paymentCondition);
+	}
+	
 
 	/**
 	 * Fonction appeler par le bouton générer un avoir.
@@ -229,65 +252,32 @@ public class InvoiceController {
 
 	/**
 	 * Method to generate invoice as a Pdf
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	public void showInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		Invoice invoice = request.getContext().asType(Invoice.class);
-		String invoiceIds = "";
-
-		@SuppressWarnings("unchecked")
-		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedPartner != null){
-			for(Integer it : lstSelectedPartner) {
-				invoiceIds+= it.toString()+",";
-			}
-		}
-
-		if(!invoiceIds.equals("")){
-			invoiceIds = invoiceIds.substring(0, invoiceIds.length()-1);
-			invoice = invoiceRepo.find(new Long(lstSelectedPartner.get(0)));
-		}else if(invoice.getId() != null){
-			invoiceIds = invoice.getId().toString();
-		}
-
-		if(!invoiceIds.equals("")){
-			String language;
-			Integer invoicesCopy = invoice.getPartner().getInvoicesCopySelect();
-			try{
-				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-			}catch (NullPointerException e){
-				language = "en";
-			}
-
-			String title = I18n.get("Invoice");
-			if(invoice.getInvoiceId() != null)  {
-				title += invoice.getInvoiceId();
-			}
-			
-			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
-					.addParam("InvoiceId", invoiceIds)
-					.addParam("Locale", language)
-					.addParam("InvoicesCopy", invoicesCopy)
-					.addModel(invoice)
-					.generate()
-					.getFileLink();
-			
-
-			logger.debug("Printing "+title);
+		Context context = request.getContext();
+		ReportSettings reportSetting = null;
 		
-			response.setView(ActionView
-					.define(title)
-					.add("html", fileLink).map());
-			
-		}else{
+		if(context.containsKey("_ids") && !ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+			List<Long> ids = Lists.transform((List) request.getContext().get("_ids"), new Function<Object, Long>() {
+                @Nullable
+                @Override
+                public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                }
+            });
+            reportSetting = invoiceService.printInvoices(ids);
+		} else if(context.containsKey("id")) {
+			reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
+		} else {
 			response.setFlash(I18n.get(IExceptionMessage.INVOICE_3));
+			return;
 		}
+
+		response.setView(ActionView
+				.define(reportSetting.getOutputName())
+				.add("html", reportSetting.getFileLink()).map());
+
 	}
 
 	@SuppressWarnings("unchecked")

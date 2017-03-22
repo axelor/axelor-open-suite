@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
@@ -56,7 +55,6 @@ import com.google.inject.Inject;
 public class CfonbExportService {
 
 	protected CfonbConfig cfonbConfig;
-	protected CfonbToolService cfonbToolService;
 	protected CfonbConfigService cfonbConfigService;
 	protected ReimbursementRepository reimbursementRepo;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
@@ -65,11 +63,10 @@ public class CfonbExportService {
 	private boolean sepa;
 
 	@Inject
-	public CfonbExportService(CfonbToolService cfonbToolService, CfonbConfigService cfonbConfigService,
+	public CfonbExportService(CfonbConfigService cfonbConfigService,
 			ReimbursementRepository reimbursementRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo,
 			PartnerService partnerService)  {
 
-		this.cfonbToolService = cfonbToolService;
 		this.cfonbConfigService = cfonbConfigService;
 		this.reimbursementRepo = reimbursementRepo;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
@@ -311,26 +308,6 @@ public class CfonbExportService {
 	}
 
 
-
-	/**
-	 * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
-	 * @param moveLine
-	 * 			Une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
-	 * @return
-	 * 			La facture trouvée
-	 */
-	public Invoice getInvoice(MoveLine moveLine)  {
-		Invoice invoice = null;
-		if(moveLine.getMove().getRejectOk())  {
-			invoice = moveLine.getInvoiceReject();
-		}
-		else  {
-			invoice = moveLine.getMove().getInvoice();
-		}
-		return invoice;
-	}
-
-
 	/**
 	 * Fonction permettant de créer un enregistrement 'émetteur' pour un virement des remboursements
 	 * @param company
@@ -391,10 +368,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a, "");
-		cfonbToolService.testDigital(b1, "");
-		cfonbToolService.testDigital(d3, "");
-		cfonbToolService.testDigital(g1, "");
+//		cfonbToolService.testDigital(a, "");
+//		cfonbToolService.testDigital(b1, "");
+//		cfonbToolService.testDigital(d3, "");
+//		cfonbToolService.testDigital(g1, "");
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c1Three+c2+d1One+d1Two+d2One+d2Two+d2Three+d3+d4+e+f+g1+g2;
@@ -456,10 +433,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a, "");
-		cfonbToolService.testDigital(b1, "");
-		cfonbToolService.testDigital(d3, "");
-		cfonbToolService.testDigital(g1, "");
+//		cfonbToolService.testDigital(a, "");
+//		cfonbToolService.testDigital(b1, "");
+//		cfonbToolService.testDigital(d3, "");
+//		cfonbToolService.testDigital(g1, "");
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c2+d1One+d1Two+d2+d3+d4+e+f+g1+g2;
@@ -654,7 +631,7 @@ public class CfonbExportService {
 		String b3 = this.cfonbConfig.getSenderNumExportCFONB();			// Numéro d'émetteur
 		String c1 = ref;										// Référence
 		String c2 = partner;									// Nom/Raison sociale du bénéficiaire
-		String d1 = bankDetails.getBankAddress();				// Domiciliation
+		String d1 = bankDetails.getBank().getBankAddress();		// Domiciliation
 		String d2 = "";											// Déclaration de la balance des paiement
 		String d3 = bankDetails.getSortCode();  				// Code guichet de la banque du donneur d'ordre / du débiteur
 		String d4 = bankDetails.getAccountNbr();				// Numéro de compte du bénéficiaire / du débiteur
@@ -927,7 +904,8 @@ public class CfonbExportService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_5),
 					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
-		if(bankDetails.getBankAddress() == null || bankDetails.getBankAddress().isEmpty()) {
+		String bankAddress = bankDetails.getBank().getBankAddress();
+		if(bankAddress == null || bankAddress.isEmpty()) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_6),
 					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}

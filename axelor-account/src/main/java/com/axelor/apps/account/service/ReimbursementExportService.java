@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -222,7 +222,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSED);
 
 					if(first)  {
-						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, MoveRepository.AUTOMATIC);
+						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 						first = false;
 					}
 					// Création d'une ligne au débit
@@ -398,7 +398,7 @@ public class ReimbursementExportService {
 
 		// BIC
 		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-		finInstnId.setBIC(bankDetails.getBic());
+		finInstnId.setBIC(bankDetails.getBank().getCode());
 
 		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 		dbtrAgt.setFinInstnId(finInstnId);
@@ -452,7 +452,7 @@ public class ReimbursementExportService {
 
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-			finInstnId.setBIC(bankDetails.getBic());
+			finInstnId.setBIC(bankDetails.getBank().getCode());
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);

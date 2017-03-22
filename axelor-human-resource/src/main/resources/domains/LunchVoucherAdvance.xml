@@ -8,10 +8,16 @@
   <entity name="LunchVoucherAdvance" cachable="true">
       
       <date name="distributionDate" title="Distribution date"/>
-      <integer name="nbrLunchVouchers" title="Lunch vouchers distributed" />
-      <decimal name="wageShare" title="Wage Share" scale="2" precision="20" readonly="true"/>
-      <decimal name="employersShare" title="Employer's Share" scale="2" precision="20" readonly="true"/>
+      <integer name="nbrLunchVouchers" title="Lunch vouchers distributed" min="1"/>
+      <integer name="nbrLunchVouchersUsed" title="Lunch vouchers used" min="0"/>
+      
+      <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20" readonly="true"/>
+      <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20" readonly="true"/>
+      
       <string name="comments" title="Comment" large="true"/>
+      
+      <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+      
   </entity>
   
 </domain-models>

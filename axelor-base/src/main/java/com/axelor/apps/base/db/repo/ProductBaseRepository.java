@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.io.InputStream;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -31,6 +32,10 @@ public class ProductBaseRepository extends ProductRepository{
 	
 	@Inject
 	private MetaFiles metaFiles;
+
+	@Inject
+	protected AppBaseService appBaseService;
+
 	
 	@Override
 	public Product save(Product product){
@@ -39,7 +44,8 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		product = super.save(product);
 		
-		if(product.getBarCode() == null) {
+		if((product.getBarCode() == null)&&
+           (appBaseService.getAppBase().getActivateBarCodeGeneration())) {
 			    	
 			try {
 				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());

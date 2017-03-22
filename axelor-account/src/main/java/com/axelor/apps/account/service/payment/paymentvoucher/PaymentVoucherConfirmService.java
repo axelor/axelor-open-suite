@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -110,7 +110,7 @@ public class PaymentVoucherConfirmService  {
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
-		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
+		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
 		boolean scheduleToBePaid = false;
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
@@ -142,7 +142,7 @@ public class PaymentVoucherConfirmService  {
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.getMoveCreateService().createMove(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.AUTOMATIC, paymentVoucher.getCashRegister());
+			Move move = moveService.getMoveCreateService().createMove(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC, paymentVoucher.getCashRegister());
 
 			move.setPaymentVoucher(paymentVoucher);
 

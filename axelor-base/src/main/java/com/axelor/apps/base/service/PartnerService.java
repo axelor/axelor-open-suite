@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -204,6 +204,13 @@ public class PartnerService {
 		
 		return partner;
 	}
+	
+	public void addContactToPartner(Partner contact) {
+		Partner partner = contact.getMainPartner();
+
+		partner.addContactPartnerSetItem(contact);
+		savePartner(partner);
+	}
 
 
 	private Address getAddress(Partner partner, String querySpecific, String queryComman){
@@ -269,7 +276,9 @@ public class PartnerService {
 					AppBaseServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else {
-			partner.getRegistrationCode().getChars(0, 9, Str, 0);
+            String registrationCode = partner.getRegistrationCode();
+			//remove whitespace in the registration code before using it
+            registrationCode.replaceAll("\\s","").getChars(0, 9, Str, 0);
 		}
 		
 		return new String(Str);

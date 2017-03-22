@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -85,7 +85,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		if ( modelPath == null || modelPath.isEmpty() ) { return null; }
 
-		ReportSettings reportSettings = ReportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format).addModel(message);
+		ReportSettings reportSettings = ReportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format).toAttach(message);
 		
 		for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
 			maker.setTemplate(birtTemplateParameter.getValue());

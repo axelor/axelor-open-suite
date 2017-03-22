@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,9 @@ public class OpportunityServiceImpl implements OpportunityService {
 	@Inject
 	protected OpportunityRepository opportunityRepo;
 	
+	@Inject
+	protected AddressService addressService;
+
 	@Transactional
 	public void saveOpportunity(Opportunity opportunity){
 		opportunityRepo.save(opportunity);
@@ -56,7 +59,15 @@ public class OpportunityServiceImpl implements OpportunityService {
 			name = lead.getFullName();
 		}
 
-		Address address = Beans.get(AddressService.class).createAddress(null, null, lead.getPrimaryAddress(), null, lead.getPrimaryPostalCode()+" "+lead.getPrimaryCity(), lead.getPrimaryCountry());
+		Address address = null;
+		if (lead.getPrimaryAddress() != null) {
+			// avoids printing 'null'
+			String addressL6 = lead.getPrimaryPostalCode() == null ? "" : lead.getPrimaryPostalCode() + " ";
+			addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity();
+
+			address = addressService.createAddress(null, null, lead.getPrimaryAddress(), null, addressL6, lead.getPrimaryCountry());
+			address.setFullName(addressService.computeFullName(address));
+		}
 
 		Partner partner = Beans.get(PartnerService.class).createPartner(name, null, lead.getFixedPhone(), lead.getMobilePhone(), lead.getEmailAddress(), opportunity.getCurrency(), address, address);
 

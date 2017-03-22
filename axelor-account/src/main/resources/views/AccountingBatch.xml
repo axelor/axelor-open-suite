@@ -23,11 +23,11 @@
 		<panel name="reimbursementPage" title="Reimbursement configuration" hideIf="actionSelect != 11">
 			<field name="reimbursementTypeSelect"/>
 			<field name="reimbursementExportTypeSelect" hideIf="reimbursementTypeSelect != 1"/>
-			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
+			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
 		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
 			<field name="directDebitTypeSelect"/>
-			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
+			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  colSpan="12">
 				<field name="directDebitExportTypeSelect"/>
 				<field name="debitDate"/>

@@ -33,7 +33,8 @@
 	</grid>
 	
 	<form name="leave-request-form" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest"
-	    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons" onLoad="action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel,action-leave-request-attrs-select,action-leave-request-attrs-inject-change"
+	    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons, action-leave-request-record-to-justify" 
+	    onLoad="action-leave-request-group-on-form-load"
 	    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
@@ -48,11 +49,13 @@
 	    </panel>
 		<panel name="information">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+			<field name="leaveToJustify"/>
+			<spacer/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"/>
 			<field name="requestDate" colSpan="12" width="50%"/>
 			<field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid"/>
-			<field name="leaveLine.quantity" />
+			<field name="leaveLine.quantity" title="Available quantity (acquired)" />
 			<field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change"/>
 			<spacer/>
 			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
@@ -120,9 +123,24 @@
 		<action name="action-leave-request-attrs-draft-cancel"/>
 	</action-group>
 	
+	<action-group name="action-leave-request-group-on-form-load">
+		<action name="action-leave-request-attrs-buttons"/>	
+		<action name="action-leave-request-attrs-draft-cancel"/>
+		<action name="action-leave-request-attrs-select"/>
+		<action name="action-leave-request-attrs-inject-change"/>
+		<action name="action-leave-request-method-leave-reason-to-justify"/>
+		<action name="action-leave-request-attrs-send"/>
+		<action name="action-leave-request-attrs-valid-refuse"/>
+	</action-group>
+	
 	<action-record name="action-leave-request-record-default" model="com.axelor.apps.hr.db.LeaveRequest">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
+	</action-record>
+
+	
+	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">
+		<field name="leaveToJustify" expr="eval: leave_to_justify"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
@@ -149,15 +167,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-valid-refuse">
-  		<attribute name="readonly" expr="eval: statusSelect == 3 || statusSelect == 4 " for="information"/>
+  		<attribute name="readonly" expr="eval: true" if="statusSelect == 3 || statusSelect == 4" for="information"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-draft-cancel">
   		<attribute name="readonly" expr="eval: false" for="information" if="statusSelect == 1 || statusSelect == 5"/>
-	</action-attrs>
-	
-	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
-		<attribute name="domain" for="$leaveRequestSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
@@ -165,7 +179,7 @@
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">
-		<error message="You don't have the permission to create a leave request for this user" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager) &amp;&amp; fromDate.isBefore(__date__)))"/>
+		<error message="You don't have the permission to create a leave request in the past, please contact your manager." if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager) &amp;&amp; fromDate.isBefore(__date__)))"/>
 		<error message="Invalide dates" if="toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect &gt; endOnSelect)"/>
 		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>
@@ -173,6 +187,11 @@
 	<action-validate name="action-leave-request-validate-duration">
 		<error message="Invalide duration (must be a 0.5's multiple)" if="call:com.axelor.apps.hr.web.leave.LeaveController:testDuration()"/>
 	</action-validate>
+	
+	
+	<action-method name="action-leave-request-method-leave-reason-to-justify">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveReasonToJustify"/>
+	</action-method>
 	
 	<action-method name="action-leave-request-methode-duration">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="testDuration"/>

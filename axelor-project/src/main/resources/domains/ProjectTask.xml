@@ -30,6 +30,7 @@
 	  
 	  <decimal name="progress" title="Progress (%)"/>
 	  <decimal name="sequence" title="Sequence" />
+	  <integer name="orderByState"/>
 	  
 	  <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to start"/>
 	  <many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Start tasks to start"/>

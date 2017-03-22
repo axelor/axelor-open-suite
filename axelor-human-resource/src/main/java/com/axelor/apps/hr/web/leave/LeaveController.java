@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,15 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -46,6 +51,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
 
 public class LeaveController {
 	
@@ -55,7 +61,9 @@ public class LeaveController {
 	private Provider<LeaveService> leaveServiceProvider;
 	@Inject
 	private Provider<LeaveRequestRepository> leaveRequestRepositoryProvider;
-
+	@Inject
+	private HRConfigService hrConfigService;
+	
 	public void editLeave(ActionRequest request, ActionResponse response)  {
 		
 		User user = AuthUtils.getUser();
@@ -267,16 +275,22 @@ public class LeaveController {
 	}
 
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException  {
-		
-		LeaveService leaveService = leaveServiceProvider.get();
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getLeaveLine().getLeaveReason().getManageAccumulation()){
-			leaveService.manageCancelLeaves(leave);
+		try {
+			LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+			leave = leaveRequestRepositoryProvider.get().find(leave.getId());
+			LeaveService leaveService = leaveServiceProvider.get();
+
+			leaveService.cancel(leave);
+
+			Message message = leaveService.sendCancellationEmail(leave);
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			}
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		} finally {
+			response.setReload(true);
 		}
-		leaveService.cancelLeave(leave);
-		response.setReload(true);
-		
 	}
 
 	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -285,6 +299,28 @@ public class LeaveController {
 	}
 	
 	/* Count Tags displayed on the menu items */
+	
+	@Transactional
+	public void leaveReasonToJustify(ActionRequest request, ActionResponse response) throws AxelorException {
+		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+		Boolean leaveToJustify = leave.getLeaveToJustify();
+		LeaveLine leaveLine = null;
+		
+		if(leaveToJustify == true){
+			if(leave.getUser() != null) {
+				hrConfigService.getLeaveReason(leave.getUser().getActiveCompany().getHrConfig());
+				
+				Employee employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
+				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getLeaveReason().getId());
+				
+				if(employee != null){
+					leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+					response.setValue("leaveLine", leaveLine);
+				}
+			}
+		}
+	}
+	
 	
 	public String leaveValidateTag() { 
 		

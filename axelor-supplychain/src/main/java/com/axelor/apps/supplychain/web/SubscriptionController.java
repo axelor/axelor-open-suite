@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -102,6 +102,7 @@ public class SubscriptionController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateInvoiceForAllSubscriptions(ActionRequest request, ActionResponse response)  throws AxelorException{
 
 		Query q = JPA.em().createQuery("SELECT DISTINCT saleOrderLine.saleOrder.id FROM Subscription WHERE invoicingDate <= ?1 AND invoiced = false ", Long.class);
@@ -139,6 +140,7 @@ public class SubscriptionController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateInvoiceForSelectedSubscriptions(ActionRequest request, ActionResponse response)  throws AxelorException{
 
 		List<Integer> listSelectedSubscriptionsTemp = (List<Integer>) request.getContext().get("_ids");

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -371,6 +371,28 @@ public class AccountConfigService {
 		return accountConfig.getDoubtfulCustomerAccount();
 
 	}
+	
+	public Account getExternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getExternalBankToBankAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT),
+					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getExternalBankToBankAccount();
+
+	} 
+	
+	public Account getInternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getExternalBankToBankAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
+					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getInternalBankToBankAccount();
+
+	} 
 
 
 	/******************************** TVA ********************************************/
@@ -533,6 +555,42 @@ public class AccountConfigService {
 
 	}
 	
+			                    /******** Bank Order Sequences ********/
+	public Sequence getSepaCreditTransSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getSepaCreditTransSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5), 
+					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getSepaCreditTransSequence();
+	}
+
+	public Sequence getSepaDirectDebitSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getSepaDirectDebitSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_6), 
+					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getSepaDirectDebitSequence();
+	}
+
+	public Sequence getIntCreditTransSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getIntCreditTransSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_7), 
+					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getIntCreditTransSequence();
+	}
+
+	public Sequence getIntDirectDebitSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getIntDirectDebitSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_8), 
+					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getIntDirectDebitSequence();
+	}
 	
 	
 	

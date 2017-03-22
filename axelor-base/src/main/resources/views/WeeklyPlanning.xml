@@ -12,6 +12,7 @@
 		<panel name="main">
 			<field name="name"/>
 			<field name="bonusCoef" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
+			<field name="leaveCoef" if-module="axelor-human-resource" />
 		</panel>
 	    <panel-related field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>

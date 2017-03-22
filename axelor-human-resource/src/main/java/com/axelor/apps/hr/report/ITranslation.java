@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,20 +22,31 @@ public class ITranslation {
 	public static final String EXPENSE_EXPENSE_OF = /*$$(*/ "Expense.expenseOf"; /*)*/
 	public static final String EXPENSE_EMPLOYEE_NAME = /*$$(*/ "Expense.employeeName"; /*)*/
 	public static final String EXPENSE_DATE = /*$$(*/ "Expense.expenseDate"; /*)*/
-	public static final String EXPENSE_LINE_EXPENSE_DATE = /*$$(*/ "ExpenseLine.expenseDate"; /*)*/
 	public static final String EXPENSE_PERIOD = /*$$(*/ "Expense.period"; /*)*/
-	public static final String EXPENSE_LINE_CLIENT = /*$$(*/ "ExpenseLine.client"; /*)*/
-	public static final String EXPENSE_LINE_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.expenseType"; /*)*/
 	public static final String EXPENSE_COMMENTS = /*$$(*/ "Expense.comments"; /*)*/
 	public static final String EXPENSE_AMOUNT = /*$$(*/ "Expense.totalAmount"; /*)*/
-	public static final String EXPENSE_LINE_AMOUNT = /*$$(*/ "ExpenseLine.amount"; /*)*/
 	public static final String EXPENSE_EMPLOYEE_SIGNATURE = /*$$(*/ "Expense.employeeSignature"; /*)*/
 	public static final String EXPENSE_EMPLOYER_SIGNATURE = /*$$(*/ "Expense.employerSignature"; /*)*/
-	public static final String EXPENSE_LINE_UNTAXED_AMOUNT = /*$$(*/ "ExpenseLine.untaxedAmount"; /*)*/
+	public static final String EXPENSE_WITHDRAWN_CASH= /*$$(*/ "Expense.withdrawnCash"; /*)*/
+	public static final String EXPENSE_PERSONAL_EXPENSE_AMOUNT = /*$$(*/ "Expense.personalExpenseAmount"; /*)*/
+	public static final String EXPENSE_COMPANY_CB_SELECT = /*$$(*/ "Expense.companyCbSelect"; /*)*/
+	public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
+	public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/	
+	public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/	
 	
+	public static final String EXPENSE_LINE_EXPENSE_DATE = /*$$(*/ "ExpenseLine.expenseDate"; /*)*/
+	public static final String EXPENSE_LINE_CLIENT = /*$$(*/ "ExpenseLine.client"; /*)*/
+	public static final String EXPENSE_LINE_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.expenseType"; /*)*/
+	public static final String EXPENSE_LINE_AMOUNT = /*$$(*/ "ExpenseLine.amount"; /*)*/
+	public static final String EXPENSE_LINE_UNTAXED_AMOUNT = /*$$(*/ "ExpenseLine.untaxedAmount"; /*)*/
+	public static final String EXPENSE_LINE_TOTAL_TAXED = /*$$(*/ "ExpenseLine.totalTax"; /*)*/
+	public static final String EXPENSE_LINE_DISTANCE = /*$$(*/ "ExpenseLine.distance"; /*)*/
+	public static final String EXPENSE_LINE_CITY_FROM = /*$$(*/ "ExpenseLine.cityFrom"; /*)*/
+	public static final String EXPENSE_LINE_CITY_TO = /*$$(*/ "ExpenseLine.cityTo"; /*)*/
+	public static final String EXPENSE_LINE_KILOMETRIC_ALLOW_PARAM = /*$$(*/ "ExpenseLine.kilometricAllowParam"; /*)*/
+	public static final String EXPENSE_LINE_KILOMETRIC_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.kilometricExpenseType"; /*)*/
 	
 	public static final String TIMESHEET_OF = /*$$(*/ "Timesheet.timesheetOf"; /*)*/
-	
 	public static final String TIMESHEET_PROJECT = /*$$(*/ "TimesheetLine.project"; /*)*/
 	public static final String TIMESHEET_PRODUCT = /*$$(*/ "TimesheetLine.product"; /*)*/
 	public static final String TIMESHEET_DURATION = /*$$(*/ "TimesheetLine.duration"; /*)*/

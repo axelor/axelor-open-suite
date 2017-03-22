@@ -12,6 +12,10 @@
       <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
       <boolean name="allowInjection" title="Allow Injection"/>
       <string name="instruction"  title="Instruction" multiline="true" large="true"/>
+      
+      <boolean name="payrollPreprationExport" title="Export for payroll preparation ?" />
+      <string name="exportCode" title="Export code" />
+      <decimal name="defaultDayNumberGain" title="Default day number gain" help="Used with coefficient on weekly planning to define how many days are to be granted each month" />
   </entity>
   
 </domain-models>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -111,7 +111,11 @@ public class PaymentVoucherLoadService {
 		if (paymentVoucher.getPayVoucherElementToPayList() != null)  {
 			paymentVoucher.getPayVoucherElementToPayList().clear();
 		}
-		
+
+		if (paymentVoucher.getPayVoucherDueElementList() != null)  {
+			paymentVoucher.getPayVoucherDueElementList().clear();
+		}
+
 		for (MoveLine moveLine : this.getMoveLines(paymentVoucher))  {
 			
 			paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
@@ -202,7 +206,7 @@ public class PaymentVoucherLoadService {
 		
 		PaymentVoucher paymentVoucher = payVoucherDueElement.getPaymentVoucher();
 		BigDecimal amountRemaining = paymentVoucher.getRemainingAmount();
-		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
+		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 		
 		PayVoucherElementToPay payVoucherElementToPay = new PayVoucherElementToPay();
 

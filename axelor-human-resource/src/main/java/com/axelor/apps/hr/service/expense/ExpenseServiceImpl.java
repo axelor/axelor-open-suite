@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -65,6 +67,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
 import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
@@ -138,7 +141,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 				analyticMoveLine.getPercentage().multiply(analyticMoveLine.getExpenseLine().getUntaxedAmount()
 				.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
 		analyticMoveLine.setDate(appAccountService.getTodayDate());
-		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 		
 	}
 	
@@ -287,7 +290,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode(), MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getInPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
@@ -365,6 +368,35 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
+		expenseRepository.save(expense);
+	}
+	
+	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addPayment(Expense expense) throws AxelorException {
+		expense.setPaymentDate(LocalDate.now());
+		
+		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+		expense.setPaymentMode(paymentMode);
+		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
+			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+		}
+		
+		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
 		expenseRepository.save(expense);
 	}
 

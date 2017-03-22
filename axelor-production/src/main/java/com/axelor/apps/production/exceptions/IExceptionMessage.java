@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,14 +31,14 @@ public interface IExceptionMessage {
 	 * Production order service
 	 */
 
-	static final String PRODUCTION_ORDER_SEQ = /*$$(*/ "Aucune séquence configurée pour les Ordres de production" /*)*/;
+	static final String PRODUCTION_ORDER_SEQ = /*$$(*/ "There's no configured sequence for production's orders" /*)*/;
 
 
 	/**
 	 * Production order sale order service
 	 */
 
-	static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = /*$$(*/ "Aucune nomenclature définie pour le produit %s (%s)" /*)*/;
+	static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = /*$$(*/ "There no's defined nomenclature for product %s (%s)" /*)*/;
 
 
 
@@ -46,7 +46,7 @@ public interface IExceptionMessage {
 	 * Manuf order service
 	 */
 
-	static final String MANUF_ORDER_SEQ = /*$$(*/ "Aucune séquence configurée pour les Ordres de fabrication" /*)*/;
+	static final String MANUF_ORDER_SEQ = /*$$(*/ "There's no configured sequence for fabrication's orders"/*)*/;
 
 	/**
 	 * Bill of Material Service
@@ -56,16 +56,16 @@ public interface IExceptionMessage {
 	/**
 	 * Production Order Wizard and controller
 	 */
-	static final String PRODUCTION_ORDER_1 = /*$$(*/ "Ordre de production créé" /*)*/;
-	static final String PRODUCTION_ORDER_2 = /*$$(*/ "Erreur lors de la création de l'ordre de production" /*)*/;
-	static final String PRODUCTION_ORDER_3 = /*$$(*/ "Veuillez entrer une quantité positive" /*)*/;
-	static final String PRODUCTION_ORDER_4 = /*$$(*/ "Veuillez sélectionner une nomenclature" /*)*/;
+	static final String PRODUCTION_ORDER_1 = /*$$(*/ "Production's order created" /*)*/;
+	static final String PRODUCTION_ORDER_2 = /*$$(*/ "Error during production's order's creation" /*)*/;
+	static final String PRODUCTION_ORDER_3 = /*$$(*/ "You must add a positive quantity" /*)*/;
+	static final String PRODUCTION_ORDER_4 = /*$$(*/ "You must select a nomenclature" /*)*/;
 
 	/**
 	 * Production Config Service
 	 */
-	static final String PRODUCTION_CONFIG_1 = /*$$(*/ "Veuillez configurer la production pour la société %s" /*)*/;
-	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "Veuillez configurer un Emplacement Virtuel Production pour la société %s" /*)*/;
+	static final String PRODUCTION_CONFIG_1 = /*$$(*/ "You must configure a production for company %s" /*)*/;
+	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "You must configure a Production Virtual Location for company %s" /*)*/;
 
 	/**
 	 * Manuf Order Controller
@@ -80,7 +80,7 @@ public interface IExceptionMessage {
 	/**
 	 * Sale Order Line Controller
 	 */
-	static final String SALE_ORDER_LINE_1 = /*$$(*/ "Nomenclature personnalisé créée" /*)*/;
+	static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
 
 	/**
 	 * Production Order Controller
