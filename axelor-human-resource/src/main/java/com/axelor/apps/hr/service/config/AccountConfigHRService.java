@@ -20,13 +20,13 @@ package com.axelor.apps.hr.service.config;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class AccountConfigHRService extends AccountConfigService{
+public class AccountConfigHRService extends AccountConfigBankPaymentService  {
 	
 	public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException  {
 		

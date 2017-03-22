@@ -14,7 +14,7 @@
   	<integer name="partnerTypeSelect" title="Partner Type" selection="bankpayment.bank.order.partner.type.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="bankpayment.bank.order.status.select"/>
 	<date name="bankOrderDate" title="Bank order Date"/>  	
-	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
 	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format" required="true"/>
 	<datetime name="validationDateTime" title="Validation date"/>
 	<datetime name="fileGenerationDateTime" title="File generation date"/>
@@ -49,7 +49,7 @@
 		public static final int ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER = 3;
 		public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 4;
 		public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
-		public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_DEBIT = 6;
+		public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -23,8 +23,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService)  {
-		super(bankOrderRepo, accountConfigService, bankOrderLineService);
+	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
+		super(bankOrderRepo, accountConfigBankPaymentService, bankOrderLineService);
 	}
 
 	

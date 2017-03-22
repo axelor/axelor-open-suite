@@ -144,20 +144,25 @@
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
 			
-			<panel name="bankOrder" title="Bank Order">
+			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
 			  	<field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
 			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
 			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				
-				<panel name="sepaBankOrdersSequences" title="SEPA Bank orders sequences" colSpan="6">
+				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="6">
 					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-				<panel name="intBankOrdersSequences" title="International Bank orders sequences" colSpan="6">
 					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="6">
+					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
+				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="6">
+					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">

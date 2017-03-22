@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -43,10 +43,12 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
@@ -68,7 +70,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	protected EbicsService ebicsService;
 	
 	@Inject
-	private AccountConfigService accountConfigService;
+	private AccountConfigBankPaymentService accountConfigBankPaymentService;
 	
 	@Inject
 	private SequenceService sequenceService;
@@ -252,22 +254,33 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 		bankOrder.setValidationDateTime(new LocalDateTime());
 		
-		this.setSequenceOnBankOrderLines(bankOrder);
+		setSequenceOnBankOrderLines(bankOrder);
 		
-		this.setNbOfLines(bankOrder);
+		setNbOfLines(bankOrder);
 		
 		File fileToSend = this.generateFile(bankOrder);
 		
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
-		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
+		sendFile(bankOrder, fileToSend);
 		
 		bankOrderRepo.save(bankOrder);
 
 	}
 	
 	
-	private void setSequenceOnBankOrderLines(BankOrder bankOrder)  {
+	public void sendFile(BankOrder bankOrder, File fileToSend) throws AxelorException  {
+		
+		PaymentMode paymentMode = bankOrder.getPaymentMode();
+		
+		if(paymentMode != null && !paymentMode.getAutomaticTransmission())  {  return;  }
+		
+		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
+
+	}
+	
+	
+	protected void setSequenceOnBankOrderLines(BankOrder bankOrder)  {
 		
 		if(bankOrder.getBankOrderLineList() == null)  {  return;  }
 		
@@ -302,6 +315,10 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	
 	
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
+		
+		if(bankOrder.getFileToSend() != null)  {  return MetaFiles.getPath(bankOrder.getFileToSend()).toFile();  }
+		
+		if(bankOrder.getBankOrderLineList() == null  || bankOrder.getBankOrderLineList().isEmpty())  {  return null;  }
 		
 		bankOrder.setFileGenerationDateTime(new LocalDateTime());
 		
@@ -351,23 +368,29 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	
 	
 	protected Sequence getSequence(BankOrder bankOrder) throws AxelorException {
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(bankOrder.getSenderCompany());
+		AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(bankOrder.getSenderCompany());
 
 		switch (bankOrder.getOrderTypeSelect()) {
 			case BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT:
-				return accountConfigService.getSepaDirectDebitSeq(accountConfig);
+				return accountConfigBankPaymentService.getSepaDirectDebitSequence(accountConfig);
 
 			case BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER:
-				return accountConfigService.getSepaCreditTransSeq(accountConfig);
+				return accountConfigBankPaymentService.getSepaCreditTransSequence(accountConfig);
 
 			case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT:
-				return accountConfigService.getIntDirectDebitSeq(accountConfig);
+				return accountConfigBankPaymentService.getIntDirectDebitSequence(accountConfig);
 
 			case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER:
-				return accountConfigService.getIntCreditTransSeq(accountConfig);
+				return accountConfigBankPaymentService.getIntCreditTransSequence(accountConfig);
+				
+			case BankOrderRepository.ORDER_TYPE_NATIONAL_TREASURY_TRANSFER:
+				return accountConfigBankPaymentService.getNatTreasuryTransSequence(accountConfig);
+
+			case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER:
+				return accountConfigBankPaymentService.getIntTreasuryTransSequence(accountConfig);
 
 			default:
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING), IException.MISSING_FIELD);
+				return accountConfigBankPaymentService.getOtherBankOrderSequence(accountConfig);
 		}
 	}
 	

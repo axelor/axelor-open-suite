@@ -31,10 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -126,7 +126,7 @@ public class BankOrderFileService {
 			try {
 				return FileTool.writer(this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
 			} catch (IOException e) {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_2),
+				throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2),
 						GeneralServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
 			}
 

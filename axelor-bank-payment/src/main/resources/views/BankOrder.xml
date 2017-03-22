@@ -146,12 +146,10 @@
 		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 			<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
-			<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="false"/>
+	    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
 			<field name="fileToSend" required="true" widget="binary-link"/>
 			<field name="bankOrderTotalAmount" colSpan="4"/>
 			<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
-	    	<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-bank-order-file-format-change"/>
-	    	<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
 			<field name="signatoryUser" requiredIf="statusSelect == 2"/>
 		</panel>
 		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
