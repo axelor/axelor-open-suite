@@ -18,7 +18,10 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.inject.Beans;
@@ -56,7 +59,7 @@ public class BankOrderLineService {
 	}
 	
 	/**
-	 * Method to create a specific BankOrderLine for SEPA and internationnal transfer and direct debit
+	 * Method to create a specific BankOrderLine for SEPA and international transfer and direct debit
 	 *
 	 * @param partner
 	 * @param amount
@@ -167,6 +170,109 @@ public class BankOrderLineService {
 			}
 		}
 	}
-	
+
+	public String createDomainForBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
+		String domain = "";
+		String bankDetailsIds = "";
+
+		if ((bankOrderLine == null) || (bankOrder == null)) {
+			return domain;
+		}
+
+		//the case where the bank order is for a company
+		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+			if (bankOrderLine.getReceiverCompany() != null) {
+
+			    bankDetailsIds = this.getIdStringListFromList(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+
+				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
+					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
+					bankDetailsIds += bankOrderLine.getReceiverCompany()
+							.getDefaultBankDetails().getId().toString();
+				}
+
+			}
+		}
+
+		//case where the bank order is for a partner
+		else if (bankOrderLine.getPartner() != null) {
+		    bankDetailsIds = this.getIdStringListFromList(bankOrderLine.getPartner().getBankDetailsList());
+		}
+
+		if (bankDetailsIds.equals("")) {
+			return domain = "";
+		}
+
+		domain = "self.id IN(" + bankDetailsIds + ")";
+
+		//filter on the result from bankPartner if the option is active.
+		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
+				.filter("? MEMBER OF self.bankDetailsSet",
+						bankOrder.getSenderBankDetails())
+				.fetchOne();
+
+		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
+		    domain += " AND self.id IN (" +
+					this.getIdStringListFromList(ebicsPartner.getReceiverBankDetailsSet()) +
+					")";
+		}
+		return domain;
+	}
+
+	public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
+		BankDetails candidateBankDetails = null;
+		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+			//fill using the default in company
+			if (bankOrderLine.getReceiverCompany() == null) {return null;}
+			candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
+		}
+		else {
+			//fill using the default in partner
+			if (bankOrderLine.getPartner() == null) {return null;}
+			for (BankDetails bankDetails : bankOrderLine.getPartner().getBankDetailsList()) {
+				if (bankDetails.getIsDefault()) {
+					candidateBankDetails = bankDetails;
+					break;
+				}
+			}
+		}
+
+		//filter on the result from bankPartner if the option is active.
+		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
+				.filter("? MEMBER OF self.bankDetailsSet",
+						bankOrder.getSenderBankDetails())
+				.fetchOne();
+
+		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
+
+			if (ebicsPartner.getReceiverBankDetailsSet().contains(candidateBankDetails)) {
+				return candidateBankDetails;
+			}
+			else {
+				return null;
+			}
+		}
+		return candidateBankDetails;
+	}
+
+	private String getIdStringListFromList(Collection<BankDetails> bankDetailsList) {
+		String idList = "";
+		for (BankDetails bankDetails : bankDetailsList) {
+			idList += bankDetails.getId() + ",";
+		}
+		//remove the last comma
+		if(!idList.equals("") && idList.substring(idList.length() - 1).equals(",")) {
+			idList = idList.substring(0, idList.length() - 1);
+		}
+		return idList;
+	}
+
+	private boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
+		return  (ebicsPartner != null) &&
+				(ebicsPartner.getFilterReceiverBD()) &&
+				(ebicsPartner.getReceiverBankDetailsSet() != null) &&
+				(!ebicsPartner.getReceiverBankDetailsSet().isEmpty()) &&
+				(ebicsPartner.getOrderTypeSelect() == orderType);
+	}
 	
 }
