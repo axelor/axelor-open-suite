@@ -27,9 +27,6 @@ dependencies {
 
 	compile libs.ST4
 	
-	compile files("src/main/lib/ebics-1.0.2.jar")
-
-
 }
 
 license {

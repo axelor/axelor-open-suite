@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	
+	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
+		<toolbar>
+  			<button name="exportUsers" title="Export" onClick="action-export-ebics-user" />
+    		<button name="importUsers" title="Import" onClick="action-ebics-open-import-ebics-users" />
+  		</toolbar>
+		<hilite if="statusSelect &lt; 3" color="primary"/>
+	    <hilite if="statusSelect == 3" color="success"/>
+	    <hilite if="statusSelect == 4" color="danger"/>
+		<field name="name" />
+		<field name="userId" />
+		<field name="ebicsTypeSelect"/>
+		<field name="statusSelect"/>
+	</grid>
+	
+	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
+		<panel title="General informations" colSpan="12">
+			<field name="statusSelect" colSpan="12"/>
+			<field name="name" />
+			<field name="password" requiredIf="ebicsTypeSelect == 0"/>
+			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
+			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
+			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
+			<field name="associatedUser"/>
+			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
+			<field name="nextOrderId"/>
+			<field name="ebicsPartner.ebicsBank"/>
+		</panel>
+		<panel title="Test configuration" colSpan="12" showIf="ebicsPartner.testMode">
+			<field name="ebicsPartner.testMode"/>
+			<field name="testFile" widget="binary-link"/>
+			<field name="testBankStatementFileFormat"/>
+			<field name="testBankOrderFileFormat"/>
+		</panel>
+		<panel-tabs>
+			<panel title="Certificates">
+				<panel title="DN" colSpan="12" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
+					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
+					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" showTitle="false" />
+				</panel>
+				<panel title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false" canNew="true"/>
+				</panel>
+				<panel title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="e002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
+				</panel>
+				<panel title="Authentication certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
+				</panel>
+			</panel>
+			<panel-related field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+		</panel-tabs>
+		
+		<panel sidebar="true">
+			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
+			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
+			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
+			<button name="printCertificates" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-method-print-certificates" showIf="statusSelect >= 3"/>
+			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3" prompt="Are you sure you want get the server certificates ?"/>
+			<button name="sendSPR" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3" prompt="Are you sure you want suspend the user ? The whole initialisation process will have to be done again."/>
+			<button name="sendFUL" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3" prompt="You will send a file, are you sure the test mode is enabled ?"/>
+			<button name="sendFDL" title="Send file download request (FDL)" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
+			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
+			<button name="sendPTK" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>
+			<button name="sendHPD" title="Get bank parameters (HPD)" onClick="save,action-ebics-user-method-send-hpd" showIf="statusSelect == 3"/>
+			<button name="admin" title="Administration mode" onClick="action-ebics-user-attrs-administration-mode"/>
+		</panel>
+	
+	</form>
+	
+	
+	<form name="import-ebics-user-form" title="Import Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
+		<panel>
+			<field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="Data file"/>
+			<button name="importUsers" title="Import Ebics users" onClick="action-ebics-method-import-ebics-users" showIf="dataFile != null" colSpan="4" />
+			<field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
+		</panel>	
+	</form>
+	
+	<action-method name="action-ebics-user-method-generate-certificates">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="generateCertificate"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-generate-dn">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="generateDn"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-ini">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendINIRequest"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-hia">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendHIARequest"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-spr">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendSPRRequest"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-ful">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendFULRequest"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-fdl">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendFDLRequest"/>
+	</action-method>
+    
+    <action-method name="action-ebics-user-method-send-hpb">
+  		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendHPBRequest" />
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-send-htd">
+  		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendHTDRequest" />
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-send-ptk">
+  		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendPTKRequest" />
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-send-hpd">
+  		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="sendHPDRequest" />
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-update-edition-date">
+    	<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="updateEditionDate" />
+    </action-method>
+    
+    <action-method name="action-ebics-method-import-ebics-users">
+    	<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="importEbicsUsers"/>
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-print-certificates">
+    	<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="printCertificates"/>
+    </action-method>
+    
+    <action-attrs name="action-ebics-user-attrs-administration-mode">
+    	<attribute name="readonly" for="statusSelect" expr="false"/>
+    	<attribute name="readonly" for="nextOrderId" expr="false"/>
+    </action-attrs>
+    
+    <action-view name="action-ebics-open-import-ebics-users" title="Import ebics users" model="com.axelor.apps.bankpayment.db.EbicsUser">
+    	<view type="form" name="import-ebics-user-form"/>
+    	<view-param name="popup" value="true"/>
+    	<view-param name="popup-save" value="false"/>
+    	<view-param name="show-confirm" value="false"/>
+    	<view-param name="show-toolbar" value="false"/>
+    </action-view>
+    
+    <action-export name="action-export-ebics-user" output="${date}${time}" download="true">
+	  <export name="EbicsExport-${__datetime__.toString('ddMMyyyyHHmmSS')}.xml"
+	    	  template="data-export/export-ebics-user.txt"
+	          engine="groovy"/>
+	</action-export>
+
+    
+</object-views>

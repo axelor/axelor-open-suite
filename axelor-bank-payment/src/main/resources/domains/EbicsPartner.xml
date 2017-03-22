@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+	
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+  
+  <entity name="EbicsPartner" lang="java">
+  
+    <many-to-one name="ebicsBank" ref="com.axelor.apps.bankpayment.db.EbicsBank" title="Ebics bank" required="true"/>
+    <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
+    <many-to-one name="defaultSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Default signatory"/>
+
+    <many-to-many name="bankStatementFileFormatSet" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Supported file formats"/>
+	<datetime name="bankStatementLastExeDateT" title="Date of last execution"/>
+	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bankpayment.ebics.bank.bank.statement.period.mode.select" default="1"/>
+	<date name="bankStatementStartDate" title="Start date"/>
+	<date name="bankStatementEndDate" title="End date"/>
+	<many-to-one name="bankStatementEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics user for get the bank statements"/>
+	
+	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
+	
+    <many-to-one name="pSRBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Payment Status Report file format"/>
+	<boolean name="usePSR" title="Enable PSR"/>
+	
+	<boolean name="testMode" title="Test mode"/>
+
+	<boolean name="filterReceiverBD" default="false" title="Filter receiver bank details?"/>
+	<integer name="orderTypeSelect" selection="bankpayment.bank.order.type.select" title="Order type to filter"/>
+	<many-to-many name="receiverBankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Authorized Bank Accounts"/>
+	
+	<extra-code><![CDATA[
+	
+	   	// BANK STATEMENT GET MODE SELECT
+		public static final int GET_MODE_AUTOMATIC = 1;
+		public static final int GET_MODE_PERIOD = 2;
+		
+		
+	]]></extra-code>
+    
+  </entity>
+  
+</domain-models>

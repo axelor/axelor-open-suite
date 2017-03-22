@@ -49,7 +49,6 @@ public class CfonbImportService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected CfonbConfigService cfonbConfigService;
-	protected CfonbToolService cfonbToolService;
 	protected PaymentModeRepository paymentModeRepo;
 	protected GeneralService generalService;
 	
@@ -57,10 +56,9 @@ public class CfonbImportService {
 	protected List<String> importFile;
 
 	@Inject
-	public CfonbImportService(CfonbConfigService cfonbConfigService, CfonbToolService cfonbToolService, PaymentModeRepository paymentModeRepo, GeneralService generalService)  {
+	public CfonbImportService(CfonbConfigService cfonbConfigService, PaymentModeRepository paymentModeRepo, GeneralService generalService)  {
 		
 		this.cfonbConfigService = cfonbConfigService;
-		this.cfonbToolService = cfonbToolService;
 		this.paymentModeRepo = paymentModeRepo;
 		this.generalService = generalService;
 		
@@ -330,11 +328,11 @@ public class CfonbImportService {
 
 
 	private void testLength(String headerCFONB, List<String> multiDetailsCFONB, String endingCFONB, Company company) throws AxelorException  {
-		cfonbToolService.testLength(headerCFONB, 240);
-		cfonbToolService.testLength(endingCFONB, 240);
-		for(String detailCFONB : multiDetailsCFONB)  {
-			cfonbToolService.testLength(detailCFONB, 240);
-		}
+//		cfonbToolService.testLength(headerCFONB, 240);
+//		cfonbToolService.testLength(endingCFONB, 240);
+//		for(String detailCFONB : multiDetailsCFONB)  {
+//			cfonbToolService.testLength(detailCFONB, 240);
+//		}
 	}
 
 
@@ -695,28 +693,5 @@ public class CfonbImportService {
 	}
 
 
-	public BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl)  {
-		BigDecimal amountRemaining = BigDecimal.ZERO;
-		if(psl.getAdvanceOrPaymentMove() != null && psl.getAdvanceOrPaymentMove().getMoveLineList() != null)  {
-			for(MoveLine moveLine : psl.getAdvanceOrPaymentMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk())  {
-					amountRemaining = amountRemaining.add(moveLine.getCredit());
-				}
-			}
-		}
-		return amountRemaining;
-	}
-
-	public BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice)  {
-		BigDecimal amountRemaining = BigDecimal.ZERO;
-		if(invoice.getPaymentMove() != null && invoice.getPaymentMove().getMoveLineList() != null)  {
-			for(MoveLine moveLine : invoice.getPaymentMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk())  {
-					amountRemaining = amountRemaining.add(moveLine.getCredit());
-				}
-			}
-		}
-		return amountRemaining;
-	}
 
 }

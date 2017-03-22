@@ -26,9 +26,6 @@ public interface IReport {
 	public static final String INVOICE = "Invoice.rptdesign";
 	public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
 	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
-	public static final String BANK_ORDER = "BankOrder.rptdesign";
-	public static final String LUNCH_VOUCHER_MGT_MONTHLY = "LunchVoucherMgt_Monthly.rptdesign";
-	public static final String EBICS_CERTIFICATE = "EbicsCertificate.rptdesign";
 	
 	
 }

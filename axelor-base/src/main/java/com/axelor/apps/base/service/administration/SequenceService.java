@@ -151,13 +151,12 @@ public class SequenceService {
 			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			seq = seqPrefixe + seqSuffixe;
 
-		if (
-            monthlyResetOk && (
+		if ( monthlyResetOk && (
 				(!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH)) ||
 				(!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR))
-            )
-        )
-		{return false; }
+            ))  {
+             return false;
+		}
 
 		return true;
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+	
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+  
+  <entity name="EbicsBank" lang="java">
+	<string name="fullName" namecolumn="true"/>
+	<string name="hostId" title="Host ID" help="true"/>
+	<string name="name" title="Name"/>
+  
+	<many-to-one name="bank" ref="com.axelor.apps.base.db.Bank" required="true"/>
+	<string name="fax" title="Fax"/>
+    <string name="url" title="URL"/>
+	
+	<string name="languageSelect" title="Language" selection="select.language" />
+	
+	<integer name="certValidityPeriodSelect" title="Certificate validity period(Years)" default="5" selection="bankpayment.ebics.bank.certificate.validity.period.select" />
+	
+	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
+	
+	<string name="protocolSelect" title="Protocol" selection="bankpayment.ebics.bank.protocol.select" default="ssl" />
+	
+	<boolean name="useX509ExtentionForAutoSignedCert" title="Use X509 extentions for auto signed certificates" default="true"/>
+	
+  </entity>
+</domain-models>

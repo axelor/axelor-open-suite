@@ -89,4 +89,14 @@ public interface IExceptionMessage {
 	
 	static final String PAYROLL_PREPARATION_DUPLICATE = /*$$(*/ "There is already a payroll preparation for the employee %s, the company %s and the period %s"/*)*/ ;
 
+	/**
+	 *  Expense service
+	 */
+	static final String EXPENSE_JOURNAL = /*$$(*/ "You must configure an expenses journal(company : %s)" /*)*/;
+	static final String EXPENSE_ACCOUNT = /*$$(*/ "You must configure an expenses account (company : %s)" /*)*/;
+	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "You must configure an account for expenses taxes (company : %s)" /*)*/;
+	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Move already used, you must deletter it first" /*)*/;
+
+	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
+	
 }

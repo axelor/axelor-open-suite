@@ -360,7 +360,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
 		}
 		catch(Exception e){
-			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
 		expenseRepository.save(expense);

@@ -318,16 +318,7 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">gross_weight</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["StockMoveId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -458,6 +449,7 @@ else row["last_modified_by"]</expression>
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockMoveId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -651,7 +643,7 @@ left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.
 left join base_printing_settings as PrintingSetting on (Company.printing_settings = PrintingSetting.id)
 left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
 left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
- ]]></xml-property>
+where StockMove.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -939,16 +931,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">lineSequence</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["stock_move_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["StockMoveId"].value.split(",")</value>
-                    </simple-property-list>
-                    <property name="updateAggregation">true</property>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -1004,6 +987,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockMoveId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1088,7 +1072,7 @@ left join base_unit as Unit on (StockMoveLine.unit = Unit.id)
 left join base_tracking_number as TrackingNumber on (StockMoveLine.tracking_number = TrackingNumber.id)
 left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = StockMoveLine.sale_order_line)
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
-]]></xml-property>
+where StockMove.id in (@INJECTID)]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -2331,8 +2315,7 @@ row["first_name"]
                                                 <property name="textAlign">left</property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF>
-]]></text-property>
+<VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                         <cell id="3810">

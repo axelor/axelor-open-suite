@@ -2,16 +2,17 @@ package com.axelor.apps.hr.service.bankorder;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.BankOrderRepository;
-import com.axelor.apps.account.service.bankorder.BankOrderCreateService;
-import com.axelor.apps.account.service.bankorder.BankOrderLineService;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -23,8 +24,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService)  {
-		super(bankOrderRepo, accountConfigService, bankOrderLineService);
+	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
+		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService);
 	}
 
 	

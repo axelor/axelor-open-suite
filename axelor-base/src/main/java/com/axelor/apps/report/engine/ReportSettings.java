@@ -42,9 +42,13 @@ public class ReportSettings {
 
 	public static String FORMAT_PDF = "pdf";
 	public static String FORMAT_XLS = "xls";
+	public static String FORMAT_XLSX = "xlsx";
 	public static String FORMAT_DOC = "doc";
+	public static String FORMAT_DOCX = "docx";
+	public static String FORMAT_ODS = "ods";
+	public static String FORMAT_ODT = "odt";
 	public static String FORMAT_HTML = "html";
-	
+
 	protected Map<String, Object> params = Maps.newHashMap();
 	
 	protected String format = FORMAT_PDF;
@@ -98,15 +102,17 @@ public class ReportSettings {
 		
 	}
 	
+	public String getOutputName()  {
+		return outputName;
+	}
+	
 	/**
 	 * This method get the generated report file.
 	 * @return
 	 * 		The generated report file.
 	 */
 	public File getFile()  {
-		
 		return output;
-		
 	}
 	
 	protected void attach() throws FileNotFoundException, IOException  {

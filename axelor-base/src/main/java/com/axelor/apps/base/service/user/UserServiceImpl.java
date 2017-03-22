@@ -20,11 +20,14 @@ package com.axelor.apps.base.service.user;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 /**
  * UserService is a class that implement all methods for user informations
@@ -157,6 +160,21 @@ public class UserServiceImpl implements UserService  {
 		if (user == null)  {  return null;  }
 			
 		return user.getPartner();
+	}
+
+	@Transactional
+	public void createPartner(User user) {
+		Partner partner = new Partner();
+		partner.setPartnerTypeSelect(2);
+		partner.setIsContact(true);
+		partner.setName(user.getName());
+		partner.setFullName(user.getName());
+		partner.setTeam(user.getActiveTeam());
+		partner.setUser(user);
+		Beans.get(PartnerRepository.class).save(partner);
+
+		user.setPartner(partner);
+		userRepo.save(user);
 	}
 }
  

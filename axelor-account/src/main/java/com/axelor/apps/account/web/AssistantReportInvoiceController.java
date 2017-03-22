@@ -50,6 +50,7 @@ public class AssistantReportInvoiceController {
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
 				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
+                .addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();
@@ -77,6 +78,7 @@ public class AssistantReportInvoiceController {
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
 				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
+				.addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();
