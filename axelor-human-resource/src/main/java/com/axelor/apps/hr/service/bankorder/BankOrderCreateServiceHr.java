@@ -2,6 +2,7 @@ package com.axelor.apps.hr.service.bankorder;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
-		super(bankOrderRepo, accountConfigBankPaymentService, bankOrderLineService);
+	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
+		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService);
 	}
 
 	

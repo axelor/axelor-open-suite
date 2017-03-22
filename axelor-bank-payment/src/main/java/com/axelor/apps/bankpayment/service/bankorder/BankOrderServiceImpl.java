@@ -27,6 +27,9 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import com.axelor.apps.bankpayment.db.*;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.apps.base.db.BankDetails;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -37,9 +40,6 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
-import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
@@ -200,7 +200,8 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			
 			bankOrderLineService.checkPreconditions(bankOrderLine);
 			totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
-			
+			bankOrderLineService.checkBankDetails(bankOrderLine);
+
 		}
 		if (!totalAmount.equals(arithmeticTotal))  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID), IException.INCONSISTENCY);
@@ -263,7 +264,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
 		sendFile(bankOrder, fileToSend);
-		
+
 		bankOrderRepo.save(bankOrder);
 
 	}
@@ -275,7 +276,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 		if(paymentMode != null && !paymentMode.getAutomaticTransmission())  {  return;  }
 		
-		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
+		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
 
 	}
 	
@@ -312,8 +313,21 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		bankOrderRepo.save(bankOrder);
 		
 	}
-	
-	
+
+
+	@Transactional
+	public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails) {
+		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
+				.filter("? MEMBER OF self.bankDetailsSet", bankDetails)
+				.fetchOne();
+		if (ebicsPartner != null) {
+			return ebicsPartner.getDefaultSignatoryEbicsUser();
+		}
+		else {
+			return null;
+		}
+	}
+
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
 		
 		if(bankOrder.getFileToSend() != null)  {  return MetaFiles.getPath(bankOrder.getFileToSend()).toFile();  }

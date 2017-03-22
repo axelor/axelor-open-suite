@@ -25,6 +25,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -61,5 +63,8 @@ public interface BankOrderService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelBankOrder(BankOrder bankOrder);
-	
+
+	@Transactional
+	public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);
+
 }

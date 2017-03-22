@@ -38,7 +38,7 @@
 	<one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder" title="Bank Order Lines" orderBy="counter"/>
 	
 	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory"/>
-	<many-to-one name="ebicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics User ID"/>
+	<many-to-one name="signatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory"/>
 	<many-to-one name="fileToSend" ref="com.axelor.meta.db.MetaFile" title="File to send" />
 	
 	 <extra-code><![CDATA[

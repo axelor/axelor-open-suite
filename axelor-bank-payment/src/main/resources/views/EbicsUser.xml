@@ -21,7 +21,7 @@
 		<panel title="General informations" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="name" />
-			<field name="password" />
+			<field name="password" requiredIf="ebicsTypeSelect == 0"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>

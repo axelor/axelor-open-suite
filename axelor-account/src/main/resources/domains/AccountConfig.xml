@@ -113,7 +113,7 @@
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
-    
+  	
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />

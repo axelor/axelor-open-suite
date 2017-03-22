@@ -558,5 +558,4 @@ public interface IExceptionMessage {
 	static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
 	
 	
-	
 }

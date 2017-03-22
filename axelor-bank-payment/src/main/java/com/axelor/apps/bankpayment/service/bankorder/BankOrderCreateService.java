@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -32,26 +25,36 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class BankOrderCreateService {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	protected BankOrderRepository bankOrderRepo;
+    protected BankOrderService bankOrderService;
 	protected AccountConfigService accountConfigService;
 	protected BankOrderLineService bankOrderLineService;
 
 	
 	@Inject
-	public BankOrderCreateService(BankOrderRepository bankOrderRepo, AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService)  {
+	public BankOrderCreateService(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService)  {
 		
 		this.bankOrderRepo = bankOrderRepo;
+        this.bankOrderService = bankOrderService;
 		this.accountConfigService = accountConfigService;
 		this.bankOrderLineService = bankOrderLineService;
 		
@@ -84,8 +87,16 @@ public class BankOrderCreateService {
 		bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
 		bankOrder.setSenderCompany(senderCompany);
 		bankOrder.setSenderBankDetails(senderBankDetails);
-		bankOrder.setSignatoryUser(accountConfigService.getAccountConfig(senderCompany).getDefaultSignatoryUser());
-		
+        EbicsUser signatoryEbicsUser = bankOrderService.getDefaultEbicsUserFromBankDetails(senderBankDetails);
+        User signatoryUser = null;
+        if (signatoryEbicsUser != null) {
+            signatoryUser = signatoryEbicsUser.getAssociatedUser();
+            bankOrder.setSignatoryEbicsUser(signatoryEbicsUser);
+        }
+        if (signatoryUser != null) {
+            bankOrder.setSignatoryUser(signatoryUser);
+        }
+
 		if(!bankOrderFileFormat.getIsMultiCurrency())  {
 			bankOrder.setBankOrderCurrency(currency);
 		}

@@ -73,6 +73,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
 	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
 	static final String BANK_ORDER_COMPANY_NO_SEQUENCE = /*$$(*/ "The company %s does not have bank order sequence" /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
 
 	
 	/**
