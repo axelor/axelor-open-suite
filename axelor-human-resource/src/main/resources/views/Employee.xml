@@ -30,18 +30,28 @@
 		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
-					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+					<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
 		           	<field name="webSite"/>
 	            </editor>
             </field>
         </panel>
         <panel-tabs>
         	<panel name="information" title="Information">
+	        	<panel name="phonePro" title="Professionnal Phones" colSpan="12">
+	        		<field name="fixedProPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+	        		<field name="mobileProPhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+					<field name="phoneAtCustomer" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+	        	</panel>
       			<panel name="personalInfo" title="Personal Info." colSpan="12">
         			<field name="birthDate" colSpan="4"/>
+        			<field name="maritalStatus" colSpan="4"/>
         			<field name="socialSecurityNumber" colSpan="4"/>
         			<field name="kilometricAllowParam" colSpan="4"/>
       			</panel>
+	        	<panel name="emergencyContact" title="Emergency Contact" colSpan="12">
+	        		<field name="emergencyContact" colSpan="4"/>
+	        		<field name="emergencyNumber" colSpan="4" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+	        	</panel>
      			<panel name="contractualInfo" title="Contractual Info." colSpan="12">
         			<field name="dateOfHire" colSpan="4"/>
         			<field name="seniorityDate" colSpan="4"/>
