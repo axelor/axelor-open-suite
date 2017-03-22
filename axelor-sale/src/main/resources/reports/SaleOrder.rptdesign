@@ -2736,7 +2736,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null||row._outer["delAddressId"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null||row._outer["delAddressId"] == null|| row._outer["delAddressId"] == row._outer["invAddressId"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -2810,7 +2810,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["delAddressId"]==null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"] == row._outer["delAddressId"] || row._outer["delAddressId"] == null || row._outer["invAddressId"]  == null</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -2841,36 +2841,72 @@ row["ClientPartFirstName"]
                     <text id="3685">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["invAddressId"] == row["delAddressId"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["delAddress2"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3686">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["invAddressId"] == row["delAddressId"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["delAddress3"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3687">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["invAddressId"] == row["delAddressId"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["delAddress4"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3688">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["invAddressId"] == row["delAddressId"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["delAddress5"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3689">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["invAddressId"] == row["delAddressId"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["delAddress6"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3690">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["invAddressId"] == row["delAddressId"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["DeliveryCountry"]</VALUE-OF>]]></text-property>
                     </text>

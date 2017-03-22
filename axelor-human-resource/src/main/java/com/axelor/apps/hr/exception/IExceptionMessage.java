@@ -42,6 +42,7 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH = /*$$(*/ "Please configure the lunch voucher export path in HR config for the company %s" /*)*/;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation"/*)*/ ;

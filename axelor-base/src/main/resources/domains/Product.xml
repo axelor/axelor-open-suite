@@ -24,7 +24,7 @@
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
     <boolean name="isRawMaterial" title="Raw material" initParam="true" help="true"/>
     <boolean name="isPrototype" title="Prototype"/>
-    <integer name="subTypeProductSelect" title="Sub Type Product" selection="product.sub.type.product.select"/>
+    <integer name="productSubTypeSelect" title="Product Subtype" selection="product.sub.type.product.select"/>
     <integer name="inventoryTypeSelect" title="Inventory type" selection="product.inventory.type.select"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="10" massUpdate="true"/>

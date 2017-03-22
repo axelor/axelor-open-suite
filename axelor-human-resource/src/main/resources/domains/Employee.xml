@@ -28,6 +28,12 @@
       <boolean name="hrManager" title="HR manager" />
       <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
       <date name="birthDate" title="Birth date" />
+      <string name="maritalStatus" title="Marital status" selection="hr.employee.marital.status"/>
+      <string name="fixedProPhone" title="Fixed pro. phone"/>
+      <string name="mobileProPhone" title="Mobile pro. phone"/>
+      <string name="phoneAtCustomer" title="Phone at customer"/>
+      <string name="emergencyContact" title="Emergency contact"/>
+      <string name="emergencyNumber" title="Emergency number"/>
       <date name="dateOfHire" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />

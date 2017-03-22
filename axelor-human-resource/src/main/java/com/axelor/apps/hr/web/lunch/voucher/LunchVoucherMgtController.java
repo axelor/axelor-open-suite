@@ -101,6 +101,10 @@ public class LunchVoucherMgtController {
 		LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
 		
 		try {
+/*
+			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
+			lunchVoucherMgtService.exportLunchVoucherMgt(lunchVoucherMgt);
+*/
 			lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
 			response.setReload(true);
 		} catch (Exception e) {

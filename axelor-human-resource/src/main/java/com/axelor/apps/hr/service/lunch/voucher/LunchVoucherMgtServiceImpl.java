@@ -153,6 +153,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 		MetaFile metaFile = new MetaFile();
 		metaFile.setFileName(I18n.get("Lunch Voucher Mgt") + " - " + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + ".csv");
+
 		
 		Path tempFile = MetaFiles.createTempFile(null, ".csv");
 		final OutputStream os = new FileOutputStream(tempFile.toFile());
@@ -186,8 +187,11 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		} finally {
 			Files.deleteIfExists(tempFile);
 		}
-
+/*
+		*/
+		//lunchVoucherMgt.setExported(true);
 		lunchVoucherMgt.setCsvFile(metaFile);
+
 		lunchVoucherMgt.setExportDate(Beans.get(GeneralService.class).getTodayDate());
 		
 		lunchVoucherMgtRepository.save(lunchVoucherMgt);
