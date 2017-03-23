@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,20 +28,25 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_SENT_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the sent expense template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the validated expense template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the refused expense template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the canceled expense template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_SENT_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the sent timehsheet template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the validated timehsheet template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the refused timehsheet template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the canceled timehsheet template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_SENT_LEAVE_TEMPLATE = /*$$(*/ "Please configure the sent leave template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the validated leave template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the refused leave template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the canceled leave template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_SENT_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the sent extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the validated extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
 	
-	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
-	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
-	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;
-	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Merci de rentrer un planning pour l'employé rattaché à l'utilisateur %s"/*)*/ ;
+	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation"/*)*/ ;
+	static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation"/*)*/ ;
+	static final String TIMESHEET_PRODUCT = /*$$(*/ "Please add a product"/*)*/ ;
+	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Please add an employee's planning related to user %s"/*)*/ ;
 	static final String TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS = /*$$(*/ "Please, enter the number of daily work hours per employee %s"/*)*/ ;
 	static final String TIMESHEET_DATE_CONFLICT = /*$$(*/ "There is a conflict between the dates entered and the dates in the lines : %s"/*)*/ ;
 	static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty"/*)*/ ;
@@ -55,6 +60,7 @@ public interface IExceptionMessage {
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;
+	static final String EMPLOYEE_CONTRACT_OF_EMPLOYMENT = /*$$(*/ "Please, add a contract of employment for employee : %s"/*)*/ ;
 	
 	static final String BATCH_MISSING_FIELD = /*$$(*/ "Leave reason and day number have to be defined"/*)*/ ;
 	static final String EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT = /*$$(*/ "The employee %s has multiple %s leave lines"/*)*/ ;
@@ -68,11 +74,18 @@ public interface IExceptionMessage {
 	static final String BATCH_LEAVE_MANAGEMENT_ENDING_2 = /*$$(*/ "Employees' leaves failed to be computed due to configuration anomaly : %s"/*)*/ ;
 	static final String BATCH_LEAVE_MANAGEMENT_ENDING_3 = /*$$(*/ "Employees' leaves failed to be computed due to missing data : %s"/*)*/ ;
 	static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/ "There is an error in a formula"/*)*/ ;
+	static final String BATCH_PAYROLL_PREPARATION_GENERATION_RECAP = /*$$(*/ "Payroll preparations attempted to be generated : %s"/*)*/ ;
+	static final String BATCH_PAYROLL_PREPARATION_SUCCESS_RECAP = /*$$(*/ "Payroll preparations successfully generated : %s"/*)*/ ;
+	static final String BATCH_PAYROLL_PREPARATION_DUPLICATE_RECAP = /*$$(*/ "Payroll preparations failed to be generated due to a duplicate one : %s"/*)*/ ;
+	static final String BATCH_PAYROLL_PREPARATION_CONFIGURATION_RECAP = /*$$(*/ "Payroll preparations failed to be generated due to missing data : %s"/*)*/ ;
+	static final String BATCH_PAYROLL_PREPARATION_EXPORT_RECAP = /*$$(*/ "Payroll preparations exported : %s"/*)*/ ;
 	
 	static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/ "Minimum stock of lunch vouchers will be reached for the company %s.\n  Minimum Stock allowed : %s.\n Available Stock : %s" /*)*/ ;
 	
 	static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/ "There is no year for society %s which includes date %s"/*)*/ ;
 	
 	static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/ "There is no matching condition for the allowance %s"/*)*/ ;
+	
+	static final String PAYROLL_PREPARATION_DUPLICATE = /*$$(*/ "There is already a payroll preparation for the employee %s, the company %s and the period %s"/*)*/ ;
 
 }

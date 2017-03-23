@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,6 +55,7 @@ public class AssistantReportInvoiceController {
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
 				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
+                .addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();
@@ -85,6 +86,7 @@ public class AssistantReportInvoiceController {
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
 				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
+				.addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();

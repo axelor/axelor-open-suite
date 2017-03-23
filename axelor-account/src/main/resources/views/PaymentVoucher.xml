@@ -9,7 +9,7 @@
         <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-        <field name="paymentDateTime"/>
+        <field name="paymentDate"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="paidAmount" aggregate="sum"/>
         <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>
@@ -26,7 +26,7 @@
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
-			 <field name="paymentDateTime" colSpan="4" required="true"/>
+			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid"/>
 			 <field name="cashRegister" colSpan="4" grid-view="cash-register-grid" form-view="cash-register-form"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
@@ -61,7 +61,7 @@
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-moveLine-domain-4, action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
-			<field name="currency" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
 		
 		<panel colSpan="12" showIf="statusSelect == 1">
@@ -202,7 +202,7 @@
    	</action-record>
    	
 	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">
-		<attribute name="hidden" for="payboxEmail" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.email != null &amp;&amp; !partner.email.isEmpty())"/>
+		<attribute name="hidden" for="payboxEmail" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.emailAddress != null &amp;&amp; !partner.emailAddress.isEmpty())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-payment-voucher-hidden-fields-if-purchase">
@@ -248,10 +248,13 @@
 	
 	
 	<action-attrs name="action-set-payment-mode-domain">
-		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="operationTypeSelect == 1 || operationTypeSelect == 4"/>
-		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 1'" if="operationTypeSelect == 2 || operationTypeSelect == 3"/>
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 1'" if="(operationTypeSelect == 1 || operationTypeSelect == 4) &amp;&amp; inTaxTotal &lt; 0"/>
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="(operationTypeSelect == 1 || operationTypeSelect == 4) &amp;&amp; inTaxTotal &gt;= 0"/>
+
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 1'" if="(operationTypeSelect == 2 || operationTypeSelect == 3) &amp;&amp; inTaxTotal &gt;= 0"/>
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="(operationTypeSelect == 2 || operationTypeSelect == 3) &amp;&amp; inTaxTotal &lt; 0"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-payment-voucher-set-partner-domain">
 		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isSupplier = true'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isCustomer = true'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>

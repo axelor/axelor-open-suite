@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,6 +49,7 @@ public interface ITranslation {
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
 	
+
 	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
 	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
 	
@@ -60,6 +61,8 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/ "Invoice.expenseTotalAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
+
+	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
 
 	
 	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
@@ -116,8 +119,17 @@ public interface ITranslation {
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticJournal"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAxis"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAccount"; /*)*/
-
 	
+	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "SaleInvoicesDetails.sumByPartner"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "SaleInvoicesDetails.sumByProduct"; /*)*/
 
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "PurchaseInvoicesDetails.invoiced"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "PurchaseInvoicesDetails.ordered"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
 
 }

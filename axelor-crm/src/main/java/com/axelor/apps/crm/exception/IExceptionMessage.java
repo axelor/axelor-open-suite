@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,36 +29,36 @@ public interface IExceptionMessage {
 	/**
 	 * Target service
 	 */
-	static final String TARGET_1 = /*$$(*/ "L'objectif %s est en contradiction avec la configuration d'objectif %s" /*)*/;
+	static final String TARGET_1 = /*$$(*/ "Objective %s is in contradiction with objective's configuration %s" /*)*/;
 
 	/**
 	 * Batch event reminder
 	 */
 	static final String BATCH_EVENT_REMINDER_1 = /*$$(*/ "Event reminder %s" /*)*/;
-	static final String BATCH_EVENT_REMINDER_2 = /*$$(*/ "Compte rendu de la génération de rappel des évènements :\n" /*)*/;
-	static final String BATCH_EVENT_REMINDER_3 = /*$$(*/ "Rappel(s) traité(s)" /*)*/;
+	static final String BATCH_EVENT_REMINDER_2 = /*$$(*/ "Event's reminder's generation's reporting :\n" /*)*/;
+	static final String BATCH_EVENT_REMINDER_3 = /*$$(*/ "Reminder(s) treated" /*)*/;
 
 	/**
 	 * Batch event reminder message
 	 */
-	static final String BATCH_EVENT_REMINDER_MESSAGE_1 = /*$$(*/ "Rappel(s) traité(s)" /*)*/;
+	static final String BATCH_EVENT_REMINDER_MESSAGE_1 = /*$$(*/ "Reminder(s) treated" /*)*/;
 
 	/**
 	 * Batch target
 	 */
 	static final String BATCH_TARGET_1 = /*$$(*/ "Event reminder %s" /*)*/;
-	static final String BATCH_TARGET_2 = /*$$(*/ "Compte rendu de la génération des objectifs :\n" /*)*/;
-	static final String BATCH_TARGET_3 = /*$$(*/ "Configuration des objectifs(s) traité(s)" /*)*/;
+	static final String BATCH_TARGET_2 = /*$$(*/ "Objectives' generation's reporting :\n" /*)*/;
+	static final String BATCH_TARGET_3 = /*$$(*/ "Treated objectives reporting" /*)*/;
 
 	/**
 	 * Convert lead wizard controller
 	 */
-	static final String CONVERT_LEAD_1 = /*$$(*/ "Prospect converti" /*)*/;
+	static final String CONVERT_LEAD_1 = /*$$(*/ "Contact converted" /*)*/;
 
 	/**
 	 * Event controller
 	 */
-	static final String EVENT_1 = /*$$(*/ "Aucune séquence configurée pour les tickets" /*)*/;
+	static final String EVENT_1 = /*$$(*/ "There's no configured sequence for the tickets" /*)*/;
 	static final String EVENT_2 = /*$$(*/ "Input location please" /*)*/;
 
 	/**
@@ -73,7 +73,7 @@ public interface IExceptionMessage {
 	/**
 	 * Opportunity
 	 */
-	static final String LEAD_PARTNER = /*$$(*/ "Veuillez selectionner une piste" /*)*/;
+	static final String LEAD_PARTNER = /*$$(*/ "Please select a path" /*)*/;
 
 	/**
 	 * Configuration

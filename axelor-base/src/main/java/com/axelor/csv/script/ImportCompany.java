@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,16 +18,21 @@
 package com.axelor.csv.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 
 public class ImportCompany {
+	
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	MetaFiles metaFiles;
@@ -37,18 +42,23 @@ public class ImportCompany {
 		assert bean instanceof Company;
 		
 		Company company = (Company) bean;
+		String fileName = (String) values.get("logo_fileName");
 		
-		final Path path = (Path) values.get("__path__");
-	    final File image = path.getParent().resolve((String) values.get("logo_fileName")).toFile(); 
-
-		try {
-			final MetaFile metaFile = metaFiles.upload(image);
-			company.setLogo(metaFile);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!StringUtils.isEmpty(fileName)) {
+			final Path path = (Path) values.get("__path__");
+			
+			try {
+				final File image = path.getParent().resolve(fileName).toFile();
+				if(image != null && image.isFile()) {
+					final MetaFile metaFile = metaFiles.upload(image);
+					company.setLogo(metaFile);
+				}
+			} catch (Exception e) {
+				LOG.error("Error when importing company : {}", e);
+			}
 		}
 
-		return bean;
+		return company;
 	}
 
 }

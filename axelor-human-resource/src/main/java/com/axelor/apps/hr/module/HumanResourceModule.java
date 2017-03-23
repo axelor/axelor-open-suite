@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,6 @@ package com.axelor.apps.hr.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.batch.MailBatchService;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
@@ -39,6 +38,8 @@ import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.LeaveServiceImpl;
+import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
+import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
@@ -49,6 +50,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
+import com.axelor.apps.hr.service.user.UserHrService;
+import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 
 
 public class HumanResourceModule extends AxelorModule {
@@ -71,7 +74,8 @@ public class HumanResourceModule extends AxelorModule {
 		bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
 		bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
 		bind(AppHumanResourceService.class).to(AppHumanResourceServiceImpl.class);
-
+		bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
+		bind(UserHrService.class).to(UserHrServiceImpl.class);
 	}
 
 }

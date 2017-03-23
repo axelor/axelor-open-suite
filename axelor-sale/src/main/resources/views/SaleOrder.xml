@@ -135,7 +135,7 @@
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
-	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
+	    <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="versionNumber" if="__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
 	    <field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
@@ -166,7 +166,7 @@
   		    <field name="deliveryCondition" colSpan="12"/>
   		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" if="__config__.app.isApp('stock')" />   
 			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"  if="__config__.app.isApp('stock')" />   
-  		    <panel-dashlet action="action-view-show-stock-move-line" title="Stock movement" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
+  		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
       	</panel>
 	      
 	    
@@ -232,13 +232,13 @@
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
 	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.taxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.amountInvoiced}}  {{record.currency.symbol}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
@@ -288,7 +288,7 @@
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
-	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
+	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="templateUser" form-view="user-form" grid-view="user-grid"/>
 	  </panel>
 	  
@@ -393,7 +393,7 @@
 	    <field name="saleOrderSeq" css="highlight"/>
 	    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	    <field name="externalReference"/>
-	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  </panel>
 	  <panel-tabs readonly="true">
 	    <panel name="customerInformation" title="Customer information" showTitle="false">
@@ -418,13 +418,13 @@
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
 	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Total V.A.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.taxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
 	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
+	              &lt;dd&gt;{{record.amountInvoiced}} {{record.currency.symbol}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
@@ -639,9 +639,11 @@
     </action-record>
     
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition"/>
+    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition" if="clientPartner?.paymentCondition != null"/>
+    	<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="clientPartner?.paymentCondition == null"/>
  		<field name="currency" expr="eval: clientPartner?.currency"/>
- 		<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
+		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
@@ -745,8 +747,8 @@
 	  	<context name="_saleOrder" expr="eval: __this__"/>
     </action-view>
 	
-	<action-view name="action-view-show-stock-move-line" title="Stock movement" model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-grid"/>
+	<action-view name="action-view-show-stock-move-line" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-sale-order-grid"/>
 		<view type="form" name="stock-move-line-form"/>
 		<domain>self.stockMove.saleOrder = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__"/>

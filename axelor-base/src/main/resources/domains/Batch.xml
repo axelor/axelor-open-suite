@@ -19,6 +19,9 @@
     <integer name="done" title="Succeeded" />
     <integer name="anomaly" title="Anomaly" />
     <string name="comments" title="Comments" large="true" />
+    
+    
+    <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile" />
   
   </entity>
 

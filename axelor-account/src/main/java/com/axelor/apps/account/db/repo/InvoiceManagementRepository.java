@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setMove(null);
 		copy.setOriginalInvoice(null);
 		copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
+		copy.setAmountPaid(BigDecimal.ZERO);
 		copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		copy.setAmountRejected(BigDecimal.ZERO);
 		copy.clearBatchSet();

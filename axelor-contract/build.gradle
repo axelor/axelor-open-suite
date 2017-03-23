@@ -1,14 +1,17 @@
-apply plugin: 'axelor-module' 
+apply plugin: "com.axelor.app-module"
 
-module { 
-	name "axelor-contract"
-	version "5.0.0"
+apply {
+	version = "5.0.0"
+}
+
+axelor { 
 	title "Axelor :: Contract"
-	
 	removable true
-	
-	module "modules:axelor-studio"
-	module "modules:axelor-purchase"
-	module "modules:axelor-sale"
-	module "modules:axelor-account"
+}
+
+dependencies {
+	compile project(":modules:axelor-studio")
+	compile project(":modules:axelor-purchase")
+	compile project(":modules:axelor-sale")
+	compile project(":modules:axelor-account")
 }

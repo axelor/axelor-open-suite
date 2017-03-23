@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.administration;
 import org.apache.commons.lang.StringUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
 
 import org.slf4j.Logger;
@@ -39,7 +40,8 @@ import com.google.inject.persist.Transactional;
 public class SequenceService {
 
 	private final static String
-		PATTERN_YEAR = "%Y",
+		PATTERN_FULL_YEAR = "%YYYY",	
+		PATTERN_YEAR = "%YY",
 		PATTERN_MONTH = "%M",
 		PATTERN_FULL_MONTH ="%FM",
 		PATTERN_DAY = "%D",
@@ -126,21 +128,40 @@ public class SequenceService {
 
 	}
 
-	public static boolean isValid( Sequence sequence ){
+	public static boolean isYearValid( Sequence sequence ){
 
-		boolean
-			monthlyResetOk = sequence.getMonthlyResetOk(),
-			yearlyResetOk = sequence.getYearlyResetOk();
+		boolean yearlyResetOk = sequence.getYearlyResetOk();
 
-		if ( !monthlyResetOk && !yearlyResetOk ){ return true; }
+		if ( !yearlyResetOk ){ return true; }
 
 		String
 			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
 			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			seq = seqPrefixe + seqSuffixe;
 
-		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR) ){ return false; }
+
+		return true;
+
+	}
+
+	public static boolean isMonthValid( Sequence sequence ){
+
+		boolean	monthlyResetOk = sequence.getMonthlyResetOk();
+
+		if ( !monthlyResetOk ){ return true; }
+
+		String
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
+			seq = seqPrefixe + seqSuffixe;
+
+		if ( monthlyResetOk && (
+				(!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH)) ||
+				(!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR))
+            ))  {
+             return false;
+		}
 
 		return true;
 
@@ -168,6 +189,7 @@ public class SequenceService {
 
 
 		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
+				.replaceAll( PATTERN_FULL_YEAR, Integer.toString( refDate.get(ChronoField.YEAR_OF_ERA) ) )
 				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYear() ) )
 				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthValue() ) )
 				.replaceAll( PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")) )

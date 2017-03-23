@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,21 +20,15 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.bankorder.BankOrderService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,7 +39,6 @@ public class InvoicePaymentCancelServiceImpl  implements  InvoicePaymentCancelSe
 	protected InvoicePaymentRepository invoicePaymentRepository;
 	protected MoveCancelService moveCancelService;
 	protected ReconcileService reconcileService;
-	protected BankOrderService bankOrderService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	
@@ -54,13 +47,12 @@ public class InvoicePaymentCancelServiceImpl  implements  InvoicePaymentCancelSe
 	@Inject
 	public InvoicePaymentCancelServiceImpl(
 			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, MoveCancelService moveCancelService, 
-			ReconcileService reconcileService, BankOrderService bankOrderService, InvoicePaymentToolService invoicePaymentToolService)  {
+			ReconcileService reconcileService, InvoicePaymentToolService invoicePaymentToolService)  {
 		
 		this.accountConfigService = accountConfigService;
 		this.invoicePaymentRepository = invoicePaymentRepository;
 		this.moveCancelService = moveCancelService;
 		this.reconcileService = reconcileService;
-		this.bankOrderService = bankOrderService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
 		
 	}
@@ -83,39 +75,26 @@ public class InvoicePaymentCancelServiceImpl  implements  InvoicePaymentCancelSe
 	public void cancel(InvoicePayment invoicePayment) throws AxelorException  {
 		
 		Move paymentMove = invoicePayment.getMove();
-		BankOrder paymentBankOrder = invoicePayment.getBankOrder();
 		Reconcile reconcile = invoicePayment.getReconcile();
 		
-		if(paymentBankOrder != null){
-			if(paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED){
-				throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL), IException.FUNCTIONNAL);
-			}
-			else{
-				bankOrderService.cancelBankOrder(paymentBankOrder);
-				this.updateCancelStatus(invoicePayment);
+		log.debug("cancel : reconcile : {}", reconcile);
+		
+		if(reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED)  {
+			reconcileService.unreconcile(reconcile);
+			if(accountConfigService.getAccountConfig(invoicePayment.getInvoice().getCompany()).getAllowRemovalValidatedMove())  {
+				invoicePayment.setReconcile(null);
+				Beans.get(ReconcileRepository.class).remove(reconcile);
 			}
 		}
-		else {
-			
-			log.debug("cancel : reconcile : {}", reconcile);
-			
-			if(reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED)  {
-				reconcileService.unreconcile(reconcile);
-				if(accountConfigService.getAccountConfig(invoicePayment.getInvoice().getCompany()).getAllowRemovalValidatedMove())  {
-					invoicePayment.setReconcile(null);
-					Beans.get(ReconcileRepository.class).remove(reconcile);
-				}
-			}
 
-			if(paymentMove != null && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT)  {
-				invoicePayment.setMove(null);
-				moveCancelService.cancel(paymentMove);
-			}
-			else  {
-				this.updateCancelStatus(invoicePayment);
-			}
+		if(paymentMove != null && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT)  {
+			invoicePayment.setMove(null);
+			moveCancelService.cancel(paymentMove);
+		}
+		else  {
+			this.updateCancelStatus(invoicePayment);
+		}
 
-		}	
 
 	}
 	

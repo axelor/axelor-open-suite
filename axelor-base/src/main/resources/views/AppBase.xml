@@ -21,6 +21,7 @@
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="teamManagement" widget="boolean-switch"/>
+		    	<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel> 
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">

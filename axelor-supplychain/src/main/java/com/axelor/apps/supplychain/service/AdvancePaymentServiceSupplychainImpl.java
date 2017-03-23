@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,7 +146,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 		
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
 		
-		Move move = moveService.getMoveCreateService().createMove(journal, company, advancePayment.getCurrency(), clientPartner, advancePaymentDate, paymentMode, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, advancePayment.getCurrency(), clientPartner, advancePaymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		BigDecimal amountConverted = currencyService.getAmountCurrencyConvertedAtDate(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePaymentDate);
 		

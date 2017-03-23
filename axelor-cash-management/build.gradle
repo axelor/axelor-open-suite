@@ -1,14 +1,15 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-cash-management"
-	version "5.0.0"
+apply {
+	version = "5.0.0"
+}
+
+axelor {
 	title "Axelor cash management"
-
-	// module dependencies
-	
 	removable true
-	
-	module "modules:axelor-human-resource"
-	module "modules:axelor-supplychain"
+}
+
+dependencies {
+	compile project(":modules:axelor-human-resource")
+	compile project(":modules:axelor-supplychain")
 }

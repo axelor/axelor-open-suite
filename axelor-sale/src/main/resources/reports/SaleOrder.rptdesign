@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201702020724</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -39,6 +39,26 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -164,7 +184,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1210,8 +1230,8 @@ PaymentCondition.name as "PaymentCondName", PaymentMode.name as "PaymentMode",
 DeliveryAddress.addressl2 as "delAddress2", DeliveryAddress.addressl3 as "delAddress3", 
 DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAddress5", 
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
-SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankDetail.bank_address, 
-BankDetail.iban, BankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.external_reference, 
+SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, Bank.bank_address, 
+BankDetail.iban, Bank.code as "bic", Currency.code as "CurrencyCode", SaleOrder.external_reference, 
 PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
 InvoicingAddress.id as "invAddressId", DeliveryAddress.id as "delAddressId",
 Duration.name as "durationName", SaleOrder.delivery_date as "deliveryDate", SaleOrder.delivery_condition as "deliveryCondition",
@@ -1237,28 +1257,8 @@ left outer join base_partner as SalemanPartner on (SalemanUser.partner = Saleman
 left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.email_address = SalemanEmailAddress.id) 
 left outer join sale_sale_config as SaleConfig on (SaleConfig.company = Company.id) 
 left outer join base_duration as Duration on (SaleOrder.duration = Duration.id) 
+left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
 where SaleOrder.id = ? ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OrderLineDS" id="3678">
             <property name="nullsOrdering">nulls lowest</property>
@@ -3852,8 +3852,7 @@ else row["Column Binding_tot_sub"]</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I>
-]]></text-property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
                                         </text>
                                         <text id="4187">
                                             <property name="fontSize">8pt</property>
@@ -5853,6 +5852,7 @@ else 'Subscriptions'</value>
                     <property name="rowSpan">1</property>
                     <text id="3597">
                         <property name="fontSize">8pt</property>
+                        <structure name="toc"/>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["bic"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5968,8 +5968,7 @@ else 'Subscriptions'</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">row["description"]</VALUE-OF></I>
-]]></text-property>
+                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
                     </text>
                 </cell>
             </row>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +43,13 @@ public class ReportSettings {
 
 	public static String FORMAT_PDF = "pdf";
 	public static String FORMAT_XLS = "xls";
+	public static String FORMAT_XLSX = "xlsx";
 	public static String FORMAT_DOC = "doc";
+	public static String FORMAT_DOCX = "docx";
+	public static String FORMAT_ODS = "ods";
+	public static String FORMAT_ODT = "odt";
 	public static String FORMAT_HTML = "html";
-	
+
 	protected Map<String, Object> params = Maps.newHashMap();
 	
 	protected String format = FORMAT_PDF;
@@ -53,8 +58,10 @@ public class ReportSettings {
 	protected Model model;
 	protected String fileName;
 	protected File output;
-	
-	
+
+	private boolean FLAG_ATTACH = false;
+
+
 	public ReportSettings(String rptdesign, String outputName)  {
 		
 		this.rptdesign = rptdesign;
@@ -64,7 +71,12 @@ public class ReportSettings {
 		
 	}
 	
-
+	/**
+	 * This method generate the Birt report output.
+	 * @return
+	 * 		The ReportSettings instance.
+	 * @throws AxelorException
+	 */
 	public ReportSettings generate() throws AxelorException  {
 		
 		this.computeFileName();
@@ -74,6 +86,11 @@ public class ReportSettings {
         
 	}
 	
+	/**
+	 * The method get the generated report file link.
+	 * @return
+	 * 		The generated report file link.
+	 */
 	public String getFileLink()  {
 		
 		if(output == null)  {  return null;  }
@@ -86,15 +103,22 @@ public class ReportSettings {
 		
 	}
 	
+	public String getOutputName()  {
+		return outputName;
+	}
+	
+	/**
+	 * This method get the generated report file.
+	 * @return
+	 * 		The generated report file.
+	 */
 	public File getFile()  {
-		
 		return output;
-		
 	}
 	
 	protected void attach() throws FileNotFoundException, IOException  {
 		
-		if (model != null && model.getId() != null && output != null) {
+		if (FLAG_ATTACH && model.getId() != null && output != null) {
 			try (InputStream is = new FileInputStream(output)) {
 				Beans.get(MetaFiles.class).attach(is, fileName, model);
 			}
@@ -117,6 +141,21 @@ public class ReportSettings {
 		
 	}
 	
+	
+	/**
+	 * This method can be use to define a specific report output format. The default format is PDF.
+	 * @param format
+	 * 		The ouput format
+	 * 		<p><ul>
+	 * 		<li>FORMAT_PDF = "pdf"
+	 * 		<li>FORMAT_XLS = "xls"
+	 * 		<li>FORMAT_DOC = "doc"
+	 * 		<li>FORMAT_HTML = "html"
+	 * 		<li>Or any value supported by Birt
+	 * 		</ul><p>
+	 * @return
+	 * 		The ReportSettings instance.
+	 */
 	public ReportSettings addFormat(String format)  {
 		
 		if(format != null)  {
@@ -127,14 +166,31 @@ public class ReportSettings {
 		
 	}
 	
-	public ReportSettings addModel(Model model)  {
+	/**
+	 * Method that link the generated report as attachment to the model passed in parameter
+	 * @param model
+	 * 		An Axelor Model
+	 * @return
+	 * 		The ReportSettings instance
+	 */
+	public ReportSettings toAttach(Model model)  {
 		
-		this.model = model;
+		this.model = Objects.requireNonNull(model);
+		FLAG_ATTACH = true;
 		
 		return this;
 		
 	}
 
+	/**
+	 * This method is use to pass a parameter to the Birt report.
+	 * @param param
+	 * 		A string key.
+	 * @param value
+	 * 		An object value. The type of value must be a supported type per the Birt report. 
+	 * @return
+	 * 		The ReportSettings instance.
+	 */
 	public ReportSettings addParam(String param, Object value)  {
 		
 		this.params.put(param, value);

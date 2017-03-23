@@ -38,6 +38,7 @@
 	  
 	  <decimal name="progress" title="Progress (%)"/>
 	  <decimal name="sequence" title="Sequence" />
+	  <integer name="orderByState"/>
 	  
 	  
 		<boolean name="imputable"/>

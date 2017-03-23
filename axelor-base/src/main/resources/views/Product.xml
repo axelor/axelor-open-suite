@@ -21,8 +21,8 @@
 	    <field name="code" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
-	    <field name="costPrice" width="120"/>
-	    <field name="salePrice" width="120"/>
+	    <field name="costPrice" width="120" x-scale="2"/>
+	    <field name="salePrice" width="120" x-scale="2"/>
     </grid>
 
 	<form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
@@ -50,14 +50,14 @@
       		</panel>
     		<panel colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
-      			<field name="barCode" showTitle="false" colSpan="12" widget="Image" readonly="true" x-height="50"/>
+				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
     		</panel>
     		<panel colSpan="10">
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
 			        <field name="subTypeProductSelect" colSpan="12"/>
-			        <field name="isActivity" showIf="productTypeSelect == 'service'"/>
+			        <field name="isActivity" showIf="productTypeSelect == 'service'" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
 			        <field name="inventoryTypeSelect" colSpan="12" />
@@ -79,7 +79,7 @@
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
 			        <field name="customsCode" colSpan="12"/>
-			        <field name="saleCurrency" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
 			          	<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
@@ -105,7 +105,7 @@
 		      	<panel name="purchase" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
-			        <field name="purchaseCurrency" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
 		      	</panel>

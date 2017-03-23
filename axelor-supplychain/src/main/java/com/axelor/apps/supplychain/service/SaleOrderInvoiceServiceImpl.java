@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -326,10 +326,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	private BigDecimal getAmountVentilated(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice, int invoiceOperationTypeSelect)  {
 		
 		String query = "SELECT SUM(self.companyExTaxTotal)"
-					+ " FROM InvoiceLine as self"
-					+ " WHERE (self.saleOrderLine.saleOrder.id = :saleOrderId OR self.saleOrder.id = :saleOrderId )"
-						+ " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-						+ " AND self.invoice.statusSelect = :statusVentilated";
+					 + " FROM InvoiceLine as self";
+
+		if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
+			query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
+		} else {
+			query += " WHERE self.saleOrder.id = :saleOrderId";
+		}
+
+		query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
+			   + " AND self.invoice.statusSelect = :statusVentilated";
 		
 		if (currentInvoiceId != null)  {
 			if(excludeCurrentInvoice)  {

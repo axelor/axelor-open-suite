@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,13 +49,13 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.CompanyConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -228,9 +228,9 @@ public class MoveLineService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate dueDate, int ref, String origin) throws AxelorException{
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
 
-		return this.createMoveLine(move, partner, account, amount, isDebit, today, dueDate, ref, origin);
+		return this.createMoveLine(move, partner, account, amount, isDebit, date, date, ref, origin);
 	}
 
 
@@ -302,7 +302,7 @@ public class MoveLineService {
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
 						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
 							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
-							analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+							analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 							analyticMoveLine.setInvoiceLine(null);
 							analyticMoveLine.setAccount(moveLine.getAccount());
 							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);

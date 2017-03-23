@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -113,6 +113,12 @@ public class InventoryController {
 		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
 		inventoryService.realizeInventory(inventory);
 		response.setReload(true);
+	}
+	
+	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+		Inventory inventory = request.getContext().asType(Inventory.class);
+		inventory = inventoryRepo.find(inventory.getId());
+		inventoryService.cancel(inventory);
 	}
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {

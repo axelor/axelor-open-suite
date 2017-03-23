@@ -4,17 +4,17 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="analytic-move-line-grid" title="Analytic Move Lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
-    	<hilite if="statusSelect == 1" color="warning"/>
-    	<hilite if="statusSelect == 2" color="info"/>
-    	<hilite if="statusSelect == 3" color="success"/>
-    	<hilite if="statusSelect == 4" color="primary"/>
+    	<hilite if="typeSelect == 1" color="warning"/>
+    	<hilite if="typeSelect == 2" color="info"/>
+    	<hilite if="typeSelect == 3" color="success"/>
+    	<hilite if="typeSelect == 4" color="primary"/>
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="date"/>
         <field name="amount" aggregate="sum"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="statusSelect"/>
+        <field name="typeSelect"/>
     </grid>
     
     <grid name="analytic-move-line-distribution-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis">
@@ -25,11 +25,11 @@
         <field name="amount"/>
         <field name="date"/>
         <field name="project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
-        <field name="statusSelect"/>
+        <field name="typeSelect"/>
     </grid>
     
-    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project-task"
-    	onLoad="action-analytic-move-line-attrs-title-project-task" width="large">
+    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
+    	onLoad="action-analytic-move-line-attrs-title-project" width="large">
        <panel name="main" >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
        		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -37,11 +37,11 @@
 	        <field name="date"/>
 	        <field name="percentage"/>
 	        <field name="amount"/>
-	        <field name="currency" form-view="currency-form" grid-view="currency-grid" />
-	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-task-form" grid-view="project-task-grid" if="__config__.app.isApp('business-project')"/>
+	        <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" />
+	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"/>
   			<field name="account"/>
 			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
-	        <field name="statusSelect"/>
+	        <field name="typeSelect"/>
        </panel>
         
     </form>
@@ -54,8 +54,8 @@
 	        <field name="percentage" colSpan="4" onChange="action-analytic-move-line-method-compute-amount"/>
 	        <field name="amount" colSpan="4" readonly="true"/>
 	        <field name="date" colSpan="4"/>
-	        <field name="project" grid-view="project-task-grid" form-view="project-task-form" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
-	        <field name="statusSelect"/>
+	        <field name="project" grid-view="project-grid" form-view="project-form" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+	        <field name="typeSelect"/>
         </panel>      
     </form>
     
@@ -67,7 +67,7 @@
     	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
     </action-record>
     
-    <action-attrs name="action-analytic-move-line-attrs-title-project-task">
+    <action-attrs if-module="axelor-business-project"  name="action-analytic-move-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
 </object-views>

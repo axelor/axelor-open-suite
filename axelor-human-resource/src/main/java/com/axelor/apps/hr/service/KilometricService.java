@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service;
 
 
@@ -11,8 +28,8 @@ import java.util.List;
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
@@ -66,14 +83,13 @@ public class KilometricService {
 		
 		KilometricLog log = getKilometricLog(employee, date);
 		
-		if (log != null){
-			return log;
-		}
+		if (log != null) { return log; }
+		if (employee.getMainEmploymentContract() == null) { throw new AxelorException( String.format( I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName() ), IException.CONFIGURATION_ERROR ); }
 		
-		Year year = Beans.get(YearRepository.class).all().filter("self.toDate <= ?1 AND self.fromDate >= ?1 AND company = ?2", date, employee.getUser().getActiveCompany()).fetchOne();
+		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
 		if (year == null){
-			throw new AxelorException( I18n.get( String.format(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR, employee.getUser().getActiveCompany(), date) ) , IException.CONFIGURATION_ERROR);
+			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date)  , IException.CONFIGURATION_ERROR);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);
@@ -99,12 +115,12 @@ public class KilometricService {
 		
 		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
 			
-			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) == -1 && rule.getMaximumCondition().compareTo(previousDistance) == 1 ){
+			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0 ){
 				ruleList.add(rule);				
 			}
 		}
 		
-		if (ruleList.size() == 0) { throw new AxelorException( I18n.get( String.format(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE, allowance.getKilometricAllowParam().getName())  ) , IException.CONFIGURATION_ERROR); }
+		if (ruleList.size() == 0) { throw new AxelorException( String.format(I18n.get( IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE ), allowance.getKilometricAllowParam().getName()) , IException.CONFIGURATION_ERROR); }
 		
 		BigDecimal price = BigDecimal.ZERO;
 		

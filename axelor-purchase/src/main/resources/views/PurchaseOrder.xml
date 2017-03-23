@@ -77,10 +77,10 @@
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
 			<field name="receiptState" css="label-bold bold" showIf="statusSelect == 3 || statusSelect == 4" /> 
 			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-gri"/>
-			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-managment') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
+			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-managment') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()" if-module="axelor-cash-management"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 			<field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 2"  />
 		</panel>
@@ -99,6 +99,7 @@
 	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')" />
   		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
 			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" if="__config__.app.isApp('stock')" />
+			<panel-dashlet colSpan="12" action="action-purchase-order-view-stock-moves" height="178"/>
 	    </panel>	  
 		<panel-tabs>
 			<panel name="content" title="Content" colSpan="12">
@@ -164,13 +165,13 @@
 				<viewer>
 					&lt;dl class="dl-horizontal"&gt;
 					  &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-					  &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+					  &lt;dd&gt;{{record.exTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 					  &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-					  &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+					  &lt;dd&gt;{{record.taxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 					  &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-					  &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+					  &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
 					  &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-					  &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
+					  &lt;dd&gt;{{record.amountInvoiced}}  {{record.currency.symbol}}&lt;/dd&gt;
 					&lt;/dl&gt;
 				</viewer>
 	        </field>   
@@ -244,9 +245,11 @@
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
     	<action name="action-purchase-order-method-get-location"/>
+    	<action name="action-purchase-order-attrs-location-address"/>
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
+		<action name="action-purchase-order-record-payment-mode"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -282,6 +285,10 @@
     									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
     
+    <action-attrs name="action-purchase-order-attrs-location-address">
+    	<attribute name="value" for="location.address" expr="eval: location.address"/>
+    </action-attrs>
+    
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
     									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
@@ -314,8 +321,10 @@
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
- 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"/>
- 		<field name="paymentMode" expr="eval: supplierPartner?.paymentMode"/>
+ 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition" if="supplierPartner?.paymentCondition != null"/>
+ 		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
+ 		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
  		<field name="priceList" expr="eval: supplierPartner?.purchasePriceList"/>
  		<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails" 
     		if="supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails != null"/>
@@ -325,6 +334,11 @@
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
  	</action-record>
+
+	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
+	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="3"/>
@@ -388,6 +402,7 @@
 		<context name="operationTypeSelect" expr="1"/>
 		<context name="poId" expr="eval:id"/>
 	</action-view>
+
 	
 	<action-view name="purchase-order-see-quotation-lines" title="See quotation lines" 
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -407,6 +422,13 @@
 	
 	<action-view name="purchase.order.merge" title="Merge purchase orders" model="com.axelor.apps.base.db.Wizard">
 	    <view type="form" name="purchase-order-merge-form"/>
+	</action-view>
+	
+	<action-view name="action-purchase-order-view-stock-moves" model="com.axelor.apps.stock.db.StockMove" title="">
+		<view name="stock-move-grid" type="grid"/>
+		<view name="stock-move-form" type="form"/>
+		<domain>self.purchaseOrder.id = :id</domain>
+		<context name="id" expr="eval: id"/>
 	</action-view>
   
   	<action-validate name="action-purchase-order-validate-location">

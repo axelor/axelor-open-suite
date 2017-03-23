@@ -15,7 +15,7 @@
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
   		</toolbar>
 		<panel name="main" >
-			<field name="project" form-view="project-task-form" grid-view="project-task-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
+			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<field name="deadlineDate" readonlyIf="invoice != null" onChange="save,action-invoicing-project-method-fill-in"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" readonlyIf="invoice != null"/>
@@ -27,7 +27,7 @@
 		<panel-related field="purchaseOrderLineSet"  canNew="false" canEdit="false" canSelect="false" grid-view="purchase-order-line-invoicing-project-grid" form-view="purchase-order-line-form" readonlyIf="invoice != null"/>
 		<panel-related field="logTimesSet" canNew="false" canEdit="false" canSelect="false" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" readonlyIf="invoice != null"/>
 		<panel-related field="expenseLineSet" canNew="false" canEdit="false" canSelect="false" form-view="expense-line-form" grid-view="expense-line-grid" readonlyIf="invoice != null"/>
-		<panel-related field="projectSet" canNew="false" canEdit="false" canSelect="false" form-view="project-task-form" grid-view="project-task-grid" readonlyIf="invoice != null"/>
+		<panel-related field="projectSet" canNew="false" canEdit="false" canSelect="false" form-view="project-form" grid-view="project-grid" readonlyIf="invoice != null"/>
 		<panel-related field="elementsToInvoiceSet" canNew="false" canEdit="false" canSelect="false" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form" readonlyIf="invoice != null"/>
 		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form" readonlyIf="invoice != null"  if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
 		<panel sidebar="true" name="priority" title="Priority" readonlyIf="invoice != null">

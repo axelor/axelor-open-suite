@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ebics-users>
+<% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.bankpayment.db.repo.EbicsUserRepository' as Class).find(it)
+	
+	bankCerts = "" 
+	u.ebicsPartner?.ebicsBank?.ebicsCertificateList.each( {c->
+	    bankCerts += "<ebicsCertificate>"
+		bankCerts += "<typeSelect>${c.typeSelect}</typeSelect>"
+		bankCerts += "<pem>${c.pemString}</pem>"
+		bankCerts += "</ebicsCertificate>"
+	})
+	
+	requestLog = ""
+	u.ebicsRequestLogList?.each( { log ->
+		requestLog +="<requestLog>"
+		requestLog +="<requestType>${log.requestType}</requestType>"
+		requestLog +="<requestTime>${log.requestTime}</requestTime>"
+		requestLog +="<responseCode>${log.responseCode}</responseCode>"
+		requestLog +="</requestLog>"
+	})
+	
+	out << 
+	"""
+	<ebics-user>
+		<name>${u.name}</name>
+		<userId>${u.userId}</userId>
+		<password>${u.password}</password>
+		<ebicsTypeSelect>${u.ebicsTypeSelect}</ebicsTypeSelect>
+		<statusSelect>${u.statusSelect}</statusSelect>
+		<ebicsPartner>
+			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
+			<testMode>${u.ebicsPartner?.testMode}</testMode>
+			<ebicsBank>
+				<fullName>${u.ebicsPartner?.ebicsBank?.fullName}</fullName>
+				<hostId>${u.ebicsPartner?.ebicsBank?.hostId}</hostId>
+				<name>${u.ebicsPartner?.ebicsBank?.name}</name>
+				<url>${u.ebicsPartner?.ebicsBank?.url}</url>
+				<languageSelect>${u.ebicsPartner?.ebicsBank?.languageSelect}</languageSelect>
+				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
+				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
+				<bank>
+					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
+					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>
+					<bankAddress>${u.ebicsPartner?.ebicsBank?.bank.bankAddress}</bankAddress>
+				</bank>
+				<ebicsCertificateList>
+				 $bankCerts
+				</ebicsCertificateList>
+			</ebicsBank>
+		</ebicsPartner>
+		<securityMedium>${u.securityMedium}</securityMedium>
+		<nextOrderId>${u.nextOrderId}</nextOrderId>
+		<associatedUserCode>${u.associatedUser?.code}</associatedUserCode>
+		<dn>${u.dn}</dn>
+		<a005Certificate>
+			<pem>${u.a005Certificate.pemString}</pem>
+			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.a005Certificate.privateKey)}</privateKey>
+		</a005Certificate>
+		<e002Certificate>
+			<pem>${u.e002Certificate.pemString}</pem>
+			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.e002Certificate.privateKey)}</privateKey>
+		</e002Certificate>
+		<x002Certificate>
+			<pem>${u.x002Certificate.pemString}</pem>
+			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.x002Certificate.privateKey)}</privateKey>
+		</x002Certificate>
+		<ebicsRequestLogList>
+		 $requestLog
+		</ebicsRequestLogList>
+	</ebics-user>
+	"""
+}) %>
+
+</ebics-users>
+

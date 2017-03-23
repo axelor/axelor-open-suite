@@ -12,8 +12,9 @@
 		<field name="dueDate" />
 		<field name="statusSelect"/>
 		<field name="progress" widget="Progress" aggregate="avg"/>
+		<field name="typeSelect"/>
 	</grid>
-
+	
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project"
 	onLoad="action-project-method-set-visible-duration,action-project-attrs-duration-title,action-project-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision, action-project-record-default-configurations,save">
 		<toolbar>
@@ -62,7 +63,7 @@
 			</panel>
 			<!-- 
 				<panel name="relatedProjectsTasks" title="Related Projects/Tasks">
-					<panel-related field="childProjectList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
+					<panel-related field="childProjectList" colSpan="12" form-view="project-form" grid-view="project-grid" canNew="false"/>
 				</panel>
 			 -->
 			<panel name="otherElementsToInvoice" title="Other elements to invoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" >
@@ -80,7 +81,7 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
-			<panel name="activity" title="Activities">
+			<panel name="activity" title="Activities" if-module="axelor-human-resource">
 				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 			<panel name="configurations" title="Configurations">
@@ -99,16 +100,6 @@
 			<field name="sequence" hidden="true"/>
 		</panel>
 	</form>
-	
-	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.Project">
-		<field name="name"/>
-		<field name="assignedTo" form-view="user-form" grid-view="user-grid"/>
-		<field name="fromDate"/>
-		<field name="toDate" />
-		<field name="dueDate" />
-		<field name="statusSelect"/>
-		<field name="progress" aggregate="avg"/>
-	</grid>
 	
 	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.Project" taskStart="fromDate" taskDuration="duration" taskParent="project" 
 		   taskProgress="progress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
@@ -178,20 +169,8 @@
 			<field name="taskAttrs" colSpan="12" />
 		</panel>
 	</form>
-	
-	
-	<grid name="project-task-grid" title="Projects" model="com.axelor.apps.project.db.Project">
-		<field name="fullName"/>
-		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="fromDate" />
-		<field name="toDate" />
-		<field name="dueDate" />
-		<field name="statusSelect"/>
-		<field name="progress" widget="Progress"/>
-		<field name="typeSelect"/>
-	</grid>
 
-
+<!--
 	<form name="project-task-form" title="Project" model="com.axelor.apps.project.db.Project" 
 	onNew="action-project-attrs-hide-invoicing-panel,action-project-project-default,action-project-attrs-duration-title,action-project-attrs-scale-and-precision,action-project-record-bind-customer-parent"
 	onLoad="action-project-attrs-hide-invoicing-panel,action-project-method-set-visible-duration,action-project-attrs-duration-title,action-project-attrs-scale-and-precision">
@@ -204,12 +183,12 @@
 			</field>
 			<field name="typeSelect"/>
 			<field name="statusSelect" widget="NavSelect" colSpan="6"/>
-			<!-- 
+			
 				<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  readonlyIf="$popup()" 
 				   onChange="action-project-attrs-hide-invoicing-panel,action-project-record-inv-type-select" 
 				   title="Parent Project"  form-view="project-form" grid-view="project-grid" domain="self.typeSelect = 'project'" 
 				   colSpan="6" width="50%" hide="true"/>
-			 -->
+			 
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" domain="self.isCustomer = true" readonly="true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
@@ -269,6 +248,8 @@
 			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
+-->	
+
 	
 	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -344,7 +325,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
-	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="typeSelect == 'task'"/>
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"
+				   if="(typeSelect == 'task')&amp;&amp;(project?.membersUserSet)&amp;&amp;(!project.membersUserSet.isEmpty())" />
 	</action-attrs>
 	
 	<action-attrs name="action-project-project-default" model="com.axelor.apps.project.db.Project">
@@ -414,7 +396,7 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     
-    <action-attrs name="action-project--attrs-duration-title">
+    <action-attrs name="action-project-attrs-duration-title">
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
 		<attribute name="title" for="$visibleTimeSpent" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Time Spent(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Time Spent(Minutes)') : com.axelor.i18n.I18n.get('Time Spent(Hours)')"/>

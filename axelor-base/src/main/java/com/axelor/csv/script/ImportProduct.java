@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -49,17 +50,22 @@ public class ImportProduct {
 		assert bean instanceof Product;
 		
 		Product product = (Product) bean;
-		
-		final Path path = (Path) values.get("__path__");
 		String fileName = (String) values.get("picture_fileName");
 		
-		if (path != null) {
+		if(!StringUtils.isEmpty(fileName)) {
+			final Path path = (Path) values.get("__path__");
+			
 			try {
-				final File image = path.getParent().resolve(fileName).toFile(); 
-				final MetaFile metaFile = metaFiles.upload(image);
-				product.setPicture(metaFile);
+				final File image = path.getParent().resolve(fileName).toFile();
+				if(image != null && image.isFile()) {
+					final MetaFile metaFile = metaFiles.upload(image);
+					product.setPicture(metaFile);
+				}
+				else {
+					LOG.debug("No image file found: {}", image.getAbsolutePath());
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.error("Error when importing product picture : {}", e);
 			}
 		}
 		

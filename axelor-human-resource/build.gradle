@@ -1,13 +1,17 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-human-resource"
-	version "5.0.0"
+apply {
+	version = "5.0.0"
+}
+
+axelor {
 	title "Axelor human resource"
+	removable true
+}
 
-	//module dependencies
-	module "modules:axelor-account"
-	module "modules:axelor-project"
-	module "modules:axelor-crm"
-	
+dependencies {
+	compile project(":modules:axelor-account")
+	compile project(":modules:axelor-project")
+	compile project(":modules:axelor-crm")
+	compile project(":modules:axelor-bank-payment")
 }

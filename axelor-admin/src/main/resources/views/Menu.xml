@@ -21,13 +21,4 @@
     <view type="form" name="meta-group-menu-assistant-form" />
   </action-view>
   
-  <menuitem name="menu-meta-group-menu-assistant" parent="menu-auth" title="Group Menu Assistant"
-    action="action-group-menu-assistant" />
-
-  <action-view name="action-group-menu-assistant" title="Group Menu Assistant"
-    model="com.axelor.meta.db.MetaGroupMenuAssistant">
-    <view type="grid" name="meta-group-menu-assistant-grid" />
-    <view type="form" name="meta-group-menu-assistant-form" />
-  </action-view>
-  
 </object-views>

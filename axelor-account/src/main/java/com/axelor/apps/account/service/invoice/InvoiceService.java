@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
@@ -29,6 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -138,6 +140,29 @@ public interface InvoiceService {
 	
 	
 	public void generateBudgetDistribution(Invoice invoice);
+	
+	/**
+	 * Print an invoice
+	 * 
+	 * @param invoice the invoice to print
+	 * @param toAttach whatever to attache the invoice to the object
+	 * 
+	 * @return ReportSettings
+	 * 
+	 * @throws AxelorException
+	 */
+	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException;
+	
+	/**
+	 * Print a list of invoices in the same output
+	 * 
+	 * @param ids the list of invoices ids
+	 * 
+	 * @return ReportSettings
+	 * 
+	 * @throws AxelorException
+	 */
+	public ReportSettings printInvoices(List<Long> ids) throws AxelorException;
 
 	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,
@@ -148,6 +173,8 @@ public interface InvoiceService {
 	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoiceMerged);
 
 	public void deleteOldInvoices(List<Invoice> invoiceList);
+	
+	public Invoice getInvoice(MoveLine moveLine);
 
 
 }

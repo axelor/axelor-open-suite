@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -21,6 +21,26 @@
             <property name="name">odaDriverClass</property>
             <property name="id">7</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -144,8 +164,8 @@
                     <name>disabledContentBidiFormatStr</name>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -209,15 +229,7 @@
                     <text-property name="heading">address_block</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["message_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["MessageId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -263,6 +275,7 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["MessageId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -338,7 +351,7 @@ left outer join meta_file as MetaFile on (MetaFile.id = baseCompany.logo)
 left outer JOIN base_printing_settings AS basePrintingSettings ON basePrintingSettings.id=baseCompany.id
 LEFT outer JOIN meta_select AS metaSelect ON metaSelect.name='message.media.type.select'
 LEFT outer JOIN meta_select_item AS metaSelectItem ON metaSelectItem.select_id=metaSelect.id AND metaSelectItem.value= CAST(self.media_type_select AS CHAR)
-WHERE self.media_type_select in (1,2)]]></xml-property>
+WHERE self.id IN (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="9">
             <list-property name="columnHints">

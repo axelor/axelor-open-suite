@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankStatementFileFormat" lang="java" sequential="true">
+  
+  	<integer name="importId" />
+  	<string name="statementFileFormatSelect" title="File format" selection="bankpayment.bank.statement.file.format.statement.file.format.select"/>
+	<string name="name" title="Name"/>
+	<string name="description" title="Description" large="true" multiline="true"/>
+	
+  	
+	 
+ 	<extra-code><![CDATA[
+	
+	   	// BANK STATEMENT FILE FORMAT SELECT
+		public static final String FILE_FORMAT_CAMT_054_001_02_ACT = "camt.054.001.02.act";
+		public static final String FILE_FORMAT_CAMT_054_001_02_ADD = "camt.054.001.02.add";
+		public static final String FILE_FORMAT_CAMT_054_001_02_ABB = "camt.054.001.02.abb";
+		
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ACT = "camt.xxx.cfonb240.act";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_PCO = "camt.xxx.cfonb240.pco";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_REP = "camt.xxx.cfonb240.rep";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_DRI = "camt.xxx.cfonb240.dri";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_RCT = "camt.xxx.cfonb240.rct";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_RSD = "camt.xxx.cfonb240.rsd";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_RTG = "camt.xxx.cfonb240.rtg";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_RTI = "camt.xxx.cfonb240.rti";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_RCH = "camt.xxx.cfonb240.rch";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_RCO = "camt.xxx.cfonb240.rco";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ARD = "camt.xxx.cfonb240.ard";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ATG = "camt.xxx.cfonb240.atg";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ATI = "camt.xxx.cfonb240.ati";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ACH = "camt.xxx.cfonb240.ach";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_CAI = "camt.xxx.cfonb240.cai";
+		
+		public static final String FILE_FORMAT_CAMT_053_001_02_STM = "camt.053.001.02.stm";
+		
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM = "camt.xxx.cfonb120.stm";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY = "camt.xxx.cfonb120.stm.0by";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_REP = "camt.xxx.cfonb120.rep";
+
+		public static final String FILE_FORMAT_CAMT_FIN_MT940_STM = "camt.fin.mt940.stm";
+		public static final String FILE_FORMAT_CAMT_FIN_MT942_REP = "camt.fin.mt942.rep";
+		
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB560_ARA = "camt.xxx.cfonb560.ara";
+
+		public static final String FILE_FORMAT_PAIN_002_001_01_ARA = "pain.002.001.01.ara";
+		public static final String FILE_FORMAT_PAIN_002_001_02_ARA = "pain.002.001.02.ara";
+		public static final String FILE_FORMAT_PAIN_002_001_02_ACK = "pain.002.001.02.ack";
+		
+		
+	]]></extra-code>
+    
+  </entity>
+
+</domain-models>

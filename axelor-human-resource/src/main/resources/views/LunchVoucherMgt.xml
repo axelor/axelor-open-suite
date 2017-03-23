@@ -9,65 +9,63 @@
         <field name="leavePeriod"/>
         <field name="statusSelect"/>
         <field name="requestedLunchVouchers"/>
-        <field name="wageShare"/>
-        <field name="employersShare"/>
+        <field name="lunchVoucherWageShare"/>
+        <field name="lunchVoucherEmployersShare"/>
     </grid>
 
 	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large" onNew="action-lunch-voucher-record-default-onnew">
-	<toolbar>
-		<button name="print" title="Print" icon="fa-print"/>
-	</toolbar>
+		<toolbar>
+			<button name="printBtn" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2" onClick="action-lunch-voucher-method-print"/>
+			<button name="exportBtn" title="Export CSV" icon="fa-file-text-o" showIf="statusSelect == 3 &amp;&amp; csvFile == null" onClick="action-lunch-voucher-method-export"/>
+		</toolbar>
   		<panel name="main">
-    		<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
-    		<field name="company" colSpan="6" onChange="action-lunch-voucher-record-company-onchange"/>
-    		<spacer colSpan="6"/>
-    		<field name="payPeriod"/>
-        	<field name="leavePeriod"/>
+  			<panel colSpan="6">
+  				<panel colSpan="12" readonlyIf="statusSelect != 1">
+  					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+		    		<field name="company" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
+		    		<spacer colSpan="6"/>
+		    		<field name="payPeriod"/>
+		        	<field name="leavePeriod"/>
+  				</panel>
+	        	<panel colSpan="12">
+	        		<button name="calculateBtn" title="Calculate" colSpan="6" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect != 3" hidden="true"/>
+		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="save,action-lunch-voucher-method-validate" showIf="statusSelect == 2" hidden="true"/>
+	        	</panel>
+	        	<panel title="Export" colSpan="12" readonly="true" hidden="true" showIf="csvFile != null">
+	        		<field name="exportDate"/>
+   					<field name="csvFile" widget="binary-link" showTitle="false"/>
+	        	</panel>
+  			</panel>
+    		<panel name="charges" title="Charges and Contributions" colSpan="3">
+				<field name="lunchVoucherWageShare" colSpan="12"/>
+				<field name="lunchVoucherEmployersShare" colSpan="12"/>
+			</panel>
+			<panel title="Informations" colSpan="3" readonly="true">
+				<field name="requestedLunchVouchers" css="label-bold bold" colSpan="12"/>
+				<field name="totalLunchVouchers" css="label-bold bold" colSpan="12"/>
+				<field name="stockQuantityStatus" css="label-bold bold" colSpan="12"/>
+			</panel>
   		</panel>
-  		<panel name="charges" title="Charges and Contributions" sidebar="true">
-			<field name="wageShare"/>
-			<field name="employersShare"/>
-		</panel>
-  		<panel name="action" sidebar="true">
-    		<button name="calculate" title="Calculate" colSpan="12" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" readonlyIf="statusSelect != 1"/>
-    		<button name="generateInvoice" title="Generate control invoice" colSpan="12" onClick="save,action-lunch-voucher-record-status-generate,save" readonlyIf="statusSelect != 2"/>
-  		</panel>
-  		<panel name="info" sidebar="true">
-    		<panel title="Requested lunch vouchers on the period">
-    			<field name="requestedLunchVouchers" css="label-bold bold" showTitle="false" colSpan="12"/>
-    		</panel>
-    		<panel title="Total lunch vouchers">
-    			<field name="totalLunchVouchers" showTitle="false" colSpan="12" css="label-bold bold"/>
-    		</panel>
-    		<panel title="Stock quantity status">
-    			<field name="stockQuantityStatus" showTitle="false" colSpan="12" css="label-bold bold"/>
-    		</panel>
-			<panel title="Line Stock quantity">
-    			<field name="stockLineQuantity" showTitle="false" colSpan="12" css="label-bold bold" onChange="save,action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
-    			<field name="stockLineComment" colSpan="12"/>
-    		</panel>    		
-    	</panel>
-  		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false"/>
+    	<panel title="Line Stock quantity" readonlyIf="statusSelect == 3" canCollapse="true" collapseIf="true">
+   			<field name="stockLineQuantity" showTitle="false" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
+   			<field name="stockLineComment" colSpan="6"/>
+   		</panel>
+  		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
 	</form>
-	
 	
 	<!-- ACTION RECORDS -->
 	
 	<action-record name="action-lunch-voucher-record-default-onnew" model="com.axelor.apps.hr.db.LunchVoucherMgt">
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="wageShare" expr="eval: __user__.activeCompany?.hrConfig?.wageShare"/>
-		<field name="employersShare" expr="eval: __user__.activeCompany?.hrConfig?.employersShare"/>
+		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
+		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
 		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-		<field name="wageShare" expr="eval: company?.hrConfig?.wageShare"/>
-		<field name="employersShare" expr="eval: company?.hrConfig?.employersShare"/>
-	</action-record>
-	
-	<action-record name="action-lunch-voucher-record-status-generate" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-		<field name="statusSelect" expr="3"/>
+		<field name="lunchVoucherWageShare" expr="eval: company?.hrConfig?.lunchVoucherWageShare"/>
+		<field name="lunchVoucherEmployersShare" expr="eval: company?.hrConfig?.lunchVoucherEmployersShare"/>
 	</action-record>
 	
 	<!-- ACTION METHODS -->
@@ -84,5 +82,16 @@
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="updateTotal"/>
 	</action-method>
 	
+	<action-method name="action-lunch-voucher-method-export">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="export"/>
+	</action-method>
+	
+	<action-method name="action-lunch-voucher-method-validate">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="validate"/>
+	</action-method>
+	
+	<action-method name="action-lunch-voucher-method-print">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="print"/>
+	</action-method>
 	
 </object-views>

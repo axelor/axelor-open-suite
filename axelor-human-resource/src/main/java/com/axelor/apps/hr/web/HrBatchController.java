@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,26 +37,14 @@ public class HrBatchController {
 	
 	
 	/**
-	 * Lancer le batch d'ajout de congés
+	 * Launch any type of HR batch
 	 *
 	 * @param request
 	 * @param response
 	 * @throws AxelorException 
 	 */
-	public void actionLeaveManagement(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void launchHrBatch(ActionRequest request, ActionResponse response) throws AxelorException{
 
-		HrBatch hrBatch = request.getContext().asType(HrBatch.class);
-
-		Batch batch = hrBatchService.run(hrBatchRepo.find(hrBatch.getId()));
-
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
-	
-	public void actionSeniorityLeaveManagement(ActionRequest request, ActionResponse response) throws AxelorException{
-
-		
 		HrBatch hrBatch = request.getContext().asType(HrBatch.class);
 
 		Batch batch = hrBatchService.run(hrBatchRepo.find(hrBatch.getId()));

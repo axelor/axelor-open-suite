@@ -5,7 +5,7 @@
 
 	<grid name="project-my-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true">
 		<field name="user" />
-		<field name="project" form-view="project-task-form" grid-view="project-task-grid" />
+		<field name="project" form-view="project-form" grid-view="project-grid" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
@@ -19,7 +19,7 @@
 	<form name="project-my-planning-line-form" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="false">
 	    <panel name="main" >
 			<field name="user" />
-			<field name="project" form-view="project-task-form" grid-view="project-task-grid" />
+			<field name="project" form-view="project-form" grid-view="project-grid" />
 			<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 			<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 			<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
@@ -33,7 +33,7 @@
 	
 	<grid name="project-my-team-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
 		<field name="user" />
-		<field name="project"  form-view="project-task-form" grid-view="project-task-grid" />
+		<field name="project"  form-view="project-form" grid-view="project-grid" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
@@ -47,7 +47,7 @@
 	<form name="project-my-team-planning-line-form" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="false">
 	    <panel name="main" >
 			<field name="user" />
-			<field name="project"  form-view="project-task-form" grid-view="project-task-grid" />
+			<field name="project"  form-view="project-form" grid-view="project-grid" />
 			<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 			<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 			<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>

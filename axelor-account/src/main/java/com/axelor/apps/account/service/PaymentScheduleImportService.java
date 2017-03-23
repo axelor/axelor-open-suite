@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,12 +45,12 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
-import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.message.db.Message;
@@ -75,11 +75,11 @@ public class PaymentScheduleImportService {
 	protected PaymentScheduleService paymentScheduleService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected PaymentModeService paymentModeService;
-	protected CfonbImportService cfonbImportService;
 	protected ReminderService reminderService;
 	protected AccountConfigService accountConfigService;
 	protected DirectDebitManagementRepository directDebitManagementRepo;
 	protected InvoiceRepository invoiceRepo;
+	protected PaymentService paymentService;
 
 	protected LocalDate today;
 
@@ -89,8 +89,8 @@ public class PaymentScheduleImportService {
 	@Inject
 	public PaymentScheduleImportService(AppAccountService appAccountService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
 			PaymentScheduleService paymentScheduleService, PaymentScheduleLineRepository paymentScheduleLineRepo, PaymentModeService paymentModeService,
-			CfonbImportService cfonbImportService, ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
-			InvoiceRepository invoiceRepo) {
+			ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
+			InvoiceRepository invoiceRepo, PaymentService paymentService) {
 
 		this.moveLineService = moveLineService;
 		this.moveService = moveService;
@@ -98,11 +98,11 @@ public class PaymentScheduleImportService {
 		this.paymentScheduleService = paymentScheduleService;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.paymentModeService = paymentModeService;
-		this.cfonbImportService = cfonbImportService;
 		this.reminderService = reminderService;
 		this.accountConfigService = accountConfigService;
 		this.directDebitManagementRepo = directDebitManagementRepo;
 		this.invoiceRepo = invoiceRepo;
+		this.paymentService = paymentService;
 		this.today = appAccountService.getTodayDate();
 
 	}
@@ -249,7 +249,7 @@ public class PaymentScheduleImportService {
 			log.debug("une facture trouvée");
 
 			// Afin de pouvoir associer le montant rejeté à la facture
-			amountReject = this.setAmountRejected(invoice, amountReject, cfonbImportService.getAmountRemainingFromPaymentMove(invoice));
+			amountReject = this.setAmountRejected(invoice, amountReject, paymentService.getAmountRemainingFromPaymentMove(invoice));
 
 			if(invoice.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
 				invoice.setRejectDate(dateReject);
@@ -407,7 +407,7 @@ public class PaymentScheduleImportService {
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
 		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
 
-		Move move = moveService.getMoveCreateService().createMove(rejectJournal, company, null, null, date, null, MoveRepository.IMPORT);
+		Move move = moveService.getMoveCreateService().createMove(rejectJournal, company, null, null, date, null, MoveRepository.TECHNICAL_ORIGIN_IMPORT);
 		move.setRejectOk(true);
 		moveRepo.save(move);
 		return move;
@@ -693,7 +693,7 @@ public class PaymentScheduleImportService {
 		Partner partner = invoice.getPartner();
 		PaymentMode paymentMode = invoice.getCompany().getAccountConfig().getRejectionPaymentMode();
 		invoice.setPaymentMode(paymentMode);
-		partner.setPaymentMode(paymentMode);
+		partner.setInPaymentMode(paymentMode);
 	}
 
 
@@ -706,7 +706,7 @@ public class PaymentScheduleImportService {
 		Partner partner = paymentSchedule.getPartner();
 		PaymentMode paymentMode = paymentSchedule.getCompany().getAccountConfig().getRejectionPaymentMode();
 		paymentSchedule.setPaymentMode(paymentMode);
-		partner.setPaymentMode(paymentMode);
+		partner.setInPaymentMode(paymentMode);
 	}
 
 
