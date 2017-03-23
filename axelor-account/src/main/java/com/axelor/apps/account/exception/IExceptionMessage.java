@@ -457,6 +457,11 @@ public interface IExceptionMessage {
 	static final String BATCH_VENTILATION_2 = /*$$(*/ "Invoice(s) ventilated" /*)*/;
 
 	/**
+	 * Refund invoice
+	 */
+	static final String REFUND_INVOICE_1 = /*$$(*/ "%s : Payment mode must be filled either in the partner or in the company configuration." /*)*/;
+
+	/**
 	 * Validate state
 	 */
 	static final String INVOICE_VALIDATE_1 = /*$$(*/ "The payment mode is not in adequacy with the invoice type" /*)*/;

@@ -43,6 +43,7 @@
 "%s : One or several detail records are missing in the file %s","%s : Il manque un ou plusieurs enregistrements détail dans le fichier %s",,
 "%s : Payment condition missing","%s : Condition de paiement absent",,
 "%s : Payment mode missing","%s : Mode de paiement absent",,
+"%s : Payment mode must be filled either in the partner or in the company configuration.","%s : Le mode de paiement doit être rempli soit dans le tiers, soit dans la configuration de la société.",,
 "%s : Payment voucher n° %s, the paid amount should be positive","%s : Saisie paiement n° %s, le montant payé doit être positif",,
 "%s : Payment's amount (%s) is different than Paybox's collected amount (%s)","%s : Le montant de la saisie paiement (%s) est différent du montant encaissé par Paybox (%s)",,
 "%s : Please define an email template for cash register (company: %s)","%s : Veuillez définir un modèle d'email pour la caisse (société: %s)",,
