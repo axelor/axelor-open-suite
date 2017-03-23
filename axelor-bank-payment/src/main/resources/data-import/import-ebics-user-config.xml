@@ -30,6 +30,36 @@
 	   		</bind>
 	   		<bind node="certValidityPeriodSelect" to="certValidityPeriodSelect" />
 	   		<bind node="protocolSelect" to="protocolSelect" />
+	   		<bind node="useX509ExtentionForAutoSignedCert" to="useX509ExtentionForAutoSignedCert" />
+      	</bind>
+      	<bind node="bankStatementFileFormatSet/bankStatementFileFormat" to="bankStatementFileFormatSet" search="self.name = :bankStatementFileFormatName">
+      		<bind node="importId" to="importId" />
+      		<bind node="statementFileFormatSelect" to="statementFileFormatSelect" />
+      		<bind node="name" to="name" alias="bankStatementFileFormatName" />
+      		<bind node="description" to="description" />
+      	</bind>
+      	<bind node="pSRBankStatementFileFormat" to="pSRBankStatementFileFormat" search="self.name = :pSRBsankStatementFileFormatName">
+      		<bind node="importId" to="importId" />
+      		<bind node="statementFileFormatSelect" to="statementFileFormatSelect" />
+      		<bind node="name" to="name" alias="pSRBsankStatementFileFormatName" />
+      		<bind node="description" to="description" />
+      	</bind>
+      	<bind node="bankStatementEbicsUserId" to="bankStatementEbicsUser" search="self.userId = :bankStatementEbicsUserId" />
+      	<bind node="bankStatementGetModeSelect" to="bankStatementGetModeSelect" />
+      	<bind node="bankStatementLastExeDateT" to="bankStatementLastExeDateT" />
+      	<bind node="usePSR" to="usePSR" />
+      	<bind node="bankDetailsSet/bankDetails" to="bankDetailsSet" search="self.fullName = :fullName">
+      		<bind node="importId" to="importId" />
+      		<bind node="partnerFullName" to="partnerFullName" search="self.fullName = :partnerFullName"  update="true"/>
+      		<bind node="ownerName" to="ownerName" />
+      		<bind node="bank" to="bank" search="self.code = :bank" update="true"/>
+      		<bind node="bankCode" to="bankCode" />
+      		<bind node="iban" to="iban" />
+      		<bind node="sortCode" to="sortCode" />
+      		<bind node="accountNbr" to="accountNbr" />
+      		<bind node="bbanKey" to="bbanKey" />
+      		<bind node="ibanBic" to="ibanBic" />
+      		<bind node="fullName" to="fullName" />
       	</bind>
       </bind>
       <bind node="securityMedium" to="securityMedium" />
@@ -55,6 +85,8 @@
    		<bind node="requestType" to="requestType" />
    		<bind node="requestTime" to="requestTime" />
    		<bind node="responseCode" to="responseCode" />
+   		<bind node="requestTraceText" to="requestTraceText" />
+   		<bind node="responseTraceText" to="responseTraceText" />
       </bind>
     </bind>
   </input> 
