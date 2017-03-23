@@ -1,16 +1,17 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-supplychain"
-	version "5.0.0"
-	title "Axelor :: Supply chain"
-	
-	removable true
-	
-	module "modules:axelor-purchase"
-	module "modules:axelor-sale"
-	module "modules:axelor-stock"
-	module "modules:axelor-account"
-	module "modules:axelor-crm"
+apply {
+	version = "5.0.0"
 }
 
+axelor {
+	title "Axelor :: Supply chain"
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-purchase")
+	compile project(":modules:axelor-sale")
+	compile project(":modules:axelor-stock")
+	compile project(":modules:axelor-account")
+}

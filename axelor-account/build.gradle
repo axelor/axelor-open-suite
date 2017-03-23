@@ -1,21 +1,21 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-account"
-	version "5.0.0"
+apply {
+	version = "5.0.0"
+}
+
+axelor {
 	title "Axelor :: Account"
-
 	removable true
-
-	module "modules:axelor-base"
 }
 
 configurations {
 	jaxbDeps
 }
 
-
 dependencies {
+	compile project(":modules:axelor-base")
+	
 	jaxbDeps 'com.sun.xml.bind:jaxb-xjc:2.2.2',
 		'com.sun.xml.bind:jaxb-impl:2.2.2',
 		'javax.xml.bind:jaxb-api:2.2.2'
@@ -24,9 +24,6 @@ dependencies {
 	
 	compile group: 'jdom', name: 'jdom', version: '1.1'
 	compile group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '2.5.0'
-
-	compile libs.ST4
-	
 }
 
 license {
