@@ -1,0 +1,20 @@
+def repos = {
+	maven {
+		name 'axelor-nexus'
+		url	'http://repository.axelor.com/nexus/content/groups/public/'
+	}
+	maven {
+		url 'https://plugins.gradle.org/m2/'
+	}
+	mavenCentral()
+	mavenLocal()
+	jcenter()
+}
+
+repositories repos
+buildscript.repositories repos
+
+allprojects {
+	repositories repos
+	buildscript.repositories repos
+}

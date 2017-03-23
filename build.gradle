@@ -1,11 +1,39 @@
 buildscript {
-	apply from: "gradle/adk.gradle"
-	dependencies {
-		classpath adkPlugins()
-	}
+    ext.repos = {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://repository.axelor.com/nexus/public/' }
+    }
+    repositories repos
+    dependencies {
+        classpath "com.axelor:axelor-gradle:5.0.0-SNAPSHOT" 
+    }
 }
 
-apply plugin: 'axelor-app'
+allprojects {
+	repositories repos
+}
+
+apply plugin: 'eclipse'
+apply plugin: "com.axelor.app"
+apply {
+	version = "5.0.0"
+}
+
+axelor {
+	title "Axelor :: ERP"
+}
+
+allprojects {
+	apply plugin: 'eclipse'
+	
+	group = "com.axelor"
+	
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
 
 def modules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists()
@@ -17,33 +45,17 @@ def customModules = new File('modules').listFiles().findAll { dir ->
 
 modules.addAll(customModules)
 
-application {
 
-	name "axelor-erp"
-	title "Axelor :: ERP"
-	
-	version "5.0.0"
-	
-	// ADK version required
-	adkVersion "5.0.0"
-
-
-	// depends on all modules
+dependencies {
 	modules.each { dir ->
-		module "modules:$dir.name"
+		compile project(":modules:$dir.name")
 	}
-	
-	// install all modules
-	modules.each { dir ->
-			install "$dir.name"
-	}
-	
 }
 
-allprojects {
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+task wrapper(type: Wrapper) {
+	gradleVersion = "3.4.1"
 }
+
 
 tomcat {
 	httpPort = project.properties.get("http.port", 8080) as Integer
