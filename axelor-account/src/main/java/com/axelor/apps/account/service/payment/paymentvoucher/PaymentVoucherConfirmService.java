@@ -164,9 +164,7 @@ public class PaymentVoucherConfirmService  {
 
 					paidLineTotal = paidLineTotal.add(amountToPay);
 
-					this.payMoveLine(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
-
-					moveLineNo +=1;
+					this.payMoveLine(move, moveLineNo++, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
 
 				}
 			}
@@ -178,14 +176,14 @@ public class PaymentVoucherConfirmService  {
 			// in the else case we create a classical balance on the bank account of the payment mode
 			if (paymentVoucher.getMoveLine() != null){
 				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(),
-						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
+						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
 
 				Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
 				reconcileService.confirmReconcile(reconcile, true);
 			}
 			else{
 
-				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
+				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
 			}
 			move.getMoveLineList().add(moveLine);
 			// Check if the paid amount is > paid lines total
