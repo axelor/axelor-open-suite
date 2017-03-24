@@ -895,8 +895,13 @@ public class MoveLineExportService {
 				items[3] = moveLine.getDate().toString("YYYYMMdd");
 				items[4] = moveLine.getAccount().getCode(); 
 				items[5] = moveLine.getAccount().getName();
-				items[6] = null; //Le numéro de compte auxiliaire (à blanc pour le moment) 
-				items[7] = null; //Le libellé de compte auxiliaire (à blanc pour le moment) 
+				items[6] = "";
+				items[7] = "";
+				Partner partner = moveLine.getPartner();
+				if(partner != null)  {
+					items[6] = partner.getPartnerSeq();
+					items[7] = partner.getFullName();
+				}
 				items[8] = moveLine.getOrigin();
 				items[9] = moveLine.getDate().toString("YYYYMMdd"); // Pour le moment on va utiliser la date des lignes d'écriture. 
 				items[10]= moveLine.getDescription();
