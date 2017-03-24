@@ -123,7 +123,7 @@
 					<field name="isEmployee" showIf="!isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2"/>
 				</panel>
 				<panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
-					<field name="contactAddress">
+					<field name="contactAddress" colSpan="12">
 						<editor x-show-titles="false">
 							<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 							<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
@@ -187,8 +187,12 @@
 					<field name="description" colSpan="12" height="8" showTitle="false"/>
 				</panel>
 	    	</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
+			<panel name="payment" title="Invoicing/Payment" hideIf="isContact || isEmployee" if-module="axelor-account" colSpan="12" >
 				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
+				<panel-include if-module="axelor-account" if="__config__.general.getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
+		    </panel>
+		    <panel name="payment-employee" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
+				<panel-include view="incl-invoice-payment-partner-form-employee" from="axelor-account"/>
 				<panel-include if-module="axelor-account" if="__config__.general.getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
 			<panel name="balance" title="Accounting balance" hideIf="isContact" if-module="axelor-account" colSpan="12">
@@ -197,7 +201,7 @@
 			</panel>
 			
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
-			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee">
+			<panel name="activities" title="Activities"  hideIf="is == null || isEmployee" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails">
 				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
 		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
