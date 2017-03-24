@@ -22,7 +22,7 @@
     </grid>
     
 	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" 
-	onNew="action-account-move-onnew-group,action-move-attrs-hide-move-line-name-in-draft-status" onLoad="action-move-attrs-hide-move-line-name-in-draft-status">
+	onNew="action-account-move-onnew-group" onLoad="action-move-attrs-hide-move-line-name-in-draft-status">
 	
 		<toolbar>
 			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
@@ -44,7 +44,6 @@
 		  
 		<panel sidebar="true" name="action" title="Action" itemSpan="6">
 			<field name="statusSelect" readonly="true"> 
-				<hilite if="statusSelect == 1" color="info"/>
     			<hilite if="statusSelect == 4" color="danger"/>
 			</field>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
@@ -79,7 +78,9 @@
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
 		<action name="default-move-record"/>
+		<action name="action-move-record-journal"/>
 		<action name="action-move-method-get-period"/>
+		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
 	</action-group>
 	
 	<action-group name="action-group-account-move-validate-click">
@@ -96,6 +97,10 @@
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
 		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
 		<field name="technicalOriginSelect" expr="1"/>
+    </action-record>
+    
+    <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
+    	<field name="journal" expr="eval: company?.accountConfig?.manualMiscOpeJournal"/>
     </action-record>
     
 	<!-- ACTION ATTRS -->

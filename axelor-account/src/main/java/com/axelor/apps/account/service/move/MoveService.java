@@ -256,7 +256,7 @@ public class MoveService {
 			Account account = invoice.getPartnerAccount();
 			MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-			Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
+			Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
 			if(moveToolService.isSameAccount(creditMoveLineList, account))  {
@@ -301,7 +301,7 @@ public class MoveService {
 		Partner partner = invoice.getPartner();
 		Account account = invoice.getPartnerAccount();
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
 		log.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
@@ -348,7 +348,7 @@ public class MoveService {
 	 */
 	public void createExcessMove(Invoice refund, Company company, Partner partner, Account account, BigDecimal amount, MoveLine invoiceCustomerMoveLine) throws AxelorException  {
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
 		Move excessMove = moveCreateService.createMove(journal, company, refund.getCurrency(), partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		excessMove.setInvoice(refund);
