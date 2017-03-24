@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -169,7 +169,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -819,55 +819,70 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                     <property name="columnName">purchase_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">purchase_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">purchase_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">purchase_line_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">purchase_line_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">purchase_line_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">product_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">description</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">qty</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">qty</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">UnitCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">UnitCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">UnitCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">UnitPrice</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">UnitPrice</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">UnitPrice</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">TaxValue</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">TaxValue</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">TaxValue</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_title_line</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_title_line</text-property>
+                    <text-property name="heading">is_title_line</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters"/>
@@ -917,6 +932,11 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                         <property name="position">9</property>
                         <property name="name">TaxValue</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">is_title_line</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -985,10 +1005,18 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">is_title_line</property>
+                    <property name="nativeName">is_title_line</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PurchaseOrder.id as purchase_id, PurchaseOrderLine.id as purchase_line_id, PurchaseOrderLine.product_name, PurchaseOrderLine.description, PurchaseOrderLine.qty,
 Unit.name as "UnitCode", PurchaseOrderLine.price as "UnitPrice", PurchaseOrderLine.ex_tax_total,
-TaxLine.value as "TaxValue"
+TaxLine.value as "TaxValue",
+PurchaseOrderLine.is_title_line
 from purchase_purchase_order_line as PurchaseOrderLine
 inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 left outer join base_product as Product on (PurchaseOrderLine.product = Product.id)
@@ -1900,6 +1928,11 @@ row["first_name"]
                                     <expression name="expression" type="javascript">dataSetRow["purchase_line_id"]</expression>
                                     <property name="dataType">decimal</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">is_title_line</property>
+                                    <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
                             </list-property>
                             <list-property name="filter">
                                 <structure>
@@ -2183,9 +2216,27 @@ row["first_name"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="3457">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"] == true</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
 <VALUE-OF>if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="3832">
+                                            <property name="fontWeight">bold</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"] != true</expression>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3436">
