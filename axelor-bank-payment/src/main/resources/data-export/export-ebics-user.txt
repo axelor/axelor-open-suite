@@ -16,7 +16,36 @@
 		requestLog +="<requestType>${log.requestType}</requestType>"
 		requestLog +="<requestTime>${log.requestTime}</requestTime>"
 		requestLog +="<responseCode>${log.responseCode}</responseCode>"
+		requestLog +="<requestTraceText>${log.requestTraceText}</requestTraceText>"
+		requestLog +="<responseTraceText>${log.responseTraceText}</responseTraceText>"
 		requestLog +="</requestLog>"
+	})
+	
+	bankStatementFileFormat = ""
+	u.ebicsPartner?.bankStatementFileFormatSet.each( {b->
+	    bankStatementFileFormat += "<bankStatementFileFormat>"
+		bankStatementFileFormat += "<importId>${b.importId}</importId>"
+		bankStatementFileFormat += "<statementFileFormatSelect>${b.statementFileFormatSelect}</statementFileFormatSelect>"
+		bankStatementFileFormat += "<name>${b.name}</name>"
+		bankStatementFileFormat += "<description>${b.description}</description>"
+		bankStatementFileFormat += "</bankStatementFileFormat>"
+	})
+	
+	bankDetails = ""
+	u.ebicsPartner?.bankDetailsSet.each( {b->
+	    bankDetails += "<bankDetails>"
+		bankDetails += "<importId>${b.importId}</importId>"
+		bankDetails += "<partnerFullName>${b.fullName}</partnerFullName>"
+		bankDetails += "<ownerName>${b.ownerName}</ownerName>"
+		bankDetails += "<bank>${b.bank?.code}</bank>"
+		bankDetails += "<bankCode>${b.bankCode}</bankCode>"
+		bankDetails += "<iban>${b.iban}</iban>"
+		bankDetails += "<sortCode>${b.sortCode}</sortCode>"
+		bankDetails += "<accountNbr>${b.accountNbr}</accountNbr>"
+		bankDetails += "<bbanKey>${b.bbanKey}</bbanKey>"
+		bankDetails += "<ibanBic>${b.ibanBic}</ibanBic>"
+		bankDetails += "<fullName>${b.fullName}</fullName>"
+		bankDetails += "</bankDetails>"
 	})
 	
 	out << 
@@ -30,6 +59,22 @@
 		<ebicsPartner>
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
 			<testMode>${u.ebicsPartner?.testMode}</testMode>
+			<bankStatementFileFormatSet>
+					$bankStatementFileFormat
+			</bankStatementFileFormatSet>
+			<pSRBankStatementFileFormat>
+				<importId>${u.ebicsPartner?.pSRBankStatementFileFormat?.importId}</importId>
+				<statementFileFormatSelect>${u.ebicsPartner?.pSRBankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>
+				<name>${u.ebicsPartner?.pSRBankStatementFileFormat?.name}</name>
+				<description>${u.ebicsPartner?.pSRBankStatementFileFormat?.description}</description>
+			</pSRBankStatementFileFormat>
+			<bankStatementEbicsUserId>${u.ebicsPartner?.bankStatementEbicsUser?.userId}</bankStatementEbicsUserId>
+			<bankStatementGetModeSelect>${u.ebicsPartner?.bankStatementGetModeSelect}</bankStatementGetModeSelect>
+			<bankStatementLastExeDateT>${u.ebicsPartner?.bankStatementLastExeDateT}</bankStatementLastExeDateT>
+			<usePSR>${u.ebicsPartner?.usePSR}</usePSR>
+			<bankDetailsSet>
+				$bankDetails
+			</bankDetailsSet>
 			<ebicsBank>
 				<fullName>${u.ebicsPartner?.ebicsBank?.fullName}</fullName>
 				<hostId>${u.ebicsPartner?.ebicsBank?.hostId}</hostId>
@@ -38,6 +83,7 @@
 				<languageSelect>${u.ebicsPartner?.ebicsBank?.languageSelect}</languageSelect>
 				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
 				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
+				<useX509ExtentionForAutoSignedCert>${u.ebicsPartner?.ebicsBank?.useX509ExtentionForAutoSignedCert}</useX509ExtentionForAutoSignedCert>
 				<bank>
 					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
 					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>

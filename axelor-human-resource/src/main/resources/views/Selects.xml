@@ -162,4 +162,10 @@
 		<option value="2">MeilleureGestion</option>
 	</selection>
 	
+	<selection name="hr.employee.marital.status">
+		<option value="1">Married</option>
+		<option value="2">Single</option>
+		<option value="3">Cohabitee</option>
+	</selection>
+	
 </object-views>

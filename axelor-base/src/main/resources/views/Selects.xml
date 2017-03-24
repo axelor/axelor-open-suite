@@ -604,13 +604,13 @@
 	
 	<selection name="product.inventory.type.select">
 		<option value="1">Yearly</option>
-		<option value="2">Rotating / Turning</option>
+		<option value="2">Cycle counting</option>
 	</selection>
 	
 	
 	<selection name="product.sub.type.product.select">
-		<option value="1">Product finished</option>
-		<option value="2">Product semi-finished</option>
+		<option value="1">Finished product</option>
+		<option value="2">Semi-finished product</option>
 		<option value="3">Component</option>
 	</selection>
 	

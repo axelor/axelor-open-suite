@@ -43,6 +43,7 @@
 "%s : One or several detail records are missing in the file %s",,,
 "%s : Payment condition missing",,,
 "%s : Payment mode missing",,,
+"%s : Payment mode must be filled either in the partner or in the company configuration.",,,
 "%s : Payment voucher n° %s, the paid amount should be positive",,,
 "%s : Payment's amount (%s) is different than Paybox's collected amount (%s)",,,
 "%s : Please define an email template for cash register (company: %s)",,,

@@ -14,4 +14,5 @@ module {
 
 dependencies {
 	compile files("src/main/lib/ebics-1.0.2.jar")
+	compile "org.bouncycastle:bcprov-jdk14:1.38"
 }
