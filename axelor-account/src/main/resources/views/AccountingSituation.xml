@@ -74,7 +74,7 @@
 	
 	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
         <view type="grid" name="move-line-accounting-situation-grid"/>
-    	<view type="form" name="move-line-accounting-situation-form"/>
+    	<view type="form" name="move-line-form"/>
     	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
     	AND self.account.reconcileOk = 'true' AND self.move.statusSelect = 3</domain>
     </action-view>
