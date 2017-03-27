@@ -21,10 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.BudgetDistribution;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -59,9 +56,21 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMoveLine stockMoveLine;
 	protected Subscription subscription;
-	
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
+
+	public InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName,
+										   BigDecimal price, BigDecimal priceDiscounted, String description,
+										   BigDecimal qty, Unit unit, TaxLine taxLine,
+										   int sequence, BigDecimal discountAmount, int discountTypeSelect,
+										   BigDecimal exTaxTotal, BigDecimal inTaxTotal, boolean isTaxInvoice,
+										   SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) {
+		super(invoice, product, productName, price, priceDiscounted, description, qty, unit, taxLine, sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, isTaxInvoice);
+		this.saleOrderLine = saleOrderLine;
+		this.purchaseOrderLine = purchaseOrderLine;
+		this.stockMoveLine = stockMoveLine;
+	}
+
+	protected InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+											  Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
 
 		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
@@ -108,7 +117,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 		this.subscription = subscription;
     }
-	
+
 
 	/**
 	 * @return
