@@ -556,6 +556,7 @@
 "Expiration date (only for reference)","Date de fin d'application (informatif)",,
 "Export","Export",,
 "Export Date","Date d'export",,
+"Export Date fixed to","Export figé au",,
 "Export code","Code d'export",,
 "Export direct debits","Export des prélèvements",,
 "Export file type","Format d'export",,
