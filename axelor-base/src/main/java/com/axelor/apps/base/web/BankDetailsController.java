@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.repo.BankRepository;
 import org.apache.commons.validator.routines.checkdigit.IBANCheckDigit;
 
 import com.axelor.apps.base.db.BankDetails;
@@ -36,7 +37,8 @@ public class BankDetailsController {
 		
 		BankDetails bankDetails = request.getContext().asType(BankDetails.class);
 		
-		if(bankDetails.getIban() != null) {
+		if(bankDetails.getIban() != null && bankDetails.getBank().getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+
 			if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
 				response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
 				response.setColor("iban", "#FF0000");
