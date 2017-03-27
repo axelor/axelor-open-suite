@@ -42,7 +42,8 @@ public class ImportPaymentVoucher {
 		assert bean instanceof PaymentVoucher;
 		try{
 			PaymentVoucher paymentVoucher = (PaymentVoucher)bean;
-			paymentVoucher.setInvoiceToPay(getInvoice(paymentVoucher.getOrderImport()));
+			Invoice invoiceToPay = getInvoice((String) values.get("orderImport"));
+			paymentVoucher.setInvoiceToPay(invoiceToPay);
 			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
 			if(paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED)
 				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);

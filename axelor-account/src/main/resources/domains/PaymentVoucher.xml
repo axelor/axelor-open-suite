@@ -6,7 +6,6 @@
   	<entity name="PaymentVoucher" sequential="true" lang="java">
   	
 	  	<integer name="importId" />
-		<string name="orderImport"/>
 
 		<string name="ref" title="Reference" namecolumn="true" required="false"/>
 		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" required="true"/>
