@@ -421,7 +421,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
 		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("leaveReason").toString()));
-		
+		if(user.getEmployee() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
+		}
 		if(user != null && leaveReason != null){
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);

@@ -44,7 +44,7 @@
 	     
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" />
     
-	<input file="base_team.csv" separator=";" type="com.axelor.apps.base.db.Team" search="self.importId = :importId"  />
+	<input file="base_team.csv" separator=";" type="com.axelor.team.db.Team" search="self.importId = :importId"  />
 
 	<input file="base_keyword.csv" separator=";" type="com.axelor.apps.base.db.Keyword" search="self.importId = :importId"  />
 	

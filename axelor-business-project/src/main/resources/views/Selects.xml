@@ -31,7 +31,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="business.project.app.type.select">
-		<option value="business-project">Business Project</option>
+		<option order="17" value="business-project">Business Project</option>
 	</selection>
 	
 </object-views>

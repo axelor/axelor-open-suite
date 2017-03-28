@@ -29,7 +29,6 @@ import java.util.Set;
 
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
@@ -46,6 +45,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
@@ -156,11 +156,11 @@ public class CalendarController {
 		List<Event> eventList = null;
 		
 		Set<User> userSet = new HashSet<User>();
-		if(team == null || team.getUserSet() == null || team.getUserSet().isEmpty()){
+		if(team == null || team.getMembers() == null || team.getMembers().isEmpty()){
 			userSet.add(user);
 		}
 		else{
-			userSet = team.getUserSet();
+			userSet = team.getMembers();
 		}
 		
 		for (User userIt : userSet) {

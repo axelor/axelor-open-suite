@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
-"Invoicing";"INV";"Invoicing configuration";"invoice";"app-invoice.png";"axelor-account";"account"
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Invoicing;INV;Invoicing configuration;invoice;app-invoice.png;axelor-account;account;16

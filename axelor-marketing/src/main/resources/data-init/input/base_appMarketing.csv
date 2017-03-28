@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
-"Marketing Management";"MKT";"Marketing Management Configuration";"marketing";"app-marketing.png";"axelor-marketing";"crm"
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Marketing Management;MKT;Marketing Management Configuration;marketing;app-marketing.png;axelor-marketing;crm;2

@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<selection name="app.type.select" id="talent.app.type.select">
-		<option value="training">Training</option>
-		<option value="recruitment">Recruitment</option>
+		<option order="20" value="training">Training</option>
+		<option order="21" value="recruitment">Recruitment</option>
 	</selection>
 
 	<selection name="training.register.rating.select">

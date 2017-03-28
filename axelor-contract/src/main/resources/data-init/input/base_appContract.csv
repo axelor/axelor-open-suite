@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
-"Contract";"CONT";"Contract configuration";"contract";"app-contract.png";"axelor-contract";"account,purchase,sale"
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Contract;CONT;Contract configuration;contract;app-contract.png;axelor-contract;account,purchase,sale;13

@@ -42,7 +42,8 @@
 	</selection>
 	
 	<selection name="app.type.select" id="supplychain.app.type.select">
-		<option value="supplychain">Supplychain management</option>
+		<option order="11" value="supplychain">Supplychain management</option>
+		<option order="23" value="subscription">Subscription</option>
 	</selection>
 	
 </object-views>

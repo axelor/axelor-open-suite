@@ -178,7 +178,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="crm.app.type.select">
-		<option value="crm">CRM</option>
+		<option order="8" value="crm">CRM</option>
 	</selection>
 	
 </object-views>

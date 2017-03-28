@@ -23,7 +23,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="project.app.type.select">
-		<option value="project">Project</option>
+		<option order="10" value="project">Project</option>
 	</selection>
 	
 </object-views>

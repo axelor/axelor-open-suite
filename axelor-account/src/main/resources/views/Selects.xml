@@ -282,9 +282,9 @@
 	</selection>
 
 	<selection name="app.type.select" id="account.app.type.select">
-		<option value="account">Account</option>
-		<option value="invoice">Invoice</option>
-		<option value="budget">Budget</option>
+		<option order="2" value="account">Account</option>
+		<option order="3" value="invoice">Invoice</option>
+		<option order="4" value="budget">Budget</option>
 	</selection>
 
 

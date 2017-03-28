@@ -5,7 +5,7 @@
 
 
 	<selection name="app.type.select" id="contract.app.type.select">
-		<option value="contract">Contract</option>
+		<option order="24" value="contract">Contract</option>
 	</selection>
 	
 	<selection name="contract.type.select">
