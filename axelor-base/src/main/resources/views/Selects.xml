@@ -538,6 +538,12 @@
 		<option value="5">v5</option>
 	</selection>
 
+	<selection name="base.bank.bank.details.type.select">
+		<option value="0">Other</option>
+		<option value="1">IBAN</option>
+		<option value="2">National id</option>
+	</selection>
+
 	<!-- TODO: move this selection to account module and create a copy here
 		 (ie. base.year.period.duration.select) That time also rename references
 		 of this selection in Charts.xml of CRM, Purchase, Stock modules.

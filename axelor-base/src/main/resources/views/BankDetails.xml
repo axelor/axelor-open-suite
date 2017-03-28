@@ -17,6 +17,7 @@
 			<field name="ownerName" />
 		</panel>
 		<panel name="iban" title="IBAN">
+			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bank" canNew="true" form-view="bank-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
@@ -36,6 +37,7 @@
 			<field name="ownerName" />
 		</panel>
 		<panel name="iban" title="IBAN">
+			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bank" canNew="true" form-view="bank-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
@@ -77,7 +79,7 @@
 
 	<action-validate name="action-validate-bank-details-bbanKey">
 		<error message="Incorrect BBAN Key"
-			if="( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
+			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
 	</action-validate>
 
 

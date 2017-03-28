@@ -10,6 +10,7 @@
   
     <string name="fullName" title="Name" search="code,bankName"/>
   
+    <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true" selection="base.bank.bank.details.type.select" default="1"/>
     <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true" unique="true"/>
     <string name="bankName" title="Bank Name" max="255"/>
     
@@ -21,6 +22,13 @@
     <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
     
     <one-to-many name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" mappedBy="bank"/>
+
+    <extra-code><![CDATA[
+      //BANK DETAILS IDENTIFIER TYPE SELECT
+      public static final int BANK_IDENTIFIER_TYPE_OTHER = 0;
+      public static final int BANK_IDENTIFIER_TYPE_IBAN = 1;
+      public static final int BANK_IDENTIFIER_TYPE_NATIONAL = 2;
+    ]]></extra-code>
   </entity>
 </domain-models>
 
