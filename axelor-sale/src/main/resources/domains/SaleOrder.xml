@@ -49,7 +49,7 @@
   	
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
-	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" massUpdate="true"/>
+	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->
 	<string name="description" title="Description" large="true"/>

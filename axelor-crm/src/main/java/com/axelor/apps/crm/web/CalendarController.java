@@ -29,7 +29,7 @@ import java.util.Set;
 
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
@@ -156,11 +156,11 @@ public class CalendarController {
 		List<Event> eventList = null;
 		
 		Set<User> userSet = new HashSet<User>();
-		if(team == null || team.getUserSet() == null || team.getUserSet().isEmpty()){
+		if(team == null || team.getMembers() == null || team.getMembers().isEmpty()){
 			userSet.add(user);
 		}
 		else{
-			userSet = team.getUserSet();
+			userSet = team.getMembers();
 		}
 		
 		for (User userIt : userSet) {

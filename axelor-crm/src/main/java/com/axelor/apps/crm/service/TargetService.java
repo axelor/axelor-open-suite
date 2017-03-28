@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.ITarget;
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.auth.db.User;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.IOpportunity;

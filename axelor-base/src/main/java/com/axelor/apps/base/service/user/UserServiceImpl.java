@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;

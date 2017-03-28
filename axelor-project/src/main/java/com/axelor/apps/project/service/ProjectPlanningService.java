@@ -27,7 +27,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
@@ -103,7 +103,7 @@ public class ProjectPlanningService {
 	public List<ProjectPlanningLine> populateMyTeamPlanning(ProjectPlanning planning, Team team) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
 		List<Project> projectList = null;
-		Set<User> userList = team.getUserSet();
+		Set<User> userList = team.getMembers();
 
 		for (User user : userList) {
 			String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";

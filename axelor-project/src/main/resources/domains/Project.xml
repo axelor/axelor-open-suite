@@ -21,6 +21,7 @@
 	  <integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
 	  <many-to-many name="priorities" ref="com.axelor.apps.project.db.ProjectPriority" title="Priorities"/>
 	  <many-to-many name="categories" ref="com.axelor.apps.project.db.ProjectCategory" title="Categories"/>
+	  <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
 	  
 	  
 	  <string name="code" title="Code" />

@@ -488,7 +488,7 @@
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
-		    <field type="reference" name="activeTeam" target="com.axelor.apps.base.db.Team" x-required="true" title="Team" />
+		    <field type="reference" name="activeTeam" target="com.axelor.team.db.Team" x-required="true" title="Team" />
 		</search-fields>
 		<dataset type="jpql">
 		    <![CDATA[
@@ -516,7 +516,7 @@
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user" stacked="false">
 	<search-fields>
 	<field name="toDateT" title="From Date" type="date" x-required="true"/>
-	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.apps.base.db.Team"/>
+	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.team.db.Team"/>
 	</search-fields>
 	<dataset type="jpql">
 	SELECT
@@ -1191,7 +1191,7 @@
 		
 		<chart name="chart.team.call.target.bar" title="Calls emitted historical" onInit="action.chart.crm.chart.set.active.team">
 		    <search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1235,7 +1235,7 @@
 		
 		<chart name="chart.team.meeting.target.bar" title="Meeting number historical" onInit="action.chart.crm.chart.set.active.team">
 		    <search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1275,7 +1275,7 @@
 		
 		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1315,7 +1315,7 @@
 		
 		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1355,7 +1355,7 @@
 		
 		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1395,7 +1395,7 @@
 		
 		<chart name="chart.team.sale.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1435,7 +1435,7 @@
 		
 		<chart name="chart.team.sale.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1475,7 +1475,7 @@
 		
 		<chart name="chart.team.sale.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[

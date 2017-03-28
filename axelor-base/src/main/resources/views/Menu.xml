@@ -389,14 +389,16 @@
 		<view type="form" name="user-form"/>
 	</action-view>
 	
-	<menuitem name="admin-root-user-team" parent="admin-root-user"
+	<!-- 
+		<menuitem name="admin-root-user-team" parent="admin-root-user"
 		title="Teams" action="admin.root.base.team"/>
 
-	<action-view name="admin.root.base.team" title="Teams"
-		model="com.axelor.apps.base.db.Team" >
-		<view type="grid" name="team-grid" />
-		<view type="form" name="team-form"/>
-	</action-view>
+		<action-view name="admin.root.base.team" title="Teams"
+			model="com.axelor.apps.base.db.Team" >
+			<view type="grid" name="team-grid" />
+			<view type="form" name="team-form"/>
+		</action-view>
+	-->
 	
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
 		title="Companies" action="admin.root.base.company" />
