@@ -22,10 +22,6 @@ apply {
 	version = "5.0.0"
 }
 
-axelor {
-	title "Axelor :: ERP"
-}
-
 allprojects {
 	apply plugin: 'eclipse'
 	
@@ -45,6 +41,12 @@ def customModules = new File('modules').listFiles().findAll { dir ->
 
 modules.addAll(customModules)
 
+axelor {
+	title "Axelor :: ERP"
+	modules.each { dir ->
+		install "$dir.name"
+	}
+}
 
 dependencies {
 	modules.each { dir ->
