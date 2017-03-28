@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.ITarget;
-import com.axelor.team.db.Team;
 import com.axelor.auth.db.User;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.IOpportunity;
@@ -39,6 +38,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

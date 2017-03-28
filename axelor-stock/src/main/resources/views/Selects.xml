@@ -50,7 +50,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="stock.app.type.select">
-		<option value="stock">Stock</option>
+		<option order="5" value="stock">Stock</option>
 	</selection>
 	
 </object-views>

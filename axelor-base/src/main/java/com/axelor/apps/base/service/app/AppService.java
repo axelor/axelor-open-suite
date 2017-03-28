@@ -1,5 +1,6 @@
 package com.axelor.apps.base.service.app;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.axelor.apps.base.db.App;
@@ -7,8 +8,6 @@ import com.axelor.apps.base.db.App;
 public interface AppService {
 	
 	public String importDataDemo(App app);
-	
-	public void importDataInit(App app);
 	
 	public App getApp(String type);
 	
@@ -20,6 +19,7 @@ public interface AppService {
 	
 	public List<App> getChildren(App app, Boolean active);
 	
-	public void installParent(App app);
+	public App installApp(App app, Boolean importDemo);
 	
+	public List<App> sortApps(Collection<App> apps);
 }

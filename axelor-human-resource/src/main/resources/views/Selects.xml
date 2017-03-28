@@ -158,10 +158,11 @@
 	</selection>
 	
 	<selection name="app.type.select" id="human.resource.app.type.select">
-		<option value="employee">Employee management</option>
-		<option value="leave">Leave management</option>
-		<option value="timesheet">Timesheet management</option>
-		<option value="expense">Expense management</option>
+		<option order="12" value="employee">Employee management</option>
+		<option order="13" value="leave">Leave management</option>
+		<option order="14" value="timesheet">Timesheet management</option>
+		<option order="15" value="expense">Expense management</option>
+		<option order="16" value="exthrs">Extra hours</option>
 	</selection>
 	
 	<selection name="hr.batch.payroll.preparation.export.type.select">

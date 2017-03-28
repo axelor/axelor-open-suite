@@ -29,7 +29,7 @@ import java.util.Set;
 
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.team.db.Team;
+>>>>>>> eef09720fd59919897789f47c011928183f79186
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
@@ -46,6 +46,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 

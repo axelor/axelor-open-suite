@@ -21,7 +21,7 @@
 		<view name="training-register-calendar" type="calendar" />
 		<view name="training-register-form" type="form" />
 		<domain>self.employee.id in :_employeeList and self.statusSelect != 3</domain>
-		<context name="_employeeList" expr="eval:(__user__.teamSet.userSet.employee.id).flatten()" />
+		<context name="_employeeList" expr="eval:(__user__.teamSet.members.employee.id).flatten()" />
 	</action-view>
 	
 	<menuitem name="training-register-all" parent="training-root" title="All trainings" action="training.register.all" />	

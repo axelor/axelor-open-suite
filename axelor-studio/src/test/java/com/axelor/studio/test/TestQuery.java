@@ -10,12 +10,8 @@ import org.junit.runner.RunWith;
 
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
 import com.google.inject.Inject;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules(TestModule.class)
 public class TestQuery {
 	
 	@Inject

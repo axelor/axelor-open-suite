@@ -64,7 +64,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="production.app.type.select">
-		<option value="production">Production</option>
+		<option order="18" value="production">Production</option>
 	</selection>
 	
 </object-views>

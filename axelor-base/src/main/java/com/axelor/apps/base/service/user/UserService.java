@@ -19,9 +19,9 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.team.db.Team;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 
 /**

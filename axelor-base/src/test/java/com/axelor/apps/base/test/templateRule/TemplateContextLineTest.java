@@ -31,13 +31,9 @@ import com.axelor.apps.base.service.template.TemplateContextLineService;
 import com.axelor.apps.base.test.TestModule;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.Model;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules({ TestModule.class })
 public class TemplateContextLineTest {
 	
 	@Inject

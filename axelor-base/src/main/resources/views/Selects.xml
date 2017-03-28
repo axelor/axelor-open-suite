@@ -648,7 +648,7 @@
 	</selection>
 	
 	<selection name="app.type.select">
-		<option value="base">Base</option>
+		<option order="1" value="base">Base</option>
 	</selection>
 	
 	<selection name="iaccount.payment.mode.type.select">

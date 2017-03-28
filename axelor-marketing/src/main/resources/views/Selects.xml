@@ -19,7 +19,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="marketing.app.type.select">
-		<option value="marketing">Marketing</option>
+		<option order="22" value="marketing">Marketing</option>
 	</selection>
 	
 </object-views>

@@ -40,7 +40,6 @@
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel name="teams" title="Teams">
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
-        		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
         	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm"  if="__config__.app.isApp('crm')" >
         		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>

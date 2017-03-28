@@ -26,8 +26,6 @@ import java.util.Set;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
-
-import com.axelor.team.db.Team;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
@@ -44,6 +42,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -102,7 +101,11 @@ public class ProjectPlanningService {
 	@Transactional
 	public List<ProjectPlanningLine> populateMyTeamPlanning(ProjectPlanning planning, Team team) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
+<<<<<<< HEAD
 		List<Project> projectList = null;
+=======
+		List<ProjectTask> projectTaskList = null;
+>>>>>>> eef09720fd59919897789f47c011928183f79186
 		Set<User> userList = team.getMembers();
 
 		for (User user : userList) {

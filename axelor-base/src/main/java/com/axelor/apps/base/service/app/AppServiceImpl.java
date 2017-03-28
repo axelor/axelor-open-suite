@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,6 +21,9 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaScanner;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection.Option;
+import com.google.common.base.Joiner;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -37,6 +42,8 @@ public class AppServiceImpl implements AppService {
 	private static final String DIR_INIT = "data-init";
 	
 	private static final String DIR_INIT_INPUT = "app";
+	
+	private static final String APP_TYPE_SELECT = "app.type.select";
 	
 	@Inject
 	private AppRepository appRepo;
@@ -91,9 +98,9 @@ public class AppServiceImpl implements AppService {
 		
 		List<App> depends = getDepends(app, true);
 		for (App parent : depends) {
-			log.debug("Importing demo data for parent app: {}", parent.getName());
 			parent = appRepo.find(parent.getId());
 			if (!parent.getDemoDataLoaded()) {
+				log.debug("Importing demo data for parent app: {}", parent.getName());
 				importDataDemo(parent);
 			}
 		}
@@ -105,8 +112,7 @@ public class AppServiceImpl implements AppService {
 		return appRepo.save(app);
 	}
 	
-	@Override
-	public void importDataInit(App app) {
+	private void importDataInit(App app) {
 		
 		log.debug("Data init...");
 		String modules = app.getModules();
@@ -223,7 +229,7 @@ public class AppServiceImpl implements AppService {
 		
 		List<App> apps = appRepo.all().filter(query, Arrays.asList(dependsOn.split(","))).fetch();
 		log.debug("App: {}, DependsOn: {}, Parent active: {}, Total parent founds: {}", app.getName(), dependsOn, active, apps.size());
-		return apps;
+		return sortApps(apps);
 	}
 
 	@Override
@@ -259,19 +265,69 @@ public class AppServiceImpl implements AppService {
 	}
 	
 	@Override
-	public void installParent(App app) {
+	public App installApp(App app, Boolean importDemo) {
 		List<App> apps = getDepends(app, false);
 		
 		for (App parentApp : apps) {
 			parentApp = appRepo.find(parentApp.getId());
-			parentApp.setActive(true);
-			parentApp = saveApp(parentApp);
-			if (!parentApp.getInitDataLoaded()) {
-				importDataInit(parentApp);
-				installParent(parentApp);
-			}
+			installApp(parentApp, importDemo);
 		}
 		
+		app = appRepo.find(app.getId());
+		
+		if (!app.getInitDataLoaded()) {
+			importDataInit(app);
+		}
+		
+		app = appRepo.find(app.getId());
+		if (importDemo != null && importDemo && !app.getDemoDataLoaded()) {
+			importDataDemo(app);
+		}
+		
+		app = appRepo.find(app.getId());
+		
+		app.setActive(true);
+		
+		return saveApp(app);
+	}
+	
+	
+	@Override
+	public List<App> sortApps(Collection<App> apps) {
+		
+		List<App> appsList = new ArrayList<App>();
+		
+		appsList.addAll(apps);
+		
+		appsList.sort(new Comparator<App>() {
+
+			@Override
+			public int compare(App app1, App app2) {
+				
+				Option option1 = MetaStore.getSelectionItem(APP_TYPE_SELECT, app1.getTypeSelect());
+				Option option2 = MetaStore.getSelectionItem(APP_TYPE_SELECT, app2.getTypeSelect());
+				
+				if (option1 == null || option2 == null) {
+					return 0;
+				}
+				
+				Integer order1 = option1.getOrder();
+				Integer order2 = option2.getOrder();
+				
+				if (order1 < order2) {
+					return -1;
+				}
+				if (order1 > order2) {
+					return 1;
+				}
+				
+				return 0;
+			}
+		});
+		
+		log.debug("Apps sorted: {}", getNames(appsList));
+		
+		return appsList;
 	}
 
 }
