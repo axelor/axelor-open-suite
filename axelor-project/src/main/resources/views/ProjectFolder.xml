@@ -8,13 +8,10 @@
 		<field name="description" widget="html"/>
 	</grid>
 	
-	<form title="Projects Folder" name="project-folder-form"  model="com.axelor.apps.project.db.ProjectFolder">
+	<form title="Project Folder" name="project-folder-form"  model="com.axelor.apps.project.db.ProjectFolder">
 		<panel>
-			<field name="name"/>
-			<spacer/>
+			<field name="name" colSpan="12"/>
 			<field name="description" colSpan="12" widget="html"/>
-			<spacer/>
-			<field name="membersUserSet" colSpan="12"/>
 			<field name="projectList" colSpan="12"/>
 		</panel>
 		

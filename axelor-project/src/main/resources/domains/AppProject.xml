@@ -6,7 +6,6 @@
 
 	<entity name="AppProject" lang="java" cachable="true" extends="App">
 		<string name="projectLabel" title="Project Label"/>
-		<many-to-many name="priorities" ref="com.axelor.apps.project.db.ProjectPriority" title="Priorities"/>
 		<many-to-many name="categories" ref="com.axelor.apps.project.db.ProjectCategory" title="Categories"/>
 	</entity>
 

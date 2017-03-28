@@ -12,14 +12,24 @@
   		<integer name="importId"/>
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 	  	
-	  	
-	  	<integer name="statusSelect" selection="task.status.select" title="Status" default="1"/>
+	  	<many-to-one name="parentTask" ref="com.axelor.apps.project.db.Task" title="Parent task"/>
 	 	<many-to-one name="category" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
-    	<integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
+    	<integer name="progressSelect" title="Progress" selection="project.task.progress.select" help="true"/>
 	  
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 		<string name="description" title="Description" large="true"/>
 	  
+	 <track>
+	 	<field name="name"/>
+	 	<field name="project"/>
+	 	<field name="parentTask"/>
+	 	<field name="category"/>
+	 	<field name="progressSelect"/>
+	 	<field name="membersUserSet"/>
+	 	<field name="description"/>
+	 	<message if="true" on="CREATE">Task created</message>
+	 	<message if="true" on ="UPDATE">Task updated</message>
+	 </track>
 	  
 	</entity>
   </domain-models>

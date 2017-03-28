@@ -9,8 +9,6 @@
 	<entity name="ProjectFolder">
   		<string name="name"/>
   		<string name="description" large="true"/>
-  		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Members"/>
-	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
  	 	<one-to-many name="projectList" ref="com.axelor.apps.project.db.Project" mappedBy="projectFolder"/>
 	</entity>
   </domain-models>

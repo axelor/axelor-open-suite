@@ -10,7 +10,7 @@
 		<field name="membersUserSet"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
-		<field name="statusSelect"/>
+		<field name="status"/>
 		<field name="priority"/>
 		<field name="category"/>
 	</grid>
@@ -27,13 +27,13 @@
 			<field name="sequence" title="Ticket N°" colSpan="3" readonly="true"/>
 			<field name="name" colSpan="9" placeholder="Subject"/>
 			<field name="parentTask" colSpan="6"/>
-			<field name="project" colSpan="6" onChange="action-task-attrs-project-configurations"/>
+			<field name="project" colSpan="6" onChange="action-task-attrs-project-configurations" required="true"/>
 		</panel>
 		
 		
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
-				<field name="assignedTo" form-view="user-form" grid-view="user-grid" colSpan="6"/>
+				<field name="assignedTo" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null"/>
 				<spacer/>
 				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
 				<field name="createdOn" title="Created on" colSpan="6"/>
@@ -49,14 +49,16 @@
 		</panel>
 		<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 		
-			<panel sidebar="true" name="attributes" title="Attributes">
-				<field name="statusSelect" colSpan="6"/>
-				<spacer/>
-				<field name="priority" colSpan="6"/>
-				<field name="category" colSpan="6"/>
-				<field name="progressSelect" colSpan="12" widget="SelectProgress" />
-		    </panel>
-		
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="status" colSpan="6"/>
+			<spacer/>
+			<field name="priority" colSpan="6"/>
+			<field name="category" colSpan="6"/>
+			<field name="progressSelect" colSpan="12" widget="SelectProgress" />
+	    </panel>
+		<panel-mail>
+			<mail-messages/>
+		</panel-mail>
 	</form>
 
 	
@@ -98,8 +100,8 @@
 	
 	
 	<action-attrs name="action-task-attrs-project-configurations" model="com.axelor.apps.project.db.Task">
-		<attribute name="domain" for="priority" expr="eval: &quot;self.id IN (${project?.priorities?.collect{it.id}.join(',')})&quot;"/>
-		<attribute name="domain" for="category" expr="eval: &quot;self.id IN (${project?.categories?.collect{it.id}.join(',')})&quot;"/>
+		<attribute name="domain" for="category" expr="eval: &quot;self.id IN (${project?.categories?.collect{it.id}?.join(',')})&quot;"/>
+		<attribute name="domain" for="assignedTo" expr="eval: &quot;self.id IN(${project?.team?.members?.collect{it.id}?.join(',')})&quot;"/>
 	</action-attrs>
 	
 	

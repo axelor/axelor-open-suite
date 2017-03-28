@@ -86,8 +86,8 @@
 			</panel>
 			<panel name="configurations" title="Configurations">
 				<field name="statusSelect" colSpan="6"/>
+				<field name="priority" colSpan="6"/>
 				<spacer/>
-				<field name="priorities" colSpan="6"/>
 				<field name="categories" colSpan="6"/>
 			</panel>
 		</panel-tabs>
@@ -96,8 +96,8 @@
 
 	  	</panel>
 		<panel name="settings" title="Settings" sidebar="true">
-			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 			<field name="team"/>
+			<field name="projectFolder"/>
 			<field name="sequence" hidden="true"/>
 		</panel>
 	</form>
@@ -274,7 +274,6 @@
 	</action-view>
 	
 	<action-record name="action-project-record-default-configurations" model="com.axelor.apps.project.db.Project">
-		<field name="priorities" expr="eval: __config__.app.getApp('project').getPriorities()"/>
 		<field name="categories" expr="eval: __config__.app.getApp('project').getCategories()"/>
 	</action-record>
 	
@@ -301,19 +300,19 @@
 	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectService:computeProgress(__this__)"/>
 	</action-record>
 	
-	<action-method name="action-project-method-set-stored-duration" model="com.axelor.apps.project.db.Project">
+	<action-method name="action-project-method-set-stored-duration" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredDuration"/>
 	</action-method>
 	
-	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project">
+	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredTimeSpent"/>
 	</action-method>
 	
-	<action-method name="action-project-method-set-stored-lead-delay" model="com.axelor.apps.project.db.Project">
+	<action-method name="action-project-method-set-stored-lead-delay" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredLeadDelay"/>
 	</action-method>	
 	
-	<action-method name="action-project-method-set-visible-duration" model="com.axelor.apps.project.db.Project">
+	<action-method name="action-project-method-set-visible-duration" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
 	    <call class="com.axelor.apps.hr.web.project.ProjectController" method="setProjectVisibleDuration"/>
 	</action-method>
 	

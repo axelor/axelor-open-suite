@@ -7,7 +7,6 @@
 		<panel>
 			<field name="projectLabel"/>
 			<panel title="Configurations" colSpan="12">
-				<field name="priorities" colSpan="6"/>
 				<field name="categories" colSpan="6"/>
 			</panel>
 		</panel>
