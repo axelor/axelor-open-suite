@@ -24,7 +24,8 @@
        		<field name="productName" if="__config__.general.getAllowTimetableInvoicing()"/>
        		<field name="unit" if="__config__.general.getAllowTimetableInvoicing()"/>
        		<field name="qty" if="__config__.general.getAllowTimetableInvoicing()"/>
-       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAllowTimetableInvoicing()"/>
+       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAllowTimetableInvoicing()" readonlyIf="invoice != null"/>
+            <field name="invoice" hidden="true"/>
        		<field name="comments" colSpan="12"/>
 	 	</panel>
 	 </form>
