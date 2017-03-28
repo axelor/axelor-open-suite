@@ -21,6 +21,7 @@
 			<field name="orderTypeSelect" required="true"/>
 			<field name="fileGenerationSupported"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="bankDetailsTypeSelect" widget="MultiSelect"/>
 		</panel>
 		<panel name="specificAttributes" title="Specific attributes" hidden="true">
 			<field name="qualifyingOfDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>

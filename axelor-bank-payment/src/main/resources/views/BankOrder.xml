@@ -57,8 +57,8 @@
     		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
 		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 3" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
-			<field name="senderCompany" grid-view="company-grid" form-view="company-form" onChange="action-bank-order-record-sender-company-change"/>
-			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onChange="action-method-fill-signatory-ebics-user" onSelect="action-bank-order-attrs-bank-details-domain"/>
+			<field name="senderCompany" grid-view="company-grid" form-view="company-form" onChange="action-bank-order-group-sender-company-change"/>
+			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onChange="action-method-fill-signatory-ebics-user" onSelect="action-bank-order-method-bank-details-domain"/>
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
 				<field name="bankOrderTotalAmount" colSpan="8" readonly="true"/>
@@ -153,8 +153,8 @@
 	    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
 			<field name="bankOrderTotalAmount" colSpan="4"/>
 			<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
-			<field name="senderCompany" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-record-sender-company-change"/>
-			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-method-fill-signatory-ebics-user" onSelect="action-bank-order-attrs-bank-details-domain"/>
+			<field name="senderCompany" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
+			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-method-fill-signatory-ebics-user" onSelect="action-bank-order-method-bank-details-domain"/>
 			<field name="signatoryEbicsUser" requiredIf="statusSelect == 2" onChange="action-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
 			<field name="signatoryUser" hidden="true"/>
 		</panel>
@@ -188,7 +188,7 @@
 	<action-group name="action-group-bank-order-onnew">
 		<action name="action-bank-order-record-default"/>
 		<action name="action-bank-order-record-partner-type-select-default"/>
-		<action name="action-bank-order-record-sender-company-change"/>
+		<action name="action-bank-order-group-sender-company-change"/>
 		<action name="action-method-fill-signatory-ebics-user"/>
 		<action name="action-record-fill-signatory-user"/>
 	</action-group>
@@ -203,6 +203,11 @@
 		<action name="action-bank-order-line-attrs-on-load"/>
         <action name="action-bank-order-attrs-show-partner-or-receiver-company"/>
 	</action-group>
+
+	<action-group name="action-bank-order-group-sender-company-change">
+		<action name="action-bank-order-record-sender-company-change"/>
+		<action name="action-bank-order-method-fill-bankdetails"/>
+	</action-group>
 	
 		<!-- Actions Attributes -->
 
@@ -210,13 +215,6 @@
 		<attribute name="hidden" for="bankOrderLineList.additionnalInformationPanel" expr="eval: !bankOrderFileFormat?.displayAdditionnalInformations"/>
 		<attribute name="hidden" for="bankOrderLineList.furtherInformationPanel" expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
 	</action-attrs>
-
-	<action-attrs name="action-bank-order-attrs-bank-details-domain">
-        <attribute name="domain" expr="eval: &quot;self.id IN (${senderCompany?.bankDetailsSet?.collect{it.id}.join(',')},${senderCompany?.defaultBankDetails?.id})&quot;" for="senderBankDetails"
-        	if="senderCompany?.bankDetailsSet &amp;&amp; !senderCompany?.bankDetailsSet?.isEmpty()"/>
-    <attribute name="domain" expr="eval: &quot;self.id = ${senderCompany?.defaultBankDetails?.id}&quot;" for="senderBankDetails"
-        	if="!senderCompany?.bankDetailsSet || senderCompany?.bankDetailsSet?.isEmpty()"/>
-    </action-attrs>
 
 	<action-attrs name="action-bank-order-attrs-show-partner-or-receiver-company">
 		<attribute for="bankOrderLineList.receiverCompany" name="hidden" expr="eval: partnerTypeSelect != 4"/>
@@ -236,7 +234,6 @@
 	
 	<action-record name="action-bank-order-record-sender-company-change" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="companyCurrency" expr="eval: senderCompany?.currency"/>
-		<field name="senderBankDetails" expr="eval: senderCompany?.defaultBankDetails"/>
 	</action-record>
 	
 	<action-record name="action-bank-order-record-payment-mode-change" model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -308,6 +305,14 @@
 
 	<action-method name="action-method-fill-signatory-ebics-user" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="fillSignatoryEbicsUser"/>
+	</action-method>
+
+	<action-method name="action-bank-order-method-bank-details-domain">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="setBankDetailDomain"/>
+    </action-method>
+
+	<action-method name="action-bank-order-method-fill-bankdetails">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="fillBankDetails"/>
 	</action-method>
 
 	<!-- BANK ORDER LINES ACTIONS -->

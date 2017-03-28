@@ -216,6 +216,14 @@ public class BankOrderLineService {
 					this.getIdStringListFromList(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
+
+		//filter on the bank details identifier type from the bank order file format
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
+			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
+				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
+			}
+		}
 		return domain;
 	}
 
@@ -245,17 +253,29 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 
-			if (ebicsPartner.getReceiverBankDetailsSet().contains(candidateBankDetails)) {
-				return candidateBankDetails;
-			}
-			else {
+			if (!ebicsPartner.getReceiverBankDetailsSet().contains(candidateBankDetails)) {
 				return null;
+			}
+		}
+
+		//filter on the bank details identifier type from the bank order file format
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
+			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
+			    String[] identifiers = acceptedIdentifiers.split(",");
+			    int i = 0;
+			    while (i < identifiers.length && candidateBankDetails.getBank().getBankDetailsTypeSelect() != Integer.parseInt(identifiers[i])) {
+			    	i++;
+				}
+				if (i == identifiers.length) {
+			    	return null;
+				}
 			}
 		}
 		return candidateBankDetails;
 	}
 
-	private String getIdStringListFromList(Collection<BankDetails> bankDetailsList) {
+	public String getIdStringListFromList(Collection<BankDetails> bankDetailsList) {
 		String idList = "";
 		for (BankDetails bankDetails : bankDetailsList) {
 			idList += bankDetails.getId() + ",";

@@ -328,6 +328,61 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		}
 	}
 
+	@Override
+	public String createDomainForBankDetails(BankOrder bankOrder) {
+		String domain = "";
+		if (bankOrder.getSenderCompany() != null) {
+
+			String bankDetailsIds = bankOrderLineService.getIdStringListFromList(bankOrder.getSenderCompany().getBankDetailsSet());
+
+			if(bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
+				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
+				bankDetailsIds += bankOrder.getSenderCompany()
+						.getDefaultBankDetails().getId().toString();
+			}
+			domain = "self.id IN(" + bankDetailsIds + ")";
+
+		}
+
+		if (domain.equals("")) {
+			return domain;
+		}
+		//filter on the bank details identifier type from the bank order file format
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
+			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
+				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
+			}
+		}
+		return domain;
+	}
+
+	@Override
+	public BankDetails getDefaultBankDetails(BankOrder bankOrder) {
+	    BankDetails candidateBankDetails;
+	    if (bankOrder.getSenderCompany() == null) {return null;}
+
+	    candidateBankDetails = bankOrder.getSenderCompany().getDefaultBankDetails();
+
+		//filter on the bank details identifier type from the bank order file format
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
+			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
+			    String[] identifiers = acceptedIdentifiers.split(",");
+			    int i = 0;
+			    while (i < identifiers.length && candidateBankDetails.getBank().getBankDetailsTypeSelect() != Integer.parseInt(identifiers[i])) {
+			    	i++;
+				}
+				if (i == identifiers.length) {
+			    	return null;
+				}
+			}
+		}
+
+		return candidateBankDetails;
+
+	}
+
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
 		
 		if(bankOrder.getFileToSend() != null)  {  return MetaFiles.getPath(bankOrder.getFileToSend()).toFile();  }

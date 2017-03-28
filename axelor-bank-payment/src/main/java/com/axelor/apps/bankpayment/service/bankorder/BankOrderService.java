@@ -67,4 +67,8 @@ public interface BankOrderService {
 	@Transactional
 	public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);
 
+	public String createDomainForBankDetails(BankOrder bankOrder);
+
+	public BankDetails getDefaultBankDetails(BankOrder bankOrder);
+
 }
