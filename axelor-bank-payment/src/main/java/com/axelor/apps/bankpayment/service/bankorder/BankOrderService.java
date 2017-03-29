@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
@@ -71,4 +72,7 @@ public interface BankOrderService {
 
 	public BankDetails getDefaultBankDetails(BankOrder bankOrder);
 
+	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
+
+	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
 }

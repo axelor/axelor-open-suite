@@ -16,6 +16,9 @@
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
+        <panel>
+			<field name="currency"/>
+		</panel>
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
@@ -35,6 +38,9 @@
 		<panel name="owner" title="Owner" hidden="true">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
+		</panel>
+		<panel>
+			<field name="currency"/>
 		</panel>
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>

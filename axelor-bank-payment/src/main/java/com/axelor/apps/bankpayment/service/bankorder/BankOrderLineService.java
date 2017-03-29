@@ -223,6 +223,14 @@ public class BankOrderLineService {
 			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
 				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
 			}
+			//filter on the currency if it is set in file format and in the bankdetails
+			//and if the bankOrder is multicurrency
+			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
+			if (!bankOrder.getIsMultiCurrency() &&
+				bankOrder.getBankOrderFileFormat().getCurrency() != null) {
+				String fileFormatCurrencyId = bankOrder.getBankOrderFileFormat().getCurrency().getId().toString();
+				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
+			}
 		}
 		return domain;
 	}
@@ -244,6 +252,7 @@ public class BankOrderLineService {
 				}
 			}
 		}
+		if (candidateBankDetails == null) { return null; }
 
 		//filter on the result from bankPartner if the option is active.
 		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
@@ -260,16 +269,17 @@ public class BankOrderLineService {
 
 		//filter on the bank details identifier type from the bank order file format
 		if (bankOrder.getBankOrderFileFormat() != null) {
-			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
-			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
-			    String[] identifiers = acceptedIdentifiers.split(",");
-			    int i = 0;
-			    while (i < identifiers.length && candidateBankDetails.getBank().getBankDetailsTypeSelect() != Integer.parseInt(identifiers[i])) {
-			    	i++;
-				}
-				if (i == identifiers.length) {
-			    	return null;
-				}
+			if(!Beans.get(BankOrderService.class)
+				.checkBankDetailsTypeCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat())) {
+				return null;
+			}
+		}
+
+		//filter on the currency if the bank order is not multicurrency
+		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderFileFormat() != null) {
+			if (!Beans.get(BankOrderService.class)
+				.checkBankDetailsCurrencyCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat())) {
+			    return null;
 			}
 		}
 		return candidateBankDetails;
