@@ -467,11 +467,11 @@
 		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setVisibleDuration"/>
 	</action-method>
 	
-	<action-method name="action-method-project-task-compute-progress">
+	<action-method name="action-method-project-task-compute-progress" if-module="axelor-business-project">
 		<call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="computeProgress"/>
 	</action-method>
 	
-	<action-method name="action-method-project-task-compute-duration-fromchildren">
+	<action-method name="action-method-project-task-compute-duration-fromchildren" if-module="axelor-business-project">
 		<call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="computeDurationFromChildren"/>
 	</action-method>
 	
