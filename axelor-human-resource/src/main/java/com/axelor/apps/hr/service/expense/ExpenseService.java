@@ -79,5 +79,6 @@ public interface ExpenseService  {
 	
 	public BigDecimal computePersonalExpenseAmount(Expense expense);
 	public BigDecimal computeAdvanceAmount(Expense expense);
-	
+
+	public void setDraftSequence(Expense expense);
 }

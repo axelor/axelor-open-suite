@@ -29,6 +29,9 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.google.common.base.Strings;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
@@ -336,6 +339,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 		moveService.getMoveValidateService().validateMove(move);
 
+		HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(expense.getCompany());
+		setExpenseId(expense, hrConfig.getExpenseSequence());
+
 		expense.setMove(move);
 		expense.setVentilated(true);
 		expenseRepository.save(expense);
@@ -529,5 +535,24 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		
 		return advanceAmount;
 	}
-	
+
+	public void setDraftSequence(Expense expense)  {
+		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseId()))  {
+			expense.setExpenseId(getDraftSequence(expense));
+		}
+	}
+
+	private String getDraftSequence(Expense expense)  {
+		return "*" + expense.getId();
+	}
+
+	private void setExpenseId(Expense expense, Sequence sequence) throws AxelorException {
+		if (!Strings.isNullOrEmpty(expense.getExpenseId()) && !expense.getExpenseId().contains("*")) { return; }
+
+		expense.setExpenseId(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
+
+		if (expense.getExpenseId() != null) { return; }
+
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
+	}
 }
