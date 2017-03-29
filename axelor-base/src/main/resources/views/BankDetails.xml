@@ -17,6 +17,7 @@
 			<field name="ownerName" />
 		</panel>
         <panel>
+			<field name="label"/>
 			<field name="currency"/>
 		</panel>
 		<panel name="iban" title="IBAN">
@@ -40,6 +41,7 @@
 			<field name="ownerName" />
 		</panel>
 		<panel>
+            <field name="label"/>
 			<field name="currency"/>
 		</panel>
 		<panel name="iban" title="IBAN">
