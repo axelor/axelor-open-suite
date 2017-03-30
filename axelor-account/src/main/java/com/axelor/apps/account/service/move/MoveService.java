@@ -122,9 +122,7 @@ public class MoveService {
 
 				boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
-				boolean consolidate = moveToolService.toDoConsolidate();
-
-				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer));
+				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, journal.getIsInvoiceMoveConsolidated(), isPurchase, isDebitCustomer));
 
 				moveRepository.save(move);
 

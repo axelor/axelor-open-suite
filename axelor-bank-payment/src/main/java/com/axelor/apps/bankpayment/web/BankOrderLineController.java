@@ -45,7 +45,7 @@ public class BankOrderLineController {
         }
         else {
             response.setAttr("receiverBankDetails","domain", domain);
-        }
+       }
     }
 
     public void fillBankDetail(ActionRequest request, ActionResponse response) {

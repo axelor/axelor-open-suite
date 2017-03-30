@@ -79,11 +79,6 @@ public class MoveToolService {
 	}
 
 
-	public boolean toDoConsolidate()  {
-		return generalService.getGeneral().getIsInvoiceMoveConsolidated();
-	}
-
-
 	/**
 	 *
 	 * @param invoice
