@@ -14,7 +14,6 @@
 	    <view type="form" name="project-form"/>
 	    <view type="calendar" name="project-calendar"/>
 	    <view type="gantt" name="project-gantt"/>
-	    <domain>self.typeSelect = 'project'</domain>
 	</action-view>
 	
 	<!--  Team Apps -->
@@ -25,7 +24,7 @@
 	</action-view>
 	
 	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks"/>
-	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.apps.project.db.Task">
+	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="tasks-grid"/>
 		<view type="form" name="tasks-form"/>
 	</action-view>
