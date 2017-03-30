@@ -21,6 +21,7 @@
 			</field>
 	
 			<field name="bankAddress"/>
+			<field name="bankDetailsTypeSelect"/>
 		</panel>
 	
 		<panel title="Details" colSpan="12" readonly="true">

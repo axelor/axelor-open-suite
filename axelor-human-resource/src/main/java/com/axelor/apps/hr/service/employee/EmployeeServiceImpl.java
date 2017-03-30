@@ -79,15 +79,20 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			timePref = employee.getTimeLoggingPreferenceSelect();
 			dailyWorkHrs = employee.getDailyWorkHours();
 		}
-		else {
+		if (timePref ==  null) {
 			timePref = generalService.getGeneral().getTimeLoggingPreferenceSelect();
 		}
+		
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
 			dailyWorkHrs = generalService.getGeneral().getDailyWorkHours();
 		}
 
 		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
-
+		
+		if (timePref ==  null) {
+			return duration;
+		}
+		
 		if(toHours)  {
 			if(timePref.equals("days"))  {
 				duration = duration.multiply(dailyWorkHrs);
