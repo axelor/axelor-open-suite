@@ -10,7 +10,12 @@
   
     <string name="fullName" title="Name" search="code,bankName"/>
   
+<<<<<<< HEAD
     <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true"/>
+=======
+    <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true" selection="base.bank.bank.details.type.select" default="1"/>
+    <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true" unique="true"/>
+>>>>>>> cbc75df9441f8471bb0ff2555c736b93cd676158
     <string name="bankName" title="Bank Name" max="255"/>
     
     <string name="businessPartyPrefix" title="Business Party Prefix (Bank Code)" min="4" max="4"/>
@@ -21,8 +26,18 @@
     <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
     
     <one-to-many name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" mappedBy="bank"/>
+<<<<<<< HEAD
     
     <unique-constraint columns="code,bankAddress"/>
+=======
+
+    <extra-code><![CDATA[
+      //BANK DETAILS IDENTIFIER TYPE SELECT
+      public static final int BANK_IDENTIFIER_TYPE_OTHER = 0;
+      public static final int BANK_IDENTIFIER_TYPE_IBAN = 1;
+      public static final int BANK_IDENTIFIER_TYPE_NATIONAL = 2;
+    ]]></extra-code>
+>>>>>>> cbc75df9441f8471bb0ff2555c736b93cd676158
   </entity>
 </domain-models>
 
