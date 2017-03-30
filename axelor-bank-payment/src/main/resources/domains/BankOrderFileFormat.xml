@@ -13,6 +13,8 @@
 	<string name="name" title="Name"/>
 	<string name="description" title="Description" large="true" multiline="true"/>
 	<boolean name="fileGenerationSupported" title="File generation supported"/>
+	  
+	<string name="bankDetailsTypeSelect" title="Accepted Bank Details Identifiers" selection="base.bank.bank.details.type.select"/>
 	
 	
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>

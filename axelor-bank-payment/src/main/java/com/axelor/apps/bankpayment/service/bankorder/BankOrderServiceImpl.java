@@ -30,6 +30,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import com.axelor.apps.bankpayment.db.*;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Currency;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -326,6 +327,87 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		else {
 			return null;
 		}
+	}
+
+	@Override
+	public String createDomainForBankDetails(BankOrder bankOrder) {
+		String domain = "";
+		if (bankOrder.getSenderCompany() != null) {
+
+			String bankDetailsIds = bankOrderLineService.getIdStringListFromList(bankOrder.getSenderCompany().getBankDetailsSet());
+
+			if(bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
+				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
+				bankDetailsIds += bankOrder.getSenderCompany()
+						.getDefaultBankDetails().getId().toString();
+			}
+			domain = "self.id IN(" + bankDetailsIds + ")";
+
+		}
+
+		if (domain.equals("")) {
+			return domain;
+		}
+		//filter on the bank details identifier type from the bank order file format
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
+			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
+				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
+			}
+			//filter on the currency if it is set in file format and in the bankdetails
+			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
+			if (bankOrder.getBankOrderFileFormat().getCurrency() != null) {
+				String fileFormatCurrencyId = bankOrder.getBankOrderFileFormat().getCurrency().getId().toString();
+				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
+			}
+		}
+		return domain;
+	}
+
+	@Override
+	public BankDetails getDefaultBankDetails(BankOrder bankOrder) {
+	    BankDetails candidateBankDetails;
+	    if (bankOrder.getSenderCompany() == null) {return null;}
+
+	    candidateBankDetails = bankOrder.getSenderCompany().getDefaultBankDetails();
+		if (candidateBankDetails == null) { return null; }
+
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			if (!this.checkBankDetailsTypeCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat()) ||
+				!this.checkBankDetailsCurrencyCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat())) {
+				return null;
+			}
+		}
+
+		return candidateBankDetails;
+	}
+
+	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat) {
+		//filter on the bank details identifier type from the bank order file format
+		String acceptedIdentifiers = bankOrderFileFormat.getBankDetailsTypeSelect();
+		if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
+			String[] identifiers = acceptedIdentifiers.replaceAll("\\s","").split(",");
+			int i = 0;
+			while (i < identifiers.length && bankDetails.getBank().getBankDetailsTypeSelect() != Integer.parseInt(identifiers[i])) {
+				i++;
+			}
+			if (i == identifiers.length) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat) {
+		//filter on the currency if it is set in file format
+        if (bankOrderFileFormat.getCurrency() != null) {
+		    if (bankDetails.getCurrency() != null &&
+				bankDetails.getCurrency() != bankOrderFileFormat.getCurrency()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {

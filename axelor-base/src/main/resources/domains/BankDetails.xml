@@ -11,12 +11,14 @@
     <many-to-one name="partner" ref="Partner" title="Partner"/>
     <string name="ownerName" title="Owner name" max="255" help="true"/>
     <many-to-one name="bank" title="BIC (Bank Identifier)" help="true" ref="com.axelor.apps.base.db.Bank"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <string name="iban" title="IBAN" help="true"/>
     <string name="bankCode" title="Bank Code" max="255" help="true"/>
     <string name="sortCode" title="Code Guichet" max="255" help="true"/>
     <string name="accountNbr" title="Account Number" max="255" />
     <string name="bbanKey" title="BBan Key" max="255" help="true"/>
     <string name="ibanBic" title="IBAN + BIC" max="255"/>
+    <string name="label" title="Label"/>
     <boolean name="isDefault" title="Default" />
     <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
         <![CDATA[

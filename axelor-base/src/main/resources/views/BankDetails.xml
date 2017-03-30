@@ -16,13 +16,18 @@
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
+        <panel>
+			<field name="label"/>
+			<field name="currency"/>
+		</panel>
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bank" canNew="true" form-view="bank-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
-		<panel name="bban" title="BBAN">
+		<panel name="bban" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">
+			<field name="bank.country.alpha2Code" hidden="true"/>
 			<field name="bankCode" colSpan="3" />
 			<field name="sortCode" colSpan="3"/>
 			<field name="accountNbr" colSpan="3"/>
@@ -36,13 +41,18 @@
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
-		<panel name="iban" title="IBAN">
+		<panel>
+            <field name="label"/>
+			<field name="currency"/>
+		</panel>
+		<panel name="iban" title="IBAN" hideIf="bank.country.alpha2Code != 'FR'">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bank" canNew="true" form-view="bank-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
 		<panel name="bban" title="BBAN">
+			<field name="bank.country.alpha2Code" hidden="true"/>
 			<field name="bankCode" colSpan="3" />
 			<field name="sortCode" colSpan="3"/>
 			<field name="accountNbr" colSpan="3"/>
