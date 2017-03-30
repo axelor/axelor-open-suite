@@ -57,8 +57,8 @@
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
 			<field name="receiptState" css="label-bold bold" showIf="statusSelect == 3 || statusSelect == 4" /> 
-			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-gri"/>
-			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3"/>
+			<field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber" if="__config__.general.getManagePurchaseOrderVersion()"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
@@ -66,12 +66,12 @@
 		</panel>
 		
 		<panel name="supplierInformation" title="Supplier information">
-			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" readonlyIf="statusSelect >= 3" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
 			<field name="externalReference"/>
-	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" form-view="price-list-form" grid-view="price-list-grid" /> 
+	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" />
 		</panel>
 		<panel name="delivery" title="Delivery" colSpan="12">
 			<field name="deliveryDate" colSpan="3"/>
