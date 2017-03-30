@@ -15,8 +15,8 @@
     	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getLocation"/>
     </action-method>
     
-    <action-method name="action-purchase-order-method-clear-purchase-order">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="clearPurchaseOrder"/>
+    <action-method name="action-purchase-order-method-cancel-receipt">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="cancelReceipt"/>
     </action-method>
 	
 </object-views>
