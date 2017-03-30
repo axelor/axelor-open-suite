@@ -22,7 +22,7 @@
 			<field name="fileGenerationSupported"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
-		<panel name="specificAttributes" title="Specific attributes" hidden="true">
+		<panel name="specificAttributes" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'">
 			<field name="qualifyingOfDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 			<field name="isMultiDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 			<field name="isMultiCurrency" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
