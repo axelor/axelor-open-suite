@@ -343,7 +343,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	
 	
 	/**
-	 * Method to create a recipient record for international transfer AFB160
+	 * Method to create a recipient record for national transfer AFB160
 	 * @param bankOrderLine
 	 * @return
 	 * @throws AxelorException

@@ -31,9 +31,13 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.service.bankorder.file.cfonb.CfonbToolService;
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -123,6 +127,9 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	protected String createSenderRecord() throws AxelorException  {
 
 		try  {
+			
+			Bank senderBank = senderBankDetails.getBank();
+			
 			// Zone 1 : Code enregistrement
 			String senderRecord = cfonbToolService.createZone("1", "03", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
@@ -151,25 +158,25 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("9", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone 10 : Type identifiant du compte à débiter à la banque d'éxécution ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
-			senderRecord += cfonbToolService.createZone("10", "1", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1);
+			senderRecord += cfonbToolService.createZone("10", senderBank.getBankDetailsTypeSelect(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1);
 			
 			// Zone 11 : Identifiant du compte à débiter à la banque d'éxécution 
-			senderRecord += cfonbToolService.createZone("11", senderBankDetails.getIban(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
+			senderRecord += cfonbToolService.createZone("11", getIban(senderBankDetails), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 12 : Code devise du compte à débiter à la banque d'éxécution 
-			senderRecord += cfonbToolService.createZone("12", senderCompany.getCurrency().getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone("12", senderBankDetails.getCurrency().getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 13 : Identification du contrat/client 
-			senderRecord += cfonbToolService.createZone("13", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); // TODO
+			senderRecord += cfonbToolService.createZone("13", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); 
 			
 			// Zone 14 : Type identifiant du compte émetteur ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
-			senderRecord += cfonbToolService.createZone("14", "1", cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1); //TODO
+			senderRecord += cfonbToolService.createZone("14", senderBank.getBankDetailsTypeSelect(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 15 : Identifiant du compte émetteur 
-			senderRecord += cfonbToolService.createZone("15", senderBankDetails.getIban(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
+			senderRecord += cfonbToolService.createZone("15", getIban(senderBankDetails), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 16 : Code devise du compte émetteur (Norme ISO)
-			senderRecord += cfonbToolService.createZone("16", senderCompany.getCurrency().getCode(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone("16", senderBankDetails.getCurrency().getCode(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 17-1 : Zone non utilisée 
 			senderRecord += cfonbToolService.createZone("17-1", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4);
@@ -226,6 +233,42 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	
 	
 	/**
+	 * 3.1.2 Identification des comptes
+     * Les zones "compte à débiter" et "compte du bénéficiaire" doivent respecter les règles suivantes :
+     * lorsque la zone "type identifiant de compte" est renseignée, elle prend les valeurs :
+     * "1" si le compte est identifié par un IBAN lequel doit être cadré à gauche,
+     * "2" si le compte est identifié par un identifiant national, lequel doit alors être précédé de quatre blancs,
+  	 * "0" dans les autres cas ; l'identifiant doit alors également être précédé de quatre blancs.
+	 * @param bankDetails
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public String getIban(BankDetails bankDetails) throws AxelorException  {
+		
+		String iban = bankDetails.getIban();
+		
+		if(Strings.isNullOrEmpty(iban))  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_EMPTY_IBAN), bankDetails.getOwnerName(), bankOrderSeq), IException.MISSING_FIELD);
+		}
+		
+		switch (bankDetails.getBank().getBankDetailsTypeSelect()) {
+		case BankRepository.BANK_IDENTIFIER_TYPE_IBAN:
+			return StringTool.fillStringLeft(bankDetails.getIban(), ' ', 34);
+		
+		case BankRepository.BANK_IDENTIFIER_TYPE_NATIONAL:
+			return StringTool.fillStringLeft(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+			
+		case BankRepository.BANK_IDENTIFIER_TYPE_OTHER:
+			return StringTool.fillStringLeft(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+		
+		default:
+			return StringTool.fillStringLeft(bankDetails.getIban(), ' ', 34);
+		}
+		
+	}
+	
+	
+	/**
 	 * Indice type de remises :
  	 * "1" : mono date et mono devise : La date et la devise sont prises dans l'enregistrement "En-tête".
  	 * "2" : mono date et multi devises : La date est prise dans l'enregistrement "En-tête" et la "devise" dans les enregistrements "Détail de l’opération".
@@ -257,6 +300,8 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	protected String createDetailRecord(BankOrderLine bankOrderLine) throws AxelorException   {
  
 		try {
+			BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+			
 			// Zone 1 : Code enregistrement
 			String detailRecord = cfonbToolService.createZone("1", "04", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 		
@@ -267,13 +312,13 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Type identifiant du compte du bénéficiaire ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
-			detailRecord += cfonbToolService.createZone("4", "1", cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
+			detailRecord += cfonbToolService.createZone("4", receiverBankDetails.getBank().getBankDetailsTypeSelect(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 5 : Identifiant du compte du bénéficiaire
-			detailRecord += cfonbToolService.createZone("5", bankOrderLine.getReceiverBankDetails().getIban(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);  
+			detailRecord += cfonbToolService.createZone("5", getIban(receiverBankDetails), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);  
 			
 			// Zone 6 : Nom du bénéficiaire
-			detailRecord += cfonbToolService.createZone("6", bankOrderLine.getPartner().getFullName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35); 
+			detailRecord += cfonbToolService.createZone("6", receiverBankDetails.getOwnerName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35); 
 			
 			// Zone 7 : Adresse du bénéficiaire (Obligatoire si mode de règlement par chèque (zone 18 = "1" ou "2") 
 			// Si le nom du bénéficiaire contient plus de 35 caractères, utiliser le début de la première zone pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
@@ -301,7 +346,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("13", bankOrderLine.getBankOrderAmount(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 14);
 			
 			// Zone 14 : Nombre de décimales 
-			detailRecord += cfonbToolService.createZone("14", "2", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1);
+			detailRecord += cfonbToolService.createZone("14", "2", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1); //TODO
 			
 			// Zone 15 : Zone réservée 
 			detailRecord += cfonbToolService.createZone("15", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
@@ -373,6 +418,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 		try {
 		
 			BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+			Bank bank = receiverBankDetails.getBank();
 			
 			// Zone 1 : Code enregistrement
 			String totalRecord = cfonbToolService.createZone("1", "05", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
@@ -385,18 +431,25 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			
 			// Zone 4 : Nom de la banque du bénéficiaire (A ne renseigner que si le code BIC de la banque du bénéficiaire est absent. 
 			// Si cette zone est renseignée ainsi que le code BIC, elle est ignorée par la banque sauf en cas d'anomalie sur le code BIC.)
-			totalRecord += cfonbToolService.createZone("4", receiverBankDetails.getBank().getBankAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("4", bank.getBankName(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
 			
 			// Zone 5 : Localisation de l'agence (Si le nom de la banque contient plus de 35 caractères, utiliser le début de la première zone 
 			// pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
-			totalRecord += cfonbToolService.createZone("5", "", cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);  //TODO update bank details model
+			String bankAddress = "";
+			if(bank.getBankName().length() > 35)  {
+				bankAddress = bank.getBankName().substring(35) + " ";
+			}
+			bankAddress += bank.getBankAddress();
+			totalRecord += cfonbToolService.createZone("5", bankAddress, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);  
 			
 			// Zone 6 : Code BIC de la banque du bénéficiaire (Si ce code est renseigné, c'est lui qui est utilisé pour identifier la banque du bénéficiaire. 
 			// C'est cette option qui est préconisée pour identifier la banque du bénéficiaire. )
-			totalRecord += cfonbToolService.createZone("6", receiverBankDetails.getBank().getCode(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
+			totalRecord += cfonbToolService.createZone("6", bank.getCode(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone 7 : Code pays de la banque du bénéficiaire (Norme ISO.)
-			totalRecord += cfonbToolService.createZone("7", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);  //TODO update bank details model
+			String countryCode = "";
+			if(bank.getCountry() != null)  {  countryCode = bank.getCountry().getAlpha2Code();  }
+			totalRecord += cfonbToolService.createZone("7", countryCode, cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2); 
 			
 			// Zone 8 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("8", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 157);
@@ -444,7 +497,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("4-4", bankOrderLine.getPaymentReasonLine4(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
 			
 			// Zone 5 : Zone non utilisée 
-			totalRecord += cfonbToolService.createZone("5", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);  //TODO update bank details model
+			totalRecord += cfonbToolService.createZone("5", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1); 
 			
 			// Zone 6 : Zone non utilisée 
 			totalRecord += cfonbToolService.createZone("6", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);
@@ -558,16 +611,16 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("8", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone 9 : Type identifiant du compte à débiter à la banque d'éxécution ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
-			totalRecord += cfonbToolService.createZone("9", "1", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1);
+			totalRecord += cfonbToolService.createZone("9", senderBankDetails.getBank().getBankDetailsTypeSelect(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1);
 			
 			// Zone 10 : Identifiant du compte à débiter à la banque d'éxécution 
-			totalRecord += cfonbToolService.createZone("10", senderBankDetails.getIban(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
+			totalRecord += cfonbToolService.createZone("10", getIban(senderBankDetails), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 11 : Code devise du compte à débiter à la banque d'éxécution 
 			totalRecord += cfonbToolService.createZone("11", senderCompany.getCurrency().getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 12 : Identification du contrat/client 
-			totalRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);  // TODO
+			totalRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); 
 			
 			// Zone 13 : TOTAL DE CONTROLE 
 			totalRecord += cfonbToolService.createZone("13", arithmeticTotal, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 18);
