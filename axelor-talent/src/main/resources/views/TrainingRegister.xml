@@ -56,19 +56,19 @@
 	</action-attrs>
 	
 	<action-method name="action-training-register-method-plan">
-		<call class="com.axelor.apps.talent.controller.TrainingRegisterController" method="plan"/>
+		<call class="com.axelor.apps.talent.web.TrainingRegisterController" method="plan"/>
 	</action-method>
 	
 	<action-method name="action-training-register-method-complete">
-		<call class="com.axelor.apps.talent.controller.TrainingRegisterController" method="complete"/>
+		<call class="com.axelor.apps.talent.web.TrainingRegisterController" method="complete"/>
 	</action-method>
 	
 	<action-method name="action-training-register-method-cancel">
-		<call class="com.axelor.apps.talent.controller.TrainingRegisterController" method="cancel"/>
+		<call class="com.axelor.apps.talent.web.TrainingRegisterController" method="cancel"/>
 	</action-method>
 	
 	<action-method name="action-training-register-update-old-rating">
-		<call class="com.axelor.apps.talent.controller.TrainingRegisterController" method="updateOldRating"/>
+		<call class="com.axelor.apps.talent.web.TrainingRegisterController" method="updateOldRating"/>
 	</action-method>
 	
 </object-views>

@@ -7,7 +7,7 @@
 	<entity name="JobPosition" lang="java" cachable="true">
 		<string name="jobTitle" title="Job title" required="true"  namecolumn="true"/>
 		<string name="jobReference" title="Job reference" readonly="true"/>
-		<many-to-one name="department" ref="com.axelor.apps.base.db.Department" title="Department" />
+		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department" />
 		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Responsible" />
 		<many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />
 		<integer name="experienceSelect" title="Experience" selection="job.position.experience.select" />

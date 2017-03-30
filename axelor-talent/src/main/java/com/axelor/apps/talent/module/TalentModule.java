@@ -18,10 +18,14 @@
 package com.axelor.apps.talent.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.talent.db.repo.JobPositionRepository;
+import com.axelor.apps.talent.db.repo.JobPositionTalentRepository;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingRegisterTalentRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionTalentRepository;
+import com.axelor.apps.talent.service.JobApplicationService;
+import com.axelor.apps.talent.service.JobApplicationServiceImpl;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.apps.talent.service.TrainingRegisterServiceImpl;
 import com.axelor.apps.talent.service.TrainingSessionService;
@@ -36,6 +40,8 @@ public class TalentModule extends AxelorModule {
 		bind(TrainingRegisterService.class).to(TrainingRegisterServiceImpl.class);
 		bind(TrainingSessionService.class).to(TrainingSessionServiceImpl.class);
 		bind(TrainingSessionRepository.class).to(TrainingSessionTalentRepository.class);
+		bind(JobPositionRepository.class).to(JobPositionTalentRepository.class);
+		bind(JobApplicationService.class).to(JobApplicationServiceImpl.class);
 	}
 
 }

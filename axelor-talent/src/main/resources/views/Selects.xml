@@ -57,7 +57,7 @@
 		<option value="3">Hired</option>
 		<option value="4">Application rejected</option>
 		<option value="5">Offer rejected</option>
-		<option value="6">Cancel/</option>
+		<option value="6">Cancel</option>
 	</selection>
 	
 	<selection name="crm.event.related.to.select" id="talent.crm.event.related.to.select">
