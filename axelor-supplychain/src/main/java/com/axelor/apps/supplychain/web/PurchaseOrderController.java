@@ -92,11 +92,11 @@ public class PurchaseOrderController {
 	}
 
 
-	public void clearPurchaseOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-		purchaseOrderServiceSupplychain.clearPurchaseOrder(purchaseOrder);
+		purchaseOrderServiceSupplychain.cancelReceipt(purchaseOrder);
 
 	}
 
