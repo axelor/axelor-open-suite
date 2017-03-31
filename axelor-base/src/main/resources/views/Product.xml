@@ -120,7 +120,6 @@
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
-				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
 	      			</panel>
@@ -337,7 +336,6 @@
 	</action-record>
     
     <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
     	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
     	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
     </action-attrs>
@@ -426,7 +424,7 @@
 			<domain>self.productVariantConfig != null</domain>
 		</filter>
 		<filter title="Raw Materials">
-			<domain>self.isRawMaterial = true</domain>
+			<domain>self.subTypeProductSelect = 3</domain>
 		</filter>
 		<filter title="Obsolete Products">
 			<domain>CURRENT_DATE &gt; self.endDate</domain>

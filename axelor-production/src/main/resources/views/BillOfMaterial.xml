@@ -5,7 +5,7 @@
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="fullName"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -23,7 +23,7 @@
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product"/>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
@@ -50,7 +50,7 @@
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
         <field name="priority" readonlyIf="isRawMaterial" width="20"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="isRawMaterial"/>
@@ -60,10 +60,11 @@
 
 
 	<form name="bill-of-material-line-form" title="Bill of material"
-		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
+		model="com.axelor.apps.production.db.BillOfMaterial"
+		onSave="action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-raw-material"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
@@ -117,6 +118,11 @@
  	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+
+	<action-group name="action-bill-of-material-group-product">
+		<action name="action-bill-of-material-attrs-product-raw-material"/>
+        <action name="action-bill-of-material-record-product"/>
+	</action-group>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
@@ -129,7 +135,6 @@
     	<field name="priority" expr="eval:__parent__?.billOfMaterialList?.max{ it.getPriority() }.getPriority() + 10"/>
     	<field name="isRawMaterial" expr="eval:true" />
     </action-record>
-    
     
     <action-record name="action-bill-of-material-record-product" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="unit" expr="eval: product?.unit"/>
@@ -166,7 +171,12 @@
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
-    
+
+	<action-attrs name="action-bill-of-material-attrs-product-raw-material">
+		<attribute name="value" for="isRawMaterial" expr="eval: true" if="product?.subTypeProductSelect == 3"/>
+		<attribute name="readonly" for="isRawMaterial" expr="eval: product?.subTypeProductSelect == 3"/>
+	</action-attrs>
+
 </object-views>
 
 
