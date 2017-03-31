@@ -63,7 +63,7 @@ public class ForecastService {
 					forecastGenerator.getForecastReason(), forecastGenerator.getComments(),
 					forecastGenerator.getRealizedSelect());
 			forecastGenerator.addForecastListItem(forecast);
-			itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
+			itDate = itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
 		}
 	}
 
