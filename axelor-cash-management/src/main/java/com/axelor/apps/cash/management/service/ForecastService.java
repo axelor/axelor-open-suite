@@ -18,6 +18,7 @@
 package com.axelor.apps.cash.management.service;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -44,12 +45,14 @@ public class ForecastService {
 
 		if (forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()) {
 			List<Forecast> forecastList = forecastGenerator.getForecastList();
-			for (Forecast forecast : forecastList) {
+			Iterator<Forecast> it = forecastList.iterator();
+			while (it.hasNext()) {
+				Forecast forecast = it.next();
 				if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_NO) {
-					forecastList.remove(forecast);
+					it.remove();
 				} else if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_AUTO
 						&& forecast.getEstimatedDate().isAfter(todayDate)) {
-					forecastList.remove(forecast);
+					it.remove();
 				}
 			}
 		}
