@@ -88,6 +88,7 @@ public class BankOrderController {
 			bankOrder = bankOrderRepo.find(bankOrder.getId());
 			if(bankOrder != null)  { 
 				if (bankOrder.getFileToSend() == null) {
+				    bankOrderService.checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
 					bankOrderService.checkLines(bankOrder);
 				}
 				bankOrderService.confirm(bankOrder);

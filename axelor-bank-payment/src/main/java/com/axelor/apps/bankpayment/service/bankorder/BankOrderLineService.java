@@ -154,23 +154,6 @@ public class BankOrderLineService {
 		
 	}
 
-	public void checkBankDetails(BankOrderLine bankOrderLine) throws AxelorException {
-	    BankDetails bankDetails = bankOrderLine.getBankOrder().getSenderBankDetails();
-	    if (bankDetails == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
-		}
-		EbicsPartner partner = Beans.get(EbicsPartnerRepository.class).all()
-				.filter("? MEMBER OF self.bankDetailsSet", bankDetails)
-				.fetchOne();
-	    if (partner.getFilterReceiverBD() &&
-			(partner.getOrderTypeSelect() == bankOrderLine.getBankOrder().getOrderTypeSelect())
-			) {
-			if (!partner.getReceiverBankDetailsSet().contains(bankOrderLine.getReceiverBankDetails())) {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN), IException.INCONSISTENCY);
-			}
-		}
-	}
-
 	public String createDomainForBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
 		String domain = "";
 		String bankDetailsIds = "";
@@ -204,6 +187,9 @@ public class BankOrderLineService {
 		}
 
 		domain = "self.id IN(" + bankDetailsIds + ")";
+
+		//filter the result on active bank details
+		domain += " AND self.active = true";
 
 		//filter on the result from bankPartner if the option is active.
 		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
@@ -252,7 +238,24 @@ public class BankOrderLineService {
 				}
 			}
 		}
-		if (candidateBankDetails == null) { return null; }
+		try {
+			checkBankDetails(candidateBankDetails, bankOrder);
+		} catch (AxelorException e) {
+			return null;
+		}
+
+		return candidateBankDetails;
+	}
+
+	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException {
+		if (bankDetails == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
+		}
+
+		//check if the bank details is active
+		if (!bankDetails.getActive()) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE), IException.INCONSISTENCY);
+		}
 
 		//filter on the result from bankPartner if the option is active.
 		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
@@ -262,27 +265,26 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 
-			if (!ebicsPartner.getReceiverBankDetailsSet().contains(candidateBankDetails)) {
-				return null;
+			if (!ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN), IException.INCONSISTENCY);
 			}
 		}
 
 		//filter on the bank details identifier type from the bank order file format
 		if (bankOrder.getBankOrderFileFormat() != null) {
 			if(!Beans.get(BankOrderService.class)
-				.checkBankDetailsTypeCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat())) {
-				return null;
+					.checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE), IException.INCONSISTENCY);
 			}
 		}
 
 		//filter on the currency if the bank order is not multicurrency
 		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderFileFormat() != null) {
 			if (!Beans.get(BankOrderService.class)
-				.checkBankDetailsCurrencyCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat())) {
-			    return null;
+					.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE), IException.INCONSISTENCY);
 			}
 		}
-		return candidateBankDetails;
 	}
 
 	public String getIdStringListFromList(Collection<BankDetails> bankDetailsList) {

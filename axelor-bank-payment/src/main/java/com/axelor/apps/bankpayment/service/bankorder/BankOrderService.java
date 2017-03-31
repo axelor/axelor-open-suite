@@ -72,6 +72,8 @@ public interface BankOrderService {
 
 	public BankDetails getDefaultBankDetails(BankOrder bankOrder);
 
+	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException;
+
 	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
 
 	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);

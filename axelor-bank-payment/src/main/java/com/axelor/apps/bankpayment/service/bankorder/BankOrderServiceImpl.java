@@ -201,7 +201,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			
 			bankOrderLineService.checkPreconditions(bankOrderLine);
 			totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
-			bankOrderLineService.checkBankDetails(bankOrderLine);
+			bankOrderLineService.checkBankDetails(bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder());
 
 		}
 		if (!totalAmount.equals(arithmeticTotal))  {
@@ -348,6 +348,9 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		if (domain.equals("")) {
 			return domain;
 		}
+
+		//filter the result on active bank details
+		domain += " AND self.active = true";
 		//filter on the bank details identifier type from the bank order file format
 		if (bankOrder.getBankOrderFileFormat() != null) {
 			String acceptedIdentifiers = bankOrder.getBankOrderFileFormat().getBankDetailsTypeSelect();
@@ -370,16 +373,33 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	    if (bankOrder.getSenderCompany() == null) {return null;}
 
 	    candidateBankDetails = bankOrder.getSenderCompany().getDefaultBankDetails();
-		if (candidateBankDetails == null) { return null; }
 
-		if (bankOrder.getBankOrderFileFormat() != null) {
-			if (!this.checkBankDetailsTypeCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat()) ||
-				!this.checkBankDetailsCurrencyCompatible(candidateBankDetails, bankOrder.getBankOrderFileFormat())) {
-				return null;
-			}
+	    try {
+	    	this.checkBankDetails(candidateBankDetails, bankOrder);
+		}catch (AxelorException e) {
+	    	return null;
 		}
 
 		return candidateBankDetails;
+	}
+
+	@Override
+	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException {
+		if (bankDetails == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
+		}
+		if (!bankDetails.getActive()) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_NOT_ACTIVE), IException.INCONSISTENCY);
+		}
+
+		if (bankOrder.getBankOrderFileFormat() != null) {
+			if (!this.checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE), IException.INCONSISTENCY);
+			}
+			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE), IException.INCONSISTENCY);
+			}
+		}
 	}
 
 	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat) {

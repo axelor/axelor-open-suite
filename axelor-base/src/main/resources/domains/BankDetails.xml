@@ -42,6 +42,7 @@
             return str;
         ]]>
     </string>
+    <boolean name="active" title="Active" default="true"/>
 
 	<finder-method name="findDefaultByPartner" using="partner,isDefault"/>	
 
