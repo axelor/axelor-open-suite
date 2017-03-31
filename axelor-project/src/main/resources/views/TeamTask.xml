@@ -6,9 +6,8 @@
 	<grid name="tasks-grid" title="Tasks" model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
 		<field name="description"/>
-		<field name="sequence"/>
-		<field name="fromDate"/>
-		<field name="toDate"/>
+		<field name="taskDate"/>
+		<field name="taskDeadline"/>
 		<field name="status"/>
 		<field name="priority"/>
 		<field name="category"/>
