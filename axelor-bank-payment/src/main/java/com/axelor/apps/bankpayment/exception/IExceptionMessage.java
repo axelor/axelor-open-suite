@@ -73,8 +73,10 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
 	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
 	static final String BANK_ORDER_COMPANY_NO_SEQUENCE = /*$$(*/ "The company %s does not have bank order sequence" /*)*/;
-	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/ "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The bank details is inactive." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in file format." /*)*/;
 
 	
 	/**
@@ -85,7 +87,12 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_LINE_PARTNER_MISSING = /*$$(*/ "Please select a partner for the bank order lines inserted" /*)*/;
 	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
 	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
-	
+	static final String BANK_ORDER_LINE_BANK_DETAILS_MISSING = /*$$(*/ "Please fill the receiver bank details" /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The receiver bank details is inactive." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details currency is not compatible with the currency in file format." /*)*/;
+
 	
 	/**
 	 * BankOrder merge

@@ -19,7 +19,7 @@
 		<panel name="reimbursementDetails" title="Reimbursement details">
 			<field name="amountToReimburse"/>
 			<field name="amountReimbursed"/>
-			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="bankDetails" domain="self.active = true" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 		
 		<panel name="reason" title="Reason">
