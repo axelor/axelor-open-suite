@@ -16,7 +16,7 @@
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  		<field name="toJustifyLeaveReason" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
-	  		<spacer colSpan="6"/>
+			<field name="expenseSequence" domain="self.code = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 	  	</panel>
 	  	<panel name="lunchVoucher" title="Lunch Vouchers">
 	  		<field name="lunchVoucherWageShare"/>

@@ -6,7 +6,9 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Expense" cachable="true">
-      
+
+      <string name="expenseSeq"  title="Expense N°" readonly="true"/>
+
       <date name="sentDate" title="Sent Date" readonly="true"  />
       <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
       <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" readonly="true"/>
