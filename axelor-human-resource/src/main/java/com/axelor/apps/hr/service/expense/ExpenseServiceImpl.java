@@ -340,7 +340,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		moveService.getMoveValidateService().validateMove(move);
 
 		HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(expense.getCompany());
-		setExpenseId(expense, hrConfig.getExpenseSequence());
+		setExpenseSeq(expense, hrConfig.getExpenseSequence());
 
 		expense.setMove(move);
 		expense.setVentilated(true);
@@ -537,8 +537,8 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	}
 
 	public void setDraftSequence(Expense expense)  {
-		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseId()))  {
-			expense.setExpenseId(getDraftSequence(expense));
+		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq()))  {
+			expense.setExpenseSeq(getDraftSequence(expense));
 		}
 	}
 
@@ -546,12 +546,12 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		return "*" + expense.getId();
 	}
 
-	private void setExpenseId(Expense expense, Sequence sequence) throws AxelorException {
-		if (!Strings.isNullOrEmpty(expense.getExpenseId()) && !expense.getExpenseId().contains("*")) { return; }
+	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
+		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) { return; }
 
-		expense.setExpenseId(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
+		expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
 
-		if (expense.getExpenseId() != null) { return; }
+		if (expense.getExpenseSeq() != null) { return; }
 
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 	}

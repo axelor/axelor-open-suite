@@ -7,7 +7,7 @@
 
   <entity name="Expense" cachable="true">
 
-      <string name="expenseId"  title="Expense N°" readonly="true"/>
+      <string name="expenseSeq"  title="Expense N°" readonly="true"/>
 
       <date name="sentDate" title="Sent Date" readonly="true"  />
       <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
