@@ -198,7 +198,7 @@ public class ExcelWriter implements DataWriter {
 	
 	private void setColumnWidth() {
 		
-		Iterator<Sheet> sheets = workBook.iterator();
+		Iterator<XSSFSheet> sheets = workBook.iterator();
 
 		while (sheets.hasNext()) {
 			Sheet sheet = sheets.next();
@@ -213,7 +213,7 @@ public class ExcelWriter implements DataWriter {
 	
 	private void removeBlankSheets() {
 		
-		Iterator<Sheet> sheetIter = workBook.iterator();
+		Iterator<XSSFSheet> sheetIter = workBook.iterator();
 		sheetIter.next();
 		
 		List<String> removeSheets = new ArrayList<String>();
