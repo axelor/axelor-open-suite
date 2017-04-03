@@ -43,7 +43,7 @@ public class MoveSequenceService {
 	public void setDraftSequence(Move move)  {		
 			
 		if (move.getId() != null && Strings.isNullOrEmpty(move.getReference())
-			&& move.getStatusSelect() == MoveRepository.STATUS_DRAFT)  {		
+			&& move.getStatusSelect() == MoveRepository.STATUS_NEW)  {
 			move.setReference(this.getDraftSequence(move));		
 		}		
 		
