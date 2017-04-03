@@ -79,7 +79,6 @@
         			<field name="hrManager" colSpan="4"/>
         			<field name="exportCode" />
       			</panel>
-	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 	       	<panel name="lunchVoucher" title="Lunch Vouchers">
@@ -91,6 +90,7 @@
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
 	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
 	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
+       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
         </panel-tabs>
 	</form>
 	
