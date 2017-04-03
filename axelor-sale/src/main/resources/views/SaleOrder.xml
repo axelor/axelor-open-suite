@@ -436,7 +436,7 @@
 	  </panel-tabs>
 	</form>
 	
-	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cardWidth="300px"  css="rect-image" orderBy="-orderDate">
+	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
