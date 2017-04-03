@@ -8,7 +8,8 @@
   <entity name="ProjectTask">
 
 	  <one-to-many name="timesheetLineList" orphanRemoval="false" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="projectTask"/>
-	          
+      <boolean name="imputable"/>
+
   </entity>
   
 </domain-models>
