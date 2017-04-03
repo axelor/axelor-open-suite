@@ -51,7 +51,7 @@
 	    	<button name="confirmContinueButton" onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-group-validate" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-timesheet-group-refuse" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" showIf="statusSelect == 1" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 	    	<button name="generateLinesButton" showIf="statusSelect == 1" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
@@ -197,6 +197,7 @@
 	
 	<action-attrs name="action-timesheet-attrs-buttons">
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="cancelButton" expr="eval: !(statusSelect == 1) &amp;&amp; !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 		<attribute name="hidden" for="generateLinesButton" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
