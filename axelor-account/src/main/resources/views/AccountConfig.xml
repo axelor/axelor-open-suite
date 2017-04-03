@@ -23,6 +23,7 @@
 	   	  <field name="generateMoveForInvoicePayment"/>
   	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
+			<field name="accountingDaybook"/>
     
 		</panel>
 		

@@ -44,7 +44,8 @@
 		<panel sidebar="true" name="action" title="Action" itemSpan="6">
 			<field name="statusSelect" readonly="true"/>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
-			<button name="validate" title="Validate"   onClick="action-group-account-move-validate-click" hideIf="statusSelect == 3"/>
+			<button name="validate" title="Validate" onClick="action-group-account-move-validate-click" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
+			<button name="account" title="Account" onClick="action-group-account-move-account-click" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 			<field name="getInfoFromFirstMoveLineOk" hideIf="statusSelect == 3"/>
 		</panel>
 		
@@ -83,6 +84,12 @@
 		<action name="action-move-method-validate"/>
 		<action name="save"/>
 	</action-group>
+
+	<action-group name="action-group-account-move-account-click">
+		<action name="save"/>
+		<action name="action-move-method-account"/>
+		<action name="save"/>
+	</action-group>
 	   
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
@@ -107,7 +114,11 @@
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
 	</action-method>
-	
+
+	<action-method name="action-move-method-account">
+		<call class="com.axelor.apps.account.web.MoveController" method="account"/>
+	</action-method>
+
 	<action-method name="action-move-method-generate-reverse-move">
 		<call class="com.axelor.apps.account.web.MoveController" method="generateReverse"/> 
 	</action-method>

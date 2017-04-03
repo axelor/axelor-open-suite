@@ -35,8 +35,8 @@
     <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
-		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_SIMULATED = 2;
+		public static final int STATUS_NEW = 1;
+		public static final int STATUS_DAYBOOK = 2;
 		public static final int STATUS_VALIDATED = 3;
 		public static final int STATUS_CANCELED = 4;
 		
