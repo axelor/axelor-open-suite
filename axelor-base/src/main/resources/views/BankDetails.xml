@@ -8,6 +8,7 @@
 		<field name="bank.bankAddress"/>
 		<field name="iban"/>
 		<field name="bank.code"/>
+        <field name="active"/>
 	</grid>
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
@@ -20,9 +21,12 @@
 			<field name="label"/>
 			<field name="currency"/>
 		</panel>
+		<panel sidebar="true">
+			<field name="active" widget="Boolean-switch"/>
+		</panel>
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
-			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
+			<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bank" canNew="true" form-view="bank-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
@@ -47,7 +51,7 @@
 		</panel>
 		<panel name="iban" title="IBAN" hideIf="bank.country.alpha2Code != 'FR'">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
-			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
+			<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bank" canNew="true" form-view="bank-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
