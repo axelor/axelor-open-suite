@@ -211,7 +211,7 @@
   		</panel>
 	</form>    
 	
-	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">
+	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" width="25%" css="rect-image" orderBy="code,name">
 	    <toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>

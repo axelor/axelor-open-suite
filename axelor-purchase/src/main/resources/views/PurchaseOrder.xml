@@ -183,7 +183,7 @@
 		
 	</form>
 	
-	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" cardWidth="300px" css="rect-image" orderBy="-orderDate">
+	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
