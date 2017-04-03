@@ -23,7 +23,7 @@
 			<field name="salary" />
 			<field name="location" />
 			<field name="jobDescription" widget="html" colSpan="12" />
-			<field name="mailAccount" canNew="true" />
+			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
 			<spacer/>
 			<field name="statusSelect" widget="NavSelect" colSpan="6" />
 			<button name="createJobApplication" title="Create" colSpan="3" onClick="save,action-job-position-create-application"/>

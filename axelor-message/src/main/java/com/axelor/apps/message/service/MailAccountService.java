@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.exception.AxelorException;
 
@@ -28,10 +32,12 @@ public interface MailAccountService {
 	
 	public void checkMailAccountConfiguration(MailAccount mailAccount) throws AxelorException, Exception;
 	
-	public String getSmtpSecurity(MailAccount mailAccount);
+	public String getSecurity(MailAccount mailAccount);
 	
 	public String getProtocol(MailAccount mailAccount);
 	
 	public String getSignature(MailAccount mailAccount);
+	
+	public int fetchEmails(MailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException;
 	
 }

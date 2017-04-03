@@ -32,8 +32,11 @@
 			</panel>
 		</panel>
 		<panel-tabs>
+			<panel title="Description">
+				<field name="description" widget="html" colSpan="12" />
+			</panel>
 			<panel title="Contact" colSpan="12">
-				<field name="lastName" />
+				<field name="lastName" required="true"/>
 				<field name="firstName" />
 				<field name="emailAddress" canNew="true"/>
 				<field name="fixedPhone" />
@@ -54,7 +57,6 @@
 				<field name="expectedSalary" />
 				<field name="proposedSalary" />
 				<field name="availabilityFrom" />
-				<field name="description" widget="html" colSpan="12" />
 			</panel>
 			<panel-dashlet name="plannedEvents" title="Planned events" action="action-job-application-planned-events" colSpan="12" />
 			<panel-dashlet name="previousEvents" title="Previous events" action="action-job-application-previous-events"  colSpan="12" />

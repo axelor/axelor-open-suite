@@ -20,6 +20,7 @@ package com.axelor.apps.tool.date;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -308,17 +309,23 @@ public class DateTool{
 		}
 	}
 	
-	public static LocalDate toLocalDate(Date date) {
+   public static LocalDate toLocalDate(Date date) {
 		
 		Instant instant = date.toInstant();
 		
-		return instant.atZone(ZoneId.of("UTC")).toLocalDate();
+		return instant.atZone(ZoneId.systemDefault()).toLocalDate();
+   }
+
+   public static LocalDateTime toLocalDateT(Date date) {
+		
+		Instant instant = date.toInstant();
+		
+		return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 	
 	public static Date toDate(LocalDate date) {
 		
-		Instant instant = date.atStartOfDay(ZoneId.of("UTC")).toInstant();
 		
-		return Date.from(instant);
+		return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 }

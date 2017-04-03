@@ -90,4 +90,22 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		
 		return contact;
 	}
+	
+	@Override
+	public String computeFullName(JobApplication jobApplication) {
+		
+		String fullName = null;
+		
+		if (jobApplication.getFirstName() != null) {
+			fullName  = jobApplication.getFirstName();
+		}
+		if (fullName == null)  {
+			fullName =  jobApplication.getLastName();
+		}
+		else {
+			fullName +=  " " + jobApplication.getLastName();
+		}
+		
+		return fullName;
+	}
 }
