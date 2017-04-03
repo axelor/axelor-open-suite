@@ -247,6 +247,10 @@
 	</action-record>
 	
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
+		<field name="move.period" title="Move period"/>
+		<field name="move.journal" title="Move journal"/>
+		<field name="move.statusSelect" title="Move status"/>
+		<field name="move.company" title="Move company"/>
 		<filter title="Sale Entries">
 			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
 		</filter>
