@@ -40,7 +40,7 @@
 		</panel>
 	</form>
 	
-	<cards name="app-cards" model="com.axelor.apps.base.db.App" title="Apps" css="rect-image" orderBy="sequence">
+	<cards name="app-cards" model="com.axelor.apps.base.db.App" title="Apps" css="rect-image" orderBy="sequence" width="25%:200" > 
 		<toolbar>
 			<button name="bulkInstall" title="Bulk install" onClick="action-app-open-bulk-install-selector"/>
 		</toolbar>
