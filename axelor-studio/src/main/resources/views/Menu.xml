@@ -167,4 +167,11 @@
     <context name="_showRecord" expr="eval:__repo__.of(ModuleRecorder).all().fetchOne()?.getId()" />
   </action-view>
   
+  <menuitem name="menu-custom-model-editor" title="Custom model editor" parent="menu-studio-root" action="action.custom.model.editor" order="65"/>
+  
+  <action-view name="action.custom.model.editor" title="Custom model editor">
+    <view type="html" name="studio/custom-model"/>
+  </action-view>
+  
+  
 </object-views>
