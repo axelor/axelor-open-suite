@@ -30,5 +30,7 @@ public interface LocationService {
 	public BigDecimal getRealQty(Long productId, Long locationId);
 	
 	public BigDecimal getFutureQty(Long productId, Long locationId);
+
+	public BigDecimal computeAvgPriceForProduct(Long productId);
 	
 }

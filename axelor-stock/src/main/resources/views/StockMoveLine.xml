@@ -9,8 +9,8 @@
         <field name="productModel" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
         <field name="realQty" aggregate="sum"/>
-        <field name="unitPriceUntaxed"/>
-        <field name="unitPriceTaxed" hidden="true"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
         <field name="conformitySelect"/>
@@ -21,15 +21,15 @@
         <field name="product" readonly="true" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
-        <field name="unitPriceUntaxed"/>
-        <field name="unitPriceTaxed" hidden="true"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" readonly="true"/>
         <field name="conformitySelect" readonly="true"/>
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" width="large">
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision, action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" width="large">
         <panel name="main" >
             <field name="productName" />
 	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
@@ -53,8 +53,8 @@
         <field name="productModel" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
         <field name="realQty" aggregate="sum"/>
-        <field name="unitPriceUntaxed"/>
-        <field name="unitPriceTaxed" hidden="true"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
         <field name="accordanceSelect"/>
@@ -70,7 +70,7 @@
         <field name="stockMove.partner"/>
         <field name="realQty" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
-        <field name="unitPriceTaxed" hidden="true"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
         <field name="stockMove.statusSelect"/>
@@ -107,8 +107,8 @@
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" title="Consumed quantity" aggregate="sum"/>
-        <field name="unitPriceUntaxed"/>
-        <field name="unitPriceTaxed" hidden="true"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
     </grid>
@@ -185,7 +185,6 @@
 	</action-attrs>
 	
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
-		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	

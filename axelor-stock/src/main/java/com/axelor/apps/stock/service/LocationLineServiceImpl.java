@@ -115,13 +115,13 @@ public class LocationLineServiceImpl implements LocationLineService {
 	
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
-		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)  {
+		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1), 
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
 		}
 		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 
-				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)
-				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)))  {
+				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)
+				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)))  {
 
 			String trackingNumber = "";
 			if(locationLine.getTrackingNumber() != null)  {

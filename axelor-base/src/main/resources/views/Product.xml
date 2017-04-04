@@ -125,6 +125,7 @@
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
+						<field name="avgPrice"/>
 				        <spacer/>
 				        <panel-dashlet colSpan="12" action="action-product-view-stock"/>
 				        <panel-dashlet colSpan="12" action="action-stock-report-for-product"/>
@@ -251,6 +252,7 @@
     <action-group name="action-group-base-product-onnew">
    	 	<action name="action-product-attrs-scale-and-precision"/>
    	 	<action name="action-product-attrs-scale-and-precision-production"/>
+		<action name="action-product-attrs-scale-and-precision-stock"/>
     	<action name="action-product-record-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
@@ -276,6 +278,7 @@
     	<action name="action-product-attrs-readonly-unit"/>
         <action name="action-product-attrs-scale-and-precision"/>
         <action name="action-product-attrs-scale-and-precision-production"/>
+		<action name="action-product-attrs-scale-and-precision-stock"/>
         <action name="action-product-attrs-title-sale-price"/>
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
