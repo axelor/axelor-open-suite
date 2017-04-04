@@ -39,7 +39,8 @@
 	<action-view name="action-ebics-bank-view-bank-details" model="com.axelor.apps.base.db.BankDetails" title="Bank Details">
 		<view name="bank-details-grid" type="grid"/>
 		<view name="bank-details-form" type="form"/>
-		<domain>self.bank = :bank</domain>
+		<domain>self.id IN (:bankDetailsSet)</domain>
+		<context name="bankDetailsSet" expr="eval: __repo__.of(EbicsPartner).all().filter('self.ebicsBank.id = ?', __this__.id).fetch().collect{ it.getBankDetailsSet().collect { it.getId() } }.flatten()"/>
 	</action-view>
 	
 	<action-view name="action-ebics-bank-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">
