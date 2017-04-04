@@ -91,7 +91,9 @@ public interface StockMoveLineService {
 
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
-	
+
+	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
+
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
 
