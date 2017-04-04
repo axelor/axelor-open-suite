@@ -33,7 +33,7 @@
 	</action-record>
 
 	<action-record name="action-ebics-bank-record-onchange-bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
-		<field name="hostId" expr="eval: bank.code"/>
+		<field name="hostId" expr="eval: bank?.code"/>
 	</action-record>
 
 	<action-view name="action-ebics-bank-view-bank-details" model="com.axelor.apps.base.db.BankDetails" title="Bank Details">
