@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="invoicing-project-all" parent="menu-project-root"  if="__config__.app.isApp('business-project')"    	title="Invoicing Projects"
-    	action="invoicing.project.all" />
+    	action="invoicing.project.all" order="35"/>
 
 	<action-view name="invoicing.project.all" title="Invoicing Projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
     	<view type="grid" name="invoicing-project-grid"/>
