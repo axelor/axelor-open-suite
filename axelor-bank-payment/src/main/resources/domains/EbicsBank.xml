@@ -12,6 +12,7 @@
   
 	<many-to-one name="bank" ref="com.axelor.apps.base.db.Bank" required="true"/>
 	<string name="fax" title="Fax"/>
+	<one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
     <string name="url" title="URL"/>
 	
 	<string name="languageSelect" title="Language" selection="select.language" />
