@@ -1,2 +1,2 @@
-"typeSelect";"generateProjectOrder";"projectTaskSaleOrderLines";"projectTaskPurchaseOrderLines";"projectTaskInvoiceLines";"productInvoicingProjectTask.importId";"showPurchaseOrderLineRelatedToProject";"showSaleOrderLineRelatedToProject";"showExpenseLineRelatedToProject"
+"typeSelect";"generateProjectOrder";"projectSaleOrderLines";"projectPurchaseOrderLines";"projectInvoiceLines";"productInvoicingProject.importId";"showPurchaseOrderLineRelatedToProject";"showSaleOrderLineRelatedToProject";"showExpenseLineRelatedToProject"
 "business-project";"true";"true";"true";"true";400;"true";"true";"true"

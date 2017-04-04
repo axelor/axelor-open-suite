@@ -27,9 +27,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
@@ -40,23 +40,23 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class ProjectTaskBusinessService extends ProjectTaskService{
+public class ProjectBusinessService extends ProjectService{
 
 	@Inject
 	protected AppBusinessProjectService appBusinessProjectService;
 
-	public ProjectTask generateProject(SaleOrder saleOrder){
-		ProjectTask project = this.generateProject(null, saleOrder.getFullName()+"_project", saleOrder.getSalemanUser(), saleOrder.getCompany(), saleOrder.getClientPartner());
+	public Project generateProject(SaleOrder saleOrder){
+		Project project = this.generateProject(null, saleOrder.getFullName()+"_project", saleOrder.getSalemanUser(), saleOrder.getCompany(), saleOrder.getClientPartner());
 		project.setSaleOrder(saleOrder);
 		saleOrder.setProject(project);
 		return project;
 	}
 
 	@Override
-	public ProjectTask generateProject(ProjectTask parentProject,String fullName, User assignedTo, Company company, Partner clientPartner){
-		ProjectTask project = new ProjectTask();
-		project.setTypeSelect(ProjectTaskRepository.TYPE_PROJECT);
-		project.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
+	public Project generateProject(Project parentProject,String fullName, User assignedTo, Company company, Partner clientPartner){
+		Project project = new Project();
+		project.setTypeSelect(ProjectRepository.TYPE_PROJECT);
+		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
 		project.setProject(parentProject);
 		project.setName(fullName);
 		if(Strings.isNullOrEmpty(fullName)){
@@ -69,11 +69,11 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		project.setProgress(BigDecimal.ZERO);
 		project.addMembersUserSetItem(assignedTo);
 		project.setImputable(true);
-		project.setProjTaskInvTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
+		project.setProjInvTypeSelect(ProjectRepository.INVOICING_TYPE_NONE);
 		if(parentProject != null){
-			project.setProjTaskInvTypeSelect(parentProject.getProjTaskInvTypeSelect());
+			project.setProjInvTypeSelect(parentProject.getProjInvTypeSelect());
 		}
-		Product product = appBusinessProjectService.getAppBusinessProject().getProductInvoicingProjectTask();
+		Product product = appBusinessProjectService.getAppBusinessProject().getProductInvoicingProject();
 		if(product != null){
 			project.setProduct(product);
 			project.setQty(BigDecimal.ONE);
@@ -84,39 +84,38 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		return project;
 	}
 
-	public ProjectTask generateTask(SaleOrderLine saleOrderLine, ProjectTask project){
-		ProjectTask task = this.generateTask(project, saleOrderLine.getFullName(), saleOrderLine.getSaleOrder().getSalemanUser());
-		task.setProduct(saleOrderLine.getProduct());
-		task.setQty(saleOrderLine.getQty());
-		task.setPrice(saleOrderLine.getPrice());
-		task.setUnit(saleOrderLine.getUnit());
-		task.setExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
-		saleOrderLine.setProject(task);
-		return task;
+	public Project generate(SaleOrderLine saleOrderLine, Project project){
+		Project project1 = this.generateProject(project, saleOrderLine.getFullName(), saleOrderLine.getSaleOrder().getSalemanUser());
+		project1.setProduct(saleOrderLine.getProduct());
+		project1.setQty(saleOrderLine.getQty());
+		project1.setPrice(saleOrderLine.getPrice());
+		project1.setUnit(saleOrderLine.getUnit());
+		project1.setExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
+		saleOrderLine.setProject(project1);
+		return project1;
 	}
 
-	@Override
-	public ProjectTask generateTask(ProjectTask project,String fullName, User assignedTo){
-		ProjectTask task = new ProjectTask();
-		task.setTypeSelect(ProjectTaskRepository.TYPE_TASK);
-		task.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
-		task.setProject(project);
-		task.setName(fullName);
+	public Project generateProject(Project project,String fullName, User assignedTo){
+		Project project1 = new Project();
+		project1.setTypeSelect(ProjectRepository.TYPE_TASK);
+		project1.setStatusSelect(ProjectRepository.STATE_PLANNED);
+		project1.setProject(project1);
+		project1.setName(fullName);
 		if(Strings.isNullOrEmpty(fullName)){
-			task.setName(project.getFullName()+"_task");
+			project1.setName(project1.getFullName()+"_task");
 		}
-		task.setFullName(task.getName());
-		task.setAssignedTo(assignedTo);
-		task.setProgress(BigDecimal.ZERO);
-		task.setImputable(true);
-		Product product = appBusinessProjectService.getAppBusinessProject().getProductInvoicingProjectTask();
-		task.setProduct(product);
-		task.setQty(BigDecimal.ONE);
-		task.setPrice(product.getPurchasePrice());
-		task.setUnit(product.getUnit());
-		task.setExTaxTotal(product.getPurchasePrice());
-		task.setProjTaskInvTypeSelect(project.getProjTaskInvTypeSelect());
-		return task;
+		project1.setFullName(project1.getName());
+		project1.setAssignedTo(assignedTo);
+		project1.setProgress(BigDecimal.ZERO);
+		project1.setImputable(true);
+		Product product = appBusinessProjectService.getAppBusinessProject().getProductInvoicingProject();
+		project1.setProduct(product);
+		project1.setQty(BigDecimal.ONE);
+		project1.setPrice(product.getPurchasePrice());
+		project1.setUnit(product.getUnit());
+		project1.setExTaxTotal(product.getPurchasePrice());
+		project1.setProjInvTypeSelect(project1.getProjInvTypeSelect());
+		return project1;
 	}
 	
 	public void getProjects(ActionRequest request, ActionResponse response){
@@ -124,13 +123,13 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		try{
 			User user = AuthUtils.getUser();
 			if(user != null){
-				List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.imputable = true").fetch();
-				for (ProjectTask projectTask : projectTaskList) {
-					if((projectTask.getMembersUserSet() != null && projectTask.getMembersUserSet().contains(user))
-							|| user.equals(projectTask.getAssignedTo())){
+				List<Project> projectList = Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
+				for (Project project : projectList) {
+					if((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
+							|| user.equals(project.getAssignedTo())){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("name", projectTask.getName());
-						map.put("id", projectTask.getId().toString());
+						map.put("name", project.getName());
+						map.put("id", project.getId().toString());
 						dataList.add(map);
 					}
 				}

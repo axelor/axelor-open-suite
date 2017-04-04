@@ -20,9 +20,9 @@ package com.axelor.apps.hr.web.project;
 import java.math.BigDecimal;
 
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.project.ProjectTaskService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.hr.service.project.ProjectService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -30,10 +30,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class ProjectTaskController {
+public class ProjectController {
 
 	@Inject
-	private ProjectTaskService projectTaskService;
+	private ProjectService projectService;
 	
 	@Inject
 	private EmployeeService employeeService;
@@ -52,15 +52,15 @@ public class ProjectTaskController {
 	}	
 	
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
-		ProjectTask project = request.getContext().asType(ProjectTask.class);
-		project = Beans.get(ProjectTaskRepository.class).find(project.getId());
+		Project project = request.getContext().asType(Project.class);
+		project = Beans.get(ProjectRepository.class).find(project.getId());
 
-		response.setValue("timesheetLineList", projectTaskService.computeVisibleDuration(project));
+		response.setValue("timesheetLineList", projectService.computeVisibleDuration(project));
 	}
 	
 	public void setProjectVisibleDuration(ActionRequest request, ActionResponse response){
-		ProjectTask project = request.getContext().asType(ProjectTask.class);
-		project = Beans.get(ProjectTaskRepository.class).find(project.getId());
+		Project project = request.getContext().asType(Project.class);
+		project = Beans.get(ProjectRepository.class).find(project.getId());
 		User user = AuthUtils.getUser();
 		
 		response.setValue("$visibleDuration", employeeService.getUserDuration(project.getDuration(), user, false));

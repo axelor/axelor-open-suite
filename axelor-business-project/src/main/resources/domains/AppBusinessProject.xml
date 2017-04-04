@@ -7,11 +7,11 @@
 	<entity name="AppBusinessProject" lang="java" cachable="true" extends="App">
 		
 		<boolean name="folderServiceCompany" title="Folder for Service Company"/>
-		<many-to-one name="productInvoicingProjectTask" ref="com.axelor.apps.base.db.Product" title="Default Invoicing Product for Projects/Tasks"/>
+		<many-to-one name="productInvoicingProject" ref="com.axelor.apps.base.db.Product" title="Default Invoicing Product for Projects"/>
 		
-		<boolean name="showPurchaseOrderLineRelatedToProject" title="Show purchase order lines related to the project task"/>
-		<boolean name="showSaleOrderLineRelatedToProject" title="Show sale order lines related to the project task" />
-		<boolean name="showExpenseLineRelatedToProject" title="Show expense order lines related to the project task" />
+		<boolean name="showPurchaseOrderLineRelatedToProject" title="Show purchase order lines related to the project"/>
+		<boolean name="showSaleOrderLineRelatedToProject" title="Show sale order lines related to the project" />
+		<boolean name="showExpenseLineRelatedToProject" title="Show expense order lines related to the project" />
 		
 		<boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet" />
 		<boolean name="enableToInvoiceExpense" title="Enable to invoice expense" />
@@ -19,9 +19,9 @@
 		
 		<boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
 		<boolean name="automaticProject" title="Automatic Project"/>
-		<boolean name="projectTaskSaleOrderLines" title="Project/Task in Sale Order Lines"/>
-		<boolean name="projectTaskPurchaseOrderLines" title="Project/Task in Purchase Order Lines"/>
-		<boolean name="projectTaskInvoiceLines" title="Project/Task in Invoice Lines"/>
+		<boolean name="projectSaleOrderLines" title="Project in Sale Order Lines"/>
+		<boolean name="projectPurchaseOrderLines" title="Project in Purchase Order Lines"/>
+		<boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
 		
 	</entity>
 

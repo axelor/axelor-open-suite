@@ -5,27 +5,27 @@
 	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-extra-hours-line-record-default" orderBy="date">
 		<field name="date"/>
 		<field name="qty" onChange="action-extra-hours-line-validate-qty" aggregate="sum"/>
-		<field name="projectTask"/>
+		<field name="project"/>
 		<field name="description"/>
 		<field name="user" hidden="true"/>
 	</grid>
 
 	<form name="extra-hours-line-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" cols="12" width="large"
 	    onNew="action-group-extra-hours-line-onnew"
-	    onLoad="action-extra-hours-line-attrs-title-project-task">
+	    onLoad="action-extra-hours-line-attrs-title-project">
 
 		<panel name="head">
 			<field name="date"/>
 			<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
-			<field name="projectTask"/>
+			<field name="project"/>
 			<field name="description" colSpan="12"/>
 			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
 	
 	
-	<action-attrs name="action-extra-hours-line-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
+	<action-attrs name="action-extra-hours-line-attrs-title-project">
+		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
 	
 
@@ -35,7 +35,7 @@
 	
 	<action-group name="action-group-extra-hours-line-onnew">
 		<action name="action-extra-hours-line-record-default"/>
-		<action name="action-extra-hours-line-attrs-title-project-task"/>
+		<action name="action-extra-hours-line-attrs-title-project"/>
 	</action-group>
 	
 	<action-validate name="action-extra-hours-line-validate-qty">

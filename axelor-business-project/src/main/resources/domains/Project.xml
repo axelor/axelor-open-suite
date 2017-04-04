@@ -5,7 +5,7 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-	<entity name="ProjectTask" cachable="true">
+	<entity name="Project" cachable="true">
         
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   		<decimal name="qty" title="Qty" default="1"/>
@@ -13,8 +13,7 @@
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   		<decimal name="exTaxTotal" title="Total W.T."/>
 		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
-		<boolean name="imputable"/>
-		<integer name="projTaskInvTypeSelect" selection="project.task.invoicing.type.select" title="Invoicing Type" default="1"/>
+		<integer name="projInvTypeSelect" selection="project.task.invoicing.type.select" title="Invoicing Type" default="1"/>
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
@@ -41,9 +40,9 @@
 	  	<boolean name="invoiced" readonly="true"/>
 	  	<string name="unitOnPrinting" selection="hr.time.logging.preference.select" title="Invoicing unit"/>
 	  	
-	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="projectTask" orphanRemoval="false"/>
+	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="project" orphanRemoval="false"/>
 	  	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" mappedBy="project" orphanRemoval="false"/>
-	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="projectTask" orphanRemoval="false"/>
+	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="project" orphanRemoval="false"/>
 	
 	 	<extra-code><![CDATA[
 		

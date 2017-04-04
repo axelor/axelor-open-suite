@@ -5,7 +5,7 @@
   
   <entity name="InvoiceLine" lang="java">
   
-    <many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task" />	
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />	
   
   </entity>
   

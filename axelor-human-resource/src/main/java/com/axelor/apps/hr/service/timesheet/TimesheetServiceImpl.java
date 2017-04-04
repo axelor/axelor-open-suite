@@ -60,11 +60,11 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.project.ProjectTaskService;
+import com.axelor.apps.hr.service.project.ProjectService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -89,7 +89,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected AppHumanResourceService appHumanResourceService;
 	
 	@Inject
-	protected ProjectTaskService projectTaskService; 
+	protected ProjectService projectService; 
 	
 	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
@@ -111,7 +111,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
 
-		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
+		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.project != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
@@ -222,7 +222,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	@Override
-	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
+	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, Project project, Product product) throws AxelorException{
 
 		User user = timesheet.getUser();
 		Employee employee = user.getEmployee();
@@ -298,7 +298,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
+					TimesheetLine timesheetLine = createTimesheetLine(project, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
 				
@@ -348,13 +348,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 		return timesheet;
 	}
 	
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
+	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
 		TimesheetLine timesheetLine = new TimesheetLine();
 		
 		timesheetLine.setDate(date);
 		timesheetLine.setComments(comments);
 		timesheetLine.setProduct(product);
-		timesheetLine.setProjectTask(project);
+		timesheetLine.setProject(project);
 		timesheetLine.setUser(user);
 		timesheetLine.setDurationStored(hours);
 		timesheet.addTimesheetLineListItem(timesheetLine);
@@ -496,39 +496,39 @@ public class TimesheetServiceImpl implements TimesheetService{
 	public void computeTimeSpent(Timesheet timesheet){
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			ProjectTask projectTask = timesheetLine.getProjectTask();
-			if(projectTask != null){
-				projectTask.setTimeSpent(timesheetLine.getDurationStored().add(this.computeSubTimeSpent(projectTask)));
-				this.computeParentTimeSpent(projectTask);
-				Beans.get(ProjectTaskRepository.class).save(projectTask);
+			Project project = timesheetLine.getProject();
+			if(project != null){
+				project.setTimeSpent(timesheetLine.getDurationStored().add(this.computeSubTimeSpent(project)));
+				this.computeParentTimeSpent(project);
+				Beans.get(ProjectRepository.class).save(project);
 			}
 		}
 	}
 
-	public BigDecimal computeSubTimeSpent(ProjectTask projectTask){
+	public BigDecimal computeSubTimeSpent(Project project){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<ProjectTask> subProjectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
-		if(subProjectTaskList == null || subProjectTaskList.isEmpty()){
-			return projectTask.getTimeSpent();
+		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		if(subProjectList == null || subProjectList.isEmpty()){
+			return project.getTimeSpent();
 		}
-		for (ProjectTask projectTaskIt : subProjectTaskList) {
-			sum = sum.add(this.computeSubTimeSpent(projectTaskIt));
+		for (Project projectIt : subProjectList) {
+			sum = sum.add(this.computeSubTimeSpent(projectIt));
 		}
 		return sum;
 	}
 
-	public void computeParentTimeSpent(ProjectTask projectTask){
-		ProjectTask parentProject = projectTask.getProject();
+	public void computeParentTimeSpent(Project project){
+		Project parentProject = project.getProject();
 		if(parentProject == null){
 			return;
 		}
-		parentProject.setTimeSpent(projectTask.getTimeSpent().add(this.computeTimeSpent(parentProject)));
+		parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
 		this.computeParentTimeSpent(parentProject);
 	}
 
-	public BigDecimal computeTimeSpent(ProjectTask projectTask){
+	public BigDecimal computeTimeSpent(Project project){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.timesheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
+		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.project = ?1 AND self.timesheet.statusSelect = ?2", project, TimesheetRepository.STATUS_VALIDATED).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			sum = sum.add(timesheetLine.getDurationStored());
 		}
@@ -558,7 +558,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 		
 		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
 		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
 		if(user != null){
@@ -567,7 +567,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				timesheet = createTimesheet(user, date, date);
 			}
 			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			createTimesheetLine(projectTask, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+			createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 			
 			Beans.get(TimesheetRepository.class).save(timesheet);
 			response.setTotal(1);
@@ -601,7 +601,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			
 		}
 		
-		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
+		timesheetLineList = projectService._sortTimesheetLineByDate(timesheetLineList);
 		
 		return timesheetLineList;
 	}

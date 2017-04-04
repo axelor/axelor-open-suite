@@ -33,7 +33,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderServiceImpl;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -128,9 +128,9 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		logger.debug("Création d'un devis client pour l'ordre de production : {}",
 				new Object[] { productionOrder.getProductionOrderSeq() });
 
-		ProjectTask projectTask = productionOrder.getProjectTask();
+		Project project = productionOrder.getProject();
 
-		projectTask.getClientPartner();
+		project.getClientPartner();
 
 //		if(businessFolder.getCompany() != null)  {
 //

@@ -81,7 +81,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 		
 		BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
 		Timesheet timesheet = timesheetService.getCurrentOrCreateTimesheet();
-		TimesheetLine timesheetLine = timesheetService.createTimesheetLine(timer.getProjectTask(), timer.getProduct(), timer.getUser(), timer.getStartDateTime().toLocalDate(), timesheet, durationHours, timer.getComments());
+		TimesheetLine timesheetLine = timesheetService.createTimesheetLine(timer.getProject(), timer.getProduct(), timer.getUser(), timer.getStartDateTime().toLocalDate(), timesheet, durationHours, timer.getComments());
 		
 		Beans.get(TimesheetRepository.class).save(timesheet);
 		Beans.get(TimesheetLineRepository.class).save(timesheetLine);

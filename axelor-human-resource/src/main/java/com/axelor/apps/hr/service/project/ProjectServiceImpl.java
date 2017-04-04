@@ -24,24 +24,24 @@ import java.util.List;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProjectTaskServiceImpl implements ProjectTaskService {
+public class ProjectServiceImpl implements ProjectService {
 	
 	protected AppBaseService appBaseService;
 	protected EmployeeService employeeService;	
 	
 	@Inject
-	public ProjectTaskServiceImpl(AppBaseService appBaseService, EmployeeService employeeService){
+	public ProjectServiceImpl(AppBaseService appBaseService, EmployeeService employeeService){
 		
 		this.appBaseService = appBaseService;
 		this.employeeService = employeeService;
 	}
 	
 	@Transactional(rollbackOn={Exception.class})
-	public List<TimesheetLine> computeVisibleDuration(ProjectTask project)  {
+	public List<TimesheetLine> computeVisibleDuration(Project project)  {
 		
 		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
 		

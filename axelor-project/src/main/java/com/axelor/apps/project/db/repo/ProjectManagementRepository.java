@@ -17,33 +17,33 @@
  */
 package com.axelor.apps.project.db.repo;
 
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
+import com.axelor.apps.project.db.Project;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 
-public class ProjectTaskManagementRepository extends ProjectTaskRepository {
+public class ProjectManagementRepository extends ProjectRepository {
 	
 	
 	@Override
-	public ProjectTask save(ProjectTask projectTask){
+	public Project save(Project project){
 		
-		String projectCode = ( Strings.isNullOrEmpty(projectTask.getCode()) ) ? "" : projectTask.getCode() + " - ";
-		projectTask.setFullName(projectCode + projectTask.getName());
-		if (projectTask.getChildProjectTaskList() != null && !projectTask.getChildProjectTaskList().isEmpty()){
-			for (ProjectTask child : projectTask.getChildProjectTaskList()) {
+		String projectCode = ( Strings.isNullOrEmpty(project.getCode()) ) ? "" : project.getCode() + " - ";
+		project.setFullName(projectCode + project.getName());
+		if (project.getChildProjectList() != null && !project.getChildProjectList().isEmpty()){
+			for (Project child : project.getChildProjectList()) {
 				String code = ( Strings.isNullOrEmpty(child.getCode()) ) ? "" : child.getCode() + " - ";
 				child.setFullName(code + child.getName());
 			}
 		}
 		
-		return super.save(projectTask);
+		return super.save(project);
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProjectTask copy(ProjectTask entity, boolean deep) {
-		ProjectTask project = super.copy(entity, false);
+	public Project copy(Project entity, boolean deep) {
+		Project project = super.copy(entity, false);
 		project.setStatusSelect(STATE_PLANNED);
 		save(project);
 		return project;

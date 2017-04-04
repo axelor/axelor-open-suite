@@ -23,8 +23,8 @@ import javax.persistence.Query;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -33,14 +33,14 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
-public class ProjectTaskService {
+public class ProjectService {
 
 	public static int MAX_LEVEL_OF_PROJECT = 10;
 
-	public ProjectTask generateProject(ProjectTask parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
-		ProjectTask project = new ProjectTask();
-		project.setTypeSelect(ProjectTaskRepository.TYPE_PROJECT);
-		project.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
+	public Project generateProject(Project parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
+		Project project = new Project();
+		project.setTypeSelect(ProjectRepository.TYPE_PROJECT);
+		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
 		project.setProject(parentProject);
 		project.setName(fullName);
 		if(Strings.isNullOrEmpty(fullName)){
@@ -56,10 +56,10 @@ public class ProjectTaskService {
 	}
 
 
-	public ProjectTask generateTask(ProjectTask project,String fullName, User assignedTo){
-		ProjectTask task = new ProjectTask();
-		task.setTypeSelect(ProjectTaskRepository.TYPE_TASK);
-		task.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);
+	public Project generateTask(Project project,String fullName, User assignedTo){
+		Project task = new Project();
+		task.setTypeSelect(ProjectRepository.TYPE_TASK);
+		task.setStatusSelect(ProjectRepository.STATE_PLANNED);
 		task.setProject(project);
 		task.setName(fullName);
 		if(Strings.isNullOrEmpty(fullName)){
@@ -72,38 +72,39 @@ public class ProjectTaskService {
 		return task;
 	}
 
-	public Partner getClientPartnerFromProjectTask(ProjectTask projectTask) throws AxelorException{
-		return this.getClientPartnerFromProjectTask(projectTask, 0);
+	public Partner getClientPartnerFromProject(Project project) throws AxelorException{
+		return this.getClientPartnerFromProject(project);
+		/*return this.getClientPartnerFromProject(project,0);*/
 	}
 
-	private Partner getClientPartnerFromProjectTask(ProjectTask projectTask, int counter) throws AxelorException{
-		if (projectTask.getProject() == null){
+	private Partner getClientPartnerFromProject(Project project, int counter) throws AxelorException{
+		if (project.getProject() == null){
 			//it is a root project, can get the client partner
-			if(projectTask.getClientPartner() == null){
+			if(project.getClientPartner() == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER)), IException.CONFIGURATION_ERROR);
 			}else{
-				return projectTask.getClientPartner();
+				return project.getClientPartner();
 			}
 		}else{
 			if (counter > MAX_LEVEL_OF_PROJECT){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH)), IException.CONFIGURATION_ERROR);
 			}else{
-				return this.getClientPartnerFromProjectTask(projectTask.getProject(), counter++);
+				return this.getClientPartnerFromProject(project.getProject(), counter++);
 			}
 		}
 	}
 
-	public BigDecimal computeDurationFromChildren(Long projectTaskId){
+	public BigDecimal computeDurationFromChildren(Long projectId){
 		Query q = null;
 		String query;
 		BigDecimal totalDuration = BigDecimal.ZERO;
 
 		query = "SELECT SUM(pt.duration)"
-				+ " FROM ProjectTask as pt"
-				+ " WHERE pt.project.id = :projectTaskId";
+				+ " FROM Project as pt"
+				+ " WHERE pt.project.id = :projectId";
 
 		q = JPA.em().createQuery(query, BigDecimal.class);
-		q.setParameter("projectTaskId", projectTaskId);
+		q.setParameter("projectId", projectId);
 
 		totalDuration = (BigDecimal) q.getSingleResult();
 
