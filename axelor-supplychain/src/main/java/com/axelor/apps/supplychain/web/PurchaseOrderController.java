@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -79,13 +80,24 @@ public class PurchaseOrderController {
 	}
 
 	public void getLocation(ActionRequest request, ActionResponse response) {
-
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		Location location;
+		Address address;
 
-		if (purchaseOrder.getCompany() != null) {
-
-			response.setValue("location", purchaseOrderServiceSupplychain.getLocation(purchaseOrder.getCompany()));
+		if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
+			location = purchaseOrderServiceSupplychain.getLocation(purchaseOrder.getCompany());
+		} else {
+			location = null;
 		}
+
+		if (location != null) {
+			address = location.getAddress();
+		} else {
+			address = null;
+		}
+
+		response.setValue("location", location);
+		response.setValue("location.address", address);
 	}
 
 	public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
