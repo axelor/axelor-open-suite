@@ -11,9 +11,10 @@
 	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
 		<panel title="General informations">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large" hideIf="!fullName" readonly="true"/>
-			<field name="bank" canNew="true"/>
+			<field name="bank" canNew="true" onChange="action-ebics-bank-record-onchange-bank"/>
 			<field name="hostId"/>
 			<field name="fax" placeholder="+33000000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-ebics-bank-record-normalize-fax-phone-number"/>
+			<field name="emailAddress" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 			<field name="protocolSelect" required="true" />
 			<field name="url" colSpan="12" pattern="http(s)?://.+" />
 			<field name="languageSelect" />
@@ -32,10 +33,15 @@
 		<field name="fax" expr="call:com.axelor.apps.bankpayment.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
 	</action-record>
 
+	<action-record name="action-ebics-bank-record-onchange-bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
+		<field name="hostId" expr="eval: bank?.code"/>
+	</action-record>
+
 	<action-view name="action-ebics-bank-view-bank-details" model="com.axelor.apps.base.db.BankDetails" title="Bank Details">
 		<view name="bank-details-grid" type="grid"/>
 		<view name="bank-details-form" type="form"/>
-		<domain>self.bank = :bank</domain>
+		<domain>self.id IN (:bankDetailsSet)</domain>
+		<context name="bankDetailsSet" expr="eval: (!bankDetailsSet || bankDetailsSet.isEmpty()) ? 0 : __repo__.of(EbicsPartner).all().filter('self.ebicsBank.id = ?', __this__.id).fetch().collect{ it.getBankDetailsSet().collect { it.getId() } }.flatten()"/>
 	</action-view>
 	
 	<action-view name="action-ebics-bank-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">
