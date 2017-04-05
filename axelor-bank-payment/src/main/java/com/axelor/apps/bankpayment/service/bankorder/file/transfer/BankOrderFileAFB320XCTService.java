@@ -34,7 +34,6 @@ import com.axelor.apps.bankpayment.service.bankorder.file.cfonb.CfonbToolService
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
