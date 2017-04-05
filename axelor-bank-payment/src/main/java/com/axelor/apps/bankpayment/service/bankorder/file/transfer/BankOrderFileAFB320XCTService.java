@@ -438,7 +438,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			if(bank.getBankName().length() > 35)  {
 				bankAddress = bank.getBankName().substring(35) + " ";
 			}
-			bankAddress += bank.getBankAddress();
+			bankAddress += receiverBankDetails.getBankAddress().getAddress();
 			totalRecord += cfonbToolService.createZone("5", bankAddress, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);  
 			
 			// Zone 6 : Code BIC de la banque du bénéficiaire (Si ce code est renseigné, c'est lui qui est utilisé pour identifier la banque du bénéficiaire. 

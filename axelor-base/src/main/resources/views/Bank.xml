@@ -11,7 +11,8 @@
 		<field name="branchIdentifier"/>
 	</grid>
     
-	<form name="bank-form" title="Bank Identifier Code" model="com.axelor.apps.base.db.Bank">
+	<form name="bank-form" title="Bank Identifier Code" model="com.axelor.apps.base.db.Bank"
+	onNew="action-attrs-bank-bank-address-fill-bank">
 		<panel name="main">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
 				<editor x-show-titles="false">
@@ -19,11 +20,19 @@
 					<field name="bankName" colSpan="9" placeholder="Bank Name"/>
 				</editor>
 			</field>
-	
-			<field name="bankAddress"/>
+
 			<field name="bankDetailsTypeSelect"/>
 		</panel>
-	
+		<panel>
+			<field name="bankAddressList">
+				<editor x-show-titles="false">
+					<field name="code"/>
+					<field name="address"/>
+					<field name="label"/>
+					<field name="bank" hidden="true"/>
+				</editor>
+			</field>
+        </panel>
 		<panel title="Details" colSpan="12" readonly="true">
 			<field name="businessPartyPrefix" colSpan="3"/>
 			<field name="country.alpha2Code" title="Country Code" colSpan="3"/>
@@ -31,4 +40,8 @@
 			<field name="branchIdentifier" colSpan="3"/>
 		</panel>
 	</form>
+
+	<action-attrs name="action-attrs-bank-bank-address-fill-bank">
+		<attribute for="bankAddressList.bank" name="value" expr="eval: __self__"/>
+	</action-attrs>
 </object-views>
