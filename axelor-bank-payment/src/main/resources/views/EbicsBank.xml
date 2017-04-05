@@ -14,11 +14,7 @@
 			<field name="bank" canNew="true" onChange="action-ebics-bank-record-onchange-bank"/>
 			<field name="hostId"/>
 			<field name="fax" placeholder="+33000000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-ebics-bank-record-normalize-fax-phone-number"/>
-			<field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
-				<editor x-show-titles="false">
-					<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
-				</editor>
-			</field>
+			<field name="emailAddress" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 			<field name="protocolSelect" required="true" />
 			<field name="url" colSpan="12" pattern="http(s)?://.+" />
 			<field name="languageSelect" />
