@@ -185,7 +185,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 		 * Occurrences : [1..1]
 		 * Format : YYYY-MM-DDThh:mm:ss 
 		 */
-		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(validationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
+		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
 		grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
 		grpHdr.setCtrlSum(arithmeticTotal);
 		grpHdr.setInitgPty(dbtr);

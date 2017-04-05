@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.joda.time.LocalDate;
 
@@ -83,10 +87,13 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	 * 			An invoice payment
 	 * 
 	 * @throws AxelorException
+	 * @throws DatatypeConfigurationException 
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 * 		
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException  {
+	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
 		
 		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
 		

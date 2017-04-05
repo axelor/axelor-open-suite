@@ -48,6 +48,7 @@ import com.google.inject.Inject;
 public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 
 	protected String registrationCode;
+	protected String senderAddress;
 	protected CfonbToolService cfonbToolService;
 	protected PartnerService partnerService;
 	protected int sequence = 1;
@@ -61,6 +62,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 		
 		this.partnerService = Beans.get(PartnerService.class);
 		this.registrationCode = this.partnerService.getSIRENNumber(senderCompany.getPartner());  // Add it on company
+		this.senderAddress = this.getSenderAddress();
 		this.cfonbToolService = Beans.get(CfonbToolService.class);
 		fileExtension = FILE_EXTENSION_TXT;
 
@@ -139,13 +141,13 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Date de création
-			senderRecord += cfonbToolService.createZone("4", this.validationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
+			senderRecord += cfonbToolService.createZone("4", this.generationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			
 			// Zone 5 : Raison sociale émetteur
 			senderRecord += cfonbToolService.createZone("5", senderCompany.getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35); 
 			
 			// Zone 6 : Adresse de l'émetteur
-			senderRecord += cfonbToolService.createZone("6", senderCompany.getAddress().getFullName(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);  //TODO check if not null
+			senderRecord += cfonbToolService.createZone("6", senderAddress, cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35); 
 			
 			// Zone 7 : N° SIRET de l'émetteur
 			senderRecord += cfonbToolService.createZone("7", registrationCode, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 14);
@@ -163,7 +165,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("11", getIban(senderBankDetails), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 12 : Code devise du compte à débiter à la banque d'éxécution 
-			senderRecord += cfonbToolService.createZone("12", senderBankDetails.getCurrency().getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone("12", bankOrderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 13 : Identification du contrat/client 
 			senderRecord += cfonbToolService.createZone("13", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); 
@@ -175,7 +177,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("15", getIban(senderBankDetails), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 16 : Code devise du compte émetteur (Norme ISO)
-			senderRecord += cfonbToolService.createZone("16", senderBankDetails.getCurrency().getCode(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone("16", bankOrderCurrency.getCode(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 17-1 : Zone non utilisée 
 			senderRecord += cfonbToolService.createZone("17-1", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4);
@@ -595,7 +597,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("3", sequence, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Date de création
-			totalRecord += cfonbToolService.createZone("4", this.validationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
+			totalRecord += cfonbToolService.createZone("4", this.generationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			
 			// Zone 5 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("5", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4*35);
@@ -616,7 +618,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("10", getIban(senderBankDetails), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 11 : Code devise du compte à débiter à la banque d'éxécution 
-			totalRecord += cfonbToolService.createZone("11", senderCompany.getCurrency().getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			totalRecord += cfonbToolService.createZone("11", bankOrderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 12 : Identification du contrat/client 
 			totalRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); 

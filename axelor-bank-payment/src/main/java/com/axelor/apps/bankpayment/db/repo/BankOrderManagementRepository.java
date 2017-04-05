@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.db.repo;
 
+
 import javax.persistence.PersistenceException;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -34,7 +35,7 @@ public class BankOrderManagementRepository extends BankOrderRepository {
 			
 			BankOrderService bankOrderService = Beans.get(BankOrderService.class);
 			bankOrderService.generateSequence(entity);
-			if (entity.getFileToSend() == null && (entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT || entity.getStatusSelect() == BankOrderRepository.STATUS_AWAITING_SIGNATURE)) {
+			if (entity.getGeneratedMetaFile() == null && (entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT || entity.getStatusSelect() == BankOrderRepository.STATUS_AWAITING_SIGNATURE)) {
 				bankOrderService.updateTotalAmounts(entity);
 			}		
 			
@@ -43,4 +44,22 @@ public class BankOrderManagementRepository extends BankOrderRepository {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
 	}
+	
+	@Override
+	public BankOrder copy(BankOrder entity, boolean deep) {
+
+		BankOrder copy = super.copy(entity, deep);
+
+		copy.setStatusSelect(STATUS_DRAFT);
+		copy.setGeneratedMetaFile(null);
+		copy.setSignedMetaFile(null);
+		copy.setConfirmationDateTime(null);
+		copy.setFileGenerationDateTime(null);
+		copy.setValidationDateTime(null);
+		copy.setSendingDateTime(null);
+		copy.setBankOrderSeq(null);
+		
+		return copy;
+	}
+
 }

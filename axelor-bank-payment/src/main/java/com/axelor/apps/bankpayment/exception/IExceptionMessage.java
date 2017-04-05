@@ -110,6 +110,7 @@ public interface IExceptionMessage {
 	/**
 	 * BankOrder file
 	 */
+	static final String BANK_ORDER_FILE_NO_SENDER_ADDRESS = /*$$(*/ "No address has been defined in the sender company %s" /*)*/;
 	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
 	static final String BANK_ORDER_FILE_UNKNOW_FORMAT = /*$$(*/ "Unknow format for file generation for payment mode %s" /*)*/;
 
