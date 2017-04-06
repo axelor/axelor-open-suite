@@ -63,11 +63,11 @@ public class BankOrderController {
 			bankOrder = bankOrderRepo.find(bankOrder.getId());
 			if(bankOrder != null)  { 
 				bankOrderService.confirm(bankOrder);
-				response.setReload(true);
 			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+		response.setReload(true);
 	}
 	
 	public void sign(ActionRequest request, ActionResponse response ) throws AxelorException{
@@ -137,11 +137,11 @@ public class BankOrderController {
 			bankOrder = bankOrderRepo.find(bankOrder.getId());
 			if(bankOrder != null)  { 
 				bankOrderService.realize(bankOrder);
-				response.setReload(true);
 			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+		response.setReload(true);
 	}	
 	
 	public void print(ActionRequest request, ActionResponse response) throws AxelorException{

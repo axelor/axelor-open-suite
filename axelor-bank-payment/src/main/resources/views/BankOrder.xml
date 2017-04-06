@@ -49,7 +49,7 @@
     		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
     		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
     		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6"/>
+    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 	        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        <field name="signatoryUser" hidden="true"/>
 	        <field name="signatoryEbicsUser" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
@@ -57,16 +57,16 @@
     		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
 		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
-			<field name="senderCompany" grid-view="company-grid" form-view="company-form" onChange="action-bank-order-group-sender-company-change"/>
-			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
+			<field name="senderCompany" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
+			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
-				<field name="bankOrderTotalAmount" colSpan="8" readonly="true"/>
-				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
+				<field name="bankOrderTotalAmount" colSpan="6" readonly="true"/>
+				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="6" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
 			</panel>
 			<panel readonly="true">
-				<field name="companyCurrencyTotalAmount" colSpan="8"/>
-				<field name="companyCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
+				<field name="companyCurrencyTotalAmount" colSpan="6"/>
+				<field name="companyCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="6"/>
 			</panel>
 			
 			<field name="senderReference"/>
@@ -81,8 +81,8 @@
 						<field name="receiverCompany" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change"/>
 						<field name="partner" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details"/>
 					</panel>
-					<field name="receiverBankDetails" onSelect="action-bank-order-line-method-set-bank-details-domain" onChange="action-bank-order-line-record-bank-order-currency"/>
-					<field name="bankOrderAmount" colSpan="4" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
+					<field name="receiverBankDetails" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-bank-order-currency"/>
+					<field name="bankOrderAmount" colSpan="4" min="0.00" required="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
 					<panel stacked="true" colSpan="2" itemSpan="12">
 						<field name="bankOrder.bankOrderCurrency" hidden="true"/>
 						<field name="bankOrderCurrency" hidden="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
@@ -416,7 +416,9 @@
 
 	<action-attrs name="action-bank-order-line-attrs-show-partner-or-receiver-company">
 		<attribute for="receiverCompany" name="hidden" expr="eval: __parent__.partnerTypeSelect != 4"/>
+		<attribute for="receiverCompany" name="required" expr="eval: __parent__.partnerTypeSelect == 4"/>
 		<attribute for="partner" name="hidden" expr="eval: __parent__.partnerTypeSelect == 4"/>
+		<attribute for="partner" name="required" expr="eval: __parent__.partnerTypeSelect != 4"/>
 	</action-attrs>
 
 	<!-- Actions Records -->

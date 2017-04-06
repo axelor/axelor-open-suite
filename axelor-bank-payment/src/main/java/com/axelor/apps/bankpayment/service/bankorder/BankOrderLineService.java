@@ -149,7 +149,7 @@ public class BankOrderLineService {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_PARTNER_MISSING), IException.INCONSISTENCY);
 		}
 		if (bankOrderLine.getReceiverBankDetails() == null )  {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING), IException.INCONSISTENCY);
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
 		}
 		if(bankOrderLine.getBankOrderAmount().compareTo(BigDecimal.ZERO) <= 0)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE), IException.INCONSISTENCY);
@@ -216,8 +216,8 @@ public class BankOrderLineService {
 			//and if the bankOrder is multicurrency
 			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
 			if (!bankOrder.getIsMultiCurrency() &&
-				bankOrder.getBankOrderFileFormat().getCurrency() != null) {
-				String fileFormatCurrencyId = bankOrder.getBankOrderFileFormat().getCurrency().getId().toString();
+					currency != null) {
+				String fileFormatCurrencyId = currency.getId().toString();
 				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 			}
 		}
@@ -317,8 +317,12 @@ public class BankOrderLineService {
 		
 		if(bankOrder.getIsMultiDate())  {  bankOrderDate = bankOrderLine.getBankOrderDate();  }
 		
+		Currency bankOrderCurrency = bankOrder.getBankOrderCurrency();
+		
+		if(bankOrder.getIsMultiCurrency())  {  bankOrderCurrency = bankOrderLine.getBankOrderCurrency();  }
+		
 		return currencyService.getAmountCurrencyConvertedAtDate(
-				bankOrderLine.getBankOrderCurrency(), bankOrder.getCompanyCurrency(), bankOrderLine.getBankOrderAmount(), bankOrderDate)
+				bankOrderCurrency, bankOrder.getCompanyCurrency(), bankOrderLine.getBankOrderAmount(), bankOrderDate)
 				.setScale(2, RoundingMode.HALF_UP);  //TODO Manage the number of decimal for currency  
 
 	}
