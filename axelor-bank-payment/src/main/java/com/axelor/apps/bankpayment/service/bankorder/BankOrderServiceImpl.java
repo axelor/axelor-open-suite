@@ -360,6 +360,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
 				bankDetailsIds += bankOrder.getSenderCompany().getDefaultBankDetails().getId().toString();
 			}
+			if (bankDetailsIds.equals("")) { return ""; }
 			domain = "self.id IN(" + bankDetailsIds + ")";
 
 		}
