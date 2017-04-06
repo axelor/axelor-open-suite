@@ -82,7 +82,6 @@ public class PurchaseOrderController {
 	public void getLocation(ActionRequest request, ActionResponse response) {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		Location location;
-		Address address;
 
 		if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
 			location = purchaseOrderServiceSupplychain.getLocation(purchaseOrder.getCompany());
@@ -90,14 +89,7 @@ public class PurchaseOrderController {
 			location = null;
 		}
 
-		if (location != null) {
-			address = location.getAddress();
-		} else {
-			address = null;
-		}
-
 		response.setValue("location", location);
-		response.setValue("location.address", address);
 	}
 
 	public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
