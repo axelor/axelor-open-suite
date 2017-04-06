@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,21 +168,9 @@ public class ExpenseController {
 				.model(Expense.class.getName())
 				.add("grid","expense-validate-grid")
 				.add("form","expense-form");
-		
-		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
-		.context("_activeCompany", user.getActiveCompany());
-	
-		if(employee == null || !employee.getHrManager())  {
-			if(employee != null && employee.getManager() != null) {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
-				.context("_user", user);
-			}
-			else  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
-				.context("_user", user);
-			}
-		}
-		
+
+		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
+
 		response.setView(actionView.map());
 	}
 
