@@ -19,11 +19,18 @@
 					<field name="bankName" colSpan="9" placeholder="Bank Name"/>
 				</editor>
 			</field>
-	
-			<field name="bankAddress"/>
+
 			<field name="bankDetailsTypeSelect"/>
 		</panel>
-	
+		<panel>
+			<field name="bankAddressList">
+				<editor x-show-titles="false">
+					<field name="code"/>
+					<field name="address"/>
+					<field name="label"/>
+				</editor>
+			</field>
+        </panel>
 		<panel title="Details" colSpan="12" readonly="true">
 			<field name="businessPartyPrefix" colSpan="3"/>
 			<field name="country.alpha2Code" title="Country Code" colSpan="3"/>

@@ -6,14 +6,14 @@
 	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<hilite if="!active" background="warning"/>
 		<field name="ownerName"/>
-		<field name="bank.bankAddress"/>
+		<field name="bankAddress"/>
 		<field name="iban"/>
 		<field name="bank.code"/>
         <field name="active"/>
 	</grid>
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
-	model="com.axelor.apps.base.db.BankDetails" width="large">
+		  onLoad="action-attrs-account-bankdetails-bank-set-address" model="com.axelor.apps.base.db.BankDetails" width="large">
 		<panel name="owner" title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
@@ -28,7 +28,9 @@
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" />
-			<field name="bank" canNew="true" form-view="bank-form"/>
+			<field name="bank" canNew="true" form-view="bank-form" onChange="action-attrs-account-bankdetails-bank-set-address"/>
+			<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
+			canNew="true" form-view="bank-address-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
 		<panel name="bban" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">
@@ -72,6 +74,13 @@
 			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
 	</action-validate>
 
+	<action-attrs name="action-attrs-account-bankdetails-bank-set-address">
+		<attribute for="bankAddress" name="value" expr="eval: null"/>
+		<attribute for="bankAddress" name="domain" expr="eval: &quot; self.id IN (0) &quot;"/>
+		<attribute for="bankAddress" name="domain"
+                   if="bank &amp;&amp; !bank.bankAddressList.isEmpty()"
+				   expr="eval: &quot; self.id IN (${bank.bankAddressList.collect{it.id}.join(',')}) &quot;" />
+	</action-attrs>
 
 
 </object-views>
