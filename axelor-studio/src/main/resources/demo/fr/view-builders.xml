@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <view-builder name="demo-expense-form" title="Note De Frais" model="com.axelor.apps.custom.db.DemoExpense" viewType="form" onSave="action-demo-expense-update-total,action-demo-expense-update-validated">
+  	<toolbar>
+		<button name="printExpense" title="Imprimer" onClick="action-open-demo-expense-report" />
+	</toolbar>
+  	<view-panels>
+		<view-panel panelLevel="0" noTitle="T" place="1">
+			<view-items>
+				<view-item name="expenseRef" fieldType="string" sequence="1" typeSelect="0"/>
+				<view-item name="expenseUser" fieldType="many-to-one" sequence="2" typeSelect="0" defaultValue="$user"/>
+				<view-item name="dateFrom" fieldType="date" sequence="3" defaultValue="$date" typeSelect="0" />
+				<view-item name="dateTo" fieldType="date" sequence="4" defaultValue="$date" typeSelect="0" />
+				<view-item name="expenses" fieldType="one-to-many" sequence="5" typeSelect="0" colSpan="12" />
+				<view-item name="validatedBy" sequence="6" readonly="T" fieldType="many-to-one" relationship="ManyToOne"/>
+	  			<view-item name="validatedOn" sequence="7"  fieldType="datetime" readonly="T" />
+				<view-item name="totalHT" fieldType="decimal" sequence="8" typeSelect="0" />
+				<view-item name="totalTTC" fieldType="decimal" sequence="9" typeSelect="0" />
+				<view-item name="totalTtcTransport" fieldType="decimal" sequence="10" typeSelect="0" />
+			</view-items>
+		</view-panel>
+	</view-panels>
+  </view-builder>
+  
+  <view-builder name="demo-expense-grid" title="Note De Frais" model="com.axelor.apps.custom.db.DemoExpense" viewType="grid">
+  	<view-items>
+		<view-item name="expenseRef" fieldType="string" sequence="1" typeSelect="0"/>
+		<view-item name="expenseUser" fieldType="many-to-one" sequence="2" typeSelect="0" />
+		<view-item name="dateFrom" fieldType="date" sequence="3" typeSelect="0" />
+		<view-item name="dateTo" fieldType="date" sequence="4"  typeSelect="0" />
+		<view-item name="totalTTC" fieldType="decimal" sequence="5" typeSelect="0" />
+	</view-items>
+  </view-builder>
+  
+  <view-builder name="demo-expense-line-form" title="Dépenses" model="com.axelor.apps.custom.db.DemoExpenseLine" viewType="form">
+  	<view-panels>
+		<view-panel panelLevel="0" noTitle="T" place="1">
+			<view-items>
+				<view-item name="expenseType" fieldType="many-to-one" sequence="1" typeSelect="0" />
+				<view-item name="date" fieldType="date" sequence="2" typeSelect="0"/>
+				<view-item name="file" fieldType="many-to-one" sequence="3" typeSelect="0" widget="binary-link" />
+				<view-item name="amtHt" fieldType="decimal" sequence="4" typeSelect="0" onChange="action-demo-expense-line-update-amt-with-tax" />
+				<view-item name="tva" fieldType="decimal" sequence="5" typeSelect="0" onChange="action-demo-expense-line-update-amt-with-tax"/>
+				<view-item name="amtTTC" fieldType="decimal" sequence="6" typeSelect="0" />
+				<view-item name="comments" fieldType="text" sequence="7" typeSelect="0" />
+			</view-items>
+		</view-panel>
+	</view-panels>
+  </view-builder>
+  
+  <view-builder name="demo-expense-line-grid" title="Dépenses" model="com.axelor.apps.custom.db.DemoExpenseLine" viewType="grid">
+  	<view-items>
+		<view-item name="expenseType" fieldType="many-to-one" sequence="1" typeSelect="0"/>
+		<view-item name="date" fieldType="date" sequence="2" typeSelect="0"/>
+		<view-item name="file" fieldType="many-to-one" sequence="3" typeSelect="0" />
+		<view-item name="amtHt" fieldType="decimal" sequence="4" typeSelect="0" />
+		<view-item name="tva" fieldType="decimal" sequence="5" typeSelect="0" />
+		<view-item name="amtTTC" fieldType="decimal" sequence="6" typeSelect="0" />
+	</view-items>
+  </view-builder>
+  
+  
+</view-builders>

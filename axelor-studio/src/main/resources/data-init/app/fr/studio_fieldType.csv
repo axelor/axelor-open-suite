@@ -1,0 +1,12 @@
+name
+String
+BigDecimal
+Integer
+Boolean
+LocalDateTime
+LocalDate
+Long
+ManyToOne
+OneToMany
+ManyToMany
+DateTime

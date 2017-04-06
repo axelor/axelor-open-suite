@@ -30,7 +30,7 @@
 		<view type="form" name="tasks-form"/>
 	</action-view>
 	
-	<menuitem name="project-planning" title="Planning" order="20"  />
+	<menuitem name="project-planning" title="Planning" order="20" parent="menu-project-root"  />
 
 	<menuitem name="my-planning" parent="project-planning"
     	title="My Planning"

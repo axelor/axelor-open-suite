@@ -10,6 +10,7 @@ axelor {
 }
 
 dependencies {
+    compile project(":modules:axelor-admin")
 	compile project(":modules:axelor-message")
 	compile 'commons-lang:commons-lang:2.3'
 //	compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
