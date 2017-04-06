@@ -102,6 +102,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 		dbtrAgt.setFinInstnId(finInstnId);
 
 		PaymentInstructionInformation3 pmtInf = factory.createPaymentInstructionInformation3();
+		pmtInf.setPmtInfId(bankOrderSeq);
 		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
 		pmtInf.setPmtTpInf(pmtTpInf);
 		
@@ -131,6 +132,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 
 			// Reference
 			pmtId = factory.createPaymentIdentification1();
+			pmtId.setInstrId(bankOrderLine.getSequence());
 			pmtId.setEndToEndId(bankOrderLine.getReceiverReference());
 
 			// Amount
@@ -177,6 +179,11 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 
 		// Header
 		GroupHeader32 grpHdr = factory.createGroupHeader32();
+		
+		/**
+		 * Référence du message qui n'est pas utilisée comme référence fonctionnelle.
+		 */
+		grpHdr.setMsgId(bankOrderSeq);
 		
 		/**
 		 * CreationDateTime

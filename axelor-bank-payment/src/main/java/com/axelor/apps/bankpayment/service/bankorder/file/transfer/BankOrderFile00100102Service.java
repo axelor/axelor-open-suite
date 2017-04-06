@@ -103,6 +103,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		dbtrAgt.setFinInstnId(finInstnId);
 
 		PaymentInstructionInformation1 pmtInf = factory.createPaymentInstructionInformation1();
+		pmtInf.setPmtInfId(bankOrderSeq);
 		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
 		pmtInf.setPmtTpInf(pmtTpInf);
 		
@@ -132,6 +133,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 			// Reference
 			pmtId = factory.createPaymentIdentification1();
+			pmtId.setInstrId(bankOrderLine.getSequence());
 			pmtId.setEndToEndId(bankOrderLine.getReceiverReference());
 
 			// Amount
@@ -179,6 +181,11 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		// Header
 		GroupHeader1 grpHdr = factory.createGroupHeader1();
 		
+		/**
+		 * Référence du message qui n'est pas utilisée comme référence fonctionnelle.
+		 */
+		grpHdr.setMsgId(bankOrderSeq);
+
 		/**
 		 * CreationDateTime
 		 * Definition : Date and Time at which a (group of) payment instruction(s) was created by the instructing party.
