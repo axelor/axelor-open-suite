@@ -13,7 +13,7 @@
 	</grid>
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
-		  onLoad="action-attrs-account-bankdetails-bank-set-address" model="com.axelor.apps.base.db.BankDetails" width="large">
+		  onLoad="action-attrs-account-bankdetails-bank-set-address-domain" model="com.axelor.apps.base.db.BankDetails" width="large">
 		<panel name="owner" title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
@@ -28,7 +28,7 @@
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" />
-			<field name="bank" canNew="true" form-view="bank-form" onChange="action-attrs-account-bankdetails-bank-set-address"/>
+			<field name="bank" canNew="true" form-view="bank-form" onChange="action-group-bank-details-bank-onchange"/>
 			<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
 			canNew="true" form-view="bank-address-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
@@ -44,6 +44,11 @@
 	
 	<action-group name="action-group-account-bankdetails-iban-onchange">
 		<action name="action-method_bank-details-validIban" />
+	</action-group>
+
+	<action-group name="action-group-bank-details-bank-onchange">
+		<action name="action-attrs-account-bankdetails-bank-set-address-domain"/>
+		<action name="action-attrs-account-bankdetails-bank-empty-address"/>
 	</action-group>
 
 	<action-group name="action-group-account-bank-details-form-onnew">
@@ -74,8 +79,11 @@
 			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
 	</action-validate>
 
-	<action-attrs name="action-attrs-account-bankdetails-bank-set-address">
+	<action-attrs name="action-attrs-account-bankdetails-bank-empty-address">
 		<attribute for="bankAddress" name="value" expr="eval: null"/>
+	</action-attrs>
+
+	<action-attrs name="action-attrs-account-bankdetails-bank-set-address-domain">
 		<attribute for="bankAddress" name="domain" expr="eval: &quot; self.id IN (0) &quot;"/>
 		<attribute for="bankAddress" name="domain"
                    if="bank &amp;&amp; !bank.bankAddressList.isEmpty()"
