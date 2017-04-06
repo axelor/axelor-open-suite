@@ -386,13 +386,13 @@ public class BankOrderServiceImpl implements BankOrderService {
 			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
 				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
 			}
-			// filter on the currency if it is set in file format and in the
-			// bankdetails
-			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
-			if (bankOrder.getBankOrderFileFormat().getCurrency() != null) {
-				String fileFormatCurrencyId = bankOrder.getBankOrderFileFormat().getCurrency().getId().toString();
-				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
-			}
+		}
+
+		// filter on the currency if it is set in file format and in the bankdetails
+		Currency currency = bankOrder.getBankOrderCurrency();
+		if (currency != null) {
+			String fileFormatCurrencyId = currency.getId().toString();
+			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
 		return domain;
 	}
@@ -431,7 +431,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
-			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
@@ -457,10 +457,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 	}
 
 	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails,
-			BankOrderFileFormat bankOrderFileFormat) {
+			BankOrder bankOrder) {
 		// filter on the currency if it is set in file format
-		if (bankOrderFileFormat.getCurrency() != null) {
-			if (bankDetails.getCurrency() != null && bankDetails.getCurrency() != bankOrderFileFormat.getCurrency()) {
+		if (bankOrder.getBankOrderCurrency() != null) {
+			if (bankDetails.getCurrency() != null && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
 				return false;
 			}
 		}
