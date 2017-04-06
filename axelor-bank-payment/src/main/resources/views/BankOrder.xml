@@ -156,18 +156,22 @@
 	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.bankpayment.db.BankOrder"
 	onNew="action-bank-order-group-onnew">
 
-		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
-			<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
-			<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
-			<field name="paymentMode" css="label-bold bold" colSpan="6" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-update-bankorder-currency"/>
-	    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-update-bankorder-currency"/>
-			<field name="bankOrderTotalAmount" colSpan="4"/>
-			<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
-			<field name="senderCompany" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
-			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
-			<field name="signatoryEbicsUser" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
-			<field name="signatoryUser" hidden="true"/>
+  		<panel name="main" colSpan="12">
+			<panel colSpan="12" readonlyIf="statusSelect &gt;= 2">
+				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+				<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
+				<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
+				<field name="paymentMode" css="label-bold bold" colSpan="6" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-update-bankorder-currency"/>
+		    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-update-bankorder-currency"/>
+				<field name="bankOrderTotalAmount" colSpan="4"/>
+				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
+				<field name="senderCompany" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
+				<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
+			</panel>
+	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
+				<field name="signatoryEbicsUser" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
+				<field name="signatoryUser" hidden="true"/>
+			</panel>
 		</panel>
 		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
     		<button name="confirm" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
