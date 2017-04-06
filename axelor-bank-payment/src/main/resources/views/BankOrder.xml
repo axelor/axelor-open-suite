@@ -47,8 +47,8 @@
   			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
     		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
     		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
-    		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency"/>
-    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency"/>
+    		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
+    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
     		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6"/>
 	        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        <field name="signatoryUser" hidden="true"/>
@@ -62,7 +62,7 @@
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
 				<field name="bankOrderTotalAmount" colSpan="8" readonly="true"/>
-				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5"/>
+				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
 			</panel>
 			<panel readonly="true">
 				<field name="companyCurrencyTotalAmount" colSpan="8"/>
@@ -82,14 +82,14 @@
 						<field name="partner" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details"/>
 					</panel>
 					<field name="receiverBankDetails" onSelect="action-bank-order-line-method-set-bank-details-domain" onChange="action-bank-order-line-record-bank-order-currency"/>
-					<field name="bankOrderAmount" colSpan="4"/>
+					<field name="bankOrderAmount" colSpan="4" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
 					<panel stacked="true" colSpan="2" itemSpan="12">
 						<field name="bankOrder.bankOrderCurrency" hidden="true"/>
-						<field name="bankOrderCurrency" hidden="true"/>
+						<field name="bankOrderCurrency" hidden="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
 					</panel>
-					<panel colSpan="6" hidden="true">
-						<field name="companyCurrencyAmount" colSpan="4"/>
-						<field name="bankOrder.companyCurrency" colSpan="2"/>
+					<panel colSpan="6">
+						<field name="companyCurrencyAmount" colSpan="8" readonly="true"/>
+						<field name="bankOrder.companyCurrency" colSpan="4"/>
 					</panel>
 					<field name="receiverReference"/>
 					<field name="receiverLabel"/>
@@ -238,7 +238,7 @@
 		<attribute name="hidden" for="bankOrderLineList.furtherInformationPanel" expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderDate" expr="eval: !bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderCurrency" expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
-		<attribute name="hidden" for="bankOrderLineList.bankOrder.companyCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-attrs-bank-order-file-format-change">
@@ -257,7 +257,7 @@
 		<attribute name="hidden" for="bankOrderLineList.furtherInformationPanel" expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderDate" expr="eval: !bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderCurrency" expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
-		<attribute name="hidden" for="bankOrderLineList.bankOrder.companyCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-line-attrs-on-new-from-bank-order-file-format">
@@ -265,7 +265,7 @@
 		<attribute name="value" for="receiverCountry" expr="eval: __parent__.bankOrderFileFormat?.receiverCountry"/>
 		<attribute name="value" for="paymentModeSelect" expr="eval: __parent__.bankOrderFileFormat?.paymentModeSelect"/>
 		<attribute name="value" for="feesImputationModeSelect" expr="eval: __parent__.bankOrderFileFormat?.feesImputationModeSelect"/>
-		<attribute name="value" for="bankOrder.companyCurrency" expr="__parent__.companyCurrency" if="eval: !__parent__.bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="value" for="bankOrder.companyCurrency" expr="__parent__.companyCurrency"/>
 		
 		<attribute name="hidden" for="additionnalInformationPanel" expr="eval: !__parent__.bankOrderFileFormat?.displayAdditionnalInformations"/>
 		<attribute name="hidden" for="bankOrderEconomicReason" expr="eval: !__parent__.bankOrderFileFormat?.displayBankOrderEconomicReason"/>
@@ -276,7 +276,7 @@
 		<attribute name="hidden" for="furtherInformationPanel" expr="eval: !__parent__.bankOrderFileFormat?.displayFurtherInformations"/>
 		<attribute name="hidden" for="bankOrderDate" expr="eval: !__parent__.bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderCurrency" expr="eval: !__parent__.bankOrderFileFormat?.isMultiCurrency"/>
-		<attribute name="hidden" for="bankOrder.companyCurrency" expr="eval: __parent__.bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrder.bankOrderCurrency" expr="eval: __parent__.bankOrderFileFormat?.isMultiCurrency"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-attrs-bank-details-domain">
@@ -307,7 +307,12 @@
 		<field name="bankOrderCurrency" if="bankOrderFileFormat?.currency == null &amp;&amp; senderBankDetails?.currency == null"
 			   expr="eval: senderCompany?.currency"/>
 	</action-record>
-
+	
+	<action-record name="action-bank-order-record-update-bank-order-parameter" model="com.axelor.apps.bankpayment.db.BankOrder">
+        <field name="isMultiDate" expr="eval: bankOrderFileFormat?.isMultiDate"/>
+		<field name="isMultiCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+	</action-record>
+	
 	<action-record name="action-bank-order-record-update-company-currency" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="companyCurrency" expr="eval: senderCompany?.currency"/>
 	</action-record>
@@ -430,12 +435,16 @@
 
 	<!-- Actions Methods -->
 
-    <action-method name="action-bank-order-line-method-fill-bank-details" model="com.axelor.apps.bankpayment.db.BankOrderLine">
+    <action-method name="action-bank-order-line-method-fill-bank-details">
         <call class="com.axelor.apps.bankpayment.web.BankOrderLineController" method="fillBankDetail"/>
     </action-method>
 
 	<action-method name="action-bank-order-line-method-set-bank-details-domain">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderLineController" method="setBankDetailsDomain"/>
 	</action-method>
+	
+    <action-method name="action-bank-order-line-method-compute-company-currency-amount">
+        <call class="com.axelor.apps.bankpayment.web.BankOrderLineController" method="computeCompanyCurrencyAmount"/>
+    </action-method>
     
 </object-views>

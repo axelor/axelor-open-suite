@@ -18,29 +18,30 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
-import java.util.List;
 
-import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.inject.Beans;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderLineService {
@@ -49,12 +50,14 @@ public class BankOrderLineService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	protected BankDetailsRepository bankDetailsRepo;
+	protected CurrencyService currencyService;
 
 	
 	@Inject
-	public BankOrderLineService(BankDetailsRepository bankDetailsRepo)  {
+	public BankOrderLineService(BankDetailsRepository bankDetailsRepo, CurrencyService currencyService)  {
 		
 		this.bankDetailsRepo = bankDetailsRepo;
+		this.currencyService = currencyService;
 		
 	}
 	
@@ -307,4 +310,18 @@ public class BankOrderLineService {
 				(ebicsPartner.getOrderTypeSelect() == orderType);
 	}
 	
+	
+	public BigDecimal computeCompanyCurrencyAmount(BankOrder bankOrder, BankOrderLine bankOrderLine) throws AxelorException  {
+
+		LocalDate bankOrderDate = bankOrder.getBankOrderDate();
+		
+		if(bankOrder.getIsMultiDate())  {  bankOrderDate = bankOrderLine.getBankOrderDate();  }
+		
+		return currencyService.getAmountCurrencyConvertedAtDate(
+				bankOrderLine.getBankOrderCurrency(), bankOrder.getCompanyCurrency(), bankOrderLine.getBankOrderAmount(), bankOrderDate)
+				.setScale(2, RoundingMode.HALF_UP);  //TODO Manage the number of decimal for currency  
+
+	}
+
+
 }
