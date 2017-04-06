@@ -481,7 +481,7 @@
 	
 	<input file="hr_employeeBonusType.csv" separator=";" type="com.axelor.apps.hr.db.EmployeeBonusType" />
 	
-	<input file="account_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.account.db.BankOrderEconomicReason" />
+	<input file="bankpayment_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" />
 	
 	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
 	
