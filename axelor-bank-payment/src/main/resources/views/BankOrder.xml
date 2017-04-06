@@ -41,21 +41,26 @@
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 		</toolbar>
-  		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
-    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
-    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
-  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
-    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
-    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
-    		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
-	        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
-	        <field name="signatoryUser" hidden="true"/>
-	        <field name="signatoryEbicsUser" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
-    		<field name="isMultiDate" hidden="true"/>
-    		<field name="isMultiCurrency" hidden="true"/>
-  		</panel>
+  		<panel name="main" colSpan="12">
+  			<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+	    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
+	    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
+	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
+	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
+	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
+	    		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
+	    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
+	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
+		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
+	        </panel>
+	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
+		        <field name="signatoryUser" hidden="true"/>
+		        <field name="signatoryEbicsUser" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
+	    		<field name="isMultiDate" hidden="true"/>
+	    		<field name="isMultiCurrency" hidden="true"/>
+	  		</panel>
+        </panel>
+	   
 		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
 			<field name="senderCompany" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
 			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
