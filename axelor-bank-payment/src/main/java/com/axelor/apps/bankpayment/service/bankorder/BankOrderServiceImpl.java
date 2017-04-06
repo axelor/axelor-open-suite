@@ -29,6 +29,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.axelor.apps.bankpayment.db.*;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import org.joda.time.LocalDate;
@@ -268,7 +269,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		bankOrder.setValidationDateTime(new LocalDateTime());
 
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
-
+		
 		bankOrderRepo.save(bankOrder);
 
 	}
@@ -278,9 +279,16 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 
-		File signedFile = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
+		File fileToSend = null;
 		
-		sendFile(bankOrder, signedFile);
+		if(bankOrder.getSignatoryEbicsUser().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+			fileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
+		}
+		else  {
+			fileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
+		}
+		
+		sendFile(bankOrder, fileToSend);
 
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
