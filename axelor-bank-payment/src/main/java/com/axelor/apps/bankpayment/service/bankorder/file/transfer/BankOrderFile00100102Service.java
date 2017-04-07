@@ -51,6 +51,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class BankOrderFile00100102Service extends BankOrderFileService  {
@@ -166,15 +167,20 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 			
 			rmtInf = factory.createRemittanceInformation1();
 
-			rmtInf.getUstrd().add(bankOrderLine.getReceiverLabel());
-			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();
+			String ustrd = bankOrderLine.getReceiverReference();
+			if(!Strings.isNullOrEmpty(ustrd))  {  ustrd += " - ";  }
+			ustrd += bankOrderLine.getReceiverLabel();
 			
-			CreditorReferenceInformation1 cdtrRefInf = factory.createCreditorReferenceInformation1();
-			cdtrRefInf.setCdtrRef(bankOrderLine.getReceiverReference());
+			rmtInf.getUstrd().add(ustrd);
 			
-			strd.setCdtrRefInf(cdtrRefInf);
-			
-			rmtInf.getStrd().add(strd);
+//			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();
+//			
+//			CreditorReferenceInformation1 cdtrRefInf = factory.createCreditorReferenceInformation1();
+//			cdtrRefInf.setCdtrRef(bankOrderLine.getReceiverReference());
+//			
+//			strd.setCdtrRefInf(cdtrRefInf);
+//			
+//			rmtInf.getStrd().add(strd);
 
 			// Transaction
 			cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
