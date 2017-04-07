@@ -50,9 +50,9 @@ public interface LocationLineService {
 	
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException;
-	
-	
-	
+
+	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException;
+
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
 			LocalDate lastFutureStockMoveDate);
 	

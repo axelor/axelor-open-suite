@@ -97,6 +97,10 @@
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.app.getApp('account').getManageCustomerCredit()"/>
 	</action-method>
+
+	<action-method name="action-supplychain-sale-order-method-check-stocks">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkStocks"/>
+	</action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
 		<error message="The location must be filled." if="location == null"/>
