@@ -14,6 +14,9 @@
 		<field name="name" />
 		<field name="userId" />
 		<field name="ebicsTypeSelect"/>
+		<field name="ebicsPartner"/>
+		<field name="ebicsPartner.ebicsBank"/>
+		<field name="associatedUser"/>
 		<field name="statusSelect"/>
 	</grid>
 	
