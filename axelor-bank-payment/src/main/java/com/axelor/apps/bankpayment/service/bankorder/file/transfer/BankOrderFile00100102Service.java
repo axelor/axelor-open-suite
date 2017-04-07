@@ -174,7 +174,9 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 				ustrd += bankOrderLine.getReceiverLabel();
 			}
 			
-			rmtInf.getUstrd().add(ustrd);
+			if(!Strings.isNullOrEmpty(ustrd))  {  
+				rmtInf.getUstrd().add(ustrd);
+			}
 			
 //			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();
 //			
