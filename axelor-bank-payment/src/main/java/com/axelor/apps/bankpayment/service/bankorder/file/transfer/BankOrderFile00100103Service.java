@@ -166,11 +166,15 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 
 			rmtInf = factory.createRemittanceInformation5();
 			
-			String ustrd = bankOrderLine.getReceiverReference();
-			if(!Strings.isNullOrEmpty(ustrd))  {  ustrd += " - ";  }
-			ustrd += bankOrderLine.getReceiverLabel();
+			String ustrd = "";
+			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference()))  {  ustrd += bankOrderLine.getReceiverReference();  }
+			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverLabel()))  {  
+				if(!Strings.isNullOrEmpty(ustrd))  {  ustrd += " - ";  }
+				ustrd += bankOrderLine.getReceiverLabel();
+			}
 			
 			rmtInf.getUstrd().add(ustrd);
+			
 //			StructuredRemittanceInformation7 strd = factory.createStructuredRemittanceInformation7();
 //			
 //			CreditorReferenceInformation2 cdtrRefInf = factory.createCreditorReferenceInformation2();
