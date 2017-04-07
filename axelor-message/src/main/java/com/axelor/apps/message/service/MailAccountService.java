@@ -28,7 +28,7 @@ public interface MailAccountService {
 
 	public boolean checkDefaultMailAccount(MailAccount mailAccount);
 	
-	public MailAccount getDefaultMailAccount();
+	public MailAccount getDefaultMailAccount(int serverType);
 	
 	public void checkMailAccountConfiguration(MailAccount mailAccount) throws AxelorException, Exception;
 	

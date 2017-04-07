@@ -53,6 +53,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
@@ -359,7 +360,7 @@ public class EventService {
 				}
 				message.addToEmailAddressSetItem(emailAddress);
 				message.setSubject(event.getSubject());
-				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount());
+				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP));
 			}
 			else{
 				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);

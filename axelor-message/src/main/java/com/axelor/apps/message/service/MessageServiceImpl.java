@@ -142,7 +142,7 @@ public class MessageServiceImpl implements MessageService {
 			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
 		}
 		
-		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
+		MailAccount mailAccount = mailAccountService.getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP);
 		if ( mailAccount != null ) {
 			mailAccount = mailAccountRepo.find( mailAccount.getId() );
 			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);

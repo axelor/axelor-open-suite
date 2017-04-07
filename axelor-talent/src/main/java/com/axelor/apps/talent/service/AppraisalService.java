@@ -15,12 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.talent.exception;
+package com.axelor.apps.talent.service;
 
-public interface IExceptionMessage {
+import java.util.Set;
+
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.talent.db.Appraisal;
+
+public interface AppraisalService {
 	
-	static final public String INVALID_DATE_RANGE = /*$$(*/ "Invalid dates. From date must be before to date." /*)*/;
+	public void send(Appraisal appraisal);
 	
-	static final public String INVALID_TR_DATE = /*$$(*/ "Training dates must be under training session date range." /*)*/;
+	public void cancel(Appraisal appraisal);
 	
+	public Set<Long> createAppraisals(Appraisal appraisalTemplate, Set<Employee> employees, Boolean send);
 }

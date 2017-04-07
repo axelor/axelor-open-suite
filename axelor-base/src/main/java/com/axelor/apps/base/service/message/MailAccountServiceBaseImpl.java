@@ -56,13 +56,16 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	}
 
 	@Override
-	public MailAccount getDefaultMailAccount()  {
+	public MailAccount getDefaultMailAccount(int serverType)  {
 
 		if ( appBaseService.getAppBase().getMailAccountByUser() ) {
-			return mailAccountRepo.all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();
+			return mailAccountRepo.all()
+					.filter("self.user = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
+					userService.getUser()
+					,serverType).fetchOne();
 		}
 
-		return super.getDefaultMailAccount();
+		return super.getDefaultMailAccount(serverType);
 	}
 
 }

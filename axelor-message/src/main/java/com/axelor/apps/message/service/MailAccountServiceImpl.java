@@ -96,8 +96,8 @@ public class MailAccountServiceImpl implements MailAccountService {
 	}
 
 	@Override
-	public MailAccount getDefaultMailAccount()  {
-		return mailAccountRepo.all().filter("self.isDefault = true").fetchOne();
+	public MailAccount getDefaultMailAccount(int serverType)  {
+		return mailAccountRepo.all().filter("self.isDefault = true and self.serverTypeSelect = ?1", serverType).fetchOne();
 	}
    
 	@Override

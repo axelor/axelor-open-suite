@@ -1,6 +1,7 @@
 package com.axelor.apps.base.service.app;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +21,14 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.common.FileUtils;
+import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVImporter;
+import com.axelor.data.xml.XMLImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
-import com.google.common.base.Joiner;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -43,6 +47,10 @@ public class AppServiceImpl implements AppService {
 	private static final String DIR_INIT_INPUT = "app";
 	
 	private static final String APP_TYPE_SELECT = "app.type.select";
+	
+	private static Pattern patCsv = Pattern.compile("^\\<\\s*csv-inputs");
+	
+	private static Pattern patXml = Pattern.compile("^\\<\\s*xml-inputs");
 	
 	@Inject
 	private AppRepository appRepo;
@@ -74,8 +82,7 @@ public class AppServiceImpl implements AppService {
 				File config = FileUtils.getFile(tmp, DIR_DEMO,  type + "-config.xml");
 				if (config != null && config.exists()) {
 					File data = FileUtils.getFile(config.getParentFile(), lang);
-					CSVImporter importer = new CSVImporter(config.getAbsolutePath(), data.getAbsolutePath(), null);
-					importer.run();
+					importData(config, data);
 				}
 				else {
 					log.debug("Config file not found");
@@ -132,9 +139,7 @@ public class AppServiceImpl implements AppService {
 				log.debug("Config path: {}", config.getAbsolutePath());
 				if (config != null && config.exists()) {
 					File data = FileUtils.getFile(config.getParentFile(), lang);
-					log.debug("data path: {}", config.getAbsolutePath(), data.getAbsolutePath());
-					CSVImporter importer = new CSVImporter(config.getAbsolutePath(), data.getAbsolutePath(), null);
-					importer.run();
+					importData(config, data);
 				}
 			} finally {
 				clean(tmp);
@@ -148,6 +153,36 @@ public class AppServiceImpl implements AppService {
 		
 	}
 	
+
+	private void importData(File config, File data) {
+		
+		log.debug("config path: {}, data path: {}", config.getAbsolutePath(), data.getAbsolutePath());
+		
+		try {
+			Scanner scanner = new Scanner(config);
+			Importer importer = null;
+			while(scanner.hasNextLine()){
+				String str = scanner.nextLine();
+				if (patCsv.matcher(str).find()) {
+					importer = new CSVImporter(config.getAbsolutePath(), data.getAbsolutePath(), null);
+					break;
+				}
+				if (patXml.matcher(str).find()) {
+					importer = new XMLImporter(config.getAbsolutePath(), data.getAbsolutePath());
+					break;
+				}
+			}
+			scanner.close();
+			
+			if (importer != null) {
+				importer.run();
+			}
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 	private File extract(String module, String dirName) {
 

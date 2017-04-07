@@ -7,6 +7,8 @@
   	
   	<input file="base_appRecruitment.csv" separator=";" type="com.axelor.apps.base.db.AppRecruitment" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
+  	<input file="base_appAppraisal.csv" separator=";" type="com.axelor.apps.base.db.AppAppraisal" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	
   	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
   	
   	<input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
