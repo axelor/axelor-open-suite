@@ -30,6 +30,7 @@ import com.axelor.apps.account.xsd.pain_001_001_03.AmountType3Choice;
 import com.axelor.apps.account.xsd.pain_001_001_03.BranchAndFinancialInstitutionIdentification4;
 import com.axelor.apps.account.xsd.pain_001_001_03.CashAccount16;
 import com.axelor.apps.account.xsd.pain_001_001_03.CreditTransferTransactionInformation10;
+import com.axelor.apps.account.xsd.pain_001_001_03.CreditorReferenceInformation2;
 import com.axelor.apps.account.xsd.pain_001_001_03.CustomerCreditTransferInitiationV03;
 import com.axelor.apps.account.xsd.pain_001_001_03.Document;
 import com.axelor.apps.account.xsd.pain_001_001_03.FinancialInstitutionIdentification7;
@@ -42,6 +43,7 @@ import com.axelor.apps.account.xsd.pain_001_001_03.PaymentMethod3Code;
 import com.axelor.apps.account.xsd.pain_001_001_03.PaymentTypeInformation19;
 import com.axelor.apps.account.xsd.pain_001_001_03.RemittanceInformation5;
 import com.axelor.apps.account.xsd.pain_001_001_03.ServiceLevel8Choice;
+import com.axelor.apps.account.xsd.pain_001_001_03.StructuredRemittanceInformation7;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
@@ -132,8 +134,8 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 
 			// Reference
 			pmtId = factory.createPaymentIdentification1();
-			pmtId.setInstrId(bankOrderLine.getSequence());
-			pmtId.setEndToEndId(bankOrderLine.getReceiverReference());
+//			pmtId.setInstrId(bankOrderLine.getSequence());
+			pmtId.setEndToEndId(bankOrderLine.getSequence());
 
 			// Amount
 			instdAmt = factory.createActiveOrHistoricCurrencyAndAmount();
@@ -164,7 +166,15 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 			rmtInf = factory.createRemittanceInformation5();
 
 			rmtInf.getUstrd().add(bankOrderLine.getReceiverLabel());
-
+			StructuredRemittanceInformation7 strd = factory.createStructuredRemittanceInformation7();
+			
+			CreditorReferenceInformation2 cdtrRefInf = factory.createCreditorReferenceInformation2();
+			cdtrRefInf.setRef(bankOrderLine.getReceiverReference());
+			
+			strd.setCdtrRefInf(cdtrRefInf);
+			
+			rmtInf.getStrd().add(strd);
+			
 			// Transaction
 			cdtTrfTxInf = factory.createCreditTransferTransactionInformation10();
 			cdtTrfTxInf.setPmtId(pmtId);
