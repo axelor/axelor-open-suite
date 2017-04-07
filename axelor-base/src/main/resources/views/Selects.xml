@@ -558,11 +558,13 @@
 	<selection name="base.year.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
+		<option value="3">Adjusting</option>
 	</selection>
 	
 	<selection name="base.period.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
+		<option value="3">Adjusting</option>
 	</selection>
 	
 	<selection name="company.partner.type.select">

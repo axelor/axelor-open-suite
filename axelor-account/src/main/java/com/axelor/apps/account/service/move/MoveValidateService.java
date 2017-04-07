@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -32,6 +25,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,6 +33,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public class MoveValidateService {
 
@@ -128,6 +128,10 @@ public class MoveValidateService {
 		}
 
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+
+		if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+			move.setAdjustingMove(true);
+		}
 
 		this.validateEquiponderanteMove(move);
 		this.fillMoveLines(move);
