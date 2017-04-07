@@ -59,6 +59,10 @@
 		</panel>
 	</form>
 	
+	<calendar name="appraisal-calendar" model="com.axelor.apps.talent.db.Appraisal" eventStart="toDate" title="Appraisals" colorBy="statusSelected">
+		<field name="employee"/>
+	</calendar>
+	
 	<action-method name="action-appraisal-method-send-appraisal">
 		<call class="com.axelor.apps.talent.web.AppraisalController" method="send"/>
 	</action-method>

@@ -11,7 +11,8 @@
 		<view name="training-register-grid" type="grid" />
 		<view name="training-register-calendar" type="calendar" />
 		<view name="training-register-form" type="form" />
-		<domain>self.employee.id = :_employeeId and self.statusSelect != 3</domain>
+		<view-param name="search-filters" value="my-training-register-fitlers"/>
+		<domain>self.employee.id = :_employeeId</domain>
 		<context name="_employeeId" expr="eval:__user__.employee?.id" />
 	</action-view>
 	
@@ -21,7 +22,8 @@
 		<view name="training-register-grid" type="grid" />
 		<view name="training-register-calendar" type="calendar" />
 		<view name="training-register-form" type="form" />
-		<domain>self.employee.id in :_employeeList and self.statusSelect != 3</domain>
+		<view-param name="search-filters" value="my-team-training-register-fitlers"/>
+		<domain>self.employee.id in :_employeeList</domain>
 		<context name="_employeeList" expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />
 	</action-view>
 	
@@ -121,6 +123,7 @@
 	
 	<action-view name="appraisal.my.appraisals" title="My appraisals" model="com.axelor.apps.talent.db.Appraisal">
 		<view type="grid" name="appraisal-grid"/>
+		<view type="calendar" name="appraisal-calendar" />
 		<view type="form" name="appraisal-form"/>
 		<view-param name="search-filters" value="my-appraisal-fitlers"/>
 		<domain>self.employee.user.id = :_userId and self.isTemplate = false</domain>
@@ -131,6 +134,7 @@
 	
 	<action-view name="appraisal.my.team.appraisals" title="My team appraisals" model="com.axelor.apps.talent.db.Appraisal">
 		<view type="grid" name="appraisal-grid"/>
+		<view type="calendar" name="appraisal-calendar" />
 		<view type="form" name="appraisal-form"/>
 		<view-param name="search-filters" value="my-team-appraisal-fitlers"/>
 		<domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false</domain>
