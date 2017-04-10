@@ -5,7 +5,9 @@
   	
   	<input file="base_appSale.csv" separator=";" type="com.axelor.apps.base.db.AppSale" search="self.typeSelect = :typeSelect" update="true" />
   	
-	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason" />
+	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason">
+		<bind to="freeText" eval="freeText == 'true' ? true : false" />
+	</input>
 	
 	<input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />
 	

@@ -292,7 +292,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
 		saleOrder.setCancelReason(cancelReason);
-		if (cancelReason.getName().equals("Autre") || cancelReason.getName().equals("Other")) {
+		if (cancelReason.getFreeText()) {
 			saleOrder.setOtherReason(otherReason);
 		}
 		saleOrderRepo.save(saleOrder);
