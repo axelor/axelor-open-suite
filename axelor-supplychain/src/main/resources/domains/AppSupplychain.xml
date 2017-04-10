@@ -11,6 +11,7 @@
 		<boolean name="supplierStockMoveManagement" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
 		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
+		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
 		
 		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false" help="Automatically finish a sale order when all of the stock moves bound to it are realised"/>

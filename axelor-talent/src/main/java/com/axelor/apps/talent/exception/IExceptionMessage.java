@@ -22,4 +22,5 @@ public interface IExceptionMessage {
 	static final public String INVALID_DATE_RANGE = /*$$(*/ "Invalid dates. From date must be before to date." /*)*/;
 	
 	static final public String INVALID_TR_DATE = /*$$(*/ "Training dates must be under training session date range." /*)*/;
+	
 }

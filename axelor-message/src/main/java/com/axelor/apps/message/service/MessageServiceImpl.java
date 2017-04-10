@@ -142,7 +142,7 @@ public class MessageServiceImpl implements MessageService {
 			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
 		}
 		
-		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
+		MailAccount mailAccount = mailAccountService.getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP);
 		if ( mailAccount != null ) {
 			mailAccount = mailAccountRepo.find( mailAccount.getId() );
 			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
@@ -208,7 +208,7 @@ public class MessageServiceImpl implements MessageService {
 		if ( mailAccount == null ){ return message; }
 
 		log.debug("Sent email");
-		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSmtpSecurity(mailAccount) );
+		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSecurity(mailAccount) );
 
 		List<String> 
 			replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),

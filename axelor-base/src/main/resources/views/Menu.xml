@@ -12,19 +12,6 @@
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />
 	
-	<menuitem name="admin-root" title="Application Config" order="-60"
-		icon="fa-gear" icon-background="#31b4a9"/>
-		
-	<menuitem name="admin-root-app-management" parent="admin-root" order="5"
-		title="Apps management" action="admin.root.app.management" />
-
-	<action-view name="admin.root.app.management" title="Apps management"
-		model="com.axelor.apps.base.db.App" >
-		<view type="cards" name="app-cards"/>
-		<view type="grid" name="app-grid"/>
-		<view type="form" name="app-form"/>
-	</action-view>
-	
 	<menuitem name="admin-root-general" parent="admin-root" order="10"
 		title="General data"  />
 

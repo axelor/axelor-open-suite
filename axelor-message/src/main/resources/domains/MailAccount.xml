@@ -22,8 +22,8 @@
 	
 		// SERVER TYPE SELECT
 		public static final int SERVER_TYPE_SMTP = 1;
-		// public static final int SERVER_TYPE_POP = 2; Not implemented yet
-		// public static final int SERVER_TYPE_IMAP = 3; Not implemented yet
+		public static final int SERVER_TYPE_POP = 2;
+		public static final int SERVER_TYPE_IMAP = 3; 
 		
 		// SECURITY TYPE SELECT
 		public static final int SECURITY_NONE = 0;

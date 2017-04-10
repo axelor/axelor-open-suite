@@ -5,16 +5,6 @@
   	
   	<input file="base_appLeave.csv" separator=";" type="com.axelor.apps.base.db.AppLeave" search="self.typeSelect = :typeSelect" update="true"  />
   	
-	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
-	
-	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
-	
-	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
-  
-  	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning" search="self.importId  = :importId"/>
-	
-	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
- 	    
 	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
 	
 	<input file="hr_leaveManagement.csv" separator=";" type="com.axelor.apps.hr.db.LeaveManagement" >
@@ -22,6 +12,6 @@
 		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
 		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
 	</input>
-	
+
 </csv-inputs>
 

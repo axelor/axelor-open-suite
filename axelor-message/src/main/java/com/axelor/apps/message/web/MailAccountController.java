@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.message.web;
 
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.exception.service.TraceBackService;
@@ -29,7 +34,10 @@ import com.google.inject.Inject;
 public class MailAccountController {
 	
 	@Inject
-	MailAccountService mailAccountService;
+	private MailAccountService mailAccountService;
+	
+	@Inject
+	private MailAccountRepository mailAccountRepo;
 	
 	public void validateSmtpAccount(ActionRequest request,ActionResponse response){
 		
@@ -57,6 +65,16 @@ public class MailAccountController {
 			response.setError(I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
 			response.setValue("isDefault", false);
 		}
+	}
+	
+	public void fetchEmails(ActionRequest request, ActionResponse response) throws MessagingException, IOException  {
+		
+		MailAccount account = request.getContext().asType(MailAccount.class);
+		account = mailAccountRepo.find(account.getId());
+		
+		int totalFetched = mailAccountService.fetchEmails(account, true);
+		
+		response.setFlash(I18n.get(String.format("Total email fetched: %s", totalFetched)));
 	}
 
 }

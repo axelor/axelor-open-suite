@@ -120,12 +120,12 @@
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
-				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
+						<field name="avgPrice"/>
 				        <spacer/>
 				        <panel-dashlet colSpan="12" action="action-product-view-stock"/>
 				        <panel-dashlet colSpan="12" action="action-stock-report-for-product"/>
@@ -212,7 +212,7 @@
   		</panel>
 	</form>    
 	
-	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">
+	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" width="25%" css="rect-image" orderBy="code,name">
 	    <toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
@@ -252,6 +252,7 @@
     <action-group name="action-group-base-product-onnew">
    	 	<action name="action-product-attrs-scale-and-precision"/>
    	 	<action name="action-product-attrs-scale-and-precision-production"/>
+		<action name="action-product-attrs-scale-and-precision-stock"/>
     	<action name="action-product-record-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
@@ -277,6 +278,7 @@
     	<action name="action-product-attrs-readonly-unit"/>
         <action name="action-product-attrs-scale-and-precision"/>
         <action name="action-product-attrs-scale-and-precision-production"/>
+		<action name="action-product-attrs-scale-and-precision-stock"/>
         <action name="action-product-attrs-title-sale-price"/>
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
@@ -337,7 +339,6 @@
 	</action-record>
     
     <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
     	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
     	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
     </action-attrs>
@@ -426,7 +427,7 @@
 			<domain>self.productVariantConfig != null</domain>
 		</filter>
 		<filter title="Raw Materials">
-			<domain>self.isRawMaterial = true</domain>
+			<domain>self.subTypeProductSelect = 3</domain>
 		</filter>
 		<filter title="Obsolete Products">
 			<domain>CURRENT_DATE &gt; self.endDate</domain>

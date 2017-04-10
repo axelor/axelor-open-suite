@@ -13,10 +13,8 @@
 		<field name="statusSelect" />
 	</grid>
 	
-	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large">
-		<toolbar>
-			<button name="hire" title="Hire"/>
-		</toolbar>
+	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large"
+		onNew="action-job-application-defaults">
 		<menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Create call" action="save,action-job-application-create-call" readonlyIf="id == null"/>
@@ -24,39 +22,48 @@
 	        </menu>
 	    </menubar>
 		<panel name="main">
+			<field name="statusSelect" widget="NavSelect" colSpan="9" />
+			<button name="hire" title="Hire" onClick="action-job-application-method-hire" colSpan="2" showIf="statusSelect &lt; 3"/>
+			<field name="employee" showIf="statusSelect == 3"/>
+			<panel title="Job info" colSpan="12">
+				<field name="jobPosition" />
+				<field name="jobPosition.companyDepartment" />
+				<field name="responsible" />
+			</panel>
+		</panel>
+		<panel-tabs>
+			<panel title="Description">
+				<field name="description" widget="html" colSpan="12" />
+			</panel>
 			<panel title="Contact" colSpan="12">
-				<field name="lastName" />
+				<field name="lastName" required="true"/>
 				<field name="firstName" />
-				<field name="emailAddress" />
+				<field name="emailAddress" canNew="true"/>
 				<field name="fixedPhone" />
-				<field name="mobilePhoned" />
+				<field name="mobilePhone" />
 				<field name="educationLevel" />
 				<field name="experienceSelect" />
 				<field name="industrySectorSet" widget="TagSelect" />
-				<field name="linkedInProfile" colSpan="10"/>
+				<field name="linkedInProfile" colSpan="10" widget="url"/>
 				<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
 				<field name="jobSource" />
 				<field name="referredBy" />
 				<field name="appreciation" widget="SelectProgress"/>
+				<field name="tagSkillSet" widget="TagSelect" colSpan="12" />
 				<field name="fullName" hidden="true" />
-			</panel>
-			<panel title="Job info" colSpan="12">
-				<field name="jobPosition" />
-				<field name="jobPosition.department" />
-				<field name="employee" />
 			</panel>
 			<panel title="Contract" colSpan="12">
 				<field name="jobPosition.contractType" />
 				<field name="expectedSalary" />
 				<field name="proposedSalary" />
 				<field name="availabilityFrom" />
-				<field name="description" widget="html" colSpan="12" />
 			</panel>
-			<field name="statusSelect" widget="NavSelect" colSpan="12" />
-			<field name="reasonNotHired" colSpan="12" />
 			<panel-dashlet name="plannedEvents" title="Planned events" action="action-job-application-planned-events" colSpan="12" />
 			<panel-dashlet name="previousEvents" title="Previous events" action="action-job-application-previous-events"  colSpan="12" />
-		</panel>
+			<panel title="Reason not hired">
+				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
+			</panel>
+		</panel-tabs>
 	</form>
 	
 	<action-view name="action-job-application-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
@@ -76,13 +83,22 @@
     <action-view name="action-job-application-planned-events" model="com.axelor.apps.crm.db.Event" title="Planned events">
     	<view type="grid" name="event-grid"/>
     	<view type="form" name="event-form"/>
-    	<domain>self.startDateTime >= :__datetime__</domain>
+    	<domain>self.startDateTime >= :__datetime__ and self.relatedToSelect = 'com.axelor.apps.talent.db.JobApplication' and self.relatedToSelectId = :id</domain>
     </action-view>
     
     <action-view name="action-job-application-previous-events" model="com.axelor.apps.crm.db.Event" title="Previous events">
     	<view type="grid" name="event-grid"/>
     	<view type="form" name="event-form"/>
-    	<domain>self.startDateTime &lt; :__datetime__</domain>
+    	<domain>self.startDateTime &lt; :__datetime__ and self.relatedToSelect = 'com.axelor.apps.talent.db.JobApplication' and self.relatedToSelectId = :id</domain>
     </action-view>
-	
+    
+    <action-record name="action-job-application-defaults" model="com.axelor.apps.talent.db.JobApplication">
+    	<field name="jobPosition" expr="eval:__repo__.of(JobPosition).find(_jobPositionId)"/>
+    	<field name="responsible" expr="eval:__repo__.of(Employee).find(_responsibleId)" />
+    </action-record>
+    
+    <action-method name="action-job-application-method-hire">
+    	<call class="com.axelor.apps.talent.web.JobApplicationController" method="hire"/>
+    </action-method>
+    
 </object-views>

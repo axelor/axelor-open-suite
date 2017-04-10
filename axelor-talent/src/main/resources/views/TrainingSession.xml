@@ -49,7 +49,7 @@
 	</action-view>
 	
 	<action-method name="action-training-session-method-close-session">
-		<call class="com.axelor.apps.talent.controller.TrainingSessionController" method="closeSession"/>
+		<call class="com.axelor.apps.talent.web.TrainingSessionController" method="closeSession"/>
 	</action-method>
 	
 </object-views>

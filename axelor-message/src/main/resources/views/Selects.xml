@@ -23,8 +23,8 @@
 				
 	<selection name="mail.account.server.type.select">
 		<option value="1">SMTP</option>
-<!-- 		<option value="2">POP</option> Not implemented yet -->
-<!-- 		<option value="3">IMAP</option> Not implemented yet -->
+		<option value="2">POP</option>
+		<option value="3">IMAP</option>
 	</selection>			
 	
 	<selection name="message.media.type.select">

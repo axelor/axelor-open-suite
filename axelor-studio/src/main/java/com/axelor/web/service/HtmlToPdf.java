@@ -32,10 +32,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.w3c.tidy.Configuration;
 import org.w3c.tidy.Tidy;
-import org.xhtmlrenderer.simple.PDFRenderer;
+//import org.xhtmlrenderer.simple.PDFRenderer;
 
 import com.google.inject.servlet.RequestScoped;
-import com.lowagie.text.DocumentException;
 
 @RequestScoped
 @Path("/htmlToPdf")
@@ -65,9 +64,10 @@ public class HtmlToPdf {
 			fw.close();
 			
 			File pdfFile = File.createTempFile(fileName, "");
-			PDFRenderer.renderToPDF(htmlfile, pdfFile.getAbsolutePath());
+//			PDFRenderer.renderToPDF(htmlfile, pdfFile.getAbsolutePath());
 			return pdfFile;
-		} catch (IOException | DocumentException e) {
+//		} catch (IOException | DocumentException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		

@@ -1304,14 +1304,9 @@ group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
 	   account.name as analytic_account,
 	   sum(aml.amount) as amount
 from account_analytic_move_line aml
-<<<<<<< HEAD
-left join base_product product on (product.id = aml.product)
 left join project_project project on (project.id = aml.project)
-=======
-left join project_project_task project on (project.id = aml.project_task)
 left join account_analytic_axis axis on (axis.id = aml.analytic_axis)
 left join account_analytic_account account on (account.id = aml.analytic_account)
->>>>>>> 11ef34e0fff00dc1d609e57f6489b1583992e6c9
 where project.id = ? or project.project = ? 
 group by axis.name,account.name]]></xml-property>
         </oda-data-set>

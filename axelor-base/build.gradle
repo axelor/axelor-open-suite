@@ -10,9 +10,10 @@ axelor {
 }
 
 dependencies {
+    compile project(":modules:axelor-admin")
 	compile project(":modules:axelor-message")
-	compile "commons-validator:commons-validator:1.4.0"
 	compile "org.apache.commons:commons-lang3:3.1"
+	compile "commons-validator:commons-validator:1.4.0"
 	compile "org.mnode.ical4j:ical4j:1.0.6"
 	compile "org.mnode.ical4j:ical4j-extensions:0.9.2"
 	compile "org.mnode.ical4j:ical4j-connector:0.9.4.3"

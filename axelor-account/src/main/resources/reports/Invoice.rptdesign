@@ -1414,7 +1414,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-<<<<<<< HEAD
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TimesheetLineDS" id="4006">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
@@ -1630,8 +1629,6 @@ LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND
 JOIN base_general general ON general.id = 1
 JOIN base_unit product_unit ON product_unit.id = product.unit]]></xml-property>
         </oda-data-set>
-=======
->>>>>>> 11ef34e0fff00dc1d609e57f6489b1583992e6c9
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="UnitCoeffDS" id="4261">
             <list-property name="columnHints">
                 <structure>

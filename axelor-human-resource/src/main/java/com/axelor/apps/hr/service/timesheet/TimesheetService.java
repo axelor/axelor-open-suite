@@ -64,7 +64,6 @@ public interface TimesheetService {
 	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, Project project, Product product) throws AxelorException;
-
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();
 	public Timesheet getCurrentOrCreateTimesheet();

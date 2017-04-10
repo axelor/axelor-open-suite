@@ -200,7 +200,7 @@
 							AND loc.type_select = 1) AS qty
 				FROM stock_location_line loc_line, stock_location location
 				WHERE loc_line.location = location.id 
-					AND location.type_select = 1 
+					AND location.type_select != 3
 					AND loc_line.product = :id
 				GROUP BY location.id) 
 		   		UNION ALL
@@ -250,7 +250,7 @@
 		   		stock_location_line loc_line, stock_location location
 		    WHERE 
 		        loc_line.location = location.id 
-				AND location.type_select = 1 
+				AND location.type_select != 3
 				AND loc_line.product = :id
 		    GROUP BY 
 		   		location.id) 

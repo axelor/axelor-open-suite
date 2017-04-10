@@ -749,16 +749,9 @@ Task.full_name as project,
 TimesheetLine.comments 
 
 from hr_timesheet as Timesheet
-<<<<<<< HEAD
 inner join hr_timesheet_line as TimesheetLine on (TimesheetLine.affected_to_time_sheet = Timesheet.id)
 left join project_project as Task on (TimesheetLine.project = Task.id)
 left join project_project as Project on (Task.project = Project.id)
-=======
-inner join hr_timesheet_line as TimesheetLine on (TimesheetLine.timesheet = Timesheet.id)
-left join project_project_task as Task on (TimesheetLine.project_task = Task.id)
-left join project_project_task as Project on (Task.project = Project.id)
->>>>>>> 11ef34e0fff00dc1d609e57f6489b1583992e6c9
-
 left join base_product as Product on (TimesheetLine.product = Product.id)
 where Timesheet.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

@@ -564,6 +564,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	 		expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE));
 	 		expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 	 		expenseLine.setExpenseProduct(getKilometricExpenseProduct(expense));
+	 		expenseLine.setUser(user);
 	 		
 	 		Employee employee = user.getEmployee();
 	 		if(employee != null && employee.getKilometricAllowParam() != null)  {

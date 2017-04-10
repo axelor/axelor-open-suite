@@ -101,8 +101,8 @@ public class ProjectPlanningService {
 	@Transactional
 	public List<ProjectPlanningLine> populateMyTeamPlanning(ProjectPlanning planning, Team team) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
-		List<Project> projectList = null;
 		Set<User> userList = team.getMembers();
+		List<Project> projectList = null;
 
 		for (User user : userList) {
 			String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";

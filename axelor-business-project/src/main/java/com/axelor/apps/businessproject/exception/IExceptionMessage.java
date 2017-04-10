@@ -28,10 +28,10 @@ public interface IExceptionMessage {
 	static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template"/*)*/ ;
 	static final String INVOICING_PROJECT_EMPTY = /*$$(*/ "You haven't select any element to invoice"/*)*/ ;
 	static final String INVOICING_PROJECT_USER = /*$$(*/ "The project/task selected doesn't have any responsible"/*)*/ ;
-	static final String INVOICING_PROJECT_PROJECT = /*$$(*/ "Veuillez sélectionner un(e) projet/tâche"/*)*/ ;
+	static final String INVOICING_PROJECT_PROJECT = /*$$(*/ "You must select a project/task"/*)*/ ;
 	static final String INVOICING_PROJECT_PROJECT_PARTNER = /*$$(*/ "There is no customer for this project/task"/*)*/ ;
-	static final String INVOICING_PROJECT_PROJECT_PRODUCT = /*$$(*/ "Vous n'avez pas sélectionné de produit de facturation pour la tâche %s"/*)*/ ;
-	static final String INVOICING_PROJECT_PROJECT_COMPANY = /*$$(*/ "Vous n'avez pas sélectionné de compagnie sur le projet racine"/*)*/ ;
+	static final String INVOICING_PROJECT_PROJECT_PRODUCT = /*$$(*/ "You haven't select a product to invoice for the task %s"/*)*/ ;
+	static final String INVOICING_PROJECT_PROJECT_COMPANY = /*$$(*/ "You haven't select a company on the main project"/*)*/ ;
 	static final String SALE_ORDER_NO_PROJECT = /*$$(*/ "No Project selected"/*)*/ ;
 	static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks"/*)*/ ;
 	static final String INVOICING_PROJECT_GENERATION = /*$$(*/ "Invoicing project generated"/*)*/ ;
