@@ -7,7 +7,7 @@
 	    <toolbar>
 	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
-	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
 	    <field name="fullName"/>
 	    <field name="fixedPhone"/>
@@ -22,7 +22,7 @@
 	    <toolbar>
 	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
-	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
 	    <field name="fullName"/>
 	    <field name="fixedPhone"/>
@@ -37,7 +37,7 @@
 	    <toolbar>
 	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
-	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
 	    <field name="fullName"/>
 	    <field name="fixedPhone"/>
@@ -49,6 +49,9 @@
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
+		<toolbar>
+			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+		</toolbar>
 	    <field name="fullName"/>
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
@@ -363,7 +366,7 @@
 	     <toolbar>
 	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
-	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
 		<field name="fullName" />
 		<field name="picture" />
@@ -391,6 +394,9 @@
 	</cards>
 	
 	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner" title="Contacts" css="rect-image">
+		<toolbar>
+			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
