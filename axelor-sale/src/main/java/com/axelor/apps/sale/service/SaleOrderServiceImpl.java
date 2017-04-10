@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import javax.persistence.Query;
 
 import com.axelor.apps.sale.db.CancelReason;
+import com.google.common.base.Strings;
 import org.eclipse.birt.core.exception.BirtException;
 import java.time.LocalDate;
 import org.slf4j.Logger;
@@ -292,7 +293,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
 		saleOrder.setCancelReason(cancelReason);
-		if (cancelReason.getFreeText()) {
+		if (Strings.isNullOrEmpty(otherReason)) {
+			saleOrder.setOtherReason(cancelReason.getName());
+		} else {
 			saleOrder.setOtherReason(otherReason);
 		}
 		saleOrderRepo.save(saleOrder);
