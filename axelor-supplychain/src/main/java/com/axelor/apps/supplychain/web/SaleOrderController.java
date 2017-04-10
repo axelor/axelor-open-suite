@@ -372,31 +372,4 @@ public class SaleOrderController{
 		saleOrderRepo.save(so);
 		
 	}
-
-	public void checkStocks(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if (saleOrder.getLocation() == null) {
-			return;
-		}
-		try {
-			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
-					continue;
-				}
-				//Use the unit to get the right quantity
-				Unit unit = saleOrderLine.getProduct().getUnit();
-				BigDecimal qty = saleOrderLine.getQty();
-				if(unit != null && !unit.equals(saleOrderLine.getUnit())){
-					qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
-				}
-				Beans.get(LocationLineService.class).checkIfEnoughStock(
-						saleOrder.getLocation(),
-						saleOrderLine.getProduct(),
-						qty
-				);
-			}
-		} catch (AxelorException e) {
-			response.setAlert(e.getLocalizedMessage());
-		}
-	}
 }
