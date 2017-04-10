@@ -124,7 +124,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getOtherReason());
+		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getReason());
 
 		response.setFlash(I18n.get("The sale order was canceled"));
 		response.setCanClose(true);
