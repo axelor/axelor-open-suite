@@ -548,7 +548,7 @@
     </action-group>
 
 	<action-group name="action-sale-order-line-group-onchange">
-		<action name="action-supplychain-sale-order-method-check-stocks" if="__config__.app.isApp('supplychain')"/>
+		<action name="action-supplychain-sale-order-method-check-stocks" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
 		<action name="action-sale-order-method-compute"/>
 	</action-group>
     
