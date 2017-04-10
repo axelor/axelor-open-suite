@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.auth.db.User;
@@ -47,4 +48,12 @@ public class UserController {
 			userRepo.save(user);
 		}		
 	}
+	
+	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {
+		 String applicationMode = AppSettings.get().get("application.mode", "prod");
+		 if ("dev".equals(applicationMode)) {
+			 response.setAttr("testing", "hidden", false);
+		 }
+	}
+
 }
