@@ -40,7 +40,7 @@ public class ForecastService {
 	public void generate(ForecastGenerator forecastGenerator){
 		LocalDate fromDate = forecastGenerator.getFromDate();
 		LocalDate toDate = forecastGenerator.getToDate();
-		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE_TIME);
+		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE);
 		LocalDate todayDate = appBaseService.getTodayDate();
 		
 		if(forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()){
@@ -60,7 +60,7 @@ public class ForecastService {
 							forecastGenerator.getTypeSelect(), forecastGenerator.getAmount(), itDate, forecastGenerator.getForecastReason(),
 							forecastGenerator.getComments(),forecastGenerator.getRealizedSelect());
 			forecastGenerator.addForecastListItem(forecast);
-			itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
+			itDate = itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
 		}
 	}
 	
