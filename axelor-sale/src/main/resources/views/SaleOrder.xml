@@ -546,7 +546,7 @@
     	<action name="action-sale-order-method-confirm"/>
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     </action-group>
-    
+
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>

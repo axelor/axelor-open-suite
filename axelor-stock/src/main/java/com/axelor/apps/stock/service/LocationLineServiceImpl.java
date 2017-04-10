@@ -132,9 +132,17 @@ public class LocationLineServiceImpl implements LocationLineService {
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
-	
+
+	//check if the location has more than qty units of the product
+	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException{
+	    LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
+
+	    if(locationLine != null && locationLine.getCurrentQty().compareTo(qty) < 0) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1),
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
+		}
+	}
+
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
 			LocalDate lastFutureStockMoveDate)  {
 		
