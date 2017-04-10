@@ -98,7 +98,7 @@ public class GeneralServiceImpl implements GeneralService {
 	@Override
 	public DateTime getTodayDateTime(){
 
-		DateTime todayDateTime = new DateTime();
+		DateTime todayDateTime = null;
 		String applicationMode = AppSettings.get().get("application.mode", "prod");
 
 		if ("dev".equals(applicationMode)) {
@@ -109,6 +109,10 @@ public class GeneralServiceImpl implements GeneralService {
 			} else if (getGeneral() != null && getGeneral().getToday() != null) {
 				todayDateTime = getGeneral().getToday();
 			}
+		}
+
+		if (todayDateTime == null) {
+			todayDateTime = new DateTime();
 		}
 
 		return todayDateTime;
