@@ -284,7 +284,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String reason){
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
@@ -293,10 +293,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
 		saleOrder.setCancelReason(cancelReason);
-		if (Strings.isNullOrEmpty(reason)) {
-			saleOrder.setReason(cancelReason.getName());
+		if (Strings.isNullOrEmpty(cancelReasonStr)) {
+			saleOrder.setCancelReasonStr(cancelReason.getName());
 		} else {
-			saleOrder.setReason(reason);
+			saleOrder.setCancelReasonStr(cancelReasonStr);
 		}
 		saleOrderRepo.save(saleOrder);
 	}

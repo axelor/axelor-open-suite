@@ -87,7 +87,7 @@ public interface SaleOrderService {
 
 	public SaleOrder createSaleOrder(Company company) throws AxelorException;
 
-	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String reason);
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
 	
