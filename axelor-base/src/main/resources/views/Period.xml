@@ -28,7 +28,7 @@
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
 			<button name="close" title="Close period" onClick="action-method-period-close" hideIf="statusSelect == 2"/>
-			<button name="adjust" title="Adjust period" onClick="action-method-period-adjust" showIf="statusSelect == 2"/>
+			<button name="adjust" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" showIf="statusSelect == 2"/>
     	</panel>
     </form>
 
@@ -49,4 +49,8 @@
 	<action-attrs name="action-attrs-period-hide-linked-adjusting-moves-dashlet">
 		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__.of(AdjustHistory).all().filter('self.period.id = ?', id).fetch().size() == 0"/>
 	</action-attrs>
+
+	<action-validate name="action-validate-period-is-adjusting-year">
+		<error message="Year is not in adjusting mode" if="year.statusSelect != 3"/>
+	</action-validate>
 </object-views>
