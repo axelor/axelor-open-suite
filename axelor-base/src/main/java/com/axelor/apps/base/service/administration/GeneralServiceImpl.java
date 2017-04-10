@@ -96,26 +96,22 @@ public class GeneralServiceImpl implements GeneralService {
 	 * @return
 	 */
 	@Override
-	public DateTime getTodayDateTime(){
+	public DateTime getTodayDateTime() {
 
-		DateTime todayDateTime = null;
 		String applicationMode = AppSettings.get().get("application.mode", "prod");
 
 		if ("dev".equals(applicationMode)) {
 			User user = AuthUtils.getUser();
 
-			if (user != null && user.getToday() != null){
-				todayDateTime = user.getToday();
-			} else if (getGeneral() != null && getGeneral().getToday() != null) {
-				todayDateTime = getGeneral().getToday();
+			if (user != null && user.getToday() != null) {
+				return user.getToday();
+			}
+			if (getGeneral() != null && getGeneral().getToday() != null) {
+				return getGeneral().getToday();
 			}
 		}
 
-		if (todayDateTime == null) {
-			todayDateTime = new DateTime();
-		}
-
-		return todayDateTime;
+		return new DateTime();
 	}
 
 	/**
