@@ -23,11 +23,11 @@
 			<field name="bankDetailsTypeSelect"/>
 		</panel>
 		<panel>
-			<field name="bankAddressList">
+			<field name="bankAddressList" colSpan="12">
 				<editor x-show-titles="false">
-					<field name="code"/>
-					<field name="address"/>
-					<field name="label"/>
+					<field name="code" colSpan="3"/>
+					<field name="address" colSpan="5"/>
+					<field name="label" colSpan="4"/>
 				</editor>
 			</field>
         </panel>

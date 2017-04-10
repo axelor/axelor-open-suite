@@ -212,14 +212,13 @@ public class BankOrderLineService {
 			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
 				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
 			}
-			//filter on the currency if it is set in file format and in the bankdetails
-			//and if the bankOrder is multicurrency
-			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
-			if (!bankOrder.getIsMultiCurrency() &&
-					currency != null) {
-				String fileFormatCurrencyId = currency.getId().toString();
-				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
-			}
+		}
+		//filter on the currency if it is set in bank order and in the bankdetails
+		//and if the bankOrder is not multicurrency
+		Currency currency = bankOrder.getBankOrderCurrency();
+		if (!bankOrder.getIsMultiCurrency() && currency != null) {
+			String fileFormatCurrencyId = currency.getId().toString();
+			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
 		return domain;
 	}
@@ -282,9 +281,9 @@ public class BankOrderLineService {
 		}
 
 		//filter on the currency if the bank order is not multicurrency
-		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderFileFormat() != null) {
+		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() != null) {
 			if (!Beans.get(BankOrderService.class)
-					.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+					.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE), IException.INCONSISTENCY);
 			}
 		}
