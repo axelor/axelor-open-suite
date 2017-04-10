@@ -30,6 +30,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
@@ -247,6 +248,13 @@ public class GeneralController {
 		else{
 			response.setFlash(IExceptionMessage.GENERAL_7);
 		}
+	}
+	
+	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {
+		 String applicationMode = AppSettings.get().get("application.mode", "prod");
+		 if ("dev".equals(applicationMode)) {
+			 response.setAttr("main", "hidden", false);
+		 }
 	}
 
 }
