@@ -94,8 +94,9 @@
     
     <form name="sale-order-cancel-wizard-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel name="main">
-			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox" canNew="true"/>
-			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
+			<field name="cancelReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
+			<field name="otherReason" colOffset="4" colSpan="4" hidden="true"/>
+			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colOffset="4" colSpan="4"/>
 		</panel>
     </form>
     
@@ -513,6 +514,10 @@
     <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
     	<attribute name="hidden" for="generateTasks" expr="true"/>
     </action-attrs>
+
+	<action-attrs name="action-attrs-other-reason">
+		<attribute for="otherReason" name="hidden" expr="cancelReason.name != 'Other' &amp;&amp; cancelReason.name != 'Autre'"/>
+	</action-attrs>
 
     <action-group name="action-sale-group-onchange-company">
     	<action name="action-sale-order-record-company-configuration"/>

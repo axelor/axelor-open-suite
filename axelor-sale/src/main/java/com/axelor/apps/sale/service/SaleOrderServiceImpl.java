@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.sale.db.CancelReason;
 import org.eclipse.birt.core.exception.BirtException;
 import java.time.LocalDate;
 import org.slf4j.Logger;
@@ -282,7 +283,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancelSaleOrder(SaleOrder saleOrder){
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String otherReason){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
@@ -290,6 +291,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			saleOrder.getClientPartner().setHasOrdered(false);
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
+		saleOrder.setCancelReason(cancelReason);
+		if (cancelReason.getName().equals("Autre") || cancelReason.getName().equals("Other")) {
+			saleOrder.setOtherReason(otherReason);
+		}
 		saleOrderRepo.save(saleOrder);
 	}
 

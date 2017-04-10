@@ -19,6 +19,7 @@ package com.axelor.apps.sale.web;
 
 import java.io.IOException;
 
+import com.axelor.i18n.I18n;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,9 +124,9 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getOtherReason());
 
-		response.setFlash("The sale order was canceled");
+		response.setFlash(I18n.get("The sale order was canceled"));
 		response.setCanClose(true);
 
 	}
