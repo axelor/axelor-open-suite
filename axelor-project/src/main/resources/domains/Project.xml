@@ -5,12 +5,15 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="Project" extends="com.axelor.team.db.Team">
+  <entity name="Project">
       
      <!-- 
      	<integer name="importId"/>
      -->
-      
+      <string name="name" required="true" unique="true"/>
+      <string name="description" multiline="true"/>
+      <many-to-one name="team" ref="com.axelor.team.db.Team"/>
+      <string name="teamSelected"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>      
       <many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
       <one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
@@ -19,6 +22,7 @@
 	  <integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
 	  <many-to-many name="categories" ref="com.axelor.apps.project.db.ProjectCategory" title="Categories"/>
 	  <one-to-many name="projectTasks" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
+	  <boolean name="synchronisable"/>
 	  
 	  <string name="code" title="Code" />
 	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
@@ -35,6 +39,8 @@
 	  <decimal name="progress" title="Progress (%)"/>
 	  <decimal name="sequence" title="Sequence" />
 	  <integer name="orderByState"/>
+	  
+	  <integer name="projectType" selection="project.type.select" default="1"/>
 	  
 	  
 		<boolean name="imputable"/>

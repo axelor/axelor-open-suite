@@ -46,6 +46,16 @@
 			</panel>
 		</panel>
 		
+		<panel>
+			<panel name="products" title="Products" colSpan="12">
+				<field name="products" form-view="product-form" grid-view="product-grid" colSpan="6"/>
+				<field name="quantity" colSpan="6"/>
+				<field name="salePrice" colSpan="6"/>
+				<field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
+			</panel>
+		</panel>
+	
+		
 		<panel-related field="membersUserSet" form-view="user-form" grid-view="user-grid" colSpan="12"/>
 		<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 		

@@ -45,14 +45,16 @@
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
-			<field name="imputable" />
+			<field name="imputable" widget="boolean-switch"/>
 			<field name="projInvTypeSelect" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="projInvTypeSelect == 2 || projInvTypeSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</panel>
 		<panel-related field="members" form-view="user-form" grid-view="user-grid" />
 		<panel-tabs>
 		
-			
+			<panel name="projectPhase" title="Project Phase" showIf="projectType == 1">
+				<field name="project" colSpan="12"/>
+			</panel>
 			<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 			<panel name="invoicing" title="Invoicing" if-module="axelor-business-project" showIf="projInvTypeSelect == 3" if="__config__.app.isApp('business-project')">
 				<field name="product" onChange="action-project-record-unit" requiredIf="projInvTypeSelect == 3"/>
@@ -101,10 +103,13 @@
 		</panel-tabs>
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" showIf="childProjectList.length > 0">
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectList.length > 0" colSpan="12" onClick="save,action-method-project-compute-duration-fromchildren,save"/>
-
 	  	</panel>
 		<panel name="settings" title="Settings" sidebar="true">
 			<field name="projectFolder"/>
+			<field name="projectType" onChange="action-project-attrs-project-phase"/>
+			<field name="teamSelected" readonly="true"/>
+			<button name="addTeam" title="Add / Select a team" onClick="action-project-view-select-team" />
+			<field name="synchronisable" widget="boolean-switch"/>
 			<field name="sequence" hidden="true"/>
 		</panel>
 		
@@ -459,7 +464,16 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
-	
+	<action-view name="action-project-view-select-team" model="com.axelor.team.db.Team" title="Team">
+	  <view name="team-grid" type="grid"/>
+	  <view name="team-form" type="form"/>
+	  <view-param name="popup" value="reload"/>
+	  <view-param name="show-toolbar" value="false"/>
+	  <view-param name="show-confirm" value="true"/>
+	  <view-param name="popup-save" value="true"/>
+	  <view-param name="forceEdit" value="true"/>
+	</action-view>
+
 	<action-record name="action-project-record-compute-exTaxTotal" model="com.axelor.apps.project.db.Project">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
@@ -517,6 +531,10 @@
 	
 	<action-attrs name="action-attrs-project-compute-leadDelay" model="com.axelor.apps.project.db.Project">
 	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-project-phase" model="com.axelor.apps.project.db.Project">
+		<attribute name="domain" for="project" expr="eval: &quot;self.id IN (${project?.projectType?.collect{it.id}?.join(',')})&quot;" if="project?.projectType == 2"/>
 	</action-attrs>
 	
 </object-views>

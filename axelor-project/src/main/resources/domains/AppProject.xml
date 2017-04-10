@@ -6,6 +6,7 @@
 
 	<entity name="AppProject" lang="java" cachable="true" extends="App">
 		<string name="projectLabel" title="Project Label"/>
+		<integer name="generatedElementType" title="Generated element type" selection="project.config.generated.element.type"/>
 	</entity>
 
 </domain-models>
