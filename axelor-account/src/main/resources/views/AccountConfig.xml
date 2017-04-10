@@ -50,7 +50,7 @@
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="advancePaymentAccount"/>
+					<field name="advancePaymentAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				</panel>
 				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -74,6 +74,13 @@
 				</panel>
 				 <panel name="taxPayment" title="Tax payment" colSpan="12">
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
+				</panel>
+				<panel name="defaultPaymentModes" title="Default Payment Modes" colSpan="12">
+					<field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+					<field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+				</panel>
+				<panel name="defaultPaymentCondition" title="Default Payment Condition" colSpan="12">
+					<field name="defPaymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
 				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
@@ -138,8 +145,19 @@
 			</panel>
 			
 			<panel name="bankOrder" title="Bank Order">
-			  <field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
-			  <field name="generateMoveOnBankOrderValidation"/>
+			  	<field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
+			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
+			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				
+				<panel name="sepaBankOrdersSequences" title="SEPA Bank orders sequences" colSpan="6">
+					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<panel name="intBankOrdersSequences" title="International Bank orders sequences" colSpan="6">
+					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
@@ -206,8 +224,8 @@
 	  			<field name="displayProductCodeOnPrinting"/>
 	  			<field name="displayTaxDetailOnPrinting"/>
 		 		<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
-		 		<field name="displayTimesheetOnPrinting" />
-		 		<field name="displayExpenseOnPrinting" />
+		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" />
+		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" />
 		  	</panel>
 		
 		</panel-tabs>

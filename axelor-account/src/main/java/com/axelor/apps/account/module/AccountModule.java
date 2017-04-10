@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,10 +21,6 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.db.repo.BankOrderManagementRepository;
-import com.axelor.apps.account.db.repo.BankOrderRepository;
-import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
-import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -53,10 +49,6 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
-import com.axelor.apps.account.service.bankorder.BankOrderMergeService;
-import com.axelor.apps.account.service.bankorder.BankOrderMergeServiceImpl;
-import com.axelor.apps.account.service.bankorder.BankOrderService;
-import com.axelor.apps.account.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -100,8 +92,6 @@ public class AccountModule extends AxelorModule {
         
         bind(JournalRepository.class).to(JournalManagementRepository.class);
 
-        bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
-
         bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
@@ -120,22 +110,14 @@ public class AccountModule extends AxelorModule {
         
         bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
 
-        bind(BankOrderService.class).to(BankOrderServiceImpl.class);
-        
         bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
         
         bind(ReconcileService.class).to(ReconcileServiceImpl.class);
         
         bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
         
-        bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
-        
-        bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
-        
-        bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
-        
         bind(AppAccountService.class).to(AppAccountServiceImpl.class);
-        
+
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
     

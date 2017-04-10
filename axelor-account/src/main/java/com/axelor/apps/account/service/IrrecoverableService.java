@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -754,7 +754,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int seq = 1;
 
@@ -822,7 +822,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int seq = 1;
 

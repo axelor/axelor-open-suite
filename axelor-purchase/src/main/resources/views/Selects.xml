@@ -28,8 +28,8 @@
 	</selection>
 	
 	<selection name="app.type.select" id="purchase.app.type.select">
-		<option value="purchase">Purchase</option>
-		<option value="purchase-request">Purchase Request</option>
+		<option order="6" value="purchase">Purchase</option>
+		<option order="7" value="purchase-request">Purchase Request</option>
 	</selection>
 	
 	<selection name="purchase.request.status.select">

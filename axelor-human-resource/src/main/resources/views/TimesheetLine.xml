@@ -17,7 +17,7 @@
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
-		<field name="project" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
@@ -30,7 +30,7 @@
 	<grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<field name="project" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
@@ -42,7 +42,7 @@
 
 	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet" groupBy="date" orderBy="date">
-		<field name="project" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
@@ -72,7 +72,7 @@
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project" width="large">
 		<panel name="overview" title="Overview">
-			<field name="project" onChange="action-timesheet-line-record-to-invoice,action-hr-timesheet-line-record-empty-product" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
@@ -88,7 +88,7 @@
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project" width="large">
 		<panel name="overview" title="Overview">
-			<field name="project" onChange="action-timesheet-line-record-to-invoice,action-hr-timesheet-line-record-empty-product" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="2" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
@@ -100,6 +100,11 @@
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
+
+	<action-group name="action-timesheet-line-group-project-onchange">
+		<action name="action-timesheet-line-record-to-invoice"/>
+		<action name="action-hr-timesheet-line-record-empty-product"/>
+	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-line-attrs-domain-product">
 		<attribute name="domain" for="product" expr="eval:project == null || project?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productList)&quot;"/>

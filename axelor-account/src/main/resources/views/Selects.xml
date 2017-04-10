@@ -201,34 +201,6 @@
 		<option value="4">N days + end of month at</option>
 	</selection>
 	
-	<selection name="iaccount.payment.mode.type.select">
-		<option value="1">Other</option>
-		<option value="2">Direct debit</option>
-		<option value="3">IPO</option>
-		<option value="4">IPO + Cheque</option>
-		<option value="5">Cash</option>
-		<option value="6">Bank card</option>
-		<option value="7">Cheque</option>
-		<option value="8">Web</option>
-		<option value="9">Transfer</option>
-	</selection>		
-	
-	<selection name="iaccount.payment.mode.in.out.select">
-		<option value="1">In</option>
-		<option value="2">Out</option>
-	</selection>	
-
-	<selection name="account.bank.statement.type.select">
-		<option value="1">General</option>
-		<option value="2">Customer</option>
-		<option value="3">Supplier</option>
-	</selection>	
-	
-	<selection name="account.bank.statement.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Validated</option>
-	</selection>
-	
 	<selection name="move.template.line.debit.credit.select">
 		<option value="0">Debit</option>
 		<option value="1">Credit</option>
@@ -302,82 +274,17 @@
 		<option value="1">Graph</option>
 		<option value="2">Table</option>
 	</selection>
-
-	<selection name="iaccount.bank.order.type.select">
-		<option value="1">Bank to Bank Transfer</option>
-		<option value="2">SEPA Credit Transfer</option>
-		<option value="3">SEPA Direct Debit</option>
-		<option value="4">International Credit Transfer</option>
-		<option value="5">International Direct Debit</option>
-	</selection>
 	
-	<selection name="iaccount.bank.order.partner.select">
-		<option value="1">Supplier</option>
-		<option value="2">Employee</option>
-		<option value="3">Customer</option>
-	</selection>
-	
-	<selection name="iaccount.bank.order.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Awaiting signature</option>
-		<option value="3">Validated</option>
-		<option value="4">Carried out</option>
-		<option value="5">Rejected</option> 
-		<option value="6">Canceled</option>		
-	</selection>
-	
-	<selection name="iaccount.bank.order.reject.status.select">
-		<option value="0">Not rejected</option>
-		<option value="1">Partially rejected</option>
-		<option value="2">Totally rejected</option>
-	</selection>
-	
-	<selection name="account.bank.order.line.fees.imputation.mode.select">
-		<option value="13">Receiver</option>
-		<option value="14">Reveiver and sender</option>
-		<option value="15">Sender</option>
-	</selection>
-	
-	<selection name="account.bank.order.line.payment.mode.select">
-		<option value="0">Transfer or other</option>
-		<option value="1">Cheque</option>
-	</selection>
-	
-	<selection name="bank.order.file.format.select">
-		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
-		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
-		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
-	</selection>
-	
-	<selection name="account.ebics.user.ebics.type.select">
-		<option value="0">Ebics T</option>
-		<option value="1">Ebics TS</option>
-	</selection>
-	
-	<selection name="account.ebics.user.status.select">
-		<option value="0">Waiting for the certificate configuration</option>
-		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
-		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
-		<option value="3">Active connection</option>
-		<option value="4">Certificates should be renew</option>
-	</selection>
-
-	<selection name="account.analytic.move.line.status.select">
+	<selection name="account.analytic.move.line.type.select">
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>
 	</selection>
 
-	<selection name="account.ebics.certificate.type.select">
-		<option value="ssl">SSL</option>
-		<option value="encryption">Encryption</option>
-		<option value="authentication">Authentication</option>
-	</selection>
-
 	<selection name="app.type.select" id="account.app.type.select">
-		<option value="account">Account</option>
-		<option value="invoice">Invoice</option>
-		<option value="budget">Budget</option>
+		<option order="2" value="account">Account</option>
+		<option order="3" value="invoice">Invoice</option>
+		<option order="4" value="budget">Budget</option>
 	</selection>
 
 

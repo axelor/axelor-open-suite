@@ -1,11 +1,15 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-business-project"
-	version "5.0.0"
+apply {
+	version = "5.0.0"
+}
+
+axelor {
 	title "Axelor Business Project"
+	removable true
+}
 
-	// module dependencies
-	module "modules:axelor-human-resource"
-	module "modules:axelor-supplychain"
+dependencies {
+	compile project(":modules:axelor-human-resource")
+	compile project(":modules:axelor-supplychain")
 }

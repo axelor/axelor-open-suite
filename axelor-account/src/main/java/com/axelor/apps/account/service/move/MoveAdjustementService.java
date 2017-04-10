@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,7 +77,7 @@ public class MoveAdjustementService {
 
 		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
 
-		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.AUTOMATIC);
+		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, account, debitAmountRemaining, false, today, 1, null);
@@ -113,7 +113,7 @@ public class MoveAdjustementService {
 
 		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
 
-		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.AUTOMATIC);
+		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(
@@ -156,7 +156,7 @@ public class MoveAdjustementService {
 		Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
 
 		// Move
-		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null, MoveRepository.AUTOMATIC);
+		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partnerCredit, creditMoveLineToReconcile.getAccount(), 
 				amount, true, today, 1, null);

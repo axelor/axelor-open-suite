@@ -12,11 +12,19 @@
       <integer name="canteenEntries" title="Number of canteen entries"/>
       <integer name="daysOverseas" title="Number of days overseas"/>
       <integer name="invitation" title="Invitation"/>
+      <integer name="inAdvanceNbr" title="In advance" readonly="true"/>
       <integer name="lunchVoucherNumber" title="Number of lunch vouchers" readonly="true"/>
+      <integer name="daysWorkedNbr" title="Number of days worked" readonly="true"/>
       <string name="comments" title="Comments" large="true"/>
-      <boolean name="isStockLine" default="false" title="Stock Line"/>
       <integer name="givenToEmployee" title="Given to Employee"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation" />
+      <integer name="statusSelect" title="Status" selection="hr.lunch.voucher.line.status.select" readonly="true" />
+
+      <extra-code>
+          <![CDATA[
+            public static final Integer STATUS_CALCULATED = 1;
+            public static final Integer STATUS_ANOMALY = 2;
+          ]]>
+      </extra-code>
   </entity>
-  
 </domain-models>

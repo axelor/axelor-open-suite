@@ -55,7 +55,6 @@
 <!--   	Highlight -->
   	<decimal name="salePrice" precision="20" scale="10"/> 
   	
-  	<boolean name="toInvoice"/>
   	<boolean name="isTitleLine" title="Title Line"/>
   	
   	<!-- -Json fields -->

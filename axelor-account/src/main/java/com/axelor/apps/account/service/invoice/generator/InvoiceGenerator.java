@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -169,7 +169,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setPartner(partner);
 
 		if(paymentCondition == null)  {
-			paymentCondition = partner.getPaymentCondition();
+			paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		}
 		if(paymentCondition == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
@@ -177,7 +177,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setPaymentCondition(paymentCondition);
 
 		if(paymentMode == null)  {
-			paymentMode = partner.getPaymentMode();
+			paymentMode = InvoiceToolService.getPaymentMode(invoice);
 		}
 		if(paymentMode == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
@@ -336,10 +336,7 @@ public abstract class InvoiceGenerator  {
 	}
 
 	/**
-	 * Compute the invoice amounts
-	 * <p>
-	 * The compute is based on invoice tax lines.
-	 * </p>
+	 * Compute the invoice total amounts
 	 *
 	 * @param invoice
 	 * @throws AxelorException
@@ -351,26 +348,38 @@ public abstract class InvoiceGenerator  {
 		invoice.setTaxTotal( BigDecimal.ZERO );
 		invoice.setInTaxTotal( BigDecimal.ZERO );
 
-		// In the company currency
+		// In the company accounting currency
 		invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
 		invoice.setCompanyTaxTotal(BigDecimal.ZERO);
 		invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
+		
+		for(InvoiceLine invoiceLine : invoice.getInvoiceLineList())  {
+			// In the invoice currency
+			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
+			invoice.setCompanyExTaxTotal(invoice.getCompanyExTaxTotal().add( invoiceLine.getCompanyExTaxTotal() ));
+		}
 
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
 			// In the invoice currency
-			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
 			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getTaxTotal() ));
 			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 
-			// In the company currency
-			invoice.setCompanyExTaxTotal(invoice.getCompanyExTaxTotal().add( invoiceLineTax.getCompanyExTaxBase() ));
+			// In the company accounting currency
 			invoice.setCompanyTaxTotal(invoice.getCompanyTaxTotal().add( invoiceLineTax.getCompanyTaxTotal() ));
 			invoice.setCompanyInTaxTotal(invoice.getCompanyInTaxTotal().add( invoiceLineTax.getCompanyInTaxTotal() ));
 
 		}
 		
 		invoice.setAmountRemaining(invoice.getInTaxTotal());
+
+		// In the invoice currency
+		invoice.setInTaxTotal(invoice.getExTaxTotal().add( invoice.getTaxTotal() ));
+
+		// In the company accounting currency
+		invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add( invoice.getCompanyTaxTotal() ));
 
 		logger.debug("Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });

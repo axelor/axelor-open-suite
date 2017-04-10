@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
@@ -35,6 +36,15 @@ public class HRConfigService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG), company.getName()),IException.CONFIGURATION_ERROR);
 		}
 		return hrConfig;
+	}
+	
+	public LeaveReason getLeaveReason(HRConfig hrConfig) throws AxelorException{
+		LeaveReason leaveReason = hrConfig.getLeaveReason();
+		
+		if(leaveReason == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LEAVE_REASON), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return leaveReason;
 	}
 	
 	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{
@@ -86,6 +96,18 @@ public class HRConfigService {
 		
 	}
 	
+	public Template getCanceledExpenseTemplate(HRConfig hrConfig) throws AxelorException  {
+
+		Template refusedExpenseTemplate = hrConfig.getCanceledExpenseTemplate();
+
+		if(refusedExpenseTemplate == null)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_EXPENSE_TEMPLATE), hrConfig.getCompany().getName()),IException.CONFIGURATION_ERROR);
+		}
+
+		return refusedExpenseTemplate;
+
+	}
+
 
 	// TIMESHEET
 	
@@ -125,6 +147,18 @@ public class HRConfigService {
 		
 	}
 	
+	public Template getCanceledTimesheetTemplate(HRConfig hrConfig) throws AxelorException  {
+
+		Template refusedTimesheetTemplate = hrConfig.getCanceledTimesheetTemplate();
+
+		if(refusedTimesheetTemplate == null)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_TIMESHEET_TEMPLATE), hrConfig.getCompany().getName()),IException.CONFIGURATION_ERROR);
+		}
+
+		return refusedTimesheetTemplate;
+
+	}
+
 	
 	// LEAVE REQUEST
 	
@@ -164,6 +198,18 @@ public class HRConfigService {
 		
 	}
 	
+	public Template getCanceledLeaveTemplate(HRConfig hrConfig) throws AxelorException  {
+
+		Template refusedLeaveTemplate = hrConfig.getCanceledLeaveTemplate();
+
+		if(refusedLeaveTemplate == null)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_LEAVE_TEMPLATE), hrConfig.getCompany().getName()),IException.CONFIGURATION_ERROR);
+		}
+
+		return refusedLeaveTemplate;
+
+	}
+
 	
 	// EXTRA HOURS
 	
@@ -201,6 +247,18 @@ public class HRConfigService {
 		
 		return refusedExtraHoursTemplate;
 		
+	}
+
+	public Template getCanceledExtraHoursTemplate(HRConfig hrConfig) throws AxelorException  {
+
+		Template refusedExtraHoursTemplate = hrConfig.getCanceledExtraHoursTemplate();
+
+		if(refusedExtraHoursTemplate == null)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE), hrConfig.getCompany().getName()),IException.CONFIGURATION_ERROR);
+		}
+
+		return refusedExtraHoursTemplate;
+
 	}
 
 }

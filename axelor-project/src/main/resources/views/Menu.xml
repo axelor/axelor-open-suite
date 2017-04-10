@@ -5,7 +5,7 @@
 	<menuitem name="menu-project-root" order="-103" title="Project" icon="fa-tasks"  if="__config__.app.isApp('project')"
 	     icon-background="#3f6bb9"/> 	
 	    
-	<menuitem name="project-all" parent="menu-project-root"
+	<menuitem name="project-all" parent="menu-project-root" order="5"
     	title="Projects"
     	action="project.all"/>
 
@@ -13,31 +13,41 @@
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
 	    <view type="calendar" name="project-calendar"/>
-	    <view type="kanban" name="project-kanban"/>
 	    <view type="gantt" name="project-gantt"/>
-	    <domain>self.typeSelect = 'project'</domain>
 	</action-view>
 	
 	<!--  Team Apps -->
-	<menuitem name="project-folder" parent="menu-project-root" title="Project Folder" action="project.folder"/>
+	<menuitem name="project-folder" parent="menu-project-root" title="Project Folder" action="project.folder" order="10"/>
 	<action-view name="project.folder" title="Project Folder" model="com.axelor.apps.project.db.ProjectFolder">
 		<view type="grid" name="project-folder-grid"/>
 		<view type="form" name="project-folder-form"/>
 	</action-view>
 	
 	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks"/>
-	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.apps.project.db.Task">
+	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="tasks-grid"/>
 		<view type="form" name="tasks-form"/>
 	</action-view>
 	
-	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations"/>
+	<menuitem name="project-planning" title="Planning" order="20" parent="menu-project-root"  />
+
+	<menuitem name="my-planning" parent="project-planning"
+    	title="My Planning"
+    	action="my.planning"/>
+
+	<action-method name="my.planning">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myPlanning"/>
+	</action-method>
 	
-	<menuitem name="project-priority" parent="project-configurations" title="Priority" action="project-priority"/>
-	<action-view name="project-priority" title="Project Priority" model="com.axelor.apps.project.db.ProjectPriority">
-		<view type="grid" name="priority-grid"/>
-		<view type="form" name="priority-form"/>
-	</action-view>
+	<menuitem name="my-team-planning" parent="project-planning"
+    	title="My Team Planning"
+    	action="my.team.planning"/>
+
+	<action-method name="my.team.planning">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myTeamPlanning"/>
+	</action-method>
+	
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations" order="40"/>
 	
 	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
 	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">
@@ -46,42 +56,5 @@
 	</action-view>
 	
 	
-	
-	
-	<menuitem name="project-gantt" parent="menu-project-root"
-    	title="Project gantt"
-    	action="project.gantt"/>
-    	
-   	<action-view name="project.gantt" title="Project gantt" model="com.axelor.apps.project.db.Project">
-   		<view type="gantt" name="project-gantt"/>
-   		<view type="form" name="task-form"/>
-	</action-view>
-	
-	<menuitem name="task-all" parent="menu-project-root"
-    	title="Tasks"
-    	action="task.all"/>
-
-	<action-view name="task.all" title="Tasks" model="com.axelor.apps.project.db.Project">
-    	<view type="kanban" name="task-kanban"/>
-    	<view type="grid" name="task-grid"/>
-	    <view type="form" name="task-form"/>
-	    <domain>self.typeSelect = 'task'</domain>
-	</action-view>
-	
-	<menuitem name="my-planning" parent="menu-project-root"
-    	title="My Planning"
-    	action="my.planning"/>
-
-	<action-method name="my.planning">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myPlanning"/>
-	</action-method>
-	
-	<menuitem name="my-team-planning" parent="menu-project-root"
-    	title="My Team Planning"
-    	action="my.team.planning"/>
-
-	<action-method name="my.team.planning">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myTeamPlanning"/>
-	</action-method>
 
 </object-views>

@@ -1,12 +1,15 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-admin"
-	version "5.0.0"
+apply {
+	version = "5.0.0"
+}
+
+axelor {
 	title "Axelor :: Admin"
-
 	removable false
-	
-	module "modules:axelor-exception"
+}
+
+dependencies {
+	compile project(":modules:axelor-exception")
 }
 

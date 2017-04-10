@@ -4,8 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<selection name="app.type.select" id="talent.app.type.select">
-		<option value="training">Training</option>
-		<option value="recruitment">Recruitment</option>
+		<option order="20" value="training">Training</option>
+		<option order="21" value="recruitment">Recruitment</option>
+		<option order="22" value="appraisal">Appraisal</option>
 	</selection>
 
 	<selection name="training.register.rating.select">
@@ -57,11 +58,18 @@
 		<option value="3">Hired</option>
 		<option value="4">Application rejected</option>
 		<option value="5">Offer rejected</option>
-		<option value="6">Cancel/</option>
+		<option value="6">Cancel</option>
 	</selection>
 	
 	<selection name="crm.event.related.to.select" id="talent.crm.event.related.to.select">
 		<option value="com.axelor.apps.talent.db.JobApplication">Job Application</option>
+	</selection>
+	
+	<selection name="appraisal.status.selected">
+		<option value="0">Draft</option>
+		<option value="1">Sent</option>
+		<option value="2">Completed</option>
+		<option value="3">Canceled</option>
 	</selection>
 	
 </object-views>

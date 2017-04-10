@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,8 +26,6 @@ import java.util.Set;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
-
-import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
@@ -44,6 +42,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -102,8 +101,8 @@ public class ProjectPlanningService {
 	@Transactional
 	public List<ProjectPlanningLine> populateMyTeamPlanning(ProjectPlanning planning, Team team) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
+		Set<User> userList = team.getMembers();
 		List<Project> projectList = null;
-		Set<User> userList = team.getUserSet();
 
 		for (User user : userList) {
 			String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";

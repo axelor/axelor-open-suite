@@ -43,13 +43,14 @@
 		<option value="3">Production order</option>
 	</selection>
 	
-	<selection name="stock.move.line.accordance.select">
-		<option value="1">Compliant</option>
-		<option value="2">Non compliant</option>
+	<selection name="stock.move.line.conformity.select">
+		<option value="1"></option>
+		<option value="2">Compliant</option>
+		<option value="3">Non compliant</option>
 	</selection>
 	
 	<selection name="app.type.select" id="stock.app.type.select">
-		<option value="stock">Stock</option>
+		<option order="5" value="stock">Stock</option>
 	</selection>
 	
 </object-views>

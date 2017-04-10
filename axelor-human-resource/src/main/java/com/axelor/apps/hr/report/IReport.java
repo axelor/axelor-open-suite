@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,4 +24,7 @@ public interface IReport {
 	public static final String TIMESHEET = "Timesheet.rptdesign";
 	public static final String EMPLOYEE_BONUS_MANAGEMENT = "EmployeeBonusMgt.rptdesign";
 	public static final String EMPLOYEE_ANNUAL_REPORT = "EmployeeAnnualReport.rptdesign";
+	public static final String LUNCH_VOUCHER_MGT_MONTHLY = "LunchVoucherMgt_Monthly.rptdesign";
+
+	
 }

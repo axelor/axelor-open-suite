@@ -9,8 +9,6 @@
 		<field name="actionSelect"/>
 		<field name="company"/>
 		<field name="description"/>
-		<field name="leaveReason"/>
-		<field name="dayNumber"/>
     </grid>
  
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
@@ -21,22 +19,37 @@
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
-			    <field name="leaveReason" colSpan="4" requiredIf="actionSelect == 1"/>
+			    <field name="leaveReason" colSpan="4" onChange="action-hr-batch-record-day-number-default" requiredIf="actionSelect == 1"/>
 			    <field name="comments" colSpan="8"/>
-			    <field name="dayNumber" colSpan="4" requiredIf="actionSelect == 1"/>
-			    <field name="startDate" colSpan="4"/>
-			    <field name="endDate" colSpan="4"/>
+			    <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>
+			    <field name="useWeeklyPlanningCoef" />
+			    <field name="startDate" colSpan="3"/>
+			    <field name="endDate" colSpan="3"/>
 		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
 				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
-				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-leave-management"/>
+				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
 			<panel name="seniorityLeaveManagementPage" title="Seniority leave management page" hidden="true" showIf="actionSelect == 2">
-			    <field name="leaveReason" colSpan="4" requiredIf="actionSelect == 2"/>
+			    <field name="leaveReason" colSpan="4" />
 			    <field name="comments" colSpan="8"/>
 			    <field name="startDate" colSpan="4"/>
 			    <field name="endDate" colSpan="4"/>
 			    <field name="referentialDate" colSpan="4" />
-				<button name="seniorityLeaveManagementBatch" title="Seniority leave management batch" onClick="save,action-hrbatch-method-seniority-leave-management"/>
+				<button name="seniorityLeaveManagementBatch" readonlyIf="leaveReason == null" title="Seniority leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
+			</panel>
+			<panel name="payrollPreparationGenerationPage" title="Payroll preparation generation page" hidden="true" showIf="actionSelect == 3">
+			    <field name="period" domain="self.year.company = :company" colSpan="4" />
+			    <field name="comments" colSpan="8"/>
+			    <panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
+				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
+				<button name="payrollPreparationGenerationBatch" readonlyIf="period == null" title="Payroll preparation generation batch" onClick="save,action-hrbatch-method-hr-batch"/>
+			</panel>
+			<panel  name="payrollPreparationExportPage" title="Payroll preparation export page" hidden="true" showIf="actionSelect == 4">
+				<field name="period" domain="self.year.company = :company" />
+				<field name="payrollPreparationExportTypeSelect" />
+				<field name="exportAlreadyExported" />
+				<spacer/>
+				<button name="payrollPreparationExportBatch" readonlyIf="period == null || payrollPreparationExportTypeSelect == null" title="Payroll preparation export batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
 			<panel name="informations" title="Informations">
 				<field name="createdOn" title="Created on"/>
@@ -47,20 +60,17 @@
 			</panel-tabs>
 	</form>
 
-
-	<action-method name="action-hrbatch-method-leave-management">
-		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionLeaveManagement"/>
-	</action-method>
-	
-	<action-method name="action-hrbatch-method-seniority-leave-management">
-		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionSeniorityLeaveManagement"/>
+	<action-method name="action-hrbatch-method-hr-batch">
+		<call class="com.axelor.apps.hr.web.HrBatchController" method="launchHrBatch"/>
 	</action-method>
 	
 	<action-record name="action-hr-batch-record-default" model="com.axelor.apps.hr.db.HrBatch">
 		<field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
-
-
-
+	
+	<action-record name="action-hr-batch-record-day-number-default" model="com.axelor.apps.hr.db.HrBatch">
+		<field name="dayNumber" expr="eval: leaveReason?.defaultDayNumberGain"/>
+	</action-record>
+	
 
 </object-views>

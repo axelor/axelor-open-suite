@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,14 +26,20 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RefundInvoice.class);
 	private Invoice invoice;
+
 	
 	public RefundInvoice(Invoice invoice) {
 		
@@ -61,6 +67,14 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		refund.setJournal(journalService.getJournal(invoice)); 
 		
+		// Payment mode should not be the invoice payment mode. It must come
+		// from the partner or the company, or be null.
+		refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));
+
+		if (refund.getPaymentMode() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		}
+
 		return refund;
 		
 	}

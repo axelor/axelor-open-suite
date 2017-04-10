@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -119,7 +120,7 @@ public class InterbankPaymentOrderRejectImportService {
 
 			AccountConfig accountConfig = company.getAccountConfig();
 
-			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null, MoveRepository.AUTOMATIC);
+			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 			// Création d'une ligne au crédit
 			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, rejectImportService.createRejectDate(dateReject), 1, refReject);

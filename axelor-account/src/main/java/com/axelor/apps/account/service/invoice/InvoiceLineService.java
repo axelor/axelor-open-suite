@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,6 @@ import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -96,8 +95,7 @@ public class InvoiceLineService {
 		analyticMoveLine.setInvoiceLine(invoiceLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
 		analyticMoveLine.setDate(appAccountService.getTodayDate());
-		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
-		
+		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 	}
 	
 	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{

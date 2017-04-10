@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
-"Budget";"BUDGET";"Budget configuration";"budget";"app-budget.png";"axelor-account";"account"
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Budget;BUDGET;Budget configuration;budget;app-budget.png;axelor-account;account;18

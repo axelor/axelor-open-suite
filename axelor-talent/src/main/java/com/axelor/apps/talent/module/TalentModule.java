@@ -18,10 +18,22 @@
 package com.axelor.apps.talent.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
+import com.axelor.apps.talent.db.repo.JobApplicationRepository;
+import com.axelor.apps.talent.db.repo.JobApplicationTalentRepository;
+import com.axelor.apps.talent.db.repo.JobPositionRepository;
+import com.axelor.apps.talent.db.repo.JobPositionTalentRepository;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingRegisterTalentRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionTalentRepository;
+import com.axelor.apps.talent.service.AppraisalService;
+import com.axelor.apps.talent.service.AppraisalServiceImpl;
+import com.axelor.apps.talent.service.JobApplicationService;
+import com.axelor.apps.talent.service.JobApplicationServiceImpl;
+import com.axelor.apps.talent.service.JobPositionService;
+import com.axelor.apps.talent.service.JobPositionServiceImpl;
+import com.axelor.apps.talent.service.MailAccountServiceTalentImpl;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.apps.talent.service.TrainingRegisterServiceImpl;
 import com.axelor.apps.talent.service.TrainingSessionService;
@@ -36,6 +48,13 @@ public class TalentModule extends AxelorModule {
 		bind(TrainingRegisterService.class).to(TrainingRegisterServiceImpl.class);
 		bind(TrainingSessionService.class).to(TrainingSessionServiceImpl.class);
 		bind(TrainingSessionRepository.class).to(TrainingSessionTalentRepository.class);
+		bind(JobPositionRepository.class).to(JobPositionTalentRepository.class);
+		bind(JobApplicationService.class).to(JobApplicationServiceImpl.class);
+		bind(JobApplicationRepository.class).to(JobApplicationTalentRepository.class);
+		bind(MailAccountServiceBaseImpl.class).to(MailAccountServiceTalentImpl.class);
+		bind(JobPositionService.class).to(JobPositionServiceImpl.class);
+		bind(AppraisalService.class).to(AppraisalServiceImpl.class);
+		
 	}
 
 }

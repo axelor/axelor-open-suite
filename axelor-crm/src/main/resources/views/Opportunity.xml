@@ -102,7 +102,7 @@
 		
 		<panel name="financialTerms" title="Financial terms" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="amount" colSpan="3"/>
-			<field name="currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bestCase" colSpan="3"/>
 			<field name="worstCase" colSpan="3"/>
 		</panel>
@@ -120,9 +120,9 @@
 		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
 		  <field name="user" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-		  <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+		  <field name="team" form-view="team-form" grid-view="team-grid"/>
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		  <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
+		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
 		</panel>
 		
 		<panel>
@@ -136,7 +136,7 @@
  
 	</form>
  
-	<kanban columnBy="salesStageSelect" sequenceBy="salesStageSelect" onNew="opportunity.kanban.on.new,action-opportunity-group-new" limit="10"
+	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" onNew="opportunity.kanban.on.new , action-opportunity-group-new" limit="10"
 	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>
 		<field name="description"/>

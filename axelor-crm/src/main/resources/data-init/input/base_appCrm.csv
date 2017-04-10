@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
-"CRM";"CRM";"CRM configuration";"crm";"app-crm.png";"axelor-crm";"base"
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+CRM;CRM;CRM configuration;crm;app-crm.png;axelor-crm;base;1

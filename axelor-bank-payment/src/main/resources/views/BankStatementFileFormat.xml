@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="bank-statement-file-format-grid" orderBy="statementFileFormatSelect" title="Bank Statements file formats" model="com.axelor.apps.bankpayment.db.BankStatementFileFormat" canDelete="false">
+        <field name="name"/>
+        <field name="statementFileFormatSelect"/>
+    </grid>
+    
+	<form name="bank-statement-file-format-form" title="Bank Statements file format" model="com.axelor.apps.bankpayment.db.BankStatementFileFormat" canDelete="false"> 
+  		<panel name="main" colSpan="12">
+	        <field name="statementFileFormatSelect" required="true" onChange="action-bank-statement-file-format-record-compute-name"/>
+	        <field name="name" required="true"/>
+  		</panel>
+	</form>
+	
+	<action-record name="action-bank-statement-file-format-record-compute-name" model="com.axelor.apps.bankpayment.db.BankStatementFileFormat">
+		<field name="name" expr="eval: statementFileFormatSelect" if="!name"/>
+	</action-record>
+	
+    
+</object-views>

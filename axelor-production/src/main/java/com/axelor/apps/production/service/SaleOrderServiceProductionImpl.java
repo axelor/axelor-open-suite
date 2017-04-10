@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -46,10 +47,10 @@ public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainI
 	public SaleOrderServiceProductionImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService,
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
-			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppSupplychainService appSupplychainService) {
+			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppSupplychainService appSupplychainService, AccountConfigService accountConfigService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, appSaleService,
-				userService, saleOrderStockService, saleOrderPurchaseService, appSupplychainService);
+				userService, saleOrderStockService, saleOrderPurchaseService, appSupplychainService, accountConfigService);
 		
 		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
 		

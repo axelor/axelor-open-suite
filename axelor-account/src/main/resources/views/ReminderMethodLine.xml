@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     <grid name="reminder-method-line-grid" title="Reminder method lines" model="com.axelor.apps.account.db.ReminderMethodLine">
         <field name="reminderLevel"/>
+        <field name="reminderLevelLabel"/>
         <field name="standardDeadline"/>
         <field name="minThreshold"/>
         <field name="messageTemplate"/>
@@ -19,6 +20,7 @@
 			  <field name="label" readonly="true"/>
 			</form>-->
 			</field>
+       		<field name="reminderLevelLabel" readonly="true"/>
 		</panel>
 		<panel name="conditions" title="Conditions" colSpan="6">
 		  <field name="standardDeadline"/>
@@ -31,7 +33,7 @@
 </form>
 
     
-    <action-record name="action-reminder-level-selected" model="com.axelor.apps.account.db.ReminderMatrixLine">
+    <action-record name="action-reminder-level-selected" model="com.axelor.apps.account.db.ReminderMethodLine">
         <field name="reminderLevelLabel" expr="eval: reminderLevel.label"/>
     </action-record>
   

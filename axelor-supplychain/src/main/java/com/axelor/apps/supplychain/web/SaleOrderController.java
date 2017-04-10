@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,25 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -54,7 +59,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderController{
-	
+
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
@@ -63,10 +68,10 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-	
+
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-	
+
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -76,7 +81,7 @@ public class SaleOrderController{
 
 			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
 			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-			
+
 			if(stockMove != null)  {
 				response.setView(ActionView
 					.define(I18n.get("Stock Move"))
@@ -107,6 +112,7 @@ public class SaleOrderController{
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -281,6 +287,7 @@ public class SaleOrderController{
 	            .map());
 	}
 
+	@SuppressWarnings("unchecked")
 	public void invoiceSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
 		if(listSelectedSaleOrder != null){
@@ -365,5 +372,4 @@ public class SaleOrderController{
 		saleOrderRepo.save(so);
 		
 	}
-	
 }

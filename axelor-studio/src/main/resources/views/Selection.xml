@@ -132,4 +132,8 @@
     	<option value="2">Partial update</option>
     </selection>
     
+    <selection name="app.type.select" id="studio.app.type.select">
+		<option order="21" value="bpm">Bpm</option>
+	</selection>
+    
 </object-views>

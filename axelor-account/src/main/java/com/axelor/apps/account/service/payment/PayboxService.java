@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,10 +37,9 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
-import org.bouncycastle.util.io.pem.PemReader;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
+import org.bouncycastle.openssl.PEMReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -436,9 +435,9 @@ public class PayboxService {
      */
      private PublicKey getPubKey(String pubKeyPath) throws Exception  {
 
- 		PemReader reader = new PemReader(new FileReader(pubKeyPath));
+ 		PEMReader reader = new PEMReader(new FileReader(pubKeyPath));
 
- 		byte[] pubKey = reader.readPemObject().getContent();
+ 		byte[] pubKey = ((X509EncodedKeySpec)reader.readObject()).getEncoded();
 
  		reader.close();
 

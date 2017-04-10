@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ public interface IReport {
 	public static final String INVOICE = "Invoice.rptdesign";
 	public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
 	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
-	public static final String BANK_ORDER = "BankOrder.rptdesign";
 	
 	
 }

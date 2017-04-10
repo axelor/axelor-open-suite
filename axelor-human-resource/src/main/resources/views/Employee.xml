@@ -24,9 +24,9 @@
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
-	                <field name="titleSelect" colSpan="2" />
-	            	<field name="name" title="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name" colSpan="5" />
-	            	<field name="firstName" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name" colSpan="5" />
+					<field name="titleSelect" css="bold" colSpan="2"/>
+					<field name="name" title="Name" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+					<field name="firstName" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
 		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
@@ -67,19 +67,21 @@
         			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
         			<field name="negativeValueLeave" colSpan="4"/>
         			<field name="hrManager" colSpan="4"/>
+        			<field name="exportCode" />
       			</panel>
 	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 	       	<panel name="lunchVoucher" title="Lunch Vouchers">
 	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
+	       		<button name="addLunchVoucherAdvance" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
 	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
-	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" />
+	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
 	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
 	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
-	       	<panel-include view="talent-employee-form" if="__config__.app.isApp('training')"/>
+	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
         </panel-tabs>
 	</form>
 	

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -72,6 +74,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	protected AppSupplychainService appSupplychainService; 
 	
+	protected AccountConfigService accountConfigService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
@@ -86,6 +90,24 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 		purchaseOrder.setLocation(location);
 
+		purchaseOrder.setPaymentMode(supplierPartner.getInPaymentMode());
+		purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
+		
+		if (purchaseOrder.getPaymentMode() == null) {
+			purchaseOrder.setPaymentMode(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getInPaymentMode()
+				);
+		}
+
+		if (purchaseOrder.getPaymentCondition() == null) {
+			purchaseOrder.setPaymentCondition(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getDefPaymentCondition()
+				);
+		}
 		return purchaseOrder;
 	}
 
@@ -141,11 +163,17 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 						priceDiscounted = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, priceDiscounted, purchaseOrderLine.getProduct());
 					}
 					
+					BigDecimal taxRate = BigDecimal.ZERO;
+					TaxLine taxLine = purchaseOrderLine.getTaxLine();
+					if(taxLine != null)  {
+						taxRate = taxLine.getValue();
+					}
+					
 					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
 							product, purchaseOrderLine.getProductName(), 
 							purchaseOrderLine.getDescription(), qty, 
-							priceDiscounted,unit, 
-							stockMove, 2, purchaseOrder.getInAti(), purchaseOrderLine.getTaxLine().getValue());
+							priceDiscounted, unit, 
+							stockMove, StockMoveLineService.TYPE_PURCHASES, purchaseOrder.getInAti(), taxRate);
 					if(stockMoveLine != null) {
 
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);

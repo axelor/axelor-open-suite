@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -80,7 +80,7 @@ public class StockMoveInvoiceController {
 	}
 
 	//Generate only one invoice from several stock moves
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void generateInvoiceConcatStockMove(ActionRequest request, ActionResponse response)  {
 		List<StockMove> stockMoveList = new ArrayList<StockMove>();
 		List<Long> stockMoveIdList = new ArrayList<Long>();
@@ -197,7 +197,7 @@ public class StockMoveInvoiceController {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void generateMultiInvoice(ActionRequest request, ActionResponse response){
 		List<Map> stockMoveMap = null;
 

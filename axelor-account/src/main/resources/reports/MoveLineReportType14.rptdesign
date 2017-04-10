@@ -109,66 +109,77 @@
                     <property name="columnName">MoveLineId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">MoveLineId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">Description</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">Description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Debit</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">Debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Credit</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">Credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerFullName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerFullName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PartnerFullName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">PartnerId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PartnerId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerSeq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerSeq</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PartnerSeq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">AccountCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">AccountCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">AccountCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">AccountName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">AccountName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">AccountName</text-property>
                 </structure>
             </list-property>
@@ -180,6 +191,7 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -344,8 +356,8 @@ where
 (MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
 MoveLine.date_val <= MoveLineReport.date_val AND Move.company = MoveLineReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
-Move.ignore_in_accounting_ok = false
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) 
+AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -365,6 +377,9 @@ Move.ignore_in_accounting_ok = false
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>

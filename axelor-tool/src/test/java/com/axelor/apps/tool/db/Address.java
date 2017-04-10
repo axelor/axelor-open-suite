@@ -26,8 +26,8 @@ import javax.validation.constraints.NotNull;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaModel;
 import com.axelor.db.Query;
-import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 @Entity
 @Table(name = "CONTACT_ADDRESS")
@@ -110,7 +110,7 @@ public class Address extends JpaModel {
 	
 	@Override
 	public String toString() {
-		ToStringHelper tsh = Objects.toStringHelper(getClass());
+		ToStringHelper tsh = MoreObjects.toStringHelper(getClass());
 		
 		tsh.add("id", getId());
 		tsh.add("contact", contact);

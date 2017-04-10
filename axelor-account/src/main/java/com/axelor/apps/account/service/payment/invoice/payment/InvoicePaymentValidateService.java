@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,5 @@ public interface InvoicePaymentValidateService   {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException;
 	
 }

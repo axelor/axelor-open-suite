@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,6 @@ import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -34,9 +33,6 @@ public class MrpController {
 	
 	@Inject
 	protected MrpRepository mrpRepository;
-	
-	@Inject
-	protected MetaActionRepository metaActionRepository;
 	
 	public void runCalculation(ActionRequest request, ActionResponse response)  {
 	

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,7 @@ import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -257,6 +258,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 				}
 
+				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
+					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
+				}
+
 				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
 			}
@@ -264,6 +269,52 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	}
 
+	@Override
+	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus) {
+		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
+			this.computeNewAveragePriceLocationLine(location, stockMoveLine);
+		}
+		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
+			this.cancelAveragePriceLocationLine(location, stockMoveLine);
+		}
+	}
+
+	protected void computeNewAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine) {
+	    LocationLine locationLine = Beans.get(LocationLineService.class)
+				.getLocationLine(location, stockMoveLine.getProduct());
+	    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+		BigDecimal oldAvgPrice = locationLine.getAvgPrice();
+		BigDecimal oldQty = locationLine.getCurrentQty();
+		BigDecimal newPrice = stockMoveLine.getUnitPriceUntaxed();
+		BigDecimal newQty = stockMoveLine.getRealQty();
+		BigDecimal newAvgPrice;
+		if (oldAvgPrice == null || oldQty == null || oldAvgPrice.equals(BigDecimal.ZERO) || oldQty.equals(BigDecimal.ZERO)) {
+		    oldAvgPrice = BigDecimal.ZERO;
+			oldQty = BigDecimal.ZERO;
+		}
+		BigDecimal sum = oldAvgPrice.multiply(oldQty);
+		sum = sum.add(newPrice.multiply(newQty));
+        newAvgPrice = sum.divide(oldQty.add(newQty), scale, RoundingMode.HALF_UP);
+        locationLine.setAvgPrice(newAvgPrice);
+	}
+
+	protected void cancelAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine) {
+		LocationLine locationLine = Beans.get(LocationLineService.class)
+				.getLocationLine(location, stockMoveLine.getProduct());
+		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+		BigDecimal currentAvgPrice = locationLine.getAvgPrice();
+		BigDecimal currentTotalQty = locationLine.getCurrentQty();
+
+		BigDecimal currentLinePrice = stockMoveLine.getUnitPriceUntaxed();
+		BigDecimal currentLineQty = stockMoveLine.getRealQty();
+
+		BigDecimal diff = currentTotalQty.multiply(currentAvgPrice).			//(currentAvgPrice*totalQty -
+				subtract(currentLinePrice.multiply(currentLineQty));			// currentLinePrice*currentLineQty)
+		BigDecimal updatedAvgPrice = 											// /  (totalQty - currentLineQty)
+				diff.divide(currentTotalQty.subtract(currentLineQty)
+				, scale, RoundingMode.HALF_UP);
+		locationLine.setAvgPrice(updatedAvgPrice);
+	}
 
 	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate

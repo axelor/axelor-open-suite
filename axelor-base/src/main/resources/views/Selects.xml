@@ -318,7 +318,7 @@
 	
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
-		<option value="xls">XLS</option>
+		<option value="xlsx">XLS</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select">
@@ -446,7 +446,7 @@
 		<option value="2">Additionnal</option>
 		<option value="3">Replace</option>
 	</selection>
-	
+
 	<selection name="base.price.list.line.amount.type.select">
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
@@ -648,7 +648,24 @@
 	</selection>
 	
 	<selection name="app.type.select">
-		<option value="base">Base</option>
+		<option order="1" value="base">Base</option>
 	</selection>
+	
+	<selection name="iaccount.payment.mode.type.select">
+		<option value="1">Other</option>
+		<option value="2">Direct debit</option>
+		<option value="3">IPO</option>
+		<option value="4">IPO + Cheque</option>
+		<option value="5">Cash</option>
+		<option value="6">Bank card</option>
+		<option value="7">Cheque</option>
+		<option value="8">Web</option>
+		<option value="9">Transfer</option>
+	</selection>
+	
+	<selection name="iaccount.payment.mode.in.out.select">
+		<option value="1">In</option>
+		<option value="2">Out</option>
+	</selection>			
 	
 </object-views>

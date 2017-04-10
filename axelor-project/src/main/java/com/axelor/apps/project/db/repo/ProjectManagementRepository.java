@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,9 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
+import com.google.inject.persist.Transactional;
 
 public class ProjectManagementRepository extends ProjectRepository {
 	
@@ -36,6 +38,15 @@ public class ProjectManagementRepository extends ProjectRepository {
 		}
 		
 		return super.save(project);
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Project copy(Project entity, boolean deep) {
+		Project project = super.copy(entity, false);
+		project.setStatusSelect(STATE_PLANNED);
+		save(project);
+		return project;
 	}
 
 }

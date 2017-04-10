@@ -12,19 +12,6 @@
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />
 	
-	<menuitem name="admin-root" title="Application Config" order="-60"
-		icon="fa-gear" icon-background="#31b4a9"/>
-		
-	<menuitem name="admin-root-app-management" parent="admin-root" order="5"
-		title="Apps management" action="admin.root.app.management" />
-
-	<action-view name="admin.root.app.management" title="Apps management"
-		model="com.axelor.apps.base.db.App" >
-		<view type="cards" name="app-cards"/>
-		<view type="grid" name="app-grid"/>
-		<view type="form" name="app-form"/>
-	</action-view>
-	
 	<menuitem name="admin-root-general" parent="admin-root" order="10"
 		title="General data"  />
 
@@ -216,13 +203,13 @@
 		<view type="form" name="bank-details-form"/>
 	</action-view>
 
-	<menuitem name="referential-conf-invoice-bic" parent="referential-conf"
-		title="SWIFT codes" action="referential.conf.invoice.bic" />
+	<menuitem name="referential-conf-invoice-bank" parent="referential-conf"
+		title="SWIFT codes" action="referential.conf.invoice.bank"/>
 
-	<action-view name="referential.conf.invoice.bic"
-		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" >
-		<view type="grid" name="bic-grid"/>
-		<view type="form" name="bic-form"/>
+	<action-view name="referential.conf.invoice.bank"
+		title="SWIFT codes" model="com.axelor.apps.base.db.Bank" >
+		<view type="grid" name="bank-grid"/>
+		<view type="form" name="bank-form"/>
 	</action-view>
 	
 	<menuitem name="referential-conf-partner-category" parent="referential-conf"
@@ -388,16 +375,6 @@
 		<view type="grid" name="user-grid"/>
 		<view type="form" name="user-form"/>
 	</action-view>
-	
-	<menuitem name="admin-root-user-team" parent="admin-root-user"
-		title="Teams" action="admin.root.base.team"/>
-
-	<action-view name="admin.root.base.team" title="Teams"
-		model="com.axelor.apps.base.db.Team" >
-		<view type="grid" name="team-grid" />
-		<view type="form" name="team-form"/>
-	</action-view>
-	
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
 		title="Companies" action="admin.root.base.company" />
 

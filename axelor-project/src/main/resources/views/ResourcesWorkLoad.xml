@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	
+	<grid name="resources-work-load-grid" title="Resources work load" model="com.axelor.apps.project.db.ResourcesWorkLoad">
+		<field name="project"/>
+		<field name="date" />
+		<field name="duration" />
+		<field name="fromPlanner"/>
+	</grid>
+	
+	<form name="resources-work-load-form" title="Resources work load" model="com.axelor.apps.project.db.ResourcesWorkLoad">
+		<panel>
+			<field name="project"/>
+			<field name="date" />
+			<field name="duration" />
+			<field name="fromPlanner"/>
+		</panel>
+	</form>
+
+	
+</object-views>

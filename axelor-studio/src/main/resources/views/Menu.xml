@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-  <menuitem name="menu-studio-root" title="BPM" order="-70" icon="fa-pencil-square-o" icon-background="purple" />
+  <menuitem name="menu-studio-root" title="BPM" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
   
   <!-- Model menus -->
   <menuitem name="menu-studio-model" title="Model" parent="menu-studio-root" order="5"/>
@@ -166,5 +166,12 @@
     <view type="form" name="module-recorder-form"/>
     <context name="_showRecord" expr="eval:__repo__.of(ModuleRecorder).all().fetchOne()?.getId()" />
   </action-view>
+  
+  <menuitem name="menu-custom-model-editor" title="Custom model editor" parent="menu-studio-root" action="action.custom.model.editor" order="65"/>
+  
+  <action-view name="action.custom.model.editor" title="Custom model editor">
+    <view type="html" name="studio/custom-model"/>
+  </action-view>
+  
   
 </object-views>

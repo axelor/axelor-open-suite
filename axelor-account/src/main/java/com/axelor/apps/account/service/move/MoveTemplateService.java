@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -83,7 +83,7 @@ public class MoveTemplateService {
 					creditPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
-				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null, MoveRepository.TEMPLATE);
+				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null, MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
 				int counter = 1;
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;

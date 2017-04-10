@@ -18,7 +18,12 @@
 package com.axelor.apps.tool.date;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -302,5 +307,25 @@ public class DateTool{
 				return false;
 			}	
 		}
+	}
+	
+   public static LocalDate toLocalDate(Date date) {
+		
+		Instant instant = date.toInstant();
+		
+		return instant.atZone(ZoneId.systemDefault()).toLocalDate();
+   }
+
+   public static LocalDateTime toLocalDateT(Date date) {
+		
+		Instant instant = date.toInstant();
+		
+		return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+	
+	public static Date toDate(LocalDate date) {
+		
+		
+		return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 }

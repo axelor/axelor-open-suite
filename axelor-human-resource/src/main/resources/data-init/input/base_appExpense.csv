@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
-"Expense Management";"EXP";"Expense Management";"expense";"app-human-resource.png";"axelor-human-resource";"account,project,crm,employee"
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Expense Management;EXP;Expense Management;expense;app-expense.png;axelor-human-resource;account,project,crm,employee;9

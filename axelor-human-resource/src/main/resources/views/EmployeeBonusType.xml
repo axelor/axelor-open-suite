@@ -16,6 +16,10 @@
 			<field name="applicationCondition" colSpan="12" />
 			<field name="formula" colSpan="12"/>
         </panel>
+        <panel>
+        	<field name="payrollPreparationExport" />
+	    	<field name="exportCode" />
+        </panel>
     </form>
 
 </object-views>

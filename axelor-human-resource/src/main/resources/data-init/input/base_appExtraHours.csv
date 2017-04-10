@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn
-Extra hours;EXT_HRS;Extra hours;exthrs;app-human-resource.png;axelor-human-resource;employee
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Extra hours;EXT_HRS;Extra hours;exthrs;app-extra-hour.png;axelor-human-resource;employee;8

@@ -9,6 +9,7 @@
   
   	<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
   	<integer name="progress" title="Progress"/>
+  	<boolean name="toInvoice" title="To invoice with project"/>
   </entity>
 
 </domain-models>

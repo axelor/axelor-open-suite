@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-
 public class ExtraHoursController {
 
 	@Inject
@@ -53,7 +52,6 @@ public class ExtraHoursController {
 	private Provider<ExtraHoursRepository> extraHoursRepositoryProvider;
 	@Inject
 	private Provider<ExtraHoursService> extraHoursServiceProvider;
-	
 	
 	public void editExtraHours(ActionRequest request, ActionResponse response){
 		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
@@ -115,7 +113,7 @@ public class ExtraHoursController {
 	}
 	
 	public void editExtraHoursSelected(ActionRequest request, ActionResponse response){
-		Map extraHoursMap = (Map)request.getContext().get("extraHoursSelect");
+		Map extraHoursMap = (Map) request.getContext().get("extraHoursSelect");
 		ExtraHours extraHours = Beans.get(ExtraHoursRepository.class).find(new Long((Integer)extraHoursMap.get("id")));
 		response.setView(ActionView
 				.define("Extra hours")
@@ -242,6 +240,26 @@ public class ExtraHoursController {
 			TraceBackService.trace(response, e);
 		}
 		finally {
+			response.setReload(true);
+		}
+	}
+
+	//canceling request and sending mail to applicant
+	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+		try {
+			ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+			extraHours = extraHoursRepositoryProvider.get().find(extraHours.getId());
+			ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+
+			extraHoursService.cancel(extraHours);
+
+			Message message = extraHoursService.sendCancellationEmail(extraHours);
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			}
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		} finally {
 			response.setReload(true);
 		}
 	}

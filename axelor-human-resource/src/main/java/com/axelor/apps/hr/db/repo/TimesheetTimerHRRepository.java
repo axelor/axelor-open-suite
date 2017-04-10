@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,8 +33,10 @@ public class TimesheetTimerHRRepository extends TSTimerRepository{
 		if(tsTimer.getStatusSelect() == TSTimerRepository.STATUS_STOP){
 			if(tsTimer.getTimesheetLine() != null)
 				updateTimesheetLine(tsTimer);
-			else
-				tsTimerService.generateTimesheetLine(tsTimer);
+			else{
+				if(tsTimer.getDuration() > 59){ tsTimerService.generateTimesheetLine(tsTimer); }
+			}
+				
 		}
 		
 		return super.save(tsTimer);

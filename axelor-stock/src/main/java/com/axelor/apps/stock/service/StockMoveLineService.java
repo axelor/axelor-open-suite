@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -91,7 +91,9 @@ public interface StockMoveLineService {
 
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
-	
+
+	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
+
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
 

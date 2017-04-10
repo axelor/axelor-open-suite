@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,12 +29,8 @@ import com.axelor.apps.base.test.TestModule;
 import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
 import com.google.inject.Inject;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules({ TestModule.class })
 public class TemplateRuleTest {
 	
 	@Inject

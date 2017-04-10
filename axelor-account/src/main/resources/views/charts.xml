@@ -360,9 +360,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)  
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -403,9 +403,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -432,9 +432,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	

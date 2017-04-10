@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,8 +58,11 @@ public interface TimesheetService {
 	
 	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 
+	@Transactional(rollbackOn={Exception.class})
+	public void cancel(Timesheet timesheet) throws AxelorException;
 	
-	public void cancel(Timesheet timesheet);
+	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, Project project, Product product) throws AxelorException;
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();

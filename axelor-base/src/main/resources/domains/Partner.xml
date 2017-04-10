@@ -14,10 +14,10 @@
     <!-- ERP -->
     <integer name="partnerTypeSelect" title="Partner Type" selection="partner.partner.type.select" />
     <integer name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true"/>
-    <string name="name" title="Name/Company Name" required="true"/>
+    <string name="name" title="Name/Company Name" required="true" index="false"/>
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Function"/>
-    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo"/>
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" index="false"/>
     
     
     <boolean name="isCustomer" title="Customer?"/>
@@ -28,14 +28,14 @@
     
     
     <string name="languageSelect" title="Language" selection="select.language" massUpdate="true" help="true"/>
-    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true"/>
+    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
     
     <integer name="deliveryDelay" title="Delivery delay (days)"/>
     
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
-    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" help="true"/>
-    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" help="true" index="false"/>
+    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" index="false"/>
     
     <!-- From contact -->
     <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
@@ -52,20 +52,20 @@
    
     <!--  Page règle de facturation/paiement -->
 <!--     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details" help="true"/> -->
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
-  	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List"/>
-  	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true" index="false"/>
+  	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List" index="false"/>
+  	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List" index="false"/>
    
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner"/>
 	
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
    
-    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" help="true"/>
-	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" help="true"/>
-	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" help="true"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" help="true" index="false"/>
+	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" help="true" index="false"/>
+	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" help="true" index="false"/>
     <string name="description" title="Description"  large="true"/>
-   	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector"/> 
+   	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector" index="false"/> 
 	<integer name="nbrEmployees" title="Employees (Nbr)"/>
 	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code" help="true"/>

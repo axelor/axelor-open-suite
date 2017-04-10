@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -34,6 +35,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -46,8 +48,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -205,6 +212,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		ventilateFactory.getVentilator(invoice).process();
 		
 		invoiceRepo.save(invoice);
+		
+		if(appAccountService.getAppAccount().getPrintReportOnVentilation()){
+			printInvoice(invoice, true);
+		}
 		
 	}
 
@@ -364,6 +375,75 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		}
 	}
 	
+	protected String getDefaultPrintingLocale(Invoice invoice, Company company) {
+		String locale = null;
+		
+		if(invoice != null && invoice.getPartner() != null) {
+			locale = invoice.getPartner().getLanguageSelect();
+		}
+		
+		if(locale == null && company != null && company.getPrintingSettings() != null) {
+			locale = company.getPrintingSettings().getLanguageSelect();
+		}
+		
+		User user = AuthUtils.getUser();
+		if(user != null && user.getLanguage() != null) {
+			locale = user.getLanguage();
+		}
+		
+		return locale == null ? "en" : locale;
+	}
+	
+	@Override
+	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
+		String locale = getDefaultPrintingLocale(invoice, invoice.getCompany());
+		
+		String title = I18n.get("Invoice");
+		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
+		
+		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
+		if (toAttach) { reportSetting.toAttach(invoice); }
+		
+		return reportSetting.addParam("InvoiceId", invoice.getId().toString())
+				.addParam("Locale", locale)
+				.addParam("InvoicesCopy", invoice.getInvoicesCopySelect())
+				.generate();
+	}
+	
+	@Override
+	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
+		User user = AuthUtils.getUser();
+		String locale = getDefaultPrintingLocale(null, user == null ? null : user.getActiveCompany());
+		
+		String title = I18n.get("Invoices");
+		
+		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");	
+		return reportSetting.addParam("InvoiceId", Joiner.on(",").join(ids))
+				.addParam("Locale", locale)
+				.addParam("InvoicesCopy", 0)
+				.generate();
+	}
+	
+	
+
+	/**
+	 * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
+	 * @param moveLine
+	 * 			Une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
+	 * @return
+	 * 			La facture trouvée
+	 */
+	public Invoice getInvoice(MoveLine moveLine)  {
+		Invoice invoice = null;
+		if(moveLine.getMove().getRejectOk())  {
+			invoice = moveLine.getInvoiceReject();
+		}
+		else  {
+			invoice = moveLine.getMove().getInvoice();
+		}
+		return invoice;
+	}
+
 }
 
 

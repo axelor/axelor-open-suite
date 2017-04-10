@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -122,10 +122,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	/**
-	 * Calculer le montant d'une commande.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
+	 * Compute the purchase order total amounts
 	 *
 	 * @param purchaseOrder
 	 * @throws AxelorException
@@ -136,21 +133,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setExTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
-
-		for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
-
-			// Dans la devise de la comptabilité du tiers
-			purchaseOrder.setExTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrderLineVat.getExTaxBase() ));
-			purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().add( purchaseOrderLineVat.getTaxTotal() ));
-			purchaseOrder.setInTaxTotal(purchaseOrder.getInTaxTotal().add( purchaseOrderLineVat.getInTaxTotal() ));
-
-		}
-
+		
 		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-			//Into company currency
+			purchaseOrder.setExTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrderLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
 			purchaseOrder.setCompanyExTaxTotal(purchaseOrder.getCompanyExTaxTotal().add( purchaseOrderLine.getCompanyExTaxTotal() ));
 		}
+		
+		for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
 
+			// In the purchase order currency
+			purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().add( purchaseOrderLineVat.getTaxTotal() ));
+
+		}
+		
+		purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrder.getTaxTotal() ));
+		
 		logger.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
 			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
 
@@ -254,7 +253,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
 				.addParam("PurchaseOrderId", purchaseOrder.getId().toString())
 				.addParam("Locale", language)
-				.addModel(purchaseOrder)
+				.toAttach(purchaseOrder)
 				.generate()
 				.getFileLink();
 

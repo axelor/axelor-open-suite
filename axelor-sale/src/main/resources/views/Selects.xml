@@ -52,7 +52,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="sale.app.type.select">
-		<option value="sale">Sale</option>
+		<option order="9" value="sale">Sale</option>
 	</selection>
 	
 </object-views>
