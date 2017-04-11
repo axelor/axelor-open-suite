@@ -66,7 +66,7 @@
 164;"bankOrder";"SEPA Direct Debits";1;10;"SDD%YY%FM";;1;1;1
 165;"bankOrder";"International Credit Transfers";1;10;"ICT%YY%FM";;1;1;1
 166;"bankOrder";"International Direct Debits";1;10;"IDD%YY%FM";;1;1;1
-167;"product";"Product";1;7;"PR";;1;0;1
+167;"product";"Product";1;7;"PR";;1;0;
 1;"partner";"Identifier for accounts and contacts";4;10;"P";;1;0;1
 2;"saleOrder";"Sale Order / Customer Order";1;5;"SO";;1;0;1
 3;"purchaseOrder";"RFQ/Quotes for Suppliers";1;5;"PO";;1;0;1
