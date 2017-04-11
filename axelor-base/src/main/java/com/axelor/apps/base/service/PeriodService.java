@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -29,6 +25,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PeriodService {
 	
@@ -36,7 +38,10 @@ public class PeriodService {
 	
 	@Inject
 	private PeriodRepository periodRepo;
-	
+
+	@Inject
+	private AdjustHistoryService adjustHistoryService;
+
 	/**
 	 * Recupère la bonne période pour la date passée en paramètre
 	 * @param date
@@ -77,5 +82,27 @@ public class PeriodService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_2)), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void close(Period period) {
+		period = periodRepo.find(period.getId());
+
+		if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+			adjustHistoryService.setEndDate(period);
+		}
+
+		period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+		period.setClosureDateTime(LocalDateTime.now());
+		periodRepo.save(period);
+	}
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void adjust(Period period) {
+		period = periodRepo.find(period.getId());
+
+		adjustHistoryService.setStartDate(period);
+
+		period.setStatusSelect(PeriodRepository.STATUS_ADJUSTING);
+		periodRepo.save(period);
+	}
 }
