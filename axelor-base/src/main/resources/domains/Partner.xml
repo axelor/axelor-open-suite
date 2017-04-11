@@ -76,6 +76,13 @@
    	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" help="true"/>
 	<many-to-one name="contactAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 	
+	<extra-code>
+	<![CDATA[
+		public static final int PARTNER_TYPE_COMPANY = 1;
+		public static final int PARTNER_TYPE_INDIVIDUAL = 2;
+	]]>
+	</extra-code>
+	
   </entity>
   
 </domain-models>
