@@ -51,7 +51,8 @@
     		<panel colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
-    		</panel>
+				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
+			</panel>
     		<panel colSpan="10">
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">

@@ -35,6 +35,7 @@ public interface ProductService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateProductPrice(Product product);
 
+	public String getSequence() throws AxelorException;
 
 	/**
 	 * Retourne le prix d'un produit à une date t.

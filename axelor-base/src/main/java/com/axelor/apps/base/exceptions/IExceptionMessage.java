@@ -106,6 +106,11 @@ public interface IExceptionMessage {
 	 */
 	static final public String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 	static final public String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+
+	/**
+	 * Product service
+	 */
+	static final public String PRODUCT_NO_SEQUENCE = /*$$(*/ "There is no configured sequence for product" /*)*/;
 	
 	/**
 	 * Importer
