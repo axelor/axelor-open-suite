@@ -292,7 +292,7 @@
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null" if-module="axelor-account"/>
-		    <button name="convertToIndividualPartner" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="isContact == true &amp;&amp; mainPartner == null"/>
+		    <button name="convertToIndividualPartner" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
 	    </toolbar>
 	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
 	    <panel name="main" >
