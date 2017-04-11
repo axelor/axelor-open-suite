@@ -158,7 +158,7 @@
 		title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers" />
 	
 	<action-view name="stock.root.conf.stock.tracking.numbers" title="Tracking Numbers"
-		model="com.axelor.apps.base.db.TrackingNumber" >
+		model="com.axelor.apps.stock.db.TrackingNumber" >
 		<view type="grid" name="tracking-number-grid" />
 		<view type="form" name="tracking-number-form"/>
 		<context name="_datePlusTwoMonths" expr="eval: __date__.plusMonths(2)"/>
@@ -190,7 +190,16 @@
 		<view type="grid" name="shipment-mode-grid"/>
 		<view type="form" name="shipment-mode-form"/>	
 	</action-view>
-	
+
+	<menuitem name="stock-root-conf-tracking-number-config" parent="stock-root-conf"
+		title="Tracking number configuration" action="stock.root.conf.tracking.number.config" />
+
+	<action-view name="stock.root.conf.tracking.number.config" title="Tracking number configuration"
+		model="com.axelor.apps.stock.db.TrackingNumberConfiguration" >
+		<view type="grid" name="tracking-number-configuration-grid"/>
+		<view type="form" name="tracking-number-configuration-form"/>
+	</action-view>
+
 <!-- ADMINISTRATION -->
 
 

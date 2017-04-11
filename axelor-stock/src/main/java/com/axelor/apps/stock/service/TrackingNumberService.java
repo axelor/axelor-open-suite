@@ -23,10 +23,10 @@ import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
