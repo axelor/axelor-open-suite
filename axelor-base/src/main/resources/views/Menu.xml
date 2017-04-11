@@ -89,7 +89,6 @@
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact != true</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
 		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	

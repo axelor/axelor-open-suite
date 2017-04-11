@@ -41,6 +41,8 @@
 		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
 
 		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
+
+		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
 		<extra-code>
 	   		<![CDATA[

@@ -28,7 +28,7 @@ public class MoveLineManagementRepository extends MoveLineRepository{
 	
 	@Override
 	public void remove(MoveLine entity){
-		if(!entity.getMove().getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+		if(!entity.getMove().getStatusSelect().equals(MoveRepository.STATUS_NEW)){
 			throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
 		}else{
 			entity.setArchived(true);
