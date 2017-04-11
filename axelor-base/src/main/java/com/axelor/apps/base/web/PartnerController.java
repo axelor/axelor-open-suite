@@ -311,4 +311,14 @@ public class PartnerController {
 	public String normalizePhoneNumber(String phoneNumber){
 		return phoneNumber.replaceAll("\\s|\\.", "");
 	}
+	
+	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
+		Partner partner = request.getContext().asType(Partner.class);
+		if (partner.getId() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
+					IException.CONFIGURATION_ERROR);
+		}
+		partner = partnerRepo.find(partner.getId());
+		partnerService.convertToIndividualPartner(partner);
+	}
 }
