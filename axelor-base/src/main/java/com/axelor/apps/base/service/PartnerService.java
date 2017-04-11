@@ -284,4 +284,11 @@ public class PartnerService {
 		return new String(Str);
 	}
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void convertToIndividualPartner(Partner partner) {
+		partner.setIsContact(false);
+		partner.setPartnerTypeSelect(2);
+		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);		
+		partner.setContactAddress(null);
+	}
 }

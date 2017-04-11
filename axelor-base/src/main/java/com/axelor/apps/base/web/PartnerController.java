@@ -311,4 +311,10 @@ public class PartnerController {
 	public String normalizePhoneNumber(String phoneNumber){
 		return phoneNumber.replaceAll("\\s|\\.", "");
 	}
+	
+	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
+		Partner partner = request.getContext().asType(Partner.class);
+		partnerService.convertToIndividualPartner(partner);
+		response.setValues(partner);
+	}
 }
