@@ -14,11 +14,11 @@
 	 	<many-to-one name="category" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
     	<integer name="progressSelect" title="Progress" selection="project.task.progress.select" help="true"/>
     	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-    	
+    	<one-to-many name="task" ref="com.axelor.team.db.TeamTask" mappedBy="parentTask"/>
 	  
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Followers"/>
 		<string name="description" title="Description" large="true"/>
-		<many-to-one name="products" ref="com.axelor.apps.base.db.Product" title="Products"/>
+		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<decimal name="quantity" title="Quantity"/>
 		<decimal name="salePrice" title="Sale Price" />

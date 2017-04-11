@@ -48,7 +48,7 @@
 		
 		<panel>
 			<panel name="products" title="Products" colSpan="12">
-				<field name="products" form-view="product-form" grid-view="product-grid" colSpan="6"/>
+				<field name="product" form-view="product-form" grid-view="product-grid" colSpan="6"/>
 				<field name="quantity" colSpan="6"/>
 				<field name="salePrice" colSpan="6"/>
 				<field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
@@ -117,10 +117,10 @@
 	</action-record>
 	
 	<action-attrs name="action-task-attrs-project-configurations" model="com.axelor.team.db.TeamTask">
-		<attribute name="domain" for="category" expr="eval: &quot;self.id IN (${project?.categories?.collect{it.id}?.join(',')})&quot;"/>
-		<attribute name="domain" for="assignedTo" expr="eval: &quot;self.id IN(${project?.members?.collect{it.id}?.join(',')})&quot;"/>
-		<attribute name="domain" for="parentTask" expr="eval: &quot;self.id IN(${project?.projectTasks?.collect{it.id}?.join(',')})&quot;"/>
-  		<attribute name="domain" for="membersUserSet" expr="eval: &quot;self.id IN (${project?.members?.collect{it.id}?.join(',')})&quot;"/>
+		<attribute name="domain" for="category" expr="eval: &quot;self.id IN (${project?.categorySet?.collect{it.id}?.join(',')})&quot;"/>
+		<attribute name="domain" for="assignedTo" expr="eval: &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot;"/>
+		<attribute name="domain" for="parentTask" expr="eval: &quot;self.id IN(${project?.teamTaskList?.collect{it.id}?.join(',')})&quot;"/>
+  		<attribute name="domain" for="membersUserSet" expr="eval: &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot;"/>
 	</action-attrs>
 	
 	
