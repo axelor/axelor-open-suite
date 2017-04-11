@@ -244,13 +244,13 @@
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="decimal"/>
 		
-		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-task-view">
+		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-project-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
 		</node>    	
 		
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-task-view">
+		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-project-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
@@ -304,47 +304,8 @@
 		<attribute name="value:add" for="membersUserSet" expr="eval: assignedTo"/>
 	</action-attrs>
 	
-	<action-view name="action-view-show-project-tree" title="Project Tree" model="com.axelor.apps.project.db.Project">	
-		<view type="tree" name="project-tree"/>
-    	<view type="form" name="project-form"/>
-    	<domain>self.project.id = :id</domain>
-     	<context name="id" expr="eval: id"/>
-	</action-view>
-	
-	<tree name="project-tree" title="Projects">
-    	
-    	<column name="name" type="string"/>
-    	<column name="assignedTo" type="reference"/>
-    	<column name="progress" type="decimal"/>
-    	<column name="typeSelect" type="string"/>
-		
-		<node model="com.axelor.apps.project.db.Project" domain="self.project.id = :id" onClick="action-task-view">
-			<field name="name" as="name"/>
-			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
-			<field name="typeSelect" as="typeSelect"/>
-		</node>    	
-		
-		<node model="com.axelor.apps.project.db.Project" parent="project" draggable="true" onClick="action-project-view">
-			<field name="name" as="name"/>
-			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
-			<field name="typeSelect" as="typeSelect"/>
-		</node>
-    
-	</tree>
-	
-	<action-view name="action-project-view" title="Projects" model="com.axelor.apps.project.db.Project">
-    	<view type="form" name="project-form"/>
-        <view-param name="popup" value="reload"/>
-        <view-param name="show-toolbar" value="false"/>
-  		<view-param name="show-confirm" value="false" />
-	  	<view-param name="popup-save" value="false"/>
-    	<context name="_showRecord" expr="eval: id"/>
-    </action-view>
-	
-	<action-view name="action-task-view" title="Tasks" model="com.axelor.apps.project.db.Project">
-    	<view type="form" name="task-form"/>
+	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
+    	<view type="form" name="tasks-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
