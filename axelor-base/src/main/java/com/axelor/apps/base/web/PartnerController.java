@@ -314,7 +314,7 @@ public class PartnerController {
 	
 	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
+		partner = partnerRepo.find(partner.getId());
 		partnerService.convertToIndividualPartner(partner);
-		response.setValues(partner);
 	}
 }
