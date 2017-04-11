@@ -40,7 +40,6 @@
      	
   	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines" help="true"/>
   	
-    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config." help="true"/>
     <boolean name="hasWarranty" title="Warranty ?"/>
     <boolean name="isPerishable" title="Perishable ?"/>
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>

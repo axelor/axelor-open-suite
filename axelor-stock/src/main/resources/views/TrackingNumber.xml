@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="tracking-number-grid" title="Tracking Number" model="com.axelor.apps.base.db.TrackingNumber">
+    <grid name="tracking-number-grid" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber">
 		<hilite if="$moment(perishableExpirationDate).isBefore(__date__) || $moment(warrantyExpirationDate).isBefore(__date__)" color="danger" />
 		<hilite if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))" color="warning" />
 		<hilite if="$moment(perishableExpirationDate).isAfter($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isAfter($moment(_datePlusTwoMonths))" color="success" />
@@ -13,7 +13,7 @@
         <field name="perishableExpirationDate"/>
     </grid>
     
-    <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.base.db.TrackingNumber"
+    <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
     	onLoad="action-tracking-number-attrs-hide-fields" >
     	<panel name="main">
 	    	<field name="trackingNumberSeq"/>

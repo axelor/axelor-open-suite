@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;

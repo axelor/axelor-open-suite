@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="isPurchaseTrackingManaged"/>
         <field name="isProductionTrackingManaged"/>
         <field name="isSaleTrackingManaged"/>
@@ -17,7 +17,7 @@
         <field name="productionQtyByTracking"/>
     </grid>
     
-    <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration"
+    <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration"
     	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
     	<panel name="main" >
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
@@ -47,7 +47,7 @@
 		</panel>
     </form>
     
-    <action-record name="action-tracking-number-config-record-default" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    <action-record name="action-tracking-number-config-record-default" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
     	<field name="saleAutoTrackingNbrOrderSelect" expr="eval: 1"/>
     	<field name="saleQtyByTracking" expr="0"/>
     	<field name="purchaseQtyByTracking" expr="0"/>
@@ -55,15 +55,15 @@
     </action-record>
     
     
-    <action-record name="action-tracking-number-set-default-purchase-qty" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    <action-record name="action-tracking-number-set-default-purchase-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="purchaseQtyByTracking" expr="eval:isPurchaseTrackingManaged ? 1 : 0"/>
     </action-record>
     
-    <action-record name="action-tracking-number-set-default-production-qty" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    <action-record name="action-tracking-number-set-default-production-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="productionQtyByTracking" expr="eval:isProductionTrackingManaged ? 1 : 0"/>
     </action-record>
     
-    <action-record name="action-tracking-number-set-default-sale-qty" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    <action-record name="action-tracking-number-set-default-sale-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="saleQtyByTracking" expr="eval:isSaleTrackingManaged ? 1 : 0"/>
     </action-record>
     

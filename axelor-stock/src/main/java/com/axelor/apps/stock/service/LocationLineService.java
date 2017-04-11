@@ -23,7 +23,7 @@ import java.util.List;
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.exception.AxelorException;

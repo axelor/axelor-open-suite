@@ -136,14 +136,14 @@
 	      			<panel-include view="product-production-form"/>
 	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
 	    		</panel>
-	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'">
+	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 	      			<panel colSpan="12">
 				        <field name="hasWarranty"/>
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
 				        <field name="isPerishable"/>
 				        <field name="perishableNbrOfMonths" showIf="isPerishable"/>
 	      			</panel>
-	      			<panel colSpan="12" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+	      			<panel colSpan="12">
 	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
 	      			</panel>
 	    		</panel>
