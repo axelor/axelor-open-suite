@@ -5,58 +5,57 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="Project" cachable="true">
+  <entity name="Project">
       
-      <integer name="importId"/>
-      
-      
-     	 <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-      
-      
-      <many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
-      <one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
-	  <string name="name" title="Name" required="true"/>
-	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
-	  <string name="typeSelect" selection="project.task.type.select" title="Type" />
-	  <integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
-	  <many-to-many name="priorities" ref="com.axelor.apps.project.db.ProjectPriority" title="Priorities"/>
-	  <many-to-many name="categories" ref="com.axelor.apps.project.db.ProjectCategory" title="Categories"/>
+     	<integer name="importId"/>
+		<string name="name" required="true" unique="true"/>
+		<string name="description" multiline="true" large="true"/>
+		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
+		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>      
+		<many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
+		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
+		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
+		<string name="typeSelect" selection="project.task.type.select" title="Type" />
+		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
+		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Categorie"/>
+		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
+		<boolean name="synchronisable"/>
+		
+		<string name="code" title="Code" />
+		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+		<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+		
+		<datetime name="fromDate" title="From Date"/>
+		<datetime name="toDate" title="To Date"/>
+		<datetime name="dueDate" title="Due Date"/>
+		
+		<decimal name="duration" title="Duration"/>
+		<decimal name="timeSpent" title="Time Spent"/>
+		<decimal name="leadDelay" title="Lead/Delay"/>
+		
+		<decimal name="progress" title="Progress (%)"/>
+		<decimal name="sequence" title="Sequence" />
+		<integer name="orderByState"/>
+	  
+		<integer name="projectTypeSelect" selection="project.type.select" default="1"/>
 	  
 	  
-	  <string name="code" title="Code" />
-	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
-	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-	  <string name="description" title="Description" large="true"/>
+		<boolean name="imputable" default="1"/>
 	  
-	  <datetime name="fromDate" title="From Date"/>
-	  <datetime name="toDate" title="To Date"/>
-	  <datetime name="dueDate" title="Due Date"/>
-	  
-	  <decimal name="duration" title="Duration"/>
-	  <decimal name="timeSpent" title="Time Spent"/>
-	  <decimal name="leadDelay" title="Lead/Delay"/>
-	  
-	  <decimal name="progress" title="Progress (%)"/>
-	  <decimal name="sequence" title="Sequence" />
-	  <integer name="orderByState"/>
-	  
-	  
-		<boolean name="imputable"/>
-	  
-	  <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
-	  <many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>
-	  <many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to finish"/>
-	  <many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to finish"/>
-	  
-	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-	  
-	  <many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
-	  
-	  <!-- -Json fields -->
-	  <string name="projectAttrs" title="Fields" json="true" />
-	  <string name="taskAttrs" title="Fields" json="true" />
-	  
-	  <string name="fullName" namecolumn="true" title="Name"/>
+		<many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
+		<many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>
+		<many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to finish"/>
+		<many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to finish"/>
+		
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+		
+		<many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
+		
+		<!-- -Json fields -->
+		<string name="projectAttrs" title="Fields" json="true" />
+		<string name="taskAttrs" title="Fields" json="true" />
+		
+		<string name="fullName" namecolumn="true" title="Name"/>
 	 
 	   <extra-code>
    		<![CDATA[

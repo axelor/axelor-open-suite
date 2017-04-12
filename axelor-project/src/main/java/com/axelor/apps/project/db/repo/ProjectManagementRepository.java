@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.project.db.repo;
 
-import com.axelor.exception.AxelorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 

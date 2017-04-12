@@ -553,8 +553,8 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	 		}
 	 		ExpenseLine expenseLine = new ExpenseLine();
 	 		if (request.getData().get("project") != null) {
-	 			ProjectRepository projectTaskRepo = Beans.get(ProjectRepository.class);
-	 			expenseLine.setProject(projectTaskRepo.find(Long.parseLong(request.getData().get("project").toString())));
+	 			ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+	 			expenseLine.setProject(projectRepo.find(Long.parseLong(request.getData().get("project").toString())));
 	 		}
 	 		expenseLine.setDistance(new BigDecimal(request.getData().get("nbrKm").toString()));
 	 		expenseLine.setFromCity(request.getData().get("cityFrom").toString());

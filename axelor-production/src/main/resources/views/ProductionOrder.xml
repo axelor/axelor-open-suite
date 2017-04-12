@@ -14,11 +14,11 @@
          -->
     </grid>
     
-	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project-task"
-		onLoad="action-production-order-attrs-title-project-task" width="large">
+	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project"
+		onLoad="action-production-order-attrs-title-project" width="large">
 	  <panel name="main">
 	    <field name="productionOrderSeq"/>
-	    <field name="project" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()" />
+	    <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()" />
 	    <field name="prioritySelect"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
@@ -42,7 +42,7 @@
 	  <panel-dashlet   action="action-production-order-view-operation-order"/>
 	</form>
     
-    <action-attrs  if-module="axelor-business-production"  name="action-production-order-attrs-title-project-task">
+    <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
 
