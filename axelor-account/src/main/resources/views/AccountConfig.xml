@@ -205,7 +205,7 @@
 						<field name="name" colSpan="6"/>
 						<field name="accountType" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 						<field name="reconcileOk" colSpan="6"/>
-						<field name="parent" colSpan="6" grid-view="account-grid" form-view="account-form"/>
+						<field name="parentAccount" colSpan="6" grid-view="account-grid" form-view="account-form"/>
 						<field name="company" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				    </editor>
 				</field>

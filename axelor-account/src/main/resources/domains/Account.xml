@@ -10,7 +10,7 @@
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true" hashKey="true" help="true"/>
-    <many-to-one name="parent" ref="Account" title="Parent Account"  help="true"/>
+    <many-to-one name="parentAccount" ref="Account" title="Parent Account"  help="true"/>
     <many-to-one name="accountType" ref="AccountType" massUpdate="true" title="Account Type"  help="true"/>
     <boolean name="reconcileOk" massUpdate="true" title="Reconcilable ?" help="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="true"/>

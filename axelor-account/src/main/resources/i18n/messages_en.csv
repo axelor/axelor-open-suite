@@ -1520,7 +1520,7 @@
 "help:Account.accountType","The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view",,
 "help:Account.code","The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.",,
 "help:Account.company","Each account is linked to a chart of account, and thus to a company.",,
-"help:Account.parent","The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company.",,
+"help:Account.parentAccount","The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company.",,
 "help:Account.reconcileOk","The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable.",,
 "help:AccountConfig.doubtfulCustomerAccount","Utiliser pour le passage en client douteux",,
 "help:AccountConfig.interbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,
