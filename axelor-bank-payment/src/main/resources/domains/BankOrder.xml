@@ -13,7 +13,7 @@
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true" unique="true"/>
   	<integer name="partnerTypeSelect" title="Partner Type" selection="bankpayment.bank.order.partner.type.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="bankpayment.bank.order.status.select"/>
-	<date name="bankOrderDate" title="Bank order Date"/>  	
+	<date name="bankOrderDate" title="Bank order due Date"/>
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
 	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format" required="true"/>
 	<datetime name="confirmationDateTime" title="Confirmation date"/>

@@ -110,6 +110,7 @@
 "Bank order Date","Date de l'ordre bancaire",,
 "Bank order amount","Montant de l'ordre bancaire",,
 "Bank order currency","Devise de l'ordre bancaire",,
+"Bank order due Date","Date d'échéance de l'ordre bancaire",,
 "Bank order export folder path","Dossier d'export des ordres bancaires",,
 "Bank order file format","Format de fichier des ordres bancaires",,
 "Bank order file formats","Formats de fichier des ordres bancaires",,
