@@ -249,8 +249,6 @@ public class InventoryService {
 		generateStockMove(inventory);
 		updateProduct(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
-
-		inventoryRepo.save(inventory);
 	}
 
 	private void updateProduct(Inventory inventory) {
