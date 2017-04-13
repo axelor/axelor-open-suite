@@ -244,20 +244,20 @@ public class InventoryService {
 
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void realizeInventory(Inventory inventory) throws AxelorException {
 		generateStockMove(inventory);
 		updateProduct(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
-		
+
 		inventoryRepo.save(inventory);
 	}
-	
+
 	private void updateProduct(Inventory inventory) {
 		for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
 			Product product = inventoryLine.getProduct();
-			product.setLastInventoryDateT(inventory.getDateT());
 			product.setLastInventoryRealQty(inventoryLine.getRealQty());
+			product.setLastInventoryDateT(inventory.getDateT());
 		}
 	}
 
