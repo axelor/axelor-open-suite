@@ -544,7 +544,7 @@
     </action-group>
     
     <action-group name="action-sale-order-group-finalize">
-    	<action name="action-sale-method-update-customer-credit-line"/>
+    	<action name="action-sale-method-update-customer-credit"/>
     	<action name="action-sale-order-validate-bloqued"/>
     	<action name="action-sale-order-method-finalize"/>
     </action-group>
