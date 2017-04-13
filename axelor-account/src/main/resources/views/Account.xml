@@ -8,7 +8,7 @@
         <field name="name"/>
 		<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/> 
         <field name="reconcileOk"/>
-        <field name="parent" form-view="account-form" grid-view="account-grid"/>
+        <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 	
@@ -21,12 +21,12 @@
         <column name="name" type="string"/>
          <column name="code" type="string"/>
          
-        <node model="com.axelor.apps.account.db.Account" domain="self.parent is null">
+        <node model="com.axelor.apps.account.db.Account" domain="self.parentAccount is null">
             <field as="name" name="name"/>
              <field as="code" name="code"/>
         </node>
         
-        <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true" onClick="action-account-view-account-onchange-view" >
+        <node model="com.axelor.apps.account.db.Account" parent="parentAccount" draggable="true" onClick="action-account-view-account-onchange-view" >
             <field as="name" name="name"/>
             <field as="code" name="code"/>
         </node>
@@ -39,7 +39,7 @@
 			<panel name="settings" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/> 
 				<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
-				<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+				<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 				<field name="reconcileOk"/>
 			</panel>
 	   </panel>
@@ -51,7 +51,7 @@
 			<field name="name" colSpan="9" css="bold"/>
 			<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/> 
 			<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
-			<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+			<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 			<field name="reconcileOk"/>
 		</panel>
 	</form>
@@ -77,11 +77,11 @@
     </action-record>
          
     <action-validate name="action-account-validate">
-     	<error message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company." if="parent != null &amp;&amp; company != null &amp;&amp; parent?.company?.id != company?.id"/>
+     	<error message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company." if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
     </action-validate>
     
     <action-record name="action-account-clean-company" model="com.axelor.apps.account.db.Account">
-        <field name="company"  expr="eval:null" if="parent != null &amp;&amp; company != null &amp;&amp; parent?.company?.id != company?.id"/>
+        <field name="company"  expr="eval:null" if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
     </action-record>
     
 </object-views>
