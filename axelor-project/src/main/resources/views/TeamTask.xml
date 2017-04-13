@@ -31,6 +31,7 @@
 		
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
+				<field name="team" form-view="team-form" grid-view="grid-form" colSpan="6" readonly="true"/>
 				<field name="assignedTo" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true"/>
 				<spacer/>
 				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
@@ -49,8 +50,8 @@
 		<panel>
 			<panel name="products" title="Products" colSpan="12">
 				<field name="product" form-view="product-form" grid-view="product-grid" colSpan="6"/>
-				<field name="quantity" colSpan="6"/>
 				<field name="salePrice" colSpan="6"/>
+				<field name="quantity" colSpan="6"/>
 				<field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
 			</panel>
 		</panel>
@@ -114,6 +115,8 @@
 		<field name="assignedTo" expr="eval: null"/>
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
+		<field name="team" expr="eval: project?.team"/>
+		<field name="team" expr="eval: project?.project?.team " if="project?.team == null"/>
 	</action-record>
 	
 	<action-attrs name="action-task-attrs-project-configurations" model="com.axelor.team.db.TeamTask">
