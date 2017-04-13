@@ -7,9 +7,12 @@
         <toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
+		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
+		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
         <field name="bankOrderSeq"/>
         <field name="orderTypeSelect"/>
         <field name="bankOrderDate"/>
+		<field name="confirmationDateTime"/>
         <field name="senderCompany"/>
         <field name="amount"/>
         <field name="bankOrderCurrency"/>
@@ -23,9 +26,12 @@
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
+		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
+		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
         <field name="bankOrderSeq"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
+        <field name="confirmationDateTime"/>
         <field name="senderCompany"/>
         <field name="amount"/>
         <field name="bankOrderCurrency"/>

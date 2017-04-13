@@ -110,6 +110,7 @@
 "Bank order Date",,,
 "Bank order amount",,,
 "Bank order currency",,,
+"Bank order due Date",,,
 "Bank order export folder path",,,
 "Bank order file format",,,
 "Bank order file formats",,,
