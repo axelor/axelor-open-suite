@@ -194,7 +194,7 @@
 	    	</panel>
 	    	<panel name="packaging" title="Packaging">
 	  			<panel name="weight" title="Weight" colSpan="6">
-	  				<field name="weightUnit" domain="self.lengthUnit.unitTypeSelect = 1"/>
+	  				<field name="weightUnit" domain="self.weightUnit.unitTypeSelect = 1"/>
 	  				<field name="grossWeight"/>
 	  				<field name="netWeight"/>
 	  			</panel>
