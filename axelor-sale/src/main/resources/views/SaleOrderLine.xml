@@ -81,7 +81,7 @@
 		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 		   	</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
+				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
@@ -144,7 +144,7 @@
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
-    	<action name="action-sale-order-line-attrs-title-project-task"/>
+    	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-record-new"/>
@@ -156,7 +156,7 @@
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
-    	<action name="action-sale-order-line-attrs-title-project-task"/>
+    	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>

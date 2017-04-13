@@ -1518,7 +1518,7 @@
 "help:Account.accountType",,,
 "help:Account.code",,,
 "help:Account.company",,,
-"help:Account.parent",,,
+"help:Account.parentAccount",,,
 "help:Account.reconcileOk",,,
 "help:AccountConfig.doubtfulCustomerAccount",,,
 "help:AccountConfig.interbankPaymentOrderImportPathCFONB",,,

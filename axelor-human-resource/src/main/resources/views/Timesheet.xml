@@ -69,7 +69,7 @@
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
 		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
 			<field name="$toGenerationDate" title="To generation date" widget="Date"/>
-			<field name="$project" title="Project" target="com.axelor.apps.project.db.Project" domain="self.imputable=true" type="many-to-one" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="$project" title="Project" target="com.axelor.apps.project.db.Project" domain="self.imputable=true" type="many-to-one" form-view="project-form" grid-view="project-grid"/>
 			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>

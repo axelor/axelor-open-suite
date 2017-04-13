@@ -51,7 +51,6 @@ public class ProjectService {
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
 		project.setProgress(BigDecimal.ZERO);
-		project.addMembersUserSetItem(assignedTo);
 		return project;
 	}
 

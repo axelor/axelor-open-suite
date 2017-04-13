@@ -366,7 +366,6 @@
 		<view type="grid" name="user-grid"/>
 		<view type="form" name="user-form"/>
 	</action-view>
-	
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
 		title="Companies" action="admin.root.base.company" />
 

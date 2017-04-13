@@ -58,7 +58,7 @@ public class AccountChartController {
 		AccountChart act = accountChartRepo.find(accountConfig.getAccountChart().getId());
 		Company company = companyRepo.find(accountConfig.getCompany().getId());
 		accountConfig = accountConfigRepo.find(accountConfig.getId());
-		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parent != null", company.getId()).fetch();
+		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parentAccount != null", company.getId()).fetch();
 		
 		if(accountList.isEmpty()){
 			if(accountChartsService.installAccountChart(act,company,accountConfig))
