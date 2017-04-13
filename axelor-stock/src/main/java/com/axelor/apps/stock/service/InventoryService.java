@@ -244,7 +244,7 @@ public class InventoryService {
 
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void realizeInventory(Inventory inventory) throws AxelorException {
 		generateStockMove(inventory);
 		updateProduct(inventory);
@@ -255,8 +255,7 @@ public class InventoryService {
 	
 	private void updateProduct(Inventory inventory) {
 		for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-			Long productId = inventoryLine.getProduct().getId();
-			Product product = productRepo.find(productId);
+			Product product = inventoryLine.getProduct();
 			product.setLastInventoryDateT(inventory.getDateT());
 			product.setLastInventoryRealQty(inventoryLine.getRealQty());
 		}
