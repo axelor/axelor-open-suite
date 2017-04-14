@@ -169,6 +169,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
+		stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
 
 		return stockMoveLine;
 	}
