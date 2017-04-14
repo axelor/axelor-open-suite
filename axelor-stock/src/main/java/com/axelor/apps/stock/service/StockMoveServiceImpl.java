@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -344,7 +345,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			Product product = stockMoveLine.getProduct();
 
-			if (!"storable".equalsIgnoreCase(product.getProductTypeSelect())) {
+			if (!ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
 				continue;
 			}
 
