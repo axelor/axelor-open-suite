@@ -22,7 +22,10 @@
 	    <field name="hasInSmForStorableProduct"/>
 	    <field name="hasInSmForNonStorableProduct"/>
 	  </panel>
-	</form>	
+	  <panel name="customsInformation" title="Customs">
+	  	<field name="weightUnit" domain="self.weightUnit.unitTypeSelect = 1"/>
+	  </panel>
+	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">
 		<field name="company" expr="eval: _company" if="_company != null"/>

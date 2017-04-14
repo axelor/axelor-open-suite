@@ -39,6 +39,8 @@
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+    	    <field name="netWeight" readonly="true" showIf="netWeight != 0"/>
+	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"  />
@@ -96,6 +98,8 @@
 	        <field name="unitPriceUntaxed"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="netWeight" readonly="true" showIf="netWeight != 0"/>
+	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
