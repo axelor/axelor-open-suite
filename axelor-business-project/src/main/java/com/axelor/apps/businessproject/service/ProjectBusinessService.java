@@ -55,7 +55,6 @@ public class ProjectBusinessService extends ProjectService{
 	@Override
 	public Project generateProject(Project parentProject,String fullName, User assignedTo, Company company, Partner clientPartner){
 		Project project = new Project();
-		project.setTypeSelect(ProjectRepository.TYPE_PROJECT);
 		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
 		project.setProject(parentProject);
 		project.setName(fullName);
@@ -97,7 +96,6 @@ public class ProjectBusinessService extends ProjectService{
 
 	public Project generateProject(Project project,String fullName, User assignedTo){
 		Project project1 = new Project();
-		project1.setTypeSelect(ProjectRepository.TYPE_TASK);
 		project1.setStatusSelect(ProjectRepository.STATE_PLANNED);
 		project1.setProject(project1);
 		project1.setName(fullName);
