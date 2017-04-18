@@ -18,15 +18,13 @@ allprojects {
 
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
-apply {
-	version = "5.0.0"
-}
 
 allprojects {
 	apply plugin: 'eclipse'
 	
 	group = "com.axelor"
-	
+	version = "5.0.0-SNAPSHOT"
+
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 }
