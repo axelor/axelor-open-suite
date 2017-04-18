@@ -41,6 +41,8 @@ modules.addAll(customModules)
 
 axelor {
 	title "Axelor :: ERP"
+	description "Axelor Entreprise Application"
+
 	modules.each { dir ->
 		install "$dir.name"
 	}
