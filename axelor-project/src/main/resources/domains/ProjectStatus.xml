@@ -11,4 +11,5 @@
   		<boolean name="isOpen"/>
   		<boolean name="isClose"/>
 	</entity>
-  </domain-models>
+ 
+ </domain-models>

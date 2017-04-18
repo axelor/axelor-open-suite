@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-
+	
+	<grid name="business-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+		<field name="fullName"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="statusSelect"/>
+	</grid>
+	
 	<action-method name="action-project-method-print-project">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printProject"/>
 	</action-method>

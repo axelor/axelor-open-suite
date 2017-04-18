@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="project" package="com.axelor.apps.project.db"/>
+	
+	<entity name="Resource">
+  		<string name="name" required="true"/>
+  		<many-to-one name="resourceCategory" ref="ResourceCategory" title="Category" />
+  		<decimal name="cost" title="Cost"/>
+  		<string name="batchNo" title="Serial/batch number"/>
+	</entity>
+ 
+ </domain-models>

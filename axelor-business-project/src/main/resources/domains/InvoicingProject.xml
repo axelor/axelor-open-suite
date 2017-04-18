@@ -7,13 +7,13 @@
 
   <entity name="InvoicingProject" cachable="true">
       
-    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-    <many-to-many name="logTimesSet" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log Times Selection" />
-    <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale Order Lines Selection" />
-    <many-to-many name="purchaseOrderLineSet" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase Order Lines Selection" />
-    <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense Lines Selection" />
-    <many-to-many name="elementsToInvoiceSet" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Elements To Invoice Selection" />
-    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" title="Project Selection" />
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Business project"/>
+    <many-to-many name="logTimesSet" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log Times" />
+    <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale Order Lines" />
+    <many-to-many name="purchaseOrderLineSet" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase Order Lines" />
+    <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense Lines" />
+    <many-to-many name="elementsToInvoiceSet" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Elements To Invoice" />
+    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" title="Project" />
 	<integer name="logTimesSetPrioritySelect" selection="invoicing.project.priority.select" title="Log Times Priority" default="3"/>
 	<integer name="saleOrderLineSetPrioritySelect" selection="invoicing.project.priority.select" title="Sale Order Lines Priority" default="1"/>
 	<integer name="purchaseOrderLineSetPrioritySelect" selection="invoicing.project.priority.select" title="Purchase Order Lines Priority" default="2"/>

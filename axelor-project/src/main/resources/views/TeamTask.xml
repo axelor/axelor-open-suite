@@ -13,12 +13,14 @@
 		<field name="category"/>
 	</grid>
 	
-	<form title="Task" name="tasks-form"  model="com.axelor.team.db.TeamTask" onLoad="action-task-attrs-project-configurations">
+	<form title="Task" name="tasks-form"  model="com.axelor.team.db.TeamTask" onLoad="action-task-attrs-project-configurations"
+		onNew="action-task-defaults">
 		<toolbar>
 			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" />
 			<button name="start" help="Start" icon="fa-play"/>
 			<button name="accept" help="Validate" icon="fa-check"/>
 			<button name="stop" help="Finish" icon="fa-power-off"/>
+			<button name="bookResource" title="Book resource" onClick="save,action-task-book-resource" />
 		</toolbar>
 		
 		<panel name="main" colSpan="12">
@@ -27,7 +29,6 @@
 			<field name="parentTask" colSpan="6" readonlyIf="project == null"/>
 			<field name="project" colSpan="6" onChange="action-task-attrs-project-configurations, action-task-record-project-configurations" required="true"/>
 		</panel>
-		
 		
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
@@ -115,9 +116,17 @@
 	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
 		<field name="category" expr="eval: null"/>
-		<field name="assignedTo" expr="eval: null"/>
+		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
+	</action-record>
+	
+	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
+		<field name="assignedTo" expr="eval:__user__" />
+		<field name="priority" expr="normal" />
+    	<field name="status" expr="new" />
+    	<field name="taskDate" expr="#{__date__}" />
+    	<field name="project" expr="eval:_project" />
 	</action-record>
 	
 	<action-attrs name="action-task-attrs-project-configurations" model="com.axelor.team.db.TeamTask">
@@ -127,5 +136,12 @@
   		<attribute name="domain" for="membersUserSet" expr="eval: &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot;"/>
 	</action-attrs>
 	
+	<action-view name="action-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
+		<view type="form" name="resource-booking-form" />
+		<view type="grid" name="resource-booking-grid" />
+		<view type="calendar" name="resource-booking-calendar" />
+		<context name="_project" expr="eval:__self__.project"/>
+		<context name="_task" expr="eval:__self__"/>
+	</action-view>
 	
 </object-views>

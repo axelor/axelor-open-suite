@@ -2,15 +2,15 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="invoicing-project-grid" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject">
+	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
 		<field name="invoice"/>
 		<field name="deadlineDate"/>
 		<field name="createdOn"/>		
 	</grid>
 
-	<form name="invoicing-project-form" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject" 
-		onNew="action-invoicing-project-attrs-title-project" onLoad="action-invoicing-project-attrs-title-project">
+	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject" 
+		onNew="action-invoicing-project-attrs-title-project" onLoad="action-invoicing-project-attrs-title-project" width="large">
 		<toolbar>
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
   		</toolbar>
@@ -30,16 +30,16 @@
 		<panel-related field="projectSet" canNew="false" canEdit="false" canSelect="false" form-view="project-form" grid-view="project-grid" readonlyIf="invoice != null"/>
 		<panel-related field="elementsToInvoiceSet" canNew="false" canEdit="false" canSelect="false" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form" readonlyIf="invoice != null"/>
 		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form" readonlyIf="invoice != null"  if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
-		<panel sidebar="true" name="priority" title="Priority" readonlyIf="invoice != null">
+<!-- 		<panel sidebar="true" name="priority" title="Priority" readonlyIf="invoice != null"> -->
 			
-			<field name="saleOrderLineSetPrioritySelect" width="30%"/>
-			<field name="purchaseOrderLineSetPrioritySelect" width="30%"/>
-			<field name="logTimesSetPrioritySelect" width="30%"/>
-			<field name="expenseLineSetPrioritySelect" width="30%"/>
-			<field name="projectSetPrioritySelect" width="30%"/>
-			<field name="elementsToInvoiceSetPrioritySelect" width="30%"/>
+<!-- 			<field name="saleOrderLineSetPrioritySelect" width="30%"/> -->
+<!-- 			<field name="purchaseOrderLineSetPrioritySelect" width="30%"/> -->
+<!-- 			<field name="logTimesSetPrioritySelect" width="30%"/> -->
+<!-- 			<field name="expenseLineSetPrioritySelect" width="30%"/> -->
+<!-- 			<field name="projectSetPrioritySelect" width="30%"/> -->
+<!-- 			<field name="elementsToInvoiceSetPrioritySelect" width="30%"/> -->
 			
-		</panel>
+<!-- 		</panel> -->
 	</form>
 	
 	<action-method name="action-invoicing-project-method-generate-invoice">

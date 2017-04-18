@@ -46,36 +46,9 @@
 	    
 	</form>
 	
-	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
-	</form>
-	
 	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
 	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
 	</form>
-	
-	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
-	</form>
-	
-	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
-
-<!-- 	<grid  title="Reported balances" > -->
-<!--         <field name="company"/> -->
-<!--     </grid> -->
-<!--              <form   title="Reported balance" > -->
-<!--                  <field name="company" widget="SuggestBox"/> -->
-<!--                  <field name="reportedBalanceLineList"  > -->
-<!--                      <grid title="Reported balance lines" > -->
-<!--                          <field name="year"/> -->
-<!--                          <field name="amount"/> -->
-<!--                      </grid> -->
-<!--                      <form    title="Reported balance line" > -->
-<!--                          <field name="year"/> -->
-<!--                          <field name="amount"/> -->
-<!--                      </form> -->
-<!--                  </field> -->
-<!--              </form> -->
 	
 	<form name="incl-sepa-direct-debit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
          <panel name="sepaDirectDebit" title="SEPA Direct Debit" colSpan="12" >

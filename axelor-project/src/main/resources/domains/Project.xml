@@ -15,9 +15,8 @@
 		<many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
 		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
-		<string name="typeSelect" selection="project.task.type.select" title="Type" />
 		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
-		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Categorie"/>
+		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronisable"/>
 		
@@ -49,14 +48,17 @@
 		
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 		
-		<many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
+		<many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Type of authorized activities"/>
+		
+		<boolean name="excludePlanning" title="Exclude planning" />
 		
 		<!-- -Json fields -->
 		<string name="projectAttrs" title="Fields" json="true" />
-		<string name="taskAttrs" title="Fields" json="true" />
 		
 		<string name="fullName" namecolumn="true" title="Name"/>
-	 
+	 	
+	 	<boolean name="isProject" title="Project" default="true" />
+	 	
 	   <extra-code>
    		<![CDATA[
    			public static final String TYPE_PROJECT = "project";
