@@ -182,7 +182,7 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-line-store-product-type" model="com.axelor.apps.stock.db.StockMoveLine">
-		<field name="productTypeSelect" expr="eval: product.productTypeSelect"/>
+		<field name="productTypeSelect" expr="eval: product?.productTypeSelect"/>
 	</action-record>
 	
 	<action-attrs name="action-stock-move-line-product-domain">
