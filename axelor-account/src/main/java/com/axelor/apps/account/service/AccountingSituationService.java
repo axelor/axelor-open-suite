@@ -29,4 +29,5 @@ public interface AccountingSituationService	{
 	List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException;
 	AccountingSituation createAccountingSituation(Company company) throws AxelorException;
 	AccountingSituation getAccountingSituation(Partner partner, Company company);
+	AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException;
 }
