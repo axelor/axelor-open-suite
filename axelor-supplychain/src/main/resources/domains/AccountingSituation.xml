@@ -5,11 +5,9 @@
 
     <module name="account" package="com.axelor.apps.account.db"/>
 
-    <entity name="ReportedBalanceLine" lang="java">
-
-        <many-to-one name="accountingSituation" ref="com.axelor.apps.account.db.AccountingSituation" title="Accounting situation"/>
-        <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
-        <decimal name="amount" title="Amount"/>
-
+    <entity name="AccountingSituation" lang="java">
+        <!--  Customer Credit -->
+        <decimal name="acceptedCredit" title="Accepted Credit" precision="20" scale="2" required="true"/>
+        <decimal name="usedCredit" title="Used Credit" precision="20" scale="2" readonly="true"/>
     </entity>
 </domain-models>
