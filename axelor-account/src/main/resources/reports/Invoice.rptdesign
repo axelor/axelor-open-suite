@@ -942,7 +942,7 @@
 	Company.name as "companyName", 
 	BankDetail.iban, 
 	Bank.code as "bic",
-	Bank.bank_address, 
+	BankDetail.bank_address, 
 	Invoice.note, 
 	Invoice.internal_reference, 
 	Invoice.external_reference, 
