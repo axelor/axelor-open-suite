@@ -21,6 +21,9 @@ import java.math.BigDecimal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.axelor.apps.production.db.CostSheet;
+import com.axelor.inject.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,7 +182,7 @@ public class ManufOrderStockMoveService {
 
 		this.finishStockMove(manufOrder.getInStockMove());
 		this.finishStockMove(manufOrder.getOutStockMove());
-
+		Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 	}
 
 

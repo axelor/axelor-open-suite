@@ -128,6 +128,9 @@
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 				</panel>
 			</panel>
+			<panel name="cost" title="Cost" readonly="true" showIf="statusSelect == 6">
+				<field name="costSheet" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
+			</panel>
 		</panel-tabs>
 		<panel name="actions" title="Actions" colSpan="12" sidebar="true" showIf="id">
 			<button name="plan" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan"/>
