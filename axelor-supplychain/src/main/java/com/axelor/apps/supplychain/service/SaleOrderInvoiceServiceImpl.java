@@ -237,7 +237,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), 
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
-				saleOrderLine.getSequence(), false, saleOrderLine, null, null, null)  {
+				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
