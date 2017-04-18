@@ -144,8 +144,7 @@ public class OperationOrderController {
 		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
 		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		manufOrderWorkflowService.start(operationOrder.getManufOrder());
-
-		response.setReload(true);
+        response.setReload(true);
 	}
 
 	public void pause(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -166,7 +165,10 @@ public class OperationOrderController {
 
 	public void finish(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		//this attribute is not in the database, only in the view
+		LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
 		operationOrder = operationOrderRepo.find(operationOrder.getId());
+        operationOrder.setRealStartDateT(realStartDateT);
 		operationOrderWorkflowService.finish(operationOrder);
 		manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
 
