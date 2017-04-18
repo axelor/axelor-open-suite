@@ -44,7 +44,7 @@
 		    	<field name="manageSalesUnits" if-module="axelor-sale" widget="Boolean-switch"/>
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
-				<field name="manageMultiBanks" if-module="axelor-cash-management" widget="Boolean-switch"/>
+				<field name="manageMultiBanks" widget="Boolean-switch"/>
 				<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">

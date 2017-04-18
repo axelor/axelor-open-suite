@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
@@ -141,16 +142,17 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 		PaymentMode paymentMode = advancePayment.getPaymentMode();
 		Partner clientPartner = saleOrder.getClientPartner();
 		LocalDate advancePaymentDate = advancePayment.getAdvancePaymentDate();
+		BankDetails bankDetails = saleOrder.getCompanyBankDetails();
 		
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 		
 		Move move = moveService.getMoveCreateService().createMove(journal, company, advancePayment.getCurrency(), clientPartner, advancePaymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		BigDecimal amountConverted = currencyService.getAmountCurrencyConvertedAtDate(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePaymentDate);
 		
-		move.addMoveLineListItem(moveLineService.createMoveLine(move, clientPartner, paymentModeService.getPaymentModeAccount(paymentMode, company), 
+		move.addMoveLineListItem(moveLineService.createMoveLine(move, clientPartner, paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails), 
 				amountConverted, true, advancePaymentDate, null, 1, ""));
 		
 		move.addMoveLineListItem(moveLineService.createMoveLine(move, clientPartner, accountConfigService.getAdvancePaymentAccount(accountConfig), 

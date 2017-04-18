@@ -43,6 +43,9 @@
 
 		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
 		
+		<boolean name="manageMultiBanks" title="Manage multi banks"/>
+		
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;
