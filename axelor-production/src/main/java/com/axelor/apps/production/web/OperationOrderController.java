@@ -100,20 +100,12 @@ public class OperationOrderController {
 	public void computeDuration(ActionRequest request, ActionResponse response) {
 		
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		
 		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
-		
-		if(operationOrder.getPlannedStartDateT() != null && operationOrder.getPlannedEndDateT() != null) {
-			response.setValue("plannedDuration", 
-					operationOrderWorkflowService.getDuration(
-							operationOrderWorkflowService.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
-		}
-		
-		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
-			response.setValue("realDuration", 
-					operationOrderWorkflowService.getDuration(
-							operationOrderWorkflowService.computeRealDuration(operationOrder)));
-		}
+		operationOrderWorkflowService.computeDuration(operationOrder);
+		response.setReload(true);
+
 	}
 	
 	public void machineChange(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -138,13 +130,6 @@ public class OperationOrderController {
 		operationOrderWorkflowService.plan(operationOrder);
 		
 		response.setReload(true);
-	}
-
-	public void start(ActionRequest request, ActionResponse response) throws AxelorException {
-		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-		operationOrder = operationOrderRepo.find(operationOrder.getId());
-		manufOrderWorkflowService.start(operationOrder.getManufOrder());
-        response.setReload(true);
 	}
 
 	public void pause(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -402,6 +387,20 @@ public class OperationOrderController {
 		}
 		
 		response.setData(dataList);
+	}
+
+	public void startManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		operationOrder =operationOrderRepo.find(operationOrder.getId());
+		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		response.setReload(true);
+	}
+
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
+		response.setReload(true);
 	}
 }
 

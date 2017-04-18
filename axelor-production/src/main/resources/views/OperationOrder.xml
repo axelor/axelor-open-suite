@@ -31,8 +31,8 @@
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
         <button name="plan" icon="fa-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect &gt;= 3"/>
-        <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-group-start-or-resume,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-record-pause,save" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="fa-times-circle" help="Cancel"  onClick="action-operation-order-method-cancel,save" readonlyIf="statusSelect == 2"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
@@ -49,7 +49,7 @@
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
         <button name="plan" icon="fa-calendar" help="Plan" onClick="save,action-operation-order-method-plan" readonlyIf="statusSelect &gt;= 3"/>
-        <button name="start" icon="fa-play" help="Start" onClick="save,action-operation-order-group-start-or-resume,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+        <button name="start" icon="fa-play" help="Start" onClick="save,action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" help="Pause" onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="fa-power-off" help="Finish" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="save,action-operation-order-method-cancel,save" readonlyIf="statusSelect == 2"/>
@@ -99,7 +99,7 @@
 		</panel>
 		<panel name="actions" title="Actions" sidebar="true" colSpan="12" showIf="id" readonlyIf="statusSelect == 6">
 			<button name="plan" title="Plan" icon="fa-calendar" hideIf="statusSelect &gt;= 3" colSpan="12" onClick="save,action-operation-order-method-plan"/>
-			<button name="start" title="Start" icon="fa-play" showIf="statusSelect == 3" colSpan="12" onClick="save,action-operation-order-method-start,action-operation-order-method-compute-duration,save"/>
+			<button name="start" title="Start" icon="fa-play" showIf="statusSelect == 3" colSpan="12" onClick="save,action-operation-order-group-start,save"/>
 			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect != 2" colSpan="12" onClick="save,action-operation-order-method-cancel,save"/>
 			<button name="finish" title="Finish" icon="fa-power-off"  showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration,save"/>
 			<button name="pause" title="Pause" icon="fa-pause" showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-pause,save"/>
@@ -138,8 +138,20 @@
 		<action name="action-operation-order-method-resume" if="statusSelect == 5"/>
 	</action-group>
     
-    <action-method name="action-operation-order-method-start">
-    	<call class="com.axelor.apps.production.web.OperationOrderController" method="start"/>
+    <action-group name="action-operation-order-group-start">
+    	<action name="action-operation-order-record-started"/>
+    	<action name="action-operation-order-method-start"/>
+    	<action name="action-operation-order-method-start-manuf-order" if="_parent?.statusSelect == 3"/>
+        <action name="action-operation-order-method-compute-duration"/>
+    </action-group>
+    
+    <action-record name="action-operation-order-record-started" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="startedBy" expr="eval: __user__"/>
+		<field name="startingDateTime" expr="eval: __datetime__"/>
+    </action-record>
+    
+    <action-method name="action-operation-order-method-start-manuf-order">
+    	<call class="com.axelor.apps.production.web.OperationOrderController" method="startManufOrder"/>
     </action-method>
 
     <action-method name="action-operation-order-method-pause">
@@ -157,6 +169,24 @@
 	<action-method name="action-operation-order-method-cancel">
 		<call class="com.axelor.apps.production.web.OperationOrderController" method="cancel"/>
 	</action-method>
+    
+    <action-method name="action-operation-order-method-start">
+		<call class="com.axelor.apps.production.web.OperationOrderController" method="start"/>
+    </action-method>
+    
+    <action-record name="action-operation-order-record-cancel" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="statusSelect" expr="eval: 2"/>
+    </action-record>
+    
+    <action-record name="action-operation-order-record-pause" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="statusSelect" expr="eval: 5"/>
+    	<field name="stoppedBy" expr="eval: __user__"/>
+		<field name="stoppingDateTime" expr="eval: __datetime__"/>
+    </action-record>
+    
+    <action-record name="action-operation-order-record-resume" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="statusSelect" expr="eval: 4"/>
+    </action-record>
     
     <action-method name="action-operation-order-method-print">
 		<call class="com.axelor.apps.production.web.OperationOrderController" method="print"/>
