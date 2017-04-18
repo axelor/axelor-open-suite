@@ -114,6 +114,7 @@
 			        <field name="costPrice" colSpan="6" onChange="action-product-record-compute-sale-price"/>
 			        <field name="costTypeSelect" colSpan="6" onChange="action-product-attrs-cost-type-select-onchange"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
+					<field name="$shippingCoef" type="decimal" title="Shipping Coef." readonly="true"/>
 	      		</panel>
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"/>
 	    	</panel>
@@ -286,6 +287,7 @@
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
+		<action name="action-product-method-supplier-catalog-coeff"/>
     </action-group>
 
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
@@ -314,11 +316,11 @@
 
 	<action-attrs name="action-product-attrs-cost-type-select-onchange">
 		<attribute for="costPrice" name="readonly" expr="eval: costTypeSelect != 1"/>
-		<attribute for="costPrice" name="value" expr="eval: purchasePrice" if="costTypeSelect == 2"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(new BigDecimal(shippingCoef)) : purchasePrice" if="costTypeSelect == 2"/>
 		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
 		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
 	</action-attrs>
-    
+
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
@@ -376,6 +378,10 @@
 	
 	<action-method name="action-product-method-update-products-prices" >
 		<call class="com.axelor.apps.base.web.ProductController" method="updateProductsPrices"/>
+	</action-method>
+
+	<action-method name="action-product-method-supplier-catalog-coeff">
+		<call class="com.axelor.apps.base.web.ProductController" method="fillShippingCoeff"/>
 	</action-method>
 	
     <action-validate name="action-product-validate-end-date">
