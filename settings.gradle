@@ -9,11 +9,6 @@ modules.addAll(new File('modules').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists() 
 })
 
-modules.addAll(new File('modules/axelor-process-studio').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists() 
-})
-
-
 modules.each { dir ->
 	include "modules:$dir.name"
 	project(":modules:$dir.name").projectDir = dir
