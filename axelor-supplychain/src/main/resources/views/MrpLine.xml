@@ -15,30 +15,31 @@
         <field name="location"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
-        <button name="generateProposal" icon="fa-calendar" help="Generate proposal" onClick="action-mrp-line-method-generate-proposal" readonlyIf="[5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
+        <field name="proposalGenerated" hidden="true"/>
+        <button name="generateProposal" icon="fa-calendar" help="Generate proposal" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>
     </grid>
     
 	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
-	    <panel name="main" readonly="true">
-	        <field name="product"/>
-	        <field name="mrpLineType"/>
-        	<field name="qty"/>
-        	<field name="maturityDate"/>
-        	<field name="cumulativeQty" css="bold"/>
-        	<field name="product.unit"/>
-   	        <field name="minQty"/>
-        	<field name="location"/>
-        	<field name="maxLevel"/>
-   	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="[5,8].indexOf(mrpLineType.elementSelect) != -1" readonlyIf="proposalGenerated"/>
+	    <panel name="main">
+	        <field name="product" readonly="true"/>
+	        <field name="mrpLineType" readonly="true"/>
+        	<field name="qty" readonly="true"/>
+        	<field name="maturityDate" readonly="true"/>
+        	<field name="cumulativeQty" css="bold" readonly="true"/>
+        	<field name="product.unit" readonly="true"/>
+   	        <field name="minQty" readonly="true"/>
+        	<field name="location" readonly="true"/>
+        	<field name="maxLevel" readonly="true"/>
+   	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>
             <field name="mrpLineType.elementSelect" hidden="true"/>
-            <field name="mrpLineOriginList" colSpan="12">
+            <field name="mrpLineOriginList" colSpan="12" readonly="true">
                 <editor x-viewer="true">
            			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12" showTitle="false"/>
                 </editor>
             </field>
             <field name="proposalGenerated" hidden="true"/>
-            <field name="proposalSelect" title="Proposal" widget="RefSelect"/>
+            <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true" showIf="proposalGenerated"/>
 	    </panel>
 	 </form>
 	 
