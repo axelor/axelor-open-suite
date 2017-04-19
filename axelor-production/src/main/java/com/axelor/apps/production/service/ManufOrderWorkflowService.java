@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
+import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -134,6 +135,11 @@ public class ManufOrderWorkflowService {
 		}
 
 		manufOrderStockMoveService.finish(manufOrder);
+		//create cost sheet
+		CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+
+		//update price in product
+		manufOrder.getProduct().setLastProductionPrice(costSheet.getCostPrice());
 
 		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);

@@ -182,7 +182,6 @@ public class ManufOrderStockMoveService {
 
 		this.finishStockMove(manufOrder.getInStockMove());
 		this.finishStockMove(manufOrder.getOutStockMove());
-		Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 	}
 
 
