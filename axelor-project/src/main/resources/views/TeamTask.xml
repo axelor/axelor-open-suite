@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
-	<grid name="tasks-grid" title="Tasks" model="com.axelor.team.db.TeamTask">
+	<grid id="project-team-task-form" name="team-task-grid"  title="Tasks" model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
 		<field name="description"/>
 		<field name="taskDate"/>
@@ -13,7 +13,7 @@
 		<field name="category"/>
 	</grid>
 	
-	<form title="Task" name="tasks-form"  model="com.axelor.team.db.TeamTask" onLoad="action-task-attrs-project-configurations"
+	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onLoad="action-task-attrs-project-configurations"
 		onNew="action-task-defaults">
 		<toolbar>
 			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" />
@@ -41,6 +41,7 @@
 				<field name="taskDate" colSpan="4" required="true"/>
 				<field name="taskDuration" colSpan="4" widget="duration" x-big="true"/>
 				<field name="taskDeadline" colSpan="4"/>
+				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			</panel>
 			<panel title=" " colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -79,7 +80,7 @@
 	
 	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="task-tree"/>
-    	<view type="form" name="tasks-form"/>
+    	<view type="form" name="team-task-form"/>
     	<domain>self.task.id = :id</domain>
      	<context name="id" expr="eval: id"/>
 	</action-view>
@@ -105,7 +106,7 @@
 	</tree>
 	
 	<action-view name="action-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
-    	<view type="form" name="tasks-form"/>
+    	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
@@ -143,5 +144,6 @@
 		<context name="_project" expr="eval:__self__.project"/>
 		<context name="_task" expr="eval:__self__"/>
 	</action-view>
+	
 	
 </object-views>

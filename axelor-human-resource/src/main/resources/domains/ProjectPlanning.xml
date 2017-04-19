@@ -5,10 +5,10 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="Project">
-
-	  <one-to-many name="timesheetLineList" orphanRemoval="false" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="project"/>
-	  <decimal name="totalPlannedHrs" title="Total planned hours" />
+  <entity name="ProjectPlanning" cachable="true">
+      
+      <one-to-many name="projectPlanningTime" ref="ProjectPlanningTime" title="Allocated time" mappedBy="projectPlanning"/>
+      <decimal name="totalPlannedHrs" title="Total planned hours" />
 	          
   </entity>
   
