@@ -16,7 +16,10 @@
       	<decimal name="minQty" title="Min qty"/>
   		<string name="relatedToSelectName" title="Related to"/>
       	<one-to-many name="mrpLineOriginList" ref="com.axelor.apps.supplychain.db.MrpLineOrigin" mappedBy="mrpLine" title="Origins"/>
-  		
+  		<boolean name="proposalGenerated" default="false" required="true" readonly="true"/>
+  		<string name="proposalSelect" selection="mrp.line.proposal.ref.select" readonly="true"/>
+  		<long name="proposalSelectId" readonly="true"/>
+
   </entity>
 
 </domain-models>
