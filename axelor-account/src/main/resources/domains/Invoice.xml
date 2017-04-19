@@ -22,6 +22,7 @@
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account" required="true"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+    <string name="addressStr" title="Address" large="true" multiline="true"/>
     <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
     <boolean name="isSubscription" title="Subscription ?" default="false"/>
     <string name="internalReference" title="Internal Ref." help="true"/>

@@ -517,4 +517,9 @@ public class InvoiceController {
 		}
 	}
 
+	public void computeAddressStr(ActionRequest request, ActionResponse response) {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		response.setValue("addressStr", invoiceService.computeAddressStr(invoice.getAddress()));
+	}
+
 }
