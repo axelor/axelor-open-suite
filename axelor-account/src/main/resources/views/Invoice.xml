@@ -381,6 +381,7 @@
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
+		<action name="action-invoice-attrs-hidden-bank-details"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -389,7 +390,8 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
-    </action-group>   
+		<action name="action-invoice-attrs-hidden-bank-details"/>
+    </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
@@ -530,7 +532,11 @@
 	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">
     	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: !company || !currency || company?.currency == currency"/>
     </action-attrs>
-	
+
+	<action-attrs name="action-invoice-attrs-hidden-bank-details">
+		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.general.getManageMultiBanks()"/>
+	</action-attrs>
+
 	<!-- DOMAIN -->
 	
 	<action-attrs name="action-invoice-partner-account-domain">
