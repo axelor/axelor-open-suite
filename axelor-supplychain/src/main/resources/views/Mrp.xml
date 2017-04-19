@@ -12,7 +12,8 @@
         <field name="statusSelect"/>
 	 </grid>
     
-	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large">
+	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
+		onLoad="action-attrs-mrp-generate-all-proposal">
 	    <toolbar>
 	        <button name="runCalculation" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1"/>
    	        <button name="generateAllProposals" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect == 2"/>
@@ -48,6 +49,12 @@
 	    <domain>self.mrp.id = :_mrpId</domain>
 		<context name="_mrpId" expr="eval: __this__.id"/>
 	</action-view>
+
+	<action-attrs name="action-attrs-mrp-generate-all-proposal"
+		model="com.axelor.apps.supplychain.db.Mrp">
+		<attribute name="readonly" for="generateAllProposals"
+			expr="eval: __repo__.of(Mrp).find(id).mrpLineList.every { it.proposalGenerated || [5, 8].indexOf(it.mrpLineType.elementSelect) == -1}" />
+	</action-attrs>
 	
 </object-views>
 
