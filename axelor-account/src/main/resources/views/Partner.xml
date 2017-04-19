@@ -76,7 +76,6 @@
 <!--                      </form> -->
 <!--                  </field> -->
 <!--              </form> -->
->>>>>>> RM6048: Accounting balance in Partner form
 	
 	<form name="incl-sepa-direct-debit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
          <panel name="sepaDirectDebit" title="SEPA Direct Debit" colSpan="12" >
@@ -114,4 +113,5 @@
 	<action-attrs name="action-partner-account-attrs-hide-employee-account">
 		<attribute name="hidden" for="accountingSituationList.employeeAccount" expr="eval: !isEmployee"/>
 	</action-attrs>
+
 </object-views>
