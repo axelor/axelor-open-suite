@@ -30,13 +30,15 @@
    	        <field name="minQty"/>
         	<field name="location"/>
         	<field name="maxLevel"/>
-   	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="[5,8].indexOf(mrpLineType.elementSelect) != -1"/>
+   	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="[5,8].indexOf(mrpLineType.elementSelect) != -1" readonlyIf="proposalGenerated"/>
             <field name="mrpLineType.elementSelect" hidden="true"/>
             <field name="mrpLineOriginList" colSpan="12">
                 <editor x-viewer="true">
            			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12" showTitle="false"/>
                 </editor>
             </field>
+            <field name="proposalGenerated" hidden="true"/>
+            <field name="proposalSelect" title="Proposal" widget="RefSelect"/>
 	    </panel>
 	 </form>
 	 

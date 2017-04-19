@@ -18,10 +18,10 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.hibernate.proxy.HibernateProxy;
-import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -135,7 +136,13 @@ public class MrpLineServiceImpl implements MrpLineService  {
 
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-		
+		linkToOrder(mrpLine, purchaseOrder);
+	}
+
+	protected void linkToOrder(MrpLine mrpLine, AuditableModel order) {
+		mrpLine.setProposalSelect(order.getClass().getName());
+		mrpLine.setProposalSelectId(order.getId());
+		mrpLine.setProposalGenerated(true);
 	}
 	
 	
