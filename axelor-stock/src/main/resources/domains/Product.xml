@@ -5,8 +5,6 @@
  
   <entity name="Product" lang="java">
       <decimal name="avgPrice" readonly="true" precision="20" scale="10" title="Average Price"/>
-	  <decimal name="lastInventoryRealQty"/>
-	  <datetime name="lastInventoryDateT" tz="true"/>
   </entity>
 
 </domain-models>

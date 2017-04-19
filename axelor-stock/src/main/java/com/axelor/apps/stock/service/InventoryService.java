@@ -19,12 +19,12 @@ package com.axelor.apps.stock.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -247,16 +247,39 @@ public class InventoryService {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void realizeInventory(Inventory inventory) throws AxelorException {
 		generateStockMove(inventory);
-		updateProduct(inventory);
+		storeLastInventoryData(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
 	}
 
-	private void updateProduct(Inventory inventory) {
-		for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-			Product product = inventoryLine.getProduct();
-			product.setLastInventoryRealQty(inventoryLine.getRealQty());
-			product.setLastInventoryDateT(inventory.getDateT());
+	private void storeLastInventoryData(Inventory inventory) {
+		Map<String, BigDecimal> realQties = new HashMap<>();
+		
+		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
+		
+		if (inventoryLineList != null) {
+			for (InventoryLine inventoryLine : inventoryLineList) {
+				Product product = inventoryLine.getProduct();
+				TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+				realQties.put(makeRealQtyKey(product, trackingNumber), inventoryLine.getRealQty());
+			}
 		}
+
+		List<LocationLine> locationLineList = inventory.getLocation().getLocationLineList();
+		
+		if (locationLineList != null) {
+			for (LocationLine locationLine : locationLineList) {
+				Product product = locationLine.getProduct();
+				TrackingNumber trackingNumber = locationLine.getTrackingNumber();
+				locationLine.setLastInventoryRealQty(realQties.get(makeRealQtyKey(product, trackingNumber)));
+				locationLine.setLastInventoryDateT(inventory.getDateT());
+			}
+		}
+
+	}
+	
+	private String makeRealQtyKey(Product product, TrackingNumber trackingNumber) {
+		return String.format("%d,%d", product != null ? product.getId() : 0,
+				trackingNumber != null ? trackingNumber.getId() : 0);
 	}
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
