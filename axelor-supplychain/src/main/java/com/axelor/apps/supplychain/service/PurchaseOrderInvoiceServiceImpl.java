@@ -67,7 +67,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		Invoice invoice = this.createInvoice(purchaseOrder);
 		invoiceRepo.save(invoice);
 		invoiceService.setDraftSequence(invoice);
-		invoice.setAddressStr(invoiceService.computeAddressStr(invoice));
+		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
 
 		if(invoice != null) {
 			purchaseOrder.setInvoice(invoice);
