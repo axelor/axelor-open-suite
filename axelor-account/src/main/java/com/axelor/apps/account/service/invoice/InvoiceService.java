@@ -176,5 +176,5 @@ public interface InvoiceService {
 	
 	public Invoice getInvoice(MoveLine moveLine);
 
-
+	public String computeAddressStr(Invoice invoice);
 }
