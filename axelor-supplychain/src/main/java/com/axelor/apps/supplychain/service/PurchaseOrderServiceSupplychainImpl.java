@@ -74,6 +74,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	protected AppSupplychainService appSupplychainService; 
 	
+	@Inject
 	protected AccountConfigService accountConfigService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
