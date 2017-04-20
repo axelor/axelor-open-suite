@@ -24,8 +24,8 @@ import java.util.List;
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -169,6 +169,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
+		
+		if (product != null) {
+			stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
+		}
 
 		return stockMoveLine;
 	}

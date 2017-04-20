@@ -15,7 +15,7 @@
 	<decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
 	<date name="lastFutureStockMoveDate" title="Last Future Stock Move"/>
 	
-	<many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr"/>
+	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr"/>
 	<many-to-one name="detailsLocation" ref="com.axelor.apps.stock.db.Location" title="Location Details"/>
 	
 	<decimal name="lastInventoryRealQty"/>

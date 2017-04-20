@@ -566,7 +566,7 @@ LEFT JOIN
 LEFT JOIN
 	base_unit as Unit ON (Unit.id = Product.unit)
 LEFT JOIN 
-	base_tracking_number AS TrackingNumber ON (TrackingNumber.id = StockMoveLine.tracking_number)
+	stock_tracking_number AS TrackingNumber ON (TrackingNumber.id = StockMoveLine.tracking_number)
 	
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

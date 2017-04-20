@@ -39,4 +39,5 @@ public class ProjectController {
 		Project project = projectService.generateProject(null, partner.getName()+" project", user, user.getActiveCompany(), partner);
 		response.setValues(project);
 	}
+	
 }

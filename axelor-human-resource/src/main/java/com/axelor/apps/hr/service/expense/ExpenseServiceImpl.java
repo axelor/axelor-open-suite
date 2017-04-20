@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.account.service.AccountingSituationService;
 import org.apache.commons.codec.binary.Base64;
 
 import java.time.LocalDate;
@@ -94,6 +95,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected AppAccountService appAccountService;
 	protected AccountConfigHRService accountConfigService;
+	protected AccountingSituationService accountingSituationService;
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
@@ -101,7 +103,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
 			AccountManagementServiceAccountImpl accountManagementService, AppAccountService appAccountService,
-			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
+			AccountConfigHRService accountConfigService, AccountingSituationService accountingSituationService, AnalyticMoveLineService analyticMoveLineService,
 			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
 		
 		this.moveService = moveService;
@@ -110,6 +112,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		this.accountManagementService = accountManagementService;
 		this.appAccountService = appAccountService;
 		this.accountConfigService = accountConfigService;
+		this.accountingSituationService = accountingSituationService;
 		this.analyticMoveLineService = analyticMoveLineService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
@@ -300,7 +303,11 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 		int moveLineId = 1;
 		int expenseLineId = 1;
-		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
+		Account employeeAccount = accountingSituationService.getAccountingSituation(expense.getUser().getPartner(), expense.getCompany()).getEmployeeAccount();
+		if (employeeAccount == null) {
+			employeeAccount = accountConfigService.getExpenseEmployeeAccount(accountConfig);
+		}
+		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), employeeAccount, expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
 
 		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
 			analyticAccounts.clear();
@@ -553,8 +560,8 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	 		}
 	 		ExpenseLine expenseLine = new ExpenseLine();
 	 		if (request.getData().get("project") != null) {
-	 			ProjectRepository projectTaskRepo = Beans.get(ProjectRepository.class);
-	 			expenseLine.setProject(projectTaskRepo.find(Long.parseLong(request.getData().get("project").toString())));
+	 			ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+	 			expenseLine.setProject(projectRepo.find(Long.parseLong(request.getData().get("project").toString())));
 	 		}
 	 		expenseLine.setDistance(new BigDecimal(request.getData().get("nbrKm").toString()));
 	 		expenseLine.setFromCity(request.getData().get("cityFrom").toString());

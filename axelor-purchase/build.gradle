@@ -1,11 +1,13 @@
 apply plugin: "com.axelor.app-module"
 
 apply {
-	version = "5.0.0"
+	version = "5.0.0-SNAPSHOT"
 }
 
 axelor {
 	title "Axelor :: Purchase"
+	description "Axelor Purchase Module"
+
 	removable true
 }
 

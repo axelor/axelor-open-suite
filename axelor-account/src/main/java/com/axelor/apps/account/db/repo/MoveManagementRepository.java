@@ -42,7 +42,7 @@ public class MoveManagementRepository extends MoveRepository {
 		} catch (AxelorException e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
-		copy.setStatusSelect(STATUS_DRAFT);
+		copy.setStatusSelect(STATUS_NEW);
 		copy.setReference(null);
 		copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
 		copy.setExportNumber(null);
@@ -75,7 +75,7 @@ public class MoveManagementRepository extends MoveRepository {
 	@Override
 	public void remove(Move entity){
 		
-		if(!entity.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+		if(!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)){
 			throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
 		}else{
 			entity.setArchived(true);

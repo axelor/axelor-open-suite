@@ -8,6 +8,7 @@
   <entity name="CancelReason" lang="java">
   	
     <string name="name" namecolumn="true"/>
+    <boolean name="freeText" title="Free Text"/>
     
   </entity>
 

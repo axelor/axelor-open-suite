@@ -8,5 +8,9 @@
   <entity name="MetaJsonRecord" table="META_JSON_RECORD">
     <integer name="status"  title="Status"/>
   </entity>
+  
+  <entity name="MetaJsonField" table="META_JSON_FIELD">
+    <many-to-one name="jsonCreator" ref="com.axelor.studio.db.JsonCreator" />
+  </entity>
 
 </domain-models>

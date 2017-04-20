@@ -50,7 +50,7 @@
 					  	<label title="Assigned to"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
-					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+					    <field name="team" form-view="team-form" grid-view="team-grid"/>
 		
 			
 					</editor>
@@ -113,7 +113,7 @@
 					  	<label title="Assigned to" colSpan="12"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
-					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+					    <field name="team" form-view="team-form" grid-view="team-grid"/>
 					</editor>
 				</field>
 			</panel>
@@ -149,7 +149,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user" colSpan="4"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4" if="__config__.app.getApp('base').getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4"/>
 					    <field name="company" widget="SuggestBox" colSpan="4"/>
 					</editor>
 				</field>
@@ -174,7 +174,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.app.getApp('base').getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
@@ -197,7 +197,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.app.getApp('base').getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
@@ -221,7 +221,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.app.getApp('base').getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
@@ -317,7 +317,7 @@
 			  <panel title="Assigned to">
 			    <field name="companySet"  widget="TagSelect" canNew="false"/>
 			    <field name="user"/>
-			    <field name="team" if="__config__.app.getApp('base').getTeamManagement()"/>
+			    <field name="team"/>
 			  </panel>
 			</panel>
 		</panel-tabs>
@@ -381,7 +381,7 @@
 		    <panel title="Assigned to" colSpan="12" >
 		      <field name="companySet" widget="TagSelect" canNew="false"/>
 		      <field name="user"/>
-		      <field name="team" if="__config__.app.getApp('base').getTeamManagement()"/>
+		      <field name="team"/>
 		    </panel>
 		  </panel>
 		</panel-tabs>
@@ -512,7 +512,7 @@
 	  </panel>
 	  <panel name="assignedTo" title="Assigned to" >
 	    <field name="user"/>
-	    <field name="team" if="__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="team"/>
 	    <field name="company" widget="SuggestBox"/>
 	  </panel>
 	</form>
@@ -535,7 +535,7 @@
 	    </panel>
 	  <panel name="assignment" title="Assignment">
 	    <field name="user"/>
-	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
 
@@ -570,7 +570,7 @@
 	    </panel>
 	  <panel name="assignment" title="Assignment">
 	    <field name="user"/>
-	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
 
@@ -603,7 +603,7 @@
 	    </panel>
 	  <panel name="assignedTo" title="Assigned to">
 	    <field name="user"/>
-	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
 

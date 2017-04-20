@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
@@ -87,10 +87,10 @@ public class LocationLineServiceImpl implements LocationLineService {
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);			
+			minStockRulesService.generateOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);
 		}
 		if(future)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
+			minStockRulesService.generateOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
 		}
 		
 	}
@@ -132,9 +132,17 @@ public class LocationLineServiceImpl implements LocationLineService {
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
-	
+
+	//check if the location has more than qty units of the product
+	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException{
+	    LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
+
+	    if(locationLine != null && locationLine.getCurrentQty().compareTo(qty) < 0) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1),
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
+		}
+	}
+
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
 			LocalDate lastFutureStockMoveDate)  {
 		

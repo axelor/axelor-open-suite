@@ -38,7 +38,7 @@
       			</field>
     		 </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
-        	 <panel name="teams" title="Teams" if="__config__.app.getApp('base').getTeamManagement()">
+        	 <panel name="teams" title="Teams">
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<field name="teamSet" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>

@@ -89,7 +89,6 @@
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact != true</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
 		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	
@@ -259,14 +258,6 @@
 		<context name="fromMenu" expr="eval:true"/>		
 	</action-view>
 
-	<menuitem name="referential-conf-tracking-number-config" parent="referential-conf"
-		title="Tracking number configuration" action="referential.conf.tracking.number.config" />
-
-	<action-view name="referential.conf.tracking.number.config" title="Tracking number configuration"
-		model="com.axelor.apps.base.db.TrackingNumberConfiguration" >
-		<view type="grid" name="tracking-number-configuration-grid"/>
-		<view type="form" name="tracking-number-configuration-form"/>
-	</action-view>
 	
 	<menuitem name="referential-report" parent="referential-root" order="90"
 		title="Reportings"/>
@@ -375,7 +366,6 @@
 		<view type="grid" name="user-grid"/>
 		<view type="form" name="user-form"/>
 	</action-view>
-	
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
 		title="Companies" action="admin.root.base.company" />
 

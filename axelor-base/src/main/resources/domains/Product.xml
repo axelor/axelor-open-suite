@@ -7,7 +7,8 @@
   
     <integer name="importId"/>
     <string name="name" title="Name" required="true" initParam="true"/>
-	
+
+    <string name="sequence" title="Product N°" readonly="true"/>
     <string name="code" title="Code" required="true" initParam="true"/>
 	<string name="ean13" title="EAN13 Code" unique="true"/>
 	
@@ -40,7 +41,6 @@
      	
   	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines" help="true"/>
   	
-    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config." help="true"/>
     <boolean name="hasWarranty" title="Warranty ?"/>
     <boolean name="isPerishable" title="Perishable ?"/>
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>

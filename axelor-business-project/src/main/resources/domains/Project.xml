@@ -13,7 +13,7 @@
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   		<decimal name="exTaxTotal" title="Total W.T."/>
 		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
-		<integer name="projInvTypeSelect" selection="project.task.invoicing.type.select" title="Invoicing Type" default="1"/>
+		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type" default="1"/>
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
@@ -43,7 +43,10 @@
 	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="project" orphanRemoval="false"/>
 	  	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" mappedBy="project" orphanRemoval="false"/>
 	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="project" orphanRemoval="false"/>
-	
+		
+		
+		<boolean name="isBusinessProject" title="Business project" />
+		
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT

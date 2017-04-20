@@ -55,14 +55,14 @@
 				</panel>
 			</panel>
 	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
-	        <panel name="trackingNumber" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false">
+	        <panel name="trackingNumber" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock" if="__config__.app.isApp('stock')">
         		<panel colSpan="12">
         			<field name="hasWarranty" />
 	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
         	 		<field name="isPerishable" />
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
-        	 	<panel colSpan="12" if-module="axelor-stock"  if="__config__.app.isApp('stock')" >
+        	 	<panel colSpan="12">
 		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
 	            </panel>
 	        </panel>
@@ -156,14 +156,14 @@
 					<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
 				</panel>
 			</panel>
-	        <panel name="trackingNumber" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false">
+	        <panel name="trackingNumber" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock" if="__config__.app.isApp('stock')">
         		<panel colSpan="12">
         			<field name="hasWarranty" />
 	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
         	 		<field name="isPerishable" />
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
-        	 	<panel colSpan="12" if-module="axelor-stock">
+        	 	<panel colSpan="12">
 		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
 	            </panel>
 	        </panel>

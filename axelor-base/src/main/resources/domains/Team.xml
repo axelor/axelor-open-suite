@@ -9,8 +9,7 @@
   
   	<string name="importId"/>
     <string name="code" title="Code"/>
-    <many-to-many name="members" ref="com.axelor.auth.db.User" title="Users/Employees"/>
-  
+
   </entity>
 
 </domain-models>

@@ -51,7 +51,7 @@
 		<dashlet action="dashlet.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
-		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
+		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team" height="350"/>
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.salesman" height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family" height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.product.sales.per.category" height="350" />
@@ -163,7 +163,7 @@
 	<dashboard name="sale.dashboard.view.1" title="Sales Details">
 		<dashlet action="dashlet.salesman.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.my.turnover.per.month"  height="350" />
-		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team"  height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
+		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team"  height="350"/>
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.salesman"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.product.sales.per.category"  height="350" />
