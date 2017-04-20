@@ -27,6 +27,7 @@ import java.io.IOException;
 public interface MoveLineExportService {
 
 	public void exportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
+	public void replayExportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
 	public MoveLineReport createMoveLineReport(Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate) throws AxelorException;
 	public void exportMoveLineTypeSelect1006(MoveLineReport mlr, boolean replay) throws AxelorException, IOException;
 	public void exportMoveLineTypeSelect1007(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;

@@ -1279,6 +1279,25 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 	}
 
+	public void replayExportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException {
+		switch(moveLineReport.getTypeSelect()) {
+			case MoveLineReportRepository.EXPORT_SALES:
+				this.exportMoveLineTypeSelect1006(moveLineReport, true);
+				break;
+			case MoveLineReportRepository.EXPORT_REFUNDS:
+				this.exportMoveLineTypeSelect1007(moveLineReport, true);
+				break;
+			case MoveLineReportRepository.EXPORT_TREASURY:
+				this.exportMoveLineTypeSelect1008(moveLineReport, true);
+				break;
+			case MoveLineReportRepository.EXPORT_PURCHASES:
+				this.exportMoveLineTypeSelect1009(moveLineReport, true);
+				break;
+			default:
+				break;
+			}
+	}
+
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLineReport createMoveLineReport(Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate) throws AxelorException  {
