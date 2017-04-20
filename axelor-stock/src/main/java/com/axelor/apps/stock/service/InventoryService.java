@@ -253,30 +253,52 @@ public class InventoryService {
 
 	private void storeLastInventoryData(Inventory inventory) {
 		Map<String, BigDecimal> realQties = new HashMap<>();
-		
+		Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
+
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
-		
+
 		if (inventoryLineList != null) {
 			for (InventoryLine inventoryLine : inventoryLineList) {
 				Product product = inventoryLine.getProduct();
 				TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+
 				realQties.put(makeRealQtyKey(product, trackingNumber), inventoryLine.getRealQty());
+
+				BigDecimal realQty = consolidatedRealQties.getOrDefault(product, BigDecimal.ZERO);
+				realQty = realQty.add(inventoryLine.getRealQty());
+				consolidatedRealQties.put(product, realQty);
 			}
 		}
 
 		List<LocationLine> locationLineList = inventory.getLocation().getLocationLineList();
-		
+
 		if (locationLineList != null) {
 			for (LocationLine locationLine : locationLineList) {
 				Product product = locationLine.getProduct();
-				TrackingNumber trackingNumber = locationLine.getTrackingNumber();
-				locationLine.setLastInventoryRealQty(realQties.get(makeRealQtyKey(product, trackingNumber)));
-				locationLine.setLastInventoryDateT(inventory.getDateT());
+				BigDecimal realQty = consolidatedRealQties.get(product);
+				if (realQty != null) {
+					locationLine.setLastInventoryRealQty(realQty);
+					locationLine.setLastInventoryDateT(inventory.getDateT());
+				}
+			}
+		}
+
+		List<LocationLine> detailsLocationLineList = inventory.getLocation().getDetailsLocationLineList();
+
+		if (detailsLocationLineList != null) {
+			for (LocationLine detailsLocationLine : detailsLocationLineList) {
+				Product product = detailsLocationLine.getProduct();
+				TrackingNumber trackingNumber = detailsLocationLine.getTrackingNumber();
+				BigDecimal realQty = realQties.get(makeRealQtyKey(product, trackingNumber));
+				if (realQty != null) {
+					detailsLocationLine.setLastInventoryRealQty(realQty);
+					detailsLocationLine.setLastInventoryDateT(inventory.getDateT());
+				}
 			}
 		}
 
 	}
-	
+
 	private String makeRealQtyKey(Product product, TrackingNumber trackingNumber) {
 		return String.format("%d,%d", product != null ? product.getId() : 0,
 				trackingNumber != null ? trackingNumber.getId() : 0);
