@@ -38,15 +38,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AddressServiceAccountImpl;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
-import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
-import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
-import com.axelor.apps.account.service.MoveLineReportService;
-import com.axelor.apps.account.service.MoveLineReportServiceImpl;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.*;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -117,6 +109,8 @@ public class AccountModule extends AxelorModule {
         bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
         
         bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+
+        bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
