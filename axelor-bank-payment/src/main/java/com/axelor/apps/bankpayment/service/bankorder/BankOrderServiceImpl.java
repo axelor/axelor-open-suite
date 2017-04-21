@@ -279,16 +279,16 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 
-		File fileToSend = null;
+		File dataFileToSend = null;
+		File signatureFileToSend = null;
+
 		
 		if(bankOrder.getSignatoryEbicsUser().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
-			fileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
+			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
-		else  {
-			fileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-		}
+		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 		
-		sendFile(bankOrder, fileToSend);
+		sendFile(bankOrder, dataFileToSend, signatureFileToSend);
 
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
@@ -296,7 +296,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	public void sendFile(BankOrder bankOrder, File fileToSend) throws AxelorException {
+	public void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
 
 		PaymentMode paymentMode = bankOrder.getPaymentMode();
 
@@ -304,8 +304,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, fileToSend,
-				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
+		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, dataFileToSend,
+				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
 
 	}
 

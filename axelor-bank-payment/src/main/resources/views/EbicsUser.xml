@@ -35,7 +35,8 @@
 		</panel>
 		<panel title="Test configuration" colSpan="12" showIf="ebicsPartner.testMode">
 			<field name="ebicsPartner.testMode"/>
-			<field name="testFile" widget="binary-link"/>
+			<field name="testDataFile" widget="binary-link"/>
+			<field name="testSignatureFile" widget="binary-link"/>
 			<field name="testBankStatementFileFormat"/>
 			<field name="testBankOrderFileFormat"/>
 		</panel>
