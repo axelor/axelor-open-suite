@@ -39,11 +39,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class OperationOrderWorkflowService {
-	private OperationOrderStockMoveService operationOrderStockMoveService;
-	private OperationOrderRepository operationOrderRepo;
-	private OperationOrderDurationRepository operationOrderDurationRepo;
+	protected OperationOrderStockMoveService operationOrderStockMoveService;
+	protected OperationOrderRepository operationOrderRepo;
+	protected OperationOrderDurationRepository operationOrderDurationRepo;
 
-	private LocalDateTime now;
+	protected LocalDateTime now;
 	
 	@Inject
 	public OperationOrderWorkflowService(OperationOrderStockMoveService operationOrderStockMoveService, OperationOrderRepository operationOrderRepo,
@@ -170,14 +170,14 @@ public class OperationOrderWorkflowService {
 	}
 
 
-	private void startOperationOrderDuration(OperationOrder operationOrder) {
+	public void startOperationOrderDuration(OperationOrder operationOrder) {
 		OperationOrderDuration duration = new OperationOrderDuration();
 		duration.setStartedBy(AuthUtils.getUser());
 		duration.setStartingDateTime(now);
 		operationOrder.addOperationOrderDurationListItem(duration);
 	}
 
-	private void stopOperationOrderDuration(OperationOrder operationOrder) {
+	public void stopOperationOrderDuration(OperationOrder operationOrder) {
 		OperationOrderDuration duration = operationOrderDurationRepo.all().filter("self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL", operationOrder.getId()).fetchOne();
 		duration.setStoppedBy(AuthUtils.getUser());
 		duration.setStoppingDateTime(now);

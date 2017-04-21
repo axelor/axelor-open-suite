@@ -33,12 +33,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ManufOrderWorkflowService {
-	private OperationOrderWorkflowService operationOrderWorkflowService;
-	private OperationOrderRepository operationOrderRepo;
-	private ManufOrderStockMoveService manufOrderStockMoveService;
-	private ManufOrderRepository manufOrderRepo;
+	protected OperationOrderWorkflowService operationOrderWorkflowService;
+	protected OperationOrderRepository operationOrderRepo;
+	protected ManufOrderStockMoveService manufOrderStockMoveService;
+	protected ManufOrderRepository manufOrderRepo;
 
-	private LocalDateTime now;
+	protected LocalDateTime now;
 
 	@Inject
 	public ManufOrderWorkflowService(OperationOrderWorkflowService operationOrderWorkflowService, OperationOrderRepository operationOrderRepo,

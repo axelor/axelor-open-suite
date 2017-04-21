@@ -54,11 +54,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class OperationOrderController {
-	private OperationOrderRepository operationOrderRepo;
-	private OperationOrderWorkflowService operationOrderWorkflowService;
-	private ManufOrderService manufOrderService;
-	private ManufOrderWorkflowService manufOrderWorkflowService;
-	private WeeklyPlanningService weeklyPlanningService;
+	protected OperationOrderRepository operationOrderRepo;
+	protected OperationOrderWorkflowService operationOrderWorkflowService;
+	protected ManufOrderService manufOrderService;
+	protected ManufOrderWorkflowService manufOrderWorkflowService;
+	protected WeeklyPlanningService weeklyPlanningService;
 	
 	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
