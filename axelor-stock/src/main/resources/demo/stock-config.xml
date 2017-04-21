@@ -22,5 +22,10 @@
 	</input>
 	
 	<input file="stock_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine" />
-	
+
+	<input file="stock_customsCodeNomenclature.csv" separator=";"
+		type="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+		<bind to="parentCustomsCode" search="self.code = :parentCode" if="parentCode" />
+	</input>
+
 </csv-inputs>
