@@ -51,10 +51,7 @@
 	    ]]>
     </boolean>
     
-    <many-to-one name="startedBy" ref="com.axelor.auth.db.User" title="Started by" readonly="true"/>
-    <many-to-one name="stoppedBy" ref="com.axelor.auth.db.User" title="Stopped by" readonly="true"/>
-    <datetime name="startingDateTime" title="Starting Date" readonly="true"  />
-    <datetime name="stoppingDateTime" title="Stoppping Date" readonly="true"  />
+    <one-to-many name="operationOrderDurationList" ref="com.axelor.apps.production.db.OperationOrderDuration" title="Operation Order Durations" mappedBy="operationOrder"/>
 
     <string name="comments" title="Comments" large="true"/>
     
