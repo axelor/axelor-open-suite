@@ -97,7 +97,7 @@ public class AppServiceImpl implements AppService {
 		
 		saveApp(app);
 		
-		return I18n.get("Demo data loaded sucessefully");
+		return I18n.get("Demo data loaded successfully");
 	}
 	
 	private void importParentData(App app) {
