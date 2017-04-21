@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -378,5 +379,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		return stockMoveLine;
 	}
 
+	@Override
+	public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) {
+		if (stockMoveLineList == null) {
+			return;
+		}
+
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			CustomsCodeNomenclature customsCode = stockMoveLine.getProduct().getCustomsCode();
+			stockMoveLine.setCustomsCodeNomenclature(customsCode);
+			stockMoveLine.setCustomsCode(customsCode.getCode());
+		}
+	}
 
 }
