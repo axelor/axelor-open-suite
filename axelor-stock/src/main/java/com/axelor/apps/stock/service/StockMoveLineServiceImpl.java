@@ -386,9 +386,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
-			CustomsCodeNomenclature customsCode = stockMoveLine.getProduct().getCustomsCode();
+			Product product = stockMoveLine.getProduct();
+			if (product == null) {
+				continue;
+			}
+			CustomsCodeNomenclature customsCode = product.getCustomsCode();
 			stockMoveLine.setCustomsCodeNomenclature(customsCode);
-			stockMoveLine.setCustomsCode(customsCode.getCode());
+			stockMoveLine.setCustomsCode(customsCode != null ? customsCode.getCode() : null);
 		}
 	}
 
