@@ -12,17 +12,17 @@
       <bind node="statusSelect" to="statusSelect" />
       <bind node="ebicsPartner" to="ebicsPartner" search="self.partnerId = :partnerId" update="false">
       	<bind node="partnerId" to="partnerId" alias="partnerId"/>
+		<bind node="testMode" to="testMode"/>
+		<bind node="filterReceiverBD" to="filterReceiverBD"/>
       	<bind node="ebicsBank" to="ebicsBank" search="self.hostId = :hostId" update="false">
 	   		<bind node="hostId" to="hostId" alias="hostId"/>
 	   		<bind node="name" to="name" />
 	   		<bind node="fullName" to="fullName"/>
 	   		<bind node="url" to="url"/>
-	   		<bind node="testMode" to="testMode"/>
 	   		<bind node="languageSelect" to="languageSelect"/>
 	   		<bind node="bank" to="bank" search="self.code = :code"  update="false">
 	   			<bind node="code" to="code" />
 	   			<bind node="bankName" to="bankName" />
-	   			<bind node="bankAddress" to="bankAddress" />
 	   		</bind>
 	   		<bind node="ebicsCertificateList/ebicsCertificate" to="ebicsCertificateList" search="self.typeSelect = :bankCertType and self.ebicsBank.hostId = :hostId" >
 	   			<bind node="typeSelect" to="typeSelect" />
@@ -60,6 +60,30 @@
       		<bind node="bbanKey" to="bbanKey" />
       		<bind node="ibanBic" to="ibanBic" />
       		<bind node="fullName" to="fullName" />
+			<bind node="bankAddress" to="bankAddress" search="self.address = :address">
+				<bind node="code" to="code"/>
+				<bind node="address" to="address"/>
+				<bind node="label" to="label"/>
+			</bind>
+		</bind>
+		  <bind node="receiverBankDetailsSet/bankDetails" to="receiverBankDetailsSet" search="self.fullName = :fullName">
+			  <bind node="importId" to="importId" />
+			  <bind node="partnerFullName" to="partnerFullName" search="self.fullName = :partnerFullName"  update="true"/>
+			  <bind node="ownerName" to="ownerName" />
+			  <bind node="bank" to="bank" search="self.code = :bank" update="true"/>
+			  <bind node="bankCode" to="bankCode" />
+			  <bind node="iban" to="iban" />
+			  <bind node="sortCode" to="sortCode" />
+			  <bind node="accountNbr" to="accountNbr" />
+			  <bind node="active" to="active" />
+			  <bind node="bbanKey" to="bbanKey" />
+			  <bind node="ibanBic" to="ibanBic" />
+			  <bind node="fullName" to="fullName" />
+			  <bind node="bankAddress" to="bankAddress" search="self.address = :address">
+				  <bind node="code" to="code"/>
+				  <bind node="address" to="address"/>
+				  <bind node="label" to="label"/>
+			  </bind>
       	</bind>
       </bind>
       <bind node="securityMedium" to="securityMedium" />
