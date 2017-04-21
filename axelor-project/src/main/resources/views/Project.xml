@@ -20,6 +20,7 @@
 			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 			<button name="bookResource" title="Book resource" onClick="save,action-project-book-resource" />
+			<button name="printPlannifCost" title="Print planifications and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 		<panel name="overview" title="Overview">
 		
