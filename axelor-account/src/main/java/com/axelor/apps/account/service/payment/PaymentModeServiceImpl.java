@@ -67,8 +67,8 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		
 		for(AccountManagement accountManagement : paymentMode.getAccountManagementList())  {
 
-			if(accountManagement.getCompany().equals(company) 
-					&& accountManagement.getBankDetails().equals(bankDetails))  {
+			if(accountManagement.getCompany() != null && accountManagement.getCompany().equals(company) 
+					&& accountManagement.getBankDetails() != null && accountManagement.getBankDetails().equals(bankDetails))  {
 
 				return accountManagement;
 
