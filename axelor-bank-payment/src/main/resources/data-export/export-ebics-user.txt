@@ -112,6 +112,8 @@
 				<hostId>${u.ebicsPartner?.ebicsBank?.hostId}</hostId>
 				<name>${u.ebicsPartner?.ebicsBank?.name}</name>
 				<url>${u.ebicsPartner?.ebicsBank?.url}</url>
+				<fax>${u.ebicsPartner?.ebicsBank?.fax}</fax>
+				<emailAddress>${u.ebicsPartner?.ebicsBank?.emailAddress}</emailAddress>
 				<languageSelect>${u.ebicsPartner?.ebicsBank?.languageSelect}</languageSelect>
 				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
 				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
