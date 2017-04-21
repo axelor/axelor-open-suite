@@ -141,23 +141,7 @@ public class MoveLineReportController {
 		MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 		
 		try {
-			switch(moveLineReport.getTypeSelect()) {
-			
-				case MoveLineReportRepository.EXPORT_SALES:
-					moveLineExportService.exportMoveLineTypeSelect1006(moveLineReport, true);
-					break;
-				case MoveLineReportRepository.EXPORT_REFUNDS:
-					moveLineExportService.exportMoveLineTypeSelect1007(moveLineReport, true);
-					break;
-				case MoveLineReportRepository.EXPORT_TREASURY:
-					moveLineExportService.exportMoveLineTypeSelect1008(moveLineReport, true);
-					break;
-				case MoveLineReportRepository.EXPORT_PURCHASES:
-					moveLineExportService.exportMoveLineTypeSelect1009(moveLineReport, true);
-					break;
-				default:
-					break;
-			}
+		    moveLineExportService.replayExportMoveLine(moveLineReport);
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}

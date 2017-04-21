@@ -186,7 +186,8 @@
 	</action-view>
 		
 	
-	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
+	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch vouchers mgt" action="lunch.voucher.mgt.all"/>
+	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Bonuses mgt" action="employee.bonus.mgt.all"/>
 	
 	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
     	<view type="grid" name="lunch-voucher-mgt-grid"/>
@@ -330,7 +331,6 @@
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
 	
-	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
 	<menuitem name="hr-employee-bonus-type" parent="hr-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
 	
 	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
