@@ -5,11 +5,12 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="Project">
-
-	  <one-to-many name="timesheetLineList" orphanRemoval="false" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="project"/>
-	  <decimal name="totalPlannedHrs" title="Total planned hours" />
-	          
+  <entity name="ProjectPlanningTime" cachable="true">
+    
+      <date name="date" column="date_val" title="Date" />  
+      <decimal name="hours" title="Hours" />
+	  <many-to-one name="projectPlanning" ref="ProjectPlanning" />      
+		          
   </entity>
   
 </domain-models>

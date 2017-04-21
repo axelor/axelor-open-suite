@@ -20,6 +20,7 @@
 			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 			<button name="bookResource" title="Book resource" onClick="save,action-project-book-resource" />
+			<button name="printPlannifCost" title="Print planifications and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 		<panel name="overview" title="Overview">
 		
@@ -52,6 +53,7 @@
 			<field name="projInvTypeSelect" showIf="isBusinessProject"  if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="isBusinessProject &amp;&amp; (projInvTypeSelect == 2 || projInvTypeSelect == 3)" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="excludePlanning" showIf="isProject"/>
+			<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 		</panel>
 		<panel title="Members">
 			<field name="membersUserSet" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false"/>
@@ -90,8 +92,6 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
-			<panel name="activity" title="Activities" >
-				</panel>
 			<panel name="configurations" title="Configurations">
 				<field name="productList" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
@@ -225,7 +225,7 @@
 	
 	<action-view name="action-view-show-project-task-tree" title="Project Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="project-task-tree"/>
-    	<view type="form" name="tasks-form"/>
+    	<view type="form" name="team-task-form"/>
     	<domain>self.project.id = :_id AND self.parentTask = null</domain>
      	<context name="_id" expr="eval: id"/>
 	</action-view>
@@ -306,7 +306,7 @@
 	</action-attrs>
 	
 	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
-    	<view type="form" name="tasks-form"/>
+    	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
@@ -328,8 +328,8 @@
 	</action-view>
 	
 	<action-view name="action-project-view-show-task" title="Tasks" model="com.axelor.apps.project.db.Project">
-		<view type="grid" name="tasks-grid" />
-		<view type="form" name="tasks-form" />
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
@@ -345,9 +345,9 @@
 	
 	<action-view name="action-project-open-gantt" title="Gantt" model="com.axelor.team.db.TeamTask">
 		<view type="gantt" name="task-gantt" />
-		<view type="grid" name="tasks-grid" />
-		<view type="form" name="tasks-form" />
-		<domain>self.project = :_id OR self.project.project.id = :_id</domain>
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
+		<domain>self.project.id = :_id OR self.project.project.id = :_id</domain>
 	</action-view>
 	
 	<action-view name="action-project-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
@@ -358,8 +358,8 @@
 	</action-view>
 	
 	<action-view name="action-project-add-task" title="Task" model="com.axelor.team.db.TeamTask">
-		<view type="form" name="tasks-form" />
-		<view type="grid" name="tasks-grid" />
+		<view type="form" name="team-task-form" />
+		<view type="grid" name="team-task-grid" />
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
 	

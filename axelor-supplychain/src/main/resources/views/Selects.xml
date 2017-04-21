@@ -45,5 +45,9 @@
 		<option order="11" value="supplychain">Supplychain management</option>
 		<option order="23" value="subscription">Subscription</option>
 	</selection>
-	
+
+	<selection name="mrp.line.proposal.ref.select" id="supplychain.mrp.line.proposal.ref.select">
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+	</selection>
+
 </object-views>

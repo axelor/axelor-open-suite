@@ -15,6 +15,10 @@
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printProject"/>
 	</action-method>
 	
+	<action-method name="action-project-method-print-planif-and-cost">
+		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printPlannifAndCost"/>
+	</action-method>
+	
 	<action-attrs id="business-project-action-project-project-default" name="action-project-project-default" model="com.axelor.apps.project.db.Project">
 		<attribute name="value" for="typeSelect" expr="eval:'project'" />
 		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>

@@ -317,22 +317,38 @@ public class InvoicingProjectService {
 	
 	public void fillLines(InvoicingProject invoicingProject,Project project){
 		if(project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)  {
-
-			invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
-					.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.saleOrder.creationDate < ?2 or ?3 is null)", project, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
-			
-			invoicingProject.getPurchaseOrderLineSet().addAll(Beans.get(PurchaseOrderLineRepository.class)
-					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.purchaseOrder.orderDate < ?2 or ?3 is null)", project, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
-			
-			invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
-					.all().filter("self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", project, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
-			
-			invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
-					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expenseDate < ?2 or ?3 is null)", project, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
-			
-			invoicingProject.getElementsToInvoiceSet().addAll(Beans.get(ElementsToInvoiceRepository.class)
-					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", project, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
-			
+			if (invoicingProject.getDeadlineDate() != null){
+				invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
+						.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2", project,invoicingProject.getDeadlineDate()).fetch());
+				
+				invoicingProject.getPurchaseOrderLineSet().addAll(Beans.get(PurchaseOrderLineRepository.class)
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2", project, invoicingProject.getDeadlineDate()).fetch());
+				
+				invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
+						.all().filter("self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2", project,invoicingProject.getDeadlineDate()).fetch());
+				
+				invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2", project, invoicingProject.getDeadlineDate()).fetch());
+				
+				invoicingProject.getElementsToInvoiceSet().addAll(Beans.get(ElementsToInvoiceRepository.class)
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2", project,invoicingProject.getDeadlineDate()).fetch());
+			}
+			else {
+				invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
+						.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
+				
+				invoicingProject.getPurchaseOrderLineSet().addAll(Beans.get(PurchaseOrderLineRepository.class)
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
+				
+				invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
+						.all().filter("self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
+				
+				invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
+				
+				invoicingProject.getElementsToInvoiceSet().addAll(Beans.get(ElementsToInvoiceRepository.class)
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
+			}
 			if(project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE && !project.getInvoiced())
 				invoicingProject.addProjectSetItem(project);
 		}

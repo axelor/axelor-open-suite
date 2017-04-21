@@ -131,10 +131,15 @@
 		</panel>
 	  
 		<panel name="invoicingInformations" title="Invoicing informations">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange, action-invoice-attrs-hide-totals-company-currency" onSelect="action-set-partner-domain"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-invoice-attrs-hide-totals-company-currency,action-method-invoice-address-str" onSelect="action-set-partner-domain"/>
 			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
 					readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"/>
-			<field name="address" onSelect="action-invoice-attrs-domain-address" form-view="address-partner-address-form" canNew="true" />
+			<panel stacked="true">
+				<field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" form-view="address-partner-address-form" canEdit="false" canNew="true"/>
+				<field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
+					<viewer>{{record.addressStr}}</viewer>
+				</field>
+			</panel>
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" hideIf="operationTypeSelect &gt; 3" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -552,6 +557,10 @@
 	</action-validate>
 
 	<!-- ACTION METHOD -->
+
+	<action-method name="action-method-invoice-address-str" model="com.axelor.apps.account.db.Invoice">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="computeAddressStr"/>
+	</action-method>
 
 	<action-method name="action-invoice-method-payment-mode-condition">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="fillPaymentModeAndCondition"/>

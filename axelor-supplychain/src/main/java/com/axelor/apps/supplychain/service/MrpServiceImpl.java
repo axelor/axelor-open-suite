@@ -746,7 +746,9 @@ public class MrpServiceImpl implements MrpService  {
 		
 		for(MrpLine mrpLine : mrp.getMrpLineList())  {
 			
-			mrpLineService.generateProposal(mrpLine);
+			if (!mrpLine.getProposalGenerated()) {
+				mrpLineService.generateProposal(mrpLine);
+			}
 			
 		}
 		

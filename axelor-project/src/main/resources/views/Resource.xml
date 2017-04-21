@@ -20,6 +20,9 @@
 			<field name="cost" />
 			<field name="batchNo" />
 		</panel>
+		<panel>
+			<field name="resourceAttrs" colSpan="12" />
+		</panel>
 	</form>
 	
 	<action-view name="action-resource-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">

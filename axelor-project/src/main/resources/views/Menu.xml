@@ -4,7 +4,15 @@
 
 	<menuitem name="menu-project-root" order="-103" title="Projects" icon="fa-tasks"  if="__config__.app.isApp('project')"
 	     icon-background="#3f6bb9"/> 	
-	    
+	
+	<menuitem name="project-dasbhoard" parent="menu-project-root" order="-1"
+    	title="Dashboard"
+    	action="project.dashboard"/>
+    	
+    <action-view name="project.dashboard" title="Dashboard">
+    	<view type="dashboard" name="project-dashboard"/>
+    </action-view>
+    	    
 	<menuitem name="project-all" parent="menu-project-root" order="5"
     	title="Projects"
     	action="project.all"/>
@@ -28,8 +36,8 @@
 	
 	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks"/>
 	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="tasks-grid"/>
-		<view type="form" name="tasks-form"/>
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
 	</action-view>
 	
 	<menuitem name="project-planning" title="Project planning" order="20" parent="menu-project-root" action="project.planning" />
@@ -43,9 +51,8 @@
 	
 	<menuitem name="project-planning-calendar" title="Planning Calendar" order="25" parent="menu-project-root" action="project.planning.calendar" />
 	
-	<action-view name="project.planning.calendar" title="Project Calendar" model="com.axelor.apps.project.db.ProjectPlanning">
+	<action-view name="project.planning.calendar" title="Planning Calendar" model="com.axelor.apps.project.db.ProjectPlanning">
 		<view type="calendar" name="project-planning-calendar" />
-		<view type="gantt" name="project-planning-gantt" />
 		<view type="grid" name="project-planning-grid" />
 		<view type="form" name="project-planning-form" />
 	</action-view>
