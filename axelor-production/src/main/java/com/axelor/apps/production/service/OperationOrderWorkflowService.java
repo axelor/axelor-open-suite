@@ -17,43 +17,42 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDateTime;
-
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class OperationOrderWorkflowService {
-
-	@Inject
-	private OperationOrderStockMoveService operationOrderStockMoveService;
-
-	@Inject
-	protected AppProductionService appProductionService;
-	
-	@Inject
+	protected OperationOrderStockMoveService operationOrderStockMoveService;
 	protected OperationOrderRepository operationOrderRepo;
+	protected OperationOrderDurationRepository operationOrderDurationRepo;
 
-	private LocalDateTime today;
+	protected LocalDateTime now;
 	
 	@Inject
-	public OperationOrderWorkflowService(AppProductionService appProductionService) {
-		this.appProductionService = appProductionService;
-		today = this.appProductionService.getTodayDateTime().toLocalDateTime();
+	public OperationOrderWorkflowService(OperationOrderStockMoveService operationOrderStockMoveService, OperationOrderRepository operationOrderRepo,
+										 OperationOrderDurationRepository operationOrderDurationRepo, AppProductionService appProductionService) {
+		this.operationOrderStockMoveService = operationOrderStockMoveService;
+		this.operationOrderRepo = operationOrderRepo;
+		this.operationOrderDurationRepo = operationOrderDurationRepo;
 
+		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
 	@Transactional
@@ -71,8 +70,7 @@ public class OperationOrderWorkflowService {
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+		return operationOrderRepo.save(operationOrder);
 	}
 	
 	@Transactional
@@ -86,8 +84,7 @@ public class OperationOrderWorkflowService {
 				this.getDuration(
 				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+		return operationOrderRepo.save(operationOrder);
 	}
 
 
@@ -120,50 +117,85 @@ public class OperationOrderWorkflowService {
 
 		return operationOrder.getManufOrder().getPlannedStartDateT();
 	}
-	
-
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(OperationOrder operationOrder)  {
+	public void start(OperationOrder operationOrder) {
+		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
+			operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+			operationOrder.setRealStartDateT(now);
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+			startOperationOrderDuration(operationOrder);
 
-		operationOrder.setRealStartDateT(today);
-		
-		operationOrder.setStartedBy(AuthUtils.getUser());
-		
-		operationOrder.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
-
-		Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+			operationOrderRepo.save(operationOrder);
+		}
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void pause(OperationOrder operationOrder) {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
+
+		stopOperationOrderDuration(operationOrder);
+
+		operationOrderRepo.save(operationOrder);
+	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(OperationOrder operationOrder) throws AxelorException  {
+	public void resume(OperationOrder operationOrder) {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
 
-		operationOrderStockMoveService.cancel(operationOrder);
+		startOperationOrderDuration(operationOrder);
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
-
-		Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+		operationOrderRepo.save(operationOrder);
 	}
 
 	@Transactional
-	public OperationOrder finish(OperationOrder operationOrder) throws AxelorException  {
+	public void finish(OperationOrder operationOrder) throws AxelorException {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
+		operationOrder.setRealEndDateT(now);
+
+		stopOperationOrderDuration(operationOrder);
 
 		operationOrderStockMoveService.finish(operationOrder);
-
-		operationOrder.setRealEndDateT(today);
-
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
-
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+		operationOrderRepo.save(operationOrder);
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancel(OperationOrder operationOrder) throws AxelorException {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
+
+		operationOrderStockMoveService.cancel(operationOrder);
+
+		operationOrderRepo.save(operationOrder);
+	}
+
+
+	public void startOperationOrderDuration(OperationOrder operationOrder) {
+		OperationOrderDuration duration = new OperationOrderDuration();
+		duration.setStartedBy(AuthUtils.getUser());
+		duration.setStartingDateTime(now);
+		operationOrder.addOperationOrderDurationListItem(duration);
+	}
+
+	public void stopOperationOrderDuration(OperationOrder operationOrder) {
+		OperationOrderDuration duration = operationOrderDurationRepo.all().filter("self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL", operationOrder.getId()).fetchOne();
+		duration.setStoppedBy(AuthUtils.getUser());
+		duration.setStoppingDateTime(now);
+
+		operationOrderDurationRepo.save(duration);
+	}
+
+
+	public Duration computeRealDuration(OperationOrder operationOrder) {
+		Duration totalDuration = Duration.ZERO;
+
+		List<OperationOrderDuration> operationOrderDurations = operationOrder.getOperationOrderDurationList();
+		for (OperationOrderDuration operationOrderDuration : operationOrderDurations) {
+			totalDuration = totalDuration.plus(Duration.between(operationOrderDuration.getStartingDateTime(), operationOrderDuration.getStoppingDateTime()));
+		}
+
+		return totalDuration;
+	}
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
@@ -257,11 +289,5 @@ public class OperationOrderWorkflowService {
 
 		return qty.multiply(new BigDecimal(duration)).longValue();
 	}
-
-
-
-
-
-
 }
 
