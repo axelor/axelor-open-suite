@@ -60,7 +60,6 @@
   	<boolean name="sellable" title="Sellable" default="true" />
   	<boolean name="purchasable" title="Purchasable" default="true"/>
   	<boolean name="inAti" title="In ATI"/>
-  	<string name="customsCode" title="Customs Code"/>
   	
   	<integer name="costTypeSelect" title="Cost type" selection="base.product.cost.type.select" default="1"/>
   	

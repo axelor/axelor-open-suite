@@ -79,7 +79,6 @@
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
-			        <field name="customsCode" colSpan="12"/>
 			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
@@ -206,6 +205,7 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
+				  <field name="customsCode" if-module="axelor-stock"/>
   			</panel>
   		</panel-tabs>
   		<panel>
