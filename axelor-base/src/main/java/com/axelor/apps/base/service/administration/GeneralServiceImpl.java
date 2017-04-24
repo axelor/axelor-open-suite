@@ -28,6 +28,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
@@ -95,20 +96,22 @@ public class GeneralServiceImpl implements GeneralService {
 	 * @return
 	 */
 	@Override
-	public DateTime getTodayDateTime(){
+	public DateTime getTodayDateTime() {
 
-		DateTime todayDateTime = new DateTime();
+		String applicationMode = AppSettings.get().get("application.mode", "prod");
 
-		User user = AuthUtils.getUser();
+		if ("dev".equals(applicationMode)) {
+			User user = AuthUtils.getUser();
 
-		if (user != null && user.getToday() != null){
-			todayDateTime = user.getToday();
+			if (user != null && user.getToday() != null) {
+				return user.getToday();
+			}
+			if (getGeneral() != null && getGeneral().getToday() != null) {
+				return getGeneral().getToday();
+			}
 		}
-		else if (getGeneral() != null && getGeneral().getToday() != null){
-			todayDateTime = getGeneral().getToday();
-		}
-		
-		return todayDateTime;
+
+		return new DateTime();
 	}
 
 	/**

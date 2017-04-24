@@ -93,7 +93,7 @@
 		
 		<panel name="search" title="Search">
 			<field name="ref" readonly="true"/>
-			<field name="date" readonlyIf="statusSelect == 2"/>
+			<field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select.export"/>
 			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="typeSelect != 1000" onChange="action-move-line-report-record-period-dates" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 1000" grid-view="year-account-grid" form-view="year-account-form" />

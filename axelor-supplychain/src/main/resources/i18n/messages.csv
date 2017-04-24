@@ -221,6 +221,7 @@
 "The company is required and must be the same for all sale orders",,,
 "The currency is required and must be the same for all sale orders",,,
 "The invoice for the stock move %s can't be generated because of this following error : %s",,,
+"The invoice has already been generated.",,,
 "The location must be filled.",,,
 "The supplier is required and must be the same for all purchase orders",,,
 "Timetable",,,

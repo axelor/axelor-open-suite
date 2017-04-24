@@ -18,9 +18,7 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
-import com.google.inject.persist.Transactional;
 
 public class ProjectTaskManagementRepository extends ProjectTaskRepository {
 	
@@ -41,12 +39,13 @@ public class ProjectTaskManagementRepository extends ProjectTaskRepository {
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ProjectTask copy(ProjectTask entity, boolean deep) {
+		
 		ProjectTask project = super.copy(entity, false);
 		project.setStatusSelect(STATE_PLANNED);
-		save(project);
+		
 		return project;
+	
 	}
 
 }

@@ -13,7 +13,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate">
+    onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate" onLoad="action-user-apply-applicaton-mode">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
@@ -21,7 +21,7 @@
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null"/>
 	        <button name="createEmployee" onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
         </panel>
-		<panel name="testing" title="Testing" sidebar="true">
+		<panel name="testing" title="Testing" sidebar="true" hidden="true">
 			<field name="today"/>
 		</panel>
         <panel-include view="user-form" from="axelor-core"/>
@@ -110,5 +110,9 @@
  		  <view-param name="popup" value="reload"/>
  		  <context name="user_id" expr="eval:__this__.id"/>
  	</action-view>
-        
+
+	<action-method name="action-user-apply-applicaton-mode">
+		<call class="com.axelor.apps.base.web.UserController" method="applyApplicationMode"/>
+	</action-method>
+
 </object-views>

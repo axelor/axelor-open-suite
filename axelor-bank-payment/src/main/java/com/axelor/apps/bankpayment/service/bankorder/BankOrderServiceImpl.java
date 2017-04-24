@@ -279,16 +279,16 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 
-		File fileToSend = null;
+		File dataFileToSend = null;
+		File signatureFileToSend = null;
+
 		
 		if(bankOrder.getSignatoryEbicsUser().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
-			fileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
+			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
-		else  {
-			fileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-		}
+		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 		
-		sendFile(bankOrder, fileToSend);
+		sendFile(bankOrder, dataFileToSend, signatureFileToSend);
 
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
@@ -296,7 +296,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	public void sendFile(BankOrder bankOrder, File fileToSend) throws AxelorException {
+	public void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
 
 		PaymentMode paymentMode = bankOrder.getPaymentMode();
 
@@ -304,8 +304,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, fileToSend,
-				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
+		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, dataFileToSend,
+				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
 
 	}
 
@@ -386,13 +386,13 @@ public class BankOrderServiceImpl implements BankOrderService {
 			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
 				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
 			}
-			// filter on the currency if it is set in file format and in the
-			// bankdetails
-			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
-			if (bankOrder.getBankOrderFileFormat().getCurrency() != null) {
-				String fileFormatCurrencyId = bankOrder.getBankOrderFileFormat().getCurrency().getId().toString();
-				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
-			}
+		}
+
+		// filter on the currency if it is set in file format and in the bankdetails
+		Currency currency = bankOrder.getBankOrderCurrency();
+		if (currency != null) {
+			String fileFormatCurrencyId = currency.getId().toString();
+			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
 		return domain;
 	}
@@ -431,7 +431,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
-			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
@@ -457,10 +457,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 	}
 
 	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails,
-			BankOrderFileFormat bankOrderFileFormat) {
+			BankOrder bankOrder) {
 		// filter on the currency if it is set in file format
-		if (bankOrderFileFormat.getCurrency() != null) {
-			if (bankDetails.getCurrency() != null && bankDetails.getCurrency() != bankOrderFileFormat.getCurrency()) {
+		if (bankOrder.getBankOrderCurrency() != null) {
+			if (bankDetails.getCurrency() != null && bankDetails.getCurrency() != bankOrder.getBankOrderCurrency()) {
 				return false;
 			}
 		}

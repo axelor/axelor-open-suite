@@ -206,12 +206,20 @@ public class EbicsController {
 		
 		try {
 			
-			MetaFile testMetaFile = ebicsUser.getTestFile();
-			
+			MetaFile testDataMetaFile = ebicsUser.getTestDataFile();
+			MetaFile testSignatureMetaFile = ebicsUser.getTestDataFile();
+
 			BankOrderFileFormat bankOrderFileFormat = ebicsUser.getTestBankOrderFileFormat();
 			
-			if(ebicsUser.getEbicsPartner().getTestMode() && testMetaFile != null && bankOrderFileFormat != null)  { 
-				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect());
+			if(ebicsUser.getEbicsPartner().getTestMode() && testDataMetaFile != null && bankOrderFileFormat != null)  { 
+				
+				File testSignatureFile = null;
+				
+				if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
+					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
+				}
+				
+				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));

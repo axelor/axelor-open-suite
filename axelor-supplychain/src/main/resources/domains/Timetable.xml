@@ -15,6 +15,7 @@
   	<decimal name="qty" title="Qty" default="1"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	<string name="productName" title="Product name"/>
+	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"/>
 	
   </entity>
   

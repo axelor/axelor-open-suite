@@ -135,7 +135,7 @@
 			<field name="address" onSelect="action-invoice-attrs-domain-address" form-view="address-partner-address-form" canNew="true" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<field name="bankDetails" hideIf="operationTypeSelect &gt; 3" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
@@ -381,6 +381,7 @@
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
+		<action name="action-invoice-attrs-hidden-bank-details"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -389,7 +390,8 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
-    </action-group>   
+		<action name="action-invoice-attrs-hidden-bank-details"/>
+    </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
@@ -530,7 +532,11 @@
 	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">
     	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: !company || !currency || company?.currency == currency"/>
     </action-attrs>
-	
+
+	<action-attrs name="action-invoice-attrs-hidden-bank-details">
+		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.general.getManageMultiBanks()"/>
+	</action-attrs>
+
 	<!-- DOMAIN -->
 	
 	<action-attrs name="action-invoice-partner-account-domain">

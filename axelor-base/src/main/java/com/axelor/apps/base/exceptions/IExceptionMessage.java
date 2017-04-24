@@ -190,6 +190,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 	static final public String PARTNER_2 = /*$$(*/ "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
+	static final public String PARTNER_3 = /*$$(*/ "Can’t convert into an individual partner from scratch." /*)*/;
 	
 	/**
 	 * Product controller

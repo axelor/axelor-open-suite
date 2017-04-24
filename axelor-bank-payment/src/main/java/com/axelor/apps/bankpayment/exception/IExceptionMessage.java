@@ -76,7 +76,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/ "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The bank details is inactive." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
-	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in file format." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in bank order." /*)*/;
 
 	
 	/**
@@ -91,7 +91,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
 	static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The receiver bank details is inactive." /*)*/;
 	static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
-	static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details currency is not compatible with the currency in file format." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
 
 	
 	/**
@@ -123,7 +123,7 @@ public interface IExceptionMessage {
 	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
 	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
 	static final String EBICS_MISSING_CERTIFICATES = /*$$(*/  "Please add certificates to print" /*)*/;
-
+	static final String EBICS_INVALID_BANK_URL = /*$$(*/  "Invalid bank url. It must be start with http:// or https://" /*)*/;
 	
 	
 	

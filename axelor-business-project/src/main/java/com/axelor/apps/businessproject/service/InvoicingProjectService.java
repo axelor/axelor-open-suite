@@ -182,7 +182,7 @@ public class InvoicingProjectService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
-				priority, false, saleOrderLine, null, null, null)  {
+				priority, false, saleOrderLine, null, null)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

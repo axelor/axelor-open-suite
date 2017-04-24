@@ -15,7 +15,7 @@
 		<field name="today" />
 	</grid>
 	
-	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" width="large">
+	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" width="large" onLoad="action-general-apply-applicaton-mode">
     	<toolbar>
 		    <button name="new" title="New" hidden="true"/>
 		    <button name="delete" title="Delete" hidden="true"/>
@@ -25,7 +25,7 @@
 		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects"/>
 		    <button name="remindTimesheets" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
 		</toolbar>
-		<panel name="main" >
+		<panel name="main" hidden="true">
 		    <field name="today"/>
 		</panel>
 		<panel-tabs>
@@ -44,7 +44,7 @@
 		    	<field name="manageSalesUnits" if-module="axelor-sale" widget="Boolean-switch"/>
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
-				<field name="manageMultiBanks" if-module="axelor-cash-management" widget="Boolean-switch"/>
+				<field name="manageMultiBanks" widget="Boolean-switch"/>
 				<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
@@ -224,5 +224,9 @@
 	<action-attrs name="action-general-attrs-default-invoice-type-domain">
 		<attribute name="selection-in" for="defaultInvoiceTypeSelect" expr="[1,2]"/>
 	</action-attrs>
+	
+	<action-method name="action-general-apply-applicaton-mode">
+		<call class="com.axelor.apps.base.web.GeneralController" method="applyApplicationMode"/>
+	</action-method>
 	
 </object-views>

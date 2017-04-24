@@ -49,7 +49,7 @@
     
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="priority" readonlyIf="isRawMaterial" width="20"/>
+        <field name="priority" readonlyIf="isRawMaterial" width="71"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
