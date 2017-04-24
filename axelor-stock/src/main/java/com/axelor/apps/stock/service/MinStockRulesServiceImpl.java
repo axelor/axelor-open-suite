@@ -51,6 +51,10 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	}
 
 
+	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException{
+		this.generatePurchaseOrder(product, qty, locationLine, type);
+	}
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
@@ -78,6 +82,20 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 
 		}
 
+	}
+
+	@Override
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, MinStockRules minStockRules) {
+		BigDecimal qtyToOrder;
+		if (type == MinStockRulesRepository.TYPE_CURRENT) {
+			qtyToOrder = locationLine.getCurrentQty().subtract(qty);
+		}
+		else {
+			qtyToOrder = locationLine.getFutureQty().subtract(qty);
+		}
+		qtyToOrder = minStockRules.getMinQty().subtract(qtyToOrder);
+		qtyToOrder = qtyToOrder.max(minStockRules.getReOrderQty());
+		return qtyToOrder;
 	}
 
 

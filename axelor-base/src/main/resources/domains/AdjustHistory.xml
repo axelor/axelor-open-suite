@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="base" package="com.axelor.apps.base.db"/>
+
+    <entity name="AdjustHistory" lang="java">
+        <datetime name="startDate" title="Start Date" readonly="true"/>
+        <datetime name="endDate" title="End Date" readonly="true"/>
+        <many-to-one name="fiscalYear" ref="com.axelor.apps.base.db.Year" title="Fiscal Year"/>
+        <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+
+        <!--
+        <finder-method name="findByFiscalYear" using="fiscalYear"/>
+        <finder-method name="findByPeriod" using="period"/>
+        -->
+    </entity>
+</domain-models>

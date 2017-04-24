@@ -52,6 +52,18 @@ public class MoveController {
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
 	}
+
+	public void account(ActionRequest request, ActionResponse response) {
+
+		Move move = request.getContext().asType(Move.class);
+		move = moveRepo.find(move.getId());
+
+		try {
+			moveService.getMoveAccountService().account(move);
+			response.setReload(true);
+		}
+		catch (Exception e) { TraceBackService.trace(response, e); }
+	}
 	
 	public void getPeriod(ActionRequest request, ActionResponse response) {
 		
@@ -112,7 +124,7 @@ public class MoveController {
 		Move move = request.getContext().asType(Move.class);
 		move = moveRepo.find(move.getId());
 
-		if(move.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+		if(move.getStatusSelect().equals(MoveRepository.STATUS_NEW)){
 			moveRepo.remove(move);
 			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
 			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
@@ -139,7 +151,7 @@ public class MoveController {
 
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)", moveIds, MoveRepository.STATUS_DRAFT).fetch();
+			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)", moveIds, MoveRepository.STATUS_NEW).fetch();
 			if(!moveList.isEmpty()){
 				moveService.getMoveRemoveService().deleteMultiple(moveList);
 				response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));

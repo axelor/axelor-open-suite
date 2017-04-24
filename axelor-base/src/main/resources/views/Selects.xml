@@ -354,6 +354,7 @@
 		<option value="manufOrder">Manufacturing order</option>
 		<option value="bankOrder">Bank order</option>
 		<option value="reconcile">Reconcile</option>
+		<option value="product">Product</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -558,11 +559,13 @@
 	<selection name="base.year.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
+		<option value="3">Adjusting</option>
 	</selection>
 	
 	<selection name="base.period.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
+		<option value="3">Adjusting</option>
 	</selection>
 	
 	<selection name="company.partner.type.select">
@@ -598,8 +601,10 @@
 	</selection>
 	
 	<selection name="base.product.cost.type.select">
-		<option value="1">Standard</option>
+		<option value="1">Manual</option>
 		<option value="2">Last purchase price</option>
+		<option value="3">Average Price</option>
+		<option value="4">Last production price</option>
 	</selection>
 	
 	<selection name="product.inventory.type.select">

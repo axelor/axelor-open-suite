@@ -94,8 +94,9 @@
     
     <form name="sale-order-cancel-wizard-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel name="main">
-			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox" canNew="true"/>
-			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
+			<field name="cancelReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
+			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
+			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colOffset="4" colSpan="4"/>
 		</panel>
     </form>
     
@@ -173,7 +174,7 @@
 <!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/>  -->
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
-      		  <field name="project" domain="self.typeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
+      		  <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
 	          <button name="generateProject" title="Generate Project" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
 	          <button name="generateTasks" title="Generate Tasks" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
@@ -225,6 +226,9 @@
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
+		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
+			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+		</field>
 	  </panel>
 	  
 	  <panel sidebar="true" readonly="true"  colSpan="4">  
@@ -514,6 +518,10 @@
     	<attribute name="hidden" for="generateTasks" expr="true"/>
     </action-attrs>
 
+	<action-attrs name="action-attrs-sale-other-reason">
+		<attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
+	</action-attrs>
+
     <action-group name="action-sale-group-onchange-company">
     	<action name="action-sale-order-record-company-configuration"/>
     	<action name="action-sale-order-method-get-location" />
@@ -536,7 +544,7 @@
     </action-group>
     
     <action-group name="action-sale-order-group-finalize">
-    	<action name="action-sale-method-update-customer-credit-line"/>
+    	<action name="action-sale-method-update-customer-credit"/>
     	<action name="action-sale-order-validate-bloqued"/>
     	<action name="action-sale-order-method-finalize"/>
     </action-group>

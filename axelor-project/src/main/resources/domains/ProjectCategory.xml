@@ -9,4 +9,5 @@
   		<string name="name" title="Name"/>
   		<boolean name="byDefault" title="By Default"/>
 	</entity>
-  </domain-models>
+
+</domain-models>

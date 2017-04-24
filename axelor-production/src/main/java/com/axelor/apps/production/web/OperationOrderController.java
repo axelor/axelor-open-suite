@@ -17,26 +17,6 @@
  */
 package com.axelor.apps.production.web;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.eclipse.birt.core.exception.BirtException;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.DayPlanning;
@@ -56,26 +36,44 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class OperationOrderController {
-	
-	@Inject
 	protected OperationOrderRepository operationOrderRepo;
-	
-	@Inject
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
-	
-	@Inject
 	protected ManufOrderService manufOrderService;
-	
-	@Inject
+	protected ManufOrderWorkflowService manufOrderWorkflowService;
 	protected WeeklyPlanningService weeklyPlanningService;
 	
 	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-	
 	private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
+
+	@Inject
+	public OperationOrderController(OperationOrderRepository operationOrderRepo, OperationOrderWorkflowService operationOrderWorkflowService,
+									ManufOrderService manufOrderService, ManufOrderWorkflowService manufOrderWorkflowService,
+									WeeklyPlanningService weeklyPlanningService) {
+		this.operationOrderRepo = operationOrderRepo;
+		this.operationOrderWorkflowService = operationOrderWorkflowService;
+		this.manufOrderService = manufOrderService;
+		this.manufOrderWorkflowService = manufOrderWorkflowService;
+		this.weeklyPlanningService = weeklyPlanningService;
+	}
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //
@@ -114,7 +112,7 @@ public class OperationOrderController {
 		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
 			response.setValue("realDuration", 
 					operationOrderWorkflowService.getDuration(
-							operationOrderWorkflowService.computeDuration(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())));
+							operationOrderWorkflowService.computeRealDuration(operationOrder)));
 		}
 	}
 	
@@ -132,32 +130,57 @@ public class OperationOrderController {
 			response.setReload(true);
 		}
 	}
-	
-	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		
-		operationOrder = operationOrderWorkflowService.plan(operationOrderRepo.find(operationOrder.getId()));
+
+
+	public void plan(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.plan(operationOrder);
 		
 		response.setReload(true);
-		
 	}
-	
-	
-	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
 
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
+	public void start(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		manufOrderWorkflowService.start(operationOrder.getManufOrder());
 
-		operationOrder = operationOrderWorkflowService.finish(operationOrderRepo.find(operationOrder.getId()));
-		
-		Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
-		
 		response.setReload(true);
-		
 	}
-	
-	
-	
+
+	public void pause(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.pause(operationOrder);
+
+		response.setReload(true);
+	}
+
+	public void resume(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		manufOrderWorkflowService.resume(operationOrder.getManufOrder());
+
+		response.setReload(true);
+	}
+
+	public void finish(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.finish(operationOrder);
+		manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
+
+		response.setReload(true);
+	}
+
+	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrderWorkflowService.cancel(operationOrderRepo.find(operationOrder.getId()));
+
+		response.setReload(true);
+	}
+
+
 	/**
 	 * Method that generate a Pdf file for an operation order
 	 *
@@ -378,14 +401,5 @@ public class OperationOrderController {
 		
 		response.setData(dataList);
 	}
-	
-	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		operationOrder =operationOrderRepo.find(operationOrder.getId());
-		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
-		response.setReload(true);
-		
-	}
-	
 }
 

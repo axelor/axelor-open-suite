@@ -23,16 +23,20 @@ import java.util.Map;
 
 
 import com.axelor.apps.base.db.App;
+import com.axelor.auth.service.PermissionAssistantService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportApp {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ImportApp.class);
 	
 	@Inject
 	private MetaFiles metaFiles;
-	
-	
+
 	public Object importApp(Object bean, Map<String,Object> values) {
 		
 		assert bean instanceof App;
@@ -48,7 +52,7 @@ public class ImportApp {
 			app.setImage(metaFile);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.warn("Can't load image {} for app {}", fileName, app.getName());
 		}
 		
 		return app;

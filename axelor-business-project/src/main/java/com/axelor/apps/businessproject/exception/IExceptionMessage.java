@@ -35,4 +35,5 @@ public interface IExceptionMessage {
 	static final String SALE_ORDER_NO_PROJECT = /*$$(*/ "No Project selected"/*)*/ ;
 	static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks"/*)*/ ;
 	static final String INVOICING_PROJECT_GENERATION = /*$$(*/ "Invoicing project generated"/*)*/ ;
+	static final String JOB_COSTING_APP = /*$$(*/ "Job costing"/*)*/ ;
 }

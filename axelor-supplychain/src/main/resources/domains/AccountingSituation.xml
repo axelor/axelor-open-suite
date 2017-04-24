@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="account" package="com.axelor.apps.account.db"/>
+
+    <entity name="AccountingSituation" lang="java">
+        <!--  Customer Credit -->
+        <decimal name="acceptedCredit" title="Accepted Credit" precision="20" scale="2" required="true"/>
+        <decimal name="usedCredit" title="Used Credit" precision="20" scale="2" readonly="true"/>
+    </entity>
+</domain-models>

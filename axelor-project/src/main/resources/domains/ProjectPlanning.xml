@@ -7,9 +7,13 @@
 
   <entity name="ProjectPlanning" cachable="true">
       
-      <integer name="year" title="Year" readonly="true"/>
-      <integer name="week" title="Week" readonly="true"/>
-      <one-to-many name="projectPlanningLineList" ref="com.axelor.apps.project.db.ProjectPlanningLine"/>
+      <datetime name="fromDate" title="From" required="true"/>
+      <datetime name="toDate" title="To" required="true"/>
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"  required="true"/>
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"  required="true"/>
+      <many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="TeamTask"  />
+      <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
+      <string name="description" title="Description" large="true" />
 	          
   </entity>
   

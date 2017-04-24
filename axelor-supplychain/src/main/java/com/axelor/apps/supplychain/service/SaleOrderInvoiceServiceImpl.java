@@ -163,6 +163,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		log.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
 
+		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+
 		return invoice;
 
 	}

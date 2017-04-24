@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -86,7 +87,7 @@ public interface SaleOrderService {
 
 	public SaleOrder createSaleOrder(Company company) throws AxelorException;
 
-	public void cancelSaleOrder(SaleOrder saleOrder);
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
 	

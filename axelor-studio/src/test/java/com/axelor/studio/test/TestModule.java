@@ -17,8 +17,6 @@
  */
 package com.axelor.studio.test;
 
-import net.sf.ehcache.CacheManager; 
-
 import com.axelor.app.AppModule;
 import com.axelor.auth.AuthModule;
 import com.axelor.db.JpaModule;
@@ -30,10 +28,6 @@ public class TestModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		// shutdown the cache manager if running : Breaking the test
-		if (CacheManager.ALL_CACHE_MANAGERS.size() > 0) {
-			CacheManager.getInstance().shutdown();
-		}
 		bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class);
 
         install(new JpaModule("testUnit", true, true));

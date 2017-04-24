@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -176,5 +177,5 @@ public interface InvoiceService {
 	
 	public Invoice getInvoice(MoveLine moveLine);
 
-
+	public String computeAddressStr(Address address);
 }

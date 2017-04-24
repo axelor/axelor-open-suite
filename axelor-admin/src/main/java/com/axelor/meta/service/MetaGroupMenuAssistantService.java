@@ -36,9 +36,6 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
-
 import com.axelor.app.AppSettings;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
@@ -53,6 +50,8 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 
 public class MetaGroupMenuAssistantService {
 

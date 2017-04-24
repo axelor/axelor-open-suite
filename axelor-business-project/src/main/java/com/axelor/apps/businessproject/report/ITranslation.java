@@ -63,4 +63,19 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 	
+	public static final String PROJECT_CONSUMED_TIME = /*$$(*/ "Project.consumedTime"; /*)*/
+	public static final String PROJECT_TOTAL_TIME_CHART = /*$$(*/ "Project.totalTimeChart"; /*)*/
+	public static final String PROJECT_TOTAL_COST_CHART = /*$$(*/ "Project.totalCostChart"; /*)*/
+	public static final String PROJECT_PLANNED_TIME = /*$$(*/ "Project.plannedTime"; /*)*/
+	public static final String PROJECT_SYNTHESIS = /*$$(*/ "Project.synthesis"; /*)*/
+	public static final String PROJECT_TIME = /*$$(*/ "Project.time"; /*)*/
+	public static final String PROJECT_REAL_PASSED = /*$$(*/ "Project.realPassed"; /*)*/
+	public static final String PROJECT_PLANNED_PASSED = /*$$(*/ "Project.plannedPast"; /*)*/
+	public static final String PROJECT_REMAIN_PLANNED = /*$$(*/ "Project.remainPlanned"; /*)*/
+	public static final String PROJECT_REMAIN_THEORY = /*$$(*/ "Project.remainInTheory"; /*)*/
+	public static final String PROJECT_CHART_MONTH_PASSED_TIME = /*$$(*/ "Project.chartTimePassedPerMonth"; /*)*/
+	public static final String PROJECT_CHART_MONTH_PASSED_COST = /*$$(*/ "Project.chartCostPassedPerMonth"; /*)*/
+	public static final String PROJECT_CHART_MONTH_REMAINING_TIME = /*$$(*/ "Project.chartTimeRemainingPerMonth"; /*)*/
+	public static final String PROJECT_CHART_MONTH_REMAINING_COST = /*$$(*/ "Project.chartCostRemainingPerMonth"; /*)*/
+	
 }

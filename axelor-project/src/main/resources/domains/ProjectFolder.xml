@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="project" package="com.axelor.apps.project.db"/>
-
 	
 	<entity name="ProjectFolder">
   		<string name="name"/>
   		<string name="description" large="true"/>
  	 	<one-to-many name="projectList" ref="com.axelor.apps.project.db.Project" mappedBy="projectFolder"/>
 	</entity>
-  </domain-models>
+	
+</domain-models>

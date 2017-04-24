@@ -96,5 +96,32 @@ public class ProjectController {
 		response.setValue("$visibleDuration", visibleDuration);
 
 	}
+	
+	
+	public void printPlannifAndCost(ActionRequest request,ActionResponse response) throws AxelorException  {
+
+		Project project = request.getContext().asType(Project.class);
+
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+
+		String name = I18n.get("Plannification and cost");
+		
+		if (project.getCode() != null) {
+			name += " (" + project.getCode() + ")";
+		}
+		
+		String fileLink = ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
+				.addParam("ProjectId", project.getId())
+				.addParam("Locale", language)
+				.toAttach(project)
+				.generate()
+				.getFileLink();
+
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
+	}
 
 }
