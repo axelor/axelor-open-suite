@@ -14,11 +14,13 @@
       	<bind node="partnerId" to="partnerId" alias="partnerId"/>
 		<bind node="testMode" to="testMode"/>
 		<bind node="filterReceiverBD" to="filterReceiverBD"/>
-      	<bind node="ebicsBank" to="ebicsBank" search="self.hostId = :hostId" update="false">
+      	<bind node="ebicsBank" to="ebicsBank" search="self.hostId = :hostId" update="true">
 	   		<bind node="hostId" to="hostId" alias="hostId"/>
 	   		<bind node="name" to="name" />
 	   		<bind node="fullName" to="fullName"/>
 	   		<bind node="url" to="url"/>
+			<bind node="fax" to="fax" />
+			<bind node="emailAddress" to="emailAddress" />
 	   		<bind node="languageSelect" to="languageSelect"/>
 	   		<bind node="bank" to="bank" search="self.code = :code"  update="false">
 	   			<bind node="code" to="code" />
@@ -94,7 +96,7 @@
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'signature'"  />
       	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null" />
-      </bind> 
+      </bind>
       <bind to="e002Certificate" node="e002Certificate">
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'encryption'" />
