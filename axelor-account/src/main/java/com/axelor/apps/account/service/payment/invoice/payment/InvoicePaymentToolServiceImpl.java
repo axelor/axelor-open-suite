@@ -18,7 +18,14 @@
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,4 +100,24 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return amountPaid;
 	}
 
+	/**
+	 *
+	 * @param company  company from the invoice
+	 * @param invoicePayment
+	 * @return list of bankdetails in the payment mode for the given company.
+	 */
+	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment){
+		List<BankDetails> bankDetailsList = new ArrayList<BankDetails>();
+		PaymentMode paymentMode = invoicePayment.getPaymentMode();
+		if(company == null || paymentMode == null) { return bankDetailsList; }
+		paymentMode = Beans.get(PaymentModeRepository.class).find(invoicePayment.getPaymentMode().getId());
+
+		for (AccountManagement accountManagement : paymentMode.getAccountManagementList()) {
+			if (accountManagement.getCompany().equals(company) &&
+					accountManagement.getBankDetails() != null) {
+				bankDetailsList.add(accountManagement.getBankDetails());
+			}
+		}
+		return bankDetailsList;
+    }
 }

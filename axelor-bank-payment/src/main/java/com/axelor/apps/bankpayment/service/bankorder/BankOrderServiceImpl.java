@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.BankDetailsService;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -361,8 +362,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		String domain = "";
 		if (bankOrder.getSenderCompany() != null) {
 
-			String bankDetailsIds = bankOrderLineService
-					.getIdStringListFromList(bankOrder.getSenderCompany().getBankDetailsSet());
+			String bankDetailsIds = Beans.get(BankDetailsService.class)
+					.getIdStringListFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
 
 			if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
 				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";

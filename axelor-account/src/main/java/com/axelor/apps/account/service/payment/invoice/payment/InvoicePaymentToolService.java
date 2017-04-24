@@ -19,12 +19,18 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.util.List;
 
 public interface InvoicePaymentToolService  {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException;
-	
+
+	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment);
 }

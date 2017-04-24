@@ -19,8 +19,10 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
+import java.util.List;
 
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.db.Model;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,7 +171,8 @@ public class BankOrderLineService {
 		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() != null) {
 
-			    bankDetailsIds = this.getIdStringListFromList(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+			    bankDetailsIds = Beans.get(BankDetailsService.class)
+						.getIdStringListFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
 
 				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
 					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -182,7 +185,8 @@ public class BankOrderLineService {
 
 		//case where the bank order is for a partner
 		else if (bankOrderLine.getPartner() != null) {
-		    bankDetailsIds = this.getIdStringListFromList(bankOrderLine.getPartner().getBankDetailsList());
+		    bankDetailsIds = Beans.get(BankDetailsService.class).
+					getIdStringListFromCollection(bankOrderLine.getPartner().getBankDetailsList());
 		}
 
 		if (bankDetailsIds.equals("")) {
@@ -202,7 +206,8 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 		    domain += " AND self.id IN (" +
-					this.getIdStringListFromList(ebicsPartner.getReceiverBankDetailsSet()) +
+					Beans.get(BankDetailsService.class).
+							getIdStringListFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
 
@@ -289,17 +294,6 @@ public class BankOrderLineService {
 		}
 	}
 
-	public String getIdStringListFromList(Collection<BankDetails> bankDetailsList) {
-		String idList = "";
-		for (BankDetails bankDetails : bankDetailsList) {
-			idList += bankDetails.getId() + ",";
-		}
-		//remove the last comma
-		if(!idList.equals("") && idList.substring(idList.length() - 1).equals(",")) {
-			idList = idList.substring(0, idList.length() - 1);
-		}
-		return idList;
-	}
 
 	private boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
 		return  (ebicsPartner != null) &&
