@@ -275,7 +275,7 @@ public class EbicsService {
 	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file, String format) throws AxelorException {
 		  
 		EbicsSession session = new EbicsSession(user);
-	    boolean test = isTest(user, false);
+	    boolean test = isTest(user);
 	    if (test) {
 	    	session.addSessionParam("TEST", "true");
 	    }
@@ -347,7 +347,7 @@ public class EbicsService {
 		EbicsSession session = new EbicsSession(user);
 		File file = null;
 		try {
-		    boolean test = isTest(user, true);
+		    boolean test = isTest(user);
 		    if (test) {
 		    	session.addSessionParam("TEST", "true");
 		    }
@@ -377,7 +377,7 @@ public class EbicsService {
 		return file;
 	}
 	
-	private boolean isTest(EbicsUser user, boolean download) throws AxelorException {
+	private boolean isTest(EbicsUser user) throws AxelorException {
 		
 		EbicsPartner partner = user.getEbicsPartner();
 		
