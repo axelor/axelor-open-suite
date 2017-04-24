@@ -103,7 +103,7 @@
 	    <action name="action-record-payment-voucher-default-record"/>
 	    <action name="action-record-payment-voucher-cash-register-record"/>
 	    <action name="action-pv-hide-confirm-button"/>
-	    <action name="action-payment-voucher-getDateTime"/>
+	    <action name="action-payment-voucher-getDate"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
@@ -205,8 +205,8 @@
 		<field name="cashRegister" expr="eval: user?.activeCashRegister"/>
 	</action-record>
 	
-	<action-record name="action-payment-voucher-getDateTime" model="com.axelor.apps.account.db.PaymentVoucher">
-    	<field name="paymentDateTime" expr="eval: __config__.generalService.getTodayDateTime()"/>
+	<action-record name="action-payment-voucher-getDate" model="com.axelor.apps.account.db.PaymentVoucher">
+    	<field name="paymentDate" expr="eval: __config__.generalService.getTodayDate()"/>
    	</action-record>
    	
 	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">
