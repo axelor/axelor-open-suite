@@ -15,7 +15,7 @@
 		<panel name="main">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
 				<editor x-show-titles="false">
-					<field name="code" colSpan="3" placeholder="BIC" x-bind="{{code|uppercase}}"/>
+					<field name="code" colSpan="3" placeholder="BIC" x-bind="{{code|uppercase}}" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
 					<field name="bankName" colSpan="9" placeholder="Bank Name"/>
 				</editor>
 			</field>
