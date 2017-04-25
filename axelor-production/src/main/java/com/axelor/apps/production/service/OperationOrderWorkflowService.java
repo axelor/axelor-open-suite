@@ -182,6 +182,13 @@ public class OperationOrderWorkflowService {
 		duration.setStoppedBy(AuthUtils.getUser());
 		duration.setStoppingDateTime(now);
 
+		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_FINISHED) {
+			long durationLong = getDuration(computeRealDuration(operationOrder));
+			operationOrder.setRealDuration(durationLong);
+			Machine machine = operationOrder.getWorkCenter().getMachine();
+			machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+		}
+
 		operationOrderDurationRepo.save(duration);
 	}
 
