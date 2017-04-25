@@ -38,7 +38,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class GeneralServiceImpl implements GeneralService {
@@ -221,6 +223,15 @@ public class GeneralServiceImpl implements GeneralService {
 		}
 
 		return duration;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void setManageMultiBanks(boolean manageMultiBanks) {
+		getGeneral().setManageMultiBanks(manageMultiBanks);
 	}
 
 }
