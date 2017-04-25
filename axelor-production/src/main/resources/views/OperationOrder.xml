@@ -72,15 +72,17 @@
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 		</panel>
 		<panel name="dates" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
-	      <panel name="plannedDates" title="Planned dates" colSpan="6">
-	        <field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
-	        <field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
-	      </panel>
-	      <panel name="realDates" title="Real dates" colSpan="6">
-	        <field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
-	        <field name="realEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
-	      </panel>
-	    </panel>
+			<panel name="plannedDates" title="Planned dates" colSpan="6">
+				<field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
+				<field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
+				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"/>
+			</panel>
+			<panel name="realDates" title="Real dates" colSpan="6">
+				<field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
+				<field name="realEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
+				<field name="realDuration" colSpan="12" widget="duration" x-seconds="true"/>
+			</panel>
+		</panel>
 		<panel name="resources" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="workCenter" readonly="true" grid-view="work-center-grid" form-view="work-center-form"/>
 			<field name="machineWorkCenter" readonlyIf="statusSelect &gt; 3" onSelect="action-operation-order-attrs-domain-machine" onChange="save,action-operation-order-method-machine-change" grid-view="work-center-machine-grid" form-view="work-center-machine-form"/>

@@ -188,6 +188,12 @@ public class ManufOrderWorkflowService {
 		}
 	}
 
+	/**
+	 * Returns last operation order (highest priority) of given {@link ManufOrder}
+	 *
+	 * @param manufOrder A manufacturing order
+	 * @return Last operation order of {@code manufOrder}
+	 */
 	public OperationOrder getLastOperationOrder(ManufOrder manufOrder) {
 		return operationOrderRepo.all().filter("self.manufOrder = ?", manufOrder).order("-plannedEndDateT").fetchOne();
 	}

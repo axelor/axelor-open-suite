@@ -119,6 +119,11 @@ public class OperationOrderWorkflowService {
 	}
 
 
+	/**
+	 * Starts the given {@link OperationOrder} and sets its starting time
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(OperationOrder operationOrder) {
 		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
@@ -131,6 +136,11 @@ public class OperationOrderWorkflowService {
 		}
 	}
 
+	/**
+	 * Pauses the given {@link OperationOrder} and sets its pausing time
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void pause(OperationOrder operationOrder) {
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
@@ -140,6 +150,11 @@ public class OperationOrderWorkflowService {
 		operationOrderRepo.save(operationOrder);
 	}
 
+	/**
+	 * Resumes the given {@link OperationOrder} and sets its resuming time
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void resume(OperationOrder operationOrder) {
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
@@ -149,6 +164,12 @@ public class OperationOrderWorkflowService {
 		operationOrderRepo.save(operationOrder);
 	}
 
+	/**
+	 * Ends the given {@link OperationOrder} and sets its stopping time<br>
+	 * Realizes the linked stock moves
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional
 	public void finish(OperationOrder operationOrder) throws AxelorException {
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
@@ -160,6 +181,11 @@ public class OperationOrderWorkflowService {
 		operationOrderRepo.save(operationOrder);
 	}
 
+	/**
+	 * Cancels the given {@link OperationOrder} and its linked stock moves
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(OperationOrder operationOrder) throws AxelorException {
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
@@ -170,6 +196,11 @@ public class OperationOrderWorkflowService {
 	}
 
 
+	/**
+	 * Starts an {@link OperationOrderDuration} and links it to the given {@link OperationOrder}
+	 *
+	 * @param operationOrder An operation order
+	 */
 	public void startOperationOrderDuration(OperationOrder operationOrder) {
 		OperationOrderDuration duration = new OperationOrderDuration();
 		duration.setStartedBy(AuthUtils.getUser());
@@ -177,15 +208,34 @@ public class OperationOrderWorkflowService {
 		operationOrder.addOperationOrderDurationListItem(duration);
 	}
 
+	/**
+	 * Ends the last {@link OperationOrderDuration} and sets the real duration of {@code operationOrder}<br>
+	 * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
+	 *
+	 * @param operationOrder An operation order
+	 */
 	public void stopOperationOrderDuration(OperationOrder operationOrder) {
 		OperationOrderDuration duration = operationOrderDurationRepo.all().filter("self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL", operationOrder.getId()).fetchOne();
 		duration.setStoppedBy(AuthUtils.getUser());
 		duration.setStoppingDateTime(now);
 
+		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_FINISHED) {
+			long durationLong = getDuration(computeRealDuration(operationOrder));
+			operationOrder.setRealDuration(durationLong);
+			Machine machine = operationOrder.getWorkCenter().getMachine();
+			machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+		}
+
 		operationOrderDurationRepo.save(duration);
 	}
 
 
+	/**
+	 * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder}
+	 *
+	 * @param operationOrder An operation order
+	 * @return Real duration of {@code operationOrder}
+	 */
 	public Duration computeRealDuration(OperationOrder operationOrder) {
 		Duration totalDuration = Duration.ZERO;
 
