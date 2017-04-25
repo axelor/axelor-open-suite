@@ -18,7 +18,7 @@ public class CompanyServiceImpl implements CompanyService {
 		if (countActiveBankDetails(company) > 1) {
 			GeneralService generalService = Beans.get(GeneralService.class);
 			General general = generalService.getGeneral();
-			if (general.getManageMultiBanks() == false) {
+			if (!general.getManageMultiBanks()) {
 				generalService.setManageMultiBanks(true);
 			}
 		}
