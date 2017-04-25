@@ -32,5 +32,10 @@ public interface InvoicePaymentToolService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
+	/**
+	 * @param company  company from the invoice
+	 * @param invoicePayment
+	 * @return list of bankdetails in the payment mode for the given company.
+	 */
 	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment);
 }

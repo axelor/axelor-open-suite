@@ -26,6 +26,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 
+import java.util.List;
+
 public interface PaymentModeService {
 
 	public Account getPaymentModeAccount(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
@@ -36,4 +38,10 @@ public interface PaymentModeService {
 
 	public Journal getPaymentModeJournal(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
+	/**
+	 * @param paymentMode
+	 * @param company
+	 * @return list of bankdetails in the payment mode for the given company.
+	 */
+	public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company);
 }
