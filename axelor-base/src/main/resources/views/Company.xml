@@ -9,7 +9,8 @@
         <field name="address" form-view="address-form" grid-view="address-grid"/>
     </grid>
 
-	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
+	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
+		onSave="action-company-check-multi-banks">
 		<panel name="main" readonlyIf="$popup()">
 		    <panel colSpan="4">
 				<field name="logo" widget="Image"/>
@@ -113,6 +114,9 @@
 		<attribute name="domain" for="defaultBankDetails" if="!bankDetailsSet || bankDetailsSet.isEmpty()"
 				   expr="self.id IN (0)"/>
 	</action-attrs>
-	
-	
+
+	<action-method name="action-company-check-multi-banks">
+		<call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks" />
+	</action-method>
+
 </object-views>
