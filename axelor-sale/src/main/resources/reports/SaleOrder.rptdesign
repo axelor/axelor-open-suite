@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201702020724</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -1230,7 +1230,7 @@ PaymentCondition.name as "PaymentCondName", PaymentMode.name as "PaymentMode",
 DeliveryAddress.addressl2 as "delAddress2", DeliveryAddress.addressl3 as "delAddress3", 
 DeliveryAddress.addressl4 as "delAddress4", DeliveryAddress.addressl5 as "delAddress5", 
 DeliveryAddress.addressl6 as "delAddress6", DeliveryCountry.name as "DeliveryCountry",
-SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, Bank.bank_address, 
+SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, BankAddress.address as "bank_address", 
 BankDetail.iban, Bank.code as "bic", Currency.code as "CurrencyCode", SaleOrder.external_reference, 
 PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
 InvoicingAddress.id as "invAddressId", DeliveryAddress.id as "delAddressId",
@@ -1258,6 +1258,7 @@ left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.
 left outer join sale_sale_config as SaleConfig on (SaleConfig.company = Company.id) 
 left outer join base_duration as Duration on (SaleOrder.duration = Duration.id) 
 left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
+left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
 where SaleOrder.id = ? ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OrderLineDS" id="3678">
