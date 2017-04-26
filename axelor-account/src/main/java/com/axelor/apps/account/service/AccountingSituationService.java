@@ -195,10 +195,7 @@ public class AccountingSituationService	{
 			candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
 		}
 		List<BankDetails>authorizedBankDetails = Beans.get(PaymentModeService.class).
-				getCompatibleBankDetailsList(
-						accountingSituation.getPartner().getInPaymentMode(),
-						accountingSituation.getCompany()
-				);
+				getCompatibleBankDetailsList(paymentMode, company);
 		if (authorizedBankDetails.contains(candidateBankDetails) &&
 				candidateBankDetails.getActive()) {
 			return candidateBankDetails;
