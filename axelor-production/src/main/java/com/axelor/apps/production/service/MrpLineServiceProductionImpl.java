@@ -17,12 +17,16 @@
  */
 package com.axelor.apps.production.service;
 
+import java.util.Map;
+
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.service.MinStockRulesService;
@@ -50,11 +54,11 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl  {
 		this.manufOrderService = manufOrderService;
 		
 	}
-	
+
 	@Override
-	public void generateProposal(MrpLine mrpLine) throws AxelorException  {
+	public void generateProposal(MrpLine mrpLine, Map<Partner, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
-		super.generateProposal(mrpLine);
+		super.generateProposal(mrpLine, purchaseOrders);
 		
 		if(mrpLine.getMrpLineType().getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)  {
 			

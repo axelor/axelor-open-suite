@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.hibernate.proxy.HibernateProxy;
 
@@ -78,19 +79,25 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		this.today = appBaseService.getTodayDate();
 		this.user = userService.getUser();
 	}
-	
+
+	@Override
 	public void generateProposal(MrpLine mrpLine) throws AxelorException  {
+		generateProposal(mrpLine, null);
+	}
+
+	@Override
+	public void generateProposal(MrpLine mrpLine, Map<Partner, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		if(mrpLine.getMrpLineType().getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)  {
 			
-			this.generatePurchaseProposal(mrpLine);
+			this.generatePurchaseProposal(mrpLine, purchaseOrders);
 			
 		}
 		
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	protected void generatePurchaseProposal(MrpLine mrpLine) throws AxelorException  {
+	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Partner, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		Product product = mrpLine.getProduct();
 		Location location = mrpLine.getLocation();
@@ -105,18 +112,29 @@ public class MrpLineServiceImpl implements MrpLineService  {
 
 		Company company = location.getCompany();
 
-		PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-				this.user,
-				company,
-				null,
-				supplierPartner.getCurrency(),
-				maturityDate,
-				"MRP-"+this.today.toString(), //TODO sequence on mrp
-				null,
-				location,
-				this.today,
-				supplierPartner.getPurchasePriceList(),
-				supplierPartner));
+		PurchaseOrder purchaseOrder = null;
+	
+		if (purchaseOrders != null) {
+			purchaseOrder = purchaseOrders.get(supplierPartner);
+		}
+		
+		if (purchaseOrder == null) {
+			purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+					this.user,
+					company,
+					null,
+					supplierPartner.getCurrency(),
+					maturityDate,
+					"MRP-"+this.today.toString(), //TODO sequence on mrp
+					null,
+					location,
+					this.today,
+					supplierPartner.getPurchasePriceList(),
+					supplierPartner));
+			if (purchaseOrders != null) {
+				purchaseOrders.put(supplierPartner, purchaseOrder);
+			}
+		}
 		Unit unit = product.getPurchasesUnit();
 		BigDecimal qty = mrpLine.getQty();
 		if(unit == null){
