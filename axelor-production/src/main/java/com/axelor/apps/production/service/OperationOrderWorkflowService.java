@@ -225,7 +225,9 @@ public class OperationOrderWorkflowService {
 			long durationLong = getDuration(computeRealDuration(operationOrder));
 			operationOrder.setRealDuration(durationLong);
 			Machine machine = operationOrder.getWorkCenter().getMachine();
-			machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+			if (machine != null) {
+				machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+			}
 		}
 
 		operationOrderDurationRepo.save(duration);
