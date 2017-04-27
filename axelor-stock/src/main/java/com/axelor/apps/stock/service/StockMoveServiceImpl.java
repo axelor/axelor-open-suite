@@ -284,6 +284,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
 				true);
+		
+		stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
