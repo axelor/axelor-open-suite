@@ -205,7 +205,7 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
-				  <field name="customsCode" if-module="axelor-stock"/>
+				  <field name="customsCodeNomenclature" if-module="axelor-stock"/>
   			</panel>
   		</panel-tabs>
   		<panel>

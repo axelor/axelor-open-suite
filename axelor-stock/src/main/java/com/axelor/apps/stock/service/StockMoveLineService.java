@@ -96,6 +96,11 @@ public interface StockMoveLineService {
 
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
+	/**
+	 * Store customs code information on each stock move line from the products
+	 * 
+	 * @param stockMoveLineList
+	 */
 	public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
 
 }
