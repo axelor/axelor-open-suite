@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -27,6 +28,8 @@ public interface CostSheetService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
-	
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException;
 
 }

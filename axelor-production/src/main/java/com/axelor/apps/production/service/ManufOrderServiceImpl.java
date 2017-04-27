@@ -23,6 +23,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import java.time.LocalDateTime;
+
+import com.axelor.apps.stock.db.StockMoveLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,6 +318,16 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		}
 		
 		return language;
+	}
+
+	@Override
+	public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
+		for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
+			if(stockMoveLine.getProduct().equals(manufOrder.getProduct())) {
+				return stockMoveLine.getRealQty();
+			}
+		}
+		return BigDecimal.ZERO;
 	}
 
 }

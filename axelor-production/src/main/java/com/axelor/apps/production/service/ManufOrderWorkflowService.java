@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
+import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -85,9 +86,8 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
-		if (manufOrder.getRealStartDateT() == null) {
-			manufOrder.setRealStartDateT(now);
-		}
+		manufOrder.setRealStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		manufOrderRepo.save(manufOrder);
 	}
@@ -135,6 +135,13 @@ public class ManufOrderWorkflowService {
 		}
 
 		manufOrderStockMoveService.finish(manufOrder);
+		//create cost sheet
+		CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+
+		//update price in product
+		manufOrder.getProduct().setLastProductionPrice(costSheet.getCostPrice());
+
+		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
 		manufOrderRepo.save(manufOrder);
 	}
@@ -178,13 +185,9 @@ public class ManufOrderWorkflowService {
 				count++;
 			}
 		}
-		if (count == operationOrderList.size()) {
-			manufOrderStockMoveService.finish(manufOrder);
 
-			manufOrder.setRealEndDateT(now);
-			manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
-
-			manufOrderRepo.save(manufOrder);
+		if(count == operationOrderList.size()){
+			this.finish(manufOrder);
 		}
 	}
 

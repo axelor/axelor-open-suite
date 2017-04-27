@@ -64,7 +64,8 @@ public class OperationOrderWorkflowService {
 
 		operationOrder.setPlannedDuration(
 				this.getDuration(
-				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
+				));
 
 		operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
 
@@ -82,7 +83,8 @@ public class OperationOrderWorkflowService {
 
 		operationOrder.setPlannedDuration(
 				this.getDuration(
-				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
+				));
 
 		return operationOrderRepo.save(operationOrder);
 	}
@@ -223,7 +225,9 @@ public class OperationOrderWorkflowService {
 			long durationLong = getDuration(computeRealDuration(operationOrder));
 			operationOrder.setRealDuration(durationLong);
 			Machine machine = operationOrder.getWorkCenter().getMachine();
-			machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+			if (machine != null) {
+				machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+			}
 		}
 
 		operationOrderDurationRepo.save(duration);
@@ -247,10 +251,26 @@ public class OperationOrderWorkflowService {
 		return totalDuration;
 	}
 
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
-		return Duration.between(startDateTime, endDateTime);
+	@Transactional
+	public OperationOrder computeDuration(OperationOrder operationOrder)  {
+		Long duration;
 
+		if(operationOrder.getPlannedStartDateT() != null && operationOrder.getPlannedEndDateT() != null) {
+			duration = this.getDuration(
+					Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
+			);
+			operationOrder.setPlannedDuration(duration);
+		}
+
+		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
+			duration = this.getDuration(
+					Duration.between(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())
+			);
+			operationOrder.setRealDuration(duration);
+		}
+
+		return operationOrderRepo.save(operationOrder);
 	}
 
 	public long getDuration(Duration duration)  {
