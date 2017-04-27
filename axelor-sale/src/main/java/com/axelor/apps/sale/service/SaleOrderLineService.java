@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 
 public interface SaleOrderLineService {
 
@@ -67,4 +68,8 @@ public interface SaleOrderLineService {
 	public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 	
 	public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product);
+	
+	public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
+	
+	public SaleOrder getSaleOrder(Context context);
 }

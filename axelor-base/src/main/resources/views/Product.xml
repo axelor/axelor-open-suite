@@ -70,6 +70,7 @@
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
 			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')" />
+			        <field name="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
 			        <field name="expense" hidden="true"/>
       			</panel>
     		</panel>
@@ -207,6 +208,7 @@
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
   			</panel>
+  			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
   		</panel-tabs>
   		<panel>
   			<field name="productAttrs" colSpan="12" />

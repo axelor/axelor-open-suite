@@ -35,6 +35,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -59,7 +60,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		Unit unit = null;
 		BigDecimal qty = BigDecimal.ZERO;
 		
-		if(!saleOrderLine.getIsTitleLine())  {
+		if(saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE)  {
 			unit = saleOrderLine.getProduct().getPurchasesUnit();
 			qty = saleOrderLine.getQty();
 			if(unit == null){
@@ -78,7 +79,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 														qty, 
 														unit);
 		
-		purchaseOrderLine.setIsTitleLine(saleOrderLine.getIsTitleLine());
+		purchaseOrderLine.setIsTitleLine(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
 		this.computeAnalyticDistribution(purchaseOrderLine);
 		return purchaseOrderLine;
 		

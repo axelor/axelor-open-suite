@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -609,7 +610,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 		
 		if(saleOrderLine != null)  {
-			if(saleOrderLine.getIsTitleLine())  {  isTitleLine = true;  }
+			if(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK)  {  isTitleLine = true;  }
 			sequence = saleOrderLine.getSequence();
 		}
 		else if(purchaseOrderLine != null)  {

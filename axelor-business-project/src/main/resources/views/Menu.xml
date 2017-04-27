@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<menuitem name="business-project-root" title="Job costing" order="-102" icon="fa-list-alt" icon-background="blue"/>
+	<menuitem name="business-project-root" title="Job costing" order="-102" icon="fa-list-alt" icon-background="blue" if="__config__.app.isApp('business-project')"/>
 	
 	<menuitem name="business-project-folder" parent="business-project-root" title="Project Folder" action="business.project.folder" order="5"/>
 	

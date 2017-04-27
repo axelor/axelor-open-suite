@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -41,6 +40,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class SaleOrderLineServiceImpl implements SaleOrderLineService {
@@ -118,7 +118,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		Product product = saleOrderLine.getProduct();
-
+		
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
@@ -204,5 +204,42 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		}
 		return false;
 		
+	}
+	
+	@Override
+	public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine) {
+		
+		BigDecimal totalPack = BigDecimal.ZERO;
+		
+		for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
+			totalPack = totalPack.add(subLine.getInTaxTotal());
+		}
+		
+		return totalPack;
+	}
+
+	@Override
+	public SaleOrder getSaleOrder(Context context) {
+		
+		Context parentContext = context.getParentContext();
+		
+		if (!parentContext.get("_model").equals(SaleOrder.class.getName())) {
+			parentContext = parentContext.getParentContext();
+		}
+		
+		if (parentContext == null) {
+			return null;
+		}
+		
+		SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
+		
+		if(!parentContext.getContextClass().toString().equals(SaleOrder.class.toString())){
+			
+			SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+			
+			saleOrder = saleOrderLine.getSaleOrder();
+		}
+		
+		return saleOrder;
 	}
 }

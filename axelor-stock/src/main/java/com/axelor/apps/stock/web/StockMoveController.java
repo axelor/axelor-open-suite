@@ -19,7 +19,9 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +33,11 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
@@ -47,6 +49,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -328,5 +331,38 @@ public class StockMoveController {
 		response.setValue("exTaxTotal", stockMoveService.compute(stockMove));
 		
 	}
+	
+	public void openStockPerDay(ActionRequest request, ActionResponse response) {
+		
+		Context context = request.getContext();
+		
+		Long locationId = Long.parseLong(((Map<String,Object>)context.get("stockLocation")).get("id").toString());
+		LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
+		LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
+		
+		Collection<Map<String,Object>> products = (Collection<Map<String,Object>>)context.get("productSet");
+		
+		String domain = null;
+		List<Object> productIds = null;
+		if (products != null && !products.isEmpty()) {
+			productIds = Arrays.asList(products.stream().map(p->p.get("id")).toArray());
+			domain = "self.id in (:productIds)";
+		}
+		
+		response.setView(ActionView.define(I18n.get("Stocks"))
+			.model(Product.class.getName())
+			.add("cards", "stock-product-cards")
+			.add("grid", "stock-product-grid")
+			.add("form", "stock-product-form")
+			.domain(domain)
+			.context("fromStockWizard", true)
+			.context("productIds", productIds)
+			.context("stockFromDate", fromDate)
+			.context("stockToDate", toDate)
+			.context("locationId", locationId)
+			.map());
+		
+	}
+	
 
 }

@@ -136,6 +136,17 @@
         </panel>
     </form>
     
+    <form name="stock-move-wizard-stock-per-day" title="Stock per day" model="com.axelor.apps.base.db.Wizard" 
+    	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
+    	 onNew="action-stock-move-wizard-stock-per-day-defaults">
+    	<panel name="main">
+    		<field name="stockFromDate" title="From Date" type="date" required="true"/>
+    		<field name="stockToDate" title="To Date" type="date" required="true"/>
+	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.Location" required="true" />
+	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" />
+	        <button name="runWizard" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
+        </panel>
+    </form>
     
     <action-view title="Special split" model="com.axelor.apps.base.db.Wizard" name="action-stock-move-wizard-special-split">
 	    <view type="form" name="stock-move-wizard-special-split-form"/>
@@ -226,6 +237,11 @@
     <action-attrs name="action-stock-move-attrs-domain-address">
 		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
 		<attribute name="domain" for="toAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
+    </action-attrs>
+    
+    <action-attrs name="action-stock-move-wizard-stock-per-day-defaults">
+    	<attribute name="value" for="stockFromDate" expr="eval:__date__"/>
+    	<attribute name="value" for="stockToDate" expr="eval:__date__"/>
     </action-attrs>
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
@@ -319,6 +335,10 @@
 	
 	<action-method name="action-stock-move-line-method-change-conformity">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="changeConformityStockMoveLine"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-open-stock-per-day">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="openStockPerDay"/>
 	</action-method>
 	
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">

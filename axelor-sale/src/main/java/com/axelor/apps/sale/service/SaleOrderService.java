@@ -36,7 +36,6 @@ public interface SaleOrderService {
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
 

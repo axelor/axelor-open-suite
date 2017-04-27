@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -92,7 +93,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
-				if(saleOrderLine.getProduct() != null || saleOrderLine.getIsTitleLine()){
+				if(saleOrderLine.getProduct() != null || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK){
 					this.createStockMoveLine(stockMove, saleOrderLine, company);
 				}
 			}
@@ -174,7 +175,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 			return stockMoveLine;
 		}
-		else if(saleOrderLine.getIsTitleLine()){
+		else if(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK){
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					null,
 					saleOrderLine.getProductName(),
