@@ -25,4 +25,22 @@
 
 	</tree>
 
+	<grid model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+		title="Customs code nomenclature" name="customs-code-nomenclature-grid">
+		<field name="code" />
+		<field name="wording" />
+		<field name="supplementaryUnit" />
+		<field name="parentCustomsCode" />
+	</grid>
+
+	<form model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+		title="Customs code nomenclature" name="customs-code-nomenclature-form">
+		<panel readonly="true">
+			<field name="code" />
+			<field name="wording" />
+			<field name="supplementaryUnit" />
+			<field name="parentCustomsCode" />
+		</panel>
+	</form>
+
 </object-views>
