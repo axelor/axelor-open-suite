@@ -84,9 +84,7 @@ public interface StockMoveService {
 	public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
 
 
-	StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
-
-	StockMove copyStockMoveReverseAll(StockMove stockMove) throws AxelorException;
+	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException;

@@ -365,16 +365,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(),newStockMove.getCompany()));
 
-		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
-			if(stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0)   {
+			if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 
-				if(!split)  {
+				if (split) {
 					newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
+					newStockMoveLine.setRealQty(newStockMoveLine.getQty());
 				}
-
-				newStockMoveLine.setRealQty(newStockMoveLine.getQty());
 
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
@@ -387,43 +386,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		return stockMoveRepo.save(newStockMove);
 
-	}
-
-	@Override
-	public StockMove copyStockMoveReverseAll(StockMove stockMove) throws AxelorException {
-
-		StockMove newStockMove = new StockMove();
-
-		newStockMove.setCompany(stockMove.getCompany());
-		newStockMove.setPartner(stockMove.getPartner());
-		newStockMove.setFromLocation(stockMove.getToLocation());
-		newStockMove.setToLocation(stockMove.getFromLocation());
-		newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
-		newStockMove.setFromAddress(stockMove.getFromAddress());
-		if (stockMove.getToAddress() != null)
-			newStockMove.setFromAddress(stockMove.getToAddress());
-		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING)
-			newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
-		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
-			newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
-		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL)
-			newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
-		newStockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
-		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-
-		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-			StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
-			newStockMove.addStockMoveLineListItem(newStockMoveLine);
-		}
-
-		newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
-		newStockMove.setRealDate(null);
-		newStockMove
-				.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
-				+ stockMove.getStockMoveSeq() + " )");
-
-		return stockMoveRepo.save(newStockMove);
 	}
 
 	@Override
@@ -587,7 +549,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		LOG.debug("Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ", new Object[] { stockMove.getStockMoveSeq() });
 
-		return copyStockMoveReverseAll(stockMove);
+		return copyAndSplitStockMoveReverse(stockMove, false);
 
 	}
 
