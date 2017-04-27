@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.hibernate.proxy.HibernateProxy;
@@ -138,35 +137,20 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		}
 		Unit unit = product.getPurchasesUnit();
 		BigDecimal qty = mrpLine.getQty();
-		if (unit == null) {
+		if(unit == null){
 			unit = product.getUnit();
-		} else {
+		}
+		else{
 			qty = Beans.get(UnitConversionService.class).convertWithProduct(product.getUnit(), unit, qty, product);
 		}
-
-		boolean foundProduct = false;
-		List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
-
-		if (purchaseOrderLineList != null) {
-			for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-				if (product.equals(purchaseOrderLine.getProduct()) && unit.equals(purchaseOrderLine.getUnit())) {
-					foundProduct = true;
-					purchaseOrderLine.setQty(purchaseOrderLine.getQty().add(qty));
-					break;
-				}
-			}
-		}
-
-		if (!foundProduct) {
-			purchaseOrder.addPurchaseOrderLineListItem(
-					purchaseOrderLineService.createPurchaseOrderLine(
-							purchaseOrder,
-							product,
-							null,
-							null,
-							qty,
-							unit));
-		}
+		purchaseOrder.addPurchaseOrderLineListItem(
+				purchaseOrderLineService.createPurchaseOrderLine(
+						purchaseOrder,
+						product,
+						null,
+						null,
+						qty,
+						unit));
 
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
