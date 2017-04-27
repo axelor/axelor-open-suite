@@ -389,6 +389,42 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	}
 
+	@Override
+	public StockMove copyStockMoveReverseAll(StockMove stockMove) throws AxelorException {
+
+		StockMove newStockMove = new StockMove();
+
+		newStockMove.setCompany(stockMove.getCompany());
+		newStockMove.setPartner(stockMove.getPartner());
+		newStockMove.setFromLocation(stockMove.getToLocation());
+		newStockMove.setToLocation(stockMove.getFromLocation());
+		newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
+		newStockMove.setFromAddress(stockMove.getFromAddress());
+		if (stockMove.getToAddress() != null)
+			newStockMove.setFromAddress(stockMove.getToAddress());
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING)
+			newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
+			newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL)
+			newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
+		newStockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
+		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
+
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+			StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
+			newStockMove.addStockMoveLineListItem(newStockMoveLine);
+		}
+
+		newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+		newStockMove.setRealDate(null);
+		newStockMove
+				.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
+		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
+				+ stockMove.getStockMoveSeq() + " )");
+
+		return stockMoveRepo.save(newStockMove);
+	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -547,11 +583,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generateReversion(StockMove stockMove) throws AxelorException  {
+	public StockMove generateReversion(StockMove stockMove) throws AxelorException  {
 
 		LOG.debug("Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ", new Object[] { stockMove.getStockMoveSeq() });
 
-		stockMoveRepo.save(this.copyAndSplitStockMoveReverse(stockMove, false));
+		return copyStockMoveReverseAll(stockMove);
 
 	}
 
