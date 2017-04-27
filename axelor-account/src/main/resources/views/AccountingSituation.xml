@@ -18,7 +18,8 @@
 	     onNew="action-account-accounting-situation-default-set" width="large">
 		<panel name="main" >
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
@@ -55,6 +56,8 @@
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 	    	
 		<panel name="customerBalance" title="Customer balance"  itemSpan="4" >
@@ -83,4 +86,13 @@
 	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	</action-record>
+
+	<action-method name="action-account-accounting-situation-set-inbd-domain">
+        <call class="com.axelor.apps.account.web.AccountingSituationController" method="createInBankDetailsDomain"/>
+	</action-method>
+
+	<action-method name="action-account-accounting-situation-set-outbd-domain">
+		<call class="com.axelor.apps.account.web.AccountingSituationController" method="createOutBankDetailsDomain"/>
+	</action-method>
+
  </object-views>

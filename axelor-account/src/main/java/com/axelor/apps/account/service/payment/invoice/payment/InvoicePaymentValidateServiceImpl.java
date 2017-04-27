@@ -134,7 +134,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		Partner partner = invoice.getPartner();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		BigDecimal paymentAmount = invoicePayment.getAmount();
-		BankDetails companyBankDetails = invoice.getCompanyBankDetails();
+		BankDetails companyBankDetails = invoicePayment.getBankDetails();
 		
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		

@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.payment;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
@@ -35,6 +32,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaymentModeServiceImpl implements PaymentModeService {
 
@@ -115,5 +117,20 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		return accountManagement.getJournal();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company){
+		List<BankDetails> bankDetailsList = new ArrayList<BankDetails>();
+		List<AccountManagement> accountManagementList = paymentMode.getAccountManagementList();
+		if(accountManagementList == null) { return bankDetailsList; }
+		for (AccountManagement accountManagement : accountManagementList) {
+			if (accountManagement.getCompany().equals(company) &&
+					accountManagement.getBankDetails() != null) {
+			    bankDetailsList.add(accountManagement.getBankDetails());
+			}
+		}
+	    return bankDetailsList;
+    }
 
 }
