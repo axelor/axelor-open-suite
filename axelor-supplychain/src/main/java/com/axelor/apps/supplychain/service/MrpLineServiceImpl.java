@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,17 +18,17 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.hibernate.proxy.HibernateProxy;
-import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -66,7 +67,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	protected User user;
 
 	@Inject
-	public MrpLineServiceImpl(GeneralService generalService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
+	public MrpLineServiceImpl(AppBaseService appBaseService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, MinStockRulesService minStockRulesService)  {
 		
 		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
@@ -74,7 +75,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		this.purchaseOrderRepo = purchaseOrderRepo;
 		this.minStockRulesService = minStockRulesService;
 		
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 		this.user = userService.getUser();
 	}
 	
@@ -135,7 +136,13 @@ public class MrpLineServiceImpl implements MrpLineService  {
 
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-		
+		linkToOrder(mrpLine, purchaseOrder);
+	}
+
+	protected void linkToOrder(MrpLine mrpLine, AuditableModel order) {
+		mrpLine.setProposalSelect(order.getClass().getName());
+		mrpLine.setProposalSelectId(order.getId());
+		mrpLine.setProposalGenerated(true);
 	}
 	
 	

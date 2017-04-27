@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,16 +29,11 @@ import org.junit.runner.RunWith;
 
 import com.axelor.apps.base.service.template.TemplateContextLineService;
 import com.axelor.apps.base.test.TestModule;
-import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.Model;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules({ TestModule.class })
 public class TemplateContextLineTest {
 	
 	@Inject

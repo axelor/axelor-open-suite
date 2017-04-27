@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,8 +86,10 @@ public class MapRest {
 			objectNode.put("pinChar", pinChar);			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 	
@@ -123,8 +125,10 @@ public class MapRest {
 			objectNode.put("pinChar", "C");			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 
@@ -160,8 +164,10 @@ public class MapRest {
 			objectNode.put("pinChar", "P");			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 
@@ -197,8 +203,10 @@ public class MapRest {
 			objectNode.put("pinChar", "S");			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 

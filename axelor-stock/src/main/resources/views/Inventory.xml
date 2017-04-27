@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
         <field name="inventorySeq"/>
@@ -65,8 +65,7 @@
 
     <action-group name="action-group-stock-inventory-realize-click">
     	<action name="save"/>
-    	<action name="action-inventory-method-generate-stock-move"/>
-    	<action name="action-inventory-record-realize"/>    	
+    	<action name="action-inventory-method-realize-stock-move"/>
     	<action name="save"/>
     </action-group>
 
@@ -84,7 +83,7 @@
 
     <action-record name="action-inventory-record-new" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
-	    <field name="dateT" expr="eval:__config__.generalService.getTodayDateTime()"/>
+	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	</action-record>
 	
@@ -95,10 +94,6 @@
 	<action-record name="action-inventory-record-plan" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="2"/>
 	</action-record>
-    
-    <action-record name="action-inventory-record-realize" model="com.axelor.apps.stock.db.Inventory">
-	    <field name="statusSelect" expr="3"/>
-	</action-record>
 	
 	<action-method name="action-inventory-method-show-inventory">
 		<call class="com.axelor.apps.stock.web.InventoryController" method="showInventory"/>
@@ -108,8 +103,8 @@
 		<call class="com.axelor.apps.stock.web.InventoryController" method="importFile"/>
 	</action-method>
 	
-	<action-method name="action-inventory-method-generate-stock-move">
-		<call class="com.axelor.apps.stock.web.InventoryController" method="generateStockMove"/>
+	<action-method name="action-inventory-method-realize-stock-move">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="realizeInventory"/>
 	</action-method>
 	
 	<action-method name="action-inventory-method-cancel">

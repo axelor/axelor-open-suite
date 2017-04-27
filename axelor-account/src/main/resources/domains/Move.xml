@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -23,18 +23,29 @@
     <boolean name="accountingOk" title="Exported ?" default="false"/>
     <many-to-one name="moveLineReport" ref="com.axelor.apps.account.db.MoveLineReport" title="Accounting Export"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher"/>
+   	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>
+   	<string name="companyCurrencyCode" title="Company currency code"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+   	<string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
     <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
     <date name="validationDate" title="Validation date"/>
+    <integer name="technicalOriginSelect" title="Technical origin" required="true" readonly="true" selection="iaccount.move.technical.origin.select"/>
+    <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     
     <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
-		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_SIMULATED = 2;
+		public static final int STATUS_NEW = 1;
+		public static final int STATUS_DAYBOOK = 2;
 		public static final int STATUS_VALIDATED = 3;
 		public static final int STATUS_CANCELED = 4;
+		
+		// TECHNICAL ORIGIN SELECT
+		public static final int TECHNICAL_ORIGIN_ENTRY = 1;
+		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
+		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
+		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
 	
 	]]></extra-code>
     

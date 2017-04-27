@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,10 +30,7 @@ public class ImportAddress {
 	
 	public Object importAddress(Object bean, Map<String,Object> values) {
 		
-		assert bean instanceof Address;
-		
 		Address address = (Address) bean;
-		
 		address.setFullName(addressService.computeFullName(address));
 		
 		return address;

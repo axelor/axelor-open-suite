@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -55,6 +56,10 @@ public class InventoryController {
 	
 	@Inject
 	InventoryRepository inventoryRepo;
+	
+	@Inject
+	ProductRepository productRepo;
+	
 	
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
 	
@@ -102,10 +107,12 @@ public class InventoryController {
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
 	}
 	
-	public void generateStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void realizeInventory(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		inventoryService.generateStockMove(inventory);
+		Long id = request.getContext().asType(Inventory.class).getId();
+		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+		inventoryService.realizeInventory(inventory);
+		response.setReload(true);
 	}
 	
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,14 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -53,7 +55,7 @@ public interface StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate estimatedDate, String description) throws AxelorException;
+			Location toLocation, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
 	/**
 	 * Méthode générique permettant de créer un StockMove.
@@ -65,7 +67,7 @@ public interface StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException;
+			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
 	public int getStockMoveType(Location fromLocation, Location toLocation);
 
@@ -93,6 +95,7 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
+	@SuppressWarnings("rawtypes")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty);
 

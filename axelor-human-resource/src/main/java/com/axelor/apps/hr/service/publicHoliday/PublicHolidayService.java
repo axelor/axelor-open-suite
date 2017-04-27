@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.hr.service.publicHoliday;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -62,5 +62,16 @@ public class PublicHolidayService {
 		else{
 			return true;
 		}
+	}
+	
+	public int getImposedDayNumber(Employee employee, LocalDate startDate, LocalDate endDate){
+		
+		PublicHolidayPlanning imposedDays =  employee.getImposedDayPlanning();
+		
+		if (imposedDays == null || imposedDays.getPublicHolidayDayList() == null || imposedDays.getPublicHolidayDayList().isEmpty()) { return 0; }
+		
+		List<PublicHolidayDay> imposedDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
+		
+		return imposedDayList.size();
 	}
 }

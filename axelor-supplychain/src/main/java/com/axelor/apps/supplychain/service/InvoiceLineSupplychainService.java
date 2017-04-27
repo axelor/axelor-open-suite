@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.google.inject.Inject;
 
@@ -32,9 +32,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineService  {
 	
 	@Inject
 	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
-			GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService, ProductService productService)  {
+			AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
 		
-		super(accountManagementService, currencyService, priceListService, generalService, analyticDistributionLineService, productService);
+		super(accountManagementService, currencyService, priceListService, appAccountService, analyticMoveLineService, productService);
 		
 	}
 	

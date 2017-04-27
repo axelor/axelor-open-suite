@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,27 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.db.Subscription;
+import com.google.inject.Inject;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
+	
+	@Inject
+	private AppService appService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
-
+		
 		SaleOrder copy = super.copy(entity, deep);
-
+		
+		if (!appService.isApp("supplychain")) {
+				return copy;
+		}
+		
 		copy.setShipmentDate(null);
 		copy.setDeliveryState(STATE_NOT_DELIVERED);
 		copy.setAmountInvoiced(null);

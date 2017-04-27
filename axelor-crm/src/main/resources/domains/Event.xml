@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -24,7 +24,7 @@
   	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
     
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
 	
@@ -59,6 +59,9 @@
   	
   	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
   	
+  	<!-- -Json fields -->
+	<string name="eventAttrs" title="Fields" json="true" />
+	
   	<extra-code>
       	<![CDATA[
       		// TYPE SELECT

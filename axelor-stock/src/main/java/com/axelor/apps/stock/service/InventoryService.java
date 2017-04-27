@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,16 +23,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -98,7 +99,7 @@ public class InventoryService {
 
 		inventory.setInventorySeq(this.getInventorySequence(location.getCompany()));
 
-		inventory.setDateT(date.toDateTimeAtStartOfDay());
+		inventory.setDateT(date.atStartOfDay(ZoneOffset.UTC));
 
 		inventory.setDescription(description);
 
@@ -242,6 +243,15 @@ public class InventoryService {
 		return null;
 
 	}
+	
+	@Transactional
+	public void realizeInventory(Inventory inventory) throws AxelorException {
+		this.generateStockMove(inventory);
+		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
+		
+		inventoryRepo.save(inventory);
+	}
+	
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
@@ -301,7 +311,7 @@ public class InventoryService {
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null);
+				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);

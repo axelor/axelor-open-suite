@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -30,7 +30,8 @@
 <!--     ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
+    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>
+    <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
@@ -43,8 +44,15 @@
    	<many-to-one name="cashRegisterTemplate" ref="com.axelor.apps.message.db.Template" title="Cashier email template"/>
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
    	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
-   	
-   	<!--  Onglet CFONB -->
+
+	<!-- Default Payment Modes -->
+	<many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Incoming Payment Mode"/>
+	<many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Outgoing Payment Mode"/>
+	
+	<!-- Default Payment Condition -->
+	<many-to-one name="defPaymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"/>
+
+	<!--  Onglet CFONB -->
 	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
    	
    	<!--  Doubtful Cust. -->
@@ -69,6 +77,7 @@
     <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="true"/>
    
    	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
+   	<string name="exportFileName" title="File name for payroll journal entries"/>
    	
    	<!-- Onglet Prélèvements -->
    	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="true"/>
@@ -99,16 +108,24 @@
   	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"  help="true"/>
     <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
   
-    <!-- Onglet Facturation -->
+    <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
-    <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice"/>
-    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"/>
+    <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
+    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
     
+      <!--  Bank orders page -->
+  	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
+   	<many-to-one name="internalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for internal order (unique company)"/>
+    <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (mulitple company)"/>
+  	
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
 	<integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select" default="1"/>
+
+	<!-- Accounting Daybook (Mode brouillard)-->
+	<boolean name="accountingDaybook" title="Accounting Daybook"/>
 	
 <!-- 	Sequence  -->
 	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
@@ -116,13 +133,16 @@
 	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
 	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
 	
+	<many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA Credit Transfers"/>
+	<many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA Direct Debits"/>
+	<many-to-one name="intCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International Credit Transfers"/>
+	<many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="International Direct Debits"/>
+	
 <!-- 	Invoice printing    -->
 	<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing ?"/>
   	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>
  	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
-  	<boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
-  	<boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
   	
   	<extra-code><![CDATA[
 	

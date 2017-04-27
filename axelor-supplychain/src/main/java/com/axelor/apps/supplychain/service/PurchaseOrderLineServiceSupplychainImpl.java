@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,11 +23,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -39,10 +41,13 @@ import com.google.inject.Inject;
 public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl  {
 	
 	@Inject
-	protected AnalyticDistributionLineService analyticDistributionLineService;
+	protected AnalyticMoveLineService analyticMoveLineService;
 	
 	@Inject
 	protected UnitConversionService unitConversionService;
+	
+	@Inject
+	protected AppAccountService appAccountService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceSupplychainImpl.class); 
 	
@@ -93,37 +98,41 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	}
 	
 	public PurchaseOrderLine computeAnalyticDistribution(PurchaseOrderLine purchaseOrderLine) throws AxelorException{
-		List<AnalyticDistributionLine> analyticDistributionLineList = purchaseOrderLine.getAnalyticDistributionLineList();
-		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			analyticDistributionLineList = analyticDistributionLineService.generateLines(purchaseOrderLine.getPurchaseOrder().getSupplierPartner(), purchaseOrderLine.getProduct(), purchaseOrderLine.getPurchaseOrder().getCompany(), purchaseOrderLine.getExTaxTotal());
-			if(analyticDistributionLineList != null){
-				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-					analyticDistributionLine.setPurchaseOrderLine(purchaseOrderLine);
-					analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
-					analyticDistributionLine.setDate(generalService.getTodayDate());
-				}
-				purchaseOrderLine.setAnalyticDistributionLineList(analyticDistributionLineList);
-			}
+		
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return purchaseOrderLine;  }
+		
+		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+		List<AnalyticMoveLine> analyticMoveLineList = purchaseOrderLine.getAnalyticMoveLineList();
+		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
+			analyticMoveLineList = analyticMoveLineService.generateLines(purchaseOrder.getSupplierPartner(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), purchaseOrderLine.getExTaxTotal());
+			purchaseOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
 		}
-		else if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-				analyticDistributionLine.setPurchaseOrderLine(purchaseOrderLine);
-				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
-				analyticDistributionLine.setDate(generalService.getTodayDate());
+		if(analyticMoveLineList != null)  {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+				this.updateAnalyticMoveLine(analyticMoveLine, purchaseOrderLine);
 			}
 		}
 		return purchaseOrderLine;
 	}
 	
+	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, PurchaseOrderLine purchaseOrderLine)  {
+		
+		analyticMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
+		analyticMoveLine.setDate(appBaseService.getTodayDate());
+		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+		
+	}
+	
 	public PurchaseOrderLine createAnalyticDistributionWithTemplate(PurchaseOrderLine purchaseOrderLine) throws AxelorException{
-		List<AnalyticDistributionLine> analyticDistributionLineList = null;
-		analyticDistributionLineList = analyticDistributionLineService.generateLinesWithTemplate(purchaseOrderLine.getAnalyticDistributionTemplate(), purchaseOrderLine.getExTaxTotal());
-		if(analyticDistributionLineList != null){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-				analyticDistributionLine.setPurchaseOrderLine(purchaseOrderLine);
+		List<AnalyticMoveLine> analyticMoveLineList = null;
+		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(purchaseOrderLine.getAnalyticDistributionTemplate(), purchaseOrderLine.getExTaxTotal());
+		if(analyticMoveLineList != null)  {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList)  {
+				analyticMoveLine.setPurchaseOrderLine(purchaseOrderLine);
 			}
 		}
-		purchaseOrderLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+		purchaseOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
 		return purchaseOrderLine;
 	}
 	

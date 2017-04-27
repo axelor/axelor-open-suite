@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,8 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface MinStockRulesService {
-	
+
+	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
@@ -35,7 +36,7 @@ public interface MinStockRulesService {
 	
 	public boolean useMinStockRules(LocationLine locationLine, MinStockRules minStockRules, BigDecimal qty, int type); 
 	
-	public MinStockRules getMinStockRules(Product product, Location location, int type); 
-	
-	
+	public MinStockRules getMinStockRules(Product product, Location location, int type);
+
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, MinStockRules minStockRules);
 }

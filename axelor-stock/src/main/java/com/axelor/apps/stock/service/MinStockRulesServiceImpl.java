@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,10 +19,10 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
@@ -46,10 +46,14 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	@Inject
 	public MinStockRulesServiceImpl() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 
+
+	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException{
+		this.generatePurchaseOrder(product, qty, locationLine, type);
+	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -78,6 +82,20 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 
 		}
 
+	}
+
+	@Override
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, MinStockRules minStockRules) {
+		BigDecimal qtyToOrder;
+		if (type == MinStockRulesRepository.TYPE_CURRENT) {
+			qtyToOrder = locationLine.getCurrentQty().subtract(qty);
+		}
+		else {
+			qtyToOrder = locationLine.getFutureQty().subtract(qty);
+		}
+		qtyToOrder = minStockRules.getMinQty().subtract(qtyToOrder);
+		qtyToOrder = qtyToOrder.max(minStockRules.getReOrderQty());
+		return qtyToOrder;
 	}
 
 

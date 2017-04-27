@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,16 +25,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -53,7 +54,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	private PriceListService priceListService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 
 	/**
@@ -91,9 +92,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		BigDecimal price = this.convertUnitPrice(product, taxLine, product.getSalePrice(), saleOrder);
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getSaleCurrency(), saleOrder.getCurrency(), price, saleOrder.getCreationDate())
-			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
 	}
 
@@ -108,7 +109,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 	public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
@@ -118,7 +119,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		Product product = saleOrderLine.getProduct();
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
@@ -163,9 +164,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 			
 			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			if(discounts != null){
-				int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
-				if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-						|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
+				int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
+				if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+						|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
 					
 					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
 					discounts.put("price", price);

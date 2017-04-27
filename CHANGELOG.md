@@ -162,6 +162,20 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - EMAIL : disabled the email sending
 - STOCK MOVE : cancel a stock move and update the sale order or purchase order
 
+
+# 3.0.3 (2017-02-28)
+## Bug Fixes
+	
+- Fixed issue on the method to get the next period
+- Changed display of CFONB field, by using nested, on AccontConfig
+- Restore client view wizard action
+- Updated translations of Invoice and SaleOrder report
+- Fixed issue on sequence assignment on SaleOrder
+- CRM Calls dashboard fix
+- Unused actions removed
+- Sequence onNew fix: nextNum removed
+
+
 # 3.0.2 (2015-09-09)
 ## Bug Fixes
 - Domain on Partner account in Invoice

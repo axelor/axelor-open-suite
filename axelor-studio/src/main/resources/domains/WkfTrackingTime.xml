@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="WkfTrackingTime" cachable="true">
+      <![CDATA[
+	 	It stores the total time spent on particular status. 
+	  ]]>
+      <many-to-one name="wkfTracking" ref="WkfTracking" required="true"/>
+      <string name="status" title="Status" required="true"/>
+      <decimal name="totalTimeHours" title="Status time(hours)"/>
+      <decimal name="totalTimeDays" title="Status time(days)" />
+  </entity>
+    
+ </domain-models>

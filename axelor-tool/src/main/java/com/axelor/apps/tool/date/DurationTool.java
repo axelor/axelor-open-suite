@@ -17,31 +17,30 @@
  */
 package com.axelor.apps.tool.date;
 
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class DurationTool{
 	
 	public static Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 		
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+		return Duration.between(startDateTime, endDateTime);
 	}
 	
 	
-	public static int getDaysDuration(Duration duration)  {
+	public static long getDaysDuration(Duration duration)  {
 		
-		return duration.toStandardDays().getDays();
+		return duration.toDays();
 	}
 	
-	public static int getHoursDuration(Duration duration)  {
+	public static long getHoursDuration(Duration duration)  {
 		
-		return duration.toStandardHours().getHours();
+		return duration.toHours();
 	}
 	
-	public static int getMinutesDuration(Duration duration)  {
+	public static long getMinutesDuration(Duration duration)  {
 		
-		return duration.toStandardMinutes().getMinutes();
+		return duration.toMinutes();
 	}
 	
 }

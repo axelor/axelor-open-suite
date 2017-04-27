@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +31,13 @@ import wslite.http.HTTPMethod;
 import wslite.http.HTTPRequest;
 import wslite.http.HTTPResponse;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -50,7 +50,7 @@ public class CurrencyConversionService {
 	private CurrencyRepository currencyRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	private CurrencyConversionLineRepository cclRepo;
@@ -60,7 +60,7 @@ public class CurrencyConversionService {
 		BigDecimal rate = new BigDecimal(-1);
 
 		LOG.debug("Currerncy conversion From: {} To: {}",new Object[] { currencyFrom,currencyTo});
-		String wsUrl = generalService.getGeneral().getCurrencyWsURL();
+		String wsUrl = appBaseService.getAppBase().getCurrencyWsURL();
 		if(wsUrl == null){
 			LOG.info("Currency WS URL not configured");
 			return rate;
@@ -107,16 +107,16 @@ public class CurrencyConversionService {
 	}
 
 	@Transactional
-	public void createCurrencyConversionLine(Currency currencyFrom, Currency currencyTo, LocalDate fromDate, BigDecimal rate, General general, String variations){
-		LOG.debug("Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, General: {}, Variations: {}",
-				   new Object[]{currencyFrom,currencyTo,fromDate,rate,general,variations});
+	public void createCurrencyConversionLine(Currency currencyFrom, Currency currencyTo, LocalDate fromDate, BigDecimal rate, AppBase appBase, String variations){
+		LOG.debug("Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, AppBase: {}, Variations: {}",
+				   new Object[]{currencyFrom,currencyTo,fromDate,rate,appBase,variations});
 
 		CurrencyConversionLine ccl = new CurrencyConversionLine();
 		ccl.setStartCurrency(currencyFrom);
 		ccl.setEndCurrency(currencyTo);
 		ccl.setFromDate(fromDate);
 		ccl.setExchangeRate(rate);
-		ccl.setGeneral(general);
+		ccl.setAppBase(appBase);
 		ccl.setVariations(variations);
 		cclRepo.save(ccl);
 

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 
-public class PartnerSaleService extends PartnerService{
+public class PartnerSaleService extends PartnerService {
+	
 	@Override
 	public List<Long> findPartnerMails(Partner partner){
 		List<Long> idList = new ArrayList<Long>();
@@ -53,7 +54,7 @@ public class PartnerSaleService extends PartnerService{
 		return idList;
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	public List<Long> findMailsFromSaleOrder(Partner partner){
 		String query = "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"+
 				" WHERE part.id = "+partner.getId()+" AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "+
@@ -62,7 +63,7 @@ public class PartnerSaleService extends PartnerService{
 		return JPA.em().createQuery(query).getResultList();
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	public List<Long> findMailsFromSaleOrderContact(Partner partner){
 		String query = "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"+
 				" WHERE part.id = "+partner.getId()+" AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "+

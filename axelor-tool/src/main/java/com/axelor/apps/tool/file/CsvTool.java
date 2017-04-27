@@ -23,8 +23,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 
 public final class CsvTool {
 

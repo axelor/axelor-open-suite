@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ebics="http://www.ebics.org/H003" targetNamespace="http://www.ebics.org/H003" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<annotation>
+		<documentation xml:lang="de">ebics_request.xsd ist das EBICS-Protokollschema für Anfragen.</documentation>
+		<documentation xml:lang="en">ebics_request.xsd is the appropriate EBICS protocol schema for standard requests.</documentation>
+	</annotation>
+	<include schemaLocation="ebics_types.xsd"/>
+	<include schemaLocation="ebics_orders.xsd"/>
+	<import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+	<element name="ebicsRequest">
+		<annotation>
+			<documentation xml:lang="de">Electronic Banking Internet Communication Standard des Zentralen Kreditausschusses (ZKA): Multibankfähige Schnittstelle zur internetbasierten Kommunikation.</documentation>
+			<documentation xml:lang="en">Electronic Banking Internet Communication Standard of the "Zentraler Kreditausschuss (ZKA)": multi-bank capable interface for internet-based communication.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="header">
+					<annotation>
+						<documentation xml:lang="de">enthält die technischen Transaktionsdaten.</documentation>
+						<documentation xml:lang="en">contains the transaction-driven data.</documentation>
+					</annotation>
+					<complexType>
+						<sequence>
+							<element name="static" type="ebics:StaticHeaderType">
+								<annotation>
+									<documentation xml:lang="de">enhält alle festen Headereinträge.</documentation>
+									<documentation xml:lang="en">contains the static header entries.</documentation>
+								</annotation>
+							</element>
+							<element name="mutable" type="ebics:MutableHeaderType">
+								<annotation>
+									<documentation xml:lang="de">enthält alle variablen Headereinträge.</documentation>
+									<documentation xml:lang="en">contains the mutable header entries.</documentation>
+								</annotation>
+							</element>
+						</sequence>
+						<attributeGroup ref="ebics:AuthenticationMarker"/>
+					</complexType>
+				</element>
+				<element ref="ebics:AuthSignature"/>
+				<element name="body">
+					<annotation>
+						<documentation xml:lang="de">enthält die Auftragsdaten, EU(s) und weitere Nutzdaten.</documentation>
+						<documentation xml:lang="en">contains order data, order signature(s) and further data referring to the current order.</documentation>
+					</annotation>
+					<complexType>
+						<sequence>
+							<annotation>
+								<documentation xml:lang="de"/>
+							</annotation>
+							<element ref="ds:X509Data" minOccurs="0" maxOccurs="0">
+								<annotation>
+									<documentation xml:lang="de">X.509-Daten des Teilnehmers.</documentation>
+									<documentation xml:lang="en">X.509 data of the user.</documentation>
+								</annotation>
+							</element>
+							<choice>
+								<annotation>
+									<documentation xml:lang="de">Welche Transaktionsphase?</documentation>
+									<documentation xml:lang="en">Which transaction phase?</documentation>
+								</annotation>
+								<sequence>
+									<annotation>
+										<documentation xml:lang="de">Initialisierungs- und Transferphase.</documentation>
+										<documentation xml:lang="en">Initialisation or transfer phase.</documentation>
+									</annotation>
+									<element name="PreValidation" minOccurs="0">
+										<annotation>
+											<documentation xml:lang="de">Daten zur Vorabprüfung; nur anzugeben in der Initialisierungsphase bei Uploads mit Auftragsattribut OZH (EUs + Auftragsdaten).</documentation>
+											<documentation xml:lang="en">Data sent for pre-validation; mandatory for initialisation phase during uploads using order attribute OZH (order signature(s) + order data).</documentation>
+										</annotation>
+										<complexType>
+											<complexContent>
+												<extension base="ebics:PreValidationRequestType">
+													<attributeGroup ref="ebics:AuthenticationMarker"/>
+												</extension>
+											</complexContent>
+										</complexType>
+									</element>
+									<element name="DataTransfer" type="ebics:DataTransferRequestType" minOccurs="0">
+										<annotation>
+											<documentation xml:lang="de">Transfer von Signatur- bzw. Auftragsdaten; nur bei Upload anzugeben.</documentation>
+											<documentation xml:lang="en">Transfer of signature or order data; mandatory for uploads only.</documentation>
+										</annotation>
+									</element>
+								</sequence>
+								<sequence>
+									<annotation>
+										<documentation xml:lang="de">Quittierungsphase nach Download.</documentation>
+										<documentation xml:lang="en">Receipt phase after download.</documentation>
+									</annotation>
+									<element name="TransferReceipt">
+										<annotation>
+											<documentation xml:lang="de">Quittierung des Transfers.</documentation>
+											<documentation xml:lang="en">Receipt of transfer.</documentation>
+										</annotation>
+										<complexType>
+											<complexContent>
+												<extension base="ebics:TransferReceiptRequestType">
+													<attributeGroup ref="ebics:AuthenticationMarker"/>
+												</extension>
+											</complexContent>
+										</complexType>
+									</element>
+								</sequence>
+							</choice>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+			<attributeGroup ref="ebics:VersionAttrGroup"/>
+			<anyAttribute namespace="##targetNamespace" processContents="strict"/>
+		</complexType>
+	</element>
+	<complexType name="StaticHeaderType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für den statischen EBICS-Header.</documentation>
+			<documentation xml:lang="en">Data type for the static EBICS header.</documentation>
+		</annotation>
+		<sequence>
+			<element name="HostID" type="ebics:HostIDType">
+				<annotation>
+					<documentation xml:lang="de">Hostname des Banksystems.</documentation>
+				</annotation>
+			</element>
+			<choice>
+				<annotation>
+					<documentation xml:lang="de">Transaktionsphase?</documentation>
+					<documentation xml:lang="en">Transaction phase?</documentation>
+				</annotation>
+				<sequence>
+					<annotation>
+						<documentation xml:lang="de">Initialisierungsphase.</documentation>
+						<documentation xml:lang="en">Initialisation phase.</documentation>
+					</annotation>
+					<element name="Nonce" type="ebics:NonceType">
+						<annotation>
+							<documentation xml:lang="de">Zufallswert; damit wird die Initialisierungsnachricht des Clients einzigartig.</documentation>
+							<documentation xml:lang="en">Random value, ensures the uniqueness of the client's message during initialisation phase.</documentation>
+						</annotation>
+					</element>
+					<element name="Timestamp" type="ebics:TimestampType">
+						<annotation>
+							<documentation xml:lang="de">aktueller Zeitstempel zur Begrenzung der serverseitigen Nonce-Speicherung.</documentation>
+							<documentation xml:lang="en">current timestamp, used to limit storage space for nonces on the server.</documentation>
+						</annotation>
+					</element>
+					<element name="PartnerID" type="ebics:PartnerIDType">
+						<annotation>
+							<documentation xml:lang="de">Kunden-ID des serverseitig administrierten Kunden.</documentation>
+							<documentation xml:lang="en">ID of the partner = customer, administered on the server.</documentation>
+						</annotation>
+					</element>
+					<element name="UserID" type="ebics:UserIDType">
+						<annotation>
+							<documentation xml:lang="de">Teilnehmer-ID des serverseitig zu diesem Kunden administrierten Teilnehmers.</documentation>
+							<documentation xml:lang="en">ID of the user that is assigned to the given customer, administered on the server.</documentation>
+						</annotation>
+					</element>
+					<element name="SystemID" type="ebics:UserIDType" minOccurs="0">
+						<annotation>
+							<documentation xml:lang="de">technische User-ID für Multi-User-Systeme.</documentation>
+							<documentation xml:lang="en">ID of the system for multi-user systems.</documentation>
+						</annotation>
+					</element>
+					<element name="Product" nillable="true" minOccurs="0">
+						<annotation>
+							<documentation xml:lang="de">Kennung des Kundenprodukts bzw. Herstellerkennung oder Name.</documentation>
+							<documentation xml:lang="en">software ID / manufacturer ID / manufacturer's name of the customer's software package.</documentation>
+						</annotation>
+						<complexType>
+							<simpleContent>
+								<extension base="ebics:ProductType">
+									<attribute name="Language" type="ebics:LanguageType" use="required">
+										<annotation>
+											<documentation xml:lang="de">Sprachkennzeichen der Kundenproduktversion (gemäß ISO 639).</documentation>
+											<documentation xml:lang="en">Language code of the customer's software package according to ISO 639.</documentation>
+										</annotation>
+									</attribute>
+									<attribute name="InstituteID" type="ebics:InstituteIDType" use="optional">
+										<annotation>
+											<documentation xml:lang="de">Kennung des Herausgebers des Kundenprodukts bzw. des betreuenden Kreditinstituts.</documentation>
+											<documentation xml:lang="en">ID of the manufacturer / financial institute providing support for the customer's software package.</documentation>
+										</annotation>
+									</attribute>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="OrderDetails" type="ebics:StaticHeaderOrderDetailsType">
+						<annotation>
+							<documentation xml:lang="de">Auftragsdetails.</documentation>
+							<documentation xml:lang="en">order details.</documentation>
+						</annotation>
+					</element>
+					<element name="BankPubKeyDigests">
+						<annotation>
+							<documentation xml:lang="de">Hashwerte der erwarteten öffentlichen Schlüssel (Verschlüsselung, Signatur, Authentifikation) des Kreditinstituts.</documentation>
+							<documentation xml:lang="en">Digest values of the expected public keys (authentication, encryption, signature) owned by the financial institute.</documentation>
+						</annotation>
+						<complexType>
+							<sequence>
+								<element name="Authentication">
+									<annotation>
+										<documentation xml:lang="de">Hashwert des Authentifikationsschlüssels.</documentation>
+										<documentation xml:lang="en">Digest value of the public authentication key.</documentation>
+									</annotation>
+									<complexType>
+										<simpleContent>
+											<extension base="ebics:PubKeyDigestType">
+												<attribute name="Version" type="ebics:AuthenticationVersionType" use="required">
+													<annotation>
+														<documentation xml:lang="de">Version des Authentifikationsverfahrens.</documentation>
+														<documentation xml:lang="en">Version of the algorithm used for authentication.</documentation>
+													</annotation>
+												</attribute>
+											</extension>
+										</simpleContent>
+									</complexType>
+								</element>
+								<element name="Encryption">
+									<annotation>
+										<documentation xml:lang="de">Hashwert des Verschlüsselungsschlüssels.</documentation>
+										<documentation xml:lang="en">Digest value of the public encryption key.</documentation>
+									</annotation>
+									<complexType>
+										<simpleContent>
+											<extension base="ebics:PubKeyDigestType">
+												<attribute name="Version" type="ebics:EncryptionVersionType" use="required">
+													<annotation>
+														<documentation xml:lang="de">Version des Verschlüsselungsverfahrens.</documentation>
+														<documentation xml:lang="en">Version of the algorithm used for encryption.</documentation>
+													</annotation>
+												</attribute>
+											</extension>
+										</simpleContent>
+									</complexType>
+								</element>
+								<element name="Signature" minOccurs="0" maxOccurs="0">
+									<annotation>
+										<documentation xml:lang="de">Hashwert des Signaturschlüssels.</documentation>
+										<documentation xml:lang="en">Digest value of the public signature key.</documentation>
+									</annotation>
+									<complexType>
+										<simpleContent>
+											<extension base="ebics:PubKeyDigestType">
+												<attribute name="Version" type="ebics:SignatureVersionType" use="required">
+													<annotation>
+														<documentation xml:lang="de">Version des Signaturverfahrens.</documentation>
+														<documentation xml:lang="en">Version of the algorithm used for signature creation.</documentation>
+													</annotation>
+												</attribute>
+											</extension>
+										</simpleContent>
+									</complexType>
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+					<element name="SecurityMedium" type="ebics:SecurityMediumType">
+						<annotation>
+							<documentation xml:lang="de">Angabe des Sicherheitsmediums, das der Kunde verwendet.</documentation>
+							<documentation xml:lang="en">Classification of the security medium used by the customer.</documentation>
+						</annotation>
+					</element>
+					<element name="NumSegments" type="ebics:NumSegmentsType" minOccurs="0">
+						<annotation>
+							<documentation xml:lang="de">Gesamtsegmentanzahl für diese Transaktion; nur bei Uploads anzugeben.</documentation>
+							<documentation xml:lang="en">Total number of segments for this transaction; mandatory for uploads only.</documentation>
+						</annotation>
+					</element>
+					<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+				<sequence>
+					<annotation>
+						<documentation xml:lang="de">Transfer- und Quittierungsphase.</documentation>
+						<documentation xml:lang="en">Transfer or receipt phase.</documentation>
+					</annotation>
+					<element name="TransactionID" type="ebics:TransactionIDType">
+						<annotation>
+							<documentation xml:lang="de">eindeutige, technische Transaktions-ID; wird vom Server vergeben.</documentation>
+							<documentation xml:lang="en">unique transaction ID, provided by the server.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</choice>
+		</sequence>
+	</complexType>
+	<complexType name="MutableHeaderType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für den variablen EBICS-Header.</documentation>
+			<documentation xml:lang="en">Data type for the mutable EBICS header.</documentation>
+		</annotation>
+		<sequence>
+			<element name="TransactionPhase" type="ebics:TransactionPhaseType">
+				<annotation>
+					<documentation xml:lang="de">Phase, in der sich die Transaktion gerade befindet; wird bei jedem Transaktionsschritt vom Client gesetzt und vom Server übernommen.</documentation>
+					<documentation xml:lang="en">Current phase of the transaction; this information is provided by the client for each step of the transaction, and the server adopts the setting.</documentation>
+				</annotation>
+			</element>
+			<element name="SegmentNumber" nillable="true" minOccurs="0">
+				<annotation>
+					<documentation xml:lang="de">enthält die Nummer des aktuellen Segments, welches gerade übertragen oder angefordert wird; nur anzugeben bei TransactionPhase=Transfer.</documentation>
+					<documentation xml:lang="en">contains the number of the segment which is currently being transmitted or requested; mandatory for transaction phase 'Transfer' only.</documentation>
+				</annotation>
+				<complexType>
+					<simpleContent>
+						<extension base="ebics:SegmentNumberType">
+							<attribute name="lastSegment" type="boolean" use="optional" default="false">
+								<annotation>
+									<documentation xml:lang="de">Ist dies das letzte Segment der Übertragung?</documentation>
+									<documentation xml:lang="en">Is this segment meant to be the last one regarding this transmission?</documentation>
+								</annotation>
+							</attribute>
+						</extension>
+					</simpleContent>
+				</complexType>
+			</element>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="StaticHeaderOrderDetailsType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für Auftragsdetails im statischen EBICS-Header.</documentation>
+			<documentation xml:lang="en">Data type for order details stored in the static EBICS header.</documentation>
+		</annotation>
+		<sequence>
+			<element name="OrderType">
+				<annotation>
+					<documentation xml:lang="de">Auftragsart.</documentation>
+					<documentation xml:lang="en">type code of the order.</documentation>
+				</annotation>
+				<complexType>
+					<simpleContent>
+						<extension base="ebics:OrderTBaseType"/>
+					</simpleContent>
+				</complexType>
+			</element>
+			<element name="OrderID" type="ebics:OrderIDType" minOccurs="0">
+				<annotation>
+					<documentation xml:lang="de">Auftragsnummer für Sendeaufträge gemäß DFÜ-Abkommen.</documentation>
+					<documentation xml:lang="en">ID of the (upload) order, formatted in accordance with the document "DFÜ-Abkommen".</documentation>
+				</annotation>
+			</element>
+			<element name="OrderAttribute" type="ebics:OrderAttributeType">
+				<annotation>
+					<documentation xml:lang="de">Auftragsattribut.</documentation>
+					<documentation xml:lang="en">attribute describing the order contents.</documentation>
+				</annotation>
+			</element>
+			<element ref="ebics:OrderParams"/>
+		</sequence>
+	</complexType>
+</schema>

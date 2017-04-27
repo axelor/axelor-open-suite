@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <menu name="menu-root-demo-expense" title="Note De Frais" isParent="T" icon="fa-money" iconBackground="blue" order="-80"/>
+  <menu name="menu-demo-expense-dashboard" title="Rapports" parent="menu-root-demo-expense"  order="15" actionBuilder="menu.demo.expense.dashboard" />
+
+</menus>

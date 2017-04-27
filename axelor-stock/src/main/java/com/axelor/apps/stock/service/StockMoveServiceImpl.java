@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +32,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
@@ -65,7 +67,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	private  StockMoveLineRepository stockMoveLineRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
@@ -73,7 +75,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Inject
 	public StockMoveServiceImpl() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 
 	}
 	
@@ -147,9 +149,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate, String description) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
 
-		return this.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate, description);
+		return this.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate, description, shipmentMode, freightCarrierMode);
 	}
 
 
@@ -163,7 +165,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
@@ -176,6 +178,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setFromLocation(fromLocation);
 		stockMove.setToLocation(toLocation);
 		stockMove.setDescription(description);
+		stockMove.setShipmentMode(shipmentMode);
+		stockMove.setFreightCarrierMode(freightCarrierMode);
 
 		return stockMove;
 	}
@@ -210,7 +214,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException  {
 
-		LOG.debug("Plannification du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
+		LOG.debug("Planification du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 
 		Location fromLocation = stockMove.getFromLocation();
 		Location toLocation = stockMove.getToLocation();
@@ -444,6 +448,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){

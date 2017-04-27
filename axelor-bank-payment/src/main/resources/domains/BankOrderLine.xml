@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankOrderLine" lang="java">
+  
+	<string name="sequence" title="Sequence" namecolumn="true" readonly="true"/>  
+	<integer name="counter" title="Counter"/>
+  	<many-to-one name="bankOrder" ref="BankOrder" title="Bank Order"/>
+  	<many-to-one name="receiverCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
+	<many-to-one name="receiverBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
+	<decimal name="bankOrderAmount" title="Bank order amount" required="true"/>
+	<decimal name="companyCurrencyAmount" title="Company currency amount"/>
+	<many-to-one name="bankOrderCurrency" ref="com.axelor.apps.base.db.Currency" title="Bank order currency"/>
+	<date name="bankOrderDate" title="Bank order Date"/>  	
+	
+	<string name="receiverReference" title="Reference"/>
+	<string name="receiverLabel" title="Label"/>
+	<many-to-one name="senderMove" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+	<many-to-one name="receiverMove" ref="com.axelor.apps.account.db.Move" title="Receiver move" readonly="true"/>
+	
+<!-- 	REJECT -->
+  	<boolean name="isRejected" title="Rejected"/>
+  	<date name="rejectDate" title="Rejection date"/>
+  	<many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject Reason"/>
+  	<decimal name="rejectAmount" title="Amount Rejected"/>
+  	<many-to-one name="rejectMove" ref="com.axelor.apps.account.db.Move" title="Reject Move" readonly="true"/>
+  	
+<!--   	International bank order -->
+	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Economic reason"/>
+  	<integer name="feesImputationModeSelect" title="Fees imputation" selection="bankpayment.bank.order.line.fees.imputation.mode.select"/>
+  	<integer name="paymentModeSelect" title="Payment Mode" selection="bankpayment.bank.order.line.payment.mode.select"/>
+  	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Receiver country"/>
+  	
+  	<string name="paymentReasonLine1" max="35"/>
+  	<string name="paymentReasonLine2" max="35"/>
+  	<string name="paymentReasonLine3" max="35"/>
+  	<string name="paymentReasonLine4" max="35"/>
+  	<string name="specialInstructionsLine1" max="35"/>
+  	<string name="specialInstructionsLine2" max="35"/>
+  	<string name="specialInstructionsLine3" max="35"/>
+  	
+  	
+  	
+  	<extra-code>
+  		<![CDATA[
+  			
+  		// FEES IMPUTATION MODE SELECT
+		public static final int FEES_IMPUTATION_MODE_RECEIVER = 13;
+		public static final int FEES_IMPUTATION_MODE_SHARED = 14;
+		public static final int FEES_IMPUTATION_MODE_SENDER = 15;
+  		
+  		// FEES IMPUTATION MODE SELECT
+		public static final int PAYMENT_MODE_TRANSFER_OR_OTHER = 0;
+		public static final int PAYMENT_MODE_CHEQUE = 1;
+  		
+  		
+  		]]>
+  	</extra-code>
+  
+  	
+  </entity>
+  
+  
+
+</domain-models>

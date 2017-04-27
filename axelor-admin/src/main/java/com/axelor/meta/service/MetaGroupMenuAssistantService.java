@@ -33,10 +33,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
-import org.joda.time.LocalDateTime;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.app.AppSettings;
 import com.axelor.auth.db.Group;
@@ -52,6 +50,8 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 
 public class MetaGroupMenuAssistantService {
 
@@ -73,7 +73,7 @@ public class MetaGroupMenuAssistantService {
 	private String getFileName(MetaGroupMenuAssistant groupMenuAssistant){
 
 		String userCode = groupMenuAssistant.getCreatedBy().getCode();
-		String dateString = LocalDateTime.now().toString("yyyyMMddHHmm");
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 		String fileName = "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
 
 		return fileName;

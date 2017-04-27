@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
@@ -12,9 +12,8 @@
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company" help="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" help="true"/>
     <datetime name="today" title="Today date" tz="true" help="true"/>
-    <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team"  title="Teams"/>
-    <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team" help="true"/>
-    
+    <many-to-many name="teamSet" ref="com.axelor.team.db.Team"  title="Teams" mappedBy="members"/>
+    <many-to-one name="activeTeam" ref="com.axelor.team.db.Team"  title="Active Team" help="true"/>
     
     <string name="fullName" namecolumn="true" search="partner,name" title="Partner name">
     	<![CDATA[

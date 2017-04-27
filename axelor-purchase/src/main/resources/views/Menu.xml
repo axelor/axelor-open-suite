@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
-	<menuitem name="sc-root-purchase" title="Purchases" order="-105" 
-		icon="fa-shopping-cart" groups="admins,ERP" icon-background="#b6473f"/>
-		
-	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="-200"
+	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
+		icon="fa-shopping-cart"  icon-background="#b6473f"/>
+	
+	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="5"
 		title="Suppliers" action="sc.root.purchase.suppliers" />
 
 	<action-view name="sc.root.purchase.suppliers" title="Suppliers"
@@ -17,14 +17,13 @@
 		<view type="form" name="partner-supplier-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact = false AND self.isSupplier = true</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isSupplier" expr="true"/>
 	</action-view>
 	
-	<menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="-150"
+	<menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="10"
 		title="Contacts" action="sc.root.purchase.contacts" />
 
 	<action-view name="sc.root.purchase.contacts" title="Contacts"
@@ -35,50 +34,158 @@
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isSupplier = true</domain>
 	</action-view>
-		
-	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" order="-3" 
-		groups="admins,ERP" action="sc.root.purchase.order.new" parent="sc-root-purchase"/>
-		
-	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
-		model="com.axelor.apps.purchase.db.PurchaseOrder" >
-		<view type="form" name="purchase-order-form" />
-		<view type="grid" name="purchase-order-grid" />
-	</action-view>	
 	
-	<menuitem name="sc-root-purchase-orders" title="Purchase orders" order="-2" 
-		groups="admins,ERP" action="sc.root.purchase.orders" parent="sc-root-purchase"/>
+	<menuitem name="sc-root-purchase-products" parent="sc-root-purchase" order="15"
+		title="Products &amp; services" action="sc.root.purchase.products" />
 
-	<action-view name="sc.root.purchase.orders" title="Purchase orders"
+	<action-view name="sc.root.purchase.products" title="Products &amp; services"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false AND self.purchasable = true</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromPurchase" expr="eval:true" />
+	</action-view>
+	
+		
+	<menuitem name="sc-root-purchase-quotations" title="Quotations" order="20" 
+		 action="sc.root.purchase.quotations" parent="sc-root-purchase"/>
+		
+	<action-view name="sc.root.purchase.quotations" title="Quotations"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
-		<view type="grid" name="purchase-order-grid" />
+		<view type="cards" name="purchase-order-cards" />
+		<view type="grid" name="purchase-order-quotation-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchase-order-filters"/>
+		<domain>self.statusSelect &lt; 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
-	<menuitem name="sc-root-purchase-orders-lines" title="Purchase orders lines" order="-1" 
-		groups="admins,ERP" action="sc.root.purchase.orders.lines" parent="sc-root-purchase"/>
+	<menuitem name="sc-root-purchase-orders" title="Purchase orders" order="25" 
+		 action="sc.root.purchase.orders" parent="sc-root-purchase"/>
 
-	<action-view name="sc.root.purchase.orders.lines" title="Purchase orders lines"
-		model="com.axelor.apps.purchase.db.PurchaseOrderLine" >
-		<view type="grid" name="purchase-order-line-menu-grid" />
-		<view type="form" name="purchase-order-line-menu-form" />
-	</action-view>	
-	
-	<menuitem name="purchase-order-merge" parent="sc-root-purchase"
-    	title="Merge purchase orders" action="purchase.order.merge" groups="admins,ERP"/> 
-
-	<action-view name="purchase.order.merge" title="Merge purchase orders" model="com.axelor.apps.base.db.Wizard">
-	    <view type="form" name="purchase-order-merge-form"/>
+	<action-view name="sc.root.purchase.orders" title="Purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder" >
+		<view type="cards" name="purchase-order-cards" />
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<view-param name="search-filters" value="purchase-order-filters"/>
+		<domain>self.statusSelect &gt; 2</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
-	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"/>
+	
+	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings" order="200"/>
 
 	<menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report" 
 		title="Suppliers Map" action="action-show-suppliers-on-map-page" order="10"/>		
 		
 	
+	<!-- Purchase request menus -->
+	<menuitem name="sc-root-purchase-request" parent="sc-root-purchase" if="__config__.app.isApp('purchase-request')"
+		title="Purchase requests" order="310" icon="fa-bullhorn" icon-background="#b6473f" />
+		
+	<menuitem name="sc-root-purchase-request-all" parent="sc-root-purchase-request"
+		title="All purchase requests" action="sc.root.purchase.request.all" order="1"/>
+		
+	<action-view name="sc.root.purchase.request.all" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="All purchase requests">
+		<view type="grid" name="purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+	</action-view>
 	
+	<menuitem name="sc-root-purchase-request-all-sent" parent="sc-root-purchase-request"
+		title="All requests sent" action="sc.root.purchase.request.all.sent" order="4" />
+		
+	<action-view name="sc.root.purchase.request.all.sent" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="All requests sent">
+		<view type="grid" name="sent-purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.statusSelect = 2</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-request-all-accepted" parent="sc-root-purchase-request"
+		title="All requests accepted" action="sc.root.purchase.request.all.accepted" order="5" />
+		
+	<action-view name="sc.root.purchase.request.all.accepted" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="All requests accepted">
+		<view type="grid" name="accepted-purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.statusSelect = 3</domain>
+	</action-view>
+	
+	<!-- Purchase request menus end  -->
+	
+	<!-- demandeur menus -->
+	
+	<!-- <menuitem name="sc-purchase-request" title="Purchase requests" order="-105"  if="__config__.app.isApp('purchase')"
+		icon="fa-shopping-cart" groups="demandeur" icon-background="#b6473f"/>
+		
+	<menuitem name="sc-root-purchase-request-my-request-new" parent="sc-purchase-request"
+		title="New Request" action="sc.root.purchase.request.my.request.new" order="2" groups="demandeur" />
+		
+	<action-view name="sc.root.purchase.request.my.request.new" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="New Request ">
+		<view type="form" name="purchase-request-form"/>
+		<view type="grid" name="purchase-request-grid"/>
+		<domain>self.createdBy = :__user__</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-request-my-current-cart" parent="sc-purchase-request"
+		title="My current cart" action="sc.root.purchase.request.my.current.cart" order="3"  groups="demandeur" />
+		
+	<action-view name="sc.root.purchase.request.my.current.cart" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="My current cart">
+		<view type="grid" name="my-current-cart-purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.createdBy = :__user__ and self.statusSelect = 1</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-request-my-sent" parent="sc-purchase-request" groups="demandeur"
+		title="My sent requests" action="sc.root.purchase.request.my.sent" order="4" />
+		
+	<action-view name="sc.root.purchase.request.my.sent" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="My sent requests">
+		<view type="grid" name="sent-purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.createdBy = :__user__ and self.statusSelect = 2</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-request-my-accepted" parent="sc-purchase-request" groups="demandeur"
+		title="My accepted requests" action="sc.root.purchase.request.my.accepted" order="5" />
+		
+	<action-view name="sc.root.purchase.request.my.accepted" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="My accepted requests">
+		<view type="grid" name="purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.createdBy = :__user__ and self.statusSelect = 3</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-request-my-refused" parent="sc-purchase-request" groups="demandeur"
+		title="My refused requests" action="sc.root.purchase.request.my.refused" order="6" />
+		
+	<action-view name="sc.root.purchase.request.my.refused" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="My refused requestes">
+		<view type="grid" name="purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.createdBy = :__user__ and self.statusSelect = 7</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-request-my" parent="sc-purchase-request"
+		title="All my requests" action="sc.root.purchase.request.my" order="7" groups="demandeur" />
+		
+	<action-view name="sc.root.purchase.request.my" model="com.axelor.apps.purchase.db.PurchaseRequest"
+		title="All my requests">
+		<view type="grid" name="purchase-request-grid"/>
+		<view type="form" name="purchase-request-form"/>
+		<domain>self.createdBy = :__user__</domain>
+	</action-view>  -->
+	
+	<!--demandeur menus end  -->
+			
 	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
 		title="Configuration" order="300"/>
 		
@@ -90,6 +197,15 @@
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="purchase-price-list-form" />
 		<domain>self.typeSelect = 2</domain>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-conf-purchase-request-creator" parent="sc-root-purchase-conf" if="__config__.app.isApp('purchase-request')"
+		title="Purchase request creator" action="sc.root.purchase.conf.purchase.request.creator" />
+
+	<action-view name="sc.root.purchase.conf.purchase.request.creator" title="Purchase request creator"
+		model="com.axelor.apps.purchase.db.PurchaseRequestCreator" >
+		<view type="grid" name="purchase-request-creator-grid" />
+		<view type="form" name="purchase-request-creator-form" />
 	</action-view>
 
 <!-- ADMINISTRATION -->
@@ -104,26 +220,15 @@
 		<view type="form" name="purchase-batch-form"/>
 	</action-view>
 	
-	
-	<menuitem name="admin-root-conf-purchase-config" parent="admin-root-conf"
-		title="Purchase configurations" action="admin.root.conf.purchase.config" />
-		
-	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
-		model="com.axelor.apps.purchase.db.PurchaseConfig" >
-		<view type="grid" name="purchase-config-grid" />
-		<view type="form" name="purchase-config-form" />
-	</action-view>
-
-
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-purchase" title="Purchases" groups="admins,ERP" top="true" left="false" order="-150"/>
+	<menuitem name="top-purchase" title="Purchases"  top="true" left="false" order="-150" if="__config__.app.isApp('purchase')"/>
 	
-	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" top="true" action="sc.root.purchase.order.new"/>
-	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" order="-70" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		
+<!-- 	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" top="true" action="sc.root.purchase.order.new"/> -->
+	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" order="-70" action="sc.root.purchase.orders" parent="top-purchase"  top="true" left="false"/>		
 	
-	<menuitem name="top-purchase-quotes" title="View RFQ" order="-90" action="top.purchase.quotes" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-purchase-quotes" title="View RFQ" order="-90" action="top.purchase.quotes" parent="top-purchase"  top="true" left="false"/>		
 	
 	<action-view name="top.purchase.quotes" title="RFQ"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
@@ -133,7 +238,7 @@
 		<domain>self.statusSelect in (2,3) </domain>
 	</action-view>	
 	
-	<menuitem name="top-purchase-orders" order="-80" title="View Orders" action="top.purchase.orders" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-purchase-orders" order="-80" title="View Orders" action="top.purchase.orders" parent="top-purchase"  top="true" left="false"/>		
 	
 	<action-view name="top.purchase.orders" title="Orders"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
@@ -142,6 +247,17 @@
 		<view-param name="search-filters" value="purchase-order-filters"/>
 		<domain>self.statusSelect in (4,5) </domain>
 	</action-view>
+	
+	<menuitem name="top-purchase-request-new" order="-70" title="Create new purchase request" action="top.purchase.request.new" 
+		parent="top-purchase"  top="true" left="false" if="__config__.app.isApp('purchase-request')"/>		
+	
+	<action-view name="top.purchase.request.new" title="Create new purchase request"
+		model="com.axelor.apps.purchase.db.PurchaseRequest" >
+		<view type="form" name="purchase-request-form" />
+		<view type="grid" name="purchase-request-grid" />
+	</action-view>
+	
+<!-- 	<menuitem name="top-purchase-reqeust-my-current-cart" order="-65" title="My current cart" action="sc.root.purchase.request.my.current.cart" parent="top-purchase"  top="true" left="false"/>		 -->
 	
 	
 	<menuitem name="menu-purchase-dashboard-1" parent="sc-root-purchase-report"  

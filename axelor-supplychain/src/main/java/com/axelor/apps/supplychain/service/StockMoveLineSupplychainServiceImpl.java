@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,7 +59,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 		else{
 			if(stockMove.getSaleOrder() != null){
 				taxLine = accountManagementService.getTaxLine(
-						generalService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
+						appBaseService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
 						stockMove.getSaleOrder().getClientPartner().getFiscalPosition(), false);
 				unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
 				PriceList priceList = stockMove.getSaleOrder().getPriceList();
@@ -74,7 +74,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 			}
 			else{
 				taxLine = accountManagementService.getTaxLine(
-						generalService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
+						appBaseService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
 						stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(), true);
 				unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
 				PriceList priceList = stockMove.getPurchaseOrder().getPriceList();

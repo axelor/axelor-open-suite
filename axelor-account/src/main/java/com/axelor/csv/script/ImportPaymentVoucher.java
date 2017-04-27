@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import java.util.Map;
 
+import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -34,13 +35,26 @@ public class ImportPaymentVoucher {
 	PaymentVoucherConfirmService paymentVoucherConfirmService;
 	
 	
+	@SuppressWarnings("rawtypes")
 	public Object importPaymentVoucher(Object bean, Map values) {
 		assert bean instanceof PaymentVoucher;
 		try{
 			PaymentVoucher paymentVoucher = (PaymentVoucher)bean;
-			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
-			if(paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED)
+			paymentVoucherLoadService.searchDueElements(paymentVoucher);
+			if(paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED)  {
+				
+				int sequence = 1;
+				
+				for(PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList())  {
+					paymentVoucher.addPayVoucherElementToPayListItem(paymentVoucherLoadService.createPayVoucherElementToPay(payVoucherDueElement, sequence++));
+					
+					// Remove the line from the due elements lists
+					paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
+				}
+				
 				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
+				
+			}
 			return paymentVoucher;
 		}catch(Exception e){
 	            e.printStackTrace();

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,16 +21,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -39,19 +39,19 @@ public class RejectImportService{
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected CfonbImportService cfonbImportService;
 	protected InterbankCodeLineRepository interbankCodeLineRepo;
 	
-	protected DateTime todayTime;
+	protected ZonedDateTime todayTime;
 
 	@Inject
-	public RejectImportService(GeneralService generalService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
+	public RejectImportService(AppAccountService appAccountService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
 		
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.cfonbImportService = cfonbImportService;
 		this.interbankCodeLineRepo = interbankCodeLineRepo;
-		this.todayTime = this.generalService.getTodayDateTime();
+		this.todayTime = this.appAccountService.getTodayDateTime();
 
 	}
 
@@ -164,15 +164,15 @@ public class RejectImportService{
 	public InterbankCodeLine getInterbankCodeLine(String reasonCode, int interbankCodeOperation)  {
 		switch(interbankCodeOperation)  {
 		case 0:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 1:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 2:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 3:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 4:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'", reasonCode, generalService.getGeneral().getChequeInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'", reasonCode, appAccountService.getAppAccount().getChequeInterbankCode()).fetchOne();
 		default:
 			return null;
 		}
@@ -185,7 +185,7 @@ public class RejectImportService{
 	 * @return
 	 */
 	public LocalDate createRejectDate(String dateReject)  {
-		return new LocalDate(
+		return LocalDate.of(
 				Integer.parseInt(dateReject.substring(4, 6))+2000,
 				Integer.parseInt(dateReject.substring(2, 4)),
 				Integer.parseInt(dateReject.substring(0, 2)));

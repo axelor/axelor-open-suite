@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -43,6 +42,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -67,7 +67,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	private PartnerRepository partnerRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppPurchaseService appPurchaseService;
 	
 	@Inject
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -122,10 +122,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	/**
-	 * Calculer le montant d'une commande.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
+	 * Compute the purchase order total amounts
 	 *
 	 * @param purchaseOrder
 	 * @throws AxelorException
@@ -136,21 +133,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setExTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
-
-		for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
-
-			// Dans la devise de la comptabilité du tiers
-			purchaseOrder.setExTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrderLineVat.getExTaxBase() ));
-			purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().add( purchaseOrderLineVat.getTaxTotal() ));
-			purchaseOrder.setInTaxTotal(purchaseOrder.getInTaxTotal().add( purchaseOrderLineVat.getInTaxTotal() ));
-
-		}
-
+		
 		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-			//Into company currency
+			purchaseOrder.setExTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrderLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
 			purchaseOrder.setCompanyExTaxTotal(purchaseOrder.getCompanyExTaxTotal().add( purchaseOrderLine.getCompanyExTaxTotal() ));
 		}
+		
+		for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
 
+			// In the purchase order currency
+			purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().add( purchaseOrderLineVat.getTaxTotal() ));
+
+		}
+		
+		purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrder.getTaxTotal() ));
+		
 		logger.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
 			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
 
@@ -269,7 +268,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}
 		purchaseOrderRepo.save(purchaseOrder);
-		if (generalService.getGeneral().getManagePurchaseOrderVersion()){
+		if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()){
 			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
 		}
 	}

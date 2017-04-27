@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
@@ -30,8 +30,8 @@
     </action-record>
     
     <action-validate name="action-civil-year-check-date">
-		<error message="Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}." if="id == null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
- 		<error message="Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}." if="id != null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+		<error message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}." if="id == null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+ 		<error message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}." if="id != null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
 	</action-validate>
 	
     <action-validate name="action-year-check-date">

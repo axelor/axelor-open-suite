@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
     	<hilite color="danger" if="$get('move.statusSelect') == 1"/>
@@ -53,8 +53,8 @@
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
-    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
-			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
+			<panel-related field="AnalyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
     </form>
     
@@ -74,6 +74,7 @@
 	        <field name="amountPaid"/>
 	        <field name="amountRemaining"/>
 	        <field name="description" showIf="$number(credit) &gt; 0.00"/>
+	        <field name="origin" showIf="$number(credit) &gt; 0.00"/>
 	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
 	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 	        <field name="interbankCodeLine" showIf="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
@@ -89,8 +90,8 @@
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverableStatusSelect" /> 
         		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
-        		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+        		<button name="passInIrrecoverable" title="Shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 	    	
 		    <panel name="others" title="Others" readonly="true">
@@ -115,6 +116,7 @@
 				<field name="amountRemaining" colSpan="3"/>
 				<field name="amountPaid" colSpan="3"/>
 				<field name="description" colSpan="12" />
+				<field name="origin" colSpan="12" />
 			</panel>
 			<panel name="rejectReason" title="Reject reason" colSpan="12" showIf="interbankCodeLine">
 				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
@@ -158,6 +160,7 @@
 	        <field name="passageReason"/>
 	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 	        <field name="description"/>
+	        <field name="origin" />
 	        <field name="reimbursementstatusSelect"/>
         </panel>
         
@@ -170,8 +173,8 @@
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>
         		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
-        		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+        		<button name="passInIrrecoverable" title="Shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 			
 		    <panel name="others" title="Others"  readonly="true">
@@ -183,7 +186,7 @@
     </form>
     
     <action-attrs name="action-move-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
     
     <action-group name="action-account-move-line-onnew-group">
@@ -231,9 +234,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">
-		<attribute for="account" name="domain" if="_parent == null || _parent._model != 'com.axelor.apps.account.db.Move'"
+		<attribute for="account" name="domain" if="_parent == null || _parent?._model != 'com.axelor.apps.account.db.Move'"
 			expr="eval: &quot; self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;" />
-		<attribute for="account" name="domain" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.Move'"
+		<attribute for="account" name="domain" if="_parent != null &amp;&amp; _parent?._model == 'com.axelor.apps.account.db.Move'"
 			expr="eval: &quot; self.company.id = ${_parent?.company?.id} AND (self.accountType.id IN (${(_parent?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(_parent?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;" />
 	</action-attrs>
 	

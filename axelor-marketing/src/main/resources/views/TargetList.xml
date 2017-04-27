@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="target-list-grid" title="Target lists" model="com.axelor.apps.marketing.db.TargetList">
+        <field name="name"/>
+    </grid>
+    
+    <form name="target-list-form" title="Target list" model="com.axelor.apps.marketing.db.TargetList" width="large">
+		<panel name="main" >
+		  <field name="name"/>
+		  <button name="applyQuery" title="Apply query" colSpan="3" onClick="action-target-list-method-apply-query"/>
+		  <panel title="Partners" colSpan="12">
+		  	 <field name="partnerFilterList" colSpan="12" layout="table">
+		  	 	<editor x-show-titles="false">
+	            <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field"/>
+	            <field name="targetField" colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-details"/>
+	            <field name="filterOperator"  colSpan="3" onSelect="action-filter-operator-domain" widget="SuggestBox" required="true"/>
+	            <field name="value" type="string" hideIf="metaField == null || isParameter || 'TRUE,FALSE,null,notNull,empty,notEmpty'.indexOf(filterOperator.value) &gt; -1"  requiredIf="!isParameter &amp;&amp; 'TRUE,FALSE,null,notNull,empty,notEmpty'.indexOf(filterOperator.value) &lt; 0" colSpan="3"/>
+	            <field name="filterOperator.value" hidden="true" />
+	            <field name="targetType" hidden="true" />
+	            <field name="metaField.relationship" hidden="true" />
+	          </editor>
+		  	 </field>
+		  	<field name="partnerTypeSelect" />
+		  	<panel-related field="partnerSet" colSpan="12" onSelect="action-target-list-lead-partner-set-domain"/>
+		  </panel>
+		  <panel title="Leads" colSpan="12">
+		  	<field name="leadFilterList" colSpan="12" layout="table">
+		  	 	<editor x-show-titles="false">
+	            <field name="metaField" onSelect="action-target-list-lead-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field"/>
+	            <field name="targetField" colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-details"/>
+	            <field name="filterOperator"  colSpan="3" onSelect="action-filter-operator-domain" widget="SuggestBox" required="true"/>
+	            <field name="value" type="string" hideIf="metaField == null || isParameter || 'TRUE,FALSE,null,notNull,empty,notEmpty'.indexOf(filterOperator.value) &gt; -1"  requiredIf="!isParameter &amp;&amp; 'TRUE,FALSE,null,notNull,empty,notEmpty'.indexOf(filterOperator.value) &lt; 0" colSpan="3"/>
+	            <field name="filterOperator.value" hidden="true" />
+	            <field name="targetType" hidden="true" />
+	            <field name="metaField.relationship" hidden="true" />
+	          </editor>
+		  	 </field>
+		  	<panel-related field="leadSet" colSpan="12"/>
+		  </panel>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-target-list-partner-filters-field-domain">
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.name = 'Partner' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;"/>
+  	</action-attrs>
+  	
+  	<action-attrs name="action-target-list-lead-filters-field-domain">
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.name = 'Lead' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;"/>
+  	</action-attrs>
+  	
+  	<action-attrs name="action-target-list-lead-partner-set-domain">
+      <attribute for="partnerSet" name="domain" expr="eval:&quot;self.isContact = false &quot;" if="partnerTypeSelect == 0"/>
+      <attribute for="partnerSet" name="domain" expr="eval:&quot;self.isContact = true &quot;" if="partnerTypeSelect == 1"/>
+      <attribute for="partnerSet" name="domain" expr="eval:null" if="partnerTypeSelect == 2"/>
+  	</action-attrs>
+  	
+  	<action-method name="action-target-list-method-apply-query">
+		<call class="com.axelor.apps.marketing.web.TargetListController" method="applyQuery"/>
+	</action-method>
+	
+	
+    
+</object-views>

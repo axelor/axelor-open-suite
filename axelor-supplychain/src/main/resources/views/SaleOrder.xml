@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew" onSave="action-sale-order-method-advance-payment-change"
@@ -41,6 +41,7 @@
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">
 		<action name="action-sale-order-record-default"/>
+		<action name="action-sale-order-record-payment-mode"/>
 		<action name="action-sale-order-record-company-configuration"/>
 		<action name="action-supplychain-sale-order-method-get-location"/>
 		<action name="action-sale-order-record-currency"/>
@@ -59,12 +60,23 @@
 	</action-group>
 	
 	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable" />
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
+    
+    
+    <!--   azeaeaeaeae -->
+    
+    
+    <action-group name="action-supplychain-sale-order-group-generate-invoice">
+    	<action name="action-supplychain-sale-order-method-generate-invoice" if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
+    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
+    </action-group>
+    
+    <!--   azeaeaeaeae -->
     
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
@@ -82,8 +94,12 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>
 	
-	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.general.getManageCustomerCredit()"/>
+	<action-method name="action-sale-method-update-customer-credit" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="updateCustomerCreditFromSaleOrder"/>
+	</action-method>
+
+	<action-method name="action-supplychain-sale-order-method-check-stocks">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkStocks"/>
 	</action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
@@ -92,6 +108,11 @@
 	
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="supplierPartnerSelect" expr="eval:__repo__.of(Partner).find(Long.valueOf(supplierPartnerId))"/>
+	</action-record>
+
+	<action-record name="action-sale-order-record-payment-mode" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
 	
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	

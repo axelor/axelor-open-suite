@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
  
   <module name="base" package="com.axelor.apps.base.db"/>
  
   <entity name="Product" lang="java">
   
-  	<boolean name="expense" title="Expense" />
+  	<boolean name="expense" title="Expense"/>
   	<boolean name="isActivity" title="Activity"/>
-  	
+  	<boolean name="deductLunchVoucher" title="Deduct lunch voucher"/>
+  	<boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
+  	<boolean name="personalExpense" title="Personal expense" />
   </entity>
 
 </domain-models>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +33,10 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.ReminderHistoryRepository;
 import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -62,14 +62,14 @@ public class ReminderActionService {
 
 	@Inject
 	public ReminderActionService(UserService userService, ReminderRepository reminderRepo, ReminderHistoryRepository reminderHistoryRepository, 
-			TemplateMessageService templateMessageService, GeneralService generalService) {
+			TemplateMessageService templateMessageService, AppAccountService appAccountService) {
 
 		this.userService = userService;
 		this.reminderRepo = reminderRepo;
 		this.reminderHistoryRepository = reminderHistoryRepository;
 		this.templateMessageService = templateMessageService;
 		
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -90,12 +90,12 @@ public class ReminderActionService {
 
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
-					GeneralServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+					AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		if(reminder.getReminderMethodLine()==null)  {
 			throw new AxelorException(
 					String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_2),
-							GeneralServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+							AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 
 		else  {
@@ -143,7 +143,7 @@ public class ReminderActionService {
 
 		if(template == null )  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REMINDER_ACTION_3),
-					GeneralServiceImpl.EXCEPTION, partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		ReminderHistory reminderHistory = this.getReminderHistory(partner, company);
@@ -196,12 +196,12 @@ public class ReminderActionService {
 		log.debug("Begin runManualAction service ...");
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
-					GeneralServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+					AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 
 		if(reminder.getWaitReminderMethodLine()==null)  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_2),
-					GeneralServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+					AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		else  {
 

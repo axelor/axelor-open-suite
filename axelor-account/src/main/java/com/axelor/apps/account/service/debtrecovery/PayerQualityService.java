@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +34,11 @@ import com.axelor.apps.account.db.ReminderLevel;
 import com.axelor.apps.account.db.ReminderMethodLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -51,18 +51,18 @@ public class PayerQualityService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected PartnerService partnerService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected PartnerRepository partnerRepository;
 	
 	protected LocalDate today;
 	
 	@Inject
-	public PayerQualityService(PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
+	public PayerQualityService(PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
 		this.partnerService = partnerService;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.partnerRepository = partnerRepository;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -163,10 +163,10 @@ public class PayerQualityService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void payerQualityProcess() throws AxelorException  {
-		List<PayerQualityConfigLine> payerQualityConfigLineList = generalService.getGeneral().getPayerQualityConfigLineList();
+		List<PayerQualityConfigLine> payerQualityConfigLineList = appAccountService.getAppAccount().getPayerQualityConfigLineList();
 		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYER_QUALITY_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 
 		List<Partner> partnerList = this.getPartnerList();

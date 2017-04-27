@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InvoicePayment" lang="java">
+  	
+  	<many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder" readonly="true" title="Bank Order"/>
+  	
+  	<finder-method name="findByBankOrder" using="bankOrder" all="true"/>
+  	
+  </entity>
+
+</domain-models>

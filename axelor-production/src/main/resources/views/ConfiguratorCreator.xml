@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.production.db.ConfiguratorCreator">
+    	<field name="name"/>
+    </grid>
+    
+    <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.production.db.ConfiguratorCreator">
+    	<panel>
+    		<field name="name"/>
+    		<panel-related field="attributes" colSpan="12" readonlyIf="id == null" form-view="production-json-field-form" grid-view="production-json-field-grid"/>
+    		<button name="generateConfigurator" title="Generate configurator" colSpan="3" onClick="save,action-configurator-creator-generate-configurator"/>
+    	</panel>
+    </form>
+    
+    <action-method name="action-configurator-creator-generate-configurator">
+    	<call class="com.axelor.apps.production.web.ConfiguratorCreatorController" method="generateConfigurator"/>
+    </action-method>
+    
+
+</object-views>

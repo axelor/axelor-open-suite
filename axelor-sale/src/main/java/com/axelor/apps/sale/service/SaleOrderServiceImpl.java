@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,8 +23,10 @@ import java.util.ArrayList;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.sale.db.CancelReason;
+import com.google.common.base.Strings;
 import org.eclipse.birt.core.exception.BirtException;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +36,12 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -48,6 +50,7 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -68,14 +71,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected PartnerService partnerService;
 	protected PartnerRepository partnerRepo;
 	protected SaleOrderRepository saleOrderRepo;
-	protected GeneralService generalService;
+	protected AppSaleService appSaleService;
 	protected User currentUser;
 	
 	protected LocalDate today;
 	
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
-			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService)  {
+			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService)  {
 		
 		this.saleOrderLineService = saleOrderLineService;
 		this.saleOrderLineTaxService = saleOrderLineTaxService;
@@ -83,9 +86,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.partnerService = partnerService;
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
-		this.generalService = generalService;
+		this.appSaleService = appSaleService;
 
-		this.today = generalService.getTodayDate();
+		this.today = appSaleService.getTodayDate();
 		this.currentUser = userService.getUser();
 	}
 	
@@ -140,10 +143,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
+	 * Compute the sale order total amounts
 	 *
 	 * @param invoice
 	 * @param vatLines
@@ -155,20 +155,22 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
 		saleOrder.setTaxTotal(BigDecimal.ZERO);
 		saleOrder.setInTaxTotal(BigDecimal.ZERO);
+		
+		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+			saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add( saleOrderLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
+			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
+		}
 
 		for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
 
-			// Dans la devise de la comptabilité du tiers
-			saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add( saleOrderLineVat.getExTaxBase() ));
+			// In the sale order currency
 			saleOrder.setTaxTotal(saleOrder.getTaxTotal().add( saleOrderLineVat.getTaxTotal() ));
-			saleOrder.setInTaxTotal(saleOrder.getInTaxTotal().add( saleOrderLineVat.getInTaxTotal() ));
 
 		}
-
-		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-			//Into company currency
-			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
-		}
+		
+		saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
 
 		logger.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });
@@ -205,6 +207,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	public String getSequence(Company company) throws AxelorException  {
+
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName()),
@@ -213,10 +216,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		return seq;
 	}
 
+
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
 		SaleOrder saleOrder = new SaleOrder();
-		saleOrder.setCreationDate(generalService.getTodayDate());
+		saleOrder.setCreationDate(appSaleService.getTodayDate());
 		if(company != null){
 			saleOrder.setCompany(company);
 			saleOrder.setSaleOrderSeq(this.getSequence(company));
@@ -239,7 +243,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setClientPartner(clientPartner);
-		saleOrder.setCreationDate(generalService.getTodayDate());
+		saleOrder.setCreationDate(appSaleService.getTodayDate());
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
@@ -280,7 +284,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancelSaleOrder(SaleOrder saleOrder){
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
@@ -288,6 +292,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			saleOrder.getClientPartner().setHasOrdered(false);
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
+		saleOrder.setCancelReason(cancelReason);
+		if (Strings.isNullOrEmpty(cancelReasonStr)) {
+			saleOrder.setCancelReasonStr(cancelReason.getName());
+		} else {
+			saleOrder.setCancelReasonStr(cancelReasonStr);
+		}
 		saleOrderRepo.save(saleOrder);
 	}
 
@@ -296,7 +306,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
-		if (generalService.getGeneral().getManageSaleOrderVersion()){
+		if (appSaleService.getAppSale().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
 	}

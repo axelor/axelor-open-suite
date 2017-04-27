@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<domain-models xmlns='http://axelor.com/xml/ns/domain-models' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd'>
+
+	<module name="contract" package="com.axelor.apps.contract.db" />
+
+	<entity name="Contract">
+		<string name="name" title="Name" required="true"  />
+		<integer name="typeSelect" title="Type" selection="contract.type.select" required="true"/>
+		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" />
+		<many-to-many name="productCategories" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
+		<many-to-many name="products" ref="com.axelor.apps.base.db.Product" title="Products"/>
+		<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list" />
+		<date name="startDate" title="Start date" />
+		<integer name="durationSelect" title="Duration" selection="contract.duration.select" />
+		<date name="tillDate" title="Till date" />
+		<string name="durationPeriodType" title="Period type" selection="contract.period.type.select" default="month"/>
+		<integer name="durationNbPeriods" title="Nb of periods" />
+		<boolean name="commitment" title="Commitment" />
+		<one-to-many name="commitmentProducts" ref="com.axelor.apps.contract.db.CommitmentProduct" title="Commitment Products"/>
+		<string name="specificCommitement" title="Specific commitement" large="true" />
+		<string name="commitmentPeriodType" title="Period type" selection="contract.period.type.select"  default="month"/>
+		<integer name="commitmentNbPeriods" title="Nb of periods" />
+		<one-to-many name="alerts" ref="com.axelor.apps.contract.db.Alert" title="Alert"/>
+		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment type"/>
+    	<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+    	<date name="terminationDate" title="Termination Date" />
+    	<string name="terminationReason" title="Termination Reason" />
+    	<boolean name="noticePeriod" title="Notice period" />
+    	<string name="noticePeriodType" title="Period type" selection="contract.period.type.select"  default="month"/>
+		<integer name="noticeNbPeriods" title="Nb of periods" />
+		<decimal name="totalAmt" title="Total amount of contract" />
+		<many-to-one name="saleOrderTemplate" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order template" />
+		<many-to-one name="purchaseOrderTemplate" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order template" />
+		<decimal name="totalSO" title="Total SO" readonly="true"/>
+		<decimal name="totalPO" title="Total PO" readonly="true"/>
+		<decimal name="totalInvoiced" title="Total invoiced" readonly="true"/>
+		<many-to-one name="contractTemplate" title="Contract template" ref="com.axelor.apps.contract.db.HtmlTemplate" />
+		<string name="contractContent" title="Contract content" large="true" />
+	</entity>
+
+</domain-models>

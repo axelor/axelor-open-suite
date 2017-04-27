@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="min-stock-rules-grid" title="Minimum stock rules" model="com.axelor.apps.stock.db.MinStockRules">
         <toolbar>
-        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+        <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>
         <field name="location" form-view="location-form" grid-view="location-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -27,7 +27,7 @@
         </panel>
 		<panel name="reorderingManagedBy" title="Reordering managed by">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-	        <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+	        <field name="team" form-view="team-form" grid-view="team-grid"/>
 		</panel>
     </form>
     

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="base" package="com.axelor.apps.marketing.db"/>
+
+  <entity name="TargetList" lang="java" sequential="true">
+  	
+  	<string name="name" title="Name" required="true"/>
+  	<one-to-many name="partnerFilterList" ref="com.axelor.studio.db.Filter" title="Partner filters" />
+  	<integer name="partnerTypeSelect" title="Select type" selection="target.partner.type.select" />
+  	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Select Partner/Contacts" />
+  	<one-to-many name="leadFilterList" ref="com.axelor.studio.db.Filter" title="Lead filters" />
+  	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Select leads" />
+  
+  </entity>
+
+</domain-models>

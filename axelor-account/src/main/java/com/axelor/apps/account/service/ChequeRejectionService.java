@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.ChequeRejection;
 import com.axelor.apps.account.db.InterbankCodeLine;
@@ -28,14 +28,15 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -115,7 +116,7 @@ public class ChequeRejectionService {
 		LocalDate rejectionDate = chequeRejection.getRejectionDate();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, rejectionDate, null);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, rejectionDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int ref = 1;
 
@@ -173,7 +174,7 @@ public class ChequeRejectionService {
 
 		if(seq == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHECK_REJECTION_1),
-					GeneralServiceImpl.EXCEPTION,chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		chequeRejection.setName(seq);

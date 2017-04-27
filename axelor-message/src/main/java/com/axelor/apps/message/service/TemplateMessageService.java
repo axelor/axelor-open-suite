@@ -20,6 +20,8 @@ package com.axelor.apps.message.service;
 import java.io.IOException;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
@@ -32,6 +34,8 @@ public interface TemplateMessageService {
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
 	
 	public Message generateMessage(long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
+	
+	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException;
 	
 	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException ;
 	

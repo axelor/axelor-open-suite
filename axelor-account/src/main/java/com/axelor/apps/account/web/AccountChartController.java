@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,7 +58,7 @@ public class AccountChartController {
 		AccountChart act = accountChartRepo.find(accountConfig.getAccountChart().getId());
 		Company company = companyRepo.find(accountConfig.getCompany().getId());
 		accountConfig = accountConfigRepo.find(accountConfig.getId());
-		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parent != null", company.getId()).fetch();
+		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parentAccount != null", company.getId()).fetch();
 		
 		if(accountList.isEmpty()){
 			if(accountChartsService.installAccountChart(act,company,accountConfig))

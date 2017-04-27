@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -126,7 +126,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				saleOrder.getLocation(),
 				toLocation,
 				saleOrder.getShipmentDate(),
-				saleOrder.getDescription());
+				saleOrder.getDescription(),
+				saleOrder.getShipmentMode(),
+				saleOrder.getFreightCarrierMode());
 
 		stockMove.setSaleOrder(saleOrder);
 		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
@@ -155,7 +157,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				taxRate = taxLine.getValue();
 			}
 			
-			
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					product,
 					saleOrderLine.getProductName(),
@@ -164,7 +165,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					priceDiscounted,
 					unit,
 					stockMove,
-					1, saleOrderLine.getSaleOrder().getInAti(), taxRate);
+					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
@@ -182,7 +183,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					BigDecimal.ZERO,
 					null,
 					stockMove,
-					1, saleOrderLine.getSaleOrder().getInAti(), null);
+					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), null);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 

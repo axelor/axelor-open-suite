@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.sale.db.repo;
 
 import javax.persistence.PersistenceException;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderService;
@@ -30,7 +30,7 @@ import com.google.inject.Inject;
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -41,7 +41,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
-		copy.setCreationDate(generalService.getTodayDate());
+		copy.setCreationDate(appBaseService.getTodayDate());
 		copy.setConfirmationDate(null);
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);

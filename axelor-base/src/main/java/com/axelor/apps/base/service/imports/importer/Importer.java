@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,9 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +121,7 @@ public abstract class Importer {
 		
 	}
 	
-	protected String computeFinalWorkspaceName( File data ){ return String.format("%s-%s", Files.getNameWithoutExtension( data.getName() ) , LocalDateTime.now().toString("yyyyMMdd")); }
+	protected String computeFinalWorkspaceName( File data ){ return String.format("%s-%s", Files.getNameWithoutExtension( data.getName() ) , LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))); }
 
 	protected boolean isZip(File file) { return Files.getFileExtension(file.getName()).equals("zip"); }
 	

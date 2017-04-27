@@ -1,42 +1,60 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-account"
-	version "4.0.0"
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
 	title "Axelor :: Account"
+	description "Axelor Account Module"
 
 	removable true
-
-	module "modules:axelor-base"
 }
 
 configurations {
-	xjc
+	jaxbDeps
 }
 
 dependencies {
-	xjc 'com.sun.xml.bind:jaxb-xjc:2.2.2'
-	xjc 'com.sun.xml.bind:jaxb-impl:2.2.2'
-	xjc 'javax.xml.bind:jaxb-api:2.2.2'
-
-	compile libs.ST4
+	compile project(":modules:axelor-base")
+	
+	jaxbDeps 'com.sun.xml.bind:jaxb-xjc:2.2.2',
+		'com.sun.xml.bind:jaxb-impl:2.2.2',
+		'javax.xml.bind:jaxb-api:2.2.2'
+	
+	compile 'xalan:xalan:2.7.2'
+	
+	compile group: 'jdom', name: 'jdom', version: '1.1'
+	compile group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '2.5.0'
+	compile "org.bouncycastle:bcprov-jdk15:1.46"
+//	compile "org.bouncycastle:bcprov-jdk14:1.38"
 }
 
-task "xjc" << {
+license {
+	// Don't generate license header on java classes generated from xsd
+	exclude "**/xsd/pain_001_001_*/**"
+}
 
+task xjc () {
+	
 	def source = "${projectDir}/src/main/resources/xsd"
 	def target = "${buildDir}/src-gen"
+	def xsdToGenerate = [
+		['package': 'com.axelor.apps.account.xsd.pain_001_001_02', 'destdir': "$target", 'schema': "$source/pain.001.001.02.xsd"],
+		['package': 'com.axelor.apps.account.xsd.pain_001_001_03', 'destdir': "$target", 'schema': "$source/pain.001.001.03.xsd"]
+	]
+	
+	doLast {
+		
+		ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxbDeps.asPath)
+		
+		xsdToGenerate.each { argsin ->
+			ant.xjc	( argsin )
+		}
 
-	file(target).mkdirs()
+	}
 
-	ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xjc.asPath)
- 	ant.xjc	(
-		destdir: target,
-		schema: "${source}/pain.001.001.02.xsd",
-		"package": "com.axelor.apps.xsd.sepa"
-	)
+	compileJava.dependsOn name
 }
-
-compileJava.dependsOn "xjc"
 
 

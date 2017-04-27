@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="period-grid" title="Period" model="com.axelor.apps.base.db.Period" orderBy="-fromDate">
         <field name="name"/>
@@ -9,39 +9,48 @@
         <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
         <field name="fromDate"/>
         <field name="toDate"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="year.company" form-view="company-form" readonly="true"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default" width="large">
+    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet">
 	    <panel name="main" readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
-			<field name="company" widget="SuggestBox" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
-	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>   
+	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
+	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" />
     	</panel>
-    	<panel>
-        	<panel colSpan="6">
-            	<button name="close" title="Close period" colSpan="6" onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
-            	<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
-        	</panel>
-            <field name="statusSelect"/>
+		<panel-dashlet action="action-view-linked-adjusting-moves-period-dashlet" name="linkedAdjustingMoves"/>
+    	<panel sidebar="true">
+			<field name="statusSelect" colSpan="6"/>
+			<field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
+			<button name="close" title="Close period" onClick="action-method-period-close" hideIf="statusSelect == 2"/>
+			<button name="adjust" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" showIf="statusSelect == 2"/>
     	</panel>
     </form>
-    
-    <action-record name="action-period-record-close" model="com.axelor.apps.base.db.Period">
-    	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_CLOSED"/>
-    </action-record>
-    
-    <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-     </action-record>
-    
-     <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">
-    	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_OPENED"/>
-     </action-record>
-    
+
+	<action-method name="action-method-period-close">
+		<call class="com.axelor.apps.base.web.PeriodController" method="close"/>
+	</action-method>
+
+	<action-method name="action-method-period-adjust">
+		<call class="com.axelor.apps.base.web.PeriodController" method="adjust"/>
+	</action-method>
+
+	<action-view name="action-view-period-linked-adjusting-moves-dashlet" title="Linked Adjusting Moves" model="com.axelor.apps.account.db.Move">
+		<view type="grid" name="move-grid"/>
+		<view type="form" name="move-form"/>
+		<domain>self.period.id = :id AND self.adjustingMove = true</domain>
+	</action-view>
+
+	<action-attrs name="action-attrs-period-hide-linked-adjusting-moves-dashlet">
+		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__.of(AdjustHistory).all().filter('self.period.id = ?', id).fetch().size() == 0"/>
+	</action-attrs>
+
+	<action-validate name="action-validate-period-is-adjusting-year">
+		<error message="Year is not in adjusting mode" if="year.statusSelect != 3"/>
+	</action-validate>
 </object-views>

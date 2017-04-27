@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
         <field name="name"/>
@@ -24,14 +24,13 @@
 	  	</panel>
 	  
 	  	<panel sidebar="true" name="modulesConfigurations" title="Modules configurations" hideIf="$popup()">
-	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account"/>
-	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale"/>
-	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock"/>
-	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase"/>
-	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production"/>
-	    	<button name="organisationConfigButton" title="Organisation config" width="100%" colSpan="6" onClick="action-company-view-organisation-config" if-module="axelor-organisation"/>
-    		<button name="hrConfigButton" title="Human Resources config" width="100%" colSpan="6" onClick="action-company-view-hr-config" if-module="axelor-human-resource"/>
-    		<button name="crmConfigButton" title="CRM config" width="100%" colSpan="6" onClick="action-company-view-crm-config" if-module="axelor-crm"/>
+	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+    		<button name="hrConfigButton" title="Human Resources config" width="100%" colSpan="6" onClick="action-company-view-hr-config" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
+    		<button name="crmConfigButton" title="CRM config" width="100%" colSpan="6" onClick="action-company-view-crm-config" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
     	</panel>
 	  
 	  	<panel name="notes" title="Notes" showIf="$popup()" readonly="true">
@@ -43,17 +42,17 @@
 	      		<field name="notes" showTitle="false" colSpan="12"/>
 	    	</panel>
 	    	<panel name="configurations" title="Configurations">
-	  			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	  			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  			<field name="printingSettings" canNew="true" form-view="printing-setting-form" grid-view="printing-setting-grid"/>
 	  			<field name="defaultPartnerTypeSelect"/>
-	  			<field name="customerPaymentDelay" if-module="axelor-cash-management"/>
-	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management"/>
+	  			<field name="customerPaymentDelay" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
 	  		</panel>
 	    	<panel name="bankDetails" title="Bank details">
 	      		<field name="defaultBankDetails"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
-	    	<panel name="orderBloquedMessage" title="Order Bloqued Message" if-module="axelor-sale">
+	    	<panel name="orderBloquedMessage" title="Order Bloqued Message" if-module="axelor-sale" if="__config__.app.isApp('sale')">
 	      		<field name="orderBloquedMessage"/>
 	    	</panel>
 	  	</panel-tabs>

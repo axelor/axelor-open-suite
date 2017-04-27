@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectPlanning" cachable="true">
+      
+      <one-to-many name="projectPlanningTime" ref="ProjectPlanningTime" title="Allocated time" mappedBy="projectPlanning"/>
+      <decimal name="totalPlannedHrs" title="Total planned hours" />
+	          
+  </entity>
+  
+</domain-models>

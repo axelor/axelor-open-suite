@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,16 +17,17 @@
  */
 package com.axelor.apps.sale.service;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Team;
+import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 
 public interface SaleOrderService {
@@ -86,7 +87,7 @@ public interface SaleOrderService {
 
 	public SaleOrder createSaleOrder(Company company) throws AxelorException;
 
-	public void cancelSaleOrder(SaleOrder saleOrder);
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
 	

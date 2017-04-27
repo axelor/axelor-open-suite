@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,7 +29,6 @@ import java.util.Set;
 
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
@@ -46,6 +45,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
@@ -132,7 +132,7 @@ public class CalendarController {
 			}
 		}
 		for (ICalendarUser iCalendarUser : userList) {
-			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
+			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer = ?1", iCalendarUser).fetch();
 			for (Event event : eventList) {
 				eventIdlist.add(event.getId());
 			}
@@ -144,7 +144,7 @@ public class CalendarController {
 	            .add("grid", "event-grid")
 	            .add("form", "event-form")
 	            .context("_typeSelect", 2)
-	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
+	            .domain("self.id in (" + Joiner.on(',').join(eventIdlist) + ")")
 	            .map());
 	}
 	
@@ -156,11 +156,11 @@ public class CalendarController {
 		List<Event> eventList = null;
 		
 		Set<User> userSet = new HashSet<User>();
-		if(team == null || team.getUserSet() == null || team.getUserSet().isEmpty()){
+		if(team == null || team.getMembers() == null || team.getMembers().isEmpty()){
 			userSet.add(user);
 		}
 		else{
-			userSet = team.getUserSet();
+			userSet = team.getMembers();
 		}
 		
 		for (User userIt : userSet) {
@@ -201,6 +201,7 @@ public class CalendarController {
 	public void showSharedEvents(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		List<Long> eventIdlist = calendarService.showSharedEvents(user);
+		eventIdlist.add(new Long(0));
 		response.setView(ActionView
 	            .define(I18n.get("Shared Calendar"))
 	            .model(Event.class.getName())

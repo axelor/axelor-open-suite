@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,7 +89,8 @@ public interface IAdministration {
 	static final String PRODUCTION_ORDER = "productionOrder";
 	static final String MANUF_ORDER = "manufOrder";
 	static final String RECONCILE = "reconcile";
-	
+	static final String PRODUCT = "product";
+
 	
 	/**
 	 * Static select in General

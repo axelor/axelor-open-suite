@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,22 +19,24 @@ package com.axelor.apps.account.service.move;
 
 import java.util.ArrayList;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.CashRegister;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -44,16 +46,18 @@ public class MoveCreateService {
 
 	protected PeriodService periodService;
 	protected MoveRepository moveRepository;
-
+	protected CompanyConfigService companyConfigService;
+	
 	protected LocalDate today;
 
 	@Inject
-	public MoveCreateService(GeneralService generalService, PeriodService periodService, MoveRepository moveRepository) {
+	public MoveCreateService(AppAccountService appAccountService, PeriodService periodService, MoveRepository moveRepository, CompanyConfigService companyConfigService)  {
 
 		this.periodService = periodService;
 		this.moveRepository = moveRepository;
+		this.companyConfigService = companyConfigService;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 
 	}
 
@@ -71,9 +75,8 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, PaymentMode paymentMode) throws AxelorException{
-
-		return this.createMove(journal, company, invoice, partner, today, paymentMode);
+	public Move createMove(Journal journal, Company company, Currency currency, Partner partner, PaymentMode paymentMode, int technicalOriginSelect) throws AxelorException{
+		return this.createMove(journal, company, currency, partner, today, paymentMode, technicalOriginSelect);
 	}
 
 
@@ -85,37 +88,36 @@ public class MoveCreateService {
 	 * @param company
 	 * @param invoice
 	 * @param partner
-	 * @param dateTime
+	 * @param date
 	 * @param isReject
 	 * 		<code>true = écriture de rejet avec séquence spécifique</code>
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode) throws AxelorException{
-
-		return this.createMove(journal, company, invoice, partner, date, paymentMode, false, false);
+	public Move createMove(Journal journal, Company company, Currency currency, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect) throws AxelorException{
+		return this.createMove(journal, company, currency, partner, date, paymentMode, technicalOriginSelect, false, false);
 
 	}
 
 
 	/**
-	 * Créer une écriture comptable de toute pièce en passant tous les paramètres qu'il faut.
-	 *
+	 * Creating a new generic accounting move
+	 * 
 	 * @param journal
-	 * @param period
 	 * @param company
-	 * @param invoice
+	 * @param currency
 	 * @param partner
-	 * @param dateTime
-	 * @param isReject
-	 * 		<code>true = écriture de rejet avec séquence spécifique</code>
+	 * @param date
+	 * @param paymentMode
+	 * @param technicalOriginSelect
+	 * @param ignoreInReminderOk
+	 * @param ignoreInAccountingOk
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean ignoreInReminderOk,
-			boolean ignoreInAccountingOk) throws AxelorException{
-
-		log.debug("Création d'une écriture comptable (journal : {}, société : {}", new Object[]{journal.getName(), company.getName()});
+	public Move createMove(Journal journal, Company company, Currency currency, Partner partner, LocalDate date, PaymentMode paymentMode, 
+			int technicalOriginSelect, boolean ignoreInReminderOk, boolean ignoreInAccountingOk) throws AxelorException  {
+		log.debug("Creating a new generic accounting move (journal : {}, company : {}", new Object[]{journal.getName(), company.getName()});
 
 		Move move = new Move();
 
@@ -130,16 +132,23 @@ public class MoveCreateService {
 		move.setPeriod(period);
 		move.setDate(date);
 		move.setMoveLineList(new ArrayList<MoveLine>());
-
-		if (invoice != null)  {
-			move.setInvoice(invoice);
+		
+		Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
+		
+		if(companyCurrency != null)  {
+			move.setCompanyCurrency(companyCurrency);
+			move.setCompanyCurrencyCode(companyCurrency.getCode());
 		}
-		if (partner != null)  {
-			move.setPartner(partner);
-			move.setCurrency(partner.getCurrency());
+		
+		if(currency == null)  {  currency = move.getCompanyCurrency();  }
+		if(currency != null)  {
+			move.setCurrency(currency);
+			move.setCurrencyCode(currency.getCode());
 		}
+		
+		move.setPartner(partner);
 		move.setPaymentMode(paymentMode);
-
+		move.setTechnicalOriginSelect(technicalOriginSelect);
 		moveRepository.save(move);
 		move.setReference("*"+move.getId());
 
@@ -163,10 +172,10 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, CashRegister cashRegister) throws AxelorException{
-
-		Move move = this.createMove(journal, company, invoice, partner, date, paymentMode);
+	public Move createMove(Journal journal, Company company, PaymentVoucher paymentVoucher, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect, CashRegister cashRegister) throws AxelorException{
+		Move move = this.createMove(journal, company, paymentVoucher.getCurrency(), partner, date, paymentMode, technicalOriginSelect);
 		move.setCashRegister(cashRegister);
+		move.setPaymentVoucher(paymentVoucher);
 		return move;
 	}
 

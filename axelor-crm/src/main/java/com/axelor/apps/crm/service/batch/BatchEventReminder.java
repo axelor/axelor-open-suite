@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,11 +21,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.IEventReminder;
@@ -58,7 +58,7 @@ public class BatchEventReminder extends BatchStrategy {
 	public BatchEventReminder(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
 		super(eventReminderService, messageServiceCrmImpl, mailAccountService);
-		this.today = Beans.get(GeneralService.class).getTodayDateTime().toLocalDateTime();
+		this.today = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
 	}
 
 

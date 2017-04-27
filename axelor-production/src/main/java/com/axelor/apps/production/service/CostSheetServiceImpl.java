@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,11 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IWorkCenter;
-import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
@@ -38,6 +37,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -58,17 +58,17 @@ public class CostSheetServiceImpl implements CostSheetService  {
 	protected CostSheet costSheet;
 	
 	@Inject
-	public CostSheetServiceImpl(GeneralService generalService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo)  {
+	public CostSheetServiceImpl(AppProductionService appProductionService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo)  {
 		
 		this.unitConversionService = unitConversionService;
 		this.costSheetLineService = costSheetLineService;
 		this.billOfMaterialRepo = billOfMaterialRepo;
 		
-		General general = generalService.getGeneral();
-		this.hourUnit = general.getUnitHours();
-		this.cycleUnit = general.getCycleUnit();
-		this.manageResidualProductOnBom = general.getManageResidualProductOnBom();
-		this.subtractProdResidualOnCostSheet = general.getSubtractProdResidualOnCostSheet();
+		AppProduction appProduction = appProductionService.getAppProduction();
+		this.hourUnit = appProductionService.getAppBase().getUnitHours();
+		this.cycleUnit = appProduction.getCycleUnit();
+		this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
+		this.subtractProdResidualOnCostSheet = appProduction.getSubtractProdResidualOnCostSheet();
 		
 	}
 	

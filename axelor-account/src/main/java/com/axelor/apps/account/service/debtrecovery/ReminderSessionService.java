@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +34,10 @@ import com.axelor.apps.account.db.ReminderMethod;
 import com.axelor.apps.account.db.ReminderMethodLine;
 import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -53,9 +53,9 @@ public class ReminderSessionService {
 	protected LocalDate today;
 
 	@Inject
-	public ReminderSessionService(ReminderRepository reminderRepo, GeneralService generalService) {
+	public ReminderSessionService(ReminderRepository reminderRepo, AppAccountService appAccountService) {
 
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -229,7 +229,7 @@ public class ReminderSessionService {
 		if(reminder.getReminderMethod() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), GeneralServiceImpl.EXCEPTION,
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), AppAccountServiceImpl.EXCEPTION,
 					reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		for(ReminderMethodLine reminderMatrixLine : reminder.getReminderMethod().getReminderMethodLineList())  {

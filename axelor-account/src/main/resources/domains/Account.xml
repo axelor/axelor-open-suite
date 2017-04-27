@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -9,8 +9,8 @@
   
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" help="true"/>
-    <many-to-one name="parent" ref="Account" title="Parent Account"  help="true"/>
+    <string name="code" title="Code" required="true" hashKey="true" help="true"/>
+    <many-to-one name="parentAccount" ref="Account" title="Parent Account"  help="true"/>
     <many-to-one name="accountType" ref="AccountType" massUpdate="true" title="Account Type"  help="true"/>
     <boolean name="reconcileOk" massUpdate="true" title="Reconcilable ?" help="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="true"/>

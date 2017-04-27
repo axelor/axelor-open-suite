@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,11 +20,12 @@ package com.axelor.apps.cash.management.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastReason;
@@ -34,13 +35,13 @@ import com.google.inject.Inject;
 public class ForecastService {
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	public void generate(ForecastGenerator forecastGenerator){
 		LocalDate fromDate = forecastGenerator.getFromDate();
 		LocalDate toDate = forecastGenerator.getToDate();
-		LocalDate itDate = new LocalDate(fromDate);
-		LocalDate todayDate = generalService.getTodayDate();
+		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE);
+		LocalDate todayDate = appBaseService.getTodayDate();
 		
 		if(forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()){
 			List<Forecast> forecastList = forecastGenerator.getForecastList();
@@ -59,7 +60,7 @@ public class ForecastService {
 							forecastGenerator.getTypeSelect(), forecastGenerator.getAmount(), itDate, forecastGenerator.getForecastReason(),
 							forecastGenerator.getComments(),forecastGenerator.getRealizedSelect());
 			forecastGenerator.addForecastListItem(forecast);
-			itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
+			itDate = itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
 		}
 	}
 	

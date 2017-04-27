@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.config;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -34,7 +34,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_1),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return cfonbConfig;
@@ -61,7 +61,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(senderRecordCodeExportCFONB == null || senderRecordCodeExportCFONB.isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_2),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return senderRecordCodeExportCFONB;
@@ -72,7 +72,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getSenderNumExportCFONB() == null || cfonbConfig.getSenderNumExportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_3),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -81,7 +81,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getSenderNameCodeExportCFONB() == null || cfonbConfig.getSenderNameCodeExportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_4),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -90,7 +90,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getRecipientRecordCodeExportCFONB() == null || cfonbConfig.getRecipientRecordCodeExportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_5),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -99,7 +99,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getTotalRecordCodeExportCFONB() == null || cfonbConfig.getTotalRecordCodeExportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_6),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -108,7 +108,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getTransferOperationCodeExportCFONB() == null || cfonbConfig.getTransferOperationCodeExportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_7),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -117,7 +117,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getDirectDebitOperationCodeExportCFONB() == null || cfonbConfig.getDirectDebitOperationCodeExportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_8),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -128,7 +128,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getHeaderRecordCodeImportCFONB() == null || cfonbConfig.getHeaderRecordCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_9),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -137,7 +137,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getDetailRecordCodeImportCFONB() == null || cfonbConfig.getDetailRecordCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_10),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -146,7 +146,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getEndingRecordCodeImportCFONB() == null || cfonbConfig.getEndingRecordCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_11),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -155,7 +155,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getTransferOperationCodeImportCFONB() == null || cfonbConfig.getTransferOperationCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_12),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -164,7 +164,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getDirectDebitOperationCodeImportCFONB() == null || cfonbConfig.getDirectDebitOperationCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_13),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -173,7 +173,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getIpoRejectOperationCodeImportCFONB() == null || cfonbConfig.getIpoRejectOperationCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_14),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -182,7 +182,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getIpoAndChequeOperationCodeImportCFONB() == null || cfonbConfig.getIpoAndChequeOperationCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_15),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -191,7 +191,7 @@ public class CfonbConfigService extends AccountConfigService  {
 
 		if(cfonbConfig.getIpoOperationCodeImportCFONB() == null || cfonbConfig.getIpoOperationCodeImportCFONB().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_16),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}

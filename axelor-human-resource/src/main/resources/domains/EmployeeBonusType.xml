@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+     <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity name="EmployeeBonusType" lang="java" >
+    
+	    <string name="code" title="Code" />
+	    <string name="label" title="Label" namecolumn="true" />
+	    
+	    <string name="applicationCondition" title="Application condition" />
+	    <string name="formula" title="Formula" />
+	    
+	    <boolean name="payrollPreparationExport" title="Export for payroll preparation" />
+	    <string name="exportCode" title="Export code" />
+	    
+    </entity>
+
+</domain-models>

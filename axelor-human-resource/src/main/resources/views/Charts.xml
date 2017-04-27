@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<chart name="chart.total.hours.per.day" title="">
   		<dataset type="jpql"><![CDATA[
@@ -25,13 +25,13 @@
   		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
-			self.projectTask.fullName AS _project
+			self.project.fullName AS _project
 		FROM
 			TimesheetLine self
 		WHERE
 			self.timesheet.id= :timesheet_id
 		GROUP BY
-			self.projectTask.fullName
+			self.project.fullName
 		]]></dataset>
  	 	<category key="_project" type="text" title="Project"/>
   		<series key="_duration" type="pie" title="Total"/>

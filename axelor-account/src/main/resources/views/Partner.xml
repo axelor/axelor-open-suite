@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-	<form name="incl-invoice-payment-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner">
+	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
 	    <panel colSpan="12">
 	    	<field name="invoiceSendingFormatSelect"/>
-	        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
-	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
+	        <field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+	        <field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
-	        <field name="payerQuality"/>
-	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"/>
-	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
+	        <field name="payerQuality" hideIf="!isCustomer"/>
+	        <field name="invoicesCopySelect" hideIf="!isCustomer"/>
+	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" hideIf="!isCustomer" if="__config__.app.isApp('business-project')" />
+	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3" if="__config__.app.isApp('business-project')" />
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel colSpan="6">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
@@ -22,13 +24,11 @@
 	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
 			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
-					<field name="bankAddress" />
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
-					<field name="bic" />
+					<field name="bank" canNew="true"></field>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
 					<field name="ownerName" hidden="true" />
 					<field name="ibanBic" hidden="true"/>
-					<field name="countryCode" hidden="true"/>
 					<field name="bankCode" hidden="true"/>
 					<field name="sortCode" hidden="true"/>
 					<field name="accountNbr" hidden="true"/>
@@ -47,13 +47,13 @@
 	</form>
 	
 	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	    <panel-related field="accountingSituationList" title="Accounting balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	</form>
 	
 	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
 	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
 	</form>
-	
+
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
          <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
 	</form>
@@ -83,11 +83,7 @@
          	<panel-related field="umrList" title="History" colSpan="12"/>
          </panel>
 	</form>
-	
-	<action-method name="action-create-accounting-situation" if-module="axelor-account">
-		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" />
-	</action-method>
-	
+
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -98,12 +94,24 @@
 	<action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.partner.id = :id AND self.companyInTaxTotalRemaining > 0</domain>
+		<domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) > 0</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
 	<action-method name="action-partner-method-show-client-situation" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
-	
+
+	<action-attrs name="action-partner-account-attrs-hide-supplier-account">
+		<attribute name="hidden" for="accountingSituationList.supplierAccount" expr="eval: !isSupplier"/>
+	</action-attrs>
+
+	<action-attrs name="action-partner-account-attrs-hide-customer-account">
+		<attribute name="hidden" for="accountingSituationList.customerAccount" expr="eval: !isCustomer"/>
+	</action-attrs>
+
+	<action-attrs name="action-partner-account-attrs-hide-employee-account">
+		<attribute name="hidden" for="accountingSituationList.employeeAccount" expr="eval: !isEmployee"/>
+	</action-attrs>
+
 </object-views>

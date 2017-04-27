@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,14 +21,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -39,47 +39,62 @@ public class CurrencyService {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private LocalDate today;
 
 	@Inject
-	public CurrencyService(GeneralService generalService) {
+	public CurrencyService(AppBaseService appBaseService) {
 
-		this.generalService = generalService;
-		this.today = generalService.getTodayDate();
+		this.appBaseService = appBaseService;
+		this.today = appBaseService.getTodayDate();
 	}
 
 
 	public CurrencyService(LocalDate today) {
 
-		this.generalService = Beans.get(GeneralService.class);
+		this.appBaseService = Beans.get(AppBaseService.class);
 		this.today = today;
 	}
 
 
-	public BigDecimal getCurrencyConversionRate(Currency startCurrency, Currency endCurrency) throws AxelorException  {
-
-		CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(startCurrency, endCurrency, today);
-		if(currencyConversionLine != null)  {
-			return currencyConversionLine.getExchangeRate();
+	public BigDecimal getCurrencyConversionRate(Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException  {
+		
+		// If the start currency is different from end currency 
+		// So we convert the amount
+		if(startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency))  {
+		
+			LocalDate dateToConvert = this.getDateToConvert(date);
+	
+			CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(startCurrency, endCurrency, dateToConvert);
+			if(currencyConversionLine != null)  {
+				return currencyConversionLine.getExchangeRate();
+			}
+			else  {
+				currencyConversionLine = this.getCurrencyConversionLine(endCurrency, startCurrency, dateToConvert);
+			}
+	
+			if(currencyConversionLine == null)  {
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_1), startCurrency.getName(), endCurrency.getName(), dateToConvert), IException.CONFIGURATION_ERROR);
+			}
+			
+			BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
+			
+			if(exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0)  {
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_2), startCurrency.getName(), endCurrency.getName(), dateToConvert), IException.CONFIGURATION_ERROR);
+			}
+	
+			return BigDecimal.ONE.divide(currencyConversionLine.getExchangeRate(), 10, RoundingMode.HALF_EVEN);
 		}
-		else  {
-			currencyConversionLine = this.getCurrencyConversionLine(endCurrency, startCurrency, today);
-		}
-
-		if(currencyConversionLine == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_1), startCurrency, endCurrency, today), IException.CONFIGURATION_ERROR);
-		}
-
-		return currencyConversionLine.getExchangeRate();
+		
+		return BigDecimal.ONE;
 
 	}
 
 
 	private CurrencyConversionLine getCurrencyConversionLine(Currency startCurrency, Currency endCurrency, LocalDate localDate)  {
 
-		List<CurrencyConversionLine> currencyConversionLineList = generalService.getCurrencyConfigurationLineList();
+		List<CurrencyConversionLine> currencyConversionLineList = appBaseService.getCurrencyConfigurationLineList();
 
 		if(currencyConversionLineList == null)  {
 			return null;
@@ -108,39 +123,51 @@ public class CurrencyService {
 	}
 
 
-	public BigDecimal getAmountCurrencyConverted(Currency currencyStart, Currency currencyEnd, BigDecimal amountToPay, LocalDate localDate) throws AxelorException  {
+	/**
+	 * Convert the amount in start currency into the end currency according to the date to convert
+	 * @param startCurrency
+	 * @param endCurrency
+	 * @param amount
+	 * @param date
+	 * @return
+	 * @throws AxelorException
+	 */
+	public BigDecimal getAmountCurrencyConvertedAtDate(Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date) throws AxelorException  {
 
-		// Si la devise source est différente de la devise d'arrivée
-		// Alors on convertit
-		if(currencyStart != null && currencyEnd != null && !currencyStart.equals(currencyEnd))  {
-			// CONVERTIR
-
-			CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(currencyStart, currencyEnd, this.getDateToConvert(localDate));
-			if(currencyConversionLine != null)  {
-				return amountToPay.multiply(currencyConversionLine.getExchangeRate());
-			}
-			else  {
-				currencyConversionLine = this.getCurrencyConversionLine(currencyEnd, currencyStart, this.getDateToConvert(localDate));
-			}
-
-			if(currencyConversionLine == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_1),
-						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
-			}
-
-			BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
-
-			if(exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_2),
-						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
-			}
-
-			return amountToPay.divide(exchangeRate, generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+		// If the start currency is different from end currency 
+		// So we convert the amount
+		if(startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency))  {
+			
+			return this.getAmountCurrencyConvertedUsingExchangeRate(amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date));
+			
 		}
 
-		return amountToPay;
+		return amount;
 
 	}
+	
+	/**
+	 * Convert the amount in start currency into the end currency according to the exchange rate
+	 * @param startCurrency
+	 * @param endCurrency
+	 * @param amount
+	 * @param exchangeRate
+	 * @return
+	 * @throws AxelorException
+	 */
+	public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(BigDecimal amount, BigDecimal exchangeRate) throws AxelorException  {
+
+		// If the start currency is different from end currency 
+		// So we convert the amount
+		if(exchangeRate.compareTo(BigDecimal.ONE) != 0)  {
+
+			return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_EVEN);
+		}
+
+		return amount;
+
+	}
+	
 
 	public LocalDate getDateToConvert(LocalDate date)  {
 

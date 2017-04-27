@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,8 +37,9 @@ import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.RejectImportService;
-import com.axelor.apps.account.service.cfonb.CfonbExportService;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -48,7 +49,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -214,7 +214,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 		if(accountingBatch.getBankDetails() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
-					GeneralServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());

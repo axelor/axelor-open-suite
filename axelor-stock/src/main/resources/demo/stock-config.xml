@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
+	
+	<input file="stock_location.csv" separator=";" type="com.axelor.apps.stock.db.Location" search="self.importId = :importId" />
+	
+	<input file="stock_minStockRules.csv" separator=";" type="com.axelor.apps.stock.db.MinStockRules"/>
+	
+	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
+		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.INVENTORY)" />
+	    <bind to="statusSelect" eval="3" />
+		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
+	</input>
+	
+	<input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId" />
+	
+	<input file="stock_inventoryLine.csv" separator=";" type="com.axelor.apps.stock.db.InventoryLine" />
+	
+	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove">
+		<bind to="stockMoveSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.OUTGOING)" />
+	</input>
+	
+	<input file="stock_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine" />
+	
+</csv-inputs>

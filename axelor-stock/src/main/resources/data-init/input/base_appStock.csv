@@ -1,0 +1,2 @@
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Stock;STOCK;Stock configuration;stock;app-stock.png;axelor-stock;base;20

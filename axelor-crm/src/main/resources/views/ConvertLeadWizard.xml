@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<form onNew="action-group-crm-convlead-wizard-onnew" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large">
 	  	<toolbar>
@@ -50,7 +50,7 @@
 					  	<label title="Assigned to"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
-					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+					    <field name="team" form-view="team-form" grid-view="team-grid"/>
 		
 			
 					</editor>
@@ -113,7 +113,7 @@
 					  	<label title="Assigned to" colSpan="12"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
-					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+					    <field name="team" form-view="team-form" grid-view="team-grid"/>
 					</editor>
 				</field>
 			</panel>
@@ -136,7 +136,7 @@
 				        <label title="Financial terms" css="label-bold"/>
 					  	<spacer/>
 				        <field name="amount" colSpan="3"/>
-				        <field name="currency" colSpan="3"/>
+				        <field name="currency" canEdit="false" colSpan="3"/>
 				        <field name="bestCase" colSpan="3"/>
 				        <field name="worstCase" colSpan="3"/>
 					    <label title="Description" css="label-bold"/>
@@ -149,7 +149,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user" colSpan="4"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4" if="__config__.general.getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4"/>
 					    <field name="company" widget="SuggestBox" colSpan="4"/>
 					</editor>
 				</field>
@@ -174,7 +174,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
@@ -197,7 +197,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
@@ -221,7 +221,7 @@
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
-					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
+					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
@@ -317,7 +317,7 @@
 			  <panel title="Assigned to">
 			    <field name="companySet"  widget="TagSelect" canNew="false"/>
 			    <field name="user"/>
-			    <field name="team" if="__config__.general.getTeamManagement()"/>
+			    <field name="team"/>
 			  </panel>
 			</panel>
 		</panel-tabs>
@@ -372,7 +372,7 @@
 		    <field name="invoiceSendingFormatSelect"/>
 		    <field name="paymentMode"/>
 		    <field name="paymentCondition"/>
-		    <field name="currency"/>
+		    <field name="currency" canEdit="false"/>
 		    <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
 		    <field name="bankDetailsList" showTitle="false" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
 		  </panel>
@@ -381,7 +381,7 @@
 		    <panel title="Assigned to" colSpan="12" >
 		      <field name="companySet" widget="TagSelect" canNew="false"/>
 		      <field name="user"/>
-		      <field name="team" if="__config__.general.getTeamManagement()"/>
+		      <field name="team"/>
 		    </panel>
 		  </panel>
 		</panel-tabs>
@@ -407,7 +407,7 @@
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="isCustomer" expr="true"/>
     	<field name="partnerTypeSelect" expr="eval: 1"/>
-    	<field name="languageSelect" expr="eval:__config__.general.getDefaultPartnerLanguage()" />
+    	<field name="languageSelect" expr="eval:__config__.app.getApp('base').getDefaultPartnerLanguage()" />
     </action-record>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">
@@ -453,7 +453,7 @@
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="jobTitle" expr="eval: _lead.jobTitle"/>
-    	<field name="languageSelect" expr="eval:__config__.general.getDefaultPartnerLanguage()" />
+    	<field name="languageSelect" expr="eval:__config__.app.getApp('base').getDefaultPartnerLanguage()" />
     </action-record>
     
     <action-record name="action-convert-lead-wizard-attrs-default-contact-address" model="com.axelor.apps.base.db.Partner">
@@ -501,7 +501,7 @@
 	    <panel>
 	      <panel name="financialTerms" title="Financial terms" colSpan="12">
 	        <field name="amount"/>
-	        <field name="currency"/>
+	        <field name="currency" canEdit="false"/>
 	        <field name="bestCase"/>
 	        <field name="worstCase"/>
 	      </panel>
@@ -512,7 +512,7 @@
 	  </panel>
 	  <panel name="assignedTo" title="Assigned to" >
 	    <field name="user"/>
-	    <field name="team" if="__config__.general.getTeamManagement()"/>
+	    <field name="team"/>
 	    <field name="company" widget="SuggestBox"/>
 	  </panel>
 	</form>
@@ -535,7 +535,7 @@
 	    </panel>
 	  <panel name="assignment" title="Assignment">
 	    <field name="user"/>
-	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
 
@@ -570,7 +570,7 @@
 	    </panel>
 	  <panel name="assignment" title="Assignment">
 	    <field name="user"/>
-	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
 
@@ -603,7 +603,7 @@
 	    </panel>
 	  <panel name="assignedTo" title="Assigned to">
 	    <field name="user"/>
-	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
+	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
 

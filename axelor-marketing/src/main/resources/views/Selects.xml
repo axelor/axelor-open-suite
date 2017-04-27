@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+	<selection name="campaign.stage.select">
+		<option value="0">Draft</option>
+		<option value="1">Planned</option>
+		<option value="2">Started</option>
+		<option value="3">Suspended</option>
+		<option value="4">Ended</option>
+	</selection>
+	
+	<selection name="target.partner.type.select">
+		<option value="0">Partner</option>
+		<option value="1">Contact</option>
+		<option value="2">Both</option>
+	</selection>
+	
+	<selection name="app.type.select" id="marketing.app.type.select">
+		<option order="22" value="marketing">Marketing</option>
+	</selection>
+	
+</object-views>

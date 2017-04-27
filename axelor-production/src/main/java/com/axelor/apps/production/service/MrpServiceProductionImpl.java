@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,20 +20,20 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.Location;
@@ -65,14 +65,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 
 	
 	@Inject
-	public MrpServiceProductionImpl(GeneralService generalService, MrpRepository mrpRepository, LocationRepository locationRepository, 
+	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
 			BillOfMaterialRepository billOfMaterialRepository, ManufOrderRepository manufOrderRepository)  {
 		
 		
-		super(generalService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
+		super(appProductionService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
 				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, minStockRulesService, mrpLineService, mrpForecastRepository);
 		
 		this.billOfMaterialRepository = billOfMaterialRepository;
@@ -101,7 +101,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
 				.filter("self.product in (?1) AND self.prodProcess.location in (?2) "
 						+ "AND self.statusSelect != ?3 AND self.plannedStartDateT > ?4", 
-						this.productMap.keySet(), this.locationList, IManufOrder.STATUS_FINISHED, today.toDateTimeAtStartOfDay()).fetch();
+						this.productMap.keySet(), this.locationList, IManufOrder.STATUS_FINISHED, today.atStartOfDay()).fetch();
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		

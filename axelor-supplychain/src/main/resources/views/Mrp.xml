@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
@@ -12,7 +12,8 @@
         <field name="statusSelect"/>
 	 </grid>
     
-	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large">
+	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
+		onLoad="action-attrs-mrp-generate-all-proposals">
 	    <toolbar>
 	        <button name="runCalculation" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1"/>
    	        <button name="generateAllProposals" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect == 2"/>
@@ -48,6 +49,12 @@
 	    <domain>self.mrp.id = :_mrpId</domain>
 		<context name="_mrpId" expr="eval: __this__.id"/>
 	</action-view>
+
+	<action-attrs name="action-attrs-mrp-generate-all-proposals"
+		model="com.axelor.apps.supplychain.db.Mrp">
+		<attribute name="readonly" for="generateAllProposals"
+			expr="eval: __repo__.of(Mrp).find(id).mrpLineList.every { it.proposalGenerated || [5, 8].indexOf(it.mrpLineType.elementSelect) == -1}" />
+	</action-attrs>
 	
 </object-views>
 

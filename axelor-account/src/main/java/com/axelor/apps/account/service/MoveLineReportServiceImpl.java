@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,8 +24,8 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +36,12 @@ import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -57,7 +57,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 	protected MoveLineReportRepository moveLineReportRepo;
 
-	protected DateTime dateTime;
+	protected ZonedDateTime datetime;
 
 	protected String query = "";
 
@@ -68,14 +68,15 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 
 	@Inject
-	public MoveLineReportServiceImpl(GeneralService generalService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
+	public MoveLineReportServiceImpl(AppAccountService appBaseService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
 		this.moveLineReportRepo = moveLineReportRepo;
 		this.accountRepo = accountRepo;
-		dateTime = generalService.getTodayDateTime();
+		datetime = appBaseService.getTodayDateTime();
 
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException  {
 
 		this.buildQuery(moveLineReport);
@@ -146,10 +147,10 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		}
 
 		if(moveLineReport.getAccountSet() != null && !moveLineReport.getAccountSet().isEmpty())	{
-			this.addParams("(self.account in (?%d) or self.account.parent in (?%d) "
-					+ "or self.account.parent.parent in (?%d) or self.account.parent.parent.parent in (?%d) "
-					+ "or self.account.parent.parent.parent.parent in (?%d) or self.account.parent.parent.parent.parent.parent in (?%d) "
-					+ "or self.account.parent.parent.parent.parent.parent.parent in (?%d))", moveLineReport.getAccountSet());
+			this.addParams("(self.account in (?%d) or self.account.parentAccount in (?%d) "
+					+ "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
+					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))", moveLineReport.getAccountSet());
 		}
 
 		if(moveLineReport.getPartnerSet() != null && !moveLineReport.getPartnerSet().isEmpty())	{
@@ -176,15 +177,15 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		
 		// FOR EXPORT ONLY :
 		
-		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_SALES)  {
+		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = ?%d))", moveLineReport);
 		}
 
-		if(moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_SALES)  {
+		if(moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("self.move.journal.notExportOk = false ");
 		}
 		
-		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_SALES)  {
+		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("self.move.journal.type = ?%d", this.getJournalType(moveLineReport));
 		}
 
@@ -230,7 +231,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany());
 			if(seq == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_1),
-						GeneralServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+						AppBaseServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			return seq;
@@ -239,7 +240,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany());
 			if(seq == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_2),
-						GeneralServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+						AppBaseServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			return seq;
@@ -297,7 +298,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setPublicationDateTime(MoveLineReport moveLineReport)  {
-		moveLineReport.setPublicationDateTime(this.dateTime);
+		moveLineReport.setPublicationDateTime(this.datetime);
 		moveLineReportRepo.save(moveLineReport);
 	}
 
