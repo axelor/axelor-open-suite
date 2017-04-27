@@ -20,6 +20,7 @@
 	        <field name="product" grid-view="product-grid" form-view="product-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+            <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>

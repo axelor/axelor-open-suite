@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.Location;
@@ -78,16 +79,15 @@ public class OperationOrderStockMoveService {
 
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
 
-		Location fromLocation = null;
+		Location fromLocation;
 
-		if(operationOrder.getProdProcessLine() != null && operationOrder.getProdProcessLine().getProdProcess() != null
-				&& operationOrder.getProdProcessLine().getProdProcess().getLocation() != null)  {
-
-			fromLocation = operationOrder.getProdProcessLine().getProdProcess().getLocation();
-		}
-		else  {
-			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-					company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
+		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+		if (operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getLocation() != null) {
+			fromLocation = prodProcessLine.getLocation();
+		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getLocation() != null) {
+			fromLocation = prodProcessLine.getProdProcess().getLocation();
+		} else {
+			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 		}
 
 		StockMove stockMove = stockMoveService.createStockMove(
