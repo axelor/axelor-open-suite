@@ -124,6 +124,8 @@
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
+				        <field name="lastInventoryRealQty" if-module="axelor-stock"/>
+				        <field name="lastInventoryDateT" if-module="axelor-stock"/>
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
