@@ -61,12 +61,12 @@
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber" if="__config__.general.getManagePurchaseOrderVersion()"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
-			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
+			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
+			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>
 		</panel>
 		
 		<panel name="supplierInformation" title="Supplier information">
-			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" readonlyIf="statusSelect >= 3" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -88,7 +88,7 @@
 			</panel>
 			<panel name="otherInformation" title="Other information">
 				<panel name="financialTerms" title="Financial terms">
-					<field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+					<field name="paymentMode" domain="self.inOutSelect = 2" onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 					<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 				</panel>
 				<panel name="invoicing" title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
@@ -173,6 +173,7 @@
     	<action name="action-purchase-order-dispaly-price"/>
 		<action name="action-purchase-order-record-payment-mode"/>
 		<action name="action-attrs-po-hidden-bank-details"/>
+        <action name="action-purchase-order-method-fill-company-bank-details"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
@@ -185,6 +186,7 @@
 
     <action-group name="action-group-purchase-order-company-change-actions">
 	    <action name="action-purchase-order-record-company-configuration"/>
+		<action name="action-purchase-order-method-fill-company-bank-details"/>
 	    <action name="action-purchase-order-method-get-location"/>
     </action-group>
     
@@ -203,6 +205,13 @@
     <action-group name="action-group-purchase-order-merge-action">
 	    <action name="action-purchase-order-method-merge-purchase" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
 	    <action name="action-purchase-order-method-merge-supplychain"/>
+	</action-group>
+    
+	<action-group name="action-group-purchase-order-partner-onchange">
+		<action name="action-purchase-order-record-partner"/>
+        <action name="action-purchase-order-attrs-hide-contact-partner"/>
+		<action name="action-purchase-order-validate-information"/>
+        <action name="action-purchase-order-method-fill-company-bank-details"/>
 	</action-group>
     
     <action-method name="action-purchase-order-method-update-cost-price">
@@ -244,11 +253,6 @@
     
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
-		<field name="companyBankDetails" expr="eval: null"/>
-	    <field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails"
-    		if="supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails?.active"/>
-    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="!(supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
 	</action-record>
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -258,11 +262,6 @@
  		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
  		<field name="priceList" expr="eval: supplierPartner?.purchasePriceList"/>
-		<field name="companyBankDetails" expr="eval: null"/>
- 		<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails" 
-    		if="supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails?.active"/>
-    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="!(supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
  		<field name="contactPartner" expr="eval:null" />
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
@@ -374,7 +373,7 @@
 		<field name="locationToCheck" expr="eval: contextLocationToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
 	</action-record>
-	
+
 	<action-attrs name="action-attrs-po-domain-on-contact-partner">
 		<attribute for="contactPartner" if="supplierPartner != null &amp;&amp; !supplierPartner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
  		<attribute for="contactPartner" if="supplierPartner != null &amp;&amp; supplierPartner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
