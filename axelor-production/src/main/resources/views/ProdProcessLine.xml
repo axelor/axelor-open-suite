@@ -18,7 +18,7 @@
     	<panel name="main"> 
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
-	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" onChange="action-prod-process-line-record-capacity-settings"/>
+	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-record-capacity-settings"/>
 	    	<field name="outsourcing"/>
 	    	<panel name="capacitySettings" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
