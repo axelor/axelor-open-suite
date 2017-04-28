@@ -8,7 +8,8 @@
         <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>
         <field name="location" form-view="location-form" grid-view="location-grid"/>
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product.code" form-view="product-form" grid-view="product-grid"/>
+        <field name="product.name" form-view="product-form" grid-view="product-grid"/>
         <field name="minQty" aggregate="min"/>
         <field name="reOrderQty" aggregate="sum"/>
         <field name="typeSelect"/>
