@@ -14,6 +14,7 @@
       <many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="TeamTask"  />
       <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
       <string name="description" title="Description" large="true" />
+      <string name="planningAttrs" title="Attrs" json="true"/>
 	          
   </entity>
   

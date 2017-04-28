@@ -371,7 +371,7 @@
 "No template created in CRM configuration for company %s, emails have not been sent","Aucun modèle créé dans la configuration CRM pour la société %s, aucun email n'a été envoyé",,
 "Non-participant","Non-participant",,
 "None","Aucun",,
-"Normal","Moyen",,
+"Normal","Normal",,
 "Not started","Non démarré",,
 "Notes","Remarques",,
 "Objective %s is in contradiction with objective's configuration %s","L'objectif %s est en contradiction avec la configuration d'objectif %s",,

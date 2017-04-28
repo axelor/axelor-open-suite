@@ -136,7 +136,7 @@
         </panel>
     </form>
     
-    <form name="stock-move-wizard-stock-per-day" title="Stock per day" model="com.axelor.apps.base.db.Wizard" 
+    <form name="stock-move-wizard-stock-per-day" title="Stock Availability" model="com.axelor.apps.base.db.Wizard" 
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
     	 onNew="action-stock-move-wizard-stock-per-day-defaults">
     	<panel name="main">
