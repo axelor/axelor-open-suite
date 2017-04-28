@@ -130,28 +130,25 @@ class WkfNodeService {
 	 *            MetaField to update with MetaSelect.
 	 * @return MetaSelect of statusField.
 	 */
-	private MetaSelect addMetaSelect(MetaField statusField) {
+	@Transactional
+	public MetaSelect addMetaSelect(MetaField statusField) {
 
-		MetaSelect metaSelect = statusField.getMetaSelect();
-
-		if (metaSelect == null) {
-			String selectName = wkfService.getSelectName();
+		String selectName = wkfService.getSelectName();
 //			try {
 //				Mapper mapper = Mapper.of(Class.forName(statusField.getMetaModel().getFullName()));
 //				Property p = mapper.getProperty(statusField.getName());
 //				selectName = p.getSelection();
 //			} catch (ClassNotFoundException e) {
 //			}
-			
-			metaSelect = metaSelectRepo.findByName(selectName);
-			if (metaSelect == null) {
-				metaSelect = new MetaSelect(selectName);
-				MetaModule metaModule = wkfService.workflow.getMetaModule();
-				metaSelect.setModule(metaModule.getName());
-			}
-			
-			statusField.setMetaSelect(metaSelect);
+		
+		MetaSelect metaSelect = metaSelectRepo.findByName(selectName);
+		if (metaSelect == null) {
+			metaSelect = new MetaSelect(selectName);
+			MetaModule metaModule = wkfService.workflow.getMetaModule();
+			metaSelect.setModule(metaModule.getName());
+			metaSelect = metaSelectRepo.save(metaSelect);
 		}
+		
 		if (metaSelect.getItems() == null) {
 			metaSelect.setItems(new ArrayList<MetaSelectItem>());
 		}

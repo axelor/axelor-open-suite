@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Query;
 
@@ -31,16 +32,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -57,7 +59,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -107,9 +108,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException  {
-
+		
+		AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+		if (appSale != null && appSale.getActive() && appSale.getProductPackMgt()) {
+			this._addPackLines(saleOrder);
+		}
+		
 		this.initSaleOrderLineTaxList(saleOrder);
 
 		this._computeSaleOrderLineList(saleOrder);
@@ -408,6 +413,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		.addFormat(format)
 		.generate()
 		.getFileLink();
+	}
+	
+	private void _addPackLines(SaleOrder saleOrder) {
+		
+		if (saleOrder.getSaleOrderLineList() == null) {
+			return;
+		}
+		
+		List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
+		lines.addAll(saleOrder.getSaleOrderLineList());
+		for (SaleOrderLine line : lines) {
+			if (line.getSubLineList() == null) {
+				continue;
+			}
+			for (SaleOrderLine subLine : line.getSubLineList()) {
+				if (subLine.getSaleOrder() == null) {
+					saleOrder.addSaleOrderLineListItem(subLine);
+				}
+			}
+		}
 	}
 }
 

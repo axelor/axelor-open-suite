@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-Project;PRJ;Project configuration;project;app-project.png;axelor-project;base;14
+"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn";"sequence"
+"Projects";"PRJ";"Project management";"project";"app-project.png";"axelor-project";"base";14

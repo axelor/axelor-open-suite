@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201702020724</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -8,18 +8,6 @@
         </structure>
     </list-property>
     <list-property name="propertyBindings">
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">3678</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3678</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3678</property>
-        </structure>
         <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
@@ -39,26 +27,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -184,7 +152,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-wip</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1366,12 +1334,6 @@ where SaleOrder.id = ? ]]></xml-property>
                     <text-property name="heading">product_type_select</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">subscription_18</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">subscription</text-property>
-                    <text-property name="heading">subscription</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">is_title_line</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">is_title_line</text-property>
@@ -1479,11 +1441,6 @@ where SaleOrder.id = ? ]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">subscription_18</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">19</property>
                         <property name="name">is_title_line</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1612,26 +1569,30 @@ where SaleOrder.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">subscription_18</property>
-                    <property name="nativeName">subscription</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">19</property>
                     <property name="name">is_title_line</property>
                     <property name="nativeName">is_title_line</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select SOLine.id, SOLine.description, SOLine.qty as "quantity", Unit.label_to_printing as "UnitCode", 
-SOLine.product_name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, 
-Currency.code as "CurrencyCode", TaxLine.value as "tax_line", Product.code as "productCode", 
-SOLine.ex_tax_total - (SOLine.qty * SOLine.price) as "totalDiscountAmount",
-SOLine.sequence, select_item.title as periodicity, SaleOrder.subscription, Subscription.from_period_date,
-Subscription.to_period_date, Product.product_type_select, SaleOrder.subscription,
-SOLine.is_title_line
+            <xml-property name="queryText"><![CDATA[select 
+	SOLine.id, 
+	SOLine.description, 
+	SOLine.qty as "quantity", 
+	Unit.label_to_printing as "UnitCode", 
+	SOLine.product_name as "ProductName", 
+	SOLine.price as "unit_price", 
+	SOLine.ex_tax_total, 
+	Currency.code as "CurrencyCode",
+	TaxLine.value as "tax_line",
+	Product.code as "productCode", 
+	SOLine.ex_tax_total - (SOLine.qty * SOLine.price) as "totalDiscountAmount",
+	SOLine.sequence, select_item.title as periodicity,
+	SaleOrder.subscription, 
+	Subscription.from_period_date,
+	Subscription.to_period_date,
+	Product.product_type_select,
+	SOLine.type_select = 1 as is_title_line
 from sale_sale_order as SaleOrder
 left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
 left outer join supplychain_subscription as Subscription on (Subscription.sale_order_line = SOLine.id)
@@ -1642,27 +1603,6 @@ left outer join account_tax_line as TaxLine on (SOLine.tax_line = TaxLine.id)
 LEFT JOIN meta_select mselect ON (mselect.name = 'product.periodicity.subscription.select')
 LEFT JOIN meta_select_item select_item ON (select_item.select_id = mselect.id AND select_item.value = CAST(SOLine.periodicity AS CHAR))
 where SaleOrder.id = ?]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderLineTaxDS" id="3422">
             <list-property name="columnHints">
@@ -3423,12 +3363,6 @@ else row["Column Binding_tot_sub"]</expression>
                                 </list-property>
                                 <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">subscription_18</property>
-                                <text-property name="displayName">subscription</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["subscription_18"]</expression>
-                                <property name="dataType">integer</property>
                             </structure>
                             <structure>
                                 <property name="name">is_title_line</property>

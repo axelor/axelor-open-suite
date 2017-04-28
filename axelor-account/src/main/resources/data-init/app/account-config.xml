@@ -13,7 +13,7 @@
 	
 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"  search="self.importId = :importId" update="true">
 		<bind to="importId" column="importId" />
-		<bind to="parent" search="self.code = :parent_code AND self.company.id = 1" update="true">
+		<bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1" update="true">
 			<bind to="code" column="parent_code" />
 		</bind>
 	</input>

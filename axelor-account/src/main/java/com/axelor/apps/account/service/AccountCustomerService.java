@@ -242,9 +242,12 @@ public class AccountCustomerService {
 	 * @param company
 	 * 				Une société
 	 */
-	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
+	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount) throws AxelorException {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
+			if(accountingSituation == null) {
+				accountingSituation = accountingSituationService.createAccountingSituation(partner, company);
+			}
 			if(accountingSituation != null)  {
 				this.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
 			}
@@ -253,11 +256,16 @@ public class AccountCustomerService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void flagPartners(List<Partner> partnerList, Company company)  {
+	public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-			accountingSituation.setCustAccountMustBeUpdateOk(true);
-			accSituationRepo.save(accountingSituation);
+			if(accountingSituation == null) {
+				accountingSituation = accountingSituationService.createAccountingSituation(partner, company);
+			}
+			if (accountingSituation != null) {
+				accountingSituation.setCustAccountMustBeUpdateOk(true);
+				accSituationRepo.save(accountingSituation);
+			}
 		}
 	}
 

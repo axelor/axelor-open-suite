@@ -1,40 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
-    <grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-    	<field name="company" form-view="company-form" grid-view="company-grid"/>
-    	<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-       	<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-       	<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
-        <field name="balanceCustAccount"/>
-        <field name="balanceDueCustAccount"/>
-        <field name="balanceDueReminderCustAccount"/>
-    </grid>
-    
-	 <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
-	     onLoad="action-account-accounting-situation-method-update-customer-account" 
-	     onNew="action-account-accounting-situation-default-set" width="large">
-		<panel name="main" >
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
+		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+		<field name="balanceCustAccount"/>
+		<field name="balanceDueCustAccount"/>
+		<field name="balanceDueReminderCustAccount"/>
+		<field name="acceptedCredit"/>
+		<field name="usedCredit"/>
+	</grid>
+
+	<form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation"
+		  onLoad="action-accounting-situation-group-form-onload"
+		  onNew="action-account-accounting-situation-default-set" width="large">
+		<panel name="main">
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-       		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-       		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+			<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
+			<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
 		</panel>
 		<panel name="customerBalance" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
 			<field name="balanceDueReminderCustAccount"/>
 		</panel>
-	    <panel name="reminderProcess" title="Reminder process">
-	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
-	    </panel>
-	    <panel-dashlet action="action-accounting-situation-view-move-lines"/>
+		<panel name="reminderProcess" title="Reminder process">
+			<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
+		</panel>
+
+		<panel-related field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
+
+		<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain">
+			<field name="acceptedCredit"/>
+			<field name="usedCredit"/>
+		</panel>
+
+		<panel-dashlet action="action-accounting-situation-view-move-lines"/>
 	</form>
-    
-    
+
+
     <grid name="accounting-situation-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
     	<field name="company" form-view="company-form" grid-view="company-grid"/>
     	<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -44,6 +54,8 @@
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
         <field name="balanceDueReminderCustAccount"/>
+		<field name="acceptedCredit"/>
+		<field name="usedCredit"/>
     </grid>
     
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
@@ -65,11 +77,42 @@
 	    <panel name="reminderProcess" title="Reminder process"  >
 	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
 	    </panel>
-	     <panel-dashlet action="action-accounting-situation-view-move-lines"/>
+
+		 <panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
+
+		 <panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain">
+			 <field name="acceptedCredit"/>
+			 <field name="usedCredit"/>
+		 </panel>
+
+		 <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 	</form>
-    
+
+	<action-group name="action-accounting-situation-group-form-onload">
+		<action name="action-account-accounting-situation-method-update-customer-account"/>
+		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
+		<action name="action-accounting-situation-attrs-hide-customer-account"/>
+		<action name="action-accounting-situation-attrs-hide-employee-account"/>
+	</action-group>
+
+	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
+		<attribute name="hidden" for="supplierAccount" expr="eval: !__parent__?.isSupplier"/>
+	</action-attrs>
+
+	<action-attrs name="action-accounting-situation-attrs-hide-customer-account">
+		<attribute name="hidden" for="customerAccount" expr="eval: !__parent__?.isCustomer"/>
+	</action-attrs>
+
+	<action-attrs name="action-accounting-situation-attrs-hide-employee-account">
+		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
+	</action-attrs>
+
   	<action-method name="action-account-accounting-situation-method-update-customer-account">
 		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>
+	</action-method>
+
+	<action-method name="action-supplychain-method-compute-used-credit">
+		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit"/>
 	</action-method>
 	
 	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">

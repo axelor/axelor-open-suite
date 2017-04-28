@@ -21,5 +21,6 @@ public interface IReport {
 	
 	public static final String PROJECT = "Project.rptdesign";
 	public static final String INVOICE_ANNEX = "InvoiceAnnex.rptdesign";
+	public static final String PLANNIF_AND_COST = "PlannificationAndCost.rptdesign";
 	
 }

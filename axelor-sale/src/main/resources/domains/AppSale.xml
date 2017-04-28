@@ -7,6 +7,7 @@
 	<entity name="AppSale" lang="java" cachable="true" extends="App">
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
+		<boolean name="productPackMgt" title="Products Pack management" />
 	</entity>
 
 </domain-models>

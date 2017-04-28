@@ -55,4 +55,10 @@
 		<option order="9" value="sale">Sale</option>
 	</selection>
 	
+	<selection name="sale.order.line.type.select">
+		<option value="0">Normal</option>
+		<option value="1">Title</option>
+		<option value="2">Pack</option>
+	</selection>
+	
 </object-views>

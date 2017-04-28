@@ -84,7 +84,7 @@
 			   <field name="exTaxTotal" readonly="true"/>
 			   <field name="inTaxTotal" readonly="true"/>
 			   <field name="saleMinPrice" readonly="true"/>
-			   <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.getApp('business-project').getProjectPurchaseOrderLines()" if-module="axelor-business-project"/>
+			   <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" if-module="axelor-business-project"/>
 			   <field name="invoiced" showIf="toInvoice"/>
 			   <field name="salePrice" hidden="true"/>
 		</panel>  
@@ -104,7 +104,7 @@
 	      <panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
-	      <field name="project" form-view="project-task-form" grid-view="project-task-grid"/>
+	      <field name="project" form-view="project-form" grid-view="project-grid"/>
 	    </panel>
 	    <panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getManageSupplier()" >
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
@@ -166,7 +166,7 @@
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
-		<action name="action-purchase-order-line-attrs-title-project-task"/>
+		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
@@ -174,7 +174,7 @@
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
-		<action name="action-purchase-order-line-attrs-title-project-task"/>
+		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
@@ -208,8 +208,8 @@
 		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 	</action-attrs>
-	
-	<action-attrs if-module="axelor-business-project" name="action-purchase-order-line-attrs-title-project-task">
+
+	<action-attrs if-module="axelor-business-project" name="action-purchase-order-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="projectPanel" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project')  &amp;&amp;  !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>

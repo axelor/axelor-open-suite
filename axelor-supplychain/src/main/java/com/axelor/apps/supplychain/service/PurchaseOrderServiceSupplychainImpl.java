@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -62,6 +54,13 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -73,7 +72,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	@Inject
 	protected AppSupplychainService appSupplychainService; 
-	
+
+	@Inject
 	protected AccountConfigService accountConfigService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);

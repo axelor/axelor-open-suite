@@ -47,13 +47,13 @@
 	</form>
 	
 	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	    <panel-related field="accountingSituationList" title="Accounting balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	</form>
 	
 	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
 	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
 	</form>
-	
+
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
          <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
 	</form>
@@ -83,11 +83,7 @@
          	<panel-related field="umrList" title="History" colSpan="12"/>
          </panel>
 	</form>
-	
-	<action-method name="action-create-accounting-situation" if-module="axelor-account">
-		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" if="__config__.app.isApp('account')" />
-	</action-method>
-	
+
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -106,5 +102,16 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
 
-	
+	<action-attrs name="action-partner-account-attrs-hide-supplier-account">
+		<attribute name="hidden" for="accountingSituationList.supplierAccount" expr="eval: !isSupplier"/>
+	</action-attrs>
+
+	<action-attrs name="action-partner-account-attrs-hide-customer-account">
+		<attribute name="hidden" for="accountingSituationList.customerAccount" expr="eval: !isCustomer"/>
+	</action-attrs>
+
+	<action-attrs name="action-partner-account-attrs-hide-employee-account">
+		<attribute name="hidden" for="accountingSituationList.employeeAccount" expr="eval: !isEmployee"/>
+	</action-attrs>
+
 </object-views>

@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -169,6 +170,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
+		
+		if (product != null) {
+			stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
+		}
 
 		return stockMoveLine;
 	}
@@ -374,5 +379,19 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		return stockMoveLine;
 	}
 
+	@Override
+	public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) {
+		if (stockMoveLineList == null) {
+			return;
+		}
+
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			Product product = stockMoveLine.getProduct();
+			CustomsCodeNomenclature customsCodeNomenclature = product != null ? product.getCustomsCodeNomenclature()
+					: null;
+			stockMoveLine.setCustomsCodeNomenclature(customsCodeNomenclature);
+			stockMoveLine.setCustomsCode(customsCodeNomenclature != null ? customsCodeNomenclature.getCode() : null);
+		}
+	}
 
 }

@@ -44,8 +44,6 @@ import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
-import com.axelor.apps.supplychain.service.CustomerCreditLineService;
-import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
@@ -96,7 +94,6 @@ public class SupplychainModule extends AxelorModule {
         bind(CancelState.class).to(CancelStateSupplyChain.class);
         bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
-        bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
         bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
         bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
         bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);

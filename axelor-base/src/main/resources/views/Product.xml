@@ -70,6 +70,7 @@
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
 			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')" />
+			        <field name="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
 			        <field name="expense" hidden="true"/>
       			</panel>
     		</panel>
@@ -79,7 +80,6 @@
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
-			        <field name="customsCode" colSpan="12"/>
 			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
@@ -112,8 +112,9 @@
 		      	</panel>
 	      		<panel name="costs" title="Costs" colSpan="6">
 			        <field name="costPrice" colSpan="6" onChange="action-product-record-compute-sale-price"/>
-			        <field name="costTypeSelect" colSpan="6"/>
+			        <field name="costTypeSelect" colSpan="6" onChange="action-product-attrs-cost-type-select-onchange"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
+					<field name="$shippingCoef" type="decimal" title="Shipping Coef." readonly="true"/>
 	      		</panel>
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"/>
 	    	</panel>
@@ -123,6 +124,8 @@
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
+				        <field name="lastInventoryRealQty" if-module="axelor-stock"/>
+				        <field name="lastInventoryDateT" if-module="axelor-stock"/>
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
@@ -206,7 +209,9 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
+				  <field name="customsCodeNomenclature" if-module="axelor-stock"/>
   			</panel>
+  			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
   		</panel-tabs>
   		<panel>
   			<field name="productAttrs" colSpan="12" />
@@ -262,6 +267,7 @@
     	<action name="action-product-attrs-readonly-unit"/>
     	<action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     	<action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
+		<action name="action-product-attrs-set-cost-type-select"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
@@ -285,8 +291,9 @@
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
+		<action name="action-product-method-supplier-catalog-coeff"/>
     </action-group>
-    
+
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
     	<attribute name="readonly" for="unit" expr="eval: __repo__.of(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
     </action-attrs>
@@ -304,7 +311,20 @@
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
-    
+
+	<action-attrs name="action-product-attrs-set-cost-type-select">
+		<attribute for="costTypeSelect" name="selection-in" expr="[1,2]"/>
+        <attribute for="costTypeSelect" name="selection-in" expr="[1,2,3]" if="__config__.app.isApp('supplychain')"/>
+		<attribute for="costTypeSelect" name="selection-in" expr="[1,2,3,4]" if="__config__.app.isApp('production')"/>
+	</action-attrs>
+
+	<action-attrs name="action-product-attrs-cost-type-select-onchange">
+		<attribute for="costPrice" name="readonly" expr="eval: costTypeSelect != 1"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(new BigDecimal(shippingCoef)) : purchasePrice" if="costTypeSelect == 2"/>
+		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
+		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
+	</action-attrs>
+
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
@@ -362,6 +382,10 @@
 	
 	<action-method name="action-product-method-update-products-prices" >
 		<call class="com.axelor.apps.base.web.ProductController" method="updateProductsPrices"/>
+	</action-method>
+
+	<action-method name="action-product-method-supplier-catalog-coeff">
+		<call class="com.axelor.apps.base.web.ProductController" method="fillShippingCoeff"/>
 	</action-method>
 	
     <action-validate name="action-product-validate-end-date">

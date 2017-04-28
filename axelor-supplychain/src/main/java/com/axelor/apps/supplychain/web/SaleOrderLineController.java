@@ -44,7 +44,7 @@ public class SaleOrderLineController {
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 		if(saleOrder == null){
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+			saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
 			saleOrderLine.setSaleOrder(saleOrder);
 		}
 		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
@@ -57,7 +57,7 @@ public class SaleOrderLineController {
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 		if(saleOrder == null){
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+			saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
 			saleOrderLine.setSaleOrder(saleOrder);
 		}
 		if(saleOrderLine.getAnalyticDistributionTemplate() != null){
@@ -71,7 +71,7 @@ public class SaleOrderLineController {
 
 	public void checkStocks(ActionRequest request, ActionResponse response) {
 	    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		SaleOrder saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
 		if (saleOrder.getLocation() == null) {
 			return;
 		}

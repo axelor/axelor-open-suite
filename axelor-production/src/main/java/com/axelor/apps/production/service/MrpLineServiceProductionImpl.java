@@ -17,12 +17,18 @@
  */
 package com.axelor.apps.production.service;
 
+import java.time.LocalDate;
+import java.util.Map;
+
+import com.axelor.apps.Pair;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.service.MinStockRulesService;
@@ -50,11 +56,11 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl  {
 		this.manufOrderService = manufOrderService;
 		
 	}
-	
+
 	@Override
-	public void generateProposal(MrpLine mrpLine) throws AxelorException  {
+	public void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
-		super.generateProposal(mrpLine);
+		super.generateProposal(mrpLine, purchaseOrders);
 		
 		if(mrpLine.getMrpLineType().getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)  {
 			
@@ -69,11 +75,12 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl  {
 		
 		Product product = mrpLine.getProduct();
 		
-		manufOrderService.generateManufOrder(product, mrpLine.getQty(), 
+		ManufOrder manufOrder = manufOrderService.generateManufOrder(product, mrpLine.getQty(), 
 			ManufOrderService.DEFAULT_PRIORITY, 
 			ManufOrderService.IS_TO_INVOICE, 
 			null, mrpLine.getMaturityDate().atStartOfDay()); // TODO compute the time to produce to put the manuf order at the correct day
 		
+		linkToOrder(mrpLine, manufOrder);
 	}
 	
 	@Override

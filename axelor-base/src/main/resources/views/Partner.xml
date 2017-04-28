@@ -120,10 +120,10 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value"/>
+					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account"/>
 					<field name="hasOrdered" showIf="isCustomer"/>
-					<field name="isSupplier" hideIf="isEmployee"/>
-					<field name="isEmployee" hideIf="isCustomer || isSupplier"/>
+					<field name="isSupplier" hideIf="isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
+					<field name="isEmployee" hideIf="isCustomer || isSupplier" onChange="action-partner-account-attrs-hide-employee-account"/>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" >
@@ -170,7 +170,7 @@
 					<panel title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 						<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
-						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
+						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
 				</panel>
 				<panel name="notes" title="Notes" colSpan="12">
@@ -181,18 +181,12 @@
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
-			<panel name="balance" title="Accounting balance" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
-				<panel-include view="incl-customer-balance-partner-form" from="axelor-account" />
-				<panel-include view="incl-reported-balance-partner-form" from="axelor-account" />
-			</panel>
+			<panel-related field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
 			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails"  if="__config__.app.isApp('crm')">
 		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
-			</panel>
-			<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()">
-				<panel-include view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
 				<field name="saleOrderInformation" colSpan="12"/>
@@ -336,7 +330,7 @@
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid"/>
                 <field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
             </panel>
         </panel>
@@ -476,7 +470,7 @@
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid"/>
                 <field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
             </panel>
         </panel>
@@ -486,10 +480,13 @@
 	</form>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
+    	<action name="action-partner-method-update-customer-credit-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
+		<action name="action-partner-account-attrs-hide-supplier-account"/>
+		<action name="action-partner-account-attrs-hide-customer-account"/>
+		<action name="action-partner-account-attrs-hide-employee-account"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
@@ -635,12 +632,8 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
 	</action-method>
 
-	<action-method name="action-partner-method-generate-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="generateLines" if="__config__.app.isApp('supplychain')" />
-	</action-method>
-	
-	<action-method name="action-partner-method-update-customer-credit-line-from-partner" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromPartner" if="__config__.app.isApp('supplychain')" />
+	<action-method name="action-partner-method-update-customer-credit-from-partner" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="updateCustomerCreditFromPartner"/>
 	</action-method>
 	
 	

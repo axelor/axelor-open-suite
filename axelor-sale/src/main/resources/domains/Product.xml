@@ -6,6 +6,8 @@
   <entity name="Product" lang="java">
   
     <many-to-one name="salesUnit" ref="com.axelor.apps.base.db.Unit" title="Sales unit" initParam="true" massUpdate="true" help="true"/>
+  	<boolean name="isPack" title="Is pack" />
+  	<one-to-many name="packLines" title="Pack lines" ref="com.axelor.apps.sale.db.PackLine" />
   	
   </entity>
 

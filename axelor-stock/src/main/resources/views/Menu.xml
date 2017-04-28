@@ -130,6 +130,14 @@
 		<view type="form" name="stock-move-line-all-form"/>
 	</action-view>		
 	
+	<menuitem name="stock-root-stock-per-day" parent="stock-root"
+		title="Stock Availability" action="stock.root.stock.per.day"  order="32"/>
+
+	<action-view name="stock.root.stock.per.day" title="Stock Availability"
+		model="com.axelor.apps.base.db.Wizard" >
+		<view type="form" name="stock-move-wizard-stock-per-day"/>
+	</action-view>		
+	
 	<menuitem name="stock-root-report" parent="stock-root"
 		title="Reportings" order="45"/>
 		
@@ -199,6 +207,16 @@
 		<view type="grid" name="tracking-number-configuration-grid"/>
 		<view type="form" name="tracking-number-configuration-form"/>
 	</action-view>
+
+	<menuitem name="stock-root-conf-customs-code-nomenclature"
+		parent="stock-root-conf" title="Customs code nomenclature"
+		action="stock.root.conf.customs.code.nomenclature" />
+
+	<action-view name="stock.root.conf.customs.code.nomenclature"
+		title="Customs code nomenclature" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+		<view type="tree" name="customs-code-nomenclature-tree"/>
+	</action-view>
+
 
 <!-- ADMINISTRATION -->
 

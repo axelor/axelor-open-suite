@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import java.util.HashSet;
 import java.util.List;
 
 import java.time.LocalDateTime;
 
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -51,13 +53,20 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 	public void fillLines(InvoicingProject invoicingProject,Project project){
 		super.fillLines(invoicingProject, project);
 		if(project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)  { 
-			LocalDateTime deadlineDateToDateTime = null;
+			if (invoicingProject.getManufOrderSet() == null) {
+				invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
+			}
 			
 			if (invoicingProject.getDeadlineDate() != null){
-				deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
+				LocalDateTime deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
+				invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
+						.all().filter("self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)", project, deadlineDateToDateTime).fetch());
 			}
-			invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
-					.all().filter("self.productionOrder.project = ?1 AND (self.realStartDateT < ?2 or ?3 is null)", project, deadlineDateToDateTime, invoicingProject.getDeadlineDate()).fetch());
+			else {
+				invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
+						.all().filter("self.productionOrder.project = ?1", project).fetch());
+			}
+			
 		}
 	}
 	

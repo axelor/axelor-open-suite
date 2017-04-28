@@ -151,6 +151,7 @@
     	<action name="action-inventory-line-attrs-tracking-number"/>
     	<action name="action-stock-move-line-set-product-info"/>
     	<action name="action-stock-move-line-compute-price"/>
+    	<action name="action-stock-move-line-store-product-type"/>
     </action-group>
     
     <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -182,6 +183,10 @@
 	
 	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">
 	    <field name="product" expr="eval: trackingNumber.product" if="trackingNumber"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-line-store-product-type" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="productTypeSelect" expr="eval: product?.productTypeSelect"/>
 	</action-record>
 	
 	<action-attrs name="action-stock-move-line-product-domain">

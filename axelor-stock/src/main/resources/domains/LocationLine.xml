@@ -18,5 +18,8 @@
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr"/>
 	<many-to-one name="detailsLocation" ref="com.axelor.apps.stock.db.Location" title="Location Details"/>
 	
+	<decimal name="lastInventoryRealQty"/>
+	<datetime name="lastInventoryDateT" tz="true"/>
+	
   </entity>
 </domain-models>

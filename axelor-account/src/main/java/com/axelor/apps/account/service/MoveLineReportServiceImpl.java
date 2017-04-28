@@ -147,10 +147,10 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		}
 
 		if(moveLineReport.getAccountSet() != null && !moveLineReport.getAccountSet().isEmpty())	{
-			this.addParams("(self.account in (?%d) or self.account.parent in (?%d) "
-					+ "or self.account.parent.parent in (?%d) or self.account.parent.parent.parent in (?%d) "
-					+ "or self.account.parent.parent.parent.parent in (?%d) or self.account.parent.parent.parent.parent.parent in (?%d) "
-					+ "or self.account.parent.parent.parent.parent.parent.parent in (?%d))", moveLineReport.getAccountSet());
+			this.addParams("(self.account in (?%d) or self.account.parentAccount in (?%d) "
+					+ "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
+					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))", moveLineReport.getAccountSet());
 		}
 
 		if(moveLineReport.getPartnerSet() != null && !moveLineReport.getPartnerSet().isEmpty())	{

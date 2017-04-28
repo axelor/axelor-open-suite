@@ -39,7 +39,6 @@ public class ProjectService {
 
 	public Project generateProject(Project parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
 		Project project = new Project();
-		project.setTypeSelect(ProjectRepository.TYPE_PROJECT);
 		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
 		project.setProject(parentProject);
 		project.setName(fullName);
@@ -51,26 +50,9 @@ public class ProjectService {
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
 		project.setProgress(BigDecimal.ZERO);
-		project.addMembersUserSetItem(assignedTo);
 		return project;
 	}
 
-
-	public Project generateTask(Project project,String fullName, User assignedTo){
-		Project task = new Project();
-		task.setTypeSelect(ProjectRepository.TYPE_TASK);
-		task.setStatusSelect(ProjectRepository.STATE_PLANNED);
-		task.setProject(project);
-		task.setName(fullName);
-		if(Strings.isNullOrEmpty(fullName)){
-			task.setName(project.getFullName()+"_task");
-		}
-		task.setFullName(task.getName());
-		task.setAssignedTo(assignedTo);
-		task.setProgress(BigDecimal.ZERO);
-
-		return task;
-	}
 
 	public Partner getClientPartnerFromProject(Project project) throws AxelorException{
 		return this.getClientPartnerFromProject(project);

@@ -60,4 +60,6 @@ public interface ManufOrderService {
 	
 	public String getLanguageToPrinting(ManufOrder manufOrder);
 
+	public BigDecimal getProducedQuantity(ManufOrder manufOrder);
+
 }

@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.mysql.jdbc.log.Log;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -220,7 +222,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException  {
 
-		LOG.debug("Plannification du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
+		LOG.debug("Planification du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 
 		Location fromLocation = stockMove.getFromLocation();
 		Location toLocation = stockMove.getToLocation();
@@ -287,6 +289,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
 				true);
+		
+		stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
@@ -638,6 +642,39 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		stockMoveRepo.save(this.copyAndSplitStockMoveReverse(stockMove, false));
 
+	}
+	
+	@Override
+	public Map<LocalDate, BigDecimal> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate) {
+		
+		Map<LocalDate, BigDecimal> stockMap = new HashMap<LocalDate, BigDecimal>();
+		
+		while(!fromDate.isAfter(toDate)) {
+			Double qty = getStock(locationId, productId, fromDate);
+			stockMap.put(fromDate, new BigDecimal(qty));
+			fromDate = fromDate.plusDays(1);
+		}
+		
+		return stockMap;
+	}
+	
+    private Double getStock(Long locationId, Long productId, LocalDate date) {
+		
+		List<StockMoveLine> inLines = stockMoveLineRepo.all()
+			.filter("self.product.id = ?1 AND self.stockMove.toLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
+			,productId, locationId, StockMoveRepository.STATUS_CANCELED, date).fetch();
+		
+		List<StockMoveLine> outLines = stockMoveLineRepo.all()
+				.filter("self.product.id = ?1 AND self.stockMove.fromLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
+				,productId, locationId, StockMoveRepository.STATUS_CANCELED, date).fetch();
+		
+		Double inQty = inLines.stream().mapToDouble(inl->Double.parseDouble(inl.getQty().toString())).sum();
+		
+		Double outQty = outLines.stream().mapToDouble(out->Double.parseDouble(out.getQty().toString())).sum();
+		
+		Double qty = inQty-outQty;
+		
+		return qty;
 	}
 
 }
