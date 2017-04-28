@@ -95,8 +95,10 @@
 			<panel name="configurations" title="Configurations">
 				<field name="productList" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
-				<field name="projectFolder"/>
-				<field name="projectTypeSelect"/>
+				<field name="projectFolder" onChange="action-project-attrs-filter-project-parent"/>
+				<field name="projectTypeSelect" onChange="action-project-attrs-filter-project-parent"/>
+				<field name="projectParent" hideIf="projectTypeSelect == 1"/>
+				<spacer/>
 				<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectList.length > 0" colSpan="3" onClick="save,action-method-project-compute-duration-fromchildren,save"/>
 				<button name="addTeam" title="Add / Select a team" onClick="action-project-view-select-team" colSpan="3" />
 				<field name="synchronisable" widget="boolean-switch" colSpan="3" />
@@ -275,7 +277,7 @@
 	</action-record>
 	
 	<action-attrs name="action-project-attrs-filter-project-parent">
-		<attribute name="domain" for="project" expr="eval: &quot; self.id IN (${projectFolder?.project?.collect{it.id}.join(',')})&quot;" if="projectFolder?.project?.projectTypeSelect == 1"/>
+		<attribute name="domain" for="projectParent" expr="eval: &quot; self.id IN (${projectFolder?.project?.collect{it.id}.join(',')})&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-hide-invoicing-panel">

@@ -19,6 +19,7 @@
 		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronisable"/>
+		<many-to-one name="projectParent" ref="com.axelor.apps.project.db.Project" title="Project Parent"/>
 		
 		<string name="code" title="Code" />
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
