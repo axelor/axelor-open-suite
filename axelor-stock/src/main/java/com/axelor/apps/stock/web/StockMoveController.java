@@ -65,6 +65,7 @@ public class StockMoveController {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -84,6 +85,7 @@ public class StockMoveController {
 			StockMove stockMove = stockMoveRepo.find(stockMoveFromRequest.getId());
 			String newSeq = stockMoveService.realize(stockMove);
 			
+			
 			response.setReload(true);
 
 			if(newSeq != null)  {
@@ -98,6 +100,8 @@ public class StockMoveController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
 

@@ -179,7 +179,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 
-
 	@Override
 	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException  {
 
@@ -393,5 +392,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			stockMoveLine.setCustomsCode(customsCodeNomenclature != null ? customsCodeNomenclature.getCode() : null);
 		}
 	}
+
 
 }

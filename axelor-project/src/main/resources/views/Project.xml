@@ -95,8 +95,10 @@
 			<panel name="configurations" title="Configurations">
 				<field name="productList" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
-				<field name="projectFolder"/>
-				<field name="projectTypeSelect"/>
+				<field name="projectFolder" onChange="action-project-attrs-filter-project-parent"/>
+				<field name="projectTypeSelect" onChange="action-project-attrs-filter-project-parent"/>
+				<field name="projectParent" hideIf="projectTypeSelect == 1"/>
+				<spacer/>
 				<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectList.length > 0" colSpan="3" onClick="save,action-method-project-compute-duration-fromchildren,save"/>
 				<button name="addTeam" title="Add / Select a team" onClick="action-project-view-select-team" colSpan="3" />
 				<field name="synchronisable" widget="boolean-switch" colSpan="3" />
@@ -274,6 +276,10 @@
 		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
 	</action-record>
 	
+	<action-attrs name="action-project-attrs-filter-project-parent">
+		<attribute name="domain" for="projectParent" expr="eval: &quot; self.id IN (${projectFolder?.project?.collect{it.id}.join(',')})&quot;"/>
+	</action-attrs>
+	
 	<action-attrs name="action-project-attrs-hide-invoicing-panel">
 		<attribute name="hidden" for="invoicingPanel" expr="eval: projInvTypeSelect != 3"/>
 	</action-attrs>
@@ -295,7 +301,7 @@
 		<attribute name="value" for="isProject" expr="eval:_fromProject"/>
 		<attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.Project">
 		<attribute name="value:add" for="membersUserSet" expr="eval: assignedTo"/>
 	</action-attrs>
@@ -313,7 +319,13 @@
 	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+    	
+    <action-view name="action-project-view-create-team" title="Create a team" model="com.axelor.team.db.Team">
+    	<view type="form" name="team-form"/>
     
+    </action-view>
+    	
+    	
     <action-attrs name="action-project-attrs-duration-title">
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
@@ -333,14 +345,14 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
-	<action-view name="action-project-view-select-team" model="com.axelor.team.db.Team" title="Team">
-	  <view name="team-grid" type="grid"/>
-	  <view name="team-form" type="form"/>
+	<action-view name="action-project-view-select-team" model="com.axelor.apps.project.db.Project" title="Team">
+	  <view name="project-team-form" type="form"/>
 	  <view-param name="popup" value="reload"/>
 	  <view-param name="show-toolbar" value="false"/>
 	  <view-param name="show-confirm" value="true"/>
 	  <view-param name="popup-save" value="true"/>
 	  <view-param name="forceEdit" value="true"/>
+	  <context name="_showRecord" expr="eval: id"/>
 	</action-view>
 	
 	<action-view name="action-project-open-gantt" title="Gantt" model="com.axelor.team.db.TeamTask">
