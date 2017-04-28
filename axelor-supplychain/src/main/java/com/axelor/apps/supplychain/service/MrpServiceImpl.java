@@ -18,15 +18,17 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
@@ -744,10 +746,12 @@ public class MrpServiceImpl implements MrpService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateProposals(Mrp mrp) throws AxelorException  {
 		
+		Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
+		
 		for(MrpLine mrpLine : mrp.getMrpLineList())  {
 			
 			if (!mrpLine.getProposalGenerated()) {
-				mrpLineService.generateProposal(mrpLine);
+				mrpLineService.generateProposal(mrpLine, purchaseOrders);
 			}
 			
 		}

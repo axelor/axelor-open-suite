@@ -20,9 +20,11 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.hibernate.proxy.HibernateProxy;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -52,6 +54,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -78,19 +81,25 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		this.today = appBaseService.getTodayDate();
 		this.user = userService.getUser();
 	}
-	
+
+	@Override
 	public void generateProposal(MrpLine mrpLine) throws AxelorException  {
+		generateProposal(mrpLine, null);
+	}
+
+	@Override
+	public void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		if(mrpLine.getMrpLineType().getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)  {
 			
-			this.generatePurchaseProposal(mrpLine);
+			this.generatePurchaseProposal(mrpLine, purchaseOrders);
 			
 		}
 		
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	protected void generatePurchaseProposal(MrpLine mrpLine) throws AxelorException  {
+	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		Product product = mrpLine.getProduct();
 		Location location = mrpLine.getLocation();
@@ -105,18 +114,31 @@ public class MrpLineServiceImpl implements MrpLineService  {
 
 		Company company = location.getCompany();
 
-		PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-				this.user,
-				company,
-				null,
-				supplierPartner.getCurrency(),
-				maturityDate,
-				"MRP-"+this.today.toString(), //TODO sequence on mrp
-				null,
-				location,
-				this.today,
-				supplierPartner.getPurchasePriceList(),
-				supplierPartner));
+		Pair<Partner, LocalDate> key = null;
+		PurchaseOrder purchaseOrder = null;
+	
+		if (purchaseOrders != null) {
+			key = new Pair<>(supplierPartner, maturityDate);
+			purchaseOrder = purchaseOrders.get(key);
+		}
+		
+		if (purchaseOrder == null) {
+			purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+					this.user,
+					company,
+					null,
+					supplierPartner.getCurrency(),
+					maturityDate,
+					"MRP-"+this.today.toString(), //TODO sequence on mrp
+					null,
+					location,
+					this.today,
+					supplierPartner.getPurchasePriceList(),
+					supplierPartner));
+			if (purchaseOrders != null) {
+				purchaseOrders.put(key, purchaseOrder);
+			}
+		}
 		Unit unit = product.getPurchasesUnit();
 		BigDecimal qty = mrpLine.getQty();
 		if(unit == null){

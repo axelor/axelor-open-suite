@@ -18,10 +18,13 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
-
 import java.time.LocalDate;
+import java.util.Map;
 
+import com.axelor.apps.Pair;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
@@ -29,14 +32,16 @@ import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 
-
 public interface MrpLineService {
-	
-	public void generateProposal(MrpLine mrpLine) throws AxelorException;
 
-	public MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, Location location, Model... models);
-	
-	public MrpLineOrigin createMrpLineOrigin(Model model);
+	void generateProposal(MrpLine mrpLine) throws AxelorException;
 
-	public MrpLineOrigin copyMrpLineOrigin(MrpLineOrigin mrpLineOrigin);
+	void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException;
+
+	MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty,
+			LocalDate maturityDate, BigDecimal cumulativeQty, Location location, Model... models);
+
+	MrpLineOrigin createMrpLineOrigin(Model model);
+
+	MrpLineOrigin copyMrpLineOrigin(MrpLineOrigin mrpLineOrigin);
 }
