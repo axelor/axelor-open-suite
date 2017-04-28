@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="partner-product-quality-rate-grid" title="Partner product quality rate grid" model="com.axelor.apps.stock.db.PartnerProductQualityRate">
+    	<field name="product"/>
+    	<field name="qualityRate"/>
+    </grid>
+    
+    <form name="partner-product-quality-rate-form" model="com.axelor.apps.stock.db.PartnerProductQualityRate" title="Partner product quality rate form">
+    	<panel>
+  		  	<field name="partner" colSpan="6"/>
+  		  	<spacer/>
+    		<field name="product" colSpan="6"/>
+    		<field name="qualityRate" colSpan="6"/>
+    	</panel>
+    </form>
+    
+ </object-views>
