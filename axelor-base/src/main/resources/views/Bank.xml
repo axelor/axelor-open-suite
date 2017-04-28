@@ -25,9 +25,10 @@
 		<panel>
 			<field name="bankAddressList" colSpan="12">
 				<editor x-show-titles="false">
-					<field name="code" colSpan="3"/>
-					<field name="address" colSpan="5"/>
-					<field name="label" colSpan="4"/>
+					<field name="code" onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
+					<field name="address" onChange="action-method-bank-address-fill-full-name" colSpan="5"/>
+					<field name="label" onChange="action-method-bank-address-fill-full-name" colSpan="4"/>
+					<field name="fullName" hidden="true"/>
 				</editor>
 			</field>
         </panel>

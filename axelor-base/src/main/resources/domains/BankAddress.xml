@@ -7,9 +7,10 @@
 
     <entity name="BankAddress" lang="java">
         <string name="code" title="Code"/>
-        <string name="address" title="SWIFT address" max="255" nullable="false" namecolumn="true"/>
+        <string name="address" title="SWIFT address" max="255" nullable="false"/>
         <string name="label" title="Label"/>
         <many-to-one name="bank" ref="com.axelor.apps.base.db.Bank"/>
+        <string name="fullAddress" title="Full Address" namecolumn="true"/>
     </entity>
 </domain-models>
 

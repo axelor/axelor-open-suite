@@ -4,10 +4,12 @@
 
     <form name="bank-address-form" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress"
           onNew="action-attrs-bank-address-form-bank" onLoad="action-attrs-bank-address-form-bank">
-        <field name="code"/>
-        <field name="address"/>
-        <field name="label"/>
-        <field name="bank"/>
+        <panel>
+            <field name="code"/>
+            <field name="address"/>
+            <field name="label"/>
+            <field name="bank"/>
+        </panel>
     </form>
 
     <grid name="bank-address-grid" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress">
@@ -22,4 +24,7 @@
         <attribute for="bank" name="value" expr="eval: __parent__?.bank" if="__parent__?._model == 'com.axelor.apps.base.db.BankDetails'"/>
     </action-attrs>
 
+    <action-method name="action-method-bank-address-fill-full-name">
+        <call class="com.axelor.apps.base.web.BankAddressController" method="fillFullName"/>
+    </action-method>
 </object-views>
