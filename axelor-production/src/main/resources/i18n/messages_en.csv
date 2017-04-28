@@ -135,6 +135,7 @@
 "Manage consumed products on operations?",,,
 "Manage consumed products on phases?",,,
 "Manage residual products on BOM",,,
+"ManufOrder",,,
 "ManufOrder.billOfMaterial","Bill of Material",,
 "ManufOrder.effective","Effective",,
 "ManufOrder.endDate","End Date",,
