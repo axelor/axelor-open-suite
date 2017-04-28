@@ -30,7 +30,7 @@
     		</panel>
     	</panel>
     	<panel-tabs>
-    		<panel-related name="toConsumeProdProductList"  field="toConsumeProdProductList" title="To consume products" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+			<panel-related name="toConsumeProdProductList" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
     		<panel-related  field="objectDescriptionList" colSpan="12"/>
     	</panel-tabs>
     	        
