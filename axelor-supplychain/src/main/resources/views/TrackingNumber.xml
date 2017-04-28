@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
-    <grid name="tracking-number-grid" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber">
-		<hilite if="$moment(perishableExpirationDate).isBefore(__date__) || $moment(warrantyExpirationDate).isBefore(__date__)" color="danger" />
-		<hilite if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))" color="warning" />
-		<hilite if="$moment(perishableExpirationDate).isAfter($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isAfter($moment(_datePlusTwoMonths))" color="success" />
-    	<field name="trackingNumberSeq"/>
-    	<field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="warrantyExpirationDate"/>
-        <field name="perishableExpirationDate"/>
-    </grid>
-    
-    <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
-    	onLoad="action-tracking-number-attrs-hide-fields" >
-    	<panel name="main">
-	    	<field name="trackingNumberSeq"/>
-	        <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields" form-view="product-form" grid-view="product-grid"/>
-	        <field name="warrantyExpirationDate"/>
-	        <field name="perishableExpirationDate"/>
-	        <field name="counter"/>
-        </panel>
-    </form>
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<search name="tracking-number-search" title="Tracking number search" limit="50">
+	<search name="tracking-number-search" title="Tracking number search" limit="50" id="tracking-number-supplychain-search">
 		<search-fields>
 			<field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
 			<field name="trackingNumber" type="reference" target="com.axelor.apps.stock.db.TrackingNumber" widget="SuggestBox" domain="self.product = :product"/>
@@ -39,6 +18,8 @@
 			<field name="location" type="string"/>
 			<field name="moveLine" type="string"/>
 			<field name="date" type="date"/>
+			<field name="saleOrder" title="Sale Order" type="string"/>
+			<field name="purchaseOrder" title="Purchase Order" type="string"/>
 		</result-fields>
 
 		<select model="com.axelor.apps.stock.db.StockMove" title="Stock Move">
@@ -48,6 +29,8 @@
 			<field name="stockMoveLineList[].realQty" as="currentQty"/>
 			<field name="stockMoveLineList[].qty" as="futureQty"/>
 			<field name="stockMoveLineList[].stockMove.realDate" as="date"/>
+			<field name="stockMoveLineList[].stockMove.saleOrder.saleOrderSeq" as="saleOrder"/>
+			<field name="stockMoveLineList[].stockMove.purchaseOrder.purchaseOrderSeq" as="purchaseOrder"/>
 			<where>
 				<input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
 			</where>
@@ -63,11 +46,4 @@
 			</where>
 		</select>
 	</search>
-    
-    <action-attrs name="action-tracking-number-attrs-hide-fields">
-    	<attribute name="hidden" for="warrantyExpirationDate" expr="eval: !product?.hasWarranty"/>
-    	<attribute name="hidden" for="perishableExpirationDate" expr="eval: !product?.isPerishable"/>
-    </action-attrs>
-    
-    
 </object-views>

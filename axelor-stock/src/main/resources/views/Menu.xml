@@ -42,7 +42,14 @@
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
-	</action-view>		
+	</action-view>
+
+
+	<menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search" action="stock.root.search" order="17"/>
+
+	<action-view name="stock.root.search" title="Search">
+		<view name="tracking-number-search" type="search"/>
+	</action-view>
 	
 <!-- 	MUST BE DELETED -->
 	
