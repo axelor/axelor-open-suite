@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.production.service;
 
+import java.time.LocalDate;
 import java.util.Map;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
@@ -56,7 +58,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl  {
 	}
 
 	@Override
-	public void generateProposal(MrpLine mrpLine, Map<Partner, PurchaseOrder> purchaseOrders) throws AxelorException  {
+	public void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		super.generateProposal(mrpLine, purchaseOrders);
 		

@@ -28,6 +28,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
@@ -745,7 +746,7 @@ public class MrpServiceImpl implements MrpService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateProposals(Mrp mrp) throws AxelorException  {
 		
-		Map<Partner, PurchaseOrder> purchaseOrders = new HashMap<>();
+		Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
 		
 		for(MrpLine mrpLine : mrp.getMrpLineList())  {
 			

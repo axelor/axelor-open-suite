@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.hibernate.proxy.HibernateProxy;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -53,6 +54,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -86,7 +88,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	}
 
 	@Override
-	public void generateProposal(MrpLine mrpLine, Map<Partner, PurchaseOrder> purchaseOrders) throws AxelorException  {
+	public void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		if(mrpLine.getMrpLineType().getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)  {
 			
@@ -97,7 +99,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Partner, PurchaseOrder> purchaseOrders) throws AxelorException  {
+	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		Product product = mrpLine.getProduct();
 		Location location = mrpLine.getLocation();
@@ -112,10 +114,12 @@ public class MrpLineServiceImpl implements MrpLineService  {
 
 		Company company = location.getCompany();
 
+		Pair<Partner, LocalDate> key = null;
 		PurchaseOrder purchaseOrder = null;
 	
 		if (purchaseOrders != null) {
-			purchaseOrder = purchaseOrders.get(supplierPartner);
+			key = new Pair<>(supplierPartner, maturityDate);
+			purchaseOrder = purchaseOrders.get(key);
 		}
 		
 		if (purchaseOrder == null) {
@@ -132,7 +136,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 					supplierPartner.getPurchasePriceList(),
 					supplierPartner));
 			if (purchaseOrders != null) {
-				purchaseOrders.put(supplierPartner, purchaseOrder);
+				purchaseOrders.put(key, purchaseOrder);
 			}
 		}
 		Unit unit = product.getPurchasesUnit();
