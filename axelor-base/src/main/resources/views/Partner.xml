@@ -197,12 +197,18 @@
 			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
 				<field name="password" widget="password"/>
 			</panel>
-			<panel name="Delivery" title="Delivery" showIf="isSupplier || isCustomer">
+			<panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
 				<field name="deliveryDelay" showIf="isSupplier"/>
 				<spacer/>
 				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
 				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+			</panel>
+			<panel name="quality" title="Quality rating" if-module="axelor-stock" showIf="isSupplier">
+				<field name="qualityRating" colSpan="3"/>
+				<field name="moveLinesTotal" colSpan="3"/>
+				<spacer/>
+				<field name="productMoveLineList" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel>
@@ -526,6 +532,11 @@
 		<attribute name="required" for="name" expr="true"/>
 		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
 	</action-attrs>
+	
+<!--	<action-attrs name="action-partner-attrs-move-lines-total">
+		<attribute name="value" for="moveLinesTotal" expr="eval: __repo__.of(StockMove).all().filter('self.typeSelect = 1').count()"/>
+	</action-attrs>
+  -->	
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />

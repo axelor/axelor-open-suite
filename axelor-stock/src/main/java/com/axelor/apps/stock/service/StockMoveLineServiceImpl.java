@@ -178,7 +178,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 
-
 	@Override
 	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException  {
 
@@ -377,6 +376,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
 		return stockMoveLine;
 	}
+
 
 
 }

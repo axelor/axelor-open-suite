@@ -35,7 +35,6 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
@@ -62,6 +61,7 @@ public class StockMoveController {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -81,6 +81,7 @@ public class StockMoveController {
 			StockMove stockMove = stockMoveRepo.find(stockMoveFromRequest.getId());
 			String newSeq = stockMoveService.realize(stockMove);
 			
+			
 			response.setReload(true);
 
 			if(newSeq != null)  {
@@ -95,6 +96,8 @@ public class StockMoveController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
 

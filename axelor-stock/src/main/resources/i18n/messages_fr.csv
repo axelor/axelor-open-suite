@@ -356,3 +356,8 @@
 "You must configure an inventory virtual location for the company %s","Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",,
 "You must select a stock location","Veuillez selectionner un entrepot",,
 "help:Product.trackingNumberConfiguration",,,
+"Quality Rating","Niveau de qualité",,
+"Quality rating","Niveau de qualité",,
+"Quality rate", "Niveau de qualité",,
+"Move Lines Total","Total d'écritures de stock",,
+"Product quality","Qualité des produits",,

@@ -31,14 +31,18 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.PartnerProductQualityRate;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.PartnerProductQualityRateRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -48,6 +52,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -71,6 +77,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
+
+	@Inject
+	private PartnerRepository partnerRepository;
+	
+	@Inject
+	private PartnerProductQualityRateRepository partnerProductQualityRateRepo;
 
 	@Inject
 	public StockMoveServiceImpl() {
@@ -282,6 +294,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				stockMove.getEstimatedDate(),
 				true);
 
+		
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		stockMoveRepo.save(stockMove);
@@ -298,10 +311,124 @@ public class StockMoveServiceImpl implements StockMoveService {
 			else
 				newStockSeq = newStockMove.getStockMoveSeq();
 		}
+		
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+			calculate(stockMove);
+		}
 
 		return newStockSeq;
 	}
 
+	@SuppressWarnings("null")
+	@Transactional
+	public void calculate(StockMove stockMove){
+		
+		Partner partner = stockMove.getPartner();
+		Integer valueConformity = partner.getQualityRating();
+		Integer qualityRate = 0;
+		Integer qualityRating;
+		Product product;
+		Integer moveLinesTotal = partner.getMoveLinesTotal();
+		
+		
+		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
+		
+		List<PartnerProductQualityRate> productMoveLines = partner.getProductMoveLineList();
+		
+		
+		for(StockMoveLine line : stockMoveLines) {
+			
+			qualityRate = 0;
+			
+			Integer conformity = line.getConformitySelect();
+			
+			if(conformity == StockMoveRepository.CONFORMITY_COMPLIANT) {
+				valueConformity++;
+				qualityRate++;
+			} else if (conformity == StockMoveRepository.CONFORMITY_NON_COMPLIANT) {
+				valueConformity--;
+				qualityRate--;
+			}
+			
+			product = line.getProduct();
+			
+			createProductMoveLine(partner, product, qualityRate);
+			
+			moveLinesTotal++;
+		}
+		
+		qualityRating = valueConformity;
+		partner.setQualityRating(qualityRating);
+		partner.setMoveLinesTotal(moveLinesTotal);
+		
+		partnerRepository.save(partner);
+		
+	}
+	
+	
+	
+	public PartnerProductQualityRate createProductMoveLine(Partner partner, Product product, Integer qualityRate) {
+		
+
+		PartnerProductQualityRate productMoveLine = new PartnerProductQualityRate();
+		
+		productMoveLine.setPartner(partner);
+		productMoveLine.setProduct(product);
+		productMoveLine.setQualityRate(qualityRate);
+		
+		
+		return partnerProductQualityRateRepo.save(productMoveLine);
+		
+		
+	}
+	/*
+	
+	public PartnerProductQualityRate updateProductMoveLine(Partner partner, Product product, Integer qualityRate) {
+		
+		
+		// Je parcours mon tableau de partner product
+		List <PartnerProductQualityRate> partnerProductMoveLines = partner.getProductMoveLineList();
+		Integer partnerProductQualityRate;
+		
+		// JE suis dans la ligne
+		for(PartnerProductQualityRate partnerProductLine : partnerProductMoveLines) {
+			
+			// Si produit existe déjà
+			if(product == partnerProductLine.getProduct()) {
+
+				// alors
+				
+				// Je récupère conformity de la ligne du stock
+				partnerProductQualityRate = partnerProductLine.getQualityRate();
+				
+				// Si conformity de la ligne de stock = +
+				if(qualityRate == StockMoveRepository.CONFORMITY_COMPLIANT) {
+					// alors 
+					//je récupère conformity du produi du partner et je l'augmente
+					partnerProductQualityRate++;
+					
+				// sinon
+				} else if (qualityRate == StockMoveRepository.CONFORMITY_NON_COMPLIANT) {
+					// je décrémente
+					
+					partnerProductQualityRate--;
+				}
+					
+				// J'update qualityRate
+				partnerProductLine.setQualityRate(partnerProductQualityRate);
+				// et je sors
+				return partnerProductLine;
+				
+			}
+		}
+		
+		return productMoveLine;
+		
+	}
+
+*/
+	
+	
 	@Override
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList)  {
 
