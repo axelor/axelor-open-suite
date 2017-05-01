@@ -30,13 +30,6 @@
 		</panel>
 	</form>
 	
-	<form name="project-planning-user-select-form" title="Select users"  model="com.axelor.apps.project.db.ProjectPlanning">
-		<panel>
-			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-planning-attrs-project-domain"/>
-			<button name="showPlanning" title="Show planning" onClick="action-project-planning-show-planning" colSpan="3" />
-		</panel>
-	</form>
-	
 	<gantt name="project-planning-gantt" model="com.axelor.apps.project.db.ProjectPlanning" title="Project planning"
 	 	taskStart="fromDate"  taskEnd="toDate" >
 		<field name="user"/>
@@ -46,17 +39,5 @@
 		eventStart="fromDate" eventStop="toDate" title="Project planning" colorBy="user">
 		<field name="user"/>
 	</calendar>
-	
-	<action-attrs name="action-project-planning-attrs-project-domain">
-	   <attribute name="domain" expr="eval:&quot;self.id in (${([0]+__repo__.of(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
-	</action-attrs>
-	
-	<action-view name="action-project-planning-show-planning" title="Project planning" model="com.axelor.apps.project.db.ProjectPlanning">
-		<view type="gantt" name="project-planning-gantt" />
-		<view type="grid" name="project-planning-grid" />
-		<view type="form" name="project-planning-form" />
-		<domain>self.user.id in :_userIds</domain>
-		<context name="_userIds" expr="eval:[0] + userSet.collect{it->it.id}"/>
-	</action-view>
 	
 </object-views>
