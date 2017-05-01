@@ -515,6 +515,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expense.addExpenseLineListItem(expenseLine);
 			
 			Beans.get(ExpenseRepository.class).save(expense);
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", expenseLine.getId());
+			response.setData(data);
 			response.setTotal(1);
 		}
 	}
@@ -583,6 +586,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	 		expense.addKilometricExpenseLineListItem(expenseLine);
 	 		
 	 		Beans.get(ExpenseRepository.class).save(expense);
+	 		HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", expenseLine.getId());
+			response.setData(data);
 	 		response.setTotal(1);
 	 	}
 	}

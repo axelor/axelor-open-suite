@@ -567,10 +567,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 				timesheet = createTimesheet(user, date, date);
 			}
 			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+			TimesheetLine line = createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 			
 			Beans.get(TimesheetRepository.class).save(timesheet);
 			response.setTotal(1);
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", line.getId());
+			response.setData(data);
 		}
 	}
 	
