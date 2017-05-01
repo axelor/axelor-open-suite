@@ -4,10 +4,15 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="warning" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+    	<field name="startDateTime"/>
+    	<field name="clientPartner" />
+    	<field name="typeSelect"/>
     	<field name="subject"/>
-        <field name="typeSelect"/>
         <field name="statusSelect" />
-        <field name="startDateTime"/>
         <field name="duration" widget="duration" x-big="true"/>
         <field name="user" form-view="user-form"  grid-view="user-grid"/>
         <field name="team" form-view="team-form" grid-view="team-grid"/>
@@ -26,14 +31,36 @@
  	</calendar>
     
     <grid name="my-event-grid" orderBy="startDateTime" title="Events" model="com.axelor.apps.crm.db.Event">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+		<field name="startDateTime"/>
 		<field name="subject"/>
 		<field name="typeSelect"/>
-		<field name="startDateTime"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
     
+    <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+    	<field name="startDateTime" />
+		<field name="subject" />
+		<field name="user" />
+		<field name="description" />
+    </grid>
+    
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 	onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" onSave="action-event-group-on-save">
+		<toolbar>
+			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
+			<button name="start" help="Start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
+			<button name="pause" help="Pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
+			<button name="accept" help="Finish" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
+		</toolbar>
 		<panel colSpan="12" name="calendarConfig">
 			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
@@ -44,16 +71,16 @@
 			<button name="viewOnMap" colSpan="1" icon="fa-map-marker" showIf="typeSelect == 2" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
-			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time" hideIf="typeSelect == 1"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
-			<panel colSpan="12">
+			<panel colSpan="12" hideIf="typeSelect == 1">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
-			<panel name="guests" title="Guests" colSpan="12">
+			<panel name="guests" title="Guests" colSpan="12" showIf="typeSelect == 2">
 				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
 					<editor layout="table" x-show-titles="false">
 						<field name="name" readonly="true"/>
@@ -77,14 +104,11 @@
 			<field name="typeSelect" domain="self.value IN ('1','2','3','5')"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" />
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid" />
-			<field name="prioritySelect" showIf="typeSelect == 3 || typeSelect == 5"/>
+			<field name="prioritySelect" showIf="typeSelect == 3"/>
 			<field name="statusSelect" hidden="true" showIf="!typeSelect"/>
 			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2" />
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
-			<field name="statusSelect" selection-in="[21, 22, 23, 24, 25]" hidden="true" showIf="typeSelect == 5" onChange="action-record-set-tickets-resolved-progress-select"/>
- 			<field name="eventCategory" showIf="typeSelect == 5" widget="SuggestBox"/>
- 			<field name="progressSelect" showIf="typeSelect == 5"/>
- 			<field name="limitDateT" showIf="typeSelect == 5"/>
+ 			<field name="limitDateT" showIf="typeSelect == 4"/>
 		</panel>
 		
 		<panel sidebar="true" title="Linked to" name="meetingLinked">
@@ -108,6 +132,7 @@
 	<action-group name="action-group-crm-event-onload">
 		<action name="action-partner-attrs-hide-contact-partner" />
 		<action name="action-partner-method-check-rights" if="calendarCrm != null"/>
+		<action name="action-event-hide-private" if="typeSelect == 2" />
 	</action-group>
 	
 	<action-record name="action-event-record-current-user" model="com.axelor.apps.crm.db.Event">
@@ -115,8 +140,8 @@
 	</action-record>
 	
     <action-view name="action-event-view-lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
-    	<view type="grid" name="lead-event-grid"/>
-    	<view type="form" name="lead-event-form"/>
+    	<view type="grid" name="event-lead-grid"/>
+    	<view type="form" name="lead-form"/>
     </action-view>
     
     <action-view name="action-event-view-contact" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -137,145 +162,18 @@
     	<call class="com.axelor.apps.crm.web.EventController" method="changeCreator"/>
     </action-method>
     
-    <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
-    	<toolbar>
-    		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />
-    	</toolbar>
-	    <field name="subject"/>
-	    <field name="callTypeSelect"/>
-	    <field name="startDateTime"/>
-	    <field name="endDateTime"/>
-	    <field name="statusSelect" />
-	    <field name="team" form-view="team-form" grid-view="team-grid" />
-	    <field name="user" form-view="user-form" grid-view="user-grid" />
-	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />
-	</grid>
-    
-	<form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner"
-		onNew="action-event-new-record" onSave="action-event-record-subjectTeam">
-		<toolbar>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
-		</toolbar>
-
-		<panel colSpan="12" name="main" >
-			<field name="subject" colSpan="12"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
-			<panel colSpan="12">
-				<field name="description" widget="html" colSpan="12"/>
-			</panel>
-			<panel name="dates" title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
-				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-			</panel>
-			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
-			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		
-		<panel sidebar="true" name="attributes" title="Attributes">
-			<field name="callTypeSelect"  placeholder="Type"/>
-			 <field name="statusSelect" showTitle="false" selection-in="[1, 2, 3]"  placeholder="Status"/>
-		</panel>
-		
-		<panel sidebar="true" name="linkedTo" title="Linked to">
-			<field name="clientPartner" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
-			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel>
-		<panel-mail>
-			<mail-messages limit="4" />
-			<mail-followers />
-		</panel-mail>
-	</form>
     
     <action-method name="action-method-crm-event-assign-tome">
     	<call class="com.axelor.apps.crm.web.EventController" method="assignToMeEvent"/>
     </action-method>
     
     
-	<calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="user" model="com.axelor.apps.crm.db.Event"
-	    eventStart="startDateTime" 
-	    eventStop="endDateTime" 
-	    eventLength="1">
-	    <field name="subject" />
-	</calendar>
-    
-    <grid name="meeting-grid" title="Meetings" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime" >
-    	<hilite color="warning" if="startDateTime > __time__"/>
-    	<field name="subject"/>
-	    <field name="meetingType" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
-	    <field name="startDateTime"/>
-	    <field name="endDateTime"/>
-	    <field name="location"/>
-	    <field name="statusSelect" />
-	    <field name="team" form-view="team-form" grid-view="team-grid" />
-	    <field name="user" form-view="user-form" grid-view="user-grid"/>
-	</grid>
-
-    <form name="meeting-form" onNew="action-event-new-record" title="Meeting" model="com.axelor.apps.crm.db.Event" 
-        onLoad="action-group-crm-event-onload,action-event-hide-private" onSave="action-event-group-on-save">
-		<toolbar>
-			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
-		</toolbar>
-		<panel colSpan="12" name="calendarConfig">
-			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
-			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
-		</panel>
-		<panel name="meetingGeneral" colSpan="12">
-			<field name="subject" colSpan="6"/>
-			<field name="location" colSpan="6"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
-			<panel colSpan="12">
-				<field name="description" widget="html" colSpan="12"/>
-			</panel>
-			<panel name="dates" title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
-				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-				<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
-				<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
-			</panel>
-			<panel title="Add Guests" name="addGuests" sidebar="true">
-				<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
-				<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
-			</panel>
-			<panel name="guests" title="Guests" colSpan="12">
-				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
-					<editor layout="table" x-show-titles="false">
-						<field name="name" readonly="true"/>
-						<field name="statusSelect" widget="RadioSelect"/>
-			        </editor>
-				</field>
-			</panel>
-			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
-			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		<panel name="meetingAttributes" sidebar="true" title="Attributes">
-			<field name="meetingType" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
-			<field name="statusSelect" showTitle="false" selection-in="[1, 2, 3]"/>
-		</panel>
-		<panel name="meetingLinked" sidebar="true" title="Linked to" >
-			<field name="clientPartner" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
-			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel>
-
-		<panel-mail name="panelMail">
-		  <mail-messages limit="4" />
-		  <mail-followers />
-	  	</panel-mail>
-	</form>
-    
     <action-method name="action-event-method-add-email-guest">
     	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>
     </action-method>
     
     <action-group name="action-group-crm-meeting-contactpartner-onchange">
-    	<action name="action-event-record-client-partner"/>
+    	<action name="action-attrs-client-partner"/>
     	<action name="action-meeting-set-location-contact"/>
     </action-group>
     
@@ -287,59 +185,6 @@
     	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     </action-attrs>
     
-    <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
-	    <field name="subject"/>
-	    <field name="startDateTime"/>
-	    <field name="limitDateT"/>
-	    <field name="statusSelect"/>
-	    <field name="prioritySelect"/>
-	    <field name="statusSelect" />
-	    <field name="team" form-view="team-form" grid-view="team-grid"/>
-	    <field name="user" form-view="user-form" grid-view="user-grid"/>
-	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-task-start-click,save" readonlyIf="statusSelect == 2 || statusSelect == 4"/>
-	    <button name="pause" icon="fa-pause" help="Pause" onClick="action-group-crm-task-pause-click,save" readonlyIf="statusSelect == 4 || statusSelect == 3"/>
-	    <button name="accept" icon="fa-power-off" help="Finish" onClick="action-group-crm-task-accept-click,save" readonlyIf="statusSelect == 4"/>
-	</grid>
-    
-	
-	<form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner" 
-		onNew="action-event-new-record" onSave="action-event-record-subjectTeam">
-		<toolbar>
-			<button name="start" help="Start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play" onClick="action-set-task-status-select-2,save"/>
-			<button name="pause" help="Pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" onClick="action-set-task-status-select-3,save"/>
-			<button name="accept" help="Finish" readonlyIf="statusSelect == 14" icon="fa-power-off" onClick="action-set-task-status-select-4,save"/>
-		</toolbar>
-		
-		<panel name="main" readonlyIf="statusSelect == 14">
-			<field name="subject" colSpan="12"/>
-			<field name="limitDateT" colSpan="3"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
-			<panel colSpan="12">
-				<field name="description" widget="html" colSpan="12"/>
-			</panel>
-			<panel name="dates" title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
-				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-				<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
-			</panel>
-			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		
-		<panel sidebar="true" name="attributes" title="Attributes">
-			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]"/>
-			<field name="prioritySelect" readonlyIf="statusSelect == 14"/>	
-		</panel>
-		
-		<panel sidebar="true" name="linkedTo" title="Linked to" readonlyIf="statusSelect == 14" >
-			<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
-			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		</panel>	
-	</form>
-	
     <action-group name="action-group-crm-task-start-click">
     	<action name="action-set-task-status-select-2"/>
     </action-group>
@@ -352,90 +197,6 @@
     	<action name="action-set-task-status-select-4"/>
     </action-group>
     
-	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
-		<toolbar>
-    		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />
-    	</toolbar>
-	    <hilite color="info" if="prioritySelect == 1 &amp;&amp; statusSelect != 25" />
-        <hilite color="warning" if="prioritySelect == 4 &amp;&amp; statusSelect != 25" />
-        <hilite color="danger" if="prioritySelect == 5 &amp;&amp; statusSelect != 25" />
-        <hilite color="success" if="statusSelect == 25" />
-	    <field name="ticketNumberSeq"/>
-	    <field name="subject"/>
-	    <field name="eventCategory" form-view="event-category-form" grid-view="event-category-grid"/>
-	    <field name="startDateTime"/>
-	    <field name="endDateTime"/>
-	    <field name="user" form-view="user-form" grid-view="user-gird"/>
-	    <field name="prioritySelect"/>
-	    <field name="statusSelect"/>
-	    <field name="progressSelect" widget="SelectProgress"/>
-	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" readonlyIf="statusSelect == 25  || user.id == _internalUserId" onClick="action-method-crm-event-assign-tome" />
-	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-ticket-start-click,save" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29"/>
-	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click,action-record-set-tickets-resolved-progress-select,save" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29"/>
-	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click,save" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" />
-	</grid>
-    
-    <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-record-subjectTeam,action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
-	<toolbar>
-		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome,action-event-set-sequence,save" readonlyIf="statusSelect == 25  || user.id == _internalUserId" />
-		<button name="start" help="Start" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
-		<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29" icon="fa-check" onClick="action-set-ticket-status-select-3,save"/>
-		<button name="stop" help="Finish" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" icon="fa-power-off" onClick="action-set-ticket-status-select-5,save"/>
-	</toolbar>
-	<panel name="main" colSpan="12" readonlyIf="statusSelect == 25">
-			<field name="ticketNumberSeq" title="Ticket N°" colSpan="3" readonly="true"/>
-			<field name="subject" title="Subject" colSpan="9" placeholder="Subject"/>
-			<field name="subjectTeam" hidden="true"/>
-	</panel>
-	<panel readonlyIf="statusSelect == 25">
-		<panel name="context" title="Context" colSpan="12" readonlyIf="statusSelect == 25">
-			<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead"/>
-			<field name="user" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-gird"/>
-			<field name="responsibleUser" form-view="user-form" grid-view="user-gird"/>
-		</panel>
-		<panel title=" " colSpan="12">
-			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-			<field name="duration" colSpan="3" widget="duration" onChange="action-event-method-compute-from-duration" x-big="true"/>
-			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-			<field name="limitDateT" colSpan="3"/>
-		</panel>
-		<panel title=" " colSpan="12">
-			<field name="description" showTitle="false" colSpan="12" widget="html"/>
-		</panel>
-	</panel>
-	<panel sidebar="true" name="attributes" title="Attributes">
-		<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]" onChange="action-record-set-tickets-resolved-progress-select"/>
-		<field name="prioritySelect" colSpan="3" readonlyIf="statusSelect == 25" />
-		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid" readonlyIf="statusSelect == 25"/>
-		<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21 || statusSelect == 25" widget="SelectProgress" />
-    </panel>
-    <panel-mail>
-		<mail-messages limit="4" />
-		<mail-followers />
-	</panel-mail>
-</form>
-
-	<grid name="leave-grid" title="Leaves" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime" canNew="false" canEdit="false">
-    	<field name="subject"/>
-	    <field name="startDateTime"/>
-	    <field name="endDateTime"/>
-	    <field name="user" form-view="user-form" grid-view="user-grid"/>
-	    <field name="description"/>
-	</grid>
-    
-    <form name="leave-form" title="Leave" model="com.axelor.apps.crm.db.Event" onNew="action-event-new-leave" canNew="false" canEdit="false">
-		<panel colSpan="12">
-			<field name="user" title="Leave for" form-view="user-form" grid-view="user-grid"/>
-			<panel title="Dates" colSpan="12">
-				<field name="startDateTime" colSpan="3"/>
-				<field name="endDateTime" colSpan="3"/>
-			</panel>
-			<field name="description" colSpan="12" widget="html"/>
-		</panel>
-	</form>
-	
 	<action-group name="action-event-group-on-save">
     	<action name="action-event-record-subjectTeam"/>
     	<action name="save"/>
@@ -492,7 +253,6 @@
     	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
     	<action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     	<action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
-    	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
     	<action name="action-event-record-event-from-partner" if="_partner != null"/>
@@ -500,33 +260,12 @@
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
     </action-group>
     
-    <action-group name="action-group-crm-ticket-onnew">
-    	<action name="action-event-new-record"/>
-    	<action name="action-event-ticket-attrs-default"/>
-    </action-group>
-    
-    <action-group name="action-group-crm-ticket-start-click">
-    	<action name="action-set-ticket-status-select-2"/>
-    </action-group>
-    
-    <action-group name="action-group-crm-ticket-accept-click">
-    	<action name="action-set-ticket-status-select-3"/>
-    </action-group>
-    
-    <action-group name="action-group-crm-ticket-stop-click">
-    	<action name="action-set-ticket-status-select-5"/>
-    </action-group>
     
 <!--     ACTION ATTRIBUTS -->
     
     <action-attrs name="action-event-attrs-watchers-domain">
     	<attribute name="domain" for="userSet" expr="eval: &quot; self.id IN (${project?.memberUserSet?.collect{it.id}.join(',')})&quot;" if="project?.memberUserSet?.collect{it.id}?.size() > 0"/>
     	<attribute name="domain" for="userSet" expr="eval:" if="project?.memberUserSet?.collect{it.id}?.size() == 0"/>
-    </action-attrs>
-    
-    <action-attrs name="action-event-ticket-attrs-default">
-    	<attribute name="hidden" for="responsibleUser" expr="eval: true" if="_clientView"/>
-    	<attribute name="required" for="project" expr="eval: true" if="typeSelect == 5"/>
     </action-attrs>
     
     <action-attrs name="action-event-attrs-team-domain">
@@ -537,12 +276,11 @@
     	<attribute name="domain" for="contactPartner" expr="eval: &quot;self.isContact = true AND self.id IN (${(clientPartner?.contactPartnerSet != null &amp;&amp; !clientPartner.contactPartnerSet.empty)?clientPartner.contactPartnerSet.collect{it.id}.join(','):'null,null'})&quot;" if="clientPartner"/>
     </action-attrs>
     
+    <action-attrs name="action-attrs-client-partner">
+    	<attribute name="value" for="clientPartner" expr="eval: contactPartner?.mainPartner"/>
+    </action-attrs>
 <!--     ACTION RECORD -->
 
- 	<action-record name="action-event-record-client-partner" model="com.axelor.apps.crm.db.Event">
-    	<field name="clientPartner" expr="eval: contactPartner?.mainPartner"/>
-    </action-record>
-    
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     	<field name="typeSelect" expr="eval: _typeSelect"/>
@@ -557,12 +295,6 @@
     	<field name="prioritySelect" expr="2" />
     </action-record>
     
-    <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
-    	<field name="statusSelect" expr="21"/>
-    	<field name="prioritySelect" expr="eval: _prioritySelect"/>
-    	<field name="progressSelect" expr="0"/>
-    </action-record>
-    
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
     	<field name="duration" expr="3600" if="endDateTime == null"/>
     </action-record>
@@ -570,10 +302,6 @@
     <action-record name="action-event-default-record-user" model="com.axelor.apps.crm.db.Event">
     	<field name="user" expr="eval:__user__" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3"/>
    		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    </action-record>
-    
-    <action-record name="action-event-record-ticket-responsible-user" model="com.axelor.apps.crm.db.Event">
-    	<field name="responsibleUser" expr="eval: user" if="responsibleUser == null"/>
     </action-record>
     
     <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
@@ -624,16 +352,6 @@
 		<field name="statusSelect" expr="eval:14"/>
 	</action-record>	
 	
-	<action-record name="action-set-ticket-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" expr="eval:22"/>
-	</action-record>	
-	<action-record name="action-set-ticket-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" expr="eval:23"/>
-	</action-record>
-	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" expr="eval:25"/>
-	</action-record>
-	
 	<action-record name="action-event-new-leave" model="com.axelor.apps.crm.db.Event">
 		<field name="typeSelect" expr="4"/>
 		<field name="user" expr="eval: __user__"/>
@@ -646,15 +364,8 @@
 		<field name="subjectTeam" expr="eval: com.axelor.i18n.I18n.get('Available')" if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 2"/>
 	</action-record>
 	
-	<action-record name="action-record-set-tickets-resolved-progress-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="progressSelect" expr="100" if="eval:statusSelect == 23"/>
-    </action-record>
 	
 <!-- 	ACTION METHOD -->
-	
-	 <action-method name="action-event-set-sequence">
-		<call class="com.axelor.apps.crm.web.EventController" method="setSequence" />
-	</action-method>
 	
 	<action-method name="action-event-method-compute-from-start-date-time">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeFromStartDateTime"/>
@@ -719,30 +430,6 @@
 		</filter>
 		<filter title="My Team Calls">
 			<domain>self.team = :_myActiveTeam</domain>
-		</filter>
-	</search-filters>
-	
-	<search-filters name="ticket-filters" model="com.axelor.apps.crm.db.Event" title="Ticket filters">
-		<filter title="My Tickets">
-			<domain>self.user = :__user__</domain>
-		</filter>
-		<filter title="My Team Tickets">
-			<domain>self.team = :_myActiveTeam</domain>
-		</filter>
-		<filter title="Unassigned Tickets">
-			<domain>self.user IS NULL</domain>
-		</filter>
-		<filter title="Urgent Tickets">
-			<domain>self.prioritySelect = 3</domain>
-		</filter>
-		<filter title="New Tickets">
-			<domain>self.progressSelect = 0</domain>
-		</filter>
-		<filter title="Ongoing Tickets">
-			<domain>(self.progressSelect != 0 and self.progressSelect != 100) or (self.statusSelect in (21, 22, 23, 24, 25))</domain>
-		</filter>
-		<filter title="Closed Tickets">
-			<domain>self.statusSelect = 5</domain>
 		</filter>
 	</search-filters>
 	

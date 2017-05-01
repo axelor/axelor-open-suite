@@ -150,20 +150,6 @@ public class EventController {
 	}
 
 
-	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		Event event = request.getContext().asType(Event.class);
-
-		if(event.getTicketNumberSeq() ==  null && event.getTypeSelect() == IEvent.TICKET){
-			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.EVENT_TICKET);
-			if (seq == null)
-				throw new AxelorException(I18n.get(IExceptionMessage.EVENT_1),
-								IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("ticketNumberSeq", seq);
-		}
-	}
-
 	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -198,7 +184,7 @@ public class EventController {
 			else
 				response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
 		}else
-			response.setFlash(I18n.get(IExceptionMessage.EVENT_2));
+			response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
 	}
 
 

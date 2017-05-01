@@ -17,8 +17,7 @@
 		onNew="action-job-application-defaults">
 		<menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Create call" action="save,action-job-application-create-call" readonlyIf="id == null"/>
-	            <item title="Schedule meeting" action="save,action-job-application-create-meeting" readonlyIf="id == null"/>
+	            <item title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
 		<panel name="main">
@@ -66,16 +65,8 @@
 		</panel-tabs>
 	</form>
 	
-	<action-view name="action-job-application-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="call-form"/>
-    	<context name="_typeSelect" expr="1"/>
-    	<context name="_relatedToSelect" expr="eval:'com.axelor.apps.talent.db.JobApplication'" />
-    	<context name="_relatedToSelectId" expr="eval:id" />
-    </action-view>
-    
-    <action-view name="action-job-application-create-meeting" title="Create meeting (${ fullName })" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="meeting-form"/>
-    	<context name="_typeSelect" expr="2"/>
+    <action-view name="action-job-application-schedule-event" title="Schedule Event" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
     	<context name="_relatedToSelect" expr="eval:'com.axelor.apps.talent.db.JobApplication'" />
     	<context name="_relatedToSelectId" expr="eval:id" />
     </action-view>

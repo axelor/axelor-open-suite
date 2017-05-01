@@ -20,8 +20,7 @@
 		<option value="2">Meeting</option>
 		<option value="3">Task</option>
 		<option value="4">Leave</option>
-		<option value="5">Ticket</option>
-		<option value="6">Event</option>
+		<option value="5">Event</option>
 	</selection>
 	
 	<selection name="crm.event.ticket.priority.select">

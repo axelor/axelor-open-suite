@@ -9,10 +9,8 @@
     		<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
     	</toolbar>
     	<menubar>
-	        <menu title="Plan" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
-	            <item title="Plan a meeting" action="action-sale-order-view-plan-meeting" />
-	            <item title="Plan a call" action="action-sale-order-view-plan-call" />
-	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
+	        <menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
+	            <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
 	        </menu>
 	    </menubar>
 	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
@@ -36,10 +34,8 @@
     		<button name="seeSaleOrderLines" title="See sale order lines" onClick="action-view-open-sale-order-lines"/>
     	</toolbar>
     	<menubar>
-	        <menu title="Plan" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
-	            <item title="Plan a meeting" action="action-sale-order-view-plan-meeting" />
-	            <item title="Plan a call" action="action-sale-order-view-plan-call" />
-	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
+	        <menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
+	            <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
 	        </menu>
 	    </menubar>
 	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
@@ -75,10 +71,8 @@
     
     <grid name="sale-order-partner-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     	<menubar>
-	        <menu title="Plan" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
-	            <item title="Plan a meeting" action="action-sale-order-view-plan-meeting" />
-	            <item title="Plan a call" action="action-sale-order-view-plan-call" />
-	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
+	        <menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
+	            <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
 	        </menu>
 	    </menubar>
         <field name="saleOrderSeq"/>
@@ -118,11 +112,9 @@
 	    <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-word"/>
 	  </toolbar>
 	  <menubar>
-	    <menu title="Plan" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
-	      <item title="Plan a meeting" action="action-sale-order-view-plan-meeting"/>
-	      <item title="Plan a call" action="action-sale-order-view-plan-call"/>
-	      <item title="Plan a task" action="action-sale-order-view-plan-task"/>
-	    </menu>
+	    <menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
+            <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
+        </menu>
 	    <menu title="Tools">
 		    <item action="save,action-sale-order-method-generate-template" title="Define as template"/>
 		</menu>
@@ -733,22 +725,9 @@
 		</filter>
 	</search-filters>
 	
-	<action-view name="action-sale-order-view-plan-meeting" title="Plan a meeting" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="meeting-form"/>
+	<action-view name="action-sale-order-view-schedule-event" title="Schedule Event" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
     	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
-    	<context name="_typeSelect" expr="2"/>
-    </action-view>
-    
-    <action-view name="action-sale-order-view-plan-call" title="Call" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="call-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
-    	<context name="_typeSelect" expr="1"/>
-    </action-view>
-    
-    <action-view name="action-sale-order-view-plan-task" title="Plan a task" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="crm-task-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
-    	<context name="_typeSelect" expr="3"/>
     </action-view>
     
     <action-view name="action-sale-order-view-register-advance-payment" title="Register a deposit" model="com.axelor.apps.sale.db.AdvancePayment">

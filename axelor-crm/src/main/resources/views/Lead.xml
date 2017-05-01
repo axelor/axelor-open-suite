@@ -26,8 +26,7 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
         <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
-		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
@@ -42,9 +41,7 @@
 		</toolbar>
 		<menubar>
 			<menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-			  <item title="Create call" action="save,action-lead-view-create-call"/>
-			  <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
-			  <item title="Create task" action="save,action-lead-view-create-task"/>
+			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
 			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 			</menu>
 		</menubar>
@@ -127,7 +124,7 @@
 			<field name="createdBy" colSpan="6"/>
 			<field name="createdOn" colSpan="6"/>
 			<field name="contactDate" colSpan="6"/>
-			<spacer colSpan="6"/>
+			<field name="lostReason" colSpan="12" canNew="true"/>
 		</panel>
 		
 		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
@@ -135,13 +132,14 @@
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
+		
+		<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid"/>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
-			<panel-dashlet action="action-lead-view-upcoming-events"/>
-			<panel-dashlet action="action-lead-view-historical-events-completed"/>
 			<panel-dashlet action="action-lead-view-opportunity"/>
 			<panel-dashlet action="action-lead-view-event-ticket"/>
 			<panel-dashlet action="action-lead-view-emails"/>
+			<panel-dashlet action="action-lead-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')"/>
  		</panel>
  		
  		<panel-mail>
@@ -151,7 +149,7 @@
 
 	</form>
 
-	<grid name="lead-event-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
+	<grid name="event-lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
         <field name="name"/>
         <field name="firstName"/>
 		<field name="enterpriseName"/>
@@ -177,8 +175,7 @@
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address"/>
 		<field name="statusSelect"/>
-		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
@@ -231,22 +228,9 @@
     
     <!--     CREATE CRM OBJECT FROM LEAD -->
     
-    <action-view name="action-lead-view-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="call-form"/>
+    <action-view name="action-lead-view-schedule-event" title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
     	<context name="_lead" expr="eval: __self__"/>
-    	<context name="_typeSelect" expr="1"/>
-    </action-view>
-    
-    <action-view name="action-lead-view-create-meeting" title="Create meeting (${ fullName })" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="meeting-form"/>
-    	<context name="_lead" expr="eval: __self__"/>
-    	<context name="_typeSelect" expr="2"/>
-    </action-view>
-    
-    <action-view name="action-lead-view-create-task" title="Create task (${ fullName })" model="com.axelor.apps.crm.db.Event">
-    	<view type="form" name="crm-task-form"/>
-    	<context name="_lead" expr="eval: __self__"/>
-    	<context name="_typeSelect" expr="3"/>
     </action-view>
     
     <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
@@ -256,22 +240,6 @@
    	
 <!--    	PORTLET -->
    	
-	<action-view name="action-lead-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>self.lead.id = :id and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-	
-	<action-view name="action-lead-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>self.lead.id = :id and self.startDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-   	
    	<action-view name="action-lead-view-opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-dashlet-grid"/>
 		<view type="form" name="opportunity-form"/>
@@ -279,10 +247,10 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-lead-view-event-ticket" title="Tickets" model="com.axelor.apps.crm.db.Event">
+	<action-view name="action-lead-view-event-ticket" title="Tickets" model="com.axelor.apps.crm.db.Ticket">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
-		<domain>self.lead.id = :id AND self.typeSelect = 5</domain>
+		<domain>self.lead.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	

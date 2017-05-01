@@ -47,13 +47,6 @@
 
 <!-- Task -->
     
-<!-- Ticket -->
-    <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
-    <string name="ticketNumberSeq" title="Ticket N°" help="true"/>
-    <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
-    <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
-<!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
-  	
   	<boolean name="isRecurrent" title="Recurrent"/>
   	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
   	
@@ -69,8 +62,7 @@
 	  		public static final Integer TYPE_MEETING = 2;
 	  		public static final Integer TYPE_TASK = 3;
 	  		public static final Integer TYPE_LEAVE = 4;
-	  		public static final Integer TYPE_TICKET = 5;
-	  		public static final Integer TYPE_EVENT = 6;
+	  		public static final Integer TYPE_EVENT = 5;
 	  ]]>
       </extra-code>
       
@@ -80,13 +72,8 @@
       <field name="endDateTime" on="UPDATE"/>
       <field name="internalGuestSet"/>
 	   <field name="externalGuestSet"/>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 22" tag="important">Ticket In Progress</message>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 23" tag="important">Ticket Resolved</message>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 24" tag="important">Ticket in Feedback status</message>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 25" tag="important">Ticket Closed</message> 
     </track>
       
 
   </entity>
-
 </domain-models>

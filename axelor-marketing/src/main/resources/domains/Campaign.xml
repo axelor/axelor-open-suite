@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="base" package="com.axelor.apps.marketing.db"/>
+  <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
   <entity name="Campaign" lang="java" sequential="true">
   	
@@ -13,6 +13,8 @@
   	<many-to-one name="partnerTemplate" ref="com.axelor.apps.message.db.Template" title="Contact/Partners template" />
   	<many-to-one name="leadTemplate" ref="com.axelor.apps.message.db.Template" title="Leads template" />
   	<many-to-one name="emailLog" ref="com.axelor.meta.db.MetaFile" title="Email sending log" />
+  	<one-to-many name="campaignAttendeeList" ref="CampaignAttendee" title="Attendees" mappedBy="campaign"/>
+  	<many-to-one name="campaignType" ref="CampaignType" title="Campaign Type" />
   
   </entity>
 

@@ -22,4 +22,9 @@
 		<option order="22" value="marketing">Marketing</option>
 	</selection>
 	
+	<selection name="campaign.attendee.related.to.select">
+		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
+		<option value="com.axelor.apps.base.db.Partner">Partner</option>
+	</selection>
+	
 </object-views>

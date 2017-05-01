@@ -13,8 +13,7 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 	
@@ -28,8 +27,7 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 	
@@ -43,8 +41,7 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
     
@@ -56,8 +53,7 @@
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address" placeholder="whatever@example.com"/>
-	    <button name="logCall" title="Log Call" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
-		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
+	    <button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
     
