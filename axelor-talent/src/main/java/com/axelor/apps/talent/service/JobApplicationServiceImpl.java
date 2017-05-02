@@ -47,7 +47,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		
 		Employee employee = createEmployee(jobApplication);
 		
-		jobApplication.setStatusSelect(3);
+		jobApplication.setStatusSelect(JobApplicationRepository.STATUS_HIRED);
 		jobApplication.setEmployee(employee);
 		if (jobApplication.getJobPosition() != null) {
 			int nbPeopleHired = jobApplication.getJobPosition().getNbPeopleHired();
@@ -84,7 +84,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		contact.setIsEmployee(true);
 		contact.setFixedPhone(jobApplication.getFixedPhone());
 		contact.setMobilePhone(jobApplication.getMobilePhone());
-		contact.setSource(jobApplication.getJobSource());
 		contact.setEmailAddress(jobApplication.getEmailAddress());
 		contact.setFullName(partnerSerivce.computeFullName(contact));
 		

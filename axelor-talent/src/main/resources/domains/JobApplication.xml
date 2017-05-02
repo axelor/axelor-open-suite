@@ -15,7 +15,7 @@
 		<integer name="experienceSelect" title="Work experience" selection="job.position.experience.select" />
 		<many-to-many name="industrySectorSet" title="Business sectors" ref="com.axelor.apps.base.db.IndustrySector"/>
 		<string name="linkedInProfile" title="LinkedIn profile" />
-		<many-to-one name="jobSource" ref="com.axelor.apps.base.db.Source" title="Source" />
+		<many-to-one name="talentSource" ref="com.axelor.apps.talent.db.TalentSource" title="Source" />
 		<string name="referredBy" title="Referred by" />
 		<integer name="appreciation" title="Appreciation" selection="training.register.rating.select" />
 		<many-to-one name="jobPosition" ref="JobPosition"  title="Applied job" />
@@ -26,15 +26,14 @@
 		<date name="availabilityFrom" title="Availability from" />
 		<string name="description" title="Description" large="true"/> 
 		<integer name="statusSelect" title="Status" selection="job.application.status.select" />
+		<many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage" title="Hiring stage"/>
 		<string name="reasonNotHired" title="Reason not hired" large="true"/>
 		<many-to-many name="tagSkillSet" title="Skills tag" ref="TagSkill"/>
 		<extra-code>
 	   		<![CDATA[
-	   			public static final Integer STATUS_DRAFT = 0;
-	   			public static final Integer STATUS_OPEN = 1;
-	   			public static final Integer STATUS_ON_HOLD = 2;
-	   			public static final Integer STATUS_CLOSED = 3;
-	   			public static final Integer STATUS_CANCELED = 3;
+	   			public static final Integer STATUS_OPEN = 0;
+	   			public static final Integer STATUS_HIRED = 1;
+	   			public static final Integer STATUS_REJECTED = 2;
 	   		]]>
    		</extra-code>
 	</entity>

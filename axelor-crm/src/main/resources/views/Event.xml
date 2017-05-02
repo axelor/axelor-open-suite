@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
+    <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
     	<hilite color="success" if="statusSelect == 2"/>
@@ -30,7 +30,7 @@
     	<field name="subject" />
  	</calendar>
     
-    <grid name="my-event-grid" orderBy="startDateTime" title="Events" model="com.axelor.apps.crm.db.Event">
+    <grid name="my-event-grid" orderBy="-startDateTime" title="Events" model="com.axelor.apps.crm.db.Event">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
     	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
     	<hilite color="success" if="statusSelect == 2"/>
@@ -41,7 +41,7 @@
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
     
-    <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
+    <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
     	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
     	<hilite color="success" if="statusSelect == 2"/>
