@@ -18,7 +18,7 @@
 	
 	   	// ELEMENT SELECT
 		public static final int ELEMENT_AVAILABLE_STOCK = 1;  // Available stock
-		public static final int ELEMENT_PURCHASE_ORDER = 2;  // Pruchase order
+		public static final int ELEMENT_PURCHASE_ORDER = 2;  // Purchase order
 		public static final int ELEMENT_SALE_ORDER = 3;  // Sale order
 		public static final int ELEMENT_SALE_FORECAST = 4;  // Sales forecast
 		
