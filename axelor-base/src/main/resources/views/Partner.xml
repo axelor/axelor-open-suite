@@ -570,8 +570,8 @@
     	<field name="isContact" expr="#{true}"/>
     	<field name="companySet" expr="#{_parent.companySet}"/>
     	<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
-    	<field name="user"  expr="#{_parent.user}" if="#{_parent!= null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
-    	<field name="team"  expr="#{_parent.team}" if="#{_parent!= null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="user"  expr="#{_parent.user}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{_parent.team}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
     	<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
     	<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
     	<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
