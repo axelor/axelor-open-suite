@@ -19,25 +19,30 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.time.LocalDate;
-import java.time.Period;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
@@ -289,22 +294,96 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
-		stockMoveRepo.save(stockMove);
-		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
-			return null;
-		if(stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
-			StockMove newStockMove = this.copyAndSplitStockMove(stockMove);
-			newStockSeq = newStockMove.getStockMoveSeq();
-		}
-		if(stockMove.getIsWithReturnSurplus() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
-			StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove, true);
-			if(newStockSeq != null)
-				newStockSeq = newStockSeq+" "+newStockMove.getStockMoveSeq();
-			else
-				newStockSeq = newStockMove.getStockMoveSeq();
+		resetWeights(stockMove);
+
+		try {
+			if (stockMove.getIsWithBackorder() || stockMove.getIsWithReturnSurplus()) {
+				if (stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList())) {
+					StockMove newStockMove = this.copyAndSplitStockMove(stockMove);
+					newStockSeq = newStockMove.getStockMoveSeq();
+				}
+				if (stockMove.getIsWithReturnSurplus() && this.mustBeSplit(stockMove.getStockMoveLineList())) {
+					StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove, true);
+					if (newStockSeq != null)
+						newStockSeq = newStockSeq + " " + newStockMove.getStockMoveSeq();
+					else
+						newStockSeq = newStockMove.getStockMoveSeq();
+				}
+			}
+		} finally {
+			computeWeights(stockMove);
+			stockMoveRepo.save(stockMove);
 		}
 
 		return newStockSeq;
+	}
+	
+	private void resetWeights(StockMove stockMove) {
+		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+		
+		if (stockMoveLineList == null) {
+			return;
+		}
+
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			stockMoveLine.setNetWeight(null);
+			stockMoveLine.setTotalNetWeight(null);
+		}
+	}
+
+	private void computeWeights(StockMove stockMove) throws AxelorException {
+		boolean weightsRequired = checkWeightsRequired(stockMove);
+		StockConfig stockConfig = stockMove.getCompany().getStockConfig();
+		Unit endUnit = stockConfig != null ? stockConfig.getWeightUnit() : null;
+
+		if (weightsRequired && endUnit == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_17), IException.NO_VALUE);
+		}
+		
+		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+		
+		if (stockMoveLineList == null) {
+			return;
+		}
+
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			Product product = stockMoveLine.getProduct();
+
+			if (!ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
+				continue;
+			}
+
+			Unit startUnit = product.getWeightUnit();
+			BigDecimal netWeight = product.getNetWeight();
+
+			if (startUnit != null && !netWeight.equals(BigDecimal.ZERO)) {
+				UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+				netWeight = unitConversionService.convert(startUnit, endUnit, netWeight);
+				BigDecimal totalNetWeight = netWeight.multiply(stockMoveLine.getRealQty());
+
+				stockMoveLine.setNetWeight(netWeight);
+				stockMoveLine.setTotalNetWeight(totalNetWeight);
+			} else if (weightsRequired) {
+				throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_18), IException.NO_VALUE);
+			}
+		}
+	}
+
+	private boolean checkWeightsRequired(StockMove stockMove) {
+		Address fromAddress = stockMove.getFromAddress();
+		if (fromAddress == null && stockMove.getFromLocation() != null) {
+			fromAddress = stockMove.getFromLocation().getAddress();
+		}
+
+		Address toAddress = stockMove.getToAddress();
+		if (toAddress == null && stockMove.getToLocation() != null) {
+			toAddress = stockMove.getToLocation().getAddress();
+		}
+
+		Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
+		Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+
+		return fromCountry != null && toCountry != null && !fromCountry.equals(toCountry);
 	}
 
 	@Override
