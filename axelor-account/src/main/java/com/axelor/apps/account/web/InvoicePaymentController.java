@@ -83,6 +83,7 @@ public class InvoicePaymentController  {
 	 * @param request
 	 * @param response
 	 */
+	@SuppressWarnings("unchecked")
 	public void filterBankDetails(ActionRequest request, ActionResponse response) {
 		InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 		Map<String, Object> partialInvoice =
