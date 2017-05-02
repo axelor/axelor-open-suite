@@ -219,7 +219,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 		Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
 		supplierPartner.setIsSupplier(true);
-		supplierPartner.setHasOrdered(true);
 
 		return partnerRepo.save(supplierPartner);
 	}

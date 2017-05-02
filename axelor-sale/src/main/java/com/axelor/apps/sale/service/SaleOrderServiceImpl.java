@@ -203,7 +203,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		Partner clientPartner = partnerRepo.find(saleOrder.getClientPartner().getId());
 		clientPartner.setIsCustomer(true);
-		clientPartner.setHasOrdered(true);
+		clientPartner.setIsProspect(false);
 
 		return partnerRepo.save(clientPartner);
 	}
@@ -294,7 +294,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
 		if((long) q.getSingleResult() == 1)  {
-			saleOrder.getClientPartner().setHasOrdered(false);
+			saleOrder.getClientPartner().setIsCustomer(false);
+			saleOrder.getClientPartner().setIsProspect(true);
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
 		saleOrder.setCancelReason(cancelReason);

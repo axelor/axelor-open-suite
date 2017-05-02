@@ -21,7 +21,7 @@
     
     
     <boolean name="isCustomer" title="Customer?"/>
-    <boolean name="hasOrdered" title="Has Ordered"/>
+    <boolean name="isProspect" title="Prospect?"/>
     <boolean name="isSupplier" title="Supplier?"/>
     <boolean name="isEmployee" title="Employee"/>
     <boolean name="isContact" title="Contact ?" default="false" />

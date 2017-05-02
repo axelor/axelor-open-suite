@@ -28,7 +28,7 @@
 			JOIN
 				base_country AS _country ON _country.id = _address.addressL7country
 			WHERE
-				_partner.is_customer = true AND _partner.has_ordered = true				
+				_partner.is_customer = true		
 			GROUP BY
 				_country.name
 		    ]]>
@@ -48,7 +48,7 @@
 	    JOIN 
 	    	base_industry_sector as industrySector on industrySector.id = self.industry_sector
 		WHERE
-			self.is_contact != true and self.is_customer = true AND self.has_ordered = true
+			self.is_contact != true and self.is_customer = true
 	    GROUP BY
 		   _industry_sector
 		ORDER BY
@@ -97,7 +97,7 @@
 	  LEFT JOIN  
 	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
 	  WHERE
-	    self.is_customer = true AND self.has_ordered != true AND is_contact=false
+	    self.is_prospect = true AND is_contact=false
 	  GROUP BY
 	   _address_country	
 	  ORDER BY
@@ -117,7 +117,7 @@
 		LEFT JOIN 
 			self.partnerCategory _partnerCategory 
 		WHERE 
-			self.isCustomer = true AND self.isContact = false
+			self.isProspect = true AND self.isContact = false
 		group by
 			_partnerCategory.name
 		</dataset>

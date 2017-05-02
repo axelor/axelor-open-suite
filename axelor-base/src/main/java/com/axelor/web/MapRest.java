@@ -78,8 +78,8 @@ public class MapRest {
 				objectNode.put("address", addressString);				
 			}
 			
-			objectNode.put("pinColor", partner.getIsCustomer() &&  !partner.getHasOrdered() ? "red" : "orange");
-			String pinChar = partner.getIsCustomer() &&  !partner.getHasOrdered() ? "P" : "C";
+			objectNode.put("pinColor", partner.getIsProspect() ? "red" : "orange");
+			String pinChar = partner.getIsProspect() ? "P" : "C";
 			if (partner.getIsSupplier()) {
 				pinChar = pinChar + "/S";
 			}									
@@ -99,7 +99,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getCustomers() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = true AND self.isContact=?", false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -138,7 +138,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getProspects() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = false AND self.isContact=?", false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isProspect = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
