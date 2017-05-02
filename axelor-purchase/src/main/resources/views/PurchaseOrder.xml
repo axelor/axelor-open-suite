@@ -73,18 +73,18 @@
 			<field name="externalReference"/>
 	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" />
 		</panel>
-		<panel name="delivery" title="Delivery" colSpan="12">
-			<field name="deliveryDate" colSpan="3"/>
-	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
-	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
-  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode"/>
-			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
-			<panel-dashlet colSpan="12" action="action-purchase-order-view-stock-moves" height="178"/>
-	    </panel>	  
 		<panel-tabs>
 			<panel name="content" title="Content" colSpan="12">
 				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>    
 				<panel-related field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
+			</panel>
+			<panel name="delivery" title="Delivery" colSpan="12">
+				<field name="deliveryDate" colSpan="3"/>
+				<field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
+				<field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
+				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode"/>
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
+				<panel-dashlet colSpan="12" action="action-purchase-order-view-stock-moves" height="178"/>
 			</panel>
 			<panel name="otherInformation" title="Other information">
 				<panel name="financialTerms" title="Financial terms">
