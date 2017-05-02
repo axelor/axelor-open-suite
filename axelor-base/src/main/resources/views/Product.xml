@@ -197,12 +197,12 @@
 	    	</panel>
 	    	<panel name="packaging" title="Packaging">
 	  			<panel name="weight" title="Weight" colSpan="6">
-	  				<field name="weightUnit" domain="self.weightUnit.unitTypeSelect = 1"/>
+	  				<field name="weightUnit" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossWeight"/>
 	  				<field name="netWeight"/>
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
-			        <field name="lengthUnit" domain="self.lengthUnit.unitTypeSelect = 2" />
+			        <field name="lengthUnit" domain="self.unitTypeSelect = 2" />
 			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>

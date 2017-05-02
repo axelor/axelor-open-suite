@@ -23,7 +23,7 @@
 	    <field name="hasInSmForNonStorableProduct"/>
 	  </panel>
 	  <panel name="customsInformation" title="Customs">
-	  	<field name="weightUnit" domain="self.weightUnit.unitTypeSelect = 1"/>
+	  	<field name="weightUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
 	</form>
 	
