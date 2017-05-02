@@ -48,6 +48,8 @@
 		<field name="training" expr="eval:_training" />
 		<field name="employee" expr="eval:__user__.employee" />
 		<field name="trainingSession" expr="eval:_trainingSession" />
+		<field name="fromDate" expr="eval:_fromDate"/>
+		<field name="toDate" expr="eval:_toDate"/>
 	</action-record>
 	
 	<action-attrs name="action-training-register-training-session-domain">

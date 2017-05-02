@@ -74,9 +74,11 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 		event.setTypeSelect(EventRepository.TYPE_MEETING);
 		event.setStartDateTime(trainingRegister.getFromDate());
 		event.setEndDateTime(trainingRegister.getToDate());
-		event.setMeetingType(meetingTypeRepo.findByCode("TRAIN"));
 		event.setSubject(trainingRegister.getTraining().getName());
-		
+		event.setUser(trainingRegister.getEmployee().getUser());
+		if (trainingRegister.getTrainingSession() != null) {
+			event.setLocation(trainingRegister.getTrainingSession().getLocation());
+		}
 		return event;
 	}
 	

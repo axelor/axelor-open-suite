@@ -9,21 +9,22 @@
 		<field name="toDate" />
 		<field name="statusSelect" />
 		<field name="nbrRegistered" />
+		<field name="location" />
 		<field name="rating"  widget="progress"/>
 	</grid>
 	
-	<form name="training-session-form" title="Training session" model="com.axelor.apps.talent.db.TrainingSession" width="large">
+	<form name="training-session-form" title="Training session" model="com.axelor.apps.talent.db.TrainingSession" width="large" readonlyIf="$popup()">
 		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
 			<field name="training" onChange="action-training-session-training-change" />
-			<spacer/>
+			<field name="location" />
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="duration" />
 			<panel-dashlet action="action-dashlet-training-session-employee-registered" colSpan="12"/>
 		</panel>
 		<panel itemSpan="12" sidebar="true">
-			<button name="registerTraining" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect != 3"/>
+			<button name="registerTraining" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect == 1"/>
 			<button name="closeSession" title="Close session" onClick="save,action-training-session-method-close-session" showIf="statusSelect != 3" />
 			<field name="nbrRegistered" readonly="true"/>
 			<field name="rating" widget="progress" readonly="true" />
@@ -46,6 +47,8 @@
 		<view type="grid" name="training-register-grid"/>
 		<context name="_trainingSession" expr="eval:__self__"/>
 		<context name="_training" expr="eval:__self__.training"/>
+		<context name="_fromDate" expr="eval:__self__.fromDate"/>
+		<context name="_toDate" expr="eval:__self__.toDate"/>
 	</action-view>
 	
 	<action-method name="action-training-session-method-close-session">

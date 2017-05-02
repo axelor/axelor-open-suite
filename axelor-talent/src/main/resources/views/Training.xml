@@ -7,17 +7,16 @@
 		<field name="name" />
 		<field name="category" />
 		<field name="company" />
-		<field name="location" />
 		<field name="duration" />
 		<field name="mandatoryTraining" />
 	</grid>
 	
-	<form name="training-form" title="Training" model="com.axelor.apps.talent.db.Training" width="large" onNew="action-training-set-default">
+	<form name="training-form" title="Training" model="com.axelor.apps.talent.db.Training" width="large" 
+		onNew="action-training-set-default" readonlyIf="$popup()" >
 		<panel>
 			<field name="name" />
 			<field name="category" />
 			<field name="company" />
-			<field name="location" />
 			<field name="duration" />
 			<field name="mandatoryTraining" colSpan="4" />
 			<field name="tagSkillSet" colSpan="8" widget="tag-select" />
