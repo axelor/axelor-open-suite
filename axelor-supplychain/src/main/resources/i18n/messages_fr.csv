@@ -229,7 +229,7 @@
 "To Date","à Date",,
 "Type",,,
 "Unit","Unité",,
-"Unit prices in A.T.I and in W.T. can't be mix","Les unités de prix TTC et HT ne peuvent être mélangées.",,
+"Unit prices in A.T.I and in W.T. can't be mix","Il n'est pas possible de facturer des mouvements de stock dont les prix unitaires sont définis en HT et en TTC.",,
 "You have to choose at least one incoming stock move","Vous devez choisir au moins un BR",,
 "You have to choose at least one outgoing stock move","Vous devez choisir au moins un BL",,
 "You have to select at least one subscription","Vous devez sélectionner au moins un abonnement",,

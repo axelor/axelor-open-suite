@@ -595,7 +595,7 @@
 "Exported moves","Écritures exportées",,
 "Exports","Exports",,
 "External Ref.","Réf. Externe",,
-"Facture","Invoice",,
+"Facture",,,
 "File name for payroll journal entries","Nom de fichier pour les FEC",,
 "Filepath for direct debit exports (CFONB)","Dossier",,
 "Filepath for exported files (Accounting)","Chemin du dossier pour exports comptables",,
