@@ -368,10 +368,6 @@
 "You must configure a supplier virtual location for the company %s","Veuillez configurer un Emplacement Virtuel Fournisseur pour la société %s",,
 "You must configure an inventory virtual location for the company %s","Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",,
 "You must select a stock location","Veuillez sélectionner un entrepôt",,
-
-<<<<<<< HEAD
 "Use Case","Utilisation",,
 "Used for MRP","Utilisé pour CBN",,
 "Stock control","Controle du stock",,
-=======
->>>>>>> f01c1a0ccacaee87660c708698aa6ff21302f7b0
