@@ -284,7 +284,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	public String realize(StockMove stockMove) throws AxelorException {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 		
-		checkInventoryInProgress(stockMove);
+		checkOngoingInventory(stockMove);
 		
 		String newStockSeq = null;
 
@@ -325,7 +325,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return newStockSeq;
 	}
 
-	private void checkInventoryInProgress(StockMove stockMove) throws AxelorException {
+	/**
+	 * Check and raise an exception if the provided stock move is involved in an
+	 * ongoing inventory.
+	 * 
+	 * @param stockMove
+	 * @throws AxelorException
+	 */
+	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
 		if (stockMove.getFromLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL
 				|| stockMove.getToLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL) {
 			return;
@@ -345,7 +352,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 				.bind("productList", productList).fetchOne();
 
 		if (inventoryLine != null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_19), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_19),
+					inventoryLine.getInventory().getInventorySeq()), IException.INCONSISTENCY);
 		}
 	}
 
