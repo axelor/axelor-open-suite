@@ -119,6 +119,7 @@ public class InventoryController {
 		Inventory inventory = request.getContext().asType(Inventory.class);
 		inventory = inventoryRepo.find(inventory.getId());
 		inventoryService.cancel(inventory);
+		response.setReload(true);
 	}
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
