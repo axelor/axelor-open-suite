@@ -77,7 +77,7 @@
     
     <form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload, action-partner-attrs-move-lines-total" width="large">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
     
@@ -204,11 +204,11 @@
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
 				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
 			</panel>
-			<panel name="quality" title="Quality rating" if-module="axelor-stock" showIf="isSupplier">
-				<field name="qualityRating" colSpan="3"/>
-				<field name="moveLinesTotal" colSpan="3"/>
+			<panel name="quality" title="Supplier quality rating" if-module="axelor-stock" showIf="isSupplier" readonly="true">
+				<field name="supplierQualityRating" colSpan="3"/>
+				<field name="supplierArrivalProductNumber" colSpan="3"/>
 				<spacer/>
-				<field name="productMoveLineList" colSpan="12"/>
+				<field name="partnerProductQualityRateList" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel>
@@ -533,10 +533,9 @@
 		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
 	</action-attrs>
 	
-<!--	<action-attrs name="action-partner-attrs-move-lines-total">
-		<attribute name="value" for="moveLinesTotal" expr="eval: __repo__.of(StockMove).all().filter('self.typeSelect = 1').count()"/>
+	<action-attrs name="action-partner-attrs-move-lines-total">
+		<attribute name="value" for="supplierArrivalProductNumber" expr="eval: __repo__.of(StockMoveLine).all().filter('self.stockMove.typeSelect = 3 AND self.stockMove.partner.fullName = ?1', fullName).count()"/>
 	</action-attrs>
-  -->	
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />

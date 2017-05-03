@@ -80,12 +80,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
-
-	@Inject
-	private PartnerRepository partnerRepository;
 	
 	@Inject
-	private PartnerProductQualityRateRepository partnerProductQualityRateRepo;
+	protected PartnerProductQualityRatingServiceImpl partnerProductQualityRatingService;
 
 	@Inject
 	public StockMoveServiceImpl() {
@@ -318,124 +315,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 		
 		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-			calculate(stockMove);
+			partnerProductQualityRatingService.calculate(stockMove);
 		}
 
 		return newStockSeq;
 	}
-
-	@SuppressWarnings("null")
-	@Transactional
-	public void calculate(StockMove stockMove){
-		
-		Partner partner = stockMove.getPartner();
-		Integer valueConformity = partner.getQualityRating();
-		Integer qualityRate;
-		Integer qualityRating;
-		Product product;
-		Integer conformity;
-		Integer moveLinesTotal = partner.getMoveLinesTotal();
-		Boolean updateStatus = false;
-		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
-				
-		for(StockMoveLine line : stockMoveLines) {
-			
-			qualityRate = 0;
-			conformity = line.getConformitySelect();
-			updateStatus = false;
-			
-			if(conformity == StockMoveRepository.CONFORMITY_COMPLIANT) {
-				valueConformity++;
-			} else if (conformity == StockMoveRepository.CONFORMITY_NON_COMPLIANT) {
-				valueConformity--;
-			}
-			
-			product = line.getProduct();
-			
-			List <PartnerProductQualityRate> partnerProductMoveLines = partner.getProductMoveLineList();
-			
-			if(partnerProductMoveLines.size() > 0) {
-				for(PartnerProductQualityRate partnerProductLine : partnerProductMoveLines) {
-					
-					if(product == partnerProductLine.getProduct()) {
-						qualityRate = partnerProductLine.getQualityRate();
-						updateProductMoveLine(partner, product, qualityRate, partnerProductLine);	
-						updateStatus = true;
-					}
-
-				}
-				
-				if(updateStatus == false) {
-					
-					createProductMoveLine(partner, product, qualityRate);
-				}
-				
-				
-				
-			} else if (partnerProductMoveLines.size() == 0){
-				createProductMoveLine(partner, product, qualityRate);
-			}
-			
-			moveLinesTotal++;
-		}
-		
-		qualityRating = valueConformity;
-		partner.setQualityRating(qualityRating);
-		partner.setMoveLinesTotal(moveLinesTotal);
-		
-		partnerRepository.save(partner);
-		
-	}
-	
-	
-	
-	public PartnerProductQualityRate createProductMoveLine(Partner partner, Product product, Integer qualityRate) {
-		
-		PartnerProductQualityRate productMoveLine = new PartnerProductQualityRate();
-		
-		if(qualityRate == StockMoveRepository.CONFORMITY_COMPLIANT) {
-			qualityRate++;
-			
-		} else if (qualityRate == StockMoveRepository.CONFORMITY_NON_COMPLIANT) {
-			qualityRate--;
-		}
-		
-		productMoveLine.setPartner(partner);
-		productMoveLine.setProduct(product);
-		productMoveLine.setQualityRate(qualityRate);		
-		
-		return partnerProductQualityRateRepo.save(productMoveLine);
-		
-	}
-	
-	
-	public PartnerProductQualityRate updateProductMoveLine(Partner partner, Product product, Integer qualityRate, PartnerProductQualityRate partnerProductLine) {
-		
-		Integer partnerProductQualityRate = partnerProductLine.getQualityRate();
-		
-
-		System.out.print(partnerProductQualityRate);
-		
-		if(qualityRate == StockMoveRepository.CONFORMITY_COMPLIANT) {
-			partnerProductQualityRate++;
-			
-		} else if (qualityRate == StockMoveRepository.CONFORMITY_NON_COMPLIANT) {
-			partnerProductQualityRate--;
-		}
-		
-
-		System.out.print(partnerProductQualityRate);
-			
-		partnerProductLine.setQualityRate(partnerProductQualityRate);
-		
-
-		System.out.print(partnerProductLine);
-		
-		return partnerProductQualityRateRepo.save(partnerProductLine);
-		
-	}
-
-
 	
 	
 	@Override

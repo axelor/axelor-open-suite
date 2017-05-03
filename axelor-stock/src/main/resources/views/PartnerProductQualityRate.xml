@@ -6,14 +6,14 @@
     <grid name="partner-product-quality-rate-grid" title="Partner product quality rate grid" model="com.axelor.apps.stock.db.PartnerProductQualityRate">
     	<field name="product"/>
     	<field name="qualityRate"/>
+    	<field name="partnerProductMoveLineTotal"/>
     </grid>
     
     <form name="partner-product-quality-rate-form" model="com.axelor.apps.stock.db.PartnerProductQualityRate" title="Partner product quality rate form">
     	<panel>
-  		  	<field name="partner" colSpan="6"/>
-  		  	<spacer/>
     		<field name="product" colSpan="6"/>
-    		<field name="qualityRate" colSpan="6"/>
+    		<field name="qualityRate" colSpan="3"/>
+    		<field name="partnerProductMoveLineTotal" colSpan="3"/>
     	</panel>
     </form>
     

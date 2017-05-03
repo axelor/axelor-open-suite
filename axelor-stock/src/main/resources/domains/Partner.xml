@@ -9,9 +9,9 @@
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" index="false"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
     <many-to-one name="freightCarrier" ref="com.axelor.apps.stock.db.FreightCarrier" index="false"/>
-    <integer name="qualityRating" title="Quality Rating"/>
-    <integer name="moveLinesTotal" title="Move Lines Total"/>
-    <one-to-many name="productMoveLineList" ref="com.axelor.apps.stock.db.PartnerProductQualityRate" mappedBy="partner" title="Product quality"/>
+    <integer name="supplierQualityRating" title="Supplier quality rating"/>
+    <integer name="supplierArrivalProductNumber" title="Supplier arrival product number"/>
+    <one-to-many name="partnerProductQualityRateList" ref="com.axelor.apps.stock.db.PartnerProductQualityRate" mappedBy="partner" title="Partner product quality rate"/>
 
   </entity>
   

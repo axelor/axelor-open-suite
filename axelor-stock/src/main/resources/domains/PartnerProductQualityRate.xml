@@ -9,6 +9,8 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product"/>
     <integer name="qualityRate" title="Quality rate"/>
+    <integer name="partnerProductMoveLineTotal" title="Product Move Line Total"/>
+	<finder-method name="findProductByName" using="product, partner"/>
 
   </entity>
   
