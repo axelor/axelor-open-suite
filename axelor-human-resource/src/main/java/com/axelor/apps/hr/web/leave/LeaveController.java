@@ -311,7 +311,7 @@ public class LeaveController {
 	}
 	
 	
-	public String leaveValidateTag() { 
+	public String leaveValidateMenuTag() {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(LeaveRequest.class, LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
 	

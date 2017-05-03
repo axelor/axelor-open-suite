@@ -26,7 +26,7 @@
 	</action-view>	
 	
 	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
@@ -65,7 +65,7 @@
 	</action-view>
 	
 	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="extra.hours.validate">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
@@ -99,14 +99,14 @@
 	</action-view>
 	
 	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
 	
 	<menuitem name="ventilate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
@@ -151,7 +151,7 @@
 	</action-view>
 	
 	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>

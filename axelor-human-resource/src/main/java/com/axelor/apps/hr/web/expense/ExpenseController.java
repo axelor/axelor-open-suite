@@ -282,13 +282,13 @@ public class ExpenseController {
 	
 	/* Count Tags displayed on the menu items */
 	
-	public String expenseValidateTag() { 
+	public String expenseValidateMenuTag() {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(Expense.class, ExpenseRepository.STATUS_CONFIRMED);
 		
 	}
 	
-	public String expenseVentilateTag() { 
+	public String expenseVentilateMenuTag() {
 		Long total = JPA.all(Expense.class).filter("self.statusSelect = 3 AND self.ventilated = false").count();
 		
 		return String.format("%s", total);

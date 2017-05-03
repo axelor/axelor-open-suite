@@ -158,7 +158,7 @@ public class ExtraHoursController {
 	
 /* Count Tags displayed on the menu items */
 	
-	public String extraHoursValidateTag() { 
+	public String extraHoursValidateMenuTag() {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(ExtraHours.class, ExtraHoursRepository.STATUS_CONFIRMED);
 	
