@@ -338,6 +338,16 @@ public class StockMoveServiceImpl implements StockMoveService {
 			return;
 		}
 
+		List<Location> locationList = new ArrayList<>();
+
+		if (stockMove.getFromLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+			locationList.add(stockMove.getFromLocation());
+		}
+
+		if (stockMove.getToLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+			locationList.add(stockMove.getToLocation());
+		}
+
 		List<Product> productList = stockMove.getStockMoveLineList().stream().map(StockMoveLine::getProduct)
 				.collect(Collectors.toList());
 
@@ -348,7 +358,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 						+ "AND self.inventory.location IN (:locationList)\n" + "AND self.product IN (:productList)")
 				.bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
 				.bind("endStatus", InventoryRepository.STATUS_COMPLETED)
-				.bind("locationList", Arrays.asList(stockMove.getFromLocation(), stockMove.getToLocation()))
+				.bind("locationList", locationList)
 				.bind("productList", productList).fetchOne();
 
 		if (inventoryLine != null) {
