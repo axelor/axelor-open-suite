@@ -25,6 +25,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
+import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -38,13 +41,16 @@ public interface BankOrderService {
 	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(BankOrder bankOrder) throws AxelorException;
+	public void confirm(BankOrder bankOrder)   throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sign(BankOrder bankOrder);
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void realize(BankOrder bankOrder) throws AxelorException;
 	
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
@@ -61,5 +67,17 @@ public interface BankOrderService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelBankOrder(BankOrder bankOrder);
-	
+
+	@Transactional
+	public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);
+
+	public String createDomainForBankDetails(BankOrder bankOrder);
+
+	public BankDetails getDefaultBankDetails(BankOrder bankOrder);
+
+	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException;
+
+	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
+
+	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder);
 }

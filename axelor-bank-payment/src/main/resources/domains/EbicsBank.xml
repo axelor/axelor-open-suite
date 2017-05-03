@@ -12,6 +12,7 @@
   
 	<many-to-one name="bank" ref="com.axelor.apps.base.db.Bank" required="true"/>
 	<string name="fax" title="Fax"/>
+	<string name="emailAddress" title="Email"/>
     <string name="url" title="URL"/>
 	
 	<string name="languageSelect" title="Language" selection="select.language" />
@@ -21,6 +22,8 @@
 	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
 	
 	<string name="protocolSelect" title="Protocol" selection="bankpayment.ebics.bank.protocol.select" default="ssl" />
+	
+	<boolean name="useX509ExtentionForAutoSignedCert" title="Use X509 extentions for auto signed certificates" default="true"/>
 	
   </entity>
 </domain-models>

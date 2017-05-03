@@ -21,9 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.db.mapper.Adapter;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +38,6 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -520,6 +516,25 @@ public class InvoiceController {
 	public void computeAddressStr(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		response.setValue("addressStr", invoiceService.computeAddressStr(invoice.getAddress()));
+	}
+	/**
+	 * Called on load and in partner, company or payment mode change.
+	 * Fill the bank details with a default value.
+ 	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		PaymentMode paymentMode = invoice.getPaymentMode();
+		Company company = invoice.getCompany();
+		Partner partner = invoice.getPartner();
+		if(paymentMode == null || company == null || partner == null) {
+			return;
+		}
+		partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
+				.findDefaultBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
 }

@@ -128,7 +128,8 @@ public class CertificateManager {
     a005Certificate = generator.generateA005Certificate(keypair,
 	                                                user.getDn(),
 	                                                new Date(),
-	                                                end);
+	                                                end,
+	                                                user.getEbicsPartner().getEbicsBank().getUseX509ExtentionForAutoSignedCert());
     a005PrivateKey = keypair.getPrivate();
   }
 
@@ -145,7 +146,8 @@ public class CertificateManager {
     x002Certificate = generator.generateX002Certificate(keypair,
 	                                                user.getDn(),
 	                                                new Date(),
-	                                                end);
+	                                                end,
+	                                                user.getEbicsPartner().getEbicsBank().getUseX509ExtentionForAutoSignedCert());
     x002PrivateKey = keypair.getPrivate();
   }
 
@@ -162,7 +164,8 @@ public class CertificateManager {
     e002Certificate = generator.generateE002Certificate(keypair,
 	                                                user.getDn(),
 	                                                new Date(),
-	                                                end);
+	                                                end,
+	                                                user.getEbicsPartner().getEbicsBank().getUseX509ExtentionForAutoSignedCert());
     e002PrivateKey = keypair.getPrivate();
   }
 

@@ -17,7 +17,7 @@
 			<field name="typeSelect" />
 			<field name="ebicsBank" hideIf="typeSelect == 'signature'"/>
 			<field name="certificate" colSpan="3"/>
-			<button name="loadCertificate"  onClick="save,action-ebics-certificate-method-load-certificate,save" title="Load certificate" colSpan="3" hideIf="$popup()"/>
+			<button name="loadCertificate"  onClick="save,action-ebics-certificate-method-load-certificate,save" title="Load certificate" colSpan="3"/>
 			<panel title="Information" readonly="true" colSpan="12">
 				<field name="subject" colSpan="12" />
 				<field name="issuer" colSpan="12" />

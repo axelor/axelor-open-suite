@@ -48,6 +48,8 @@
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-record-in-ati"/>
 		<action name="action-sale-order-attrs-in-ati"/>
+		<action name="action-sale-order-attrs-hidden-bank-details"/>
+		<action name="action-sale-order-method-fill-company-bank-details"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
@@ -56,9 +58,18 @@
 		<action name="action-partner-attrs-hide-contact-partner" />
 		<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-method-update-timetable"/>
+		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="save"/>
 	</action-group>
-	
+
+	<action-group name="action-so-group-domain-company-bank-details" id="supplychain-so-action-group-bank-details-domain">
+		<action name="action-invoice-attrs-domain-company-bank-details"/>
+	</action-group>
+
+	<action-method name="action-sale-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
+
 	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable" />
 	</action-method>

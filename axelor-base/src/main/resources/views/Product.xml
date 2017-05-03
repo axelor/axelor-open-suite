@@ -57,8 +57,8 @@
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
-			        <field name="subTypeProductSelect" colSpan="12"/>
-			        <field name="isActivity" showIf="productTypeSelect == 'service'" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'"/>
+			        <field name="isActivity" showIf="productTypeSelect == 'service'"  if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
 			        <field name="inventoryTypeSelect" colSpan="12" />
@@ -274,7 +274,12 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-attrs-title-sale-price"/>
+    	<action name="action-product-record-product-sub-type-select"/>
     </action-group>
+    
+    <action-record name="action-product-record-product-sub-type-select" model="com.axelor.apps.base.db.Product">
+    	<field name="productSubTypeSelect" expr="eval: null" if="productTypeSelect != 'storable'"/>
+    </action-record>
     
     <action-group name="action-group-base-product-enddate-onchange">
     	<action name="action-product-validate-end-date"/>
@@ -352,7 +357,7 @@
     </action-record>
 	
 	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
-		<field name="articleVolume" if="diameter > 0.00" expr="eval: Math.PI/4*Math.sqrt(diameter)*height"/>
+		<field name="articleVolume" if="diameter > 0.00" expr="eval: (((diameter/2)*(diameter/2))*Math.PI)*height"/>
 	</action-record>
 	
 	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">

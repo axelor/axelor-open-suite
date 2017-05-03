@@ -138,7 +138,7 @@ public class EbicsUserService {
 		
 		if (orderId == null) {
 			EbicsPartner partner = user.getEbicsPartner();
-			EbicsUser otherUser = ebicsUserRepo.all().filter("self.ebicsPartner = ?1 and self.id != ?2 and self.nextOrderId != null", partner, user.getId()).order("nextOrderId").fetchOne();
+			EbicsUser otherUser = ebicsUserRepo.all().filter("self.ebicsPartner = ?1 and self.id != ?2 and self.nextOrderId != null", partner, user.getId()).order("-nextOrderId").fetchOne();
 			
 			char firstLetter = 'A';
 			if (otherUser != null) {

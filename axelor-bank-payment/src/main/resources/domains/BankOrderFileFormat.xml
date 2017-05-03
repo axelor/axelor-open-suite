@@ -13,6 +13,8 @@
 	<string name="name" title="Name"/>
 	<string name="description" title="Description" large="true" multiline="true"/>
 	<boolean name="fileGenerationSupported" title="File generation supported"/>
+	  
+	<string name="bankDetailsTypeSelect" title="Accepted Bank Details Identifiers" selection="base.bank.bank.details.type.select"/>
 	
 	
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
@@ -27,7 +29,7 @@
   	<boolean name="displayAdditionnalInformations" title="Display additionnal informations ?"/>
 	
   	<boolean name="displayBankOrderEconomicReason" title="Display economic reason ?"/>
-	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Default economic reason"/>
+	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Default economic reason" index="idx_bankpayment_bank_order_file_format_economic_reason"/>
 	
 	<boolean name="displayReceiverCountry" title="Display receiver country ?"/>
   	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Default receiver country"/>

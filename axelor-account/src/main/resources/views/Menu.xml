@@ -59,8 +59,8 @@
 	</action-view>	
 		
 		
-	
-	<menuitem name="account-root-payment-schedule" parent="invoice-root" hidden="true"
+	<!--
+	<menuitem name="account-root-payment-schedule" parent="invoice-root"
         title="Payment Schedule" />
 
     <menuitem name="account-root-payment-schedule-payment-schedule"
@@ -84,6 +84,7 @@
         <view type="form" name="payment-schedule-line-form"/>
         <view-param name="search-filters" value="payment-schedule-line-filters"/>
     </action-view>
+    -->
 	
 	
 	<menuitem name="invoice-root-report" parent="invoice-root" order="50"
@@ -292,7 +293,7 @@
 		title="Accounting reports" model="com.axelor.apps.account.db.MoveLineReport" >
 		<view type="grid" name="move-line-report-grid" />
 		<view type="form" name="move-line-report-form" />
-		<domain>self.typeSelect in (1,2,3,4,5,10,11,12,13,15,16,17,18,19,2000)</domain>
+		<domain>self.typeSelect &lt; 1000</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -302,7 +303,7 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.MoveLineReport" >
 		<view type="grid" name="move-line-report-export-grid" />
 		<view type="form" name="move-line-report-export-form" />
-		<domain>self.typeSelect in (6,7,8,9,14)</domain>
+		<domain>self.typeSelect &gt;= 1000</domain>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"

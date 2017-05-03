@@ -60,8 +60,7 @@ public class PaymentVoucherSequenceService  {
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
 
-
-		return sequenceService.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company));
+		return sequenceService.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company, paymentVoucher.getCompanyBankDetails()));
 	}
 
 

@@ -122,7 +122,7 @@
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
 		  <field name="team" form-view="team-form" grid-view="team-grid"/>
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
+		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 		  <field name="lostReason" canNew="true" />
 		</panel>
 		

@@ -115,8 +115,10 @@ public class InterbankPaymentOrderRejectImportService {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_2),
 						AppAccountServiceImpl.EXCEPTION, refReject), IException.INCONSISTENCY);
 			}
+			
+			//TODO manage multi bank
 
-			Account bankAccount = paymentModeService.getPaymentModeAccount(invoice.getPaymentMode(), company);
+			Account bankAccount = paymentModeService.getPaymentModeAccount(invoice.getPaymentMode(), company, null);
 
 			AccountConfig accountConfig = company.getAccountConfig();
 
@@ -163,7 +165,10 @@ public class InterbankPaymentOrderRejectImportService {
 						AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 			}
 		}
-		return paymentModeService.getPaymentModeAccount(paymentMode, company);
+		
+		//TODO manage multi bank
+		
+		return paymentModeService.getPaymentModeAccount(paymentMode, company, null);
 	}
 
 

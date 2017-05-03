@@ -49,7 +49,7 @@
 			<field name="dueDate" showIf="isProject"/>
 			<field name="progress" widget="Progress" onChange="action-attrs-project-compute-leadDelay" showIf="isProject"/>
 			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" showIf="isProject" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
-			<field name="imputable" widget="boolean-switch"/>
+			<field name="imputable" widget="boolean-switch" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			<field name="projInvTypeSelect" showIf="isBusinessProject"  if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="isBusinessProject &amp;&amp; (projInvTypeSelect == 2 || projInvTypeSelect == 3)" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="excludePlanning" showIf="isProject"/>
@@ -129,7 +129,7 @@
 			<field name="dueDate" />
 			<field name="progress" onChange="action-attrs-project-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
-			<field name="imputable"/>
+			<field name="imputable" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			<field name="projInvTypeSelect" onChange="action-project-attrs-hide-invoicing-panel" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="projInvTypeSelect == 2 || projInvTypeSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="sequence" />

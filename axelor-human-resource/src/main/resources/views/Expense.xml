@@ -6,6 +6,7 @@
 		<hilite color="danger" if="statusSelect == 5"/>
 		<hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
 		<hilite color="warning" if="statusSelect == 2"/>
+		<field name="expenseSeq"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
@@ -25,6 +26,7 @@
 		</toolbar>
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
+		<field name="expenseSeq"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
@@ -50,11 +52,12 @@
 	    	<button name="cancelPaymentButton" title="Cancel payment" showIf="paymentStatusSelect == 1 || paymentStatusSelect == 3"/>
 	    </panel>
 		<panel>
+			<field name="expenseSeq"/>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
+			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"/>
@@ -63,7 +66,7 @@
 			<field name="advanceAmount" hidden="true" />
 		</panel>
 		<panel-tabs>
-			<panel-related field="expenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
+			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >

@@ -18,11 +18,10 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -96,11 +95,11 @@ public class PurchaseOrderController {
 	}
 
 
-	public void clearPurchaseOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-		purchaseOrderServiceSupplychain.clearPurchaseOrder(purchaseOrder);
+		purchaseOrderServiceSupplychain.cancelReceipt(purchaseOrder);
 
 	}
 
@@ -297,5 +296,25 @@ public class PurchaseOrderController {
 		purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
 		
 		
+	}
+
+	/**
+	 * Called on partner, company or payment change.
+	 * Fill the bank details with a default value.
+	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		PaymentMode paymentMode = purchaseOrder.getPaymentMode();
+		Company company = purchaseOrder.getCompany();
+		Partner partner = purchaseOrder.getSupplierPartner();
+		if(paymentMode == null || company == null || partner == null) {
+			return;
+		}
+		partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
+				.findDefaultBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 }

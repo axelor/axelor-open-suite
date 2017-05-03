@@ -47,7 +47,7 @@
 	
 	<selection name="production.cost.sheet.line.type.select">
 	    <option value="1" icon="img/32px/produceProduct.png">Produced product</option>
-	    <option value="2" icon="img/32px/consumeProduct.png">Consommed product</option>
+	    <option value="2" icon="img/32px/consumeProduct.png">Consumed product</option>
 	    <option value="3" icon="img/32px/workCenter.png">Work center</option>
 	    <option value="4" icon="img/32px/indirectCost.png">Indirect cost</option>
 	</selection>

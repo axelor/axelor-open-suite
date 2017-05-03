@@ -307,7 +307,6 @@ public interface IExceptionMessage {
 	 */
 	static final String ACCOUNT_CONFIG_39 = /*$$(*/ "%s : Veuillez configurer un nom de fichier pour l'export des FEC pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_40 = /*$$(*/ "%s : Veuillez configurer un compte salarié pour la société %s" /*)*/;
-	static final String ACCOUNT_CONFIG_41 = /*$$(*/ "%s : Veuillez configurer un signataire par défaut pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_1 = /*$$(*/ "%s : You must configure account's informations for the company %s"/*)*/;
 	static final String ACCOUNT_CONFIG_2 = /*$$(*/ "%s : You must configure a CFONB format reimbursement's export's folder for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_3 = /*$$(*/ "%s : You must configure a CFONB format direct debit's export's folder for the company %s" /*)*/;
@@ -352,15 +351,6 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_SEQUENCE_3 = /*$$(*/ "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/ "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
 
-	static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/ "%s : Please, configure a sequence for the SEPA Credit Transfers and the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_SEQUENCE_6 = /*$$(*/ "%s : Please, configure a sequence for the SEPA Direct Debits and the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_SEQUENCE_7 = /*$$(*/ "%s : Please, configure a sequence for the International Credit Transfers and the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_SEQUENCE_8 = /*$$(*/ "%s : Please, configure a sequence for the International Direct Debits and the company %s" /*)*/;
-
-	static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s : Please, configure an account for the bank order for the internal bank to bank transfer for the company %s" /*)*/;
-	
-	
 	/**
 	 * Cfonb config service
 	 */
@@ -467,6 +457,11 @@ public interface IExceptionMessage {
 	static final String BATCH_VENTILATION_2 = /*$$(*/ "Invoice(s) ventilated" /*)*/;
 
 	/**
+	 * Refund invoice
+	 */
+	static final String REFUND_INVOICE_1 = /*$$(*/ "%s : Payment mode must be filled either in the partner or in the company configuration." /*)*/;
+
+	/**
 	 * Validate state
 	 */
 	static final String INVOICE_VALIDATE_1 = /*$$(*/ "The payment mode is not in adequacy with the invoice type" /*)*/;
@@ -565,80 +560,7 @@ public interface IExceptionMessage {
 	static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
 
-	/**
-	 *  Expense service
-	 */
-	static final String EXPENSE_JOURNAL = /*$$(*/ "You must configure an expenses journal(company : %s)" /*)*/;
-	static final String EXPENSE_ACCOUNT = /*$$(*/ "You must configure an expenses account (company : %s)" /*)*/;
-	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "You must configure an account for expenses taxes (company : %s)" /*)*/;
-	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Move already used, you must deletter it first" /*)*/;
-
-	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
-
 	static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
-	
-	
-	/**
-	 *  BankOrder service
-	 */
-	static final String BANK_ORDER_DATE = /*$$(*/ "Bank Order date can't be in the past" /*)*/;
-	static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date"/*)*/;
-	static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
-	static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/ "Please fill partner type for the bank order" /*)*/;
-	static final String BANK_ORDER_COMPANY_MISSING = /*$$(*/ "Please fill the sender company" /*)*/;
-	static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/ "Please fill the bank details" /*)*/;
-	static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/ "Please fill currency for the bank order" /*)*/;
-	static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of the bank order is not valid" /*)*/;
-	static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/ "Please select a payment mode" /*)*/;
-	static final String BANK_ORDER_SIGNATORY_MISSING = /*$$(*/ "Please select a signatory" /*)*/;
-	static final String BANK_ORDER_WRONG_SENDER_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
-	static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the detail record of the bank order line %s" /*)*/;
-	static final String BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s" /*)*/;
-	static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the further information detail record of the bank order line %s" /*)*/;
-	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
-	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
-	static final String BANK_ORDER_COMPANY_NO_SEQUENCE = /*$$(*/ "The company %s does not have bank order sequence" /*)*/;
-
-	
-	/**
-	 *  BankOrder lines
-	 */
-	static final String BANK_ORDER_LINES_MISSING = /*$$(*/ "You can't validate this bank order. you need to fill at least one bank order line" /*)*/;
-	static final String BANK_ORDER_LINE_COMPANY_MISSING = /*$$(*/ "Please select a company for the bank order lines inserted" /*)*/;
-	static final String BANK_ORDER_LINE_PARTNER_MISSING = /*$$(*/ "Please select a partner for the bank order lines inserted" /*)*/;
-	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
-	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
-	
-	
-	/**
-	 * BankOrder merge
-	 */
-	static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/ "Please select at least two bank orders" /*)*/;
-	static final String BANK_ORDER_MERGE_STATUS = /*$$(*/ "Please select draft or awaiting signature bank orders only" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_STATUS = /*$$(*/ "Please select some bank orders that have the same status" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT = /*$$(*/ "Please select some bank orders that have the same status" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_PAYMENT_MODE = /*$$(*/ "Please select some bank orders that have the same payment mode" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT = /*$$(*/ "Please select some bank orders that have the same partner type" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_SENDER_COMPANY = /*$$(*/ "Please select some bank orders that have the same sender company" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS = /*$$(*/ "Please select some bank orders that have the same sender bank details" /*)*/;
-	static final String BANK_ORDER_MERGE_SAME_CURRENCY = /*$$(*/ "Please select some bank orders that have the same currency" /*)*/;
-	
-	/**
-	 * BankOrder file
-	 */
-	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
-	static final String BANK_ORDER_FILE_UNKNOW_FORMAT = /*$$(*/ "Unknow format for file generation for payment mode %s" /*)*/;
-
-	
-	/**
-	 *  Ebics
-	 */
-	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;
-	static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
-	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
-	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
-	static final String EBICS_MISSING_CERTIFICATES = /*$$(*/  "Please add certificates to print" /*)*/;
-
 	
 	
 }

@@ -75,7 +75,7 @@ public class MoveAdjustementService {
 
 		BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
 
-		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
@@ -111,7 +111,7 @@ public class MoveAdjustementService {
 		BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
@@ -153,7 +153,7 @@ public class MoveAdjustementService {
 		Company company = debitMoveLineToReconcile.getMove().getCompany();
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 		// Move
 		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);

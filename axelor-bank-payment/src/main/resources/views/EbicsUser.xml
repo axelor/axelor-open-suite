@@ -14,6 +14,9 @@
 		<field name="name" />
 		<field name="userId" />
 		<field name="ebicsTypeSelect"/>
+		<field name="ebicsPartner"/>
+		<field name="ebicsPartner.ebicsBank"/>
+		<field name="associatedUser"/>
 		<field name="statusSelect"/>
 	</grid>
 	
@@ -21,7 +24,7 @@
 		<panel title="General informations" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="name" />
-			<field name="password" />
+			<field name="password" requiredIf="ebicsTypeSelect == 0"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
@@ -32,7 +35,8 @@
 		</panel>
 		<panel title="Test configuration" colSpan="12" showIf="ebicsPartner.testMode">
 			<field name="ebicsPartner.testMode"/>
-			<field name="testFile" widget="binary-link"/>
+			<field name="testDataFile" widget="binary-link"/>
+			<field name="testSignatureFile" widget="binary-link"/>
 			<field name="testBankStatementFileFormat"/>
 			<field name="testBankOrderFileFormat"/>
 		</panel>
@@ -67,6 +71,7 @@
 			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
 			<button name="sendPTK" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>
 			<button name="sendHPD" title="Get bank parameters (HPD)" onClick="save,action-ebics-user-method-send-hpd" showIf="statusSelect == 3"/>
+			<button name="admin" title="Administration mode" onClick="action-ebics-user-attrs-administration-mode"/>
 		</panel>
 	
 	</form>
@@ -135,6 +140,11 @@
     <action-method name="action-ebics-user-method-print-certificates">
     	<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="printCertificates"/>
     </action-method>
+    
+    <action-attrs name="action-ebics-user-attrs-administration-mode">
+    	<attribute name="readonly" for="statusSelect" expr="false"/>
+    	<attribute name="readonly" for="nextOrderId" expr="false"/>
+    </action-attrs>
     
     <action-view name="action-ebics-open-import-ebics-users" title="Import ebics users" model="com.axelor.apps.bankpayment.db.EbicsUser">
     	<view type="form" name="import-ebics-user-form"/>

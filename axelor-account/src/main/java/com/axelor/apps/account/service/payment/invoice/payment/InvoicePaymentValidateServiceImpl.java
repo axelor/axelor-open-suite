@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import java.time.LocalDate;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -36,6 +39,7 @@ import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -83,10 +87,13 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	 * 			An invoice payment
 	 * 
 	 * @throws AxelorException
+	 * @throws DatatypeConfigurationException 
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 * 		
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException  {
+	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
 		
 		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
 		
@@ -126,8 +133,9 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		Partner partner = invoice.getPartner();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		BigDecimal paymentAmount = invoicePayment.getAmount();
+		BankDetails companyBankDetails = invoicePayment.getBankDetails();
 		
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		
 		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
 		
@@ -135,7 +143,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		
 		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
-		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company), 
+		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails), 
 				paymentAmount, isDebitInvoice, paymentDate, null, 1, ""));
 		
 		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, invoiceMoveLine.getAccount(), 

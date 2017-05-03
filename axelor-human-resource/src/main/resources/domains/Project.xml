@@ -9,7 +9,8 @@
 
 	  <one-to-many name="timesheetLineList" orphanRemoval="false" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="project"/>
 	  <decimal name="totalPlannedHrs" title="Total planned hours" />
-	          
+      <boolean name="imputable"/>
+
   </entity>
   
 </domain-models>

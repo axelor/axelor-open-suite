@@ -41,7 +41,7 @@
 				<field name="paymentVoucher.ref" readonly="true"/>
    			     <field name="paymentVoucher.user" form-view="user-form" grid-view="user-grid" readonly="true"/>
   			     <field name="paymentVoucher.paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"  readonly="true"/>
-   			     <field name="paymentVoucher.paymentDateTime" readonly="true"/>
+   			     <field name="paymentVoucher.paymentDate" readonly="true"/>
   			      <field name="paymentVoucher.paidAmount" readonly="true"/>
   			      <field name="paymentVoucher.statusSelect" readonly="true"/>
   			      <field name="paymentVoucher.currency" readonly="true"/>
