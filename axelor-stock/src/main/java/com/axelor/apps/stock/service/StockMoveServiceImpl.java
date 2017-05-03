@@ -333,11 +333,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException
 	 */
 	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
-		if (stockMove.getFromLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL
-				&& stockMove.getToLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL) {
-			return;
-		}
-
 		List<Location> locationList = new ArrayList<>();
 
 		if (stockMove.getFromLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
@@ -346,6 +341,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		if (stockMove.getToLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
 			locationList.add(stockMove.getToLocation());
+		}
+
+		if (locationList.isEmpty()) {
+			return;
 		}
 
 		List<Product> productList = stockMove.getStockMoveLineList().stream().map(StockMoveLine::getProduct)
