@@ -334,7 +334,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 */
 	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
 		if (stockMove.getFromLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL
-				|| stockMove.getToLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL) {
+				&& stockMove.getToLocation().getTypeSelect() == LocationRepository.TYPE_VIRTUAL) {
 			return;
 		}
 
