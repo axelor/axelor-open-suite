@@ -157,8 +157,6 @@
     
     <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">
     	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>
-    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'consumedProductPage'"/>
-    	<field name="stockMove" expr="eval: _parent.outStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'producedProductPage'"/>
     </action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">

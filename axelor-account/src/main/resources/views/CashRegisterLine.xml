@@ -40,10 +40,6 @@
 		
 	</form>
     
-    <action-method name="action-method-account-cash-registerline-close">
-    	<call class="com.axelor.apps.account.web.CashRegisterController" method="closeCashRegister"/>
-    </action-method>
-    
     <action-method name="action-method-account-cash-registerline-open">
     	<call class="com.axelor.apps.account.web.CashRegisterController" method="openCashRegister"/>
     </action-method>

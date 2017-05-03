@@ -90,15 +90,6 @@
         <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
     </action-validate>
     
-    <action-validate name="action-user-validate-check-contact">
-		<alert message="No contact selected/created, do you want to create a new one?" if="partner == null"/>
-	</action-validate>
-    
-    <action-group name="check-action-user-group-partner" >
-    	<action name="action-user-validate-check-contact"/>
-    	<action name="action-user-record-form-partner-contact" if="partner == null"/>
-    </action-group>
-    
     <action-group name="action-user-group-employee">
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
 		<action name="action-hr-user-show-employee" if="partner != null"/>

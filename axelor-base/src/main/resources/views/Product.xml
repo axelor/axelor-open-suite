@@ -335,12 +335,6 @@
 		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
 	</action-record>
     
-    <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
-    </action-attrs>
-    
     <action-validate name="action-product-validate-sale-supply-select">
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
 	</action-validate> 

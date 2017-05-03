@@ -109,17 +109,6 @@
 	<action-record name="action-event-record-current-user" model="com.axelor.apps.crm.db.Event">
 		<field name="user" expr="eval:__user__"/>
 	</action-record>
-	
-    <action-view name="action-event-view-lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
-    	<view type="grid" name="lead-event-grid"/>
-    	<view type="form" name="lead-event-form"/>
-    </action-view>
-    
-    <action-view name="action-event-view-contact" title="Contacts" model="com.axelor.apps.base.db.Partner">
-    	<view type="grid" name="contact-event-grid"/>
-    	<view type="form" name="contact-event-form"/>
-    	<domain>self.isContact = true</domain>
-    </action-view>
     
     <action-method name="action-event-method-domain-calendar-crm">
     	<call class="com.axelor.apps.crm.web.EventController" method="setCalendarCrmDomain"/>
@@ -438,29 +427,6 @@
     	<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
     </action-group>
 	
-	<action-view name="action-event-view-recurrence-assistant" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
-		<view type="form" name="recurrence-assistant-form"/>
-		<view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
-	    <view-param name="width" value="800" />
-	    <view-param name="show-toolbar" value="false" />
-	    <view-param name="popup-save" value="false" />
-	    <context name="_idEvent" expr="eval: id"/>
-	    <context name="_startDate" expr="eval: startDateTime"/>
-	</action-view>
-	
-	<action-view name="action-event-view-change-recurrence" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
-		<view type="form" name="recurrence-assistant-form"/>
-		<view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
-	    <view-param name="width" value="800" />
-	    <view-param name="show-toolbar" value="false" />
-	    <view-param name="popup-save" value="false" />
-	    <context name="_idEvent" expr="eval: id"/>
-	    <context name="_startDate" expr="eval: startDateTime"/>
-	    <context name="_showRecord" expr="eval: recurrenceConfiguration?.id"/>
-	</action-view>
-	
 	<action-view name="action-event-view-modifications-recurrence" title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="modifications-assistant-form"/>
 		<view-param name="popup" value="reload"/>
@@ -514,11 +480,6 @@
     </action-group>
     
 <!--     ACTION ATTRIBUTS -->
-    
-    <action-attrs name="action-event-attrs-watchers-domain">
-    	<attribute name="domain" for="userSet" expr="eval: &quot; self.id IN (${project?.memberUserSet?.collect{it.id}.join(',')})&quot;" if="project?.memberUserSet?.collect{it.id}?.size() > 0"/>
-    	<attribute name="domain" for="userSet" expr="eval:" if="project?.memberUserSet?.collect{it.id}?.size() == 0"/>
-    </action-attrs>
     
     <action-attrs name="action-event-ticket-attrs-default">
     	<attribute name="hidden" for="responsibleUser" expr="eval: true" if="_clientView"/>
@@ -664,15 +625,6 @@
     <action-method name="action-event-method-compute-from-calendar">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeFromCalendar" />
     </action-method>
-    
-    <action-method name="action-event-method-check-modifications">
-    	<call class="com.axelor.apps.crm.web.EventController" method="checkModifications"/>
-    </action-method>
-	
-	
-	<action-validate name="action-event-validate-emails-sent">
-		<alert message="Emails will be sent to all guests" if="internalGuestSet?.size &gt; 0 || externalGuestSet?.size &gt; 0"/>
-	</action-validate>
 	
 <!-- 	FILTERS -->
 	

@@ -172,11 +172,6 @@
 		<action name="action-move-line-method-compute-analytic-distribution"/>
 	</action-group>
     
-    <action-group name="action-group-account-moveline-accounting-situation-onload">
-    	<action name="action-move-line-attrs-collapse-irrecoverable-group"/>
-    	<action name="action-move-line-attrs-readonly"/>
-    </action-group>
-    
      <action-group name="action-account-move-moveline-onload-group">
 		<action name="action-move-line-attrs-collapse-irrecoverable-group"/>
 		<action name="action-move-line-attrs-readonly"/>

@@ -514,10 +514,6 @@
 		<action name="action-partner-record-full-name"/>
 	</action-group>
 	
-	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="#{__repo__(Lead).find(_parent._lead).name}"/>
-	</action-record>
-	
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
@@ -603,11 +599,6 @@
     	<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
     	<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
     </action-record>
-    
-    <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="#{null}" if="#{!isContact}"/>
-    	<field name="invoiceSendingFormatSelect" expr="#{null}" if="#{!isContact}"/>
-    </action-record>
 
 	<action-record name="action-partner-record-normalize-fixed-phone-number" model="com.axelor.apps.base.db.Partner">
 		<field name="fixedPhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fixedPhone)"/>
@@ -638,10 +629,6 @@
 	<action-record name="action-partner-record-payment-condition" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="paymentCondition" expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
 	</action-record>
-
-    <action-method name="action-set-partner-seq" >
-		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
-	</action-method>
     
     <action-method name="action-print-compnay-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>
