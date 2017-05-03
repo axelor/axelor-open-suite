@@ -17,25 +17,9 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.LunchVoucherAdvance;
-import com.axelor.apps.hr.db.LunchVoucherMgt;
-import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.*;
 import com.axelor.apps.hr.db.repo.*;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.common.ObjectUtils;
@@ -49,6 +33,14 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	
@@ -152,7 +144,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	@Transactional
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 		MetaFile metaFile = new MetaFile();
-		metaFile.setFileName(I18n.get("Lunch Voucher Mgt") + " - " + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + ".csv");
+		metaFile.setFileName(I18n.get("Lunch Voucher Mgt") + " - " + LocalDate.now().toString("YYYY-MM-dd") + ".csv");
 
 		
 		Path tempFile = MetaFiles.createTempFile(null, ".csv");
