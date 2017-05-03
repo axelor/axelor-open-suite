@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,9 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.Location;
@@ -32,6 +31,8 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
 
 public class OperationOrderStockMoveService {
 
@@ -58,9 +59,8 @@ public class OperationOrderStockMoveService {
 
 			for(ProdProduct prodProduct: operationOrder.getToConsumeProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
-				operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -68,6 +68,14 @@ public class OperationOrderStockMoveService {
 				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				operationOrder.setInStockMove(stockMove);
+			}
+
+			//fill here the consumed stock move line list item to manage the
+			//case where we had to split tracked stock move lines
+			if (stockMove.getStockMoveLineList() != null) {
+			    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+				}
 			}
 		}
 
@@ -78,16 +86,15 @@ public class OperationOrderStockMoveService {
 
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
 
-		Location fromLocation = null;
+		Location fromLocation;
 
-		if(operationOrder.getProdProcessLine() != null && operationOrder.getProdProcessLine().getProdProcess() != null
-				&& operationOrder.getProdProcessLine().getProdProcess().getLocation() != null)  {
-
-			fromLocation = operationOrder.getProdProcessLine().getProdProcess().getLocation();
-		}
-		else  {
-			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-					company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
+		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+		if (operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getLocation() != null) {
+			fromLocation = prodProcessLine.getLocation();
+		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getLocation() != null) {
+			fromLocation = prodProcessLine.getProdProcess().getLocation();
+		} else {
+			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 		}
 
 		StockMove stockMove = stockMoveService.createStockMove(
@@ -98,6 +105,8 @@ public class OperationOrderStockMoveService {
 				fromLocation,
 				virtualLocation,
 				operationOrder.getPlannedStartDateT().toLocalDate(),
+				null,
+				null,
 				null);
 
 		return stockMove;
@@ -106,7 +115,7 @@ public class OperationOrderStockMoveService {
 
 
 
-	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
+	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
@@ -115,8 +124,8 @@ public class OperationOrderStockMoveService {
 				prodProduct.getQty(),
 				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
-				null,
-				StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
+				stockMove,
+				StockMoveLineService.TYPE_IN_PRODUCTIONS, false, BigDecimal.ZERO);
 
 	}
 

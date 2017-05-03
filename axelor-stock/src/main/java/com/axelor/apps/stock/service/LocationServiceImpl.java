@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class LocationServiceImpl implements LocationService{
@@ -42,15 +46,15 @@ public class LocationServiceImpl implements LocationService{
 		return locationRepo.all().filter("self.isDefaultLocation = true AND self.typeSelect = ?1", LocationRepository.TYPE_INTERNAL).fetchOne();
 	}
 	
-	public List<Location> getInternalLocations() {
-		return locationRepo.all().filter("self.typeSelect = ?1", LocationRepository.TYPE_INTERNAL).fetch();
+	public List<Location> getNonVirtualLocations() {
+		return locationRepo.all().filter("self.typeSelect != ?1", LocationRepository.TYPE_VIRTUAL).fetch();
 	}
 	
 	@Override
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
 		if (productId != null) {
 			if (locationId == null) {
-				List<Location> locations = getInternalLocations();
+				List<Location> locations = getNonVirtualLocations();
 				if (!locations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
 					for (Location location : locations) {
@@ -84,5 +88,20 @@ public class LocationServiceImpl implements LocationService{
 		return getQty(productId, locationId, "future");
 	}
 
+	@Override
+	public BigDecimal computeAvgPriceForProduct(Long productId) {
+		String query = "SELECT new list(self.avgPrice, self.currentQty) FROM LocationLine as self " +
+				       "WHERE self.product.id = " + productId + " AND self.location.typeSelect != " + LocationRepository.TYPE_VIRTUAL;
+		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+		BigDecimal avgPrice = BigDecimal.ZERO;
+		BigDecimal qtyTot = BigDecimal.ZERO;
+		List<List<BigDecimal>> results = JPA.em().createQuery(query).getResultList();
+		for (List<BigDecimal> result : results) {
+		    avgPrice = avgPrice.add(result.get(0).multiply(result.get(1)));
+		    qtyTot = qtyTot.add(result.get(1));
+		}
+		avgPrice = avgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
+		return avgPrice;
+	}
 	
 }

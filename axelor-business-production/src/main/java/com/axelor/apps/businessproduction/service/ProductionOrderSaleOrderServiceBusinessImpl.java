@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderServiceImpl;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -113,7 +113,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 			if(!unit.equals(saleOrderLine.getUnit())){
 				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
-			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, qty, saleOrderLine.getSaleOrder().getProject(), new LocalDateTime()));
+			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, qty, saleOrderLine.getSaleOrder().getProject(), LocalDateTime.now()));
 
 		}
 
@@ -128,9 +128,9 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 		logger.debug("Création d'un devis client pour l'ordre de production : {}",
 				new Object[] { productionOrder.getProductionOrderSeq() });
 
-		ProjectTask projectTask = productionOrder.getProjectTask();
+		Project project = productionOrder.getProject();
 
-		projectTask.getClientPartner();
+		project.getClientPartner();
 
 //		if(businessFolder.getCompany() != null)  {
 //

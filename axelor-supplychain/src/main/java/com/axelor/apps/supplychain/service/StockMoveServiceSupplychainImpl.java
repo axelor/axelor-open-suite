@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,8 +23,7 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -35,6 +34,7 @@ import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -45,7 +45,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceSupplychainImpl.class);
 	
 	@Inject
-	GeneralService generalService;
+	private AppSupplychainService appSupplyChainService;
 	
 	@Override
 	public BigDecimal compute(StockMove stockMove){
@@ -70,7 +70,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 	public String realize(StockMove stockMove) throws AxelorException  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 		String newStockSeq = super.realize(stockMove);
-		General general = generalService.getGeneral();
+		AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 		if (stockMove.getSaleOrder() != null){
 			//Update linked saleOrder delivery state depending on BackOrder's existence
 			SaleOrder saleOrder = stockMove.getSaleOrder();
@@ -78,7 +78,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 				saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
 			}else{
 				saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
-				if (general.getTerminateSaleOrderOnDelivery()){
+				if (appSupplychain.getTerminateSaleOrderOnDelivery()){
 					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
 				}
 			}
@@ -91,7 +91,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
 			}else{
 				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
-				if (general.getTerminatePurchaseOrderOnReceipt()){
+				if (appSupplychain.getTerminatePurchaseOrderOnReceipt()){
 					Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
 				}
 			}
@@ -100,11 +100,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 		}
 
 		return newStockSeq;
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computeProductWeightedAveragePrice(StockMove stockMove){
-		
 	}
 
 }

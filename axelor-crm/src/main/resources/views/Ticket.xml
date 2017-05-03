@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Ticket" orderBy="ticketNumberSeq" >
+		<toolbar>
+    		<button name="grabTicket" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-ticket-assign-tome" />
+    	</toolbar>
+	    <hilite color="info" if="prioritySelect == 1 &amp;&amp; statusSelect != 25" />
+        <hilite color="warning" if="prioritySelect == 4 &amp;&amp; statusSelect != 25" />
+        <hilite color="danger" if="prioritySelect == 5 &amp;&amp; statusSelect != 25" />
+        <hilite color="success" if="statusSelect == 25" />
+	    <field name="ticketNumberSeq"/>
+	    <field name="subject"/>
+	    <field name="ticketCategory" form-view="ticket-category-form" grid-view="ticket-category-grid"/>
+	    <field name="startDateTime"/>
+	    <field name="endDateTime"/>
+	    <field name="user" form-view="user-form" grid-view="user-gird"/>
+	    <field name="prioritySelect"/>
+	    <field name="statusSelect"/>
+	    <field name="progressSelect" widget="SelectProgress"/>
+	    <button name="grabTicket" help="Assign to me" icon="fa-suitcase" readonlyIf="statusSelect == 25  || user.id == _internalUserId" onClick="action-method-crm-ticket-assign-tome" />
+	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-ticket-start-click,save" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29"/>
+	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click,action-record-set-tickets-resolved-progress-select,save" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29"/>
+	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click,save" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" />
+	</grid>
+    
+    <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Ticket" onLoad="action-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-ticket-set-sequence" onNew="action-group-crm-ticket-onnew">
+		<toolbar>
+			<button name="grabTicket" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-ticket-assign-tome,action-ticket-set-sequence,save" readonlyIf="statusSelect == 25  || user.id == _internalUserId" />
+			<button name="start" help="Start" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
+			<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29" icon="fa-check" onClick="action-set-ticket-status-select-3,save"/>
+			<button name="stop" help="Finish" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" icon="fa-power-off" onClick="action-set-ticket-status-select-5,save"/>
+		</toolbar>
+		<panel name="main" colSpan="12" readonlyIf="statusSelect == 25">
+				<field name="ticketNumberSeq" title="Ticket N°" colSpan="3" readonly="true"/>
+				<field name="subject" title="Subject" colSpan="9" placeholder="Subject"/>
+				<field name="subjectTeam" hidden="true"/>
+		</panel>
+		<panel readonlyIf="statusSelect == 25">
+			<panel name="context" title="Context" colSpan="12" readonlyIf="statusSelect == 25">
+				<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="contactPartner" onChange="action-attrs-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+				<field name="lead"/>
+				<field name="user" onChange="action-crm-record-ticket-responsible-user" form-view="user-form" grid-view="user-gird"/>
+				<field name="responsibleUser" form-view="user-form" grid-view="user-gird"/>
+			</panel>
+			<panel title=" " colSpan="12">
+				<field name="startDateTime" colSpan="3" onChange="action-ticket-method-compute-from-start-date-time"/>
+				<field name="duration" colSpan="3" widget="duration" onChange="action-ticket-method-compute-from-duration" x-big="true"/>
+				<field name="endDateTime" colSpan="3" onChange="action-ticket-method-compute-from-end-date-time"/>
+				<field name="limitDateT" colSpan="3"/>
+			</panel>
+			<panel title=" " colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+			</panel>
+		</panel>
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]" onChange="action-record-set-tickets-resolved-progress-select"/>
+			<field name="prioritySelect" colSpan="3" readonlyIf="statusSelect == 25" />
+			<field name="ticketCategory" colSpan="6" widget="SuggestBox" form-view="ticket-category-form" grid-view="ticket-category-grid" readonlyIf="statusSelect == 25"/>
+			<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21 || statusSelect == 25" widget="SelectProgress" />
+	    </panel>
+	    <panel-mail>
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
+	</form>
+    
+    <action-group name="action-group-crm-ticket-onnew">
+    	<action name="action-ticket-new-record"/>
+    	<action name="action-ticket-attrs-default"/>
+    </action-group>
+    
+    <action-record name="action-ticket-new-record" model="com.axelor.apps.crm.db.Ticket">
+    	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
+    </action-record>
+    
+    <action-group name="action-group-crm-ticket-start-click">
+    	<action name="action-set-ticket-status-select-2"/>
+    </action-group>
+    
+    <action-group name="action-group-crm-ticket-accept-click">
+    	<action name="action-set-ticket-status-select-3"/>
+    </action-group>
+    
+    <action-group name="action-group-crm-ticket-stop-click">
+    	<action name="action-set-ticket-status-select-5"/>
+    </action-group>
+    
+<!--     ACTION ATTRIBUTS -->
+    
+    <action-attrs name="action-ticket-attrs-default">
+    	<attribute name="hidden" for="responsibleUser" expr="eval: true" if="_clientView"/>
+    	<attribute name="required" for="project" expr="eval: true" />
+    </action-attrs>
+    
+<!--     ACTION RECORD -->
+
+    <action-record name="action-crm-record-ticket-responsible-user" model="com.axelor.apps.crm.db.Ticket">
+    	<field name="responsibleUser" expr="eval: user" if="responsibleUser == null"/>
+    </action-record>
+    
+    
+	<!-- ACTIONS TO SET SELECTS -->
+	
+	<action-record name="action-set-ticket-status-select-2" model="com.axelor.apps.crm.db.Ticket">
+		<field name="statusSelect" expr="eval:22"/>
+	</action-record>	
+	<action-record name="action-set-ticket-status-select-3" model="com.axelor.apps.crm.db.Ticket">
+		<field name="statusSelect" expr="eval:23"/>
+	</action-record>
+	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Ticket">
+		<field name="statusSelect" expr="eval:25"/>
+	</action-record>
+	
+	<action-record name="action-record-set-tickets-resolved-progress-select" model="com.axelor.apps.crm.db.Ticket">
+    	<field name="progressSelect" expr="100" if="eval:statusSelect == 23"/>
+    </action-record>
+	
+<!-- 	ACTION METHOD -->
+	
+	<action-method name="action-method-crm-ticket-assign-tome">
+		<call class="com.axelor.apps.crm.web.TicketController" method="assignToMe" />
+	</action-method>
+	
+	<action-method name="action-ticket-set-sequence">
+		<call class="com.axelor.apps.crm.web.TicketController" method="setSequence" />
+	</action-method>
+	
+	<action-method name="action-ticket-method-compute-from-start-date-time">
+    	<call class="com.axelor.apps.crm.web.TicketController" method="computeFromStartDateTime"/>
+    </action-method>
+	
+    <action-method name="action-ticket-method-compute-from-end-date-time">
+    	<call class="com.axelor.apps.crm.web.TicketController" method="computeFromEndDateTime"/>
+    </action-method>
+    
+    <action-method name="action-ticket-method-compute-from-duration">
+    	<call class="com.axelor.apps.crm.web.TicketController" method="computeFromDuration" />
+    </action-method>
+    
+    
+	
+<!-- 	FILTERS -->
+	
+	<search-filters name="ticket-filters" model="com.axelor.apps.crm.db.Ticket" title="Ticket filters">
+		<filter title="My Tickets">
+			<domain>self.user = :__user__</domain>
+		</filter>
+		<filter title="Unassigned Tickets">
+			<domain>self.user IS NULL</domain>
+		</filter>
+		<filter title="Urgent Tickets">
+			<domain>self.prioritySelect = 3</domain>
+		</filter>
+		<filter title="New Tickets">
+			<domain>self.progressSelect = 0</domain>
+		</filter>
+		<filter title="Ongoing Tickets">
+			<domain>(self.progressSelect != 0 and self.progressSelect != 100) or (self.statusSelect in (21, 22, 23, 24, 25))</domain>
+		</filter>
+	</search-filters>
+	
+	
+</object-views>

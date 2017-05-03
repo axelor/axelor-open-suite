@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -15,10 +15,12 @@
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="netWeight" title="Net weight"/>
+    <decimal name="totalNetWeight" title="Total net weight"/>
     
-    <many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr."/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr."/>
     
-    <integer name="accordanceSelect" title="Accordance" selection="stock.move.line.accordance.select"/>
+    <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
     
 <!--     TODO a deplacer dans Supplier management -->
     <decimal name="shippedQty" title="Shipped qty"/>
@@ -33,5 +35,9 @@
     
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
+    <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
+    
+    <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
+    <string name="customsCode"/>
   </entity>
 </domain-models>

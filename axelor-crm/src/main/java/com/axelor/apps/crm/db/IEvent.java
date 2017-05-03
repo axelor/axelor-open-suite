@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,6 @@ public interface IEvent {
 	static final int MEETING = 2;
 	static final int TASK = 3;
 	static final int HOLIDAY = 4;
-	static final int TICKET = 5;
 	
 	/**
 	 * Static event call status select

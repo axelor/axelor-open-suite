@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,7 +60,7 @@ public class PurchaseOrderToolService {
 	
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				purchaseOrder.getCurrency(), purchaseOrder.getSupplierPartner().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<action-record model="com.axelor.apps.base.db.General" name="action.general.chart.set.date.6m">
+	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.chart.set.date.6m">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
 	  <field name="monthSelect" expr="eval:6" />
 	</action-record>
 	
-	<action-record model="com.axelor.apps.base.db.General" name="action.general.default.month.value">
+	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.default.month.value">
 	  <field name="monthSelect" expr="eval:12"/>
 	</action-record>
 	
@@ -28,7 +28,7 @@
 			JOIN
 				base_country AS _country ON _country.id = _address.addressL7country
 			WHERE
-				_partner.is_customer = true AND _partner.has_ordered = true				
+				_partner.is_customer = true		
 			GROUP BY
 				_country.name
 		    ]]>
@@ -48,7 +48,7 @@
 	    JOIN 
 	    	base_industry_sector as industrySector on industrySector.id = self.industry_sector
 		WHERE
-			self.is_contact != true and self.is_customer = true AND self.has_ordered = true
+			self.is_contact != true and self.is_customer = true
 	    GROUP BY
 		   _industry_sector
 		ORDER BY
@@ -97,7 +97,7 @@
 	  LEFT JOIN  
 	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
 	  WHERE
-	    self.is_customer = true AND self.has_ordered != true AND is_contact=false
+	    self.is_prospect = true AND is_contact=false
 	  GROUP BY
 	   _address_country	
 	  ORDER BY
@@ -117,7 +117,7 @@
 		LEFT JOIN 
 			self.partnerCategory _partnerCategory 
 		WHERE 
-			self.isCustomer = true AND self.isContact = false
+			self.isProspect = true AND self.isContact = false
 		group by
 			_partnerCategory.name
 		</dataset>

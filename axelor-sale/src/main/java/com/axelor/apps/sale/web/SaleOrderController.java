@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.sale.web;
 
 import java.io.IOException;
 
+import com.axelor.i18n.I18n;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,9 +124,9 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getCancelReasonStr());
 
-		response.setFlash("The sale order was canceled");
+		response.setFlash(I18n.get("The sale order was canceled"));
 		response.setCanClose(true);
 
 	}

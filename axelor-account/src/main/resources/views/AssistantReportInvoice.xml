@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-grid">
     	<field name="fromDate"/>
@@ -46,12 +46,8 @@
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
     	<panel name="options" title="Options" sidebar="true">
-    		<field name="graph" colSpan="5"/>
-    		<label title="OR" colSpan="2"/>
-    		<field name="chart" colSpan="5" title="Table"/>
-    		<field name="pdf" colSpan="5"/>
-    		<label title="OR" colSpan="2"/>
-    		<field name="xls" colSpan="5"/>
+            <field name="graphTypeSelect" widget="RadioSelect"/>
+            <field name="formatSelect" widget="RadioSelect"/>
     		<button name="printReport" title="Print" onClick="save,action-print-invoices-details-method-print-purchases"/>
     		<field name="type" hidden="true"/>
     	</panel>

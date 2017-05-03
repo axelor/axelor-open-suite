@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +29,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -58,7 +58,7 @@ public class VentilateState extends WorkflowInvoice {
 	private AccountConfigService accountConfigService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	private InvoiceRepository invoiceRepo;
@@ -99,7 +99,7 @@ public class VentilateState extends WorkflowInvoice {
 	protected void setDate( ) throws AxelorException{
 
 		if(invoice.getInvoiceDate() == null)  {
-			invoice.setInvoiceDate(generalService.getTodayDate());
+			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		}
 
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
@@ -129,7 +129,7 @@ public class VentilateState extends WorkflowInvoice {
 		if(sequence.getMonthlyResetOk())  {
 
 			query += String.format("AND EXTRACT (month from self.invoiceDate) = ?%d ", i++);
-			params.add(invoice.getInvoiceDate().getMonthOfYear());
+			params.add(invoice.getInvoiceDate().getMonthValue());
 
 		}
 		if(sequence.getYearlyResetOk())  {

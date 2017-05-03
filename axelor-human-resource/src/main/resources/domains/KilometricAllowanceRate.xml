@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
      <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -10,7 +10,9 @@
         <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HrConfig"/>
         
         <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" required="true"/>
-        <decimal name="rate" title="Rate" required="true" precision="20" scale="3" />
+        <one-to-many name="kilometricAllowanceRuleList" ref="com.axelor.apps.hr.db.KilometricAllowanceRule" mappedBy="kilometricAllowanceRate"/>
+        
+        <integer name="importId" />
         
         <finder-method name="findByVehicleKillometricAllowanceParam" using="kilometricAllowParam"/>
         

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.weeklyplanning;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -116,7 +116,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 	}
 	
 	public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date){
-		int dayOfWeek = date.getDayOfWeek();
+		int dayOfWeek = date.getDayOfWeek().getValue();
 		switch (dayOfWeek) {
 		case 1:
 			return findDayWithName(planning,"monday");

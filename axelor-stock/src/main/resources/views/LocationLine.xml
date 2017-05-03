@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="avgPrice" x-scale="2"/>
     </grid>
     
     <form name="location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
@@ -14,6 +15,7 @@
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+            <field name="avgPrice" x-scale="2"/>
         </panel>
     </form>
     
@@ -21,6 +23,7 @@
         <field name="location" form-view="location-form" grid-view="location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
@@ -29,6 +32,7 @@
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+            <field name="avgPrice" x-scale="2"/>
 	        <field name="lastFutureStockMoveDate"/>
         </panel>
     </form>
@@ -37,6 +41,7 @@
         <field name="location" form-view="location-form" grid-view="location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
@@ -52,6 +57,7 @@
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+            <field name="avgPrice" x-scale="2"/>
 	        <field name="trackingNumber"/>
         </panel>
     </form>

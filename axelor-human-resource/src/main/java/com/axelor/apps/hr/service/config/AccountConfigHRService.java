@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,12 +40,12 @@ public class AccountConfigHRService extends AccountConfigService{
 	
 	public Account getExpenseEmployeeAccount(AccountConfig accountConfig) throws AxelorException  {
 		
-		if(accountConfig.getExpenseEmployeeAccount() == null)   {
+		if(accountConfig.getEmployeeAccount() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
 					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return accountConfig.getExpenseEmployeeAccount();
+		return accountConfig.getEmployeeAccount();
 	}
 	
 	public Account getExpenseTaxAccount(AccountConfig accountConfig) throws AxelorException  {

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
+        <field name="name"/>
+    </grid>
+    
+    <form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large">
+		<panel name="main" >
+			<field name="name"/>
+			<field name="campaignType" />
+			<field name="stageSelect" widget="NavSelect" colSpan="12"/>
+			<panel-related field="targetListSet" colSpan="12"/>
+			<field name="partnerTemplate" domain="self.metaModel.name = 'Partner'" />
+			<field name="leadTemplate" domain="self.metaModel.name = 'Lead'" />
+			<button name="sendEmail" title="Send email" colSpan="3" onClick="action-campaign-method-send-email"/>
+			<field name="emailLog" widget="binary-link" />
+		</panel>
+		<panel title="Attendees">
+		  	<field name="campaignAttendeeList" colSpan="12" showTitle="false">
+		      <editor x-show-titles="false">
+		    		<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
+		      </editor>
+		    </field>
+	  	</panel>
+	</form>
+	
+	<action-method name="action-campaign-method-send-email">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendEmail"/>
+	</action-method>
+	
+	<action-view name="action-lead-view-marketing-campaigns" title="Marketing Campaigns" model="com.axelor.apps.marketing.db.Campaign">
+		<view type="grid" name="campaign-grid"/>
+		<view type="form" name="campaign-form"/>
+		<domain>self.id in (:_campaignIds)</domain>
+		<context name="_campaignIds" expr="eval:([0]+__repo__.of(CampaignAttendee).all().filter(&quot;self.relatedToSelect = 'com.axelor.apps.crm.db.Lead' and self.relatedToSelectId = ${id}&quot;).fetch().collect{it->it.campaign.id}).flatten()" />
+	</action-view>
+    
+</object-views>

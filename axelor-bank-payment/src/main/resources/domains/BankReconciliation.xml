@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankReconciliation" lang="java">
+
+	<string name="name" title="Label" namecolumn="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
+    <date name="fromDate" title="From Date" />
+    <date name="toDate" title="To Date" />
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"  title="Currency" />
+    <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"  title="Cash account"/>
+    <decimal name="startingBalance" title="Starting Balance" /> 
+    <decimal name="endingBalance" title="Ending Balance" /> 
+    <one-to-many name="bankReconciliationLineList" ref="com.axelor.apps.bankpayment.db.BankReconciliationLine" mappedBy="bankReconciliation" title="Bank Reconciliation Lines"/>
+    <decimal name="computedBalance" title="Computed Balance" readonly="true"/> 
+    <integer name="statusSelect" title="Status" selection="bankpayment.bank.reconciliation.status.select" readonly="true" default="1"/>
+	<many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement" title="Bank statement"/>
+
+	<extra-code><![CDATA[
+	
+	   	// Status select
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code>
+
+  </entity>
+  
+</domain-models>

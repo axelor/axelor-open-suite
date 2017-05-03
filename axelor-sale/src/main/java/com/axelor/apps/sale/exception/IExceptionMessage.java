@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,5 +38,5 @@ public interface IExceptionMessage {
 	/**
 	 * Sale Config Service
 	 */
-	static final String SALE_CONFIG_1 = /*$$(*/ "%s :\n You must configure Sales module for company %s" /*)*/ ;
+	static final String SALE_CONFIG_1 = /*$$(*/ "%s : You must configure Sales module for company %s" /*)*/ ;
 }

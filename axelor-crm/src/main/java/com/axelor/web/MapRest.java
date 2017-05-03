@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,6 @@
 package com.axelor.web;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -101,17 +100,16 @@ public class MapRest {
 				addressString.append(lead.getPrimaryCountry().getName());
 			}						 
 			
-			String qString = addressString.toString().replaceAll("</br>", " ");					
-			Map<String,Object> latlng =  mapService.getMapGoogle(qString);
-			
 			objectNode.put("address", addressString.toString());
-			
 			objectNode.put("pinColor", "yellow");
-			objectNode.put("pinChar", "L");			
+			objectNode.put("pinChar", "L");
+			
 			arrayNode.add(objectNode);	
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 	
@@ -162,8 +160,10 @@ public class MapRest {
 			objectNode.put("pinChar", "O");			
 			arrayNode.add(objectNode);	
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}	
 

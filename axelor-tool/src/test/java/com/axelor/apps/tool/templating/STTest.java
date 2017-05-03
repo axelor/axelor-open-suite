@@ -21,8 +21,9 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -68,7 +69,7 @@ public class STTest {
 		contact = new Contact("Belloy","Pierre");
 		contact.setEmail("p.belloy@axelor.com");
 		contact.setFullName(contact.getFullName());
-		contact.setDateOfBirth(new LocalDate());
+		contact.setDateOfBirth(LocalDate.now());
 		contact.setPayeurQuality(new BigDecimal("2.2569"));
 		contact.setLanguage("fr");
 		
@@ -86,11 +87,11 @@ public class STTest {
 				+"<p><strong>Title: "+title.toString()+"</p>"
 				+"<p><strong>First Name:</strong> "+contact.getFirstName()+"</p>"
 				+"<p><strong>Last Name:</strong> "+contact.getLastName().toUpperCase()+"</p>"
-				+"<p><strong>DateOfBirth:</strong> "+contact.getDateOfBirth().toString("dd/MM/YYYY")+"</p>"
+				+"<p><strong>DateOfBirth:</strong> "+contact.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))+"</p>"
 				+"<p>&nbsp;</p>"
 				+"<p><em>Contact me:</em>&nbsp;<a href='mailto:"+contact.getEmail()+"' target='_blank'>"+contact.getFullName()+"</a></p>"
-				+"<hr />"+(new LocalTime()).toString("HH:mm")
-				+"<ul>"+new LocalDate()
+				+"<hr />"+ java.time.LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+				+"<ul>"+LocalDate.now()
 				+"<li>Java</li>"
 				+"<li>JavaScript</li>"
 				+"<li>Groovy</li>"

@@ -1,0 +1,140 @@
+package com.axelor.apps.hr.service.project;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanning;
+import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+
+public class ProjectPlanningServiceImpl implements ProjectPlanningService {
+	
+	private static final Logger log = LoggerFactory.getLogger(ProjectPlanningService.class);
+	
+	@Inject
+	private PublicHolidayService holidayService;
+	
+	@Inject
+	private WeeklyPlanningService weeklyPlanningService;
+	
+	@Inject
+	private ProjectPlanningTimeRepository planningTimeRepo;
+	
+	@Inject
+	private ProjectPlanningRepository planningRepo;
+	
+	@Inject
+	private ProjectRepository projectRepo;
+	
+	@Inject
+	private TeamTaskRepository teamTaskRepo;
+	
+	@Transactional
+	public ProjectPlanning updatePlanningTime(ProjectPlanning planning) throws AxelorException {
+		
+		Integer timePercent = planning.getTimepercent();
+		
+		Employee employee = planning.getUser().getEmployee();
+		
+		if (employee != null) {
+			
+			BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
+			
+			LocalDateTime startDate = planning.getFromDate();
+			LocalDateTime toDate = planning.getToDate();
+			
+			removeOldPlanningTime(planning);
+			
+			BigDecimal totalPlanned = BigDecimal.ZERO;
+			
+			while (startDate.isBefore(toDate)) {
+				
+				LocalDate date = startDate.toLocalDate();
+				
+				log.debug("Create Planning for the date: {}", date);
+				
+				double dayHrs = weeklyPlanningService.workingDayValue(employee.getPlanning(), date);
+				
+				if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
+					
+					ProjectPlanningTime planningTime = planningTimeRepo.all()
+							.filter("self.projectPlanning = ?1 and self.date = ?2", planning, date)
+							.fetchOne();
+					if (planningTime == null) {
+						planningTime = new ProjectPlanningTime();
+						planningTime.setProjectPlanning(planning);
+					}
+					planningTime.setDate(date);
+					BigDecimal totalHours = BigDecimal.ZERO;
+					if (timePercent > 0) {
+						totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+						totalPlanned = totalPlanned.add(totalHours);
+					}
+					planningTime.setHours(totalHours);
+					planningTimeRepo.save(planningTime);
+				}
+				
+				startDate = startDate.plusDays(1);
+			}
+			
+			planning.setTotalPlannedHrs(totalPlanned);
+		}
+		
+		return planning;
+	}
+	
+	@Transactional
+	public void removeOldPlanningTime(ProjectPlanning planning) {
+		
+		List<ProjectPlanningTime> planningTimes = planningTimeRepo.all()
+				.filter("self.date NOT BETWEEN self.projectPlanning.fromDate AND self.projectPlanning.toDate AND self.projectPlanning = ?1"
+				,planning).fetch();
+		
+		for (ProjectPlanningTime planningTime : planningTimes) {
+			planningTimeRepo.remove(planningTime);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public void updateTaskPlannedHrs(TeamTask task) {
+		
+		if (task != null) {
+			List<ProjectPlanning> plannings = planningRepo.all().filter("self.task = ?1", task).fetch();
+			BigDecimal totalPlanned = plannings.stream().map(p->p.getTotalPlannedHrs()).reduce(BigDecimal.ZERO, BigDecimal::add);
+			task.setTotalPlannedHrs(totalPlanned);
+			task = teamTaskRepo.save(task);
+		}
+		
+	}
+	
+	@Override
+	@Transactional
+	public void updateProjectPlannedHrs(Project project) {
+		
+		if (project != null) {
+			List<ProjectPlanning> plannings = planningRepo.all().filter("self.project = ?1", project).fetch();
+			BigDecimal totalPlanned = plannings.stream().map(p->p.getTotalPlannedHrs()).reduce(BigDecimal.ZERO, BigDecimal::add);
+			project.setTotalPlannedHrs(totalPlanned);
+			project = projectRepo.save(project);
+		}
+		
+	}
+	
+}

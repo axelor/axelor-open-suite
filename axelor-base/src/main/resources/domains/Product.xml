@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
  
   <module name="base" package="com.axelor.apps.base.db"/>
  
@@ -7,7 +7,8 @@
   
     <integer name="importId"/>
     <string name="name" title="Name" required="true" initParam="true"/>
-	
+
+    <string name="sequence" title="Product N°" readonly="true"/>
     <string name="code" title="Code" required="true" initParam="true"/>
 	<string name="ean13" title="EAN13 Code" unique="true"/>
 	
@@ -22,7 +23,9 @@
      
     <string name="productTypeSelect" title="Type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
-    <boolean name="isRawMaterial" title="Raw material" initParam="true" help="true"/>
+    <boolean name="isPrototype" title="Prototype"/>
+    <integer name="subTypeProductSelect" title="Sub Type Product" selection="product.sub.type.product.select"/>
+    <integer name="inventoryTypeSelect" title="Inventory type" selection="product.inventory.type.select"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="10" massUpdate="true"/>
     <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"  />
@@ -38,7 +41,6 @@
      	
   	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines" help="true"/>
   	
-    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config." help="true"/>
     <boolean name="hasWarranty" title="Warranty ?"/>
     <boolean name="isPerishable" title="Perishable ?"/>
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
@@ -66,6 +68,21 @@
   	<many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile" />
   	
   	<string name="fullName" title="Full name" namecolumn="true"/>
+  	
+  	
+  	<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
+  	<decimal name="grossWeight" title="Gross weight"/>
+  	<decimal name="netWeight" title="Net weight"/>
+  	
+  	<many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of length"/>
+  	<decimal name="length" title="Length" default="0"/>
+  	<decimal name="width" title="Width" default="0"/>
+  	<decimal name="height" title="Height" default="0"/>
+  	<decimal name="diameter" title="Diameter"/>
+  	<decimal name="articleVolume" title="Article volume"/>
+  	
+  	<!-- -Json fields -->
+	<string name="productAttrs" title="Fields" json="true" />
   	
   	<extra-code>
 	   		<![CDATA[

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -69,7 +70,7 @@ public class MoveTemplateService {
 			List<Long> moveList = new ArrayList<Long>();
 			BigDecimal hundred = new BigDecimal(100);
 			for(HashMap<String,Object> data : dataList){
-				LocalDate moveDate = new LocalDate(data.get("date").toString());
+				LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
 				Partner debitPartner = null;
 				Partner creditPartner = null;
 				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
@@ -82,7 +83,7 @@ public class MoveTemplateService {
 					creditPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
-				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
+				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null, MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
 				int counter = 1;
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;

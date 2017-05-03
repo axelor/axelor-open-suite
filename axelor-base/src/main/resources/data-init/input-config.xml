@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
-  	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId"  />
+  	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  search="self.typeSelect = :typeSelect" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
   	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
   	
@@ -28,18 +28,10 @@
     <input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId"  />
 	
 	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"  />
-	
-<!-- 	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"  /> -->
 	     
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"  search="self.name = :name"  />
     
 	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/>
-	
-<!-- 	<input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country" search="self.importId = :importId"  /> -->
-	
-<!-- 	<input file="base_city.csv" separator=";" type="com.axelor.apps.base.db.City" search="self.importId = :importId"  /> -->
-	
-<!-- 	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId"  call="com.axelor.csv.script.ImportAddress:importAddress" /> -->
 	
 	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" search="self.code = :code"  />
 	
@@ -71,16 +63,6 @@
 <!-- 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/> -->
 <!-- 	</input> -->
 	
-    <input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" >
-        <bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
-		<bind to="qasWsdlUrl" column="qas_url"/>
-		<bind to="manageBudget" column="manageBudget"/>
-		<bind to="manageMultiBudget" column="manageMultiBudget"/>
-        <bind to="statusSelectBudget" column="statusSelectBudget"/>
-		
-	</input>
     
     <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
     

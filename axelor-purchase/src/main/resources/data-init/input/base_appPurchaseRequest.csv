@@ -1,0 +1,2 @@
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Purchase Request;PRQUEST;Purchase Request Configuration;purchase-request;app-purchase-request.png;axelor-purchase;purchase;5

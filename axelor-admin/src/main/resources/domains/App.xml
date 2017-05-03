@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+  	<entity name="App" lang="java" strategy="JOINED">
+		
+		<string name="typeSelect" title="Type" selection="app.type.select"  required="true" unique="true"/>
+	    <integer name="importId"/>
+	    <string name="name" title="Name" required="true" translatable="true"/>
+	    <string name="code" title="Code"/>
+	    <string name="description" title="Description" large="true" translatable="true"/>
+	    <string name="modules" title="Modules contains in the app" required="true" />
+	    <string name="dependsOn" title="Depends on" selection="app.type.select"/>
+		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
+		<boolean name="initDataLoaded" title="Init data loaded ?" />
+		<boolean name="demoDataLoaded" title="Demo data loaded ?" />
+		<boolean name="active" title="Active" />
+		<integer name="sequence" title="Sequence" />
+
+  	</entity>
+
+</domain-models>

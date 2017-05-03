@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
@@ -63,7 +62,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 	@Inject
 	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = userInfoService.getUser();
 	}
 
@@ -104,7 +103,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
 			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, 
-					saleOrderLine.getBillOfMaterial(), qty, new LocalDateTime()));
+					saleOrderLine.getBillOfMaterial(), qty, LocalDateTime.now()));
 
 		}
 

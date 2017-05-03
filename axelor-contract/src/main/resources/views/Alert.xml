@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="alert-grid" title="Alert" model="com.axelor.apps.contract.db.Alert">
+       <field name="alertDate" />
+       <field name="resason" />
+       <field name="reminderSelect" />
+       <field name="reminderTypeSelect" />
+    </grid>
+    
+    <form name="alert-form" title="Alert" model="com.axelor.apps.contract.db.Alert">
+       <panel>
+	       <field name="alertDate" />
+	       <field name="resason" />
+	       <field name="reminderSelect" />
+	       <field name="reminderTypeSelect" />
+       </panel>
+    </form>
+
+</object-views>

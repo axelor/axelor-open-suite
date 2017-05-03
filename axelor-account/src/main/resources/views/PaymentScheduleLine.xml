@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="payment-schedule-line-grid" title="Schedule lines"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
@@ -10,12 +10,12 @@
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="inTaxAmountPaid" aggregate="sum"/>
 		<field name="scheduleDate" />
-		<field name="debitBlockingOk" if="__config__.general.getManageDirectDebitPayment()" />
-		<field name="rejectDate" if="__config__.general.getManageDirectDebitPayment()" />
-		<field name="interbankCodeLine" if="__config__.general.getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+		<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="statusSelect" />
-		<field name="debitNumber" if="__config__.general.getManageDirectDebitPayment()" />
-		<field name="fromReject" if="__config__.general.getManageDirectDebitPayment()" />
+		<field name="debitNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
 	</grid>
 
 	<form name="payment-schedule-line-form" title="Schedule line"
@@ -26,16 +26,16 @@
 			<field name="inTaxAmount" readonlyIf="fromReject"/>
 			<field name="inTaxAmountPaid" />
 			<field name="scheduleDate" />
-			<field name="debitBlockingOk" if="__config__.general.getManageDirectDebitPayment()"  />
-			<field name="rejectDate" if="__config__.general.getManageDirectDebitPayment()"  />
-			<field name="interbankCodeLine" if="__config__.general.getManageDirectDebitPayment()"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  />
+			<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  />
+			<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 			<field name="statusSelect" />
-			<field name="debitNumber" if="__config__.general.getManageDirectDebitPayment()" />
-			<field name="directDebitManagement" if="__config__.general.getManageDirectDebitPayment()" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
-			<field name="rejectMoveLine" if="__config__.general.getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="advanceOrPaymentMove" if="__config__.general.getManageDirectDebitPayment()"  form-view="move-form" grid-view="move-grid"/>
-			<field name="advanceMoveLine" if="__config__.general.getManageDirectDebitPayment()"  form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="fromReject" if="__config__.general.getManageDirectDebitPayment()" />
+			<field name="debitNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+			<field name="directDebitManagement" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
 		</panel>
 	</form>
 
@@ -44,10 +44,10 @@
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="scheduleDate"  />
-		<field name="debitBlockingOk" if="__config__.general.getManageDirectDebitPayment()" />
-		<field name="rejectDate" if="__config__.general.getManageDirectDebitPayment()" />
-		<field name="interbankCodeLine" if="__config__.general.getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="fromReject" if="__config__.general.getManageDirectDebitPayment()" />
+		<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+		<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
 		<field name="statusSelect" />
 	</grid>
 
@@ -58,15 +58,15 @@
 			<field name="scheduleLineSeq" />
 			<field name="inTaxAmount" readonlyIf="fromReject"/>
 			<field name="scheduleDate" />
-			<field name="debitBlockingOk" if="__config__.general.getManageDirectDebitPayment()" />
-			<field name="rejectDate" if="__config__.general.getManageDirectDebitPayment()" />
-			<field name="interbankCodeLine" if="__config__.general.getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-			<field name="debitNumber" if="__config__.general.getManageDirectDebitPayment()" />
-			<field name="directDebitManagement" if="__config__.general.getManageDirectDebitPayment()" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
-			<field name="rejectMoveLine" if="__config__.general.getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="advanceOrPaymentMove" if="__config__.general.getManageDirectDebitPayment()" form-view="move-form" grid-view="move-grid"/>
-			<field name="advanceMoveLine" if="__config__.general.getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="fromReject" if="__config__.general.getManageDirectDebitPayment()" />
+			<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+			<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+			<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="debitNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+			<field name="directDebitManagement" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
 			<field name="statusSelect" readonly="true" />
 		</panel>
 		

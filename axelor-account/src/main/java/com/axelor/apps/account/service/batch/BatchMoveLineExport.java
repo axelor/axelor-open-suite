@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +30,8 @@ import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -130,15 +130,15 @@ public class BatchMoveLineExport extends BatchStrategy {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		if(accountingBatch.getCompany() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		if(accountingBatch.getEndDate() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 		if(accountingBatch.getMoveLineExportTypeSelect() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,9 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -44,17 +44,17 @@ public class InvoicingProjectController {
 		invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
 		if(invoicingProject.getSaleOrderLineSet().isEmpty() && invoicingProject.getPurchaseOrderLineSet().isEmpty()
 				&& invoicingProject.getLogTimesSet().isEmpty() && invoicingProject.getExpenseLineSet().isEmpty() && invoicingProject.getElementsToInvoiceSet().isEmpty()
-				&& invoicingProject.getProjectTaskSet().isEmpty()){
+				&& invoicingProject.getProjectSet().isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY)), IException.CONFIGURATION_ERROR);
 		}
-		if(invoicingProject.getProjectTask() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
+		if(invoicingProject.getProject() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT)), IException.CONFIGURATION_ERROR);
 		}
-		if(invoicingProject.getProjectTask().getClientPartner() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK_PARTNER)), IException.CONFIGURATION_ERROR);
+		if(invoicingProject.getProject().getClientPartner() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER)), IException.CONFIGURATION_ERROR);
 		}
 
-		if(invoicingProject.getProjectTask().getAssignedTo() == null){
+		if(invoicingProject.getProject().getAssignedTo() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_USER)), IException.CONFIGURATION_ERROR);
 		}
 		Invoice invoice = invoicingProjectService.generateInvoice(invoicingProject);
@@ -70,12 +70,12 @@ public class InvoicingProjectController {
 
 	public void fillIn(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
-		ProjectTask projectTask = invoicingProject.getProjectTask();
-		if(projectTask == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
+		Project project = invoicingProject.getProject();
+		if(project == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT)), IException.CONFIGURATION_ERROR);
 		}
 		invoicingProjectService.clearLines(invoicingProject);
-		invoicingProjectService.setLines(invoicingProject,projectTask,0);
+		invoicingProjectService.setLines(invoicingProject,project,0);
 		response.setValues(invoicingProject);
 	}
 }

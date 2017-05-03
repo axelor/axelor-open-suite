@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,19 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,7 +37,9 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -51,21 +52,23 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
-	protected General general;
+	protected AppSupplychain appSupplychain;
+	protected AccountConfigService accountConfigService;
 
 
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
-			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService) {
+			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, 
+			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService , AccountConfigService accountConfigService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
-				partnerService, partnerRepo, saleOrderRepo, generalService, userService);
+				partnerService, partnerRepo, saleOrderRepo, appSaleService, userService);
 		
 		this.saleOrderStockService = saleOrderStockService;
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
-		this.general = generalService.getGeneral();
+		this.appSupplychain = appSupplychainService.getAppSupplychain();
+		this.accountConfigService = accountConfigService;
 		
 	}
 	
@@ -76,10 +79,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
 		super.confirmSaleOrder(saleOrder);
 		
-		if(general.getPurchaseOrderGenerationAuto())  {
+		if(appSupplychain.getPurchaseOrderGenerationAuto())  {
 			saleOrderPurchaseService.createPurchaseOrders(saleOrder);
 		}
-		if(general.getCustomerStockMoveGenerationAuto())  {
+		if(appSupplychain.getCustomerStockMoveGenerationAuto())  {
 			saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 		}
 		
@@ -102,8 +105,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		
 		saleOrder.setLocation(location);
 
-		saleOrder.setPaymentMode(clientPartner.getPaymentMode());
+		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
+		
+		if (saleOrder.getPaymentMode() == null) {
+			saleOrder.setPaymentMode(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getInPaymentMode()
+				);
+		}
+
+		if (saleOrder.getPaymentCondition() == null) {
+			saleOrder.setPaymentCondition(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getDefPaymentCondition()
+				);
+		}
+		
 		
 		return saleOrder;
 	}
@@ -113,7 +133,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		PartnerService partnerService = Beans.get(PartnerService.class);
 		if(client != null){
 			saleOrder.setPaymentCondition(client.getPaymentCondition());
-			saleOrder.setPaymentMode(client.getPaymentMode());
+			saleOrder.setPaymentMode(client.getInPaymentMode());
 			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
 			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
 			saleOrder.setPriceList(client.getSalePriceList());

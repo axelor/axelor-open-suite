@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -41,5 +41,13 @@
 		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
 	</selection>
 	
-	
+	<selection name="app.type.select" id="supplychain.app.type.select">
+		<option order="11" value="supplychain">Supplychain management</option>
+		<option order="23" value="subscription">Subscription</option>
+	</selection>
+
+	<selection name="mrp.line.proposal.ref.select" id="supplychain.mrp.line.proposal.ref.select">
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+	</selection>
+
 </object-views>

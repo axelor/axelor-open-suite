@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,7 @@ public class MoveCustAccountService {
 	}
 
 
-	public void flagPartners(Move move)  {
+	public void flagPartners(Move move) throws AxelorException {
 
 		accountCustomerService.flagPartners(this.getPartnerOfMove(move), move.getCompany());
 
@@ -56,7 +56,7 @@ public class MoveCustAccountService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCustomerAccount(Move move)  {
+	public void updateCustomerAccount(Move move) throws AxelorException {
 
 		if( AccountingService.getUpdateCustomerAccount() )  {
 			accountCustomerService.updatePartnerAccountingSituation(this.getPartnerOfMove(move), move.getCompany(), true, true, false);

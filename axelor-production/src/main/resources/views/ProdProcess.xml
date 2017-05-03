@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name"/>
     	<field name="code"/>
         <field name="location" grid-view="location-grid" form-view="location-form"/>
+        <field name="product"/>
         <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
     </grid>
     
@@ -16,7 +17,10 @@
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+	        <field name="product" grid-view="product-grid" form-view="product-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
+	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+            <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>
@@ -32,6 +36,10 @@
     
     <action-method name="action-prod-process-method-validate-prod-process">
     	<call class="com.axelor.apps.production.web.ProdProcessController" method="validateProdProcess"/>
+    </action-method>
+    
+    <action-method name="action-prod-process-method-change-prodprocesslist-outsourcing">
+    	<call class="com.axelor.apps.production.web.ProdProcessController" method="changeProdProcessListOutsourcing"/>
     </action-method>
     
 </object-views>

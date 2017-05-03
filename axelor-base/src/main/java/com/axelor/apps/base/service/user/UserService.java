@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,10 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Team;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.team.db.Team;
+import com.google.inject.persist.Transactional;
 
 /**
  * UserService is a class that implement all methods for user informations
@@ -92,4 +93,7 @@ public interface UserService {
 	 * 		the user partner
 	 */
 	public Partner getUserPartner();
+
+	@Transactional
+	public void createPartner(User user);
 }

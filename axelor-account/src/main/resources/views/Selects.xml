@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -16,7 +16,7 @@
 		<option value='2'>Confirmed</option>
 	</selection>
 	
-	<selection name='account.account.type.select'>
+	<selection name='account.account.technical.type.select'>
 		<option value='asset'>Asset</option>
 		<option value='cash'>Cash</option>
 		<option value='charge'>Charge</option>
@@ -76,9 +76,11 @@
 		<option value="12">VAT Statement</option>
 		<option value="13">Payment differences</option>
 		<option value="14">General ledger 2</option>
+		<option value="2000">Analytic balance</option>
 	</selection>
 	
 	<selection name='move.line.report.type.select.export'>
+		<option value="1000">Export payroll journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
 		<option value="1008">Export treasury -> Acc. Soft.</option>
@@ -86,10 +88,17 @@
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>
-		<option value='1'>Draft</option>
-		<option value='2'>Simulated</option>
+		<option value='1'>New</option>
+		<option value='2'>Daybook</option>
 		<option value='3'>Validated</option>
 		<option value='4'>Canceled</option>
+	</selection>
+	
+	<selection name='iaccount.move.technical.origin.select'>
+		<option value='1'>Entry</option>
+		<option value='2'>Automatic</option>
+		<option value='3'>Template</option>
+		<option value='4'>Import</option>
 	</selection>
 	
 	<selection name='iaccount.cash.register.line.status.select'>
@@ -147,6 +156,13 @@
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
 		<option value="18">Move export</option>
+		<option value="19">Credit Transfer</option>
+	</selection>
+	
+	<selection name="iaccount.account.batch.transfer.type.select">
+		<option value="1">Expense Payment</option>
+		<option value="2">Supplier Payment</option>
+		<option value="3">Customer Reimbursement</option>
 	</selection>
 	
 	<selection name="ireimbursement.batch.type.select">
@@ -183,34 +199,6 @@
 		<option value="2">End of month + n days</option>
 		<option value="3">N days + end of month</option>
 		<option value="4">N days + end of month at</option>
-	</selection>
-	
-	<selection name="iaccount.payment.mode.type.select">
-		<option value="1">Other</option>
-		<option value="2">Direct debit</option>
-		<option value="3">IPO</option>
-		<option value="4">IPO + Cheque</option>
-		<option value="5">Cash</option>
-		<option value="6">Bank card</option>
-		<option value="7">Cheque</option>
-		<option value="8">Web</option>
-		<option value="9">Transfer</option>
-	</selection>		
-	
-	<selection name="iaccount.payment.mode.in.out.select">
-		<option value="1">In</option>
-		<option value="2">Out</option>
-	</selection>	
-
-	<selection name="account.bank.statement.type.select">
-		<option value="1">General</option>
-		<option value="2">Customer</option>
-		<option value="3">Supplier</option>
-	</selection>	
-	
-	<selection name="account.bank.statement.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Validated</option>
 	</selection>
 	
 	<selection name="move.template.line.debit.credit.select">
@@ -270,12 +258,16 @@
 	<selection name="invoice.payment.type.select">
 		<option value="1">Advance Payment</option>
 		<option value="2">Payment</option>
+		<option value="3">Refund invoice</option>
+		<option value="4">Invoice</option>
+		<option value="5">Other</option>
 	</selection>
 	
 	<selection name="invoice.payment.status.select">
   		<option value="0">Draft</option>
 		<option value="1">Validated</option>
 		<option value="2">Canceled</option>
+		<option value="3">Pending</option>
 	</selection>
 	
 	<selection name="assistant.report.invoice.graph.type.select">
@@ -283,4 +275,17 @@
 		<option value="2">Table</option>
 	</selection>
 	
+	<selection name="account.analytic.move.line.type.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
+	</selection>
+
+	<selection name="app.type.select" id="account.app.type.select">
+		<option order="2" value="account">Account</option>
+		<option order="3" value="invoice">Invoice</option>
+		<option order="4" value="budget">Budget</option>
+	</selection>
+
+
 </object-views>

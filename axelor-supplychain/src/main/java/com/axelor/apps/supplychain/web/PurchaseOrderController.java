@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,20 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.common.base.Joiner;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.exception.AxelorException;
@@ -51,7 +52,10 @@ public class PurchaseOrderController {
 	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppSupplychainService appSupplychainService;
+	
+	@Inject
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -62,12 +66,12 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder.getId() != null) {
 			if (purchaseOrderServiceSupplychain.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())){
-				if(!generalService.getGeneral().getSupplierStockMoveGenerationAuto()){
+				if(!appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()){
 					response.setFlash(I18n.get("An active stockMove already exists for this purchaseOrder"));
 				}
 			}else{
 				Long stockMoveId = purchaseOrderServiceSupplychain.createStocksMove(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-				if (!generalService.getGeneral().getSupplierStockMoveGenerationAuto()){
+				if (!appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()){
 					response.setView(ActionView
 							.define(I18n.get("Stock move"))
 							.model(StockMove.class.getName())
@@ -111,7 +115,7 @@ public class PurchaseOrderController {
 	
 	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 			purchaseOrderServiceSupplychain.generateBudgetDistribution(purchaseOrder);
 			response.setValues(purchaseOrder);
@@ -119,7 +123,7 @@ public class PurchaseOrderController {
 	}
 	
 	//Generate single purchase order from several
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergePurchaseOrder(ActionRequest request, ActionResponse response)  {
 		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
 		List<Long> purchaseOrderIdList = new ArrayList<Long>();

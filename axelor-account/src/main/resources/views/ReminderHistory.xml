@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="reminder-history-line-grid" title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory">
     	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
@@ -31,7 +31,7 @@
         	<field name="balanceDue"/>
         	<field name="balanceDueReminder"/>
         	<field name="referenceDate"/>
-        	<field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
+        	<field name="reminderMethodLine" readonlyIf="reminderMethod == null" domain="self.reminderMethod = :reminderMethod" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
         	<field name="reminderDate"/>
     	</panel>
     	<panel name="reminderContent" title="Reminder content">

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="shipment-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.stock.db.ShipmentMode">
+    	<field name="name"/>
+    </grid>
+    
+    <form name="shipment-mode-form" model="com.axelor.apps.stock.db.ShipmentMode" title="Shipment Mode form">
+    	<panel>
+  		  	<field name="name" required="true" colSpan="12"/>
+  		  	<field name="freightCarrierMode" form-view="freight-carrier-mode-shipment-mode-form" grid-view="freight-carrier-mode-shipment-mode-grid" colSpan="12"/>
+    	</panel>
+    </form>
+    
+    <grid name="shipment-mode-freight-carrier-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.stock.db.ShipmentMode">
+    	<field name="name"/>
+    </grid>
+ </object-views>

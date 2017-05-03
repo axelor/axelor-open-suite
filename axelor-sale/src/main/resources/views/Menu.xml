@@ -1,54 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
-	<menuitem name="sc-root-sale" title="Sales" order="-106"
-		icon="fa-line-chart" groups="admins,ERP,CRM" icon-background="#e0a83c"/>
-		
-	<menuitem name="sale-templates-new-template" title="Create a template"  groups="admins,ERP"
-		 action="sale.templates.new.template" parent="sc-root-sale-templates" order="10"/>
-		 
-	<action-view name="sale.templates.new.template" title="New Template"
-		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="form" name="sale-order-template-form"/>
-		<view type="grid" name="sale-order-template-grid"/>
-		<domain>self.template = true AND self.templateUser.id = :_user</domain>
-		<context name="_user" expr="eval: __user__.id"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_template" expr="eval:true" />
-	</action-view>
+	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
+		icon="fa-line-chart" icon-background="#e0a83c"/>
 	
-	<menuitem name="sale-templates-all-templates" title="All Templates" groups="admins,ERP"
-		 action="sale.templates.all.templates" parent="sc-root-sale-templates" order="30"/>
-		 
-	<action-view name="sale.templates.all.templates" title="All Templates"
-		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="grid" name="sale-order-template-grid"/>
-		<view type="form" name="sale-order-template-form"/>
-		<domain>self.template = true</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_template" expr="eval:true" />
-	</action-view>
-	
-	<menuitem name="sale-templates-my-templates" title="My Templates" groups="admins,ERP"
-		 action="sale.templates.my.templates" parent="sc-root-sale-templates" order="20"/>
-		 
-	<action-view name="sale.templates.my.templates" title="My Templates"
-		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="grid" name="sale-order-template-grid"/>
-		<view type="form" name="sale-order-template-form"/>
-		<domain>self.template = true AND self.templateUser = :_user</domain>
-		<context name="_user" expr="eval: __user__"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_template" expr="eval:true" />
-	</action-view>
-	
-	<menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="-200"
+	<menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="5"
 		title="Customers" action="sc.root.sale.customers" />
 
 	<action-view name="sc.root.sale.customers" title="Customers"
@@ -58,14 +17,13 @@
 		<view type="form" name="partner-customer-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
-		<domain>self.isContact = false AND self.isCustomer = true</domain>
+		<domain>self.isContact = false AND (self.isCustomer = true || self.isProspect = true)</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
 	</action-view>
 	
-	<menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="-150"
+	<menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="10"
 		title="Contacts" action="sc.root.sale.contacts" />
 
 	<action-view name="sc.root.sale.contacts" title="Contacts"
@@ -76,48 +34,75 @@
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
 	</action-view>
-			
-	<menuitem name="sc-root-sale-new-so" title="New Sale order" order="-100" 
-		 groups="admins,ERP" action="sc.root.sale.new.so" parent="sc-root-sale"/>
-		
-	<action-view name="sc.root.sale.new.so" title="New Sale order"
-		model="com.axelor.apps.sale.db.SaleOrder" >
-		<view type="form" name="sale-order-form"/>
-		<view type="grid" name="sale-order-grid"/>
+	
+	<menuitem name="sc-root-sale-products" parent="sc-root-sale" order="15"
+		title="Products &amp; services" action="sc.root.sale.products" />
+
+	<action-view name="sc.root.sale.products" title="Products &amp; services"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false AND self.sellable = true</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromSale" expr="eval:true" />
+	</action-view>
+	
+	<menuitem name="sc-root-sale-quotations" parent="sc-root-sale" order="20"
+		 title="Quotations" action="sc.root.sale.quotations" />
+	
+	<action-view name="sc.root.sale.quotations" title="Quotations"
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="cards" name="sale-order-cards" />
+		<view type="grid" name="sale-order-quotation-grid" />
+		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
-		<domain>self.template = false</domain>
+		<view-param name="forceTitle" value="true" />
+		<domain>self.template = false and self.statusSelect &lt; 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
 	</action-view>	
 	
-	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="-75"
-		groups="admins,ERP" title="Sale orders" action="sc.root.sale.orders" />
+	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25"
+		 title="Sale orders" action="sc.root.sale.orders" />
 	
 	<action-view name="sc.root.sale.orders" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >
+		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
-		<domain>self.template = false</domain>
+		<domain>self.template = false and self.statusSelect &gt; 2</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
 	</action-view>	
 	
-	<menuitem name="sc-root-sale-order-lines" parent="sc-root-sale" order="-70"
-		groups="admins,ERP" title="Sale order lines" action="sc.root.sale.order.lines" />
+	<menuitem name="sc-root-sale-templates" parent="sc-root-sale" order="30"
+		 title="Quotations template" action="sc.root.sale.templates"/>
+		
+	<action-view name="sc.root.sale.templates" model="com.axelor.apps.sale.db.SaleOrder" title="Quotations template">
+		<view name="sale-order-template-grid" type="grid"/>
+		<view name="sale-order-template-form" type="form"/>
+		<view-param name="search-filters" value="sc.root.sale.templates.filter"/>
+		<domain>self.template = true</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_template" expr="eval:true"/>
+	</action-view>
 	
-	<action-view name="sc.root.sale.order.lines" title="SO lines"
-		model="com.axelor.apps.sale.db.SaleOrderLine" >
-		<view type="grid" name="sale-order-line-menu-grid" />
-		<view type="form" name="sale-order-line-menu-form" />
-	</action-view>	
-	
-	<menuitem name="sc-root-sale-templates" title="Templates" parent="sc-root-sale" order="-50" groups="admins,ERP"/>
+	<search-filters name="sc.root.sale.templates.filter" model="com.axelor.apps.sale.db.SaleOrder" title="My Templates">
+		<filter title="My templates">
+			<domain>self.template = true AND self.templateUser = :_user</domain>
+			<context name="_user" value="__user__"/>
+		</filter>
+	</search-filters>
 	
 	<menuitem name="sc-root-sale-report" parent="sc-root-sale"
-		title="Reportings"  order="-40"/>
+		title="Reportings"  order="35"/>
 		
 	<menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="10"/>
 		
@@ -130,18 +115,8 @@
 	
 	
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
-		title="Configuration"  order="-25"/>
-		
-	<menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
-		title="Price lists" action="sc.root.sale.conf.price.list" />
-
-	<action-view name="sc.root.sale.conf.price.list" title="Price lists"
-		model="com.axelor.apps.base.db.PriceList" >
-		<view type="grid" name="price-list-grid" />
-		<view type="form" name="sale-price-list-form" />
-		<domain>self.typeSelect = 1</domain>
-	</action-view>	
-
+		title="Configuration"  order="45"/>
+	
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
 
@@ -159,11 +134,21 @@
 		<view type="grid" name="duration-grid" />
 		<view type="form" name="duration-form" />
 	</action-view>
+		
+	<menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
+		title="Price lists" action="sc.root.sale.conf.price.list" />
+
+	<action-view name="sc.root.sale.conf.price.list" title="Price lists"
+		model="com.axelor.apps.base.db.PriceList" >
+		<view type="grid" name="price-list-grid" />
+		<view type="form" name="sale-price-list-form" />
+		<domain>self.typeSelect = 1</domain>
+	</action-view>	
 	
 	<menuitem name="sale.conf.tax" parent="sc-root-sale-conf"
-		title="Taxes" action="account.conf.financial.tax" />
+		title="Taxes" action="sale.conf.financial.tax" />
 
-	<action-view name="account.conf.financial.tax" title="Taxes"
+	<action-view name="sale.conf.financial.tax" title="Taxes"
 		model="com.axelor.apps.account.db.Tax" >
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>
@@ -182,20 +167,9 @@
 	</action-view>
 	
 	
-	<menuitem name="admin-root-conf-sale-config" parent="admin-root-conf"
-		title="Sale configurations" action="admin.root.conf.sale.config" />
-		
-	<action-view name="admin.root.conf.sale.config" title="Sale configurations"
-		model="com.axelor.apps.sale.db.SaleConfig" >
-		<view type="grid" name="sale-config-grid" />
-		<view type="form" name="sale-config-form"/>
-	</action-view>
-
-
-
 <!-- TOP MENU -->
 
-	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" top="true" title="Create SO" action="supply.chain.root.sale.order" />
+	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" top="true" title="Create SO" action="supply.chain.root.sale.order" if="__config__.app.isApp('sale')"/>
 	
 	<action-view name="supply.chain.root.sale.order" title="Sales order"
 		model="com.axelor.apps.sale.db.SaleOrder" >
@@ -203,14 +177,12 @@
 		<view type="grid" name="sale-order-grid" />
 	</action-view>	
 	
-
-	<menuitem name="top-sale" title="Sales" groups="admins,ERP,CRM" top="true" left="false" order="-160"/>
+	<menuitem name="top-sale" title="Sales" top="true" left="false" order="-160" if="__config__.app.isApp('sale')" />
 	
-	<menuitem name="top-sale-create-quote" order="-100" title="Create Quote" parent="top-sale" top="true" action="sc.root.sale.new.so"/>
-	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" order="-70" action="sc.root.sale.orders" parent="top-sale" groups="admins,ERP" top="true" left="false"/>
+<!-- 	<menuitem name="top-sale-create-quote" order="-100" title="Create Quote" parent="top-sale" top="true" action="sc.root.sale.new.so"/> -->
+	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" order="-70" action="sc.root.sale.orders" parent="top-sale"  top="true" left="false"/>
 	
-	
-	<menuitem name="top-sale-offers" title="View Quotes" order="-90" action="top.sale.offers" parent="top-sale" groups="admins,ERP" top="true" left="false"/>
+	<menuitem name="top-sale-offers" title="View Quotes" order="-90" action="top.sale.offers" parent="top-sale"  top="true" left="false"/>
 	<action-view name="top.sale.offers" title="Quotes"
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="grid" name="sale-order-grid" />
@@ -222,7 +194,7 @@
 	</action-view>	
 	
 	
-	<menuitem name="top-sale-orders" title="View Orders" order="-80" action="top.sale.orders" parent="top-sale" groups="admins,ERP" top="true" left="false"/>		
+	<menuitem name="top-sale-orders" title="View Orders" order="-80" action="top.sale.orders" parent="top-sale"  top="true" left="false"/>		
 	
 	<action-view name="top.sale.orders" title="Orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >

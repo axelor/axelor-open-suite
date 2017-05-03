@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="include-project-planning-hr-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning">
+		<panel  colSpan="12">
+			<panel-related field="projectPlanningTime" colSpan="12" />
+			<field name="totalPlannedHrs" />
+		</panel>
+	</form>
+	
+	<grid name="project-planning-time-grid" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime" editable="true">
+		<field name="date" />
+		<field name="hours" />
+	</grid>
+	
+	<form name="project-planning-time-form" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<panel>
+			<field name="date" />
+			<field name="hours" />
+		</panel>
+	</form>
+	
+	<action-method name="action-project-method-update-project-planned-time">
+		<call class="com.axelor.apps.hr.service.project.ProjectPlanningService" method="updateProjectPlannedHrs(project)"/>
+	</action-method>
+	
+	<action-method name="action-project-method-update-task-planned-time">
+		<call class="com.axelor.apps.hr.service.project.ProjectPlanningService" method="updateTaskPlannedHrs(task)" />
+	</action-method>
+	
+</object-views>

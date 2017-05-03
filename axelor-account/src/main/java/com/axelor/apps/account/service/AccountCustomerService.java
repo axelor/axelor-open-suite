@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,15 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +41,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -57,11 +60,11 @@ public class AccountCustomerService {
 	protected LocalDate today;
 	
 	@Inject
-	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, GeneralService generalService) {
+	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, AppBaseService appBaseService) {
 
 		this.accountingSituationService =accountingSituationService;
 		this.accSituationRepo = accSituationRepo;
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 	}
 
 	public AccountingSituationService getAccountingSituationService()  {
@@ -146,7 +149,7 @@ public class AccountCustomerService {
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
-				.setParameter(1, today.toDate(), TemporalType.DATE)
+				.setParameter(1, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
 				.setParameter(4, MoveRepository.STATUS_VALIDATED);
@@ -200,7 +203,7 @@ public class AccountCustomerService {
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
-				.setParameter(2, today.toDate(), TemporalType.DATE)
+				.setParameter(2, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company)
 				.setParameter(5, MoveRepository.STATUS_VALIDATED);
@@ -239,9 +242,12 @@ public class AccountCustomerService {
 	 * @param company
 	 * 				Une société
 	 */
-	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
+	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount) throws AxelorException {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
+			if(accountingSituation == null) {
+				accountingSituation = accountingSituationService.createAccountingSituation(partner, company);
+			}
 			if(accountingSituation != null)  {
 				this.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
 			}
@@ -250,11 +256,16 @@ public class AccountCustomerService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void flagPartners(List<Partner> partnerList, Company company)  {
+	public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-			accountingSituation.setCustAccountMustBeUpdateOk(true);
-			accSituationRepo.save(accountingSituation);
+			if(accountingSituation == null) {
+				accountingSituation = accountingSituationService.createAccountingSituation(partner, company);
+			}
+			if (accountingSituation != null) {
+				accountingSituation.setCustAccountMustBeUpdateOk(true);
+				accSituationRepo.save(accountingSituation);
+			}
 		}
 	}
 
@@ -338,7 +349,7 @@ public class AccountCustomerService {
 		if(customerAccount == null)  {
 
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
+					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
 
 		}
 
@@ -369,7 +380,7 @@ public class AccountCustomerService {
 		if(supplierAccount == null)  {
 
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
+					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
 
 		}
 

@@ -1,93 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="project-planning-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanning">
-		<field name="year"/>
-		<field name="week"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="user"/>
+		<field name="project"/>
+		<field name="task"/>
+		<field name="timepercent" widget="SelectProgress"/>
 	</grid>
-
 	
-	<form name="project-my-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning" 
-		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate"
-		canNew="false" canCopy="false" width="large">
-		<panel name="main" >
-			<field name="year"/>
-			<field name="week"/>
-			<button-group colOffset="10" colSpan="2">
-				<button name="previousWeek" icon="fa-chevron-circle-left" onClick="action-project-planning-method-previous-week"/>
-				<button name="currentWeek" title="Current Week" onClick="action-project-planning-method-current-week"/>
-				<button name="nextWeek" icon="fa-chevron-circle-right" onClick="action-project-planning-method-next-week"/>
-			</button-group>
-			
-		</panel>
+	<grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanning">
+		<field name="project"/>
+		<field name="task"/>
+		<field name="totalPlannedHrs"/>
+	</grid>
+	
+	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning">
 		<panel>
-			<field name="$projectPlanningLineList" onChange="action-project-planning-method-save" grid-view="project-my-planning-line-grid" form-view="project-my-planning-line-form" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" colSpan="12"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+			<field name="user"/>
+			<field name="project"/>
+			<field name="task"/>
+			<field name="timepercent" widget="SelectProgress"/>
+			<field name="description" colSpan="12" widget="html"/>
+			<panel-include view="include-project-planning-hr-form" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 		</panel>
-	    <panel>
-	    	<button name="seeMonth" title="See Month" colSpan="4"/>
-	    	<field name="$fromDate" colSpan="4" type="date" title="From Date"/>
-	      	<field name="$toDate" colSpan="4" type="date" title="To Date"/>
-	    </panel>
 	</form>
 	
-	<form name="project-my-team-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
-		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" 
-		canNew="false" canCopy="false" width="large">
-		<panel name="main" >
-			<field name="year"/>
-			<field name="week"/>
-			<button-group colOffset="10" colSpan="2">
-				<button name="previousWeek" icon="fa-chevron-circle-left" onClick="action-project-planning-method-previous-week"/>
-				<button name="currentWeek" title="Current Week" onClick="action-project-planning-method-current-week"/>
-				<button name="nextWeek" icon="fa-chevron-circle-right" onClick="action-project-planning-method-next-week"/>
-			</button-group>
-			
-		</panel>
-		<panel>
-			<field name="$projectPlanningLineList" onChange="action-project-planning-method-save" grid-view="project-my-team-planning-line-grid"  form-view="project-my-team-planning-line-form" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" colSpan="12"/>
-		</panel>
-	    <panel>
-	    	<button name="seeMonth" title="See Month" colSpan="4"/>
-	    	<field name="$fromDate" colSpan="4" type="date" title="From Date"/>
-	      	<field name="$toDate" colSpan="4" type="date" title="To Date"/>
-	    </panel>
-	</form>
-
-	<action-record name="action-project-planning-record-default" model="com.axelor.apps.project.db.ProjectPlanning">
-		<field name="$fromDate" expr="call: com.axelor.apps.project.service.ProjectPlanningService:getFromDate()"/>
-		<field name="$toDate" expr="call: com.axelor.apps.project.service.ProjectPlanningService:getToDate()"/>
-	</action-record>
+	<gantt name="project-planning-gantt" model="com.axelor.apps.project.db.ProjectPlanning" title="Project planning"
+	 	taskStart="fromDate"  taskEnd="toDate" >
+		<field name="user"/>
+	</gantt>
 	
-	<action-method name="action-project-planning-method-previous-week">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningPreviousWeek"/>
-	</action-method>
+	<calendar name="project-planning-calendar" model="com.axelor.apps.project.db.ProjectPlanning" 
+		eventStart="fromDate" eventStop="toDate" title="Project planning" colorBy="user">
+		<field name="user"/>
+	</calendar>
 	
-	<action-method name="action-project-planning-method-current-week">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningCurrentWeek"/>
-	</action-method>
-	
-	<action-method name="action-project-planning-method-next-week">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningNextWeek"/>
-	</action-method>
-	
-	<action-attrs name="action-project-planning-attrs-title-columns">
-		<attribute name="title" for="$projectPlanningLineList.monday" expr="eval: com.axelor.i18n.I18n.get('Mo') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,1)"/>
-		<attribute name="title" for="$projectPlanningLineList.tuesday" expr="eval: com.axelor.i18n.I18n.get('Tu') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,2)"/>
-		<attribute name="title" for="$projectPlanningLineList.wednesday" expr="eval: com.axelor.i18n.I18n.get('We') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,3)"/>
-		<attribute name="title" for="$projectPlanningLineList.thursday" expr="eval: com.axelor.i18n.I18n.get('Th') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,4)"/>
-		<attribute name="title" for="$projectPlanningLineList.friday" expr="eval: com.axelor.i18n.I18n.get('Fr') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,5)"/>
-		<attribute name="title" for="$projectPlanningLineList.saturday" expr="eval: com.axelor.i18n.I18n.get('Sa') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,6)"/>
-		<attribute name="title" for="$projectPlanningLineList.sunday" expr="eval: com.axelor.i18n.I18n.get('Su') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,7)"/>
-		<attribute name="title" for="$projectPlanningLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-	
-	</action-attrs>
-	
-	<action-method name="action-project-planning-method-populate">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="populate"/>
-	</action-method>
-	
-	<action-method name="action-project-planning-method-save">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="saveLines"/>
-	</action-method>
 </object-views>

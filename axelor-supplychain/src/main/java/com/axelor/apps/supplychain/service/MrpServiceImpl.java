@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,22 +18,24 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -97,7 +99,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	
 	@Inject
-	public MrpServiceImpl(GeneralService generalService, MrpRepository mrpRepository, LocationRepository locationRepository, 
+	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
@@ -114,7 +116,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.mrpLineService = mrpLineService;
 		this.mrpForecastRepository = mrpForecastRepository;
 		
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 	}
 	
 	public void runCalculation(Mrp mrp) throws AxelorException  {
@@ -744,9 +746,13 @@ public class MrpServiceImpl implements MrpService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateProposals(Mrp mrp) throws AxelorException  {
 		
+		Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
+		
 		for(MrpLine mrpLine : mrp.getMrpLineList())  {
 			
-			mrpLineService.generateProposal(mrpLine);
+			if (!mrpLine.getProposalGenerated()) {
+				mrpLineService.generateProposal(mrpLine, purchaseOrders);
+			}
 			
 		}
 		

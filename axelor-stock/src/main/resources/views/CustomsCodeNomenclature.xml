@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<tree name="customs-code-nomenclature-tree" title="Customs code nomenclature">
+
+		<column name="code" type="string" />
+		<column name="wording" type="string" />
+		<column name="supplementaryUnit" type="string" />
+
+		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+			domain="self.parentCustomsCode.id IS NULL">
+			<field as="code" name="code" />
+			<field as="wording" name="wording" />
+			<field as="supplementaryUnit" name="supplementaryUnit" />
+		</node>
+
+		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+			parent="parentCustomsCode">
+			<field as="code" name="code" />
+			<field as="wording" name="wording" />
+			<field as="supplementaryUnit" name="supplementaryUnit" />
+		</node>
+
+	</tree>
+
+	<grid model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+		title="Customs code nomenclature" name="customs-code-nomenclature-grid">
+		<field name="code" />
+		<field name="wording" />
+		<field name="supplementaryUnit" />
+		<field name="parentCustomsCode" />
+	</grid>
+
+	<form model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+		title="Customs code nomenclature" name="customs-code-nomenclature-form">
+		<panel readonly="true">
+			<field name="code" />
+			<field name="wording" />
+			<field name="supplementaryUnit" />
+			<field name="parentCustomsCode" />
+		</panel>
+	</form>
+
+</object-views>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+  
+  	<grid name="ebics-partner-grid" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner" >
+		<field name="partnerId" />
+		<field name="ebicsBank"/>
+	</grid>
+	
+	<form name="ebics-partner-form" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner">
+	
+		<panel title="General informations">
+			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
+			<field name="ebicsBank" />
+			<field name="testMode"/>
+		</panel>
+		
+		<panel title="Bank statements" colSpan="12">
+			<field name="bankStatementFileFormatSet" widget="TagSelect" canNew="false" canEdit="false" colSpan="6" form-view="bank-statement-file-format-form" grid-view="bank-statement-file-format-grid"/>
+			<field name="bankStatementEbicsUser" colSpan="6" domain="self.ebicsPartner.id = :id" form-view="ebics-user-form" grid-view="ebics-user-grid"/>
+			<field name="bankStatementGetModeSelect" colSpan="6" widget="radio-select" x-direction="horizontal"/>
+			<field name="bankStatementLastExeDateT" readonly="true" colSpan="6"/>
+			<field name="bankStatementStartDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
+			<field name="bankStatementEndDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
+			<button name="getBankStatementButton" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bankStatementFileFormatSet"/>
+			<button name="showBankStatementButton" title="Show the bank statements" onClick="action-ebics-partner-view-show-bank-statement"/>
+		</panel>
+		
+		<panel title="Payment Status Report">
+			<field name="usePSR" widget="boolean-switch"/>
+			<field name="pSRBankStatementFileFormat" showIf="usePSR"/>
+		</panel>
+		
+		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
+		
+		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
+
+	</form>
+	
+	
+	<action-method name="action-ebics-partner-method-get-bank-statement">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="getBankStatement"/>
+	</action-method>
+	
+	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">
+		<attribute name="domain" for="bankDetailsSet" expr="eval: &quot; self.bank.id = ${ebicsBank?.bank?.id} &quot;"/>
+	</action-attrs>
+	
+	<action-view name="action-ebics-partner-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">
+		<view name="ebics-user-grid" type="grid"/>
+		<view name="ebics-user-form" type="form"/>
+		<domain>self.ebicsPartner.id = :id</domain>
+	</action-view>
+
+	<action-view name="action-ebics-partner-view-show-bank-statement" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement">
+		<view name="bank-statement-grid" type="grid"/>
+		<view name="bank-statement-form" type="form"/>
+		<domain>self.ebicsPartner.id = :id</domain>
+        <context name="id" expr="eval: id"/>
+	</action-view>
+	
+</object-views>

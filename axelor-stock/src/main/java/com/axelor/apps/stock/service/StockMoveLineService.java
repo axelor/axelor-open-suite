@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,11 +20,11 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -36,7 +36,8 @@ public interface StockMoveLineService {
 
 	public static final int TYPE_SALES = 1;
 	public static final int TYPE_PURCHASES = 2;
-	public static final int TYPE_PRODUCTIONS = 3;
+	public static final int TYPE_OUT_PRODUCTIONS = 3;
+	public static final int TYPE_IN_PRODUCTIONS = 4;
 
 
 	/**
@@ -91,15 +92,16 @@ public interface StockMoveLineService {
 
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
-	
+
+	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
+
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
-
-
-
-
-
-
-
+	/**
+	 * Store customs code information on each stock move line from its product.
+	 * 
+	 * @param stockMoveLineList List of StockMoveLines on which to operate
+	 */
+	public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
 
 }

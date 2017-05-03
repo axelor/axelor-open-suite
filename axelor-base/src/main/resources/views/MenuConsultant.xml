@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<menuitem name="menu-consultant-dashbord" title="My DashBord" groups="CST" 
 		action="menu.consultant.dashbord" icon="img/16px/chart_16px.png"/>
@@ -37,8 +37,8 @@
 	
 	<action-view name="consultant.dashboard.dashlet.my.task" title="My Tasks"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="crm-task-grid"/>
-		<view type="form" name="crm-task-form"/>
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
 		<domain>self.typeSelect = 3 and self.user = :_user</domain>
 		<context name="_typeSelect" expr="3"/>
 		<context name="_user" expr="eval: __user__"/>
@@ -133,8 +133,8 @@
 		
 	<action-view name="menu.consultant.my.task" title="My Tasks"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="crm-task-grid"/>
-		<view type="form" name="crm-task-form"/>
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
 		<domain>self.typeSelect = 3 and self.user = :_user</domain>
 		<context name="_typeSelect" expr="3"/>
 		<context name="_user" expr="eval:__user__"/>
@@ -142,14 +142,13 @@
 	
 	
 	<menuitem name="menu-consultant-my-tickets" title="My Tickets" groups="CST" 
-		action="menu.consultant.my.tickets"/>	
+		action="menu.consultant.my.tickets" if="__config__.app.isApp('crm') &amp;&amp; __config__.app.getApp('crm').getTicketMgt()"/>	
 		
 	<action-view name="menu.consultant.my.tickets" title="My Tickets"
-		model="com.axelor.apps.crm.db.Event">
+		model="com.axelor.apps.crm.db.Ticket">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
-		<domain>self.typeSelect = :_typeSelect and self.user = :_user</domain>
-		<context name="_typeSelect" expr="5"/>
+		<domain>self.user = :_user</domain>
 		<context name="_user" expr="eval:__user__"/>
 	</action-view>	
 

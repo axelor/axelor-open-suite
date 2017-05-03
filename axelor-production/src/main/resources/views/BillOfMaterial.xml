@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="fullName"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -15,22 +15,22 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
-			<button name="newVersion" title="Generate new version"  if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
-			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
+			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
+			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process"/>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product AND self.company = :company"/>
+			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
 	  
 		<panel-tabs>
 			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.general.manageResidualProductOnBom"/>	    
+			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	    
 			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
 			<panel name="cost" title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
@@ -50,7 +50,7 @@
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
         <field name="priority" readonlyIf="isRawMaterial" width="20"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="isRawMaterial"/>
@@ -60,10 +60,11 @@
 
 
 	<form name="bill-of-material-line-form" title="Bill of material"
-		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
+		model="com.axelor.apps.production.db.BillOfMaterial"
+		onSave="action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-raw-material"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
@@ -117,6 +118,11 @@
  	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+
+	<action-group name="action-bill-of-material-group-product">
+		<action name="action-bill-of-material-attrs-product-raw-material"/>
+        <action name="action-bill-of-material-record-product"/>
+	</action-group>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
@@ -129,7 +135,6 @@
     	<field name="priority" expr="eval:__parent__?.billOfMaterialList?.max{ it.getPriority() }.getPriority() + 10"/>
     	<field name="isRawMaterial" expr="eval:true" />
     </action-record>
-    
     
     <action-record name="action-bill-of-material-record-product" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="unit" expr="eval: product?.unit"/>
@@ -164,9 +169,14 @@
     </action-method>
     
     <action-attrs name="action-bill-of-material-attrs-price-digits">
-    	<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+    	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
-    
+
+	<action-attrs name="action-bill-of-material-attrs-product-raw-material">
+		<attribute name="value" for="isRawMaterial" expr="eval: true" if="product?.subTypeProductSelect == 3"/>
+		<attribute name="readonly" for="isRawMaterial" expr="eval: product?.subTypeProductSelect == 3"/>
+	</action-attrs>
+
 </object-views>
 
 

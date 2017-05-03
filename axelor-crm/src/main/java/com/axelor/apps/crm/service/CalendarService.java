@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,14 +39,16 @@ import java.util.Set;
 
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
-import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
@@ -66,6 +68,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.Team;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -237,8 +240,22 @@ public class CalendarService extends ICalendarService{
 		if(event.getTypeSelect() == null || event.getTypeSelect() == 0){
 			event.setTypeSelect(EventRepository.TYPE_EVENT);
 		}
-		event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
-		event.setEndDateTime(new LocalDateTime(dtEnd.getDate()));
+		
+		ZoneId zoneId = ZoneOffset.UTC;
+		if (dtStart.getDate() != null) {
+			if (dtStart.getTimeZone() != null) {
+				zoneId = dtStart.getTimeZone().toZoneId();
+			}
+			event.setStartDateTime(LocalDateTime.ofInstant(dtStart.getDate().toInstant(), zoneId));
+		}
+		
+		if (dtEnd.getDate() != null) {
+			if (dtEnd.getTimeZone() != null) {
+				zoneId = dtEnd.getTimeZone().toZoneId();
+			}
+			event.setEndDateTime(LocalDateTime.ofInstant(dtEnd.getDate().toInstant(), zoneId));
+		}
+
 		event.setAllDay(!(dtStart.getDate() instanceof DateTime));
 
 		event.setSubject(getValue(vEvent, Property.SUMMARY));
@@ -518,8 +535,25 @@ public class CalendarService extends ICalendarService{
 				}
 				else{
 					if(source.getLastModified() != null && target.getLastModified() != null){
-						LocalDateTime lastModifiedSource = new LocalDateTime(source.getLastModified().getDateTime());
-						LocalDateTime lastModifiedTarget = new LocalDateTime(target.getLastModified().getDateTime());
+						ZoneId zoneId = ZoneOffset.UTC;
+						
+						LocalDateTime lastModifiedSource = null;
+						if (source.getLastModified().getDateTime() != null) {
+							if (source.getLastModified().getTimeZone() != null) {
+								zoneId = source.getLastModified().getTimeZone().toZoneId();
+							}
+							lastModifiedSource = LocalDateTime.ofInstant(source.getLastModified().getDateTime().toInstant(), zoneId);
+						}
+						
+						LocalDateTime lastModifiedTarget = null;
+						
+						if (target.getLastModified().getDateTime() != null) {
+							if (target.getLastModified().getTimeZone() != null) {
+								zoneId = target.getLastModified().getTimeZone().toZoneId();
+							}
+							lastModifiedTarget = LocalDateTime.ofInstant(target.getLastModified().getDateTime().toInstant(), zoneId);
+						}
+						
 						if(lastModifiedSource.isBefore(lastModifiedTarget)){
 							VEvent tmp = target;
 							target = source;

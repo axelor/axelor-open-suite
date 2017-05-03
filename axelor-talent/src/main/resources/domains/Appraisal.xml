@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="talent" package="com.axelor.apps.talent.db"/>
+
+	<entity name="Appraisal" lang="java" cachable="true">
+		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"  />
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+		<many-to-one name="appraisalType" ref="AppraisalType" title="Type of appraisal" required="true"/>
+		<date name="toDate" title="Deadline" />
+		<many-to-one name="reviewer" ref="com.axelor.apps.hr.db.Employee" title="Reviewer" />
+		<string name="attributes" title="Attributes" json="true" />
+		<string name="description" title="Description" large="true" />
+		<integer name="statusSelected" title="Status" selection="appraisal.status.selected"/>
+		<boolean name="isTemplate" title="Is template" />
+		
+		<track>
+			<message if="statusSelected == 1" on="UPDATE">Appraisal sent</message>
+		</track>
+		
+	</entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,10 +18,10 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -29,19 +29,21 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected LeaveManagementService leaveManagementService;
 	
 	@Inject
-	protected GeneralService generalService;
+	protected EmployeeRepository employeeRepository;
 	
 	@Inject
-	protected EmployeeRepository employeeRepository;
+	protected PublicHolidayService publicHolidayService;
 	
 	
 	public BatchStrategy(LeaveManagementService leaveManagementService) {
 		super();
 		this.leaveManagementService = leaveManagementService;
 	}
-
-
 	
+	public BatchStrategy() {
+		super();
+	}
+
 	protected void updateEmployee( Employee employee ){
 
 		employee.addBatchSetItem( batchRepo.find( batch.getId() ) );

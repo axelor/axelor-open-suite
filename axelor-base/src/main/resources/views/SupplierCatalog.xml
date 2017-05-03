@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog">
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -25,10 +25,11 @@
 		<panel name="description" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
+		<panel-related field="shippingCoefList" form-view="shipping-coef-table-form" grid-view="shipping_coef-grid"/>
     </form>
     
     <action-attrs name="action-supplier-catalog-attrs-scale-and-precision">
-		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
         
 </object-views>

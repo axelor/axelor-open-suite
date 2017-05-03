@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,8 +58,12 @@ public interface IExceptionMessage {
 	/**
 	 * Event controller
 	 */
-	static final String EVENT_1 = /*$$(*/ "There's no configured sequence for the tickets" /*)*/;
-	static final String EVENT_2 = /*$$(*/ "Input location please" /*)*/;
+	static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;
+	
+	/**
+	 * Ticket controller
+	 */
+	static final String TICKET_1 = /*$$(*/ "There's no configured sequence for the tickets" /*)*/;
 
 	/**
 	 * Lead controller

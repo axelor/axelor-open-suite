@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
     <grid name="account-type-grid" title="Account types" model="com.axelor.apps.account.db.AccountType">
-        <field name="nameSelect"/>
+        <field name="name"/>
+        <field name="technicalTypeSelect"/>
     </grid>
-    <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType"  >
+   
+   
+    <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType">
         <panel name="overView" title="Overview">
-        	<field name="nameSelect"/>
+        	<field name="name"/>
+        	<field name="technicalTypeSelect"/>
         </panel>
-        
+        <panel-dashlet title="Accounts" action="action-account-type-view-account" colSpan="12"/>
     </form>
+    
+    <action-view name="action-account-type-view-account" title="Accounts">
+    	<view type="grid" name="account-grid"/>
+    	<view type="form" name="account-form"/>
+    	<domain>self.accountType.id = :id</domain>
+    </action-view>
+    
 </object-views>

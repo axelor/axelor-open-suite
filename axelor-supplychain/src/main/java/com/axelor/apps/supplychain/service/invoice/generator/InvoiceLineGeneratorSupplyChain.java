@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,11 +21,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -33,12 +34,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Subscription;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -75,7 +77,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-			this.isTitleLine = saleOrderLine.getIsTitleLine();
+			this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
 		} else if (purchaseOrderLine != null){
 			this.isTitleLine = purchaseOrderLine.getIsTitleLine();
 			this.purchaseOrderLine = purchaseOrderLine;
@@ -131,12 +133,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		
 		if (saleOrderLine != null)  {
 			
-			this.copyAnalyticDistributionLines(saleOrderLine.getAnalyticDistributionLineList(), invoiceLine);
+			this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
 			
 		} else if (purchaseOrderLine != null)  {
 			
-			this.copyAnalyticDistributionLines(purchaseOrderLine.getAnalyticDistributionLineList(), invoiceLine);
+			this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
 					
 			this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
 			
@@ -157,7 +159,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	
 	public void assignOriginElements(InvoiceLine invoiceLine) throws AxelorException  {
 		
-		if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine())  {  return;  }
+		if (!Beans.get(AppSupplychainService.class).getAppSupplychain().getManageInvoicedAmountByLine())  {  return;  }
 		
 		StockMove stockMove = null;
 		if(stockMoveLine != null)  {  stockMove = stockMoveLine.getStockMove();  }
@@ -181,12 +183,17 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	}
 	
 	
-	public void copyAnalyticDistributionLines(List<AnalyticDistributionLine> originalAnalyticDistributionLineList, InvoiceLine invoiceLine)  {
+	public void copyAnalyticMoveLines(List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine)  {
 		
-		if(originalAnalyticDistributionLineList == null)  {  return;  }
+		if(originalAnalyticMoveLineList == null)  {  return;  }
  
-		for (AnalyticDistributionLine analyticDistributionLineIt : originalAnalyticDistributionLineList) {
-			invoiceLine.addAnalyticDistributionLineListItem(Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false));
+		for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
+			
+			AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
+
+			analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+
+			invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
 		}
 				
 	}

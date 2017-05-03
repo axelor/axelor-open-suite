@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="work-center-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
@@ -91,8 +91,8 @@
     </form>
 
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
-        <field name="costSheetGroup" expr="eval: __config__?.general?.workCenterCostSheetGroup"/>
-        <field name="product" expr="eval: __config__?.general?.workCenterProduct"/>
+        <field name="costSheetGroup" expr="eval: __config__?.general?.getAppProduction() ? __config__?.general?.workCenterCostSheetGroup : null"/>
+        <field name="product" expr="eval: __config__?.general.getAppProduction() ? __config__?.general?.workCenterProduct : null"/>
     </action-record>
     
     

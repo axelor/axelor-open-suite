@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
 	<action-view title="Customer deliveries by country" name="dashlet.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country" name="dashlet.stockMoveLine.product.delivery.by.country">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country by family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 
@@ -46,7 +46,7 @@
 	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true" colSpan="12"/>       			
 	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true" colSpan="12"/>
 	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true" colSpan="12"/>  
-	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
+	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />       			
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.one"  >	
@@ -138,7 +138,7 @@
 	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
     	<view type="grid" name="location-line-product-grid"/>
     	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.id = :id and self.location.typeSelect = 1</domain>
+    	<domain>self.product.id = :id and self.location.typeSelect != 3</domain>
     </action-view>
     
     <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.LocationLine">

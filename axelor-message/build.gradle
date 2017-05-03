@@ -1,17 +1,17 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-message"
-	version "4.0.0"
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
 	title "Axelor :: Message"
-	
-	removable false
+	description "Axelor Message Module"
 
-	module "modules:axelor-exception"
-	module "modules:axelor-tool"
+	removable false
 }
 
 dependencies {
-	compile 	libs.javax_mail
-	testCompile libs.greenmail
+	compile project(":modules:axelor-exception")
+	compile project(":modules:axelor-tool")
 }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,9 @@ package com.axelor.apps.hr.service.leave.management;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.auth.db.User;
@@ -32,16 +32,16 @@ import com.google.inject.persist.Transactional;
 public class LeaveManagementService {
 	
 	@Inject
-	GeneralService generalService;
-	
+	private AppBaseService appBaseService;
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
-		leaveLine.setQuantity(BigDecimal.ZERO);
+		leaveLine.setTotalQuantity(BigDecimal.ZERO);
 		if(leaveManagementList != null && !leaveManagementList.isEmpty()){
 			for (LeaveManagement leaveManagement : leaveManagementList) {
-				leaveLine.setQuantity(leaveLine.getQuantity().add(leaveManagement.getValue()));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(leaveManagement.getValue()));
 			}
+			leaveLine.setQuantity( leaveLine.getTotalQuantity().subtract( leaveLine.getDaysValidated()  ) );
 		}
 		return leaveLine;
 	}
@@ -56,13 +56,13 @@ public class LeaveManagementService {
 		leaveManagement.setUser(user);
 		leaveManagement.setComments(comments);
 		if (date == null){
-			leaveManagement.setDate(generalService.getTodayDate());
+			leaveManagement.setDate(appBaseService.getTodayDate());
 		}else{
 			leaveManagement.setDate(date);
 		}
 		leaveManagement.setFromDate(fromDate);
 		leaveManagement.setToDate(toDate);
-		leaveManagement.setValue(value);
+		leaveManagement.setValue(value.setScale(1));
 		
 		return leaveManagement;
 	}

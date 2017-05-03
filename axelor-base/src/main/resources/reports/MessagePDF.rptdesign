@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -22,6 +22,26 @@
             <property name="id">7</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -30,7 +50,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="UserName" id="10">
-            <property name="hidden">true</property>
+            <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -42,7 +62,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="11">
-            <property name="hidden">true</property>
+            <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -71,7 +91,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="MessageId" id="13">
-            <property name="hidden">true</property>
+            <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -83,7 +103,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="15">
-            <property name="hidden">true</property>
+            <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -95,7 +115,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3819">
-            <property name="hidden">true</property>
+            <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -110,7 +130,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="4629">
-            <property name="hidden">true</property>
+            <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -144,8 +164,8 @@
                     <name>disabledContentBidiFormatStr</name>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -154,61 +174,69 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">logo_path</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">message_id</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">message_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">message_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_header</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_header</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">pdf_header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">media_type_select</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">media_type_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">media_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">subject</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">subject</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">subject</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">content</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">content</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">content</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_footer</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_footer</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">pdf_footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">address_block</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">address_block</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">address_block</text-property>
                 </structure>
             </list-property>
-            <list-property name="filter">
-                <structure>
-                    <property name="operator">in</property>
-                    <expression name="expr" type="javascript">row["message_id"]</expression>
-                    <simple-property-list name="value1">
-                        <value>params["MessageId"].value.split(",")</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
                         <property name="name">logo_path</property>
-                        <property name="dataType">decimal</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
@@ -247,13 +275,14 @@
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["MessageId"].value)]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
-                    <property name="dataType">decimal</property>
+                    <property name="dataType">string</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
@@ -307,7 +336,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-    baseCompany.logo AS logo_path,	
+    MetaFile.file_path AS logo_path,	
     self.id AS message_id,
     basePrintingSettings.pdf_header AS pdf_header,
     metaSelectItem.title AS media_type_select,
@@ -317,11 +346,12 @@
     self.address_block AS address_block   
 FROM 
   message_message self
-JOIN base_company AS baseCompany ON baseCompany.id=self.company
-JOIN base_printing_settings AS basePrintingSettings ON basePrintingSettings.id=baseCompany.id
-LEFT JOIN meta_select AS metaSelect ON metaSelect.name='message.media.type.select'
-LEFT JOIN meta_select_item AS metaSelectItem ON metaSelectItem.select_id=metaSelect.id AND metaSelectItem.value= CAST(self.media_type_select AS CHAR)
-WHERE self.media_type_select in (1,2)]]></xml-property>
+left outer JOIN base_company AS baseCompany ON baseCompany.id=self.company
+left outer join meta_file as MetaFile on (MetaFile.id = baseCompany.logo)
+left outer JOIN base_printing_settings AS basePrintingSettings ON basePrintingSettings.id=baseCompany.id
+LEFT outer JOIN meta_select AS metaSelect ON metaSelect.name='message.media.type.select'
+LEFT outer JOIN meta_select_item AS metaSelectItem ON metaSelectItem.select_id=metaSelect.id AND metaSelectItem.value= CAST(self.media_type_select AS CHAR)
+WHERE self.id IN (@INJECTID)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="9">
             <list-property name="columnHints">
@@ -572,23 +602,26 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <column id="287"/>
                     <column id="288"/>
                     <row id="289">
+                        <property name="borderBottomColor">#729FCF</property>
                         <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderBottomWidth">2px</property>
                         <property name="height">1.03125in</property>
                         <cell id="290">
-                            <image id="292">
-                                <property name="height">81px</property>
-                                <property name="width">218px</property>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
-                        </cell>
-                        <cell id="291">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
                             <text id="293">
-                                <property name="textAlign">right</property>
+                                <property name="textAlign">center</property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">row["pdf_header"]</VALUE-OF>]]></text-property>
                             </text>
+                        </cell>
+                        <cell id="4638">
+                            <image id="4639">
+                                <property name="height">100px</property>
+                                <property name="width">384px</property>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                     </row>
                 </grid>
@@ -744,34 +777,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <column id="58">
                                 <property name="width">1.4583333333333333in</property>
                             </column>
-                            <row id="73">
-                                <property name="height">0.2708333333333333in</property>
-                                <cell id="74"/>
-                                <cell id="301"/>
-                                <cell id="75">
-                                    <property name="colSpan">2</property>
-                                    <property name="rowSpan">1</property>
-                                    <property name="textAlign">left</property>
-                                </cell>
-                                <cell id="77">
-                                    <property name="colSpan">3</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="265">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">row["address_block"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                            <row id="94">
-                                <property name="height">0.23958333333333334in</property>
-                                <cell id="95"/>
-                                <cell id="302"/>
-                                <cell id="96"/>
-                                <cell id="97"/>
-                                <cell id="98"/>
-                                <cell id="99"/>
-                                <cell id="100"/>
-                            </row>
                             <row id="101">
                                 <property name="height">1.1979166666666667in</property>
                                 <cell id="102">
@@ -798,61 +803,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <column id="213">
                                             <property name="width">0.7604166666666666in</property>
                                         </column>
-                                        <row id="214">
-                                            <property name="height">0.28125in</property>
-                                            <cell id="215"/>
-                                            <cell id="216">
-                                                <property name="colSpan">3</property>
-                                                <property name="rowSpan">1</property>
-                                                <text id="131">
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Subject'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<U><B><VALUE-OF>row["translation"]</VALUE-OF></B></U> <VALUE-OF format="^">" : "</VALUE-OF> <VALUE-OF>row._outer["subject"]</VALUE-OF>]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="219"/>
-                                        </row>
-                                        <row id="220">
-                                            <property name="height">0.07291666666666667in</property>
-                                            <cell id="221"/>
-                                            <cell id="222"/>
-                                            <cell id="223"/>
-                                            <cell id="224"/>
-                                            <cell id="225"/>
-                                        </row>
                                         <row id="226">
-                                            <cell id="227"/>
-                                            <cell id="228">
-                                                <property name="colSpan">3</property>
+                                            <cell id="227">
+                                                <property name="colSpan">5</property>
                                                 <property name="rowSpan">1</property>
                                                 <text id="135">
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">row["content"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="231"/>
                                         </row>
                                         <row id="232">
                                             <cell id="233"/>

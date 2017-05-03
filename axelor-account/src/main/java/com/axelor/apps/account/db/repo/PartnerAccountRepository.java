@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,15 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class PartnerAccountRepository extends PartnerBaseRepository {
-
+	
+	@Inject
+	private AppService appService;
+	
 	@Override
 	public Partner save(Partner partner) {
 		try {
@@ -37,7 +42,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 			if(partner.getId() == null){
 				return super.save(partner);
 			}
-			if(!partner.getIsContact()){
+			if(!partner.getIsContact() && appService.isApp("account")){
 				List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class).createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
 
 				if(accountingSituationList != null) {
@@ -56,7 +61,9 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 		
 		Partner copy = super.copy(partner, deep);
 		
-		copy.setAccountingSituationList(null);
+		if (appService.isApp("account")) {
+			copy.setAccountingSituationList(null);
+		}
 		
 		return copy;
 	}

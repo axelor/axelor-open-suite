@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.persistence.Query;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -54,7 +54,7 @@ public class SubscriptionController {
 	protected SaleOrderLineRepository saleOrderLineRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -102,10 +102,11 @@ public class SubscriptionController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateInvoiceForAllSubscriptions(ActionRequest request, ActionResponse response)  throws AxelorException{
 
 		Query q = JPA.em().createQuery("SELECT DISTINCT saleOrderLine.saleOrder.id FROM Subscription WHERE invoicingDate <= ?1 AND invoiced = false ", Long.class);
-		q.setParameter(1, generalService.getTodayDate());
+		q.setParameter(1, appBaseService.getTodayDate());
 		List<Long> saleOrderIdList = q.getResultList();
 		if(saleOrderIdList != null){
 			SaleOrder saleOrder = null;
@@ -139,6 +140,7 @@ public class SubscriptionController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateInvoiceForSelectedSubscriptions(ActionRequest request, ActionResponse response)  throws AxelorException{
 
 		List<Integer> listSelectedSubscriptionsTemp = (List<Integer>) request.getContext().get("_ids");

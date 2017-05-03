@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,24 +24,31 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
@@ -58,17 +65,19 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	private LocalDate today;
 
-	protected GeneralService generalService;
+	protected AppSupplychainService appSupplychainService;
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-
+	
+	@Inject
+	private InvoiceService invoiceService;
 
 	@Inject
-	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
+	public SaleOrderInvoiceServiceImpl(AppSupplychainService appSupplychainService) {
 
-		this.generalService = generalService;
-		this.today = this.generalService.getTodayDate();
+		this.appSupplychainService = appSupplychainService;
+		this.today = this.appSupplychainService.getTodayDate();
 
 	}
 
@@ -154,6 +163,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		log.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
 
+		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+
 		return invoice;
 
 	}
@@ -226,7 +237,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Product product = saleOrderLine.getProduct();
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), 
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
 				saleOrderLine.getSequence(), false, saleOrderLine, null, null, null)  {
 
@@ -317,10 +328,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	private BigDecimal getAmountVentilated(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice, int invoiceOperationTypeSelect)  {
 		
 		String query = "SELECT SUM(self.companyExTaxTotal)"
-					+ " FROM InvoiceLine as self"
-					+ " WHERE (self.saleOrderLine.saleOrder.id = :saleOrderId OR self.saleOrder.id = :saleOrderId )"
-						+ " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-						+ " AND self.invoice.statusSelect = :statusVentilated";
+					 + " FROM InvoiceLine as self";
+
+		if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
+			query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
+		} else {
+			query += " WHERE self.saleOrder.id = :saleOrderId";
+		}
+
+		query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
+			   + " AND self.invoice.statusSelect = :statusVentilated";
 		
 		if (currentInvoiceId != null)  {
 			if(excludeCurrentInvoice)  {
@@ -373,15 +390,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	public void fillInLines(Invoice invoice){
 		List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-		for (InvoiceLine invoiceLine : invoiceLineList) {
-			invoiceLine.setSaleOrder(invoice.getSaleOrder());
+		if(invoiceLineList != null){
+			for (InvoiceLine invoiceLine : invoiceLineList) {
+				invoiceLine.setSaleOrder(invoice.getSaleOrder());
+			}
 		}
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException{
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.saleOrder.id = ?2 AND self.invoiced = false",generalService.getTodayDate(),saleOrder.getId()).fetch();
+		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.saleOrder.id = ?2 AND self.invoiced = false",appSupplychainService.getTodayDate(),saleOrder.getId()).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
 			return this.generateSubscriptionInvoice(subscriptionList,saleOrder);
 		}
@@ -401,11 +420,75 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException{
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.id = ?2 AND self.invoiced = false",generalService.getTodayDate(),saleOrderLine.getId()).fetch();
+		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.id = ?2 AND self.invoiced = false",appSupplychainService.getTodayDate(),saleOrderLine.getId()).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
 			return this.generateSubscriptionInvoice(subscriptionList, saleOrderLine.getSaleOrder());
 		}
 		return null;
+	}
+
+
+	@Override
+	@Transactional
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder)
+					throws AxelorException {
+		log.debug("service supplychain 1 (saleOrder) {}", saleOrder);
+		if (saleOrder != null){
+			String numSeq = "";
+			String externalRef = "";
+			
+			for (Invoice invoiceLocal : invoiceList) {
+				if (!numSeq.isEmpty()){
+					numSeq += "-";
+				}
+				if (invoiceLocal.getInternalReference() != null){
+					numSeq += invoiceLocal.getInternalReference();
+				}
+
+				if (!externalRef.isEmpty()){
+					externalRef += "|";
+				}
+				if (invoiceLocal.getExternalReference() != null){
+					externalRef += invoiceLocal.getExternalReference();
+				}
+			}
+			InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
+			Invoice invoiceMerged = invoiceGenerator.generate();
+			invoiceMerged.setExternalReference(externalRef);
+			invoiceMerged.setInternalReference(numSeq);
+			
+			if( paymentMode != null)
+				invoiceMerged.setPaymentMode(paymentMode);
+			if( paymentCondition != null)
+				invoiceMerged.setPaymentCondition(paymentCondition);
+			
+			List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
+			invoiceGenerator.populate(invoiceMerged, invoiceLines);
+			invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+			if(!appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()){
+				this.fillInLines(invoiceMerged);
+			}
+			else{
+				invoiceMerged.setSaleOrder(null);
+			}
+			Beans.get(InvoiceRepository.class).save(invoiceMerged);
+			invoiceService.deleteOldInvoices(invoiceList);
+			return invoiceMerged;
+		}
+		else{
+			if(!appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()){
+				Invoice invoiceMerged = invoiceService.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition);
+				this.fillInLines(invoiceMerged);
+				return invoiceMerged;
+			}
+			else{
+				return invoiceService.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition);
+			}
+			
+		}
+		
 	}
 
 

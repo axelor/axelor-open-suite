@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <action-view name="action-contract-purchase-order-dashlet" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<view type="grid" name="purchase-order-grid"/>
+    	<view type="form" name="purchase-order-form"/>
+    	<domain>self.contract.id = :_contractId</domain>
+    	<context name="_contractId" expr="eval:id"/>
+    </action-view>
+    
+    <action-view name="action-contract-create-po" title="Create PO" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<view type="form" name="purchase-order-form"/>
+    	<view type="grid" name="purchase-order-grid"/>
+    	<domain>self.contract.id = :_contractId</domain>
+    	<context name="_contractId" expr="eval:id"/>
+    	<context name="_supplier" expr="eval:partner"/>
+    	<context name="_paymentMode" expr="eval:paymentMode"/>
+    	<context name="_paymentCondition" expr="eval:paymentCondition"/>
+    </action-view>
+    
+    <action-group id="contract-action-group-purchase-order-on-new-actions" name="action-group-purchase-order-on-new-actions">
+    	<action name="action-purchase-order-record-new"/>
+    	<action name="action-purchase-order-record-company-configuration"/>
+    	<action name="action-purchase-order-method-get-location"/>
+    	<action name="action-purchase-order-record-in-ati"/>
+    	<action name="action-purchase-order-attrs-in-ati"/>
+    	<action name="action-purchase-order-dispaly-price"/>
+    	<action name="action-contract-purchase-order-record-new" if="__config__.app.isApp('contract')"/>
+    </action-group>
+    
+    <action-record name="action-contract-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="supplierPartner" expr="eval:_supplier" if="_supplier != null"/>
+    	<field name="contract" expr="eval: __repo__.of(Contract).find(_contractId)" if="_contractId != null"/>
+    	<field name="paymentMode" expr="eval: _paymentMode"/>
+    	<field name="paymentCondition" expr="eval: _paymentCondition"/>
+    </action-record>
+
+</object-views>

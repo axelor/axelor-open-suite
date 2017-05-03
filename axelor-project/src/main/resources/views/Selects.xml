@@ -1,25 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<selection name="project.task.type.select">
-		<option value="project">Project</option>
-		<option value="task">Task</option>
+	<selection name="project.type.select">
+		<option value="1">Project</option>
+		<option value="2">Project Phase</option>
 	</selection>
 	
-	<selection name="project.task.status.select">
+	<selection name="project.status.select">
 		<option value="1">Planned</option>
 		<option value="2">In Progress</option>
 		<option value="3">Finished</option>
 	</selection>
 	
 	<selection name="message.related.to.select" id="project.message.related.to.select">
-	    <option value="com.axelor.apps.project.db.ProjectTask">Project/Task</option>
+	    <option value="com.axelor.apps.project.db.Project">Project</option>
 	</selection>
 	
 	<selection name="crm.event.related.to.select" id="project.crm.event.related.to.select">
-		<option value="com.axelor.apps.project.db.ProjectTask">Project/Business/Task (Project)</option>
+		<option value="com.axelor.apps.project.db.Project">Project/Business (Project)</option>
+	</selection>
+	
+	<selection name="app.type.select" id="project.app.type.select">
+		<option order="10" value="project">Project</option>
+	</selection>
+	
+	<selection name="task.status.select">
+		<option value="1">New</option>
+		<option value="2">In Progress</option>
+		<option value="3">Resolved</option>
+		<option value="4">Feedback</option>
+		<option value="5">Closed</option>
+	</selection>
+	
+	
+	<selection name="project.task.progress.select">
+		<option value="0">0 %</option>
+		<option value="10">10 %</option>
+		<option value="20">20 %</option>
+		<option value="30">30 %</option>
+		<option value="40">40 %</option>
+		<option value="50">50 %</option>
+		<option value="60">60 %</option>
+		<option value="70">70 %</option>
+		<option value="80">80 %</option>
+		<option value="90">90 %</option>
+		<option value="100">100 %</option>
+	</selection>
+	
+	<selection name="project.config.generated.element.type">
+		<option value="1">Task</option>
+		<option value="2">Project Phase</option>
+		<option value="3">Free</option>
 	</selection>
 	
 </object-views>

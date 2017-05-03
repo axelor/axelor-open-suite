@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -81,6 +81,7 @@ public class ValidateSupplyChain {
 //	@Inject
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 
+	@SuppressWarnings("rawtypes")
 	public Object validateSupplyChain(Object bean, Map values) {
 		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
 		"UNION ALL(SELECT 'so' as type,id,confirmation_date as date from sale_sale_order) " +
@@ -135,7 +136,7 @@ public class ValidateSupplyChain {
 					invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 				}
 				else{
-					invoice.setInvoiceDate(new LocalDate());
+					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);
@@ -169,7 +170,7 @@ public class ValidateSupplyChain {
 					invoice.setInvoiceDate(saleOrder.getConfirmationDate());
 				}
 				else{
-					invoice.setInvoiceDate(new LocalDate());
+					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,7 @@ public class MoveSequenceService {
 	public void setDraftSequence(Move move)  {		
 			
 		if (move.getId() != null && Strings.isNullOrEmpty(move.getReference())
-			&& move.getStatusSelect() == MoveRepository.STATUS_DRAFT)  {		
+			&& move.getStatusSelect() == MoveRepository.STATUS_NEW)  {
 			move.setReference(this.getDraftSequence(move));		
 		}		
 		

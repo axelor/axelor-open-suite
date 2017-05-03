@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+
+import com.axelor.apps.stock.db.StockMoveLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductVariantService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -41,6 +42,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -67,7 +69,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	protected ProductVariantService productVariantService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppProductionService appProductionService;
 	
 	@Inject
 	protected ManufOrderRepository manufOrderRepo;
@@ -130,7 +132,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				new ProdProduct(manufOrder.getProduct(), billOfMaterial.getQty().multiply(manufOrderQty), billOfMaterial.getUnit()));
 
 		// Add the residual products
-		if(generalService.getGeneral().getManageResidualProductOnBom() && billOfMaterial.getProdResidualProductList() != null)  {
+		if(appProductionService.getAppProduction().getManageResidualProductOnBom() && billOfMaterial.getProdResidualProductList() != null)  {
 
 			for(ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList())  {
 
@@ -199,7 +201,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		ProdProcess prodProcess = manufOrder.getProdProcess();
 
 		if(manufOrder.getPlannedStartDateT() == null){
-			manufOrder.setPlannedStartDateT(generalService.getTodayDateTime().toLocalDateTime());
+			manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 		}
 
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
@@ -316,6 +318,16 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		}
 		
 		return language;
+	}
+
+	@Override
+	public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
+		for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
+			if(stockMoveLine.getProduct().equals(manufOrder.getProduct())) {
+				return stockMoveLine.getRealQty();
+			}
+		}
+		return BigDecimal.ZERO;
 	}
 
 }

@@ -109,12 +109,13 @@ public final class FileTool {
 	 * 				La liste de ligne à écrire
 	 * @throws IOException
 	 */
-	public static void writer(String destinationFolder, String fileName, List<String> multiLine) throws IOException {
+	public static File writer(String destinationFolder, String fileName, List<String> multiLine) throws IOException {
 		System.setProperty("line.separator", "\r\n");
 		BufferedWriter output = null;
+		File file = null;
 		try  {
 			
-			 File file = create(destinationFolder, fileName);
+			 file = create(destinationFolder, fileName);
 		     output = new BufferedWriter(new FileWriter(file));
 		     int i = 0;
 		     
@@ -136,7 +137,10 @@ public final class FileTool {
 		finally  {
 			
 			if(output != null) { output.close(); }
+			
 		}
+		
+		return file;
 	}
 	
 	/**

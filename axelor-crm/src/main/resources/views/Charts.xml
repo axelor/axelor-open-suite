@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	  
 	  
 		
@@ -219,8 +219,8 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.set.date">
-	  <field name="toDateT" expr="eval:LocalDateTime.parse(todayDate).withHourOfDay(23).withMinuteOfHour(59)"/>
-	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	  <field name="toDateT" expr="eval:LocalDate.parse(todayDate).atStartOfDay().withHour(23).withMinute(59)"/>
+	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).atStartOfDay().withDayOfMonth(1).withMonth(1)"/>
 	</action-record>
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
@@ -488,7 +488,7 @@
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
-		    <field type="reference" name="activeTeam" target="com.axelor.apps.base.db.Team" x-required="true" title="Team" />
+		    <field type="reference" name="activeTeam" target="com.axelor.team.db.Team" x-required="true" title="Team" />
 		</search-fields>
 		<dataset type="jpql">
 		    <![CDATA[
@@ -516,7 +516,7 @@
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user" stacked="false">
 	<search-fields>
 	<field name="toDateT" title="From Date" type="date" x-required="true"/>
-	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.apps.base.db.Team"/>
+	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.team.db.Team"/>
 	</search-fields>
 	<dataset type="jpql">
 	SELECT
@@ -549,7 +549,7 @@
 				    COUNT(self.id)  AS _tickets,
 				    selection_item.title AS _priority
 				FROM
-				    ical_event as self
+				    crm_ticket as self
 				RIGHT JOIN 
 				    meta_select_item as selection_item     
 				ON 
@@ -557,7 +557,6 @@
 				    and self.status_select != 25)    
 				WHERE            
 				    selection_item.select_id =(select id from meta_select where name='crm.event.ticket.priority.select')
-				    AND self.type_select = 5
 				GROUP BY
 				    _priority
 				ORDER BY
@@ -572,10 +571,10 @@
 		<dataset type="sql">
 		    <![CDATA[
 			    select
-			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from ical_event where status_select!= 25 and priority_select is not null)) as _tickets,
+			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from crm_ticket where status_select!= 25 and priority_select is not null)) as _tickets,
 			        selection_item.title as _priority
 			    from
-			        ical_event self
+			        crm_ticket self
 			    RIGHT JOIN
 			        meta_select_item selection_item
 			    ON
@@ -584,7 +583,6 @@
 			        self.status_select!= 25)
 			    where
 			        selection_item.select_id=(select id from meta_select where name='crm.event.ticket.priority.select')
-			        AND self.type_select = 5
 			    group by
 			        _priority
 			  ]]>
@@ -601,7 +599,7 @@
 			      COUNT(self.id)    AS     _tickets,
 			      selection_item.title     AS     _status
 			    FROM
-			        ical_event as self
+			        crm_ticket as self
 			    RIGHT JOIN 
 			        meta_select_item as selection_item     
 			    ON 
@@ -610,8 +608,6 @@
 			        selection_item.select_id = (select id from meta_select where name = 'crm.event.status.select')
 			    AND
 			        cast(selection_item.value as int)!=5
-			    AND
-			        self.type_select = 5
 			    GROUP BY
 			        _status
 			    ORDER BY
@@ -630,7 +626,7 @@
 	      sale_man.full_name AS _sale_man,
 	      selection_item.title   AS   _status
 	    FROM
-	        ical_event as self
+	        crm_event as self
 	    JOIN
 	      auth_user as sale_man ON self.user_id = sale_man.id
 	    JOIN
@@ -638,8 +634,7 @@
 	    JOIN 
 	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
 	    WHERE
-	      self.type_select = 5
-	      AND self.status_select != 25    
+	      self.status_select != 25    
 	      AND cast(selection_item.value as decimal) = self.status_select       
 	    GROUP BY
 	        _status,
@@ -665,11 +660,10 @@
 	      self.clientPartner.fullName     AS   _partner,
 	      selection_item.title   AS   _status
 	    FROM
-	        Event self,        
+	        Ticket self,        
 	        MetaSelectItem selection_item
 	    WHERE
-	      self.typeSelect = 5
-	      AND self.statusSelect != 25
+	      self.statusSelect != 25
 	      AND self.createdOn >= :fromDateT AND self.createdOn &lt;= :toDateT        
 	      AND selection_item.select.name = 'crm.event.status.select'
 	      AND cast(selection_item.value as int) = self.statusSelect    
@@ -743,9 +737,9 @@
 		    <![CDATA[
 		    SELECT
 			    COUNT(self.id)    		AS 	_total_ticket,
-			    (select Count(id) from ical_event as open_ticket where open_ticket.status_select != 25) as _open_ticket
+			    (select Count(id) from crm_ticket as open_ticket where open_ticket.status_select != 25) as _open_ticket
 			FROM
-			  	ical_event as self
+			  	crm_ticket as self
 			  ]]>	
 	    </dataset>
 	   	<category key="_total_ticket" type="text"/>
@@ -762,7 +756,7 @@
 			   	_meta_status.status_title AS _priority,
 			   	to_char(_ticket.created_on,'yyyy-MM') AS _month
 			FROM
-			   	ical_event AS _ticket  
+			   	crm_ticket AS _ticket  
 			JOIN
 			   	(SELECT    
 			     		cast(_item.value as int) AS status_value,
@@ -828,13 +822,13 @@
 	    		_user.full_name AS _agent,
 	  			to_char(_ticket.created_on,'yyyy-MM') AS _month
 			FROM
-				ical_event AS _ticket    
+				crm_event AS _ticket    
 			LEFT JOIN
 				auth_user AS _user
 			ON
 				_ticket.user_id = _user.id  
 			WHERE
-				_ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now() AND _ticket.type_select = 5
+				_ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
 			GROUP BY
 				_agent, _month
 			ORDER BY
@@ -1191,7 +1185,7 @@
 		
 		<chart name="chart.team.call.target.bar" title="Calls emitted historical" onInit="action.chart.crm.chart.set.active.team">
 		    <search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1235,7 +1229,7 @@
 		
 		<chart name="chart.team.meeting.target.bar" title="Meeting number historical" onInit="action.chart.crm.chart.set.active.team">
 		    <search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1275,7 +1269,7 @@
 		
 		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1315,7 +1309,7 @@
 		
 		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1355,7 +1349,7 @@
 		
 		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1395,7 +1389,7 @@
 		
 		<chart name="chart.team.sale.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1435,7 +1429,7 @@
 		
 		<chart name="chart.team.sale.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1475,7 +1469,7 @@
 		
 		<chart name="chart.team.sale.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[

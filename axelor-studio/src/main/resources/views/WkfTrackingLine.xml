@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="wkf-tracking-line-grid" title="Tracking lines" model="com.axelor.studio.db.WkfTrackingLine">
+       <field name="status"/>
+       <field name="createdOn" title="Date"/>
+       <field name="createdBy" title="User" />
+       <field name="timeSpent" />
+  </grid>
+    
+  <form name="wkf-tracking-line-form" title="Tracking line" model="com.axelor.studio.db.WkfTrackingLine" width="large"
+    canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
+      <panel>
+        <field name="status"/>
+        <field name="createdOn" title="Date"/>
+        <field name="createdBy" title="User" />
+        <field name="timeSpent" />
+      </panel>
+  </form>
+  
+</object-views>
+
+

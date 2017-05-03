@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,12 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
@@ -87,10 +87,10 @@ public class LocationLineServiceImpl implements LocationLineService {
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);			
+			minStockRulesService.generateOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);
 		}
 		if(future)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
+			minStockRulesService.generateOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
 		}
 		
 	}
@@ -115,13 +115,13 @@ public class LocationLineServiceImpl implements LocationLineService {
 	
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
-		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)  {
+		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1), 
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
 		}
 		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 
-				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)
-				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)))  {
+				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)
+				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)))  {
 
 			String trackingNumber = "";
 			if(locationLine.getTrackingNumber() != null)  {
@@ -132,9 +132,17 @@ public class LocationLineServiceImpl implements LocationLineService {
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
-	
+
+	//check if the location has more than qty units of the product
+	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException{
+	    LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
+
+	    if(locationLine != null && locationLine.getCurrentQty().compareTo(qty) < 0) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1),
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
+		}
+	}
+
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
 			LocalDate lastFutureStockMoveDate)  {
 		

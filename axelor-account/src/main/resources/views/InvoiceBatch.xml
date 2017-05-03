@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="invoice-batch-grid" title="Invoice batches" model="com.axelor.apps.account.db.InvoiceBatch">
     	<field name="actionSelect" />
@@ -59,7 +59,7 @@
     
     <!-- ACTION RECORD -->
     <action-record name="action-invoice-batch-record-on-new" model="com.axelor.apps.account.db.InvoiceBatch">
-		<field name="createdOn" expr="eval: __config__.generalService.getTodayDate()"/>
+		<field name="createdOn" expr="eval: __config__.app.getTodayDate()"/>
 		<field name="createdBy" expr="eval:__user__"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>

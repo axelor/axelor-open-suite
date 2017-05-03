@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -180,7 +180,8 @@ public class MoveLineReportController {
 
 			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
-			if((moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_SALES )) {
+			if((moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY 
+					&& moveLineReport.getTypeSelect() < MoveLineReportRepository.REPORT_ANALYTIC_BALANCE )) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 

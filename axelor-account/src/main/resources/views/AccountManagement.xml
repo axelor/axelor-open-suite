@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="account-management-payment-mode-grid" title="Account Managements" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -14,7 +14,7 @@
 	 onNew="action-account-management-record-payment" width="large">
 	 	<panel name="main" >
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" form-view="account-form" grid-view="account-grid"/>
+			<field name="cashAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'" form-view="account-form" grid-view="account-grid"/>
 			<field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form" grid-view="journal-grid"/>
 			<field name="sequence" domain="self.company = :company" canNew="true" form-view="sequence-form" grid-view="sequence-grid"/>
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>

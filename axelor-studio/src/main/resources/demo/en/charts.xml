@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<charts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <chart name="demo-expense-per-month" title="Montant des dépenses par mois" model="com.axelor.apps.custom.db.DemoExpense" 
+      chartType="bar" groupOn="dateFrom" groupDateType="month" displayField="totalTTC">
+  		<filters>
+  			<filter metaField="dateFrom" filterOperator="notNull" />
+  			<filter metaField="status" filterOperator="=" value="5" />
+  		</filters>
+  </chart>
+  
+  <chart name="demo-expense-per-expense-user" title="Montant des dépenses par utilisateur" model="com.axelor.apps.custom.db.DemoExpense" 
+      chartType="bar" groupOn="expenseUser"  groupOnTarget="expenseUser.name"  displayField="totalTTC">
+  		<filters>
+  			<filter metaField="expenseUser" targetField="expenseUser.name" targetType="string" filterOperator="notNull" />
+  			<filter metaField="status" filterOperator="=" value="5" targetType="integer" />
+  		</filters>
+  </chart>
+  
+  <dashboard name="demo-expense-dashboard" title="Dashboard">
+  	<dashlets>
+  		<dashlet name="Montant des dépenses par mois" viewBuilder="demo-expense-per-month" sequence="0" viewType="chart"/>
+  		<dashlet name="Montant des dépenses par utilisateur"  viewBuilder="demo-expense-per-expense-user"  sequence="2" viewType="chart"/>
+  	</dashlets>
+  </dashboard>
+  
+  
+</charts>
