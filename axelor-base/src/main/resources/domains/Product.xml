@@ -121,6 +121,13 @@
 		<field name="startDate"/>
 		<field name="endDate"/>
 		<field name="purchasable"/>
+		<field name="purchasePrice"/>
+		<field name="defaultSupplierPartner"/>
+		<field name="purchaseCurrency"/>
+		<field name="supplierDeliveryTime"/>
+		<field name="costPrice"/>
+		<field name="managPriceCoef"/>
+		<field name="costTypeSelect"/>
 		<field name="hasWarranty"/>
 		<field name="warrantyNbrOfMonths"/>
 		<field name="isPerishable"/>

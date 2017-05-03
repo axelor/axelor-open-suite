@@ -218,7 +218,7 @@
   		</panel>
   		
   		<panel-mail>
-    		<mail-messages limit="4" />
+    		<mail-messages />
     	</panel-mail>
 	</form>    
 	
