@@ -238,6 +238,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.getStockMove().getStockMoveLineList().add(newStockMoveLine);
 
 		stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
+		stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
 
 		return newStockMoveLine;
 	}
