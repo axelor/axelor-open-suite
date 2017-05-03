@@ -30,11 +30,13 @@
 		    <field name="isProductionTrackingManaged" onChange="action-tracking-number-set-default-production-qty" />
 		    <panel name="productionTrackingManagement" title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
 		        <field name="generateProductionAutoTrackingNbr" colSpan="12"/>
+				<field name="hasProductAutoSelectTrackingNbr" showIf="isProductionTrackingManaged" colSpan="12"/>
+				<field name="productAutoTrackingNbrOrderSelect" showIf="hasProductAutoSelectTrackingNbr" colSpan="12"/>
 		        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
 		    </panel>
 		</panel>
 		<panel>
-		    <field name="isSaleTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
+		    <field name="isSaleTrackingManaged" readonlyIf="isProductionTrackingManaged || isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
 		    <panel name="saleTrackingManagement" title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
 		        <field name="generateSaleAutoTrackingNbr"  colSpan="12"/>
 		        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
@@ -57,10 +59,12 @@
     
     <action-record name="action-tracking-number-set-default-purchase-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="purchaseQtyByTracking" expr="eval:isPurchaseTrackingManaged ? 1 : 0"/>
+        <field name="isSaleTrackingManaged" expr="eval: false"/>
     </action-record>
     
     <action-record name="action-tracking-number-set-default-production-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="productionQtyByTracking" expr="eval:isProductionTrackingManaged ? 1 : 0"/>
+		<field name="isSaleTrackingManaged" expr="eval: false"/>
     </action-record>
     
     <action-record name="action-tracking-number-set-default-sale-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">

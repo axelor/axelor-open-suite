@@ -61,7 +61,14 @@ public class TrackingNumberService {
 
 
 	public String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration)  {
-		switch (trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect()) {
+	    int autoTrackingNbrOrderSelect = -1;
+		if (trackingNumberConfiguration.getIsSaleTrackingManaged()) {
+			autoTrackingNbrOrderSelect = trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect();
+		}
+		else if (trackingNumberConfiguration.getIsProductionTrackingManaged()) {
+			autoTrackingNbrOrderSelect = trackingNumberConfiguration.getProductAutoTrackingNbrOrderSelect();
+		}
+		switch (autoTrackingNbrOrderSelect) {
 			case ProductRepository.SALE_TRACKING_ORDER_FIFO:
 				return " ORDER BY self.trackingNumber ASC";
 
