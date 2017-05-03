@@ -30,7 +30,6 @@
 	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock"/>
 	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase"/>
 	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production"/>
-	    	<button name="organisationConfigButton" title="Organisation config" width="100%" colSpan="6" onClick="action-company-view-organisation-config" if-module="axelor-organisation"/>
     		<button name="hrConfigButton" title="Human Resources config" width="100%" colSpan="6" onClick="action-company-view-hr-config" if-module="axelor-human-resource"/>
     		<button name="crmConfigButton" title="CRM config" width="100%" colSpan="6" onClick="action-company-view-crm-config" if-module="axelor-crm"/>
     	</panel>
@@ -87,12 +86,6 @@
     <action-view name="action-company-view-production-config" title="Production config (${ name })" model="com.axelor.apps.production.db.ProductionConfig">
     	<view type="form" name="production-config-form"/>
     	<context name="_showRecord" expr="eval: __self__.productionConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-organisation-config" title="Organisation config (${ name })" model="com.axelor.apps.organisation.db.OrganisationConfig">
-    	<view type="form" name="organisation-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.organisationConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     

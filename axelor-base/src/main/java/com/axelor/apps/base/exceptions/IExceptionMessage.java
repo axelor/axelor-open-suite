@@ -18,7 +18,7 @@
 package com.axelor.apps.base.exceptions;
 
 /**
- * Interface of Exceptions. Enum all exception of axelor-organisation.
+ * Interface of Exceptions.
  * 
  * @author dubaux
  * 
