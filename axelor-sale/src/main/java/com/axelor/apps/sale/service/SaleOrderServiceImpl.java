@@ -315,6 +315,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		if (appSaleService.getAppSale().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
+		if (saleOrder.getVersionNumber() == 1){
+			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+		}
 	}
 	
 	@Override
@@ -323,10 +326,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
 		saleOrder.setConfirmationDate(this.today);
 		saleOrder.setConfirmedByUser(this.currentUser);
-		if (saleOrder.getVersionNumber() == 1){
-			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
-		}
-
 		
 		this.validateCustomer(saleOrder);
 		

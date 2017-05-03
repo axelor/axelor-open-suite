@@ -34,6 +34,7 @@ import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.message.db.Message;
@@ -121,20 +122,8 @@ public class LeaveController {
 		   .model(LeaveRequest.class.getName())
 		   .add("grid","leave-request-validate-grid")
 		   .add("form","leave-request-form");
-		
-		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
-		.context("_activeCompany", user.getActiveCompany());
-		
-		if(employee == null || !employee.getHrManager())  {
-			if(employee != null && employee.getManager() != null) {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
-				.context("_user", user);
-			}
-			else  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
-				.context("_user", user);
-			}
-		}
+
+		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
 		response.setView(actionView.map());
 	}
@@ -303,7 +292,7 @@ public class LeaveController {
 	@Transactional
 	public void leaveReasonToJustify(ActionRequest request, ActionResponse response) throws AxelorException {
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		Boolean leaveToJustify = leave.getLeaveToJustify();
+		Boolean leaveToJustify = leave.getToJustifyLeaveReason();
 		LeaveLine leaveLine = null;
 		
 		if(leaveToJustify == true){
@@ -311,7 +300,7 @@ public class LeaveController {
 				hrConfigService.getLeaveReason(leave.getUser().getActiveCompany().getHrConfig());
 				
 				Employee employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
-				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getLeaveReason().getId());
+				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getToJustifyLeaveReason().getId());
 				
 				if(employee != null){
 					leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);

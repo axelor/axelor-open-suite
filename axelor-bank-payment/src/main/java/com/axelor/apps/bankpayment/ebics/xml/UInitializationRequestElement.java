@@ -43,9 +43,12 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
+import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Splitter;
 import com.axelor.exception.AxelorException;
@@ -68,13 +71,15 @@ public class UInitializationRequestElement extends InitializationRequestElement 
    */
   public UInitializationRequestElement(EbicsSession session,
                                        com.axelor.apps.bankpayment.ebics.client.OrderType orderType,
-                                       byte[] userData)
+                                       byte[] userData, byte[] userSignatureData)
     throws AxelorException
   {
     super(session, orderType, generateName(orderType));
     this.userData = userData;
+    this.userSignatureData = userSignatureData;
     keySpec = new SecretKeySpec(nonce, "EAS");
     splitter = new Splitter(userData);
+    
   }
 
   @Override
@@ -97,13 +102,25 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     OrderType 				orderType;
     FileFormatType 			fileFormat;
     List<Parameter>			parameters;
+    
+    EbicsUser ebicsUser = session.getUser();
+    
+    if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+    	userSignature = new UserSignature(ebicsUser,
+			      generateName("UserSignature"),
+                          "A005",
+                          userSignatureData);
+    	
+    }
+    else  {
+    	userSignature = new UserSignature(ebicsUser,
+			      generateName("UserSignature"),
+                            "A005",
+                            userData);
+    }
 
-    userSignature = new UserSignature(session.getUser(),
-				      generateName("UserSignature"),
-	                              "A005",
-	                              userData);
     userSignature.build();
-    userSignature.validate();
+	userSignature.validate();
 
     splitter.readInput(true, keySpec);
 
@@ -142,18 +159,21 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     if (parameters.size() > 0) {
       fULOrderParams.setParameterArray(parameters.toArray(new Parameter[parameters.size()]));
     }
-
-    orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getNextOrderId(),
-	                                                              "DZHNN",
+    
+    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsUser.getEbicsTypeSelect());
+    orderAttribute.build();
+    
+    orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(ebicsUser.getNextOrderId(),
+    															  orderAttribute.getOrderAttributes(),
 	                                                              orderType,
 	                                                              fULOrderParams);
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 	                                             nonce,
 	                                             splitter.getSegmentNumber(),
-	                                             session.getUser().getEbicsPartner().getPartnerId(),
+	                                             ebicsUser.getEbicsPartner().getPartnerId(),
 	                                             product,
-	                                             session.getUser().getSecurityMedium(),
-	                                             session.getUser().getUserId(),
+	                                             ebicsUser.getSecurityMedium(),
+	                                             ebicsUser.getUserId(),
 	                                             Calendar.getInstance(),
 	                                             orderDetails,
 	                                             bankPubKeyDigests);
@@ -211,6 +231,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
   // --------------------------------------------------------------------
 
   private byte[]			userData;
+  private byte[]			userSignatureData;
   private UserSignature			userSignature;
   private SecretKeySpec			keySpec;
   private Splitter			splitter;

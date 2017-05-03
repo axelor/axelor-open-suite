@@ -17,17 +17,24 @@
  */
 package com.axelor.apps.account.service;
 
+import java.util.List;
+
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 
-import java.util.List;
 
 public interface AccountingSituationService	{
+	
 	boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company);
 	List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException;
 	AccountingSituation createAccountingSituation(Company company) throws AxelorException;
 	AccountingSituation getAccountingSituation(Partner partner, Company company);
 	AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException;
+	String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails);
+	BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner);
+
 }

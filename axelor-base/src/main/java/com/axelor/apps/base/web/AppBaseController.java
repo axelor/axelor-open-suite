@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -308,6 +309,13 @@ public class AppBaseController {
 		 }
 		 
 		 response.setReload(true);
+	}
+	
+	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {
+		 String applicationMode = AppSettings.get().get("application.mode", "prod");
+		 if ("dev".equals(applicationMode)) {
+			 response.setAttr("main", "hidden", false);
+		 }
 	}
 
 }

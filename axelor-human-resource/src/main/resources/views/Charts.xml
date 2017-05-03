@@ -4,37 +4,31 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<chart name="chart.total.hours.per.day" title="">
-  		<dataset type="jpql"><![CDATA[
+		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
-			self.date AS _day
+<<<<<<< HEAD
+			self.project.fullName AS _project
+=======
+			self.date AS _day,
+			self.projectTask.fullName AS _project
+>>>>>>> origin/wip-4.1
 		FROM
 			TimesheetLine self
 		WHERE
 			self.timesheet.id= :timesheet_id
 		GROUP BY
-			self.date
+<<<<<<< HEAD
+			self.project.fullName
+=======
+			self.date,
+			self.projectTask.fullName
 		ORDER BY 
 			self.date
+>>>>>>> origin/wip-4.1
 		]]></dataset>
- 	 	<category key="_day" type="text" title="Day"/>
-  		<series key="_duration" type="bar" title="Total"/>
-	</chart>
-	
-	<chart name="chart.total.duration.per.project" title="">
-  		<dataset type="jpql"><![CDATA[
-		SELECT
-			SUM(self.visibleDuration) AS _duration,
-			self.project.fullName AS _project
-		FROM
-			TimesheetLine self
-		WHERE
-			self.timesheet.id= :timesheet_id
-		GROUP BY
-			self.project.fullName
-		]]></dataset>
- 	 	<category key="_project" type="text" title="Project"/>
-  		<series key="_duration" type="pie" title="Total"/>
+		<category key="_day" type="text" title="Day" />
+		<series key="_duration" type="bar" title="Total" groupBy="_project" />
 	</chart>
 
 </object-views>

@@ -124,7 +124,7 @@ public final class StringTool {
 	 * @param count
 	 * @return
 	 */
-	private static String fillString(char fillChar, int count){  
+	public static String fillString(char fillChar, int count){  
        
 	   // creates a string of 'x' repeating characters  
        char[] chars = new char[count];  

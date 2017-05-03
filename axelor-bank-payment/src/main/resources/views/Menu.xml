@@ -97,7 +97,7 @@
 		title="Send a Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-send-form"/>
-		<domain>self.fileToSend != NULL</domain>
+		<domain>self.generatedMetaFile != NULL</domain>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
@@ -191,8 +191,8 @@
 	<menuitem name="account-conf-ebics-ebics-bank" parent="account-conf-ebics"
 		title="Ebics banks" action="account.conf.ebics.ebics.bank" />
 		
-	<menuitem name="account-conf-ebics-ebics-transfer-state" parent="account-conf-ebics"
-		title="Ebics transfer states" action="account.conf.ebics.ebics.transfer.state" />
+<!-- 	<menuitem name="account-conf-ebics-ebics-transfer-state" parent="account-conf-ebics" -->
+<!-- 		title="Ebics transfer states" action="account.conf.ebics.ebics.transfer.state" /> -->
 		
 	<menuitem name="account-conf-ebics-ebics-certificate" parent="account-conf-ebics"
 		title="Ebics certificates" action="account.conf.ebics.ebics.certificate" />
@@ -215,13 +215,13 @@
 		<view type="form" name="ebics-bank-form"/>
 	</action-view>
 	
-	<action-view name="account.conf.ebics.ebics.transfer.state" title="Ebics transfer state"
-		model="com.axelor.apps.bankpayment.db.EbicsTransferState" >
-		<view type="grid" name="ebics-transfer-state-grid" />
-		<view type="form" name="ebics-transfer-state-form"/>
-	</action-view>
+<!-- 	<action-view name="account.conf.ebics.ebics.transfer.state" title="Ebics transfer state" -->
+<!-- 		model="com.axelor.apps.bankpayment.db.EbicsTransferState" > -->
+<!-- 		<view type="grid" name="ebics-transfer-state-grid" /> -->
+<!-- 		<view type="form" name="ebics-transfer-state-form"/> -->
+<!-- 	</action-view> -->
 	
-	<action-view name="account.conf.ebics.ebics.certificate" title="Ebics certficate"
+	<action-view name="account.conf.ebics.ebics.certificate" title="Ebics certificate"
 		model="com.axelor.apps.bankpayment.db.EbicsCertificate" >
 		<view type="grid" name="ebics-certificate-grid" />
 		<view type="form" name="ebics-certificate-form"/>

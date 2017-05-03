@@ -85,5 +85,6 @@ public interface ExpenseService  {
 	public BigDecimal computeAdvanceAmount(Expense expense);
 	
 	public Product getKilometricExpenseProduct(Expense expense) throws AxelorException;
-	
+
+	public void setDraftSequence(Expense expense);
 }

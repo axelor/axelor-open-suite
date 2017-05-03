@@ -24,7 +24,8 @@
 		<!--  PAGE Relance -->
 		<one-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" mappedBy="accountingSituation" title="Reminder"/>
 
-		<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
+		<many-to-one name="companyInBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for in payment mode"/>
+		<many-to-one name="companyOutBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for out payment mode"/>
 
 		<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
@@ -33,11 +34,11 @@
 
 		<string name="name">
 			<![CDATA[
-		String name = "";
-	    if (partner != null) name += partner.getFullName()+" ("+partner.getPartnerSeq()+")";
-	    if (company != null) name += " - "+company.getName(); 
-		return name;
-    ]]>
+			String name = "";
+		    if (partner != null) name += partner.getFullName()+" ("+partner.getPartnerSeq()+")";
+		    if (company != null) name += " - "+company.getName(); 
+			return name;
+	    ]]>
 		</string>
 
 	</entity>

@@ -58,7 +58,7 @@
 	
 	<boolean name="priceDisplay" title="Display price on requested purchase printing" />
   	
-  	<string name="priceRequest" title="Price request" large="true"/>
+  	<string name="priceRequest" title="Message for requesting prices" large="true"/>
   	
   	<!-- -Json fields -->
 	<string name="poAttrs" title="Fields" json="true" />

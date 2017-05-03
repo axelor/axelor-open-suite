@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.ebics.xml;
 import com.axelor.apps.account.ebics.schema.s001.OrderSignatureDataType;
 import com.axelor.apps.account.ebics.schema.s001.UserSignatureDataSigBookType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.inject.Beans;
 
@@ -51,6 +52,7 @@ public class UserSignature extends DefaultEbicsRootElement {
     this.name = name;
     this.signatureVersion = signatureVersion;
   }
+  
 
   @Override
   public void build() {
@@ -59,7 +61,12 @@ public class UserSignature extends DefaultEbicsRootElement {
     byte[]				signature = null;
 
     try {
-      signature = Beans.get(EbicsUserService.class).sign(user, toSign);
+        if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+        	signature = toSign;
+        }
+        else  {
+        	signature = Beans.get(EbicsUserService.class).sign(user, toSign);
+        }
     } catch (Exception e) {
     	e.printStackTrace();
     	//throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );

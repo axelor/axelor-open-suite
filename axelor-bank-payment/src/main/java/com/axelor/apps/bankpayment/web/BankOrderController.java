@@ -19,14 +19,16 @@ package com.axelor.apps.bankpayment.web;
 
 import java.util.List;
 
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
+import com.axelor.apps.base.db.BankDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
@@ -53,15 +55,26 @@ public class BankOrderController {
 	@Inject
 	protected BankOrderRepository bankOrderRepo;
 	
+	
+	public void confirm(ActionRequest request, ActionResponse response ) {
+
+		try {
+			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+			bankOrder = bankOrderRepo.find(bankOrder.getId());
+			if(bankOrder != null)  { 
+				bankOrderService.confirm(bankOrder);
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setReload(true);
+	}
+	
 	public void sign(ActionRequest request, ActionResponse response ) throws AxelorException{
 		
 		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
 		bankOrder = bankOrderRepo.find(bankOrder.getId());
 		try {
-			if (bankOrder.getFileToSend() == null) {
-				bankOrderService.checkLines(bankOrder);
-			}
-			
 			ActionViewBuilder confirmView = ActionView
 					.define("Sign bank order")
 					.model(BankOrder.class.getName())
@@ -79,37 +92,6 @@ public class BankOrderController {
 		}
 	}
 	
-	public void confirm(ActionRequest request, ActionResponse response ) {
-
-		try {
-			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-			bankOrder = bankOrderRepo.find(bankOrder.getId());
-			if(bankOrder != null)  { 
-				if (bankOrder.getFileToSend() == null) {
-					bankOrderService.checkLines(bankOrder);
-				}
-				bankOrderService.confirm(bankOrder);
-				response.setReload(true);
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
-	public void validateWithoutSign(ActionRequest request, ActionResponse response ) {
-
-		try {
-			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-			bankOrder = bankOrderRepo.find(bankOrder.getId());
-			if(bankOrder != null)  { 
-				bankOrderService.validate(bankOrder);
-				response.setReload(true);
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
 	public void validate(ActionRequest request, ActionResponse  response) throws AxelorException{
 		
 		Context context = request.getContext();
@@ -119,23 +101,27 @@ public class BankOrderController {
 
 		try {
 			
-			EbicsUser ebicsUser = bankOrder.getEbicsUser();
+			EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
 			
 			if (ebicsUser == null) {
 				response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
 			}  
 			else  {
-				if (context.get("password") == null)  {
-					response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+			    if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
+			    	bankOrderService.validate(bankOrder);
 				}
-				else  {
-					String password = (String)context.get("password");
-					if(!ebicsUser.getPassword().equals(password)){
-						response.setValue("password", "");
+				else {
+					if (context.get("password") == null) {
 						response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
 					}
-					else{
-						bankOrderService.validate(bankOrder);
+					if (context.get("password") != null) {
+						String password = (String) context.get("password");
+						if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
+							response.setValue("password", "");
+							response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+						} else {
+							bankOrderService.validate(bankOrder);
+						}
 					}
 				}
 			}
@@ -143,6 +129,20 @@ public class BankOrderController {
 			TraceBackService.trace(response, e);
 		}
 	}
+	
+	public void realize(ActionRequest request, ActionResponse response ) {
+
+		try {
+			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+			bankOrder = bankOrderRepo.find(bankOrder.getId());
+			if(bankOrder != null)  { 
+				bankOrderService.realize(bankOrder);
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setReload(true);
+	}	
 	
 	public void print(ActionRequest request, ActionResponse response) throws AxelorException{
 		
@@ -163,35 +163,6 @@ public class BankOrderController {
 				.add("html", fileLink).map());
 		
 	}
-	
-	//called to check if there is a linked invoice payment to validate
-	public void validatePayment(ActionRequest request, ActionResponse response ) {
-
-		try {
-			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-			bankOrder = bankOrderRepo.find(bankOrder.getId());
-			if(bankOrder != null){ 
-				bankOrderService.validatePayment(bankOrder);
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
-	//called to check if there is a linked invoice payment to cancel
-	public void cancelPayment(ActionRequest request, ActionResponse response ) {
-
-		try {
-			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-			bankOrder = bankOrderRepo.find(bankOrder.getId());
-			if(bankOrder != null){ 
-				bankOrderService.cancelPayment(bankOrder);
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
 	
 	@SuppressWarnings("unchecked")
 	public void merge(ActionRequest request, ActionResponse response ) {
@@ -228,4 +199,31 @@ public class BankOrderController {
 		
 		
 	}
+
+	public void fillSignatoryEbicsUser(ActionRequest request, ActionResponse response) {
+		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+		if (bankOrder.getSenderBankDetails() != null) {
+			EbicsUser ebicsUser = bankOrderService.getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
+			bankOrder.setSignatoryEbicsUser(ebicsUser);
+			response.setValues(bankOrder);
+		}
+	}
+	public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
+		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+		String domain = bankOrderService.createDomainForBankDetails(bankOrder);
+		//if nothing was found for the domain, we set it at a default value.
+        if (domain.equals("")) {
+            response.setAttr("senderBankDetails","domain", "self.id IN (0)");
+        }
+        else {
+            response.setAttr("senderBankDetails","domain", domain);
+       }
+	}
+
+	public void fillBankDetails(ActionRequest request, ActionResponse response) {
+		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+		BankDetails bankDetails = bankOrderService.getDefaultBankDetails(bankOrder);
+		response.setValue("senderBankDetails", bankDetails);
+	}
+
 }

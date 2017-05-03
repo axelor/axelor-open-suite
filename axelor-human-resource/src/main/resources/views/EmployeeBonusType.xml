@@ -2,14 +2,14 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="employee-bonus-type-grid" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusType" >
+	<grid name="employee-bonus-type-grid" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType" >
 		<field name="code" />
 		<field name="label" />
 		<field name="applicationCondition" />
 		<field name="formula" />
     </grid>
 
-    <form name="employee-bonus-type-form" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusType">
+    <form name="employee-bonus-type-form" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
     	<panel name="main">
 	    	<field name="code" />
 			<field name="label" />

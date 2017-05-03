@@ -1,0 +1,1686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="4">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip-4.1</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsMTEhIQ==</encrypted-property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Data Set" id="5">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">Name</property>
+                    <property name="alias">Name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Name</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">Name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">WeeklyWorkHours</property>
+                    <property name="alias">WeeklyWorkHours</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">WeeklyWorkHours</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">WeeklyWorkHours</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DailyWorkHours</property>
+                    <property name="alias">DailyWorkHours</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">DailyWorkHours</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">DailyWorkHours</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">Department</property>
+                    <property name="alias">Department</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Department</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">Department</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">BirthDate</property>
+                    <property name="alias">BirthDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">BirthDate</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">BirthDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DateOfHire</property>
+                    <property name="alias">DateOfHire</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">DateOfHire</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">DateOfHire</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">HourlyRate</property>
+                    <property name="alias">HourlyRate</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">HourlyRate</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">HourlyRate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">FixedProPhone</property>
+                    <property name="alias">FixedProPhone</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">FixedProPhone</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">FixedProPhone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">MobileProPhone</property>
+                    <property name="alias">MobileProPhone</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">MobileProPhone</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">MobileProPhone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">EmergencyContact</property>
+                    <property name="alias">EmergencyContact</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">EmergencyContact</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">EmergencyContact</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">EmergencyNumber</property>
+                    <property name="alias">EmergencyNumber</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">EmergencyNumber</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">EmergencyNumber</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PhoneAtCustomer</property>
+                    <property name="alias">PhoneAtCustomer</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">PhoneAtCustomer</text-property>
+                    <text-property name="heading">PhoneAtCustomer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">Phone</property>
+                    <property name="alias">Phone</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Phone</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">Phone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">EmailAddress</property>
+                    <property name="alias">EmailAddress</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">EmailAddress</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">EmailAddress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">StartDate</property>
+                    <property name="alias">StartDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">StartDate</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">StartDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">EndDate</property>
+                    <property name="alias">EndDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">EndDate</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">EndDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">MonthlyCost</property>
+                    <property name="alias">MonthlyCost</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">MonthlyCost</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">MonthlyCost</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PayCompany</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">PayCompany</text-property>
+                    <text-property name="heading">PayCompany</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">Position</property>
+                    <property name="alias">Position</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Position</text-property>
+                    <text-property name="heading">Position</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ContractType</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ContractType</text-property>
+                    <text-property name="heading">ContractType</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">Company</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Company</text-property>
+                    <text-property name="heading">Company</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">MaritalStatus</property>
+                    <property name="alias">MaritalStatus</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">MaritalStatus</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">MaritalStatus</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">Name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">WeeklyWorkHours</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">DailyWorkHours</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">Department</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">BirthDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">DateOfHire</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">HourlyRate</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">FixedProPhone</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">MobileProPhone</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">EmergencyContact</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">EmergencyNumber</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">PhoneAtCustomer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">Phone</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">EmailAddress</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">StartDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">EndDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">MonthlyCost</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">PayCompany</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">Position</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">ContractType</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">Company</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">MaritalStatus</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">Name</property>
+                    <property name="nativeName">Name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">WeeklyWorkHours</property>
+                    <property name="nativeName">WeeklyWorkHours</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">DailyWorkHours</property>
+                    <property name="nativeName">DailyWorkHours</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">Department</property>
+                    <property name="nativeName">Department</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">BirthDate</property>
+                    <property name="nativeName">BirthDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">DateOfHire</property>
+                    <property name="nativeName">DateOfHire</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">HourlyRate</property>
+                    <property name="nativeName">HourlyRate</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">FixedProPhone</property>
+                    <property name="nativeName">FixedProPhone</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">MobileProPhone</property>
+                    <property name="nativeName">MobileProPhone</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">EmergencyContact</property>
+                    <property name="nativeName">EmergencyContact</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">EmergencyNumber</property>
+                    <property name="nativeName">EmergencyNumber</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">PhoneAtCustomer</property>
+                    <property name="nativeName">PhoneAtCustomer</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">Phone</property>
+                    <property name="nativeName">Phone</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">EmailAddress</property>
+                    <property name="nativeName">EmailAddress</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">StartDate</property>
+                    <property name="nativeName">StartDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">EndDate</property>
+                    <property name="nativeName">EndDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">MonthlyCost</property>
+                    <property name="nativeName">MonthlyCost</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">PayCompany</property>
+                    <property name="nativeName">PayCompany</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">Position</property>
+                    <property name="nativeName">Position</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">ContractType</property>
+                    <property name="nativeName">ContractType</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">Company</property>
+                    <property name="nativeName">Company</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">MaritalStatus</property>
+                    <property name="nativeName">MaritalStatus</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select Employee.name as "Name",
+Employee.weekly_work_hours as "WeeklyWorkHours",
+Employee.daily_work_hours as "DailyWorkHours",
+Employee.department as "Department",
+Employee.birth_date as "BirthDate",
+Employee.date_of_hire as "DateOfHire",
+Employee.hourly_rate as "HourlyRate",
+Employee.fixed_pro_phone as "FixedProPhone",
+Employee.mobile_pro_phone as "MobileProPhone",
+Employee.emergency_contact as "EmergencyContact",
+Employee.emergency_number as "EmergencyNumber",
+Employee.phone_at_customer as "PhoneAtCustomer",
+Partner.fixed_phone as "Phone",
+Email.address as "EmailAddress",
+Contract.start_date as "StartDate",
+Contract.end_date as "EndDate",
+Contract.monthly_global_cost as "MonthlyCost",
+Contract.pay_company as "PayCompany",
+Contract.position as "Position",
+Contract.contract_type_select as "ContractType",
+Company.name as "Company",
+SlctItem.title as "MaritalStatus"
+from hr_employee as Employee
+left outer join base_partner as Partner on (Employee.contact_partner = Partner.id)
+left outer join message_email_address as Email on (Partner.email_address = Email.id)
+left outer join hr_employment_contract as Contract on (Employee.id = Contract.employee)
+left outer join base_company as Company on (Contract.pay_company = Company.id)
+left outer join meta_select as Slct on (Slct.name = 'hr.employee.marital.status')
+left outer join meta_select_item as SlctItem on (Slct.id = SlctItem.select_id) and (SlctItem.value = Employee.marital_status)
+left outer join meta_select as SlctContract on (SlctContract.name = 'hr.employment.contract.contract.type.select')
+left outer join meta_select_item as SlctContractItem on (SlctContract.id = SlctContractItem.select_id)]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>archived</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>archived</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>archived</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>version</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>version</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>version</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>created_on</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>93</design:nativeDataTypeCode>
+            <design:precision>29</design:precision>
+            <design:scale>6</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>created_on</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>created_on</design:label>
+            <design:formattingHints>
+              <design:displaySize>29</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>updated_on</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>93</design:nativeDataTypeCode>
+            <design:precision>29</design:precision>
+            <design:scale>6</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>updated_on</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>updated_on</design:label>
+            <design:formattingHints>
+              <design:displaySize>29</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>daily_work_hours</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>2</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>daily_work_hours</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>daily_work_hours</design:label>
+            <design:formattingHints>
+              <design:displaySize>22</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>external</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>external</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>external</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>hourly_rate</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>2</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>hourly_rate</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>hourly_rate</design:label>
+            <design:formattingHints>
+              <design:displaySize>22</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>hr_manager</design:name>
+              <design:position>9</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>hr_manager</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>hr_manager</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>import_id</design:name>
+              <design:position>10</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>import_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>import_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>name</design:name>
+              <design:position>11</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>name</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>negative_value_leave</design:name>
+              <design:position>12</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>negative_value_leave</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>negative_value_leave</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>time_logging_preference_select</design:name>
+              <design:position>13</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>time_logging_preference_select</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>time_logging_preference_select</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>timesheet_reminder</design:name>
+              <design:position>14</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>timesheet_reminder</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>timesheet_reminder</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>weekly_work_hours</design:name>
+              <design:position>15</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>2</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>weekly_work_hours</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>weekly_work_hours</design:label>
+            <design:formattingHints>
+              <design:displaySize>22</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>created_by</design:name>
+              <design:position>16</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>created_by</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>created_by</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>updated_by</design:name>
+              <design:position>17</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>updated_by</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>updated_by</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>bank_details</design:name>
+              <design:position>18</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>bank_details</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>bank_details</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>contact_partner</design:name>
+              <design:position>19</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>contact_partner</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>contact_partner</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>department</design:name>
+              <design:position>20</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>department</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>department</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>kilometric_allow_param</design:name>
+              <design:position>21</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>kilometric_allow_param</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>kilometric_allow_param</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>manager</design:name>
+              <design:position>22</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>manager</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>manager</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>planning</design:name>
+              <design:position>23</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>planning</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>planning</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>product</design:name>
+              <design:position>24</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>product</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>product</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>public_holiday_planning</design:name>
+              <design:position>25</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>public_holiday_planning</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>public_holiday_planning</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <data id="374">
+            <property name="dataSet">Data Set</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">StartDate</property>
+                    <text-property name="displayName">StartDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["StartDate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+            </list-property>
+            <property name="resultSetColumn">StartDate</property>
+        </data>
+        <grid id="96">
+            <property name="height">8.333333333333334in</property>
+            <column id="97"/>
+            <column id="98"/>
+            <column id="99"/>
+            <row id="104">
+                <property name="height">0.573in</property>
+                <cell id="105">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <text id="120">
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H1>
+EMPLOYEE RESUME
+</H1>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="108">
+                <property name="height">0.90625in</property>
+                <cell id="109"/>
+                <cell id="110">
+                    <data id="124">
+                        <property name="fontSize">12pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">Data Set</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">Name</property>
+                                <text-property name="displayName">Name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">Name</property>
+                    </data>
+                    <data id="127">
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">Data Set</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">Phone</property>
+                                <text-property name="displayName">Phone</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Phone"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">Phone</property>
+                    </data>
+                    <data id="123">
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">Data Set</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">EmailAddress</property>
+                                <text-property name="displayName">EmailAddress</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["EmailAddress"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">EmailAddress</property>
+                    </data>
+                </cell>
+                <cell id="111"/>
+            </row>
+            <row id="116">
+                <property name="height">0.3333333333333333in</property>
+                <cell id="117">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <text id="183">
+                        <property name="backgroundColor">#4D4D4D</property>
+                        <property name="fontSize">11pt</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="marginTop">0px</property>
+                        <property name="marginBottom">0px</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2>Contract</H2>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="240">
+                <property name="height">2in</property>
+                <cell id="241">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <grid id="189">
+                        <column id="190"/>
+                        <column id="191"/>
+                        <column id="192"/>
+                        <row id="230">
+                            <cell id="231">
+                                <text id="234">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Daily Cost :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="232">
+                                <data id="239">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">DailyWorkHours</property>
+                                            <text-property name="displayName">DailyCost</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["DailyWorkHours"]*dataSetRow["HourlyRate"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">DailyWorkHours</property>
+                                </data>
+                            </cell>
+                            <cell id="233"/>
+                        </row>
+                        <row id="221">
+                            <cell id="222">
+                                <text id="226">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Entry date : ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="223">
+                                <data id="225">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">DateOfHire</property>
+                                            <text-property name="displayName">DateOfHire</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["DateOfHire"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">DateOfHire</property>
+                                </data>
+                            </cell>
+                            <cell id="224"/>
+                        </row>
+                        <row id="217">
+                            <cell id="218">
+                                <text id="227">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Departure date : ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="219">
+                                <data id="126">
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">EndDate</property>
+                                            <text-property name="displayName">EndDate</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["EndDate"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">EndDate</property>
+                                </data>
+                            </cell>
+                            <cell id="220"/>
+                        </row>
+                        <row id="213">
+                            <cell id="214">
+                                <text id="228">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Department :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="215">
+                                <data id="229">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">Department</property>
+                                            <text-property name="displayName">Department</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["Department"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">Department</property>
+                                </data>
+                            </cell>
+                            <cell id="216"/>
+                        </row>
+                        <row id="209">
+                            <cell id="210"/>
+                            <cell id="211"/>
+                            <cell id="212"/>
+                        </row>
+                        <row id="193">
+                            <cell id="194">
+                                <text id="162">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">block</property>
+                                    <structure name="toc"/>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Start date : ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="195">
+                                <data id="125">
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">StartDate</property>
+                                            <text-property name="displayName">StartDate</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["StartDate"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">StartDate</property>
+                                </data>
+                            </cell>
+                            <cell id="196"/>
+                        </row>
+                        <row id="197">
+                            <cell id="198">
+                                <text id="163">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">block</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[End date : ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="199"/>
+                            <cell id="200"/>
+                        </row>
+                        <row id="201">
+                            <cell id="202">
+                                <text id="164">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="display">block</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Weekly Work : ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="203">
+                                <data id="128">
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">WeeklyWorkHours</property>
+                                            <text-property name="displayName">WeeklyWorkHours</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["WeeklyWorkHours"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">WeeklyWorkHours</property>
+                                </data>
+                                <text id="165">
+                                    <property name="display">inline</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[ hours]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="204"/>
+                        </row>
+                        <row id="205">
+                            <cell id="206">
+                                <text id="176">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="display">block</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Daily Work : ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="207">
+                                <data id="129">
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">DailyWorkHours</property>
+                                            <text-property name="displayName">DailyWorkHours</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["DailyWorkHours"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">DailyWorkHours</property>
+                                </data>
+                                <text id="177">
+                                    <property name="display">inline</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[ days]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="208"/>
+                        </row>
+                    </grid>
+                </cell>
+            </row>
+            <row id="244">
+                <property name="height">2in</property>
+                <cell id="245">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <text id="248">
+                        <property name="backgroundColor">#4D4D4D</property>
+                        <property name="fontSize">11pt</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="marginTop">0px</property>
+                        <property name="marginBottom">0px</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2>Personal Informations</H2>]]></text-property>
+                    </text>
+                    <grid id="281">
+                        <column id="282"/>
+                        <column id="283"/>
+                        <column id="284"/>
+                        <row id="285">
+                            <cell id="286">
+                                <text id="305">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Date of birth :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="287">
+                                <data id="306">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">BirthDate</property>
+                                            <text-property name="displayName">BirthDate</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["BirthDate"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">BirthDate</property>
+                                </data>
+                            </cell>
+                            <cell id="288"/>
+                        </row>
+                        <row id="289">
+                            <cell id="290">
+                                <text id="307">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Country :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="291"/>
+                            <cell id="292"/>
+                        </row>
+                        <row id="293">
+                            <cell id="294">
+                                <text id="308">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Marital status :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="295">
+                                <data id="309">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">MaritalStatus</property>
+                                            <text-property name="displayName">MaritalStatus</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["MaritalStatus"].valueOf()</expression>
+                                            <property name="dataType">string</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">MaritalStatus</property>
+                                </data>
+                            </cell>
+                            <cell id="296"/>
+                        </row>
+                        <row id="297">
+                            <cell id="298">
+                                <text id="310">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Phone at customer :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="299">
+                                <data id="311">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">PhoneAtCustomer</property>
+                                            <text-property name="displayName">PhoneAtCustomer</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["PhoneAtCustomer"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">PhoneAtCustomer</property>
+                                </data>
+                            </cell>
+                            <cell id="300"/>
+                        </row>
+                        <row id="301">
+                            <cell id="302">
+                                <text id="312">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Emergency contact :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="303">
+                                <data id="314">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">EmergencyContact</property>
+                                            <text-property name="displayName">EmergencyContact</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["EmergencyContact"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">EmergencyContact</property>
+                                </data>
+                            </cell>
+                            <cell id="304"/>
+                        </row>
+                        <row id="315">
+                            <cell id="316">
+                                <text id="319">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[Emergency number :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="317">
+                                <data id="320">
+                                    <property name="dataSet">Data Set</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">EmergencyNumber</property>
+                                            <text-property name="displayName">EmergencyNumber</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["EmergencyNumber"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">EmergencyNumber</property>
+                                </data>
+                            </cell>
+                            <cell id="318"/>
+                        </row>
+                        <row id="321">
+                            <cell id="322"/>
+                            <cell id="323"/>
+                            <cell id="324"/>
+                        </row>
+                    </grid>
+                </cell>
+            </row>
+            <row id="325">
+                <property name="height">0.333in</property>
+                <cell id="326">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <text id="329">
+                        <property name="backgroundColor">#4D4D4D</property>
+                        <property name="fontSize">11pt</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="marginTop">0px</property>
+                        <property name="marginBottom">0px</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2>Position list</H2>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="354">
+                <property name="height">0.333in</property>
+                <cell id="355">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <table id="358">
+                        <property name="dataSet">Data Set</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">StartDate</property>
+                                <text-property name="displayName">StartDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["StartDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">EndDate</property>
+                                <text-property name="displayName">EndDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["EndDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">PayCompany</property>
+                                <text-property name="displayName">PayCompany</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["PayCompany"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Position</property>
+                                <text-property name="displayName">Position</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Position"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Company</property>
+                                <text-property name="displayName">Company</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Company"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ContractType</property>
+                                <text-property name="displayName">ContractType</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ContractType"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                        </list-property>
+                        <column id="371"/>
+                        <column id="372"/>
+                        <column id="373"/>
+                        <column id="388"/>
+                        <column id="396"/>
+                        <header>
+                            <row id="359">
+                                <cell id="360">
+                                    <label id="375">
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">Start Date</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="361">
+                                    <label id="377">
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">End Date</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="362">
+                                    <label id="391">
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">Company</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="385">
+                                    <label id="389">
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">Position</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="393">
+                                    <label id="397">
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">Contract Type</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="363">
+                                <cell id="364">
+                                    <data id="376">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">StartDate</property>
+                                    </data>
+                                </cell>
+                                <cell id="365">
+                                    <data id="378">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">EndDate</property>
+                                    </data>
+                                </cell>
+                                <cell id="366">
+                                    <data id="392">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">Company</property>
+                                    </data>
+                                </cell>
+                                <cell id="386">
+                                    <data id="390">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">Position</property>
+                                    </data>
+                                </cell>
+                                <cell id="394">
+                                    <data id="398">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">ContractType</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </detail>
+                        <footer>
+                            <row id="367">
+                                <cell id="368"/>
+                                <cell id="369"/>
+                                <cell id="370"/>
+                                <cell id="387"/>
+                                <cell id="395"/>
+                            </row>
+                        </footer>
+                    </table>
+                </cell>
+            </row>
+        </grid>
+    </body>
+</report>

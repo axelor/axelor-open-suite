@@ -954,7 +954,7 @@
 	Company.name as "companyName", 
 	BankDetail.iban, 
 	Bank.code as "bic",
-	Bank.bank_address, 
+	BankAddress.address as "bank_address", 
 	Invoice.note, 
 	Invoice.internal_reference, 
 	Invoice.external_reference, 
@@ -977,6 +977,7 @@ left outer join account_payment_condition as PaymentCondition on (Invoice.paymen
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
 left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
+left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
 left outer join base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)

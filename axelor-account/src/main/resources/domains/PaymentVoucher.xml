@@ -6,10 +6,12 @@
   	<entity name="PaymentVoucher" sequential="true" lang="java">
   	
 	  	<integer name="importId" />
+
 		<string name="ref" title="Reference" namecolumn="true" required="false"/>
 		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" required="true"/>
 		<many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true"/>
+	   	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank details"/>
 	    <date name="paymentDate" title="Payment date"/>
 		<decimal name="paidAmount" title="Amount paid" />
 		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>

@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.message.db.Template;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -215,14 +214,14 @@ public class AccountConfigService {
 		return accountConfig.getCustomerCreditNoteJournal();
 	}
 
-	public Journal getMiscOperationJournal(AccountConfig accountConfig) throws AxelorException  {
+	public Journal getAutoMiscOpeJournal(AccountConfig accountConfig) throws AxelorException  {
 
-		if(accountConfig.getMiscOperationJournal() == null)   {
+		if(accountConfig.getAutoMiscOpeJournal() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_18),
 					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		return accountConfig.getMiscOperationJournal();
+		return accountConfig.getAutoMiscOpeJournal();
 	}
 
 	public Journal getReimbursementJournal(AccountConfig accountConfig) throws AxelorException  {
@@ -371,29 +370,6 @@ public class AccountConfigService {
 		return accountConfig.getDoubtfulCustomerAccount();
 
 	}
-	
-	public Account getExternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
-
-		if(accountConfig.getExternalBankToBankAccount() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT),
-					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-		return accountConfig.getExternalBankToBankAccount();
-
-	} 
-	
-	public Account getInternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
-
-		if(accountConfig.getExternalBankToBankAccount() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
-					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-		return accountConfig.getInternalBankToBankAccount();
-
-	} 
-
 
 	/******************************** TVA ********************************************/
 
@@ -555,45 +531,6 @@ public class AccountConfigService {
 
 	}
 	
-			                    /******** Bank Order Sequences ********/
-	public Sequence getSepaCreditTransSeq(AccountConfig accountConfig) throws AxelorException {
-		if(accountConfig.getSepaCreditTransSequence() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5), 
-					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-		return accountConfig.getSepaCreditTransSequence();
-	}
-
-	public Sequence getSepaDirectDebitSeq(AccountConfig accountConfig) throws AxelorException {
-		if(accountConfig.getSepaDirectDebitSequence() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_6), 
-					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-		return accountConfig.getSepaDirectDebitSequence();
-	}
-
-	public Sequence getIntCreditTransSeq(AccountConfig accountConfig) throws AxelorException {
-		if(accountConfig.getIntCreditTransSequence() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_7), 
-					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-		return accountConfig.getIntCreditTransSequence();
-	}
-
-	public Sequence getIntDirectDebitSeq(AccountConfig accountConfig) throws AxelorException {
-		if(accountConfig.getIntDirectDebitSequence() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_8), 
-					AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-		return accountConfig.getIntDirectDebitSequence();
-	}
-	
-	
-	
 	public boolean getInvoiceInAti(AccountConfig accountConfig) throws AxelorException  {
 		
 		int atiChoice = accountConfig.getInvoiceInAtiSelect();
@@ -612,15 +549,5 @@ public class AccountConfigService {
 		}
 		return accountConfig.getExportFileName();
 	}
-	
-	
-	/******************************** BANK ORDERS *********************************************/
-	public User getDefaultSignatoryUser(AccountConfig accountConfig) throws AxelorException  {
-		if(accountConfig.getDefaultSignatoryUser() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
-					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		return accountConfig.getDefaultSignatoryUser();
-	}
-	
+
 }

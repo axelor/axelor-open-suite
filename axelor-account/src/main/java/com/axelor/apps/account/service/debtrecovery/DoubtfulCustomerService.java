@@ -86,7 +86,7 @@ public class DoubtfulCustomerService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
 		accountConfigService.getDoubtfulCustomerAccount(accountConfig);
-		accountConfigService.getMiscOperationJournal(accountConfig);
+		accountConfigService.getAutoMiscOpeJournal(accountConfig);
 		accountConfigService.getSixMonthDebtPassReason(accountConfig);
 		accountConfigService.getThreeMonthDebtPassReason(accountConfig);
 
@@ -134,7 +134,7 @@ public class DoubtfulCustomerService {
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
 		Invoice invoice = move.getInvoice();
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, invoice.getCurrency(), partner, move.getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, invoice.getCurrency(), partner, move.getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		newMove.setInvoice(invoice);
 		
 		int ref = 1;
@@ -206,7 +206,7 @@ public class DoubtfulCustomerService {
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
 
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 

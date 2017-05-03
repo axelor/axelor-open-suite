@@ -86,7 +86,7 @@ public class FileTransfer {
    * @throws IOException
    * @throws EbicsException
    */
-  public void sendFile(byte[] content, OrderType orderType)
+  public void sendFile(byte[] content, OrderType orderType, byte[] signature)
     throws IOException, AxelorException
   {
     HttpRequestSender			sender;
@@ -98,7 +98,7 @@ public class FileTransfer {
     sender = new HttpRequestSender(session);
     initializer = new UInitializationRequestElement(session,
 	                                            orderType,
-	                                            content);
+	                                            content, signature);
     initializer.build();
     initializer.validate();
     httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()));
