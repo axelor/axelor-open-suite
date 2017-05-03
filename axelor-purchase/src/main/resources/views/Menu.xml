@@ -93,17 +93,6 @@
 	</action-view>
 
 <!-- ADMINISTRATION -->
-
-
-	<menuitem name="admin-root-batch-purchase" parent="admin-root-batch"
-		title="Purchase batches" action="admin.root.batch.purchase" />
-
-	<action-view name="admin.root.batch.purchase" title="Purchase batches"
-		model="com.axelor.apps.purchase.db.PurchaseBatch" >
-		<view type="grid" name="purchase-batch-grid"/>
-		<view type="form" name="purchase-batch-form"/>
-	</action-view>
-	
 	
 	<menuitem name="admin-root-conf-purchase-config" parent="admin-root-conf"
 		title="Purchase configurations" action="admin.root.conf.purchase.config" />
