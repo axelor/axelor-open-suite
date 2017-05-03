@@ -49,7 +49,6 @@
 	    </panel>
 		<panel name="information">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-			<field name="toJustifyLeaveReason"/>
 			<spacer/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"/>
@@ -72,6 +71,7 @@
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
+			<field name="toJustifyLeaveReason" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -135,10 +135,9 @@
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 
-	
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<field name="toJustifyLeaveReason" expr="eval: to_justify_leave_reason"/>
-		<field name="fromDate" expr="eval:__date__"/>
+		<field name="fromDate" expr="eval:__date__" if="to_justify_leave_reason"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
