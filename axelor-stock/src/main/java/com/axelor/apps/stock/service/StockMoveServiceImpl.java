@@ -21,9 +21,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +42,14 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
@@ -57,7 +62,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.mysql.jdbc.log.Log;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -277,8 +281,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String realize(StockMove stockMove) throws AxelorException  {
+	public String realize(StockMove stockMove) throws AxelorException {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
+		
+		checkOngoingInventory(stockMove);
+		
 		String newStockSeq = null;
 
 		stockMoveLineService.updateLocations(
@@ -317,7 +324,48 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		return newStockSeq;
 	}
-	
+
+	/**
+	 * Check and raise an exception if the provided stock move is involved in an
+	 * ongoing inventory.
+	 * 
+	 * @param stockMove
+	 * @throws AxelorException
+	 */
+	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
+		List<Location> locationList = new ArrayList<>();
+
+		if (stockMove.getFromLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+			locationList.add(stockMove.getFromLocation());
+		}
+
+		if (stockMove.getToLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+			locationList.add(stockMove.getToLocation());
+		}
+
+		if (locationList.isEmpty()) {
+			return;
+		}
+
+		List<Product> productList = stockMove.getStockMoveLineList().stream().map(StockMoveLine::getProduct)
+				.collect(Collectors.toList());
+
+		InventoryLineRepository inventoryLineRepo = Beans.get(InventoryLineRepository.class);
+
+		InventoryLine inventoryLine = inventoryLineRepo.all()
+				.filter("self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
+						+ "AND self.inventory.location IN (:locationList)\n" + "AND self.product IN (:productList)")
+				.bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
+				.bind("endStatus", InventoryRepository.STATUS_COMPLETED)
+				.bind("locationList", locationList)
+				.bind("productList", productList).fetchOne();
+
+		if (inventoryLine != null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_19),
+					inventoryLine.getInventory().getInventorySeq()), IException.INCONSISTENCY);
+		}
+	}
+
 	private void resetWeights(StockMove stockMove) {
 		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 		
