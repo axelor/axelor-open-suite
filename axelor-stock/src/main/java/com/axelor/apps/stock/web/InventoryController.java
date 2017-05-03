@@ -107,11 +107,11 @@ public class InventoryController {
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
 	}
 	
-	public void realizeInventory(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void validateInventory(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Long id = request.getContext().asType(Inventory.class).getId();
 		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
-		inventoryService.realizeInventory(inventory);
+		inventoryService.validateInventory(inventory);
 		response.setReload(true);
 	}
 	

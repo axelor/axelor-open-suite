@@ -245,10 +245,10 @@ public class InventoryService {
 	}
 	
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void realizeInventory(Inventory inventory) throws AxelorException {
+	public void validateInventory(Inventory inventory) throws AxelorException {
 		generateStockMove(inventory);
 		storeLastInventoryData(inventory);
-		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
+		inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
 	}
 
 	private void storeLastInventoryData(Inventory inventory) {
