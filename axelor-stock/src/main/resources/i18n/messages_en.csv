@@ -379,3 +379,6 @@
 "You must configure an inventory virtual location for the company %s",,,
 "You must select a stock location",,,
 "help:Product.trackingNumberConfiguration",,,
+"Use Case",,,
+"Used for MRP",,,
+"Stock control",,,
