@@ -245,10 +245,10 @@ public class InventoryService {
 	}
 	
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void realizeInventory(Inventory inventory) throws AxelorException {
+	public void validateInventory(Inventory inventory) throws AxelorException {
 		generateStockMove(inventory);
 		storeLastInventoryData(inventory);
-		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
+		inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
 	}
 
 	private void storeLastInventoryData(Inventory inventory) {
@@ -347,11 +347,14 @@ public class InventoryService {
 		return stockMove;
 	}
 	
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public StockMove cancel(Inventory inventory) throws AxelorException {
 		StockMove stockMove = stockMoveRepo.findByName(inventory.getInventorySeq());
 		
-		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-		stockMoveService.cancel(stockMove);
+		if (stockMove != null) {
+			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+			stockMoveService.cancel(stockMove);
+		}
 		
 		inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
 		
