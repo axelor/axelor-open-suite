@@ -180,12 +180,7 @@
 		<error message="Invalide dates" if="toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect &gt; endOnSelect)"/>
 		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>
-	
-	<action-validate name="action-leave-request-validate-duration">
-		<error message="Invalide duration (must be a 0.5's multiple)" if="call:com.axelor.apps.hr.web.leave.LeaveController:testDuration()"/>
-	</action-validate>
-	
-	
+
 	<action-method name="action-leave-request-method-leave-reason-to-justify">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveReasonToJustify"/>
 	</action-method>

@@ -412,18 +412,6 @@
 		<attribute name="title" for="$visibleLeadDelay" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Lead/Delay(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Lead/Delay(Minutes)') : com.axelor.i18n.I18n.get('Lead/Delay(Hours)')"/>
 	</action-attrs>
 	
-	<action-view name="action-project-task-view-show-project" title="Related Projects" model="com.axelor.apps.project.db.ProjectTask">
-		<view type="grid" name="project-grid" />
-		<view type="form" name="project-form" />
-		<domain>self.typeSelect = 'project' AND self.project.id = :id</domain>
-	</action-view>
-	
-	<action-view name="action-project-task-view-show-task" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
-		<view type="grid" name="task-grid" />
-		<view type="form" name="task-form" />
-		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
-	</action-view>
-	
 	<action-record name="action-project-task-record-compute-exTaxTotal" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
@@ -442,22 +430,6 @@
 		<field name="qty" expr="1"/>
 		<field name="exTaxTotal" expr="eval: product?.salePrice"/>
 	</action-record>
-	
-	<action-record name="action-record-project-task-compute-progress" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeProgress(__this__)"/>
-	</action-record>
-	
-	<action-method name="action-project-task-method-set-stored-duration" model="com.axelor.apps.project.db.ProjectTask">
-		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredDuration"/>
-	</action-method>
-	
-	<action-method name="action-project-task-method-set-stored-time-spent" model="com.axelor.apps.project.db.ProjectTask">
-		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredTimeSpent"/>
-	</action-method>
-	
-	<action-method name="action-project-task-method-set-stored-lead-delay" model="com.axelor.apps.project.db.ProjectTask">
-		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredLeadDelay"/>
-	</action-method>	
 	
 	<action-method name="action-project-task-method-set-visible-duration" model="com.axelor.apps.project.db.ProjectTask">
 	    <call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setProjectVisibleDuration"/>

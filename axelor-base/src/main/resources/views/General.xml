@@ -197,17 +197,9 @@
 	    <call method="exportObjects" class="com.axelor.apps.base.web.GeneralController"/>
 	</action-method>
 	
-	<action-validate name="action-check-string-camel-case">
-		<error message="Please input first character as capital and other as lower case" if="firstName != null &amp;&amp; !firstName.matches('^[A-Z][a-z. \\-,_;0-9]*')" action="action-check-string-camel-case-first-name-clear" />
-	</action-validate>
-	
 	<action-attrs name="action-check-duplicate-on-new-attrs" model="com.axelor.apps.base.db.Wizard">
     	<attribute name="value" for="$fieldsSet" expr="call:com.axelor.apps.base.web.GeneralController:setFields(object)" />
     </action-attrs>
-    
-	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
-		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(com.axelor.apps.tool.StringTool.toFirstUpper(firstName))"/>
-	</action-record>
 	
 	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="wizard-check-duplicate-form" />
@@ -220,10 +212,6 @@
 	<action-method name="action-method-general-remind-timesheet">
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
 	</action-method>
-	
-	<action-attrs name="action-general-attrs-default-invoice-type-domain">
-		<attribute name="selection-in" for="defaultInvoiceTypeSelect" expr="[1,2]"/>
-	</action-attrs>
 	
 	<action-method name="action-general-apply-applicaton-mode">
 		<call class="com.axelor.apps.base.web.GeneralController" method="applyApplicationMode"/>

@@ -108,14 +108,6 @@
 		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
 	</action-record>
 	
-	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
-	    <field name="contactPartner" expr="eval:partner" />
-	    <field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
-	    <field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
-	    <field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
-	    <field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
-	</action-record>
-	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
 	    <view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>

@@ -153,10 +153,6 @@
 		<action name="save"/>
 	</action-group>
 	
-	<action-group name="action-expense-group-payment">
-		<action name="action-expense-record-reimburse"/>
-	</action-group>
-	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>

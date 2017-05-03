@@ -202,7 +202,6 @@
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="isOrdered" expr="true"/>
     </action-record>
     
 <!--     TODO : should be splited per module -->

@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Product;
-//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.exception.AxelorException;

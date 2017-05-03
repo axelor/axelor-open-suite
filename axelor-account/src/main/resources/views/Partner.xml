@@ -99,10 +99,6 @@
          </panel>
 	</form>
 	
-	<action-method name="action-create-accounting-situation" if-module="axelor-account">
-		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" />
-	</action-method>
-	
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>

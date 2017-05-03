@@ -125,16 +125,6 @@
 	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="account-root-bank-statement-bank-statement-line"
-		parent="account-root-bank-statement" title="Bank Statement Line"
-		action="account.bank.statement.line" />
-
-	<action-view name="account.bank.statement.line"
-		title="Bank Statement Line" model="com.axelor.apps.bankpayment.db.BankStatementLine" >
-		<view type="grid" name="bank-statement-line-grid" />
-		<view type="form" name="bank-statement-line-form" />
-	</action-view>
-	
 	<menuitem name="account-root-bank-reconciliation" parent="account-root"
 		title="Bank Reconciliations" order="27"/>
 
