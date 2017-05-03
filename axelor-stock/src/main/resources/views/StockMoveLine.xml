@@ -57,7 +57,7 @@
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
-        <field name="accordanceSelect"/>
+        <field name="conformitySelect"/>
     </grid>
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">

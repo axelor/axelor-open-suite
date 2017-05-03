@@ -292,7 +292,7 @@
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{record.companyInTaxTotal}} {{record.company.currency.symbol}}</dd>
 					<dt x-translate>Total Amount Remaining</dt>
-		           <dd class="order-subtotal-total">{{record.companyAmountRemaining}} {{record.company.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.companyInTaxTotalRemaining}} {{record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
 		    </field>
@@ -448,7 +448,7 @@
     	<field name="companyExTaxTotal" expr="eval: 0"/>
     	<field name="companyTaxTotal" expr="eval: 0"/>
     	<field name="companyInTaxTotal" expr="eval: 0"/>
-    	<field name="companyAmountRemaining" expr="eval: 0"/>
+    	<field name="companyInTaxTotalRemaining" expr="eval: 0"/>
         <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

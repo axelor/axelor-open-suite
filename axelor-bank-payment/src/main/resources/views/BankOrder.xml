@@ -14,7 +14,7 @@
         <field name="bankOrderDate"/>
 		<field name="confirmationDateTime"/>
         <field name="senderCompany"/>
-        <field name="amount"/>
+        <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
@@ -33,7 +33,7 @@
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
         <field name="senderCompany"/>
-        <field name="amount"/>
+        <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
