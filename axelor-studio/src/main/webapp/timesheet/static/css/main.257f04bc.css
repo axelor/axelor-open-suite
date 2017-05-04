@@ -46,12 +46,12 @@
   font-size: 12px;
   float: left;
   cursor: pointer;
-  color: #3BB4A9;
+  color: #0275D8;
 }
 
 .mode-label:hover {
   background-color: #F1F1F1;
-  color: #3BB4A9;
+  color: #0275D8;
 }
 
 .show-grid {
@@ -69,6 +69,7 @@
 }
 
 .task-content {
+  width: 30%;
   display: inline-block;
   /*padding: 0% 2%;*/
   background-color: #FFFFFF;
@@ -133,7 +134,7 @@
 }
 
 .addLine {
-  background-color: #3BB4A9;
+  background-color: #0275D8;
   border: none;
   padding: 5px 10px;
   margin-left: 10px;
@@ -141,7 +142,7 @@
 }
 
 .navigation {
-  background-color: #3BB4A9;
+  background-color: #0275D8;
   border: none;
   padding: 7px 12px;
 }
@@ -165,6 +166,15 @@
     0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
     100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
+
+@media only screen and (max-width: 992px) {
+    .task-content {
+      max-width: 30%;
+      -webkit-box-flex: 1;
+          -ms-flex: 1;
+              flex: 1;
+    }
+}
 body {
   margin: 0;
   padding: 0;
@@ -172,4 +182,4 @@ body {
   font-family: Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
-/*# sourceMappingURL=main.5f0fc272.css.map*/
+/*# sourceMappingURL=main.257f04bc.css.map*/

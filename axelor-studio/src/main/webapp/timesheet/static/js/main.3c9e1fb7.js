@@ -897,7 +897,7 @@ webpackJsonp([1],{
 	            null,
 	            _react2.default.createElement(
 	              'button',
-	              { className: 'addLine', style: { float: 'right' }, onClick: function onClick() {
+	              { className: 'addLine', style: { float: 'right', color: 'white' }, onClick: function onClick() {
 	                  return _this5.addNewLine();
 	                } },
 	              'ADD A LINE'
@@ -1041,7 +1041,7 @@ webpackJsonp([1],{
 	            { className: 'cell-height cell-header', style: { height: 50 } },
 	            _react2.default.createElement(
 	              'div',
-	              { style: { height: 'inherit', padding: 10, paddingBottom: 20, backgroundColor: isToday && 'rgba(59, 180, 169, 0.298039)' } },
+	              { style: { height: 'inherit', padding: 10, paddingBottom: 20, backgroundColor: isToday && 'rgba(2,117,216, 0.298039)' } },
 	              _react2.default.createElement(
 	                'span',
 	                { style: { display: 'block', fontWeight: 'bold' } },
@@ -1075,10 +1075,11 @@ webpackJsonp([1],{
 	                { className: 'cell-height', key: index, style: { borderTop: '1px solid #DDDDDD', backgroundColor: index % 2 !== 0 ? '#FFFFFF' : '#F2F2F2' } },
 	                _react2.default.createElement(
 	                  'div',
-	                  { style: { height: 'inherit', backgroundColor: isToday && 'rgba(59, 180, 169, 0.3)' } },
+	                  { style: { height: 'inherit', backgroundColor: isToday && 'rgba(2,117,216, 0.3)' } },
 	                  task.startsWith('dummy') ? _react2.default.createElement('span', null) : _react2.default.createElement('input', {
 	                    className: 'duration-input',
 	                    type: 'text',
+	                    tabIndex: index * _this3.props.noOfDays + _this3.props.index,
 	                    style: { backgroundColor: 'transparent' } //index % 2 !== 0 ? '#FFFFFF' : '#F2F2F2'
 	                    , value: _this3.state.data.tasks[task].duration,
 	                    onChange: function onChange(e) {
@@ -1107,7 +1108,7 @@ webpackJsonp([1],{
 	                  className: 'cell-height',
 	                  key: index,
 	                  style: Object.assign({}, styles, {
-	                    minWidth: 75,
+	                    //minWidth: 75,
 	                    borderTop: !cellBackGroundColor && '1px solid #DDDDDD',
 	                    overflowY: 'auto',
 	                    backgroundColor: cellBackGroundColor ? styles.backgroundColor : index % 2 !== 0 ? '#FFFFFF' : '#F2F2F2'
@@ -1126,7 +1127,7 @@ webpackJsonp([1],{
 	            { className: 'task-footer', style: { color: 'white', borderTop: !cellBackGroundColor && '1px solid #DDDDDD', backgroundColor: '#334250', textAlign: 'center' } },
 	            isToday ? _react2.default.createElement(
 	              'div',
-	              { style: { height: 'inherit', backgroundColor: 'rgba(59, 180, 169, 0.3)' } },
+	              { style: { height: 'inherit', backgroundColor: 'rgba(2,117,216, 0.3)' } },
 	              _react2.default.createElement(
 	                'span',
 	                { style: { display: 'block', fontWeight: 'bold', paddingTop: 10 } },
@@ -1554,9 +1555,7 @@ webpackJsonp([1],{
 	
 	      var divStyle = { overflowX: 'auto', overflowY: 'hidden', display: 'inline-block', backgroundColor: '#FFFFFF', borderBottom: '1px solid #DDDDDD' };
 	      if (isLarge) {
-	        divStyle = Object.assign({}, divStyle, {
-	          flex: 1
-	        });
+	        divStyle = Object.assign({}, divStyle);
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -1582,7 +1581,7 @@ webpackJsonp([1],{
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { style: divStyle },
+	          { style: Object.assign({}, divStyle, { maxWidth: '65%' }) },
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'duration-content', style: { width: Object.keys(this.props.dateWise).length * 120 } },
@@ -1594,6 +1593,8 @@ webpackJsonp([1],{
 	                  header: r,
 	                  isToday: _this2.isToday(r),
 	                  isField: true,
+	                  index: i + 1,
+	                  noOfDays: _this2.props.rowDates.length,
 	                  data: _this2.props.dateWise[r], changeDuration: function changeDuration(d) {
 	                    return _this2.props.changeDuration(d);
 	                  }
@@ -1604,7 +1605,7 @@ webpackJsonp([1],{
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'footer-content' },
+	          { className: 'footer-content', style: { maxWidth: '10%', width: '5%', flex: 1 } },
 	          _react2.default.createElement(_cellComponent2.default, {
 	            bodyStyleClass: 'footer-context',
 	            cellBackGroundColor: '#334250',
@@ -1668,4 +1669,4 @@ webpackJsonp([1],{
 /***/ }
 
 });
-//# sourceMappingURL=main.10ab655b.js.map
+//# sourceMappingURL=main.3c9e1fb7.js.map
