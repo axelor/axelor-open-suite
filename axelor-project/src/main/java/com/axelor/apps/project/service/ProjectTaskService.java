@@ -20,6 +20,7 @@ package com.axelor.apps.project.service;
 import java.math.BigDecimal;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -93,20 +94,13 @@ public class ProjectTaskService {
 		}
 	}
 
-	public BigDecimal computeDurationFromChildren(Long projectTaskId){
-		Query q = null;
-		String query;
-		BigDecimal totalDuration = BigDecimal.ZERO;
-
-		query = "SELECT SUM(pt.duration)"
+	public BigDecimal computeDurationFromChildren(Long projectTaskId) {
+		String query = "SELECT SUM(pt.duration)"
 				+ " FROM ProjectTask as pt"
 				+ " WHERE pt.project.id = :projectTaskId";
 
-		q = JPA.em().createQuery(query, BigDecimal.class);
+		TypedQuery<BigDecimal> q = JPA.em().createQuery(query, BigDecimal.class);
 		q.setParameter("projectTaskId", projectTaskId);
-
-		totalDuration = (BigDecimal) q.getSingleResult();
-
-		return totalDuration;
+		return q.getSingleResult();
 	}
 }
