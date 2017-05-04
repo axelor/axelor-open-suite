@@ -61,7 +61,7 @@
 		</panel>
 		
 		<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode">
-		  <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-model-grid" />
+		  <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" />
 		  <field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form" grid-view="journal-grid"/>
 		  <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		  <field name="sequence" domain="self.company = :company" canNew="true" form-view="sequence-form" grid-view="sequence-grid"/>

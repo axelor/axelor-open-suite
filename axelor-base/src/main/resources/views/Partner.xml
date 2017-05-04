@@ -427,6 +427,15 @@
 		</template>
 	</cards>
 	
+	<grid title="Employee List" name="partner-employee-grid" model="com.axelor.apps.base.db.Partner">
+		<!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
+		<field name="name"/>
+		<field name="firstName"/>
+		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+		<field name="emailAddress.address"/>
+	</grid>
+	
 	<form name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-employee-record-default" 
 	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner">
