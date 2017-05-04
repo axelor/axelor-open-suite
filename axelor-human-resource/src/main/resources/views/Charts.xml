@@ -7,25 +7,17 @@
 		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
-<<<<<<< HEAD
 			self.project.fullName AS _project
-=======
-			self.date AS _day,
-			self.projectTask.fullName AS _project
->>>>>>> origin/wip-4.1
+			self.date AS _day
 		FROM
 			TimesheetLine self
 		WHERE
 			self.timesheet.id= :timesheet_id
 		GROUP BY
-<<<<<<< HEAD
-			self.project.fullName
-=======
 			self.date,
-			self.projectTask.fullName
+			self.project.fullName
 		ORDER BY 
 			self.date
->>>>>>> origin/wip-4.1
 		]]></dataset>
 		<category key="_day" type="text" title="Day" />
 		<series key="_duration" type="bar" title="Total" groupBy="_project" />
