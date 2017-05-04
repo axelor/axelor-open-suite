@@ -104,7 +104,7 @@ public interface IExceptionMessage {
 	 */
 	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable ligne %s" /*)*/ ;
 	static final String IRRECOVERABLE_2 = /*$$(*/ "%s : Error generated on invoice creation shift to irrecoverable %s" /*)*/ ;
-	static final String IRRECOVERABLE_3 = /*$$(*/ "%s : La facture %s ne possède pas de pièce comptable dont le restant à payer est positif" /*)*/ ;
+	static final String IRRECOVERABLE_3 = /*$$(*/ "%s : The invoice %s has no accounting document whose the remainder to be paid is positive" /*)*/ ;
 	static final String IRRECOVERABLE_4 = /*$$(*/ "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/ ;
 	static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/ ;
 	static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/ ;

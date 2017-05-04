@@ -35,7 +35,7 @@
 "%s : Error generated on invoice creation shift to irrecoverable %s",,,
 "%s : Invoice's type is not filled %s",,,
 "%s : Invoicing address missing",,,
-"%s : La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",,,
+"%s : The invoice %s has no accounting document whose the remainder to be paid is positive",,,
 "%s : Letter template missing for reminder matrix %s (Partner %s, Level %s).",,,
 "%s : MoveLine amount is not equals with bank statement line %s",,,
 "%s : No payment mode found for the code %s and the company %s",,,
