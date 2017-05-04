@@ -280,12 +280,19 @@ public class StockMoveServiceImpl implements StockMoveService {
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String realize(StockMove stockMove) throws AxelorException {
+		return realize(stockMove, true);
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String realize(StockMove stockMove, boolean check) throws AxelorException {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
-		
-		checkOngoingInventory(stockMove);
-		
+
+		if (check) {
+			checkOngoingInventory(stockMove);
+		}
+
 		String newStockSeq = null;
 
 		stockMoveLineService.updateLocations(

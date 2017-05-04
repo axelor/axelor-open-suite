@@ -338,7 +338,7 @@ public class InventoryService {
 
 			stockMoveService.plan(stockMove);
 			stockMoveService.copyQtyToRealQty(stockMove);
-			stockMoveService.realize(stockMove);
+			stockMoveService.realize(stockMove, false);
 		}
 		return stockMove;
 	}
