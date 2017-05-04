@@ -554,7 +554,7 @@
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="call:com.axelor.apps.crm.service.EventService.getInvoicingAddressFullName(clientPartner)"/>
+		<field name="location" expr="call:com.axelor.apps.crm.service.EventService:getInvoicingAddressFullName(clientPartner)"/>
 	</action-record>
 
 	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
