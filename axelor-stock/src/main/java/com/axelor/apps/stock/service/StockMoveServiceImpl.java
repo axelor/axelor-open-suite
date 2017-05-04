@@ -382,7 +382,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	private void computeWeights(StockMove stockMove) throws AxelorException {
 		boolean weightsRequired = checkWeightsRequired(stockMove);
 		StockConfig stockConfig = stockMove.getCompany().getStockConfig();
-		Unit endUnit = stockConfig != null ? stockConfig.getWeightUnit() : null;
+		Unit endUnit = stockConfig != null ? stockConfig.getCustomsWeightUnit() : null;
 
 		if (weightsRequired && endUnit == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_17), IException.NO_VALUE);
