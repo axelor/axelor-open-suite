@@ -82,7 +82,7 @@ public interface StockMoveService {
 	public String realize(StockMove stockMove) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String realize(StockMove stockMove, boolean force) throws AxelorException;
+	public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
 
