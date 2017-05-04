@@ -99,5 +99,6 @@ public interface IExceptionMessage {
 	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Move already used, you must unreconcile it first" /*)*/;
 
 	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
+	static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
 	
 }
