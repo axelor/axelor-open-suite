@@ -195,7 +195,12 @@ public class LeaveController {
 			
 			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
 				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
-					response.setAlert( String.format( I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason(), leaveRequest.getLeaveLine().getLeaveReason().getInstruction()  ) );
+					String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
+					instruction = (instruction == null) ? "." : " : " + instruction;
+					response.setAlert( String.format(
+							I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
+							leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()
+					) + instruction );
 					return;
 				}else{
 					response.setNotify( String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()) );
