@@ -534,7 +534,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-move-lines-total">
-		<attribute name="value" for="supplierArrivalProductNumber" expr="eval: __repo__.of(StockMoveLine).all().filter('self.stockMove.typeSelect = 3 AND self.stockMove.partner.fullName = ?1', fullName).count()"/>
+		<attribute name="value" for="supplierArrivalProductNumber" expr="eval: __repo__.of(StockMoveLine).all().filter('self.stockMove.typeSelect = 3 AND self.stockMove.partner.fullName = ?1', fullName).fetch().sum{it.realQty}"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">

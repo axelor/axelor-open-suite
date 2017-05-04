@@ -7,6 +7,7 @@
     	<field name="product"/>
     	<field name="qualityRate"/>
     	<field name="partnerProductMoveLineTotal"/>
+    	<field name="supplierPercentRate"/>
     </grid>
     
     <form name="partner-product-quality-rate-form" model="com.axelor.apps.stock.db.PartnerProductQualityRate" title="Partner product quality rate form">
@@ -14,6 +15,7 @@
     		<field name="product" colSpan="6"/>
     		<field name="qualityRate" colSpan="3"/>
     		<field name="partnerProductMoveLineTotal" colSpan="3"/>
+    		<field name="supplierPercentRate"/>
     	</panel>
     </form>
     
