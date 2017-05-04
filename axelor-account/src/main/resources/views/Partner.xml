@@ -29,7 +29,7 @@
                         <dd ng-if="record.isDefault"> <b>{{record.fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
-			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
+			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
 					<field name="bank" canNew="true"></field>
