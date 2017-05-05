@@ -158,6 +158,7 @@ webpackJsonp([1],{
 	      },
 	      currentDate: (0, _moment2.default)().format('DD-MM-YYYY'),
 	      fromDate: (0, _moment2.default)().format('YYYY-MM-DD'),
+	      toDate: 'null',
 	      modeCount: 0,
 	      rowDates: [],
 	      dateWise: {},
@@ -286,7 +287,13 @@ webpackJsonp([1],{
 	          }).reduce(function (t1, t2) {
 	            return Number(t1) + Number(t2);
 	          }) : 0;
-	          dateRecord.tasks[projectId + '_' + taskId] = { taskId: taskId, projectId: projectId, duration: duration.toFixed(2), date: d, task: task };
+	          console.log(d >= _this2.state.fromDate, d, _this2.state.fromDate, _this2.state.toDate);
+	          if (d >= _this2.state.fromDate && (d <= _this2.state.toDate || _this2.state.toDate === null)) {
+	            dateRecord.tasks[projectId + '_' + taskId] = { taskId: taskId, projectId: projectId, duration: duration.toFixed(2), date: d, task: task };
+	          } else {
+	            console.log(tasks[t]);
+	            dateRecord.tasks['dummy' + projectId + '_' + taskId] = { duration: '' };
+	          }
 	          total += duration;
 	        });
 	        dateRecord.total = total.toFixed(2);
@@ -307,6 +314,7 @@ webpackJsonp([1],{
 	      var modeCount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 	      var mode = arguments[1];
 	      var fromDate = arguments[2];
+	      var toDate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 	
 	      var count = 7;
 	      var begin = (0, _moment2.default)().add(modeCount, 'week').startOf('week').weekday(1);
@@ -315,15 +323,17 @@ webpackJsonp([1],{
 	        begin = (0, _moment2.default)().add(modeCount, 'months').startOf('months');
 	        count = begin.daysInMonth();
 	      }
-	
+	      var counter = 0;
 	      for (var i = 0; i < count; i++) {
 	        console.log('date', begin.format(this.state.taskDateFormat), fromDate, begin.format(this.state.taskDateFormat) >= fromDate);
-	        if (begin.format(this.state.taskDateFormat) >= fromDate) {
-	          rowDates.push(begin.format(this.state.taskDateFormat));
+	        rowDates.push(begin.format(this.state.taskDateFormat));
+	        if (begin.format(this.state.taskDateFormat) < fromDate || begin.format(this.state.taskDateFormat) > toDate || toDate === null) {
+	          counter++;
 	        }
 	        begin.add('d', 1);
 	      }
-	      return rowDates;
+	      console.log(counter, count, rowDates, fromDate);
+	      return counter !== count ? rowDates : [];
 	    }
 	  }, {
 	    key: 'updateDuration',
@@ -403,82 +413,85 @@ webpackJsonp([1],{
 	    value: function gotoPrev() {
 	      console.log('prev');
 	      var modeCount = this.state.modeCount - 1;
-	      var rowDates = this.getRowDates(modeCount, this.state.mode, this.state.fromDate);
+	      var rowDates = this.getRowDates(modeCount, this.state.mode, this.state.fromDate, this.state.toDate);
+	      if (rowDates.length > 0) {
+	        var _groupTasks = this.groupTasks(this.state.taskData, rowDates),
+	            tasks = _groupTasks.tasks,
+	            dateWise = _groupTasks.dateWise,
+	            taskTotal = _groupTasks.taskTotal,
+	            grandTotal = _groupTasks.grandTotal;
 	
-	      var _groupTasks = this.groupTasks(this.state.taskData, rowDates),
-	          tasks = _groupTasks.tasks,
-	          dateWise = _groupTasks.dateWise,
-	          taskTotal = _groupTasks.taskTotal,
-	          grandTotal = _groupTasks.grandTotal;
-	
-	      var records = this.setDummyRecord(tasks, dateWise, taskTotal);
-	      console.log(taskTotal);
-	      this.setState({
-	        modeCount: modeCount,
-	        rowDates: rowDates,
-	        tasks: records.tasks,
-	        taskTotal: records.taskTotal,
-	        grandTotal: grandTotal,
-	        dateWise: records.dateWise,
-	        editor: Object.assign({}, this.state.editor, {
-	          date: rowDates[0]
-	        })
-	      });
+	        var records = this.setDummyRecord(tasks, dateWise, taskTotal);
+	        console.log(taskTotal);
+	        this.setState({
+	          modeCount: modeCount,
+	          rowDates: rowDates,
+	          tasks: records.tasks,
+	          taskTotal: records.taskTotal,
+	          grandTotal: grandTotal,
+	          dateWise: records.dateWise,
+	          editor: Object.assign({}, this.state.editor, {
+	            date: rowDates[0]
+	          })
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'gotoNext',
 	    value: function gotoNext() {
 	      console.log('next');
 	      var modeCount = this.state.modeCount + 1;
-	      var rowDates = this.getRowDates(modeCount, this.state.mode, this.state.fromDate);
+	      var rowDates = this.getRowDates(modeCount, this.state.mode, this.state.fromDate, this.state.toDate);
+	      if (rowDates.length > 0) {
+	        var _groupTasks2 = this.groupTasks(this.state.taskData, rowDates, this.state.fromDate),
+	            tasks = _groupTasks2.tasks,
+	            dateWise = _groupTasks2.dateWise,
+	            taskTotal = _groupTasks2.taskTotal,
+	            grandTotal = _groupTasks2.grandTotal;
 	
-	      var _groupTasks2 = this.groupTasks(this.state.taskData, rowDates, this.state.fromDate),
-	          tasks = _groupTasks2.tasks,
-	          dateWise = _groupTasks2.dateWise,
-	          taskTotal = _groupTasks2.taskTotal,
-	          grandTotal = _groupTasks2.grandTotal;
-	
-	      var records = this.setDummyRecord(tasks, dateWise, taskTotal);
-	      this.setState({
-	        modeCount: modeCount,
-	        rowDates: rowDates,
-	        tasks: records.tasks,
-	        taskTotal: records.taskTotal,
-	        grandTotal: grandTotal,
-	        dateWise: records.dateWise,
-	        editor: Object.assign({}, this.state.editor, {
-	          date: rowDates[0]
-	        })
-	      });
+	        var records = this.setDummyRecord(tasks, dateWise, taskTotal);
+	        this.setState({
+	          modeCount: modeCount,
+	          rowDates: rowDates,
+	          tasks: records.tasks,
+	          taskTotal: records.taskTotal,
+	          grandTotal: grandTotal,
+	          dateWise: records.dateWise,
+	          editor: Object.assign({}, this.state.editor, {
+	            date: rowDates[0]
+	          })
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'changeMode',
 	    value: function changeMode(mode) {
 	      var modeCount = 0;
-	      var rowDates = this.getRowDates(modeCount, mode, this.state.fromDate);
+	      var rowDates = this.getRowDates(modeCount, mode, this.state.fromDate, this.state.toDate);
 	      console.log(rowDates);
+	      if (rowDates.length > 0) {
+	        var _groupTasks3 = this.groupTasks(this.state.taskData, rowDates),
+	            tasks = _groupTasks3.tasks,
+	            dateWise = _groupTasks3.dateWise,
+	            taskTotal = _groupTasks3.taskTotal,
+	            grandTotal = _groupTasks3.grandTotal;
+	        // this.getGanttData(tasks);
 	
-	      var _groupTasks3 = this.groupTasks(this.state.taskData, rowDates),
-	          tasks = _groupTasks3.tasks,
-	          dateWise = _groupTasks3.dateWise,
-	          taskTotal = _groupTasks3.taskTotal,
-	          grandTotal = _groupTasks3.grandTotal;
-	      // this.getGanttData(tasks);
 	
-	
-	      var records = this.setDummyRecord(tasks, dateWise, taskTotal);
-	      this.setState({
-	        mode: mode,
-	        rowDates: rowDates,
-	        modeCount: modeCount,
-	        dateWise: records.dateWise,
-	        tasks: records.tasks,
-	        taskTotal: records.taskTotal,
-	        grandTotal: grandTotal,
-	        editor: Object.assign({}, this.state.editor, {
-	          date: rowDates[0]
-	        })
-	      });
+	        var records = this.setDummyRecord(tasks, dateWise, taskTotal);
+	        this.setState({
+	          mode: mode,
+	          rowDates: rowDates,
+	          modeCount: modeCount,
+	          dateWise: records.dateWise,
+	          tasks: records.tasks,
+	          taskTotal: records.taskTotal,
+	          grandTotal: grandTotal,
+	          editor: Object.assign({}, this.state.editor, {
+	            date: rowDates[0]
+	          })
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'setDummyRecord',
@@ -522,7 +535,8 @@ webpackJsonp([1],{
 	      service.fetchTimesheet(params.timesheetId, 'com.axelor.apps.hr.db.Timesheet').then(function (res) {
 	        taskData = res.timeline;
 	        if (rowDates === null) {
-	          rowDates = _this3.getRowDates(_this3.state.modeCount, 'week', res.fromDate);
+	          rowDates = _this3.getRowDates(_this3.state.modeCount, 'week', res.fromDate, res.toDate);
+	          _this3.setState({ fromDate: res.fromDate, toDate: res.toDate });
 	        }
 	
 	        var _groupTasks4 = _this3.groupTasks(taskData, rowDates),
@@ -1307,7 +1321,7 @@ webpackJsonp([1],{
 	                task: task.product.fullName
 	              });
 	            });
-	            resolve({ timeline: timeline, timesheetVersion: record.version, timesheetId: id, fromDate: record.fromDate });
+	            resolve({ timeline: timeline, timesheetVersion: record.version, timesheetId: id, fromDate: record.fromDate, toDate: record.toDate });
 	          }, reject);
 	        });
 	      });
@@ -1456,12 +1470,6 @@ webpackJsonp([1],{
 	  }
 	
 	  _createClass(App, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      // let s = new Service();
-	      // s.doLogin('admin','axadmin');
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -1669,4 +1677,4 @@ webpackJsonp([1],{
 /***/ }
 
 });
-//# sourceMappingURL=main.3c9e1fb7.js.map
+//# sourceMappingURL=main.482fe277.js.map
