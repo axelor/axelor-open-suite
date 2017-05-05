@@ -136,7 +136,7 @@
 					</field>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
-					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" >
+					<field name="partnerAddressList" colSpan="12">
 				        <editor layout="table" x-show-titles="false" >
 				        	<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
             				<field name="address.addressL4" hidden="true" colSpan="12"/>
@@ -258,7 +258,7 @@
 	                <field name="source" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 	            </panel>
 	            <panel colSpan="12" name="postalAddresses" title="Postal addresses" hideIf="isContact">
-	                <field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
+	                <field name="partnerAddressList" colSpan="12">
 				        <editor layout="table" x-show-titles="false">
 							<field name="address" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1"/>
@@ -659,20 +659,9 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="findContactMails"/>
 	</action-method>
 	
-	<action-method name="action-partner-address-list-change">
-	    <call class="com.axelor.apps.base.web.PartnerController" method="partnerAddressListChange"/>
-	</action-method>
-	
 	<action-method name="action-partner-iban-check-on-save">
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkIbanValidity"/>
 	</action-method>
-
-	
-	<action-view name="action-partner-view-generate-project" title="Generated Project" model="com.axelor.apps.project.db.ProjectTask">
-    	<view type="form" name="project-form"/>
-		<view type="grid" name="project-grid"/>
-    	<context name="_idPartner" expr="eval: id"/>
-    </action-view>
     
 	<action-view name="action-contact-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
