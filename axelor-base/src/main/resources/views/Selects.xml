@@ -189,8 +189,8 @@
 	</selection>
 
 	<selection name='partner.assignor.type.select'>
-		<option value='syndicate'>Syndicat</option>
-		<option value='authority'>Collectivité</option>
+		<option value='syndicate'>Syndicate</option>
+		<option value='authority'>Authority</option>
 	</selection>
 
 	<selection name="partner.industry.sectory.select">
