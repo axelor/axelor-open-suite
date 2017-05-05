@@ -11,7 +11,7 @@
 "%s : Please, configure a sequence for the SEPA Direct Debits and the company %s",,,
 "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s",,,
 "%s : Please, configure an account for the bank order for the internal bank to bank transfer for the company %s",,,
-"%s : Veuillez configurer un signataire par défaut pour la société %s",,,
+"%s : Please, configure a default signer for the company %s","%s : Veuillez configurer un signataire par défaut pour la société %s",,
 "+33000000000",,,
 "000000","OK",,
 "011000","Accusé de réception positif reçu",,
