@@ -101,15 +101,12 @@ public class ValidateSupplyChain {
 	}
 
 	@Transactional
-	void validateInventory(Long inventoryId){
-		try{
+	void validateInventory(Long inventoryId) {
+		try {
 			Inventory inventory = inventoryRepo.find(inventoryId);
-			StockMove stockMove = inventoryService.generateStockMove(inventory);
+			StockMove stockMove = inventoryService.validateInventory(inventory);
 			stockMove.setRealDate(inventory.getDateT().toLocalDate());
-			stockMoveRepo.save(stockMove);
-			inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
-			inventoryRepo.save(inventory);
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
