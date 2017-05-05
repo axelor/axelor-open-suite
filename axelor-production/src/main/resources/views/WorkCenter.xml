@@ -91,8 +91,8 @@
     </form>
 
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
-        <field name="costSheetGroup" expr="eval: __config__?.general?.getAppProduction() ? __config__?.general?.workCenterCostSheetGroup : null"/>
-        <field name="product" expr="eval: __config__?.general.getAppProduction() ? __config__?.general?.workCenterProduct : null"/>
+		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " />
+		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
     </action-record>
     
     
