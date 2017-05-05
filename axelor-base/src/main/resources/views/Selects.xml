@@ -196,7 +196,7 @@
 	<selection name="partner.industry.sectory.select">
 		<option value="1">Agriculture</option>
 		<option value="2">Banking &amp; Insurance</option>
-		<option value="3">Biotechnologies</option>
+		<option value="3">Biotechnology</option>
 		<option value="4">Chemistry</option>
 		<option value="5">Communication</option>
 		<option value="6">Real Estate</option>
