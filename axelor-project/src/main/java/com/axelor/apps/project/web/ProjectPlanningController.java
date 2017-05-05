@@ -222,6 +222,7 @@ public class ProjectPlanningController {
 	}
 
 	@Transactional
+	@SuppressWarnings("unchecked")
 	public void saveLines(ActionRequest request, ActionResponse response) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("projectPlanningLineList");
 		if(planningLineList != null){

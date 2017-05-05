@@ -54,7 +54,6 @@
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
 		<panel name="main">
-			<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 			<field name="scheduleLineSeq" />
 			<field name="inTaxAmount" readonlyIf="fromReject"/>
 			<field name="scheduleDate" />

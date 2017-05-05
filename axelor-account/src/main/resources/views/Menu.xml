@@ -508,7 +508,7 @@
 	<action-view name="account.conf.analytic.accounting.plan"
 		title="Chart of Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount" >
 		<view type="tree" name="analytic-account-tree"/>
-		<view type="form" name="analitic-account-form" />
+		<view type="form" name="analytic-account-form" />
 	</action-view>
 
 	<menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"

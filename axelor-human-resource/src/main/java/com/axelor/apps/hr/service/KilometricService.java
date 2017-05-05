@@ -112,7 +112,7 @@ public class KilometricService {
 		
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
 		
-		List<KilometricAllowanceRule> ruleList = new ArrayList();
+		List<KilometricAllowanceRule> ruleList = new ArrayList<>();
 		
 		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
 			

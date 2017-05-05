@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
-	onNew="action-group-supplychain-saleorder-onnew" onSave="action-sale-order-method-advance-payment-change"
+	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-supplychain-saleorder-onload">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
