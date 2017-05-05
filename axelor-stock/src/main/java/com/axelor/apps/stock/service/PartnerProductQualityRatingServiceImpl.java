@@ -32,7 +32,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 		
 		Partner partner = stockMove.getPartner();
 		Integer valueConformity = partner.getSupplierQualityRating();
-		Integer qualityRate;
+		BigDecimal qualityRate;
 		Integer qualityRating;
 		Product product = null;
 		Integer conformity;
@@ -44,16 +44,17 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 			product = searchProduct(line, product, partner);
 			
 			// create
-			if(product.equals(null)) {
+			if(product == null ) {
 				product = line.getProduct();
 				createProductMoveLine(partner, product);
 				System.out.println("je suis dans la methode create");
 			}
 			
 			// update
-			qualityRate = 0;
+			qualityRate = BigDecimal.ZERO;
 			conformity = line.getConformitySelect();
 			updateProductMoveLine(partner, product, qualityRate, conformity, line);
+			System.out.println("je suis dans la methode de base");
 			
 			
 		/*		
@@ -77,10 +78,10 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 		product = line.getProduct();
 		PartnerProductQualityRate partnerProductQualityRate = partnerProductQualityRateRepo.findProductByName(product, partner);
 		
-		if(partnerProductQualityRate.equals(null)) {
+		
+		if(partnerProductQualityRate == null) {
 			return null;
 		}
-
 		
 		return product;		
 	}
@@ -98,8 +99,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 	}
 	
 	
-	public PartnerProductQualityRate updateProductMoveLine(Partner partner, Product product, Integer qualityRate, Integer conformity, StockMoveLine line) {
-
+	public PartnerProductQualityRate updateProductMoveLine(Partner partner, Product product, BigDecimal qualityRate, Integer conformity, StockMoveLine line) {
 		
 		List <PartnerProductQualityRate> partnerProductMoveLines = partner.getPartnerProductQualityRateList();
 	
@@ -109,21 +109,18 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 				
 				qualityRate = partnerProductLine.getQualityRate();
 				
-				Integer partnerProductQualityRate = partnerProductLine.getQualityRate();
+				BigDecimal partnerProductQualityRate = partnerProductLine.getQualityRate();				
+				BigDecimal lineQty = partnerProductLinesTotal(line, partnerProductLine);
+				BigDecimal supplierProductPercentRate = supplierProductPercentRate(partnerProductLine);
 				
 				if(conformity == StockMoveRepository.CONFORMITY_COMPLIANT) {
-					partnerProductQualityRate++;
+					partnerProductQualityRate = partnerProductQualityRate.add(line.getRealQty());
 				}
-				
-				
-				BigDecimal lineQty = partnerProductLinesTotal(line, partnerProductLine);
-				
 
-				System.out.println(" == " + lineQty + " == ");
-				
 				partnerProductLine.setQualityRate(partnerProductQualityRate);
 				partnerProductLine.setPartnerProductMoveLineTotal(lineQty);
-				
+				partnerProductLine.setSupplierPercentRate(supplierProductPercentRate);
+
 				return partnerProductQualityRateRepo.save(partnerProductLine);
 			}
 		}
@@ -137,9 +134,24 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 		BigDecimal lineQty = line.getRealQty();
 		BigDecimal partnerProductQty = partnerProductLine.getPartnerProductMoveLineTotal();
 
-		lineQty = lineQty.add(partnerProductQty);		
-		
+		if(partnerProductQty == BigDecimal.ZERO) {
+			lineQty = BigDecimal.ONE;
+		} else {
+			lineQty = lineQty.add(partnerProductQty);		
+		}
+			
 		return lineQty;
+	}
+	
+	
+	public BigDecimal supplierProductPercentRate(PartnerProductQualityRate partnerProductLine) {
+		
+		BigDecimal productQualityRate = partnerProductLine.getQualityRate();
+		BigDecimal productMoveLineRate = partnerProductLine.getPartnerProductMoveLineTotal();
+		BigDecimal supplierProductPercentRate = productQualityRate.multiply(new BigDecimal(100)).divide(productMoveLineRate);
+		
+		System.out.println("++ " + supplierProductPercentRate + " ++");
+		return supplierProductPercentRate;
 	}
 	
 

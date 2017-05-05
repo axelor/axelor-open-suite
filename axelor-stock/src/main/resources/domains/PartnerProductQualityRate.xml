@@ -8,7 +8,7 @@
   <entity name="PartnerProductQualityRate" lang="java" cachable="true">
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product"/>
-    <integer name="qualityRate" title="Quality rate"/>
+    <decimal name="qualityRate" title="Quality rate"/>
     <decimal name="partnerProductMoveLineTotal" title="Product Move Line Total"/>
     <decimal name="supplierPercentRate"/>
 	<finder-method name="findProductByName" using="product, partner"/>

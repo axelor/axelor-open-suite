@@ -15,7 +15,9 @@
     		<field name="product" colSpan="6"/>
     		<field name="qualityRate" colSpan="3"/>
     		<field name="partnerProductMoveLineTotal" colSpan="3"/>
-    		<field name="supplierPercentRate"/>
+    		<field name="supplierPercentRate">
+    			<viewer><![CDATA[<i class="fa fa-star" aria-hidden="true"></i>]]></viewer>
+    		</field>
     	</panel>
     </form>
     
