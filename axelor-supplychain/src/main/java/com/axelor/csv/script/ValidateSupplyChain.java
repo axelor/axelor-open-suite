@@ -107,7 +107,7 @@ public class ValidateSupplyChain {
 			StockMove stockMove = inventoryService.generateStockMove(inventory);
 			stockMove.setRealDate(inventory.getDateT().toLocalDate());
 			stockMoveRepo.save(stockMove);
-			inventory.setStatusSelect(3);
+			inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
 			inventoryRepo.save(inventory);
 		}catch(Exception e){
 			e.printStackTrace();
