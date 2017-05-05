@@ -46,6 +46,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 	private ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {
 
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");

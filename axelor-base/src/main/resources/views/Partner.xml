@@ -79,8 +79,8 @@
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
-    onNew="action-group-base-partner-onnew, action-partner-attrs-hide-employee"
-    onLoad="action-group-partner-onload, action-partner-attrs-hide-employee" 
+    onNew="action-group-base-partner-onnew"
+    onLoad="action-group-partner-onload"
     onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send an email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
@@ -426,6 +426,15 @@
 		]]>
 		</template>
 	</cards>
+	
+	<grid title="Employee List" name="partner-employee-grid" model="com.axelor.apps.base.db.Partner">
+		<!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
+		<field name="name"/>
+		<field name="firstName"/>
+		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+		<field name="emailAddress.address"/>
+	</grid>
 	
 	<form name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-employee-record-default" 

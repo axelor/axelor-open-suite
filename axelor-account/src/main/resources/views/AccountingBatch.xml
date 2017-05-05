@@ -39,7 +39,7 @@
 		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
 			<field name="creditTransfertTypeSelect"/>
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="creditTransfertTypeSelect == 1" form-view="period-form" grid-view="period-gird"/>
+			<field name="period" showIf="creditTransfertTypeSelect == 1" form-view="period-form" grid-view="period-grid"/>
 		</panel>
 		
 		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >

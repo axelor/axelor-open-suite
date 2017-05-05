@@ -37,7 +37,7 @@
 		
 		<panel sidebar="true" name="info" title="Info">
 			<field name="statusSelect"/>
-			<button name="validateReimbursement" title="Validate" onClick="save,action-group-account-reimbursement-validate,save" showIf="statusSelect == 2"/>
+			<button name="validateReimbursement" title="Validate" onClick="save,com.axelor.apps.account.web.ReimbursementController:validateReimbursement,save" showIf="statusSelect == 2"/>
 		</panel>
 	</form>
     
