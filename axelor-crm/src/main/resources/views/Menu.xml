@@ -134,15 +134,6 @@
 		<view type="form" name="meeting-type-form"/>
 	</action-view>
 	
-	<menuitem name="crm-conf-participant" parent="crm-conf"
-		title="Meeting Participants" action="crm.conf.participant" />
-
-	<action-view name="crm.conf.participant" title="Meeting Participants"
-		model="com.axelor.apps.crm.db.Participant" >
-		<view type="grid" name="participant-grid"/>
-		<view type="form" name="participant-form"/>
-	</action-view>
-	
 	<menuitem name="crm-conf-category" parent="crm-conf"
 		title="Event Categories" action="crm.conf.event.category" />
 
