@@ -149,8 +149,8 @@ public class ExpenseController {
 
 	@SuppressWarnings("unchecked")
 	public void editExpenseSelected(ActionRequest request, ActionResponse response){
-		Map<String,String> expenseMap = (Map<String,String>)request.getContext().get("expenseSelect");
-		Long expenseId = Long.parseLong(expenseMap.get("id"));
+		Map<String, Object> expenseMap = (Map<String, Object>) request.getContext().get("expenseSelect");
+		Long expenseId = new Long((Integer) expenseMap.get("id"));
 		response.setView(ActionView
 				.define(I18n.get("Expense"))
 				.model(Expense.class.getName())
