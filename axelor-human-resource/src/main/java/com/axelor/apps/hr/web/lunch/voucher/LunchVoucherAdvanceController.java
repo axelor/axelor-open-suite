@@ -47,7 +47,11 @@ public class LunchVoucherAdvanceController {
 	
 	public void checkOnNewAdvance(ActionRequest request, ActionResponse response) throws AxelorException  {
 		LunchVoucherAdvance lunchVoucherAdvance = EntityHelper.getEntity(request.getContext().asType(LunchVoucherAdvance.class));
-		
+
+		if (lunchVoucherAdvance.getEmployee().getMainEmploymentContract() == null) {
+			response.setError(String.format(I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), lunchVoucherAdvance.getEmployee().getName()));
+			return;
+		}
 		Company company = lunchVoucherAdvance.getEmployee().getMainEmploymentContract().getPayCompany();
 		HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
 		int stock = lunchVoucherMgtProvider.get().checkStock(company, lunchVoucherAdvance.getNbrLunchVouchers());
