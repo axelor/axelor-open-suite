@@ -93,7 +93,7 @@ public class IrrecoverableController {
 		} 
 		else {
 
-			String name = I18n.get("Irrecouverable reporting")+" "+irrecoverable.getName();
+			String name = I18n.get("Irrecoverable reporting")+" "+irrecoverable.getName();
 			
 			String fileLink = ReportFactory.createReport(IReport.IRRECOVERABLE, name+"-${date}")
 					.addParam("IrrecoverableID", irrecoverable.getId())
