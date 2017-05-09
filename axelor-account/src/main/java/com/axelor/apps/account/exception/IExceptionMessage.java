@@ -313,7 +313,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_4 = /*$$(*/ "%s : You must configure a TIP and cheque TIP payment's import path for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_5 = /*$$(*/ "%s : You must configure a TIP and cheque TIP temporary import path for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_6 = /*$$(*/ "%s : You must configure a TIP and cheque TIP payment rejects path for the import file for the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_7 = /*$$(*/ "%s : You must configure a TIP and chaque TIP temporary path for the payment reject's file for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_7 = /*$$(*/ "%s : You must configure a TIP and cheque TIP temporary path for the payment reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_8 = /*$$(*/ "%s : You must configure a path for the reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_9 = /*$$(*/ "%s : You must configure a path for the temporary reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_10 = /*$$(*/ "%s : You must configure a path for the reimbursements rejects import's file for the company %s" /*)*/;
