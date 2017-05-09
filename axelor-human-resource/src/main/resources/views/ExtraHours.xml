@@ -57,7 +57,7 @@
 	
 	<form name="popup-extra-hours-form" title="Select the extra hours you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-extra-hours-attrs-domain-extra-hours-select">
 		<field name="$extraHoursSelect" title="Select extra hours" type="many-to-one" target="com.axelor.apps.hr.db.ExtraHours" widget="SuggestBox" />
-		<button name="editExtraHoursSelected" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected"/>
+		<button name="editExtraHoursSelected" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
 	</form>
 	
 	<action-group name="action-group-extra-hours-onnew">
