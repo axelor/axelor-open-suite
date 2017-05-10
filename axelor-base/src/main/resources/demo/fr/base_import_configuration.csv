@@ -9,7 +9,7 @@ Importing Keywords;csv;import-config-keyword.xml;import-data-keyword.csv
 Importing Leads;csv;import-config-lead.xml;import-data-lead.csv
 Importing Locations;csv;import-config-location.xml;import-data-location.csv
 Importing Machines;csv;import-config-machine.xml;import-data-machine.csv
-Importing MinstockRules;csv;import-config-min-stock-rules.xml;import-data-min-stock-rules.csv
+Importing StockRules;csv;import-config-stock-rules.xml;import-data-stock-rules.csv
 Importing Opportunities;csv;import-config-opportunity.xml;import-data-opportunity.csv
 Importing PaymentConditions;csv;import-config-payment-condition.xml;import-data-payment-condition.csv
 Importing PaymentModes;csv;import-config-payment-mode.xml;import-data-payment-mode.csv

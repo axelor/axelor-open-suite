@@ -159,13 +159,13 @@
 		<view type="form" name="location-form"/>
 	</action-view>
 	
-	<menuitem name="stock-root-conf-min-stock-rules" parent="stock-root-conf"
-		title="Minimum stock rules" action="stock.root.conf.min.Stock.rules" />
+	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"
+		title="Stock rules" action="stock.root.conf.stock.rules" />
 	
-	<action-view name="stock.root.conf.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.stock.db.MinStockRules" >
-		<view type="grid" name="min-stock-rules-grid" />
-		<view type="form" name="min-stock-rules-form" />
+	<action-view name="stock.root.conf.stock.rules" title="Stock rules"
+		model="com.axelor.apps.stock.db.StockRules" >
+		<view type="grid" name="stock-rules-grid" />
+		<view type="form" name="stock-rules-form" />
 		<context name="searchFields" expr="location;product"/>
 	</action-view>
 	

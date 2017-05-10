@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="min-stock-rules-grid" title="Minimum stock rules" model="com.axelor.apps.stock.db.MinStockRules">
+    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules">
         <toolbar>
         <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>
@@ -16,8 +16,8 @@
         <field name="orderAlertSelect"/>
     </grid>
     
-    <form name="min-stock-rules-form" title="Minimum stock rule" model="com.axelor.apps.stock.db.MinStockRules"
-    	onNew="action-min-stock-rules-record-new" width="large">
+    <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
+    	onNew="action-stock-rules-record-new" width="large">
     	<panel name="main" >
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
 			<field name="typeSelect"/>
@@ -32,7 +32,7 @@
 		</panel>
     </form>
     
-    <action-record name="action-min-stock-rules-record-new" model="com.axelor.apps.stock.db.MinStockRules">
+    <action-record name="action-stock-rules-record-new" model="com.axelor.apps.stock.db.StockRules">
 	    <field name="minQty" expr="1"/>
 	    <field name="orderAlertSelect" expr="1"/>
 	    <field name="typeSelect" expr="2"/>

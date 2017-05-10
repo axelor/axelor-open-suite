@@ -37,11 +37,11 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
-import com.axelor.apps.stock.service.MinStockRulesService;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
@@ -68,12 +68,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
-			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
+			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
 			BillOfMaterialRepository billOfMaterialRepository, ManufOrderRepository manufOrderRepository)  {
 		
 		
 		super(appProductionService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
-				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, minStockRulesService, mrpLineService, mrpForecastRepository);
+				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, stockRulesService, mrpLineService, mrpForecastRepository);
 		
 		this.billOfMaterialRepository = billOfMaterialRepository;
 		this.manufOrderRepository = manufOrderRepository;
@@ -180,11 +180,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	
 
 	@Override
-	protected MrpLineType getMrpLineTypeForProposal(MinStockRules minStockRules) throws AxelorException  {
+	protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules) throws AxelorException  {
 		
 		// TODO manage the default value in general administration
 		
-		if(minStockRules != null && minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
+		if(stockRules != null && stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
 			return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
 		}
 		

@@ -30,7 +30,7 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -47,7 +47,7 @@ public class LocationLineServiceImpl implements LocationLineService {
 	protected LocationLineRepository locationLineRepo;
 	
 	@Inject
-	protected MinStockRulesService minStockRulesService;
+	protected StockRulesService stockRulesService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
@@ -87,10 +87,10 @@ public class LocationLineServiceImpl implements LocationLineService {
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			minStockRulesService.generateOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);
+			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_CURRENT);
 		}
 		if(future)  {
-			minStockRulesService.generateOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
+			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_FUTURE);
 		}
 		
 	}
