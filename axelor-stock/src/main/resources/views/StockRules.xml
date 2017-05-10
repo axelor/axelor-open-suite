@@ -11,6 +11,7 @@
         <field name="product.code" form-view="product-form" grid-view="product-grid"/>
         <field name="product.name" form-view="product-form" grid-view="product-grid"/>
         <field name="minQty" aggregate="min"/>
+        <field name="maxQty" aggregate="min"/>
         <field name="reOrderQty" aggregate="sum"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
@@ -24,6 +25,7 @@
 	        <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect"/>
 	        <field name="minQty"/>
+	        <field name="maxQty"/>
 	        <field name="reOrderQty"/>
         </panel>
 		<panel name="reorderingManagedBy" title="Reordering managed by">
