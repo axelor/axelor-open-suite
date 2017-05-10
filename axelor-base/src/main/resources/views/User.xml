@@ -70,11 +70,11 @@
     
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
-    	(${__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;" 
-    	if="!__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
+    	(${__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;" 
+    	if="!__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     	
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id = 0 &quot;" 
-    	if="__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
+    	if="__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     </action-attrs>
     
     <action-attrs name="action-user-attrs-domain-active-company">
@@ -87,7 +87,7 @@
     </action-record>
     
     <action-validate name="action-user-check-company">
-        <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
+        <notify message="Please select active company"  if="__repo__(Company).all().fetch().size != 1"/>
     </action-validate>
     
     <action-validate name="action-user-validate-check-contact">

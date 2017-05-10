@@ -103,7 +103,7 @@
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
         <field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
 		<field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
 		<field name="technicalOriginSelect" expr="1"/>

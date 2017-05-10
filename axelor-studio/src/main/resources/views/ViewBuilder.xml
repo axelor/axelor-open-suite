@@ -42,7 +42,7 @@
   <action-record name="action-view-builder-meta-view-change" model="com.axelor.studio.db.ViewBuilder">
       <field name="name" expr="eval:metaView?.name" />
       <field name="title" expr="eval:metaView?.title" />
-      <field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter(&quot;self.fullName = '${metaView?.model}'&quot;).fetchOne()" />
+      <field name="metaModel" expr="eval:__repo__(MetaModel).all().filter(&quot;self.fullName = '${metaView?.model}'&quot;).fetchOne()" />
       <field name="model" expr="eval:metaView?.model" />
   </action-record>
   

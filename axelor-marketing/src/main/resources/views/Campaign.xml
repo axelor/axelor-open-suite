@@ -35,7 +35,7 @@
 		<view type="grid" name="campaign-grid"/>
 		<view type="form" name="campaign-form"/>
 		<domain>self.id in (:_campaignIds)</domain>
-		<context name="_campaignIds" expr="eval:([0]+__repo__.of(CampaignAttendee).all().filter(&quot;self.relatedToSelect = 'com.axelor.apps.crm.db.Lead' and self.relatedToSelectId = ${id}&quot;).fetch().collect{it->it.campaign.id}).flatten()" />
+		<context name="_campaignIds" expr="eval:([0]+__repo__(CampaignAttendee).all().filter(&quot;self.relatedToSelect = 'com.axelor.apps.crm.db.Lead' and self.relatedToSelectId = ${id}&quot;).fetch().collect{it->it.campaign.id}).flatten()" />
 	</action-view>
     
 </object-views>

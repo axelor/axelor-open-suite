@@ -373,9 +373,9 @@
     </form>
     
     <action-group name="action-group-invoice-merge-action">
-	    <action name="action-invoice-method-merge-account" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-	    <action name="action-invoice-method-merge-supplychain" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
-	    <action name="action-invoice-method-merge-business-project" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
+	    <action name="action-invoice-method-merge-account" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-invoice-method-merge-supplychain" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
+	    <action name="action-invoice-method-merge-business-project" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
 	    
 	</action-group>
 	
@@ -424,8 +424,8 @@
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
-										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-domain-project">
@@ -443,8 +443,8 @@
 	</action-record>
 	
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
-		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
-										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
+		<field name="inAti" expr="eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
 	</action-record>
 	
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
@@ -456,10 +456,10 @@
     	<field name="companyTaxTotal" expr="eval: 0"/>
     	<field name="companyInTaxTotal" expr="eval: 0"/>
     	<field name="companyAmountRemaining" expr="eval: 0"/>
-        <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
+        <field name="currency" expr="eval:__repo__(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
 
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
@@ -479,7 +479,7 @@
     </action-record>
     
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">
-    	<field name="statusSelect" expr="eval: __repo__.of(Invoice).STATUS_DRAFT"/>
+    	<field name="statusSelect" expr="eval: __repo__(Invoice).STATUS_DRAFT"/>
     </action-record>
     
 	<action-record name="action-record-load-dummy-field-confirm-merge-invoice" model="com.axelor.apps.base.db.Wizard">
@@ -518,9 +518,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
-		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
-		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
-										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
+		<attribute name="hidden" for="printing" expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
+		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
+										&amp;&amp; __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">

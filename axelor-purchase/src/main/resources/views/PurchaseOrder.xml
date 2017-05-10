@@ -282,7 +282,7 @@
     </action-group>
     
     <action-group name="action-group-purchase-order-merge-action">
-	    <action name="action-purchase-order-method-merge-purchase" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-purchase-order-method-merge-purchase" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
 	    <action name="action-purchase-order-method-merge-supplychain"/>
 	</action-group>
     
@@ -300,8 +300,8 @@
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
-    									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
     
     <action-attrs name="action-purchase-order-attrs-location-address">
@@ -309,13 +309,13 @@
     </action-attrs>
     
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
-    									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
+    	<field name="inAti" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
     </action-record>
     
     <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="priceDisplay" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceDisplay"/>
-    	<field name="priceRequest" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
+    	<field name="priceDisplay" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceDisplay"/>
+    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
     </action-record> 
      
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -325,7 +325,7 @@
     	<field name="amountRemainingToBeInvoiced" expr="eval: 0"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="buyerUser" expr="eval:__user__"/>
     	<field name="orderDate" expr="eval: __date__"/>
     </action-record>

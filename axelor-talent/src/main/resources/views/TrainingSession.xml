@@ -39,7 +39,7 @@
 		<view type="grid" name="employee-grid"/>
 		<view type="form" name="employee-form"/>
 		<domain>self.id in (:_employeeIds)</domain>
-		<context name="_employeeIds" expr="eval:[0] + __repo__.of(TrainingRegister).all().filter('self.trainingSession.id = ' + id).fetch().collect{it->it.employee?.id}"/>
+		<context name="_employeeIds" expr="eval:[0] + __repo__(TrainingRegister).all().filter('self.trainingSession.id = ' + id).fetch().collect{it->it.employee?.id}"/>
 	</action-view>
 	
 	<action-view name="action-training-session-register-training" title="Register training" model="com.axelor.apps.talent.db.TrainingRegister">

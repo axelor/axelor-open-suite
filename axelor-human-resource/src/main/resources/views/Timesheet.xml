@@ -101,7 +101,7 @@
 	</form>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
-		<attribute name="domain" expr="eval:project == null || __repo__.of(Project).find(project.id).productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productList)&quot;" for="$product"/>
+		<attribute name="domain" expr="eval:project == null || __repo__(Project).find(project.id).productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productList)&quot;" for="$product"/>
 	</action-attrs>
 
 	<action-group name="action-timesheet-group-confirm">
@@ -165,7 +165,7 @@
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">
-		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.timesheet = null',__user__).fetchOne() == null"/>
+		<error message="No log time found or all log times already added" if="__repo__(TimesheetLine).all().filter('self.user = ?1 AND self.timesheet = null',__user__).fetchOne() == null"/>
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-timesheet-selected">
@@ -229,7 +229,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-from-date-on-new">
-		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
+		<attribute name="readonly" for="fromDate" expr="eval: __repo__(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-from-date">
@@ -237,7 +237,7 @@
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
+		<field name="fromDate" expr="eval: __repo__(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-null-fromDate" model="com.axelor.apps.hr.db.Timesheet">

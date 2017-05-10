@@ -284,7 +284,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-default-category">
-		<attribute name="domain" for="categorySet" expr="eval: &quot;self.id IN (__repo__.of(ProjectCategory).all().fetch().collect{it.id}.join(','))&quot;"/>
+		<attribute name="domain" for="categorySet" expr="eval: &quot;self.id IN (__repo__(ProjectCategory).all().fetch().collect{it.id}.join(','))&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-defaults" model="com.axelor.apps.project.db.Project">

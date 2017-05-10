@@ -355,7 +355,7 @@ public class ActionBuilderService {
 		target = Arrays.copyOfRange(target, 1, target.length);
 
 		if (value == null && filter != null) {
-			return "__repo__.of(" + typeName + ").all().filter(&quot;" + filter
+			return "__repo__(" + typeName + ").all().filter(&quot;" + filter
 					+ "&quot;).fetchOne()";
 		}
 
@@ -374,7 +374,7 @@ public class ActionBuilderService {
 
 		String field = Joiner.on(".").join(target);
 
-		return "__repo__.of(" + typeName + ").all().filter(&quot;self." + field
+		return "__repo__(" + typeName + ").all().filter(&quot;self." + field
 				+ " = ?&quot;," + value + ").fetchOne()";
 	}
 
@@ -409,7 +409,7 @@ public class ActionBuilderService {
 	
 	private String getModelExpression(String[] val, String filter) {
 		
-		String expr = "__repo__.of(" + val[0] + ").all()";
+		String expr = "__repo__(" + val[0] + ").all()";
 		
 		if (filter != null) {
 			expr += ".filter(&quot;" + filter.replace("$", "self.") + "&quot;)";
