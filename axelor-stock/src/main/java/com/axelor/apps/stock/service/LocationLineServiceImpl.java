@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
@@ -35,6 +36,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -71,8 +73,10 @@ public class LocationLineServiceImpl implements LocationLineService {
 		LOG.debug("Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
 				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate });
 		
-		if(!isIncrement)  {
-			this.minStockRules(product, qty, locationLine, current, future);
+		if (!isIncrement) {
+			minStockRules(product, qty, locationLine, current, future);
+		} else {
+			maxStockRules(product, qty, locationLine, current, future);
 		}
 		
 		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
@@ -94,8 +98,35 @@ public class LocationLineServiceImpl implements LocationLineService {
 		}
 		
 	}
-	
-	
+
+	public void maxStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current,
+			boolean future) throws AxelorException {
+
+		if (current) {
+			checkStockMax(product, qty, locationLine, StockRulesRepository.TYPE_CURRENT, locationLine.getCurrentQty());
+		}
+
+		if (future) {
+			checkStockMax(product, qty, locationLine, StockRulesRepository.TYPE_FUTURE, locationLine.getFutureQty());
+		}
+
+	}
+
+	void checkStockMax(Product product, BigDecimal qty, LocationLine locationLine, int type, BigDecimal baseQty) throws AxelorException {
+		Location location = locationLine.getLocation();
+		StockRules stockRules = stockRulesService.getStockRules(product, location, type);
+
+		if (stockRules == null) {
+			return;
+		}
+
+		if (baseQty.add(qty).compareTo(stockRules.getMaxQty()) > 0) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_3),
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode()),
+					IException.CONFIGURATION_ERROR);
+		}
+	}
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
 			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
