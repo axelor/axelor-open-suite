@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -93,6 +94,8 @@ public interface SaleOrderService {
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
 
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
+	
+	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency, Partner clientPartner, Company company, Partner contactPartner, PriceList priceList, Team team) throws AxelorException;
 
 	public String getLanguageForPrinting(SaleOrder saleOrder);
 	
