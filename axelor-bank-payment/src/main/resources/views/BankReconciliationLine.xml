@@ -31,10 +31,10 @@
 </form>
     
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliationLine" name="action-bank-reconciliation-line-set-account">
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankReconciliation"/>
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankReconciliation"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankReconciliation"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankReconciliation"/>
    </action-record>
  
 	<action-attrs name="action-bank-statement-line-move-line-domain">

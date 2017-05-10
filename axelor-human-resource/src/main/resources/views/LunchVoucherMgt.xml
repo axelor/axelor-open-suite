@@ -59,8 +59,8 @@
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
 		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
-		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
-		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="payPeriod" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="leavePeriod" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">

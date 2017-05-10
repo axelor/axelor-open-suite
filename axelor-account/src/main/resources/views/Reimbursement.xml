@@ -43,7 +43,7 @@
     
 	<action-record name="action-reimbursement-set-default" model="com.axelor.apps.account.db.Reimbursement">
 	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
 	
 	<search-filters name="reimbursement-filters" model="com.axelor.apps.account.db.Reimbursement" title="Reimbursement filters">

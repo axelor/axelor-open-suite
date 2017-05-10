@@ -82,7 +82,7 @@
     </action-validate>
     
     <action-record name="action-move-template-set-default" model="com.axelor.apps.account.db.MoveTemplate">
-		<field name="company" expr="eval:__repo__.of(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>        
+		<field name="company" expr="eval:__repo__(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>        
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
@@ -92,7 +92,7 @@
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-set-active-company">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-method name="action-move-template-method-check-validity">
@@ -118,8 +118,8 @@
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
 	    <field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
-		<field name="moveTemplate" expr="eval:__repo__.of(MoveTemplate).find(_parent.moveTemplate.id)" />
-		<field name="partnerInputSelect" expr="eval:__repo__.of(MoveTemplate).find(_parent.moveTemplate.id).partnerInputSelect"/>
+		<field name="moveTemplate" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id)" />
+		<field name="partnerInputSelect" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id).partnerInputSelect"/>
 	</action-record>
 	
     

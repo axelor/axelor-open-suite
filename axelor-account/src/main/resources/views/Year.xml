@@ -41,7 +41,7 @@
 	</form>
 
 	<action-attrs name="action-attrs-year-hide-linked-adjusting-moves-dashlet">
-		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__.of(AdjustHistory).all().filter('self.fiscalYear.id = ?', id).fetch().size() == 0"/>
+		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__(AdjustHistory).all().filter('self.fiscalYear.id = ?', id).fetch().size() == 0"/>
 	</action-attrs>
 
 	<action-view name="action-view-year-linked-adjusting-moves-dashlet" title="Linked Adjusting Moves" model="com.axelor.apps.account.db.Move">
@@ -76,7 +76,7 @@
     
     <action-record name="action-year-account-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="typeSelect"  expr="eval:1"/>
     </action-record>
     

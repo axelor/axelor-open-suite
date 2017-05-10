@@ -264,11 +264,11 @@ public class ChartBuilderService {
 
 		if (modelField != null) {
 			if (typeName.equals("STRING")) {
-				defaultValue = "__repo__.of(" + modelField[0]
+				defaultValue = "__repo__(" + modelField[0]
 						+ ").all().filter(\"LOWER(" + modelField[1] + ") LIKE "
 						+ defaultValue + "\").fetchOne()";
 			} else {
-				defaultValue = "__repo__.of(" + modelField[0]
+				defaultValue = "__repo__(" + modelField[0]
 						+ ").all().filter(\"" + modelField[1] + " = "
 						+ defaultValue + "\").fetchOne()";
 			}

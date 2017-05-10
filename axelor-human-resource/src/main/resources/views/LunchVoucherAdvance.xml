@@ -61,7 +61,7 @@
 		<field name="distributionDate" expr="eval: __date__"/>
 		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
 		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
-		<field name="employee" expr="eval: __repo__.of(Employee).find(_xEmployeeId)" if="_xEmployeeId != null"/>
+		<field name="employee" expr="eval: __repo__(Employee).find(_xEmployeeId)" if="_xEmployeeId != null"/>
 	</action-record>
 	
 	<action-group name="action-lunch-voucher-advance-group-onNewAdvance">

@@ -54,7 +54,7 @@
 	<action-attrs name="action-attrs-mrp-generate-all-proposals"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<attribute name="readonly" for="generateAllProposals"
-			expr="eval: __repo__.of(Mrp).find(id).mrpLineList.every { it.proposalGenerated || [5, 8].indexOf(it.mrpLineType.elementSelect) == -1}" />
+			expr="eval: __repo__(Mrp).find(id).mrpLineList.every { it.proposalGenerated || [5, 8].indexOf(it.mrpLineType.elementSelect) == -1}" />
 	</action-attrs>
 	
 </object-views>

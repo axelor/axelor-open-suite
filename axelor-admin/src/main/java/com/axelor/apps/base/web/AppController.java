@@ -1,5 +1,23 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -113,7 +131,20 @@ public class AppController {
 			app = appService.installApp(app, importDemo);
 		}
 		
-		response.setFlash("Apps installed successfully");
+		response.setFlash(I18n.get("Apps installed successfully"));
 		response.setSignal("refresh-app", true);
 	}
+	
+	public void refreshApp(ActionRequest request, ActionResponse response) {
+		 
+		try {
+			appService.refreshApp();
+			response.setNotify(I18n.get("Apps refreshed successfully"));
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			response.setNotify(I18n.get("Error in refreshing app"));
+		}
+ 
+    }
+
 }

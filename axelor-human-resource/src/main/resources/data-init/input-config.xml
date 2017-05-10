@@ -11,7 +11,7 @@
   	
   	<input file="base_appTimesheet.csv" separator=";" type="com.axelor.apps.base.db.AppTimesheet" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
-  	<input file="base_appExtraHours.csv" separator=";" type="com.axelor.apps.base.db.AppEmployee" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	<input file="base_appExtraHours.csv" separator=";" type="com.axelor.apps.base.db.AppExtraHours" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
   	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
   	

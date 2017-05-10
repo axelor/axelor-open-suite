@@ -27,7 +27,7 @@
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
-    		if="isConsProOnOperation == true &amp;&amp; __repo__.of(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
+    		if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
     
     <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
