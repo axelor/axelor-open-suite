@@ -159,10 +159,6 @@
 		
 	</form>
 	
-	<action-method name="action-purchase-order-method-update-timetable" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateTimetable"/>
-	</action-method>
-	
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
@@ -179,7 +175,6 @@
     <action-group name="action-group-purchase-order-on-load-actions">
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
-		<action name="action-purchase-order-method-update-timetable"/>
 		<action name="action-attrs-po-hidden-bank-details"/>
 		<action name="save"/>
 	</action-group>

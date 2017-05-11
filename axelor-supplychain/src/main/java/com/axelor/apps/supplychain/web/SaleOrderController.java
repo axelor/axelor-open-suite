@@ -340,15 +340,6 @@ public class SaleOrderController{
 	            .map());
 	}
 	
-	public void updateTimetable(ActionRequest request, ActionResponse response){
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if(saleOrder.getId() != null && saleOrder.getId() > 0){
-			saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-		}
-		Beans.get(TimetableService.class).updateTimetable(saleOrder);
-		response.setValues(saleOrder);
-	}
-	
 	@Transactional
 	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
 		
