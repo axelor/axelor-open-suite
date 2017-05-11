@@ -208,49 +208,79 @@
 
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
 	
-	<menuitem name="top-menu-crm-activities" order="-180" title="Activity" top="true" left="false" if="__config__.app.isApp('crm')"/> 	
+	<menuitem name="top-menu-crm" title="CRM" order="1" top="true" left="false" if="__config__.app.isApp('crm')"/>
+	
+	<menuitem name="top-menu-crm-meetings" parent="top-menu-crm"
+		title="Meetings" action="top.menu.crm.meetings" top="true"/>
 
-	<menuitem name="top-menu-activity-my-calendar" order="-90"  parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" top="true" />
+	<action-view name="top.menu.crm.meetings" title="Meetings"
+		model="com.axelor.apps.crm.db.Event" >
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<view type="calendar" name="event-calendar"/>
+		<domain>self.typeSelect = 2</domain>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
+	</action-view>	
 	
-	<menuitem name="top-menu-activity-team-calendar" order="-80"  parent="top-menu-crm-activities" 	title="My Team Calendar" top="true" action="crm.root.meeting.team.calendar" />
+	<menuitem name="top-menu-crm-calls" parent="top-menu-crm"
+		title="Calls" action="top.menu.crm.calls" top="true"/>
+
+	<action-view name="top.menu.crm.calls" title="Calls"
+		model="com.axelor.apps.crm.db.Event" >
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<view type="calendar" name="event-calendar"/>
+		<domain>self.typeSelect = 1</domain>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
+	</action-view>
 	
-	<menuitem name="top-menu-activity-view-events" order="-60" title="View Events" action="crm.root.event" parent="top-menu-crm-activities" top="true"/>
+	<menuitem name="top-menu-crm-tasks" parent="top-menu-crm"
+		title="Tasks" action="top.menu.crm.tasks" top="true"/>
+
+	<action-view name="top.menu.crm.tasks" title="Tasks"
+		model="com.axelor.apps.crm.db.Event" >
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<view type="calendar" name="event-calendar"/>
+		<domain>self.typeSelect = 3</domain>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
+	</action-view>
 	
-	<menuitem name="top-menu-create-opportunity" order="-80" parent="top-menu-utility" top="true" title="Create Opportunity" action="top.new.opportunity.view" if="__config__.app.isApp('crm')"  />
+	<menuitem name="top-menu-crm-lead" parent="top-menu-crm"
+		title="Leads" action="top.menu.crm.lead" top="true"/>
+
+	<action-view name="top.menu.crm.lead" title="Leads"
+		model="com.axelor.apps.crm.db.Lead" >
+		<view type="grid" name="lead-grid"/>
+		<view type="form" name="lead-form"/>
+		<view-param name="search-filters" value="lead-filters"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="_internalUserId" expr="eval:__user__.id"/>
+	</action-view>
 	
-	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
-		<view type="form" name="opportunity-form"/>
+	<menuitem name="top-menu-crm-opportunity" parent="top-menu-crm"
+		title="Opportunities" action="top.menu.crm.opportunity" top="true"/>
+
+	<action-view name="top.menu.crm.opportunity" title="Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity" >
+		<view type="kanban" name="opportunity-kanban"/>
 		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form"/>
+		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
-	</action-view>
-	
-	<menuitem name="top-menu-create-lead" order="-70" parent="top-menu-utility"	top="true" title="Create Lead" action="top.new.lead.view" if="__config__.app.isApp('crm')"/>
-	
-	<action-view name="top.new.lead.view" title="Create Lead"  model="com.axelor.apps.crm.db.Lead" >
-		<view type="form" name="lead-form" />
-		<view type="grid" name="lead-grid" />
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
-	
-	<menuitem name="top-prospection" title="Prospection"  top="true" left="false" order="-170" if="__config__.app.isApp('crm')"/>
-	<menuitem name="top-prospection-create-lead" order="-100" parent="top-prospection" top="true"	title="Create Lead" action="top.new.lead.view"  />
-	<menuitem name="top-prospection-leads" title="View Leads" order="-90" action="top.propsection.leads" parent="top-prospection" top="true" left="false"/> 	
-	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
-		<view type="grid" name="lead-grid" />
-		<view type="form" name="lead-form" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-		<context name="_internalUserId" expr="eval:__user__.id"/>
-	</action-view>
-	<menuitem name="top-prospection-create-opportunity" order="-80" parent="top-prospection" top="true" title="Create Opportunity"  action="top.new.opportunity.view"  />
-	<menuitem name="top-prospection-opportunity" order="-70" title="View Opportunities" action="top.prospection.opportunity" parent="top-prospection"  top="true" left="false"/> 	
-	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
-		<view type="grid" name="opportunity-grid" />
-		<view type="form" name="opportunity-form" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-		<context name="_internalUserId" expr="eval:__user__.id"/>
-	</action-view>
-	
 	
 	  
 	<!-- CRM Dashboard Entry for CRM.... -->

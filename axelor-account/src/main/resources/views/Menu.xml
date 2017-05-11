@@ -492,33 +492,24 @@
 		<view type="form" name="accounting-batch-form"/>
 	</action-view>
 	
-	<menuitem name="top-invoice" title="Invoices/Refunds"  top="true" left="false" order="-130" if="__config__.app.isApp('invoice')"/>
-	<menuitem name="top-invoice-create-invoice" title="Create Invoice" top="true" parent="top-invoice" order="-100" action="top.invoice.new"/>
-	<action-view name="top.invoice.new" title="New Invoice" model="com.axelor.apps.account.db.Invoice">
-		<view type="form" name="invoice-form"/>
-	</action-view>
-	<menuitem name="top-invoice-all" order="-90" title="View Invoices/Refunds" action="top.invoice.all" parent="top-invoice"  top="true" left="false"/>
+	<!-- Top Menus -->
 	
-	<action-view name="top.invoice.all" title="Invoices/Refunds"
-		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid" />
-		<view type="form" name="invoice-form" />
-	</action-view>
-		
-	<menuitem name="top-invoice-custinvoices" order="-80" title="View Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing" title="Invoicing" order="5" top="true" if="__config__.app.isApp('invoice')" left="false"/>
 	
-	<action-view name="top.invoice.custinvoices" title="Cust. Invoices"
+	<menuitem name="top-invoicing-custinvoices" title="Cust. Invoices" action="top.invoicing.custinvoices" parent="top-invoicing"  top="true"/>		
+	
+	<action-view name="top.invoicing.custinvoices" title="Cust. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="customer-invoices-filters"/>
 		<domain>self.operationTypeSelect = 3</domain>
 		<context name="_operationTypeSelect" expr="eval:3"/>
-	</action-view>	
+	</action-view>
 	
-	<menuitem name="top-invoice-custrefunds" order="-70" title="View Cust. Refunds" action="top.invoice.custrefunds" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing-custrefunds" title="Cust. Refunds" action="top.invoicing.custrefunds" parent="top-invoicing"  top="true"/>		
 	
-	<action-view name="top.invoice.custrefunds" title="Cust. Refunds"
+	<action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-grid" />
 		<view type="form" name="invoice-form" />
@@ -527,9 +518,9 @@
 		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplinvoices" order="-60" title="View Suppl. Invoices" action="top.invoice.supplinvoices" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing-supplinvoices" title="Suppl. Invoices" action="top.invoicing.supplinvoices" parent="top-invoicing"  top="true"/>		
 	
-	<action-view name="top.invoice.supplinvoices" title="Suppl. Invoices"
+	<action-view name="top.invoicing.supplinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-supplier-grid" />
 		<view type="form" name="invoice-form" />
@@ -538,16 +529,16 @@
 		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplrefunds" order="-" title="View Suppl. Refunds" action="top.invoice.supplrefunds" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing-supplrefunds" title="Suppl. Refunds" action="top.invoicing.supplrefunds" parent="top-invoicing"  top="true"/>		
 	
-	<action-view name="top.invoice.supplrefunds" title="Suppl. Refunds"
+	<action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-supplier-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
 		<context name="_operationTypeSelect" expr="eval:2"/>
-	</action-view>	
+	</action-view>
 	
 	<menuitem name="menu-account-invoice-dashboard-sample" parent="invoice-root-report" order="-145"
     title="General"  action="account.invoice.dashboard.view.sample"/>    
@@ -599,34 +590,6 @@
     <action-view name="accounting.dashboard.view" title="Accounting Details">
         <view type="dashboard" name="accounting.dashboard.sample" />        
     </action-view>
-	
-	<menuitem name="top-payments" title="Payments"  top="true" left="false" if="__config__.app.isApp('invoice')"/>
-	
-	<menuitem name="top-payments-create-payment" title="Create Payment" top="true" parent="top-payments" order="-100" action="top.payments.new"/>
-	<action-view name="top.payments.new" title="Create Payment" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" name="payment-voucher-form"/>
-	</action-view>
-	<menuitem name="top-payments-all" order="-90" title="View Payments"   parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
-			
-	<menuitem name="top-payments-customers" order="-80" title="View Cust. Payments" parent="top-payments" action="top.payments.customers"  top="true" left="false"/>
-	
-	<action-view name="top.payments.customers"
-		title="Cust. Payments" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" name="payment-voucher-grid"/>
-		<view type="form" name="payment-voucher-form"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<domain>self.operationTypeSelect in (3,4)</domain>
-	</action-view>
-	
-	<menuitem name="top-payments-suppliers" order="-70" title="View Supplier Payments" parent="top-payments" action="top.payments.suppliers"  top="true" left="false"/>
-	
-	<action-view name="top.payments.suppliers"
-		title="Supplier Payments" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" name="payment-voucher-grid"/>
-		<view type="form" name="payment-voucher-form"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<domain>self.operationTypeSelect in (1,2)</domain>
-	</action-view>
 	
 	<!-- Move template -->
 	
