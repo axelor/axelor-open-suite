@@ -6,7 +6,6 @@
     <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
         <field name="$realQty" expr="call:com.axelor.apps.stock.service.LocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
         <field name="$futureQty" expr="call:com.axelor.apps.stock.service.LocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
-        <field name="avgPrice" expr="call:com.axelor.apps.stock.service.LocationService:computeAvgPriceForProduct(id)" if="__config__.app.isApp('stock')" />
     </action-record>
 
     <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">
