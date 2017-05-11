@@ -108,7 +108,8 @@
 			<panel name="timetable" title="Timetable" if-module="axelor-supplychain">
 				<field name="expectedRealisationDate" colSpan="12" width="50%"/>
 				<label title="OR"/>
-				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
+				<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
+				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 			</panel>		
 		</panel-tabs>
 	  
@@ -129,7 +130,7 @@
 		<panel sidebar="true" name="info" title="Info.">
 			<panel readonlyIf="statusSelect == 4">
 				<field name="orderDate"/>
-				<field name="internalReference"/> 
+				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">
 				<field name="validatedByUser" form-view="user-form" grid-view="user-grid"/>
@@ -175,6 +176,7 @@
     <action-group name="action-group-purchase-order-on-load-actions">
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
+		<action name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-attrs-po-hidden-bank-details"/>
 		<action name="save"/>
 	</action-group>
@@ -208,6 +210,10 @@
 		<action name="action-purchase-order-validate-information"/>
         <action name="action-purchase-order-method-fill-company-bank-details"/>
 	</action-group>
+
+	<action-method name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateAmountToBeSpreadOverTheTimetable"/>
+	</action-method>
     
     <action-method name="action-purchase-order-method-update-cost-price">
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="updateCostPrice"/>

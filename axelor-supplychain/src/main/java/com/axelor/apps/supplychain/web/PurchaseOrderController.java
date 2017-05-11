@@ -304,4 +304,10 @@ public class PurchaseOrderController {
 				.findDefaultBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
+		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+	}
 }
