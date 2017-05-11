@@ -57,10 +57,6 @@
       <field name="model" expr="eval:metaModel?.fullName" />
   </action-record>
   
-  <action-record name="action-view-builder-meta-model-change" model="com.axelor.studio.db.ViewBuilder">
-      <field name="model" expr="eval:metaModel?.fullName" />
-  </action-record>
-  
   <action-record name="action-view-builder-record-default" model="com.axelor.studio.db.ViewBuilder">
  	  <field name="viewType" expr="eval:_viewType" />
   </action-record>
