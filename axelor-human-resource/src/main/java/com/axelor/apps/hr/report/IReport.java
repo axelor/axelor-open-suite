@@ -25,6 +25,7 @@ public interface IReport {
 	public static final String EMPLOYEE_BONUS_MANAGEMENT = "EmployeeBonusMgt.rptdesign";
 	public static final String EMPLOYEE_ANNUAL_REPORT = "EmployeeAnnualReport.rptdesign";
 	public static final String LUNCH_VOUCHER_MGT_MONTHLY = "LunchVoucherMgt_Monthly.rptdesign";
+	public static final String LUNCH_VOUCHER_ADVANCE = "LunchVoucherAdvance.rptdesign";
 
 	
 }
