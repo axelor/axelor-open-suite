@@ -17,30 +17,23 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.CustomsCodeNomenclature;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
 
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
@@ -276,17 +269,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	@Override
 	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus) {
+		LocationLine locationLine = Beans.get(LocationLineService.class)
+				.getLocationLine(location, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-			this.computeNewAveragePriceLocationLine(location, stockMoveLine);
+			this.computeNewAveragePriceLocationLine(locationLine, stockMoveLine);
 		}
 		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
-			this.cancelAveragePriceLocationLine(location, stockMoveLine);
+			this.cancelAveragePriceLocationLine(locationLine, stockMoveLine);
 		}
+		Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 	}
 
-	protected void computeNewAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine) {
-	    LocationLine locationLine = Beans.get(LocationLineService.class)
-				.getLocationLine(location, stockMoveLine.getProduct());
+	protected void computeNewAveragePriceLocationLine(LocationLine locationLine, StockMoveLine stockMoveLine) {
 	    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
 		BigDecimal oldAvgPrice = locationLine.getAvgPrice();
 		BigDecimal oldQty = locationLine.getCurrentQty();
@@ -303,9 +297,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
         locationLine.setAvgPrice(newAvgPrice);
 	}
 
-	protected void cancelAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine) {
-		LocationLine locationLine = Beans.get(LocationLineService.class)
-				.getLocationLine(location, stockMoveLine.getProduct());
+	protected void cancelAveragePriceLocationLine(LocationLine locationLine, StockMoveLine stockMoveLine) {
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
 		BigDecimal currentAvgPrice = locationLine.getAvgPrice();
 		BigDecimal currentTotalQty = locationLine.getCurrentQty();
