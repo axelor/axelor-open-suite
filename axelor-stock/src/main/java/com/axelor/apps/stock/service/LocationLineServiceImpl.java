@@ -116,7 +116,7 @@ public class LocationLineServiceImpl implements LocationLineService {
 		Location location = locationLine.getLocation();
 		StockRules stockRules = stockRulesService.getStockRules(product, location, type);
 
-		if (stockRules == null) {
+		if (stockRules == null || BigDecimal.ZERO.equals(stockRules.getMaxQty())) {
 			return;
 		}
 
