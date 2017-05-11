@@ -31,7 +31,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.stock.service.MinStockRulesService;
+import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
@@ -50,9 +50,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl  {
 	@Inject
 	public MrpLineServiceProductionImpl(AppProductionService appProductionService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, ManufOrderService manufOrderService, 
-			ProductionOrderRepository productionOrderRepo, MinStockRulesService minStockRulesService)  {
+			ProductionOrderRepository productionOrderRepo, StockRulesService stockRulesService)  {
 		
-		super(appProductionService, userService, purchaseOrderServiceSupplychainImpl, purchaseOrderLineService, purchaseOrderRepo, minStockRulesService);
+		super(appProductionService, userService, purchaseOrderServiceSupplychainImpl, purchaseOrderLineService, purchaseOrderRepo, stockRulesService);
 		this.manufOrderService = manufOrderService;
 		
 	}

@@ -183,7 +183,7 @@
 "crm-root-meeting";"admins|ERP|CRM|VTE|ACH|MGT"
 "crm-conf-meeting-type";"admins|ERP|CRM"
 "menu-wkf-nodes-root-message";"admins|ERP|BPM"
-"stock-root-conf-min-stock-rules";"admins|ERP|MGT|OPS"
+"stock-root-conf-stock-rules";"admins|ERP|MGT|OPS"
 "hr-root-mission-order";"admins|ERP|CST|VTE|HRM|OPS|MGT"
 "menu-model";"admins"
 "menu-module-management";"admins"
