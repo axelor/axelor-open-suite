@@ -210,6 +210,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		if (expense.getUser().getEmployee() == null){
 			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName())  , IException.CONFIGURATION_ERROR);
 		}
+
+		if(expense.getPeriod() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PERIOD), IException.MISSING_FIELD);
+		}
 		
 		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()){
 			for (ExpenseLine line : expense.getKilometricExpenseLineList()){

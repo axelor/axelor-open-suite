@@ -149,6 +149,7 @@ public class KilometricService {
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
 		log.setDistanceTravelled( log.getDistanceTravelled().add( expenseLine.getDistance().multiply( BigDecimal.valueOf(expenseLine.getKilometricTypeSelect()) )  ) );
+		log.addExpenseLineListItem(expenseLine);
 		kilometricLogRepo.save(log);
 	}
 	
