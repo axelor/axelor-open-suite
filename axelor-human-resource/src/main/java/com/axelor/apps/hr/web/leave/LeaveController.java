@@ -103,8 +103,8 @@ public class LeaveController {
 
 	@SuppressWarnings("unchecked")
 	public void editLeaveSelected(ActionRequest request, ActionResponse response){
-		Map<String,String> leaveMap = (Map<String,String>)request.getContext().get("leaveSelect");
-		Long leaveId = Long.parseLong(leaveMap.get("id"));
+		Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
+		Long leaveId = new Long((Integer) leaveMap.get("id"));
 		response.setView(ActionView
 				.define(I18n.get("LeaveRequest"))
 				.model(LeaveRequest.class.getName())

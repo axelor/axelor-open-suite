@@ -81,7 +81,7 @@
 	
 	<form name="popup-leave-request-form" title="Select the leave request you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-leave-request-attrs-domain-leave-request-select">
 		<field name="$leaveSelect" title="Select Leave Request" type="many-to-one" target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox" />
-		<button name="editLeaveRequestSelected" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected"/>
+		<button name="editLeaveRequestSelected" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
 	</form>
 	
 	<action-group name="action-leave-request-group-send">
