@@ -106,8 +106,8 @@
 					<field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 				<panel name="productionWaste" title="Production waste" colSpan="12">
-					<button name="generateWasteStockMove" title="Generate waste stock move" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
-					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+					<button name="generateWasteStockMove" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
+					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid" readonly="true"/>
 				</panel>
 			</panel>
 			<panel name="consumedProducts" title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed" hideIf="isConsProOnOperation">

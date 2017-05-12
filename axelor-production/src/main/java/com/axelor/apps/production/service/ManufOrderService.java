@@ -68,6 +68,6 @@ public interface ManufOrderService {
 	 * @param manufOrder
 	 * @return wasteStockMove
 	 */
-	public StockMove generateWasteStockMove(ManufOrder manufOrder);
+	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException;
 
 }

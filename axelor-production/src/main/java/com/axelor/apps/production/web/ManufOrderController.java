@@ -212,8 +212,9 @@ public class ManufOrderController {
 
 	public void generateWasteStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
 		StockMove wasteStockMove = manufOrderService.generateWasteStockMove(manufOrder);
-		response.setValue("wasteStockMove", wasteStockMove);
+		response.setReload(true);
 	}
 
 }
