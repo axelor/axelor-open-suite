@@ -17,33 +17,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
-import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.SequenceService;
-import com.google.common.base.Strings;
-import org.joda.time.LocalDate;
-
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -54,10 +28,12 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -81,8 +57,16 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 public class ExpenseServiceImpl implements ExpenseService  {
 
@@ -165,17 +149,12 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
 		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
-		Product kilometricProduct;
 
-		try {
-			HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(expense.getCompany());
-			kilometricProduct = Beans.get(HRConfigService.class).getKilometricExpenseProduct(hrConfig);
-		} catch (AxelorException e) {
-		    kilometricProduct = null;
-		}
 		if(expenseLineList != null)  {
 			for (ExpenseLine expenseLine : expenseLineList) {
-			    if (kilometricProduct == null || !expenseLine.getExpenseProduct().equals(kilometricProduct)) {
+			    //if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
+				//so we ignore it, it will be taken into account in the next loop.
+			    if (expenseLine.getDistance() == null || expenseLine.getDistance().equals(BigDecimal.ZERO)) {
 					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
 					taxTotal = taxTotal.add(expenseLine.getTotalTax());
 					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
