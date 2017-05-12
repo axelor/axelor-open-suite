@@ -164,12 +164,29 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-		
+		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+		Product kilometricProduct;
+
+		try {
+			HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(expense.getCompany());
+			kilometricProduct = Beans.get(HRConfigService.class).getKilometricExpenseProduct(hrConfig);
+		} catch (AxelorException e) {
+		    kilometricProduct = null;
+		}
 		if(expenseLineList != null)  {
 			for (ExpenseLine expenseLine : expenseLineList) {
-				exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-				taxTotal = taxTotal.add(expenseLine.getTotalTax());
-				inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+			    if (kilometricProduct == null || !expenseLine.getExpenseProduct().equals(kilometricProduct)) {
+					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
+					taxTotal = taxTotal.add(expenseLine.getTotalTax());
+					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+				}
+			}
+		}
+		if(kilometricExpenseLineList != null) {
+			for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
+                exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
+                taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
+                inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
 			}
 		}
 		expense.setExTaxTotal(exTaxTotal);
