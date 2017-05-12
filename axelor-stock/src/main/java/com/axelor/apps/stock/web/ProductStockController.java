@@ -17,13 +17,9 @@
  */
 package com.axelor.apps.stock.web;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.rpc.ActionRequest;
@@ -45,18 +41,8 @@ public class ProductStockController {
 		LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
 		LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
 		
-		Set<Map<String, Object>> stockPerDay = new HashSet<Map<String,Object>>();
-		Map<LocalDate, BigDecimal> stockMap = stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
-		TreeSet<LocalDate> keys = new TreeSet<LocalDate>();
-		keys.addAll(stockMap.keySet());
-		for (LocalDate date : keys) {
-			Map<String, Object> perDateMap = new HashMap<String, Object>();
-			perDateMap.put("$date", date);
-			perDateMap.put("$qty", stockMap.get(date));
-			stockPerDay.add(perDateMap);
-		}
-		
-		response.setValue("$stockPerDaySet", stockPerDay);
+		List<Map<String,Object>> stocks = stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
+		response.setValue("$stockPerDayList", stocks);
 		
 	}
 }
