@@ -25,8 +25,9 @@ import javax.xml.bind.JAXBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
@@ -98,15 +99,17 @@ public class ChartBuilderService {
 		if (!searchFields.isEmpty()) {
 			xml += "\t" + getSearchFields() + "\n";
 		}
-
+		
+		String groupLabel = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getGroupOnJson().getTitle() : viewBuilder.getGroupOn().getLabel();
+		String displayLabel = viewBuilder.getIsJsonDisplayField() ? viewBuilder.getDisplayFieldJson().getTitle() : viewBuilder.getDisplayField().getLabel();
 		xml += "\t<dataset type=\"jpql\">";
 		xml += Tab2 + queryString[0];
 		xml += Tab2 + "</dataset>";
 		xml += Tab1 + "<category key=\"groupField\" type=\"text\" title=\""
-				+ viewBuilder.getGroupOn().getLabel() + "\" />";
+				+ groupLabel  + "\" />";
 		xml += Tab1 + "<series key=\"fieldSum\" type=\""
 				+ viewBuilder.getChartType() + "\" title=\""
-				+ viewBuilder.getDisplayField().getLabel() + "\" ";
+				+ displayLabel + "\" ";
 		if (queryString[1] != null) {
 			xml += "groupBy=\"aggField\" ";
 		}
@@ -141,15 +144,29 @@ public class ChartBuilderService {
 	 *         aggregate field name.
 	 */
 	private String[] prepareQuery(ViewBuilder viewBuilder) {
-
-		String query = "SELECT" + Tab3 + "SUM(self."
-				+ viewBuilder.getDisplayField().getName() + ") AS fieldSum,"
+		
+		String query = null;
+		String jsonFunction = null;
+		MetaJsonField jsonField = null;
+		
+		if (viewBuilder.getIsJsonDisplayField()) {
+			jsonField = viewBuilder.getDisplayFieldJson();
+			jsonFunction = filterService.getJsonJpql(jsonField);
+			query = "SELECT" + Tab3 + "SUM(" + jsonFunction + "(self."
+				+ viewBuilder.getDisplayFieldJson().getModelField() + ",'" + viewBuilder.getDisplayFieldJson().getName() + "')) AS fieldSum,"
 				+ Tab3;
-
-		String groupField = getGroupFieldName(viewBuilder.getGroupOn(),
+		}else {
+			query = "SELECT" + Tab3 + "SUM(self."
+					+ viewBuilder.getDisplayField().getName() + ") AS fieldSum,"
+					+ Tab3;
+		}
+		
+		Object targetOn = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getGroupOnJson()  : viewBuilder.getGroupOn();
+		String groupField = getGroupFieldName(targetOn,
 				viewBuilder.getGroupDateType(), viewBuilder.getGroupOnTarget());
-
-		String aggField = getGroupFieldName(viewBuilder.getAggregateOn(),
+		
+		targetOn = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getAggregateOnJson() : viewBuilder.getAggregateOn();
+		String aggField = getGroupFieldName(targetOn,
 				viewBuilder.getAggregateDateType(),
 				viewBuilder.getAggregateOnTarget());
 
@@ -186,36 +203,54 @@ public class ChartBuilderService {
 	 *            Type of date (month,year,day) selected for group field.
 	 * @return Group field string.
 	 */
-	private String getGroupFieldName(MetaField metaField, String dateType,
+	private String getGroupFieldName(Object groupOn, String dateType,
 			String target) {
 
-		if (metaField == null) {
+		if (groupOn == null) {
 			return null;
 		}
-
-		String name = metaField.getName();
-		String typeName = metaField.getTypeName();
-
+		
+		boolean isJson = groupOn instanceof MetaJsonField;
+		
+		String name = null;
+		String typeName = null;
+		if (isJson) {
+			MetaJsonField jsonField = (MetaJsonField) groupOn; 
+			name = jsonField.getName();
+			if (target != null) {
+				name = target;
+			}
+			name = filterService.getJsonJpql(jsonField) + "(self." + jsonField.getModelField() + ",'" + name + "')";
+			typeName = jsonField.getType();
+		}
+		else {
+			MetaField metaField = (MetaField) groupOn;
+			name = "self." + metaField.getName();
+			if (target != null) {
+				name = "self." + target;
+			}
+			typeName = metaField.getTypeName();
+			
+		}
+		
 		if (dateType != null
-				&& "LocalDate,ZonedDateTime,LocalDateTime".contains(typeName)) {
-
+				&& "Date,DateTime,LocalDate,ZonedDateTime,LocalDateTime,date,datetime".contains(typeName)) {
+			String dtype = "datetime";
+			if ("Date,date,LocalDate".contains(typeName)) {
+				dtype = "date";
+			}
 			switch (dateType) {
 			case "year":
-				return "YEAR(self." + name + ")";
+				return "YEAR(cast(" + name + " as " + dtype +")";
 			case "month":
-				return "concat(str(YEAR(self." + name
-						+ ")),'-',str(MONTH(self." + name + ")))";
+				return "concat(str(YEAR(cast(" + name + " as " + dtype + "))), '-',str(MONTH(cast(" + name + " as " + dtype +"))))";
 			default:
-				return "self." + name;
+				return name;
 			}
 
-		} else {
-			if (target == null) {
-				target = name + ".name";
-			}
-			return "self." + target;
-
-		}
+		} 
+		
+		return name;
 
 	}
 
@@ -307,8 +342,9 @@ public class ChartBuilderService {
 		for (Filter filter : filterList) {
 
 			MetaField field = filter.getMetaField();
+			MetaJsonField json = filter.getMetaJsonField();
 
-			String relationship = field.getRelationship();
+			String relationship = filter.getIsJson() ? json.getTargetModel() : field.getRelationship();
 			String condition = "";
 
 			if (relationship != null) {
@@ -318,7 +354,8 @@ public class ChartBuilderService {
 			}
 
 			if (filter.getIsParameter()) {
-				addSearchField(field, filter.getTargetField(),
+				Object searchField = filter.getIsJson() ? json : field;
+				addSearchField(searchField, filter.getTargetField(),
 						filter.getDefaultValue());
 			}
 
@@ -334,24 +371,34 @@ public class ChartBuilderService {
 
 	}
 
-	private void addSearchField(MetaField field, String targetField,
+	private void addSearchField(Object field, String targetField,
 			String defaultVal) {
 
-		field = (MetaField) filterService.getTargetField(field, targetField)
+		field = filterService.getTargetField(field, targetField)
 				.get(1);
-		String relationship = field.getRelationship();
-		String fieldName = field.getName();
-		String typeName = field.getTypeName();
-		String fieldStr = "<field name=\"" + field.getName() + "\" title=\""
-				+ field.getLabel();
+		boolean json = field instanceof MetaJsonField;
+		MetaJsonField jsonField = null;
+		MetaField metaField = null;
+		if (json) {
+			jsonField = (MetaJsonField) field;
+		}
+		else {
+			metaField = (MetaField) field;
+		}
+		String relationship = json ?  jsonField.getTargetModel() : metaField.getRelationship();
+		String fieldName = json ? jsonField.getName() : metaField.getName();
+		String fieldLabel = json ? jsonField.getTitle() : metaField.getLabel();
+		String typeName = json ? jsonField.getType() : metaField.getTypeName();
+		String fieldStr = "<field name=\"" + fieldName + "\" title=\""
+				+ fieldLabel;
 		String[] modelField = null;
 
 		if (relationship == null) {
-			String fieldType = viewLoaderService.getFieldType(field);
+			String fieldType = json ? Inflector.getInstance().camelize(typeName) : viewLoaderService.getFieldType(metaField);
 			fieldStr += "\" type=\"" + fieldType;
-			MetaSelect select = field.getMetaSelect();
+			String select = json ? jsonField.getSelection() : metaField.getMetaSelect() != null ? metaField.getMetaSelect().getName() : null;
 			if (select != null) {
-				fieldStr = fieldStr + "\" selection=\"" + select.getName();
+				fieldStr = fieldStr + "\" selection=\"" + select;
 			}
 		} else {
 			String targetRef = metaModelRepo.findByName(typeName).getFullName();

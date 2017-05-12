@@ -30,7 +30,7 @@
         var component;
         copyObjectToScope(formObject, $scope);
         $scope.optionsText = formObject.options.join('\n');
-        $scope.$watch('[label, fieldName, placeholder, track, nameColumn,\
+        $scope.$watch('[label, fieldName, placeholder, track, nameColumn, json, \
         				required, requiredIf, readonly, readonlyIf, place,\
         				hideIf, hidden, min, max, defaultString, defaultInteger, \
         				defaultBoolean, defaultDecimal, options, refModel, mappedBy, \
@@ -72,6 +72,7 @@
           formObject.panelTop = $scope.panelTop;
           formObject.hideTitle = $scope.hideTitle;
           formObject.metaFieldId = $scope.metaFieldId;
+          formObject.json = $scope.json;
           return formObject.validation = $scope.validation;
         }, true);
         $scope.$watch('optionsText', function(text) {
@@ -105,6 +106,7 @@
             placeholder: $scope.placeholder,
             track: $scope.track,
             nameColumn: $scope.nameColumn,
+            json: $scope.json,
             required: $scope.required,
             requiredIf: $scope.requiredIf,
             readonly: $scope.readonly,
@@ -149,6 +151,7 @@
           $scope.placeholder = this.model.placeholder;
           $scope.track = this.model.track;
           $scope.nameColumn = this.model.nameColumn;
+          $scope.json = this.model.json;
           $scope.required = this.model.required;
           $scope.requiredIf = this.model.requiredIf;
           $scope.readonly = this.model.readonly;
@@ -1303,6 +1306,7 @@
         readonlyIf : formObject.readonlyIf,
         track: formObject.track,
         nameColumn: formObject.nameColumn,
+        json: formObject.json,
         min:formObject.min,
         max:formObject.max,
         hidden:formObject.hidden,

@@ -16,6 +16,7 @@
     </panel>
     <panel>
         <button name="openFieldEditor" title="Open editor" onClick="save,action-meta-model-method-open-field-editor" />
+        <button name="openJsonFields" title="Open json fields" onClick="save,action-meta-model-open-json-fields" />
     	<panel-related field="metaFields" canMove="true" orderBy="sequence" colSpan="12" grid-view="meta-field-studio-grid" form-view="meta-field-studio-form" readonly="true"/>    
     </panel>
     <panel-related field="rightManagementList" form-view="right-management-model-form" grid-view="right-management-model-grid"/>
@@ -48,5 +49,12 @@
   <action-method name="action-meta-model-method-open-field-editor" model="com.axelor.meta.db.MetaModel">
       <call class="com.axelor.meta.web.MetaModelController" method="openFieldEditor"/>
   </action-method>
+  
+  <action-view name="action-meta-model-open-json-fields" model="com.axelor.meta.db.MetaJsonField" title="Json fields">
+  	<view type="grid" name="json-field-grid"/>
+  	<view type="form" name="json-field-form" />
+  	<domain>self.model = :_fullName</domain>
+  	<context name="_fullName" expr="eval:fullName"/>
+  </action-view>
   
 </object-views>

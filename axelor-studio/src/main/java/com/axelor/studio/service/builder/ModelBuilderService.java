@@ -422,6 +422,11 @@ public class ModelBuilderService {
 			fieldXml.append("sequence=\"" + sequence + "\" ");
 		}
 		
+		boolean json = field.getJson();
+		if (json) {
+			fieldXml.append("json=\"true\"");
+		}
+		
 		addMinMax(fieldXml, field);
 	}
 

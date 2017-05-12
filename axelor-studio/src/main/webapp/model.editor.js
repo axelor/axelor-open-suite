@@ -118,6 +118,7 @@
 	    			fieldData["max"] = Number(field.integerMax);
 	    			fieldData["defaultString"] = field.defaultString;
 	    			fieldData["nameColumn"] = field.nameColumn;
+	    			fieldData["json"] = field.json;
 	    			if(field.large){
 	    				fieldData.component= "textArea";
 	    			}
@@ -176,6 +177,7 @@
 					data["integerMax"] = field.max;
 					data["defaultString"] = field.defaultString;
 					data["nameColumn"] = field.nameColumn;
+					data["json"] = field.json;
 					break;
 				case 'boolean':
 					data["defaultBoolean"] = field.defaultBoolean;
