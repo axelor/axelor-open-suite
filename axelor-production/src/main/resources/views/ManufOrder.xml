@@ -106,7 +106,7 @@
 					<field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 				<panel name="productionWaste" title="Production waste" colSpan="12">
-					<button name="generateWasteStockMove" title="Generate waste stock move" onClick="Non implemented yet"/>
+					<button name="generateWasteStockMove" title="Generate waste stock move" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
 					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 			</panel>
@@ -216,6 +216,10 @@
     
     <action-method name="action-manuf-order-method-pre-fill-operations">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="preFillOperations"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-generate-waste-stock-move">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="generateWasteStockMove"/>
     </action-method>
     
    	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">

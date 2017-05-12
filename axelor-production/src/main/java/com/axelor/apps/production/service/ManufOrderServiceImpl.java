@@ -18,13 +18,11 @@
 package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import java.time.LocalDateTime;
-
-import com.axelor.apps.stock.db.StockMoveLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +41,16 @@ import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -328,6 +331,28 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			}
 		}
 		return BigDecimal.ZERO;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public StockMove generateWasteStockMove(ManufOrder manufOrder) {
+		StockMove wasteStockMove = null;
+
+//		if (manufOrder.getWasteProdProductList() == null) {
+//			return wasteStockMove;
+//		}
+//
+//		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+//		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+//	
+//		wasteStockMove = stockMoveService.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, estimatedDate, description, shipmentMode, freightCarrierMode);
+//
+//		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
+//			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, productName, description, quantity, unitPrice, unit, stockMove, type, taxed, taxRate);
+//			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
+//		}
+
+		return wasteStockMove;
 	}
 
 }
