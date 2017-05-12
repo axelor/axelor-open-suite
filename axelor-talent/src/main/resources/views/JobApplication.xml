@@ -78,8 +78,8 @@
     </action-view>
     
     <action-record name="action-job-application-defaults" model="com.axelor.apps.talent.db.JobApplication">
-    	<field name="jobPosition" expr="eval:__repo__.of(JobPosition).find(_jobPositionId)"/>
-    	<field name="responsible" expr="eval:__repo__.of(Employee).find(_responsibleId)" />
+    	<field name="jobPosition" expr="eval:__repo__(JobPosition).find(_jobPositionId)"/>
+    	<field name="responsible" expr="eval:__repo__(Employee).find(_responsibleId)" />
     </action-record>
     
     <action-method name="action-job-application-method-hire">

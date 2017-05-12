@@ -106,79 +106,20 @@
 		<view-param name="search-filters" value="move-filters"/>
 	</action-view>
 
-	<menuitem name="account-root-move-move-line" parent="account-root-move"
-		title="Move Lines" action="account.root.move.move.line" />
-
-	<action-view name="account.root.move.move.line" title="Move Lines"
-		model="com.axelor.apps.account.db.MoveLine" >
-		<view type="grid" name="move-line-grid" />
-		<view type="form" name="move-line-form" />
-		<view-param name="search-filters" value="move-line-filters"/>
-	</action-view>
-	
-	
 	<menuitem name="account-root-payments" parent="account-root"
 		title="Payments" order="5"/>
 
 	<menuitem name="account-root-payments-payment-voucher"
-		parent="account-root-payments" title="Payment vouchers"
+		parent="account-root-payments" title="Payments assistant"
 		action="account.root.payments.payment.voucher" />
 
 	<action-view name="account.root.payments.payment.voucher"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
+		title="Payments assistant" model="com.axelor.apps.account.db.PaymentVoucher">
 		<view type="grid" name="payment-voucher-grid"/>
 		<view type="form" name="payment-voucher-form"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 	</action-view>
-	
-	<menuitem name="account-root-payments-new-cust-payment"
-		parent="account-root-payments" title="Create Cust. Payment"
-		action="account.root.payments.new.cust.payment" />
 
-	<action-view name="account.root.payments.new.cust.payment"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" name="payment-voucher-form"/>
-		<view type="grid" name="payment-voucher-grid"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<context name="_operationTypeSelect" expr="eval:3"/>
-	</action-view>
-	
-	<menuitem name="account-root-payments-new-cust-refund" 
-		parent="account-root-payments" title="Create Cust. Refund"
-		action="account.root.payments.new.cust.refund" />
-
-	<action-view name="account.root.payments.new.cust.refund"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" name="payment-voucher-form"/>
-		<view type="grid" name="payment-voucher-grid"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<context name="_operationTypeSelect" expr="eval:4"/>
-	</action-view>
-	
-	<menuitem name="account-root-payments-new-suppl-payment"
-		parent="account-root-payments" title="Create Suppl. Payment"
-		action="account.root.payments.new.suppl.payment" />
-
-	<action-view name="account.root.payments.new.suppl.payment"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" name="payment-voucher-form"/>
-		<view type="grid" name="payment-voucher-grid"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<context name="_operationTypeSelect" expr="eval:1"/>
-	</action-view>
-	
-	<menuitem name="account-root-payments-new-suppl-refund"
-		parent="account-root-payments" title="Create Suppl. Refund"
-		action="account.root.payments.new.suppl.refund" />
-
-	<action-view name="account.root.payments.new.suppl.refund"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" name="payment-voucher-form"/>
-		<view type="grid" name="payment-voucher-grid"/>
-		<view-param name="search-filters" value="payment-voucher-filters" />
-		<context name="_operationTypeSelect" expr="eval:2"/>
-	</action-view>
-	
 	<menuitem name="account-root-periodic-processing" parent="account-root"
 		title="Periodical processing" order="10"/>
 
@@ -309,26 +250,26 @@
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"
 		title="Budget Preparation" order="25"/>
 	
-		<menuitem name="account-root-budget-management-my-budgets" parent="account-root-budget-management"
-			title="My budgets" action="account.root.budget.management.my.budgets" />
-		
-		<action-view name="account.root.budget.management.my.budgets" title="My budgets"
-			model="com.axelor.apps.account.db.Budget" >
-			<view type="grid" name="budget-grid"/>
-			<view type="form" name="budget-form"/>
-			<domain>self.inChargeUser.id = :_id</domain>
-			<context name="_id" expr="eval: __user__.id"/>
-		</action-view>
-		
-		<menuitem name="account-root-budget-management-all-budgets" parent="account-root-budget-management"
-			title="All budgets" action="account.root.budget.management.all.budgets" />
-			
-		<action-view name="account.root.budget.management.all.budgets" title="All budgets"
-			model="com.axelor.apps.account.db.Budget" >
-			<view type="grid" name="budget-grid"/>
-			<view type="form" name="budget-form"/>
-		</action-view>
+	<menuitem name="account-root-budget-management-my-budgets" parent="account-root-budget-management"
+		title="My budgets" action="account.root.budget.management.my.budgets" />
 	
+	<action-view name="account.root.budget.management.my.budgets" title="My budgets"
+		model="com.axelor.apps.account.db.Budget" >
+		<view type="grid" name="budget-grid"/>
+		<view type="form" name="budget-form"/>
+		<domain>self.inChargeUser.id = :_id</domain>
+		<context name="_id" expr="eval: __user__.id"/>
+	</action-view>
+	
+	<menuitem name="account-root-budget-management-all-budgets" parent="account-root-budget-management"
+		title="All budgets" action="account.root.budget.management.all.budgets" />
+		
+	<action-view name="account.root.budget.management.all.budgets" title="All budgets"
+		model="com.axelor.apps.account.db.Budget" >
+		<view type="grid" name="budget-grid"/>
+		<view type="form" name="budget-form"/>
+	</action-view>
+
 	<menuitem name="account-root-report" parent="account-root"
 		title="Reportings" order="30"/>
 	
@@ -480,6 +421,15 @@
 		<view type="grid" name="analytic-move-line-grid"/>
 		<view type="form" name="analytic-move-line-form"/>
 	</action-view>
+	
+	<menuitem name="account-conf-analytic-distribution-template" parent="account-conf-analytic"
+		title="Analytic Distribution Template" action="account.conf.analytic.distribution.template" />
+		
+	<action-view name="account.conf.analytic.distribution.template" title="Analytic Distribution Template"
+		model="com.axelor.apps.account.db.AnalyticDistributionTemplate" >
+		<view type="grid" name="analytic-distribution-template-grid"/>
+		<view type="form" name="analytic-distribution-template-form"/>
+	</action-view>	
 
 	<menuitem name="account-conf-payment" parent="account-conf"
 		title="Payment" />
@@ -542,33 +492,24 @@
 		<view type="form" name="accounting-batch-form"/>
 	</action-view>
 	
-	<menuitem name="top-invoice" title="Invoices/Refunds"  top="true" left="false" order="-130" if="__config__.app.isApp('invoice')"/>
-	<menuitem name="top-invoice-create-invoice" title="Create Invoice" top="true" parent="top-invoice" order="-100" action="top.invoice.new"/>
-	<action-view name="top.invoice.new" title="New Invoice" model="com.axelor.apps.account.db.Invoice">
-		<view type="form" name="invoice-form"/>
-	</action-view>
-	<menuitem name="top-invoice-all" order="-90" title="View Invoices/Refunds" action="top.invoice.all" parent="top-invoice"  top="true" left="false"/>
+	<!-- Top Menus -->
 	
-	<action-view name="top.invoice.all" title="Invoices/Refunds"
-		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid" />
-		<view type="form" name="invoice-form" />
-	</action-view>
-		
-	<menuitem name="top-invoice-custinvoices" order="-80" title="View Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing" title="Invoicing" order="5" top="true" if="__config__.app.isApp('invoice')" left="false"/>
 	
-	<action-view name="top.invoice.custinvoices" title="Cust. Invoices"
+	<menuitem name="top-invoicing-custinvoices" title="Cust. Invoices" action="top.invoicing.custinvoices" parent="top-invoicing"  top="true"/>		
+	
+	<action-view name="top.invoicing.custinvoices" title="Cust. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="customer-invoices-filters"/>
 		<domain>self.operationTypeSelect = 3</domain>
 		<context name="_operationTypeSelect" expr="eval:3"/>
-	</action-view>	
+	</action-view>
 	
-	<menuitem name="top-invoice-custrefunds" order="-70" title="View Cust. Refunds" action="top.invoice.custrefunds" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing-custrefunds" title="Cust. Refunds" action="top.invoicing.custrefunds" parent="top-invoicing"  top="true"/>		
 	
-	<action-view name="top.invoice.custrefunds" title="Cust. Refunds"
+	<action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-grid" />
 		<view type="form" name="invoice-form" />
@@ -577,9 +518,9 @@
 		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplinvoices" order="-60" title="View Suppl. Invoices" action="top.invoice.supplinvoices" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing-supplinvoices" title="Suppl. Invoices" action="top.invoicing.supplinvoices" parent="top-invoicing"  top="true"/>		
 	
-	<action-view name="top.invoice.supplinvoices" title="Suppl. Invoices"
+	<action-view name="top.invoicing.supplinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-supplier-grid" />
 		<view type="form" name="invoice-form" />
@@ -588,16 +529,16 @@
 		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>	
 	
-	<menuitem name="top-invoice-supplrefunds" order="-" title="View Suppl. Refunds" action="top.invoice.supplrefunds" parent="top-invoice"  top="true" left="false"/>		
+	<menuitem name="top-invoicing-supplrefunds" title="Suppl. Refunds" action="top.invoicing.supplrefunds" parent="top-invoicing"  top="true"/>		
 	
-	<action-view name="top.invoice.supplrefunds" title="Suppl. Refunds"
+	<action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
 		<view type="grid" name="invoice-supplier-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
 		<context name="_operationTypeSelect" expr="eval:2"/>
-	</action-view>	
+	</action-view>
 	
 	<menuitem name="menu-account-invoice-dashboard-sample" parent="invoice-root-report" order="-145"
     title="General"  action="account.invoice.dashboard.view.sample"/>    
@@ -650,34 +591,6 @@
         <view type="dashboard" name="accounting.dashboard.sample" />        
     </action-view>
 	
-	<menuitem name="top-payments" title="Payments"  top="true" left="false" if="__config__.app.isApp('invoice')"/>
-	
-	<menuitem name="top-payments-create-payment" title="Create Payment" top="true" parent="top-payments" order="-100" action="top.payments.new"/>
-	<action-view name="top.payments.new" title="Create Payment" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="form" name="payment-voucher-form"/>
-	</action-view>
-	<menuitem name="top-payments-all" order="-90" title="View Payments"   parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
-			
-	<menuitem name="top-payments-customers" order="-80" title="View Cust. Payments" parent="top-payments" action="top.payments.customers"  top="true" left="false"/>
-	
-	<action-view name="top.payments.customers"
-		title="Cust. Payments" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" name="payment-voucher-grid"/>
-		<view type="form" name="payment-voucher-form"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<domain>self.operationTypeSelect in (3,4)</domain>
-	</action-view>
-	
-	<menuitem name="top-payments-suppliers" order="-70" title="View Supplier Payments" parent="top-payments" action="top.payments.suppliers"  top="true" left="false"/>
-	
-	<action-view name="top.payments.suppliers"
-		title="Supplier Payments" model="com.axelor.apps.account.db.PaymentVoucher">
-		<view type="grid" name="payment-voucher-grid"/>
-		<view type="form" name="payment-voucher-form"/>
-		<view-param name="search-filters" value="payment-voucher-filters"/>
-		<domain>self.operationTypeSelect in (1,2)</domain>
-	</action-view>
-	
 	<!-- Move template -->
 	
 	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard"  top="true" />
@@ -703,7 +616,6 @@
 		<context name="_activeCompanyId" expr="eval:__user__.activeCompany?.id" />
 	</action-view>
 
-
 	<menuitem name="move-template-line" title="Move Templates Lines" parent="move-template-root" action="move.template.line"  top="true" />
 	
 	<action-view name="move.template.line"
@@ -719,8 +631,5 @@
 		<view type="grid" name="move-template-type-grid" />
 		<view type="form" name="move-template-type-form"  />
 	</action-view>
-	
-
-	
 	
 </object-views>

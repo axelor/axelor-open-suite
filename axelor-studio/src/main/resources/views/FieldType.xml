@@ -8,7 +8,9 @@
   </grid>
   
   <form name="field-type-form" title="Field type" model="com.axelor.studio.db.FieldType">
-      <field name="name" />
+  	  <panel>
+      	<field name="name" />
+      </panel>
   </form>
   
 </object-views>

@@ -306,13 +306,13 @@
     
     <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
     	<field name="lead" expr="eval: _lead"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)" if="_lead.user != null" />
+    	<field name="user" expr="eval: __repo__(User).find(_lead.user.id)" if="_lead.user != null" />
     	<field name="team" expr="eval: _lead.team"/>
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
-	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__.of(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
+	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
+	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
 	</action-record>
@@ -322,7 +322,7 @@
     	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="description" expr="eval: _partner.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_partner.user.id)" if="_partner.user != null" />
+    	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />
     	<field name="team" expr="eval: _partner.team"/>
     </action-record>
     

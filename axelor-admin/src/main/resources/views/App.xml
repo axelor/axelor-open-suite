@@ -43,6 +43,7 @@
 	<cards name="app-cards" model="com.axelor.apps.base.db.App" title="Apps" css="rect-image" orderBy="sequence" width="25%:200" > 
 		<toolbar>
 			<button name="bulkInstall" title="Bulk install" onClick="action-app-open-bulk-install-selector"/>
+			<button name="refreshApp" title="Refresh Apps" onClick="action-app-method-refresh-app"/>
 		</toolbar>
 		<field name="name" />
 		<field name="code" />
@@ -87,9 +88,9 @@
 	 <action-method name="action-app-method-bulk-install" >
 	 	<call class="com.axelor.apps.base.web.AppController" method="bulkInstall" />
 	 </action-method>
-	 
+
 	 <action-record name="action-app-bulk-install-select-all" model="com.axelor.apps.base.db.App">
-	 	<field name="appsSet" expr="eval:(__repo__.of(App).all().filter('self.active = false or self.demoDataLoaded = false').fetch()).toSet()"/>
+	 	<field name="appsSet" expr="eval:(__repo__(App).all().filter('self.active = false or self.demoDataLoaded = false').fetch()).toSet()"/>
 	 </action-record>
 	 
 	 <action-view name="action-app-open-bulk-install-selector" title="Bulk install" model="com.axelor.apps.base.db.App">
@@ -106,5 +107,9 @@
 	 	<attribute name="hidden" for="demoDataLoaded" expr="eval:!__self__.active"/>
 	 	<attribute name="hidden" for="importDataDemo" expr="eval:!__self__.active || demoDataLoaded"/>
 	 </action-attrs>
+
+	  <action-method name="action-app-method-refresh-app">
+		<call class="com.axelor.apps.base.web.AppController" method="refreshApp"/>
+	</action-method>
        
 </object-views>

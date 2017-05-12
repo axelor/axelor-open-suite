@@ -13,7 +13,8 @@
     <integer name="importId" />
   	<string name="moduleName" title="Module" />
     <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" />
-  	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField" required="true"/>
+  	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField"/>
+  	<many-to-one name="metaJsonField" title="Json Field" ref="com.axelor.meta.db.MetaJsonField"/>
   	<many-to-one name="wkfTransition" ref="com.axelor.studio.db.WkfTransition" />
   	<many-to-one name="filterOperator" title="Operator" ref="com.axelor.studio.db.FilterOperator" required="true"/>
   	<many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" />
@@ -22,6 +23,8 @@
   	<string name="value" title="Value" />
   	<string name="defaultValue" title="Default Value" />
   	<boolean name="isParameter" title="Is parameter ?" />
+  	<boolean name="isJson" title="Is json ?" />
+  	<boolean name="isTargetJson" title="Target json ?" />
   	<integer name="logicOp" title="Logic operator" selection="studio.chart.filter.logic.operator" default="0"/>
   </entity>
     

@@ -19,7 +19,7 @@
   	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for storable products ?"/>
   	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for non storable products ?"/>
 
-	<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
+	<many-to-one name="customsWeightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
 
   </entity>
   

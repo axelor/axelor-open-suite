@@ -47,11 +47,11 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
-import com.axelor.apps.stock.service.MinStockRulesService;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpFamily;
 import com.axelor.apps.supplychain.db.MrpForecast;
@@ -87,7 +87,7 @@ public class MrpServiceImpl implements MrpService  {
 	protected PurchaseOrderLineRepository purchaseOrderLineRepository;
 	protected SaleOrderLineRepository saleOrderLineRepository;
 	protected MrpLineRepository mrpLineRepository;
-	protected MinStockRulesService minStockRulesService;
+	protected StockRulesService stockRulesService;
 	protected MrpLineService mrpLineService;
 	protected MrpForecastRepository mrpForecastRepository;
 	
@@ -102,7 +102,7 @@ public class MrpServiceImpl implements MrpService  {
 	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
-			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
+			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
 		
 		this.mrpRepository = mrpRepository;
 		this.locationRepository = locationRepository;
@@ -112,7 +112,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.purchaseOrderLineRepository = purchaseOrderLineRepository;
 		this.saleOrderLineRepository = saleOrderLineRepository;
 		this.mrpLineRepository = mrpLineRepository;
-		this.minStockRulesService = minStockRulesService;
+		this.stockRulesService = stockRulesService;
 		this.mrpLineService = mrpLineService;
 		this.mrpForecastRepository = mrpForecastRepository;
 		
@@ -271,11 +271,11 @@ public class MrpServiceImpl implements MrpService  {
 				
 				BigDecimal reorderQty = minQty.subtract(cumulativeQty);
 				
-				MinStockRules minStockRules = minStockRulesService.getMinStockRules(product, mrpLine.getLocation(), MinStockRulesRepository.TYPE_FUTURE);
+				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE);
 				
-				if(minStockRules != null)  {   reorderQty = reorderQty.max(minStockRules.getReOrderQty());  }
+				if(stockRules != null)  {   reorderQty = reorderQty.max(stockRules.getReOrderQty());  }
 				
-				MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(minStockRules);
+				MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules);
 				
 				this.createProposalMrpLine(product, mrpLineTypeProposal, reorderQty, mrpLine.getLocation(), mrpLine.getMaturityDate(), mrpLine.getMrpLineOriginList(), mrpLine.getRelatedToSelectName());
 				
@@ -357,7 +357,7 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected MrpLineType getMrpLineTypeForProposal(MinStockRules minStockRules) throws AxelorException  {
+	protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules) throws AxelorException  {
 		
 		return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
 		

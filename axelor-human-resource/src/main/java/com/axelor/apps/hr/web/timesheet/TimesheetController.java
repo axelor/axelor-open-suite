@@ -367,4 +367,13 @@ public class TimesheetController {
 				.define(name)
 				.add("html", fileLink).map());	
 	}
+	
+	public void showTimesheetLineEditor(ActionRequest request, ActionResponse response) {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		response.setView(ActionView
+				.define(I18n.get("Timesheet lines"))
+				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
+	}
 }

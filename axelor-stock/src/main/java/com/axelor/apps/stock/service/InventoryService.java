@@ -26,14 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -41,9 +40,11 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.file.CsvTool;
@@ -245,14 +246,15 @@ public class InventoryService {
 	}
 	
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void validateInventory(Inventory inventory) throws AxelorException {
-		generateStockMove(inventory);
+	public StockMove validateInventory(Inventory inventory) throws AxelorException {
+		StockMove stockMove = generateStockMove(inventory);
 		storeLastInventoryData(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
+		return stockMove;
 	}
 
 	private void storeLastInventoryData(Inventory inventory) {
-		Map<String, BigDecimal> realQties = new HashMap<>();
+		Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
 		Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
 
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
@@ -262,7 +264,7 @@ public class InventoryService {
 				Product product = inventoryLine.getProduct();
 				TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
 
-				realQties.put(makeRealQtyKey(product, trackingNumber), inventoryLine.getRealQty());
+				realQties.put(new Pair<>(product, trackingNumber), inventoryLine.getRealQty());
 
 				BigDecimal realQty = consolidatedRealQties.getOrDefault(product, BigDecimal.ZERO);
 				realQty = realQty.add(inventoryLine.getRealQty());
@@ -289,7 +291,7 @@ public class InventoryService {
 			for (LocationLine detailsLocationLine : detailsLocationLineList) {
 				Product product = detailsLocationLine.getProduct();
 				TrackingNumber trackingNumber = detailsLocationLine.getTrackingNumber();
-				BigDecimal realQty = realQties.get(makeRealQtyKey(product, trackingNumber));
+				BigDecimal realQty = realQties.get(new Pair<>(product, trackingNumber));
 				if (realQty != null) {
 					detailsLocationLine.setLastInventoryRealQty(realQty);
 					detailsLocationLine.setLastInventoryDateT(inventory.getDateT());
@@ -297,11 +299,6 @@ public class InventoryService {
 			}
 		}
 
-	}
-
-	private String makeRealQtyKey(Product product, TrackingNumber trackingNumber) {
-		return String.format("%d,%d", product != null ? product.getId() : 0,
-				trackingNumber != null ? trackingNumber.getId() : 0);
 	}
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
@@ -342,7 +339,7 @@ public class InventoryService {
 
 			stockMoveService.plan(stockMove);
 			stockMoveService.copyQtyToRealQty(stockMove);
-			stockMoveService.realize(stockMove);
+			stockMoveService.realize(stockMove, false);
 		}
 		return stockMove;
 	}

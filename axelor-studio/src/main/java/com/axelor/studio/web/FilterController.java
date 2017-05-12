@@ -19,7 +19,9 @@ package com.axelor.studio.web;
 
 import java.util.List;
 
+import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Filter;
@@ -36,21 +38,21 @@ public class FilterController {
 		Filter filter = request.getContext().asType(Filter.class);
 
 		MetaField metaField = filter.getMetaField();
+		MetaJsonField metaJson = filter.getMetaJsonField();
+		
+		Boolean isJson = filter.getIsJson();
 
-		if (metaField != null && metaField.getRelationship() != null) {
-			String relationship = metaField.getRelationship();
-			if (relationship != null) {
-				response.setValue("targetType", relationship);
-			} else {
-				response.setValue("targetType", metaField.getTypeName());
-			}
+		if (!isJson && metaField != null && metaField.getRelationship() != null) {
+			response.setValue("targetType", metaField.getRelationship());
 			response.setValue("targetField", metaField.getName());
 		}
-
+		else if(isJson && metaJson != null && metaJson.getTargetJsonModel() != null) {
+			response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
+			response.setValue("targetField", metaJson.getName());
+		}	
 		else {
 			response.setValue("targetField", null);
 			response.setValue("targetType", null);
-
 		}
 
 		response.setValue("filterOperator", null);
@@ -63,26 +65,55 @@ public class FilterController {
 		Filter filter = request.getContext().asType(Filter.class);
 
 		MetaField metaField = filter.getMetaField();
+		MetaJsonField metaJson = filter.getMetaJsonField();
 		String targetField = filter.getTargetField();
-
-		if (targetField != null && metaField != null
+		
+		if (targetField == null) return;
+		
+		Boolean isJson = filter.getIsJson();
+		
+		List<Object> target = null;
+		if (!isJson && metaField != null
 				&& metaField.getRelationship() != null) {
-			List<Object> target = filterService.getTargetField(metaField,
+			target = filterService.getTargetField(metaField,
 					targetField);
-			metaField = (MetaField) target.get(1);
-			String relationship = metaField.getRelationship();
-			if (relationship != null) {
-				response.setValue("targetType", relationship);
-			} else {
-				response.setValue("targetType", metaField.getTypeName());
+		} else if(isJson && metaJson != null
+				&& metaJson.getTargetJsonModel() != null) {
+			target = filterService.getTargetField(metaJson,
+					targetField);
+		} 
+		
+		if (target != null) {
+			if (target.get(1) instanceof MetaField) {
+				updateTarget(response, (MetaField)target.get(0));
+			}
+			else if (target.get(1) instanceof MetaJsonField) {
+				updateTarget(response, (MetaJsonField)target.get(0));
 			}
 			response.setValue("targetField", target.get(0));
-		} else {
-			response.setValue("targetType", null);
-
 		}
-
+		else {
+			response.setValue("targetType", null);
+		}
+		
 		response.setValue("filterOperator", null);
 
+	} 
+
+	private void updateTarget(ActionResponse response, MetaField metaField) {
+		
+		String relationship = metaField.getRelationship();
+		if (relationship != null) {
+			response.setValue("targetType", relationship);
+		} else {
+			response.setValue("targetType", metaField.getTypeName());
+		}
 	}
+	
+	private void updateTarget(ActionResponse response, MetaJsonField metaJson) {
+		
+		response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
+		response.setValue("isTargetJson", true);
+	}
+	
 }

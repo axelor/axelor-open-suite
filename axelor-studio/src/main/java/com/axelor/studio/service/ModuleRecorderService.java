@@ -106,14 +106,16 @@ public class ModuleRecorderService {
 	
 	public String update(ModuleRecorder recorder) throws AxelorException {
 		
-		setServerEnv();
+		
 		String wkfProcess = wkfService.processWkfs();
 		if (wkfProcess != null) {
 			return I18n.get(String.format("Error in workflow processing: \n%s", wkfProcess));
 		}
 		
 		if (recorder.getUpdateServer()) {
-
+			
+			setServerEnv();
+			
 			modelBuilderService.build();
 			
 			selectionBuilderService.build();

@@ -285,7 +285,8 @@ public class RecordImporterService {
 		
 		return value;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private Model searchObject(Mapper mapper, Map<String, Object> data, String query) {
 		
 		logger.debug("Class: {}", mapper.getBeanClass());

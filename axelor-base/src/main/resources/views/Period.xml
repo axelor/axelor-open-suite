@@ -47,7 +47,7 @@
 	</action-view>
 
 	<action-attrs name="action-attrs-period-hide-linked-adjusting-moves-dashlet">
-		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__.of(AdjustHistory).all().filter('self.period.id = ?', id).fetch().size() == 0"/>
+		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__(AdjustHistory).all().filter('self.period.id = ?', id).fetch().size() == 0"/>
 	</action-attrs>
 
 	<action-validate name="action-validate-period-is-adjusting-year">

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -96,6 +97,7 @@ public class ExporterService {
 			}
 		}
 		
+		log.debug("Total doc keys: {}", docMap.keySet().size());
 		addModules(reader);
 
 		menuExporter.export(writer, exportModules);
@@ -103,6 +105,8 @@ public class ExporterService {
 		actionExporter.export(writer);
 		
 		processMenu();
+		
+		addRemainingDoc();
 		
 		return this.writer.export(oldFile);
 	}
@@ -217,7 +221,6 @@ public class ExporterService {
 	private String[] addHelp(String docKey, String[] vals) {
 		
 		if (!docMap.isEmpty()) {
-			
 			if (docKey == null) {
 				docKey = getDocKey(vals);
 			}
@@ -229,6 +232,7 @@ public class ExporterService {
 				if (help[1] != null) {
 					vals[CommonService.HELP_FR] = help[1];
 				}
+				docMap.remove(docKey);
 			}
 		}
 		
@@ -245,8 +249,14 @@ public class ExporterService {
 			 model = modelSplit[modelSplit.length - 1];
 		 }
 		 
+		 String view = values[CommonService.VIEW];
+		 
+		 if (view != null && view.indexOf('(') > 0) {
+			view = view.split("\\(", view.indexOf("("))[0];
+		 }
+		 
 		 String key =  model
-				+ "," + values[CommonService.VIEW]
+				+ "," + view
 				+ "," + getFieldType(values[CommonService.TYPE]) 
 			    + "," + name;
 		 
@@ -377,6 +387,9 @@ public class ExporterService {
 					continue;
 				}
 				
+				if (view.indexOf('(') > 0) {
+					view = view.split("\\(", view.indexOf("("))[0];
+				}
 				lastKey = model + "," + view + "," + getFieldType(type) + "," +  name;
 				if (row[CommonService.HELP] != null || row[CommonService.HELP_FR] != null) {
 					docMap.put(lastKey, new String[] {row[CommonService.HELP], row[CommonService.HELP_FR]});
@@ -473,5 +486,17 @@ public class ExporterService {
 		return type.replace("-", "_");
 	}
 	
+	
+	private void addRemainingDoc() {
+		
+		writer.write("MissingFields", 0, new String[]{"KEY", "HELP", "HELP FR"});
+		int count = 1;
+		for(Entry<String,String[]> entry : docMap.entrySet()) {
+			String[] val =  entry.getValue();
+			writer.write("MissingFields", count, new String[]{entry.getKey(),val[0], val[1]});
+			count++;
+		}
+		
+	}
 	
 }

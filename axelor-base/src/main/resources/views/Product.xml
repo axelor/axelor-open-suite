@@ -300,7 +300,7 @@
     </action-group>
 
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
-    	<attribute name="readonly" for="unit" expr="eval: __repo__.of(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
+    	<attribute name="readonly" for="unit" expr="eval: __repo__(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
     </action-attrs>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
@@ -353,7 +353,7 @@
     </action-record>
     
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
-    	<field name="$totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
+    	<field name="$totalVariants" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
     </action-record>
 	
 	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
@@ -435,7 +435,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-readonly-create-production-order">
-		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__.of(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL', parentProduct?.id, id).fetch().isEmpty()"/>
+		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-title-sale-price">

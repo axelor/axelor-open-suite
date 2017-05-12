@@ -67,7 +67,7 @@
   </action-record>
   
   <action-record name="action-action-builder-meta-view-change" model="com.axelor.studio.db.ActionBuilder">
-  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter('self.fullName = ${metaViewSet?.getAt(0).model}')" if="!metaViewSet?.empty"/>
+  	<field name="metaModel" expr="eval:__repo__(MetaModel).all().filter('self.fullName = ${metaViewSet?.getAt(0).model}')" if="!metaViewSet?.empty"/>
   	<field name="title" expr="eval:metaViewSet?.getAt(0).title" if="!metaViewSet?.empty" />
   </action-record>
   

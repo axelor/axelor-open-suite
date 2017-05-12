@@ -31,8 +31,8 @@ import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
 import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.stock.service.LocationServiceImpl;
-import com.axelor.apps.stock.service.MinStockRulesService;
-import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.apps.stock.service.StockRulesService;
+import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -43,7 +43,7 @@ public class StockModule extends AxelorModule {
 
     @Override
     protected void configure() {
-        bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
+        bind(StockRulesService.class).to(StockRulesServiceImpl.class);
         bind(AddressServiceStockImpl.class);
         bind(InventoryRepository.class).to(InventoryManagementRepository.class);
         bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);

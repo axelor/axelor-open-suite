@@ -39,4 +39,12 @@ public interface IExceptionMessage {
 	 * Sale Config Service
 	 */
 	static final String SALE_CONFIG_1 = /*$$(*/ "%s : You must configure Sales module for company %s" /*)*/ ;
+	
+	/**
+	 * Merge sale order
+	 */
+
+	static final public String SALE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/ "The currency is required and must be the same for all sale orders" /*)*/;
+	static final public String SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER = /*$$(*/ "The client Partner is required and must be the same for all sale orders" /*)*/;
+	static final public String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all sale orders" /*)*/;
 }

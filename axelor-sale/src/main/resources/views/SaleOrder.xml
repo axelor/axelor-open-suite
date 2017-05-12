@@ -5,7 +5,7 @@
     
     <grid name="sale-order-quotation-grid" title="Quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     	<toolbar>
-    		<button name="mergeQuotations" title="Merge quotations"/>
+    		<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-order-merge-form"/>
     		<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
     	</toolbar>
     	<menubar>
@@ -30,7 +30,7 @@
     
     <grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     	<toolbar>
-    		<button name="mergeSaleOrders" title="Merge sale orders"/>
+    		<button name="mergeSaleOrders" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
     		<button name="seeSaleOrderLines" title="See sale order lines" onClick="action-view-open-sale-order-lines"/>
     	</toolbar>
     	<menubar>
@@ -85,6 +85,22 @@
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
+    
+    <form name="sale-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge sale orders" width="large">
+		<panel-related field="$saleOrderToMerge" form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-grid"/>
+		<panel sidebar="true" title="Actions">
+			<button name="generateMergedSaleOrder" title="Merge into single sale order" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>			
+	  	</panel>
+    </form>
+    
+    <form name="sale-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
+		<panel colSpan="6" colOffset="3">
+			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="$location" title="Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.Location" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if="__config__.app.isApp('supplychain')" />
+			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<button name="confirm" title="Confirmer" onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
+		</panel>
+    </form>
     
     <form name="sale-order-cancel-wizard-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel name="main">
@@ -513,6 +529,11 @@
 		<attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
 	</action-attrs>
 
+	<action-group name="action-group-sale-order-merge-action">
+	    <action name="action-sale-order-method-merge-sale" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-sale-order-method-merge-supplychain"/>
+	</action-group>
+
     <action-group name="action-sale-group-onchange-company">
     	<action name="action-sale-order-record-company-configuration"/>
     	<action name="action-sale-order-method-get-location" />
@@ -569,17 +590,25 @@
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
-    									|| __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
+    									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"/>
     </action-attrs>
     
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="inAti" expr="eval: __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
-    									|| __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
+    	<field name="inAti" expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
+    									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
     </action-record>
     
     <action-method name="action-sale-order-method-finalize">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="finalizeSaleOrder"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-merge-sale">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="mergeSaleOrder"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-merge-supplychain" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="mergeSaleOrder" if="__config__.app.isApp('supplychain')" />
 	</action-method>
 	
     <action-method name="action-sale-order-method-confirm">
@@ -612,6 +641,10 @@
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>
     </action-record>
     
+    <action-view name="action-open-sale-order-merge-form" title="Merge sale orders" model="com.axelor.apps.base.db.Wizard">
+	    <view type="form" name="sale-order-merge-form"/>
+	</action-view>
+    
     <action-view name="action-sale-order-view-cancel" title="Cancellation" model="com.axelor.apps.sale.db.SaleOrder">
 	  	<view type="form" name="sale-order-cancel-wizard-form"/>
 	  	<view-param name="popup" value="reload"/>
@@ -629,6 +662,13 @@
 	<action-method name="action-sale-order-method-confirm-cancel">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="cancelSaleOrder"/>
 	</action-method>
+	
+	<action-record name="action-record-load-dummy-field-confirm-merge-saleorder" model="com.axelor.apps.base.db.Wizard">
+		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
+		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+		<field name="locationToCheck" expr="eval: contextLocationToCheck"/>
+		<field name="partnerId" expr="eval: contextPartnerId"/>
+	</action-record>
     
     <action-record name="action-sale-order-record-currency" model="com.axelor.apps.sale.db.SaleOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
@@ -642,7 +682,7 @@
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="hasGlobalTask" expr="eval: true"/>
     	<field name="salemanUser" expr="eval:__user__"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -652,10 +692,10 @@
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration"/>
 		<field name="companyBankDetails" expr="eval: null"/>
-    	<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyInBankDetails"
-    		if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
+    	<field name="companyBankDetails" expr="eval: __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyInBankDetails"
+    		if="clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="!(clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
+    		if="!(clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
     </action-record>
     
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
@@ -669,10 +709,10 @@
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="eval: null"/>
-		<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails"
-    		if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
+		<field name="companyBankDetails" expr="eval: __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails"
+    		if="clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="!(clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
+    		if="!(clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
     	<field name="contactPartner" expr="eval:null" />
     	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
@@ -753,7 +793,7 @@
 	
 	<action-view name="action-sale-order-view-schedule-event" title="Schedule Event" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
-    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
+    	<context name="_saleOrder" expr="eval:_ids != null ? __repo__(SaleOrder).find(_ids.get(0)) : __this__"/>
     </action-view>
     
     <action-view name="action-sale-order-view-register-advance-payment" title="Register a deposit" model="com.axelor.apps.sale.db.AdvancePayment">
@@ -789,6 +829,10 @@
 	
 	<action-validate name="action-sale-order-validate-information">
 		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null &amp;&amp; !clientPartner.saleOrderInformation.isEmpty()"/>
+	</action-validate>
+	
+	<action-validate name="action-validate-sale-order-check-selection">
+		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || saleOrderToMerge.size() == 0"/>
 	</action-validate>
 	
 	<action-record name="action-saleorder-record-template" model="com.axelor.apps.sale.db.SaleOrder">

@@ -32,7 +32,7 @@
     
     <action-record name="action-contract-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="supplierPartner" expr="eval:_supplier" if="_supplier != null"/>
-    	<field name="contract" expr="eval: __repo__.of(Contract).find(_contractId)" if="_contractId != null"/>
+    	<field name="contract" expr="eval: __repo__(Contract).find(_contractId)" if="_contractId != null"/>
     	<field name="paymentMode" expr="eval: _paymentMode"/>
     	<field name="paymentCondition" expr="eval: _paymentCondition"/>
     </action-record>

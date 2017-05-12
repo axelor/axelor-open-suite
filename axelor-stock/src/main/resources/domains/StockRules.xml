@@ -5,17 +5,18 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="MinStockRules" lang="java">
+  <entity name="StockRules" lang="java">
   
   	<string name="name" title="Name"/>
 	
 	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>  	
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="minQty" title="Min. Qty" required="true"/>
+  	<decimal name="maxQty" title="Max. Qty" required="false"/>
   	<decimal name="reOrderQty" title="Refill Qty" required="true"/>
-  	<integer name="typeSelect" title="Type" selection="stock.min.stock.rules.type.select" required="true"/>
+  	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" required="true"/>
   	
-  	<integer name="orderAlertSelect" title="Refill type" selection="stock.min.stock.rules.order.alert.select" required="true"/>
+  	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" required="true"/>
   	
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>

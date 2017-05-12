@@ -45,8 +45,8 @@
 	</action-record>
 	
 	<action-record name="action-hr-ts-timer-record-new" model="com.axelor.apps.hr.db.TSTimer">
-	    <field name="project" expr="eval:null" if="!__config.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
-	    <field name="product" expr="eval:null" if="!__config.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
+	    <field name="project" expr="eval:null" if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
+	    <field name="product" expr="eval:null" if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
 	    <field name="startDateTime" expr="eval:null"/>
 	    <field name="duration" expr="eval:null"/>
 	    <field name="timesheetLine" expr="eval:null"/>

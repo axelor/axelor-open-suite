@@ -31,7 +31,7 @@
 	</action-record>
 	
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">
-		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__.of(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
+		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
 	</action-validate>
 	
 </object-views>	

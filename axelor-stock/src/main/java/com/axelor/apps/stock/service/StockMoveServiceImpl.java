@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -280,12 +279,19 @@ public class StockMoveServiceImpl implements StockMoveService {
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String realize(StockMove stockMove) throws AxelorException {
+		return realize(stockMove, true);
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String realize(StockMove stockMove, boolean check) throws AxelorException {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
-		
-		checkOngoingInventory(stockMove);
-		
+
+		if (check) {
+			checkOngoingInventory(stockMove);
+		}
+
 		String newStockSeq = null;
 
 		stockMoveLineService.updateLocations(
@@ -382,7 +388,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	private void computeWeights(StockMove stockMove) throws AxelorException {
 		boolean weightsRequired = checkWeightsRequired(stockMove);
 		StockConfig stockConfig = stockMove.getCompany().getStockConfig();
-		Unit endUnit = stockConfig != null ? stockConfig.getWeightUnit() : null;
+		Unit endUnit = stockConfig != null ? stockConfig.getCustomsWeightUnit() : null;
 
 		if (weightsRequired && endUnit == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_17), IException.NO_VALUE);
@@ -693,17 +699,20 @@ public class StockMoveServiceImpl implements StockMoveService {
 	}
 	
 	@Override
-	public Map<LocalDate, BigDecimal> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate) {
+	public List<Map<String,Object>> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate) {
 		
-		Map<LocalDate, BigDecimal> stockMap = new HashMap<LocalDate, BigDecimal>();
+		List<Map<String,Object>> stock = new ArrayList<Map<String,Object>>();
 		
 		while(!fromDate.isAfter(toDate)) {
 			Double qty = getStock(locationId, productId, fromDate);
-			stockMap.put(fromDate, new BigDecimal(qty));
+			Map<String,Object> dateStock = new HashMap<String, Object>();
+			dateStock.put("$date",fromDate);
+			dateStock.put("$qty",new BigDecimal(qty));
+			stock.add(dateStock);
 			fromDate = fromDate.plusDays(1);
 		}
 		
-		return stockMap;
+		return stock;
 	}
 	
     private Double getStock(Long locationId, Long productId, LocalDate date) {

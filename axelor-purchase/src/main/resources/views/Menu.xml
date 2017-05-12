@@ -223,40 +223,34 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-purchase" title="Purchases"  top="true" left="false" order="-150" if="__config__.app.isApp('purchase')"/>
+	<menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false" if="__config__.app.isApp('purchase')"/>
 	
-<!-- 	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" top="true" action="sc.root.purchase.order.new"/> -->
-	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" order="-70" action="sc.root.purchase.orders" parent="top-purchase"  top="true" left="false"/>		
-	
-	<menuitem name="top-purchase-quotes" title="View RFQ" order="-90" action="top.purchase.quotes" parent="top-purchase"  top="true" left="false"/>		
-	
-	<action-view name="top.purchase.quotes" title="RFQ"
+	<menuitem name="top-menu-purchase-quotations" title="Quotations" top="true"
+		 action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
+		
+	<action-view name="top.menu.purchase.quotations" title="Quotations"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
+		<view type="cards" name="purchase-order-cards" />
+		<view type="grid" name="purchase-order-quotation-grid" />
+		<view type="form" name="purchase-order-form" />
+		<view-param name="search-filters" value="purchase-order-filters"/>
+		<domain>self.statusSelect &lt; 3</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>
+	
+	<menuitem name="top-menu-purchase-purchase-orders" title="Purchase orders" top="true"
+		 action="top.menu.purchase.purchase.orders" parent="top-menu-purchase"/>
+
+	<action-view name="top.menu.purchase.purchase.orders" title="Purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder" >
+		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchase-order-filters"/>
-		<domain>self.statusSelect in (2,3) </domain>
-	</action-view>	
-	
-	<menuitem name="top-purchase-orders" order="-80" title="View Orders" action="top.purchase.orders" parent="top-purchase"  top="true" left="false"/>		
-	
-	<action-view name="top.purchase.orders" title="Orders"
-		model="com.axelor.apps.purchase.db.PurchaseOrder" >
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<view-param name="search-filters" value="purchase-order-filters"/>
-		<domain>self.statusSelect in (4,5) </domain>
+		<domain>self.statusSelect &gt; 2</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
-	
-	<menuitem name="top-purchase-request-new" order="-70" title="Create new purchase request" action="top.purchase.request.new" 
-		parent="top-purchase"  top="true" left="false" if="__config__.app.isApp('purchase-request')"/>		
-	
-	<action-view name="top.purchase.request.new" title="Create new purchase request"
-		model="com.axelor.apps.purchase.db.PurchaseRequest" >
-		<view type="form" name="purchase-request-form" />
-		<view type="grid" name="purchase-request-grid" />
-	</action-view>
-	
+
 <!-- 	<menuitem name="top-purchase-reqeust-my-current-cart" order="-65" title="My current cart" action="sc.root.purchase.request.my.current.cart" parent="top-purchase"  top="true" left="false"/>		 -->
 	
 	
