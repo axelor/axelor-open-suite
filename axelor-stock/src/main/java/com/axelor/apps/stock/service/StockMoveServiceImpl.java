@@ -227,6 +227,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		LOG.debug("Planification du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 
+		if (stockMove.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+			stockMove.setExTaxTotal(compute(stockMove));
+		}
+
 		Location fromLocation = stockMove.getFromLocation();
 		Location toLocation = stockMove.getToLocation();
 

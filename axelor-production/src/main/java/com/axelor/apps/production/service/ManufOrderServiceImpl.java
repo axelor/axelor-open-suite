@@ -384,7 +384,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 
-		wasteStockMove.setExTaxTotal(stockMoveService.compute(wasteStockMove));
 		stockMoveService.plan(wasteStockMove);
 		stockMoveService.realize(wasteStockMove);
 
