@@ -354,6 +354,7 @@
 "You must add a positive quantity","Veuillez entrer une quantité positive",,
 "You must configure a Production Virtual Location for company %s","Veuillez configurer un Emplacement Virtuel Production pour la société %s",,
 "You must configure a production for company %s","Veuillez configurer la production pour la société %s",,
+"You must configure a waste location for company %s.","Veuillez configurer un emplacement de rebuts pour la société %s.",,
 "You must select a nomenclature","Veuillez sélectionner une nomenclature",,
 "help:ObjectDescription.image",,,
 "name","nom",,

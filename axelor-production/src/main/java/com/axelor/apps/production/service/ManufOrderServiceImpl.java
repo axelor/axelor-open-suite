@@ -44,6 +44,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -341,28 +342,32 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException {
 		StockMove wasteStockMove = null;
+		Company company = manufOrder.getCompany();
 
-		if (manufOrder.getWasteProdProductList() == null || manufOrder.getCompany() == null) {
+		if (manufOrder.getWasteProdProductList() == null || company == null) {
 			return wasteStockMove;
 		}
 
-		Location wasteLocation = getWasteLocation(manufOrder.getCompany());
-
+		ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
+		ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfig);
+		Location wasteLocation = productionConfigService.getWasteLocation(productionConfig);
+
 		wasteStockMove = stockMoveService.createStockMove(
-				manufOrder.getProdProcess().getLocation().getAddress(),
+				virtualLocation.getAddress(),
 				wasteLocation.getAddress(),
-				manufOrder.getCompany(),
-				manufOrder.getProdProcess().getLocation().getPartner(),
-				manufOrder.getProdProcess().getLocation(),
+				company,
+				company.getPartner(),
+				virtualLocation,
 				wasteLocation,
 				appBaseService.getTodayDate(),
 				manufOrder.getWasteProdDescription(),
-				manufOrder.getProdProcess().getLocation().getPartner().getShipmentMode(),
-				manufOrder.getProdProcess().getLocation().getPartner().getFreightCarrierMode());
+				null,
+				null);
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
@@ -372,8 +377,10 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 					prodProduct.getQty(),
 					prodProduct.getProduct().getCostPrice(),
 					prodProduct.getUnit(),
-					null,
-					StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
+					wasteStockMove,
+					StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
+					false,
+					BigDecimal.ZERO);
 			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 
@@ -383,12 +390,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		manufOrder.setWasteStockMove(wasteStockMove);
 		return wasteStockMove;
-	}
-
-	private Location getWasteLocation(Company company) {
-		ProductionConfigRepository productionConfigRepo = Beans.get(ProductionConfigRepository.class);
-		ProductionConfig productionConfig = productionConfigRepo.findByCompany(company);
-		return productionConfig.getWasteLocation();
 	}
 
 }

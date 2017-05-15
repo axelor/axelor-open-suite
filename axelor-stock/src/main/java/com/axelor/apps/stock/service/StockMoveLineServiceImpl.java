@@ -108,7 +108,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 						    //searching for the tracking number using FIFO or LIFO
 							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
 						}
-
+						break;
+					case StockMoveLineService.TYPE_WASTE_PRODUCTIONS:
+						break;
 					default:
 						break;
 				}
