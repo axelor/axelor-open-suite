@@ -22,11 +22,11 @@ import java.math.BigDecimal;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.db.StockRules;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface MinStockRulesService {
+public interface StockRulesService {
 
 	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
 	
@@ -34,9 +34,9 @@ public interface MinStockRulesService {
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
 	
 	
-	public boolean useMinStockRules(LocationLine locationLine, MinStockRules minStockRules, BigDecimal qty, int type); 
+	public boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type); 
 	
-	public MinStockRules getMinStockRules(Product product, Location location, int type);
+	public StockRules getStockRules(Product product, Location location, int type);
 
-	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, MinStockRules minStockRules);
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules);
 }

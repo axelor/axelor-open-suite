@@ -422,6 +422,11 @@ public class ModelBuilderService {
 			fieldXml.append("sequence=\"" + sequence + "\" ");
 		}
 		
+		boolean json = field.getJson();
+		if (json) {
+			fieldXml.append("json=\"true\"");
+		}
+		
 		addMinMax(fieldXml, field);
 	}
 
@@ -572,9 +577,7 @@ public class ModelBuilderService {
 	/**
 	 * Method convert simple type name of field into adk supported 'typeName'
 	 * (which is type class name) for MetaField.
-	 * 
-	 * @param metaField
-	 *            MetaField to get typeName.
+	 *
 	 * @return Adk supported typeName.
 	 */
 	public String getFieldTypeName(String type) {

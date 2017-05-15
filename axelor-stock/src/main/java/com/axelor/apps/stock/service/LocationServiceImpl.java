@@ -17,18 +17,18 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class LocationServiceImpl implements LocationService{
 	
@@ -89,19 +89,33 @@ public class LocationServiceImpl implements LocationService{
 	}
 
 	@Override
-	public BigDecimal computeAvgPriceForProduct(Long productId) {
-		String query = "SELECT new list(self.avgPrice, self.currentQty) FROM LocationLine as self " +
+	public void computeAvgPriceForProduct(Product product, LocationLine unsavedLocationLine) {
+	    Long productId = product.getId();
+		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self " +
 				       "WHERE self.product.id = " + productId + " AND self.location.typeSelect != " + LocationRepository.TYPE_VIRTUAL;
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-		BigDecimal avgPrice = BigDecimal.ZERO;
+		BigDecimal productAvgPrice = BigDecimal.ZERO;
 		BigDecimal qtyTot = BigDecimal.ZERO;
-		List<List<BigDecimal>> results = JPA.em().createQuery(query).getResultList();
-		for (List<BigDecimal> result : results) {
-		    avgPrice = avgPrice.add(result.get(0).multiply(result.get(1)));
-		    qtyTot = qtyTot.add(result.get(1));
+		List<List<Object>> results = JPA.em().createQuery(query).getResultList();
+		if (results.size() == 0) {
+			return;
 		}
-		avgPrice = avgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-		return avgPrice;
+		for (List<Object> result : results) {
+		    BigDecimal avgPrice = (BigDecimal) result.get(1);
+			BigDecimal qty = (BigDecimal) result.get(2);
+			if (result.get(0).equals(unsavedLocationLine.getId())) {
+			    avgPrice = unsavedLocationLine.getAvgPrice();
+			    qty = unsavedLocationLine.getCurrentQty();
+			}
+			productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
+			qtyTot = qtyTot.add(qty);
+		}
+		if (qtyTot.equals(BigDecimal.ZERO)) {
+			return;
+		}
+		productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
+		product.setAvgPrice(productAvgPrice);
+		productRepo.save(product);
 	}
 	
 }

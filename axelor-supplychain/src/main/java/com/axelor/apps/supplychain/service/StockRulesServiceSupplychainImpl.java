@@ -28,15 +28,15 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.MinStockRules;
-import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
-import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImpl  {
+public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 	@Inject
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
@@ -63,26 +63,26 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 			return;
 		}
 
-		MinStockRules minStockRules = this.getMinStockRules(product, location, type);
+		StockRules stockRules = this.getStockRules(product, location, type);
 
-		if(minStockRules == null)  {
+		if(stockRules == null)  {
 			return;
 		}
 
-		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
+		if(this.useMinStockRules(locationLine, stockRules, qty, type))  {
 
-			if(minStockRules.getOrderAlertSelect() ==  MinStockRulesRepository.ORDER_ALERT_ALERT)  {
+			if(stockRules.getOrderAlertSelect() ==  StockRulesRepository.ORDER_ALERT_ALERT)  {
 
 				//TODO
 
 			}
-			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
+			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
 
 
 			}
-			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
+			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
 
-				BigDecimal qtyToOrder = this.getQtyToOrder(qty, locationLine, type, minStockRules);
+				BigDecimal qtyToOrder = this.getQtyToOrder(qty, locationLine, type, stockRules);
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 
 				if(supplierPartner != null)  {
@@ -95,7 +95,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 							null,
 							supplierPartner.getCurrency(),
 							this.today.plusDays(supplierPartner.getDeliveryDelay()),
-							minStockRules.getName(),
+							stockRules.getName(),
 							null,
 							location,
 							this.today,

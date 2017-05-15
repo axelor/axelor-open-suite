@@ -25,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.studio.db.Filter;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -44,6 +46,9 @@ public class FilterService {
 	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
+	
+	@Inject
+	private MetaJsonFieldRepository metaJsonFieldRepo;
 
 	/**
 	 * Method to convert chart filter list to groovy expression string. Each
@@ -125,54 +130,79 @@ public class FilterService {
 
 	}
 
-	public List<Object> getTargetField(MetaField metaField, String target) {
+	public List<Object> getTargetField(Object targetField, String target) {
 
 		List<Object> result = new ArrayList<Object>();
 		List<String> targetList = new ArrayList<String>();
+		
+		MetaField metaField = null;
+		MetaJsonField metaJson = null;
+		
+		if (targetField instanceof MetaField) {
+			metaField = (MetaField) targetField;
+		}
+		else if (targetField instanceof MetaJsonField) {
+			metaJson = (MetaJsonField) targetField;
+		}
 		targetList.add(metaField.getName());
-
+		
 		if (target != null) {
-			String modelName = metaField.getTypeName();
+			String modelName = metaField != null ? metaField.getTypeName() : metaJson.getTargetModel();
 			List<String> fields = Arrays.asList(target.split("\\."));
-
 			if (fields.size() >= 2) {
-
+				
 				fields = fields.subList(1, fields.size());
 
 				for (String field : fields) {
-					MetaField subField = metaFieldRepo
+					MetaField subMetaField = metaFieldRepo
 							.all()
 							.filter("self.name = ?1 and self.metaModel.name = ?2",
 									field, modelName).fetchOne();
-					if (subField == null) {
-						break;
+					MetaJsonField subJson = null;
+					if (subMetaField == null) {
+						subJson = metaJsonFieldRepo
+								.all()
+								.filter("self.name = ?1 and self.model = ?2",
+										field, modelName).fetchOne();
 					}
-
-					metaField = subField;
+					
+					if (subMetaField != null) {
+						targetField = subMetaField;
+					}
+					else {
+						targetField = subJson;
+					}
 
 					targetList.add(field);
 
-					if (subField.getRelationship() == null) {
+					if (subMetaField != null && subMetaField.getRelationship() == null) {
+						break;
+					}
+					if (subJson != null && subJson.getTargetModel() == null) {
 						break;
 					}
 
 					if (fields.get(fields.size() - 1) == field) {
 						break;
 					} else {
-						modelName = subField.getTypeName();
+						if (subMetaField != null) {
+							modelName = subMetaField.getTypeName();
+						}
+						else if(subJson != null) {
+							modelName = subJson.getTargetModel();
+						}
 					}
-
 				}
 
 			}
 		}
 
 		result.add(Joiner.on(".").join(targetList));
-		result.add(metaField);
+		result.add(targetField);
 
 		return result;
 	}
-
+	
 	private String processValue(Filter filter, String typeName) {
 
 		String value = filter.getValue();
@@ -225,12 +255,14 @@ public class FilterService {
 	public String getSimpleCondition(Filter filter, String paramName) {
 
 		MetaField field = filter.getMetaField();
+		MetaJsonField json = filter.getMetaJsonField();
 
-		String fieldName = field.getName();
+		String fieldName = filter.getIsJson() ? json.getModelField() + ",'" + json.getName() + "'" : field.getName();
 		if (paramName == null) {
 			paramName = fieldName;
 		}
-		String conditionField = "self." + fieldName;
+		
+		String conditionField = filter.getIsJson() ? getJsonJpql(json) + "(self." + fieldName + ")": "self." + fieldName;
 
 		String value = filter.getValue();
 		String[] values = new String[] { "" };
@@ -239,7 +271,7 @@ public class FilterService {
 		}
 
 		String operator = filter.getFilterOperator().getValue();
-		String typeName = field.getTypeName().toUpperCase();
+		String typeName = filter.getIsJson() ? json.getType().toUpperCase() : field.getTypeName().toUpperCase();
 
 		value = getTagValue(value, true);
 
@@ -290,6 +322,22 @@ public class FilterService {
 		}
 
 	}
+	
+	
+	public String getJsonJpql(MetaJsonField jsonField) {
+		
+		switch(jsonField.getType()) {
+		case "integer":
+			return "json_extract_integer";
+		case "decimal":
+			return "json_extract_decimal";
+		case "boolean":
+			return "json_extract_boolean";
+		 default:
+			 return "json_extract";
+		}
+		
+	}
 
 	/**
 	 * Method to generate query condition for relational chart filter fields.
@@ -301,22 +349,24 @@ public class FilterService {
 	public String getRelationalCondition(Filter filter, String paramName) {
 
 		MetaField metaField = filter.getMetaField();
-		String fieldName = metaField.getName();
+		MetaJsonField metaJson = filter.getMetaJsonField();
+		
+		boolean json = filter.getIsJson();
+		
+		String fieldName = json ? metaJson.getName() : metaField.getName();
 		if (paramName == null) {
 			paramName = fieldName;
 		}
 		String conditionField = "self." + filter.getTargetField();
+		if (json) {
+			conditionField = "json_extract(self." + filter.getTargetField() + ")";
+		}
 		String value = filter.getValue();
 		String targetType = filter.getTargetType().toUpperCase();
-		if (targetType == null) {
-			MetaField targetField = (MetaField) getTargetField(metaField,
-					filter.getTargetField()).get(1);
-			if (targetField.getRelationship() != null) {
-				targetType = targetField.getRelationship();
-			} else {
-				targetType = targetField.getTypeName();
-			}
-		}
+//		if (targetType == null) {
+//			Object targetField = getTargetField(metaField,
+//					filter.getTargetField()).get(1);
+////		}
 		Boolean isParam = filter.getIsParameter();
 
 		String operator = filter.getFilterOperator().getValue();

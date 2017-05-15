@@ -27,7 +27,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.*;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.app.AppProductionServiceImpl;
-import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -50,7 +50,7 @@ public class ProductionModule extends AxelorModule {
 		bind(CostSheetService.class).to(CostSheetServiceImpl.class);
 		bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
 		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
-		bind(MinStockRulesServiceSupplychainImpl.class).to(MinStockRulesServiceProductionImpl.class);
+		bind(StockRulesServiceSupplychainImpl.class).to(StockRulesServiceProductionImpl.class);
 		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
 		bind(AppProductionService.class).to(AppProductionServiceImpl.class);
 		bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);

@@ -39,12 +39,12 @@
 		<option value="2">Stock control</option>
 	</selection>
 	
-	<selection name="stock.min.stock.rules.type.select">
+	<selection name="stock.stock.rules.type.select">
 		<option value="1">Current</option>
 		<option value="2">Future</option>
 	</selection>
 	
-	<selection name="stock.min.stock.rules.order.alert.select">
+	<selection name="stock.stock.rules.order.alert.select">
 		<option value="1">Alert</option>
 		<option value="2">Purchase order</option>
 		<option value="3">Production order</option>

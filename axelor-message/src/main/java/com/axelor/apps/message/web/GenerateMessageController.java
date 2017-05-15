@@ -94,7 +94,7 @@ public class GenerateMessageController {
 	public void generateMessage(ActionRequest request, ActionResponse response)  {
 		
 		Context context = request.getContext();
-		Map<?,?> templateContext = (Map<?,?>) context.get("template");
+		Map<?,?> templateContext = (Map<?,?>) context.get("_xTemplate");
 		Template template = templateRepo.find( Long.parseLong( templateContext.get("id").toString() ) );
 		
 		Long objectId =  Long.parseLong( context.get("_objectId").toString() );

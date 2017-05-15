@@ -338,8 +338,70 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		saleOrderRepo.save(saleOrder);
 	}
+	
+	@Override
+	@Transactional
+	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency, Partner clientPartner, Company company, Partner contactPartner, PriceList priceList, Team team) throws AxelorException {
+		
+		String numSeq = "";
+		String externalRef = "";
+		for (SaleOrder saleOrderLocal : saleOrderList) {
+			if (!numSeq.isEmpty()){
+				numSeq += "-";
+			}
+			numSeq += saleOrderLocal.getSaleOrderSeq();
 
+			if (!externalRef.isEmpty()){
+				externalRef += "|";
+			}
+			if (saleOrderLocal.getExternalReference() != null){
+				externalRef += saleOrderLocal.getExternalReference();
+			}
+		}
+		
+		SaleOrder saleOrderMerged = this.createSaleOrder(
+				AuthUtils.getUser(),
+				company,
+				contactPartner,
+				currency,
+				null,
+				numSeq,
+				externalRef,
+				LocalDate.now(),
+				priceList,
+				clientPartner,
+				team);
+		
+		this.attachToNewSaleOrder(saleOrderList,saleOrderMerged);
+		
+		this.computeSaleOrder(saleOrderMerged);
+		
+		saleOrderRepo.save(saleOrderMerged);
+		
+		this.removeOldSaleOrders(saleOrderList);
+		
+		return saleOrderMerged;
+	}
 
+	//Attachment of all sale order lines to new sale order
+	public void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
+		for(SaleOrder saleOrder : saleOrderList)  {
+			int countLine = 1;
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				saleOrderLine.setSequence(countLine * 10);
+				saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
+				countLine++;
+			}
+		}
+	}
+	
+	//Remove old sale orders after merge
+	public void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
+		for(SaleOrder saleOrder : saleOrderList)  {
+			saleOrderRepo.remove(saleOrder);
+		}
+	}
+	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
 		

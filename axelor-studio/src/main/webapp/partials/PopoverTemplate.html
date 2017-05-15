@@ -105,6 +105,7 @@
     </div>
     <div class="group">
         <label ng-show="!isView &amp;&amp; ['string'].indexOf(component) > -1"><input type="checkbox" ng-model="nameColumn"> Name column</label>
+        <label ng-show="!isView &amp;&amp; ['string'].indexOf(component) > -1"><input type="checkbox" ng-model="json"> Json</label>
         <label ng-hide="isView"><input type="checkbox" ng-model="track"> Track</label>	
     </div>
     <div class="group" ng-show="isView &amp;&amp; ['many-to-one','many-to-many'].indexOf(component) > -1">

@@ -165,7 +165,16 @@
 	<chart name="chart.locationLine.location.value" title="Location value">
 		<dataset type="jpql">
 			SELECT
-				SUM(self.currentQty * self.product.costPrice) AS value,
+				SUM(
+					self.currentQty *
+					CASE WHEN
+						(product.costTypeSelect = 3)
+					THEN
+						(self.avgPrice)
+					ELSE
+						(self.product.costPrice)
+					END
+				) AS value,
 				'Stock Value' AS label
 			FROM
 				LocationLine AS self
