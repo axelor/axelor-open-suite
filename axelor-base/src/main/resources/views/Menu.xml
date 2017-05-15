@@ -156,7 +156,7 @@
 	</action-view>
 	
 	<menuitem name="product-root-product-model" parent="referential-root-product-root"
-		title="Products models" action="product.root.product.model" />
+		title="Products models" action="product.root.product.model" if="__config__.app.getApp('base').getManageProductVariants()" />
 
 	<action-view name="product.root.product.model" title="Products models"
 		model="com.axelor.apps.base.db.Product" >

@@ -23,6 +23,7 @@
 		    	<field name="teamManagement" widget="boolean-switch"/>
 		    	<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>
+				<field name="manageProductVariants" widget="boolean-switch"/>
 			</panel>
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">
