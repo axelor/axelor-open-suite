@@ -38,6 +38,7 @@ public interface StockMoveLineService {
 	public static final int TYPE_PURCHASES = 2;
 	public static final int TYPE_OUT_PRODUCTIONS = 3;
 	public static final int TYPE_IN_PRODUCTIONS = 4;
+	public static final int TYPE_WASTE_PRODUCTIONS = 5;
 
 
 	/**

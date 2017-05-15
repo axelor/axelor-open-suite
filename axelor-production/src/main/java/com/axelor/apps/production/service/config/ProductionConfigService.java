@@ -55,5 +55,12 @@ public class ProductionConfigService {
 		
 	}
 	
-	
+	public Location getWasteLocation(ProductionConfig productionConfig) throws AxelorException {
+		if (productionConfig.getWasteLocation() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3),
+					productionConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return productionConfig.getWasteLocation();
+	}
+
 }
