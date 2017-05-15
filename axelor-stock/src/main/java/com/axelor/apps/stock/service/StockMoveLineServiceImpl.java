@@ -315,9 +315,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		BigDecimal diff = currentTotalQty.multiply(currentAvgPrice).			//(currentAvgPrice*totalQty -
 				subtract(currentLinePrice.multiply(currentLineQty));			// currentLinePrice*currentLineQty)
-		BigDecimal updatedAvgPrice = 											// /  (totalQty - currentLineQty)
-				diff.divide(currentTotalQty.subtract(currentLineQty)
-				, scale, RoundingMode.HALF_UP);
+		BigDecimal denominator = currentTotalQty.subtract(currentLineQty);
+		BigDecimal updatedAvgPrice;
+		if (denominator.compareTo(BigDecimal.ZERO) != 0) {
+			updatedAvgPrice = 											// /  (totalQty - currentLineQty)
+					diff.divide(denominator, scale, RoundingMode.HALF_UP);
+		} else {
+			updatedAvgPrice = BigDecimal.ZERO;
+		}
 		locationLine.setAvgPrice(updatedAvgPrice);
 	}
 
