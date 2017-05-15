@@ -76,7 +76,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			if(trackingNumberConfiguration != null)  {
 
 				switch (type) {
-					case 1:
+					case StockMoveLineService.TYPE_SALES:
 						if(trackingNumberConfiguration.getIsSaleTrackingManaged())  {
 							if(trackingNumberConfiguration.getGenerateSaleAutoTrackingNbr())  {
 								// Générer numéro de série si case cochée
@@ -89,20 +89,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 							}
 						}
 						break;
-					case 2:
+					case StockMoveLineService.TYPE_PURCHASES:
 						if(trackingNumberConfiguration.getIsPurchaseTrackingManaged() && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr())  {
 							// Générer numéro de série si case cochée
 							this.generateTrackingNumber(stockMoveLine, trackingNumberConfiguration, product, trackingNumberConfiguration.getPurchaseQtyByTracking());
 
 						}
 						break;
-					case 3:
+					case StockMoveLineService.TYPE_OUT_PRODUCTIONS:
 						if(trackingNumberConfiguration.getIsProductionTrackingManaged() && trackingNumberConfiguration.getGenerateProductionAutoTrackingNbr())  {
 							// Générer numéro de série si case cochée
 							this.generateTrackingNumber(stockMoveLine, trackingNumberConfiguration, product, trackingNumberConfiguration.getProductionQtyByTracking());
 
 						}
 						break;
+					case StockMoveLineService.TYPE_IN_PRODUCTIONS:
+						if (trackingNumberConfiguration.getHasProductAutoSelectTrackingNbr()) {
+						    //searching for the tracking number using FIFO or LIFO
+							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+						}
 
 					default:
 						break;
@@ -226,6 +231,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.getStockMove().getStockMoveLineList().add(newStockMoveLine);
 
 		stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
+		stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
 
 		return newStockMoveLine;
 	}
