@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -42,9 +42,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -272,7 +269,7 @@ from public.account_move_line_report as MoveLineReport
 left outer join public.account_payment_voucher as PaymentVoucher on (MoveLineReport.id = ?) 
 left outer join public.base_partner as Partner on (PaymentVoucher.partner  = Partner.id)
 
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.move_line_report_id = MoveLineReport.id)
 
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
 
@@ -283,35 +280,14 @@ left outer join public.account_cash_register as CashRegister on (PaymentVoucher.
 where 
 
 -- Filtre sur les paramètres du reporting comptable
-(MoveLineReport.date_from IS NULL OR date(PaymentVoucher.payment_date_time) >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR date(PaymentVoucher.payment_date_time)  <= MoveLineReport.date_to) AND
-date(PaymentVoucher.payment_date_time) <= MoveLineReport.date_val and 
+(MoveLineReport.date_from IS NULL OR date(PaymentVoucher.payment_date) >= MoveLineReport.date_from) AND 
+(MoveLineReport.date_to IS NULL OR date(PaymentVoucher.payment_date)  <= MoveLineReport.date_to) AND
+date(PaymentVoucher.payment_date) <= MoveLineReport.date_val and 
 PaymentVoucher.company = Company.id AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
 (MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = CashRegister.id) AND
 PaymentMode.type_select = 7 AND PaymentVoucher.status_select = 2 AND PaymentVoucher.operation_type_select = 3
 ORDER BY PaymentVoucher.paid_amount]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>

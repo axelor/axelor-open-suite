@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -31,9 +31,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -483,41 +480,41 @@ left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
 left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
-left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.account_move_line_report = MoveLineReport.id)
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.move_line_report_id = MoveLineReport.id)
+left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.move_line_report_id = MoveLineReport.id)
 
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
-left outer join public.account_reported_balance as ReportedBalance on (ReportedBalance.partner = Partner.id AND ReportedBalance.company = Company.id)
-left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.reported_balance = ReportedBalance.id) 
+left outer join public.account_accounting_situation as AccountingSituation on (AccountingSituation.partner = Partner.id AND AccountingSituation.company = Company.id)
+left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.accounting_situation = AccountingSituation.id) 
 left outer join public.base_year as YYear on (YYear.id = ReportedBalanceLine.year) 
 left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
 left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
 left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
 left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
 left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as mlid 
-				from public.account_move_line_report as MoveLineReport2 
-				left outer join public.account_move_line as MoveLine2 on (MoveLineReport2.id = ?)
-				left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
-				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
-				
-				left outer join public.account_account as MoveLineAccount2 on (MoveLine2.account  = MoveLineAccount2.id )
-				left outer join public.base_partner as Partner2 on (MoveLine2.partner  = Partner2.id)
+	from public.account_move_line_report as MoveLineReport2 
+	left outer join public.account_move_line as MoveLine2 on (MoveLineReport2.id = ?)
+	left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
+	left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
 
-				left outer join public.account_move_line_report_account_set as AccountSet2 on (AccountSet2.account_move_line_report = MoveLineReport2.id)
-				left outer join public.account_move_line_report_partner_set as PartnerSet2 on (PartnerSet2.account_move_line_report = MoveLineReport2.id)
-				
-				where 
-				(MoveLineReport2.date_from IS NULL OR MoveLine2.date_val >= MoveLineReport2.date_from) AND 
-				(MoveLineReport2.date_to IS NULL OR MoveLine2.date_val <= MoveLineReport2.date_to) AND
-				MoveLine2.date_val <= MoveLineReport2.date_val and 
-				Move2.company = MoveLineReport2.company AND
-				(AccountSet2.account_set IS NULL OR AccountSet2.account_set = MoveLineAccount2.id) AND
-				(PartnerSet2.partner_set IS NULL OR PartnerSet2.partner_set = Partner2.id) AND
-				MoveLineAccount2.reconcile_ok = true AND 
-				Move2.ignore_in_accounting_ok = false  AND Move2.status_select = 3 AND Reconcile2.status_select = 2
-				
-				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
+	left outer join public.account_account as MoveLineAccount2 on (MoveLine2.account  = MoveLineAccount2.id )
+	left outer join public.base_partner as Partner2 on (MoveLine2.partner  = Partner2.id)
+
+	left outer join public.account_move_line_report_account_set as AccountSet2 on (AccountSet2.move_line_report_id = MoveLineReport2.id)
+	left outer join public.account_move_line_report_partner_set as PartnerSet2 on (PartnerSet2.move_line_report_id = MoveLineReport2.id)
+
+	where 
+	(MoveLineReport2.date_from IS NULL OR MoveLine2.date_val >= MoveLineReport2.date_from) AND 
+	(MoveLineReport2.date_to IS NULL OR MoveLine2.date_val <= MoveLineReport2.date_to) AND
+	MoveLine2.date_val <= MoveLineReport2.date_val and 
+	Move2.company = MoveLineReport2.company AND
+	(AccountSet2.account_set IS NULL OR AccountSet2.account_set = MoveLineAccount2.id) AND
+	(PartnerSet2.partner_set IS NULL OR PartnerSet2.partner_set = Partner2.id) AND
+	MoveLineAccount2.reconcile_ok = true AND 
+	Move2.ignore_in_accounting_ok = false  AND Move2.status_select = 3 AND Reconcile2.status_select = 2
+
+	group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
 (MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
 (MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
@@ -528,30 +525,6 @@ Move.company = MoveLineReport.company AND
 MoveLineAccount.reconcile_ok = true 
 AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>

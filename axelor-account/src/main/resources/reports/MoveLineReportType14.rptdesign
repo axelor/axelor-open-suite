@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -31,9 +31,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -348,8 +345,8 @@ left outer join public.base_company as Company on (MoveLineReport.company = Comp
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
 left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
-left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.account_move_line_report = MoveLineReport.id)
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.move_line_report_id = MoveLineReport.id)
+left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.move_line_report_id = MoveLineReport.id)
 
 where 
 (MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
@@ -360,30 +357,6 @@ MoveLine.date_val <= MoveLineReport.date_val AND Move.company = MoveLineReport.c
 AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <list-property name="columnHints">
