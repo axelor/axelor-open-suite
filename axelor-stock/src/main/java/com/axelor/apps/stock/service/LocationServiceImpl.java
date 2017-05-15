@@ -110,6 +110,9 @@ public class LocationServiceImpl implements LocationService{
 			productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
 			qtyTot = qtyTot.add(qty);
 		}
+		if (qtyTot.equals(BigDecimal.ZERO)) {
+			return;
+		}
 		productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
 		product.setAvgPrice(productAvgPrice);
 		productRepo.save(product);
