@@ -149,7 +149,7 @@
 	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
 	      			</panel>
 	    		</panel>
-	    		<panel name="variants" title="Variants" showTitle="false">
+	    		<panel name="variants" title="Variants" showTitle="false" if="__config__.app.getApp('base').getManageProductVariants()">
 	      			<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
 	        			<field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
 				        	<editor x-show-titles="false">
