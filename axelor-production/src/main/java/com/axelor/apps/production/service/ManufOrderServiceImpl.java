@@ -384,8 +384,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 
-		stockMoveService.plan(wasteStockMove);
-		stockMoveService.realize(wasteStockMove);
+		stockMoveService.validate(wasteStockMove);
 
 		manufOrder.setWasteStockMove(wasteStockMove);
 		return wasteStockMove;
