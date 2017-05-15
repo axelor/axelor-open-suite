@@ -102,8 +102,8 @@
 		<action name="action-leave-request-method-validate-leave-request"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
-		<action name="save"/>
 		<action name="action-leave-request-method-create-events"/>
+		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-leave-request-group-refuse">
