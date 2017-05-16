@@ -222,8 +222,8 @@
 	<action-view name="stock.root.conf.customs.code.nomenclature"
 		title="Customs code nomenclature" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
 		<view type="tree" name="customs-code-nomenclature-tree"/>
+		<view type="form" name="customs-code-nomenclature-form" />
 	</action-view>
-
 
 <!-- ADMINISTRATION -->
 
