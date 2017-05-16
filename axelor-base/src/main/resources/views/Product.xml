@@ -60,7 +60,6 @@
 			        <field name="isActivity" showIf="productTypeSelect == 'service'" if-module="axelor-human-resource"/>
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain"/>
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
-			        <field name="inventoryTypeSelect" colSpan="12" />
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -68,7 +67,6 @@
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
-			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account"/>
 			        <field name="expense" hidden="true"/>
       			</panel>
     		</panel>
@@ -116,11 +114,15 @@
 	      		</panel>
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"/>
 	    	</panel>
-	    	<panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+			<panel title="Accounting">
+				<field name="isAnalyticCapture" colSpan="6" if-module="axelor-account"/>
+				<panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+			</panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock">
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain">
-				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
-				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
+				        <field name="procurementMethodSelect" colSpan="4" requiredIf="productTypeSelect == 'storable'"/>
+						<field name="inventoryTypeSelect" colSpan="4" />
+				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="4"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
 	      			</panel>
