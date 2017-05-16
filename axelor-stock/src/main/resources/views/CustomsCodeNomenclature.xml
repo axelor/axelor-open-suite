@@ -10,7 +10,7 @@
 		<column name="supplementaryUnit" type="string" />
 
 		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
-			domain="self.parentCustomsCode.id IS NULL" onClick="action-customs-code-nomenclature-view-form">
+			domain="self.parentCustomsCode.id IS NULL">
 			<field as="code" name="code" />
 			<field as="wording" name="wording" />
 			<field as="supplementaryUnit" name="supplementaryUnit" />
