@@ -289,7 +289,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		return value;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
@@ -510,7 +510,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
 		leaveRequest.setValidatedBy(AuthUtils.getUser());
 		leaveRequest.setValidationDate(generalService.getTodayDate());
-		
+
+		createEvents(leaveRequest);
 		leaveRequestRepo.save(leaveRequest);
 		
 	}

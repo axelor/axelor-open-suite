@@ -99,7 +99,6 @@
 		<action name="action-leave-request-method-validate-leave-request"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
-		<action name="action-leave-request-method-create-events"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -207,10 +206,6 @@
 	
 	<action-method name="action-leave-request-method-cancel-leave-request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="cancel"/>
-	</action-method>
-	
-	<action-method name="action-leave-request-method-create-events">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="createEvents"/>
 	</action-method>
 	
 	<action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.LeaveRequest">
