@@ -93,11 +93,10 @@ public class StockRulesServiceImpl implements StockRulesService  {
 		else {
 			qtyToOrder = locationLine.getFutureQty().subtract(qty);
 		}
-		qtyToOrder = stockRules.getMinQty().subtract(qtyToOrder);
+		qtyToOrder = stockRules.getIdealQty().subtract(qtyToOrder);
 		qtyToOrder = qtyToOrder.max(stockRules.getReOrderQty());
 		return qtyToOrder;
 	}
-
 
 	@Override
 	public boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type)  {
