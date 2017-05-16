@@ -51,13 +51,13 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	}
 
 
-	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException{
-		this.generatePurchaseOrder(product, qty, locationLine, type);
+	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, int useCase) throws AxelorException{
+		this.generatePurchaseOrder(product, qty, locationLine, type, useCase);
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, int useCase) throws AxelorException  {
 
 		Location location = locationLine.getLocation();
 
@@ -66,7 +66,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 			return;
 		}
 
-		StockRules stockRules = this.getStockRules(product, location, type);
+		StockRules stockRules = this.getStockRules(product, location, type, useCase);
 
 		if(stockRules == null)  {
 			return;
@@ -126,13 +126,18 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	}
 
 	@Override
-	public StockRules getStockRules(Product product, Location location, int type)  {
+	public StockRules getStockRules(Product product, Location location, int type, int useCase)  {
 
-		return stockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.typeSelect = ?3", product, location, type).fetchOne();
+		if (useCase == StockRulesRepository.USE_CASE_USED_FOR_MRP) {
+			return stockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.useCaseSelect = ?3", product, location, useCase).fetchOne();
+		} else if (useCase == StockRulesRepository.USE_CASE_STOCK_CONTROL) {
+			return stockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.useCaseSelect = ?3 AND self.typeSelect = ?4", product, location, useCase, type).fetchOne();
+		} else {
+			return null;
+		}
 
 		//TODO , plusieurs régles min de stock par produit (achat a 500 et production a 100)...
 
 	}
-
 
 }

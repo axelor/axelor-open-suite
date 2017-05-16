@@ -31,20 +31,20 @@ import java.time.LocalDateTime;
 
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
 
-	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException {
+	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, int useCase) throws AxelorException {
 		Location location = locationLine.getLocation();
 		if (location == null) {return;}
-		StockRules stockRules = this.getStockRules(product, location, type);
+		StockRules stockRules = this.getStockRules(product, location, type, useCase);
 		if (stockRules == null) {return;}
 	    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-	    	this.generateProductionOrder(product, qty, locationLine, type, stockRules);
+	    	this.generateProductionOrder(product, qty, locationLine, type, useCase, stockRules);
 		}
 		else {
-			this.generatePurchaseOrder(product, qty, locationLine, type);
+			this.generatePurchaseOrder(product, qty, locationLine, type, useCase);
 		}
     }
-    public void generateProductionOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) throws AxelorException {
-		if(this.useMinStockRules(locationLine, this.getStockRules(product, locationLine.getLocation(), type), qty, type)) {
+    public void generateProductionOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, int useCase, StockRules stockRules) throws AxelorException {
+		if(this.useMinStockRules(locationLine, this.getStockRules(product, locationLine.getLocation(), type, useCase), qty, type)) {
 			BigDecimal qtyToProduce = this.getQtyToOrder(qty, locationLine, type, stockRules);
 			Beans.get(ProductionOrderService.class).generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
 		}

@@ -34,7 +34,7 @@
 		<option value="3">Incoming move</option>
 	</selection>
 
-	<selection name="stock.min.stock.rules.use.case.select">
+	<selection name="stock.stock.rules.use.case.select">
 		<option value="1">Used for MRP</option>
 		<option value="2">Stock control</option>
 	</selection>

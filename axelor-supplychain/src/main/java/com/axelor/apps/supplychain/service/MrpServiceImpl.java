@@ -271,7 +271,7 @@ public class MrpServiceImpl implements MrpService  {
 				
 				BigDecimal reorderQty = minQty.subtract(cumulativeQty);
 				
-				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE);
+				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 				
 				if(stockRules != null)  {   reorderQty = reorderQty.max(stockRules.getReOrderQty());  }
 				

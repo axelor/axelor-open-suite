@@ -91,10 +91,10 @@ public class LocationLineServiceImpl implements LocationLineService {
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_CURRENT);
+			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_CURRENT, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 		}
 		if(future)  {
-			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_FUTURE);
+			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 		}
 		
 	}
@@ -114,9 +114,9 @@ public class LocationLineServiceImpl implements LocationLineService {
 
 	void checkStockMax(Product product, BigDecimal qty, LocationLine locationLine, int type, BigDecimal baseQty) throws AxelorException {
 		Location location = locationLine.getLocation();
-		StockRules stockRules = stockRulesService.getStockRules(product, location, type);
+		StockRules stockRules = stockRulesService.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
-		if (stockRules == null || BigDecimal.ZERO.equals(stockRules.getMaxQty())) {
+		if (stockRules == null || BigDecimal.ZERO.compareTo(stockRules.getMaxQty()) == 0) {
 			return;
 		}
 

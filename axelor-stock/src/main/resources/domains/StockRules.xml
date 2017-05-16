@@ -24,9 +24,11 @@
 		<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
 
 		<extra-code><![CDATA[
-	   		// TYPE SELECT
+	   		// USE CASE SELECT
 	   		public static final int USE_CASE_USED_FOR_MRP = 1;
 	   		public static final int USE_CASE_STOCK_CONTROL = 2;
+
+	   		// TYPE SELECT
 			public static final int TYPE_CURRENT = 1;
 			public static final int TYPE_FUTURE = 2;
 
