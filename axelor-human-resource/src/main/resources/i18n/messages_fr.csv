@@ -495,7 +495,7 @@
 "Please configure the canceled leave template in HR config for the company %s","Merci de configurer le modèle d'annulation des demandes de congés dans la configuration RH pour la société %s",,
 "Please configure the canceled timehsheet template in HR config for the company %s","Merci de configurer le modèle d'annulation des feuilles de temps dans la configuration RH pour la société %s",,
 "Please configure the expense type for kilometric allowance in HR config for the company %s","merci de configurer les types de frais dans la configuration RH pour la société %s",,
-"Please configure the leave reason in HR config for the company %s","Merci de configurer le motif de congés dans Configuration RH pour la société %s",,
+"Please configure the unjustified absence reason in HR config for the company %s","Merci de configurer le motif absence à justifier dans Configuration RH pour la société %s",,
 "Please configure the lunch voucher export path in HR config for the company %s","Merci de configurer le chemin d'exportation des titres restaurants dans Configuration RH pour la société %s",,
 "Please configure the refused expense template in HR config for the company %s","Merci de configurer le modèle de refus des notes de frais dans la configuration RH pour la société %s",,
 "Please configure the refused extra hours template in HR config for the company %s","Merci de configurer le modèle de refus des heures sup. dans la configuration RH pour la société %s",,
