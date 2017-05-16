@@ -55,4 +55,14 @@
 	
     <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
 	
+	   
+    <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
+	
+	
+	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
+    
 </csv-inputs>

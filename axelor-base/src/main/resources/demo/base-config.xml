@@ -16,10 +16,6 @@
       <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
     </input>
     
-    <input file="meta_menuGroup.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true">
-		<bind column="groups" to="groups" search="self.code in :groups" eval="groups.split('\\|') as List"/>
-	</input>
-	
 	<input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" search="self.fileName = :fileName"/>
     
     
