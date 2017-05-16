@@ -512,8 +512,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		leaveRequest.setValidationDate(generalService.getTodayDate());
 
 		createEvents(leaveRequest);
-		leaveRequestRepo.save(leaveRequest);
-		
 	}
 	
 	
