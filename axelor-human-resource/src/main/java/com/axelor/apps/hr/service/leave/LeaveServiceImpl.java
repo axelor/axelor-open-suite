@@ -178,7 +178,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		else{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -201,12 +200,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),leave.getLeaveLine().getLeaveReason().getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+			leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
 		}
 		else{
 			leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -226,7 +225,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		else{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -247,6 +245,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			else{
 				leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
 			}
+			leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
 		}
 		else if(leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION){
 			if(leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME){
@@ -256,7 +255,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 			}
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -443,8 +441,13 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 	}
 	
-	@Transactional
-	public void cancel(LeaveRequest leaveRequest) {
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void cancel(LeaveRequest leaveRequest) throws AxelorException {
+		
+		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
+			this.manageCancelLeaves(leaveRequest);
+		}
 		
 		if (leaveRequest.getEvent() != null){
 			Event event = leaveRequest.getEvent();
@@ -452,7 +455,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			eventRepo.remove(eventRepo.find(event.getId()));
 		}
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
-		leaveRequestRepo.save(leaveRequest);
 	}
 	
 	public Message sendCancellationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {

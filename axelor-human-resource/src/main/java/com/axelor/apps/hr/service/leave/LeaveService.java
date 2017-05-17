@@ -69,7 +69,7 @@ public interface LeaveService {
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException;
 	
 	@Transactional
-	public void cancel(LeaveRequest leaveRequest);
+	public void cancel(LeaveRequest leaveRequest) throws AxelorException;
 
 	public Message sendCancellationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 	
