@@ -44,7 +44,7 @@ public interface LeaveService {
 	public void manageSentLeaves(LeaveRequest leave) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageValidLeaves(LeaveRequest leave) throws AxelorException;
+	public void manageValidateLeaves(LeaveRequest leave) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException;

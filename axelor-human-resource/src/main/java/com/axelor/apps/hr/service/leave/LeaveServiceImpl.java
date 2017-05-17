@@ -182,7 +182,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageValidLeaves(LeaveRequest leave) throws AxelorException{
+	public void manageValidateLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -503,7 +503,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void validate(LeaveRequest leaveRequest) throws AxelorException  {
 		
 		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()){
-			this.manageValidLeaves(leaveRequest);
+			this.manageValidateLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
