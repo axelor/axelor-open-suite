@@ -61,8 +61,6 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 			
 			removeOldPlanningTime(planning);
 			
-			BigDecimal totalPlanned = BigDecimal.ZERO;
-			
 			while (startDate.isBefore(toDate)) {
 				
 				LocalDate date = startDate.toLocalDate();
@@ -84,7 +82,6 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 					BigDecimal totalHours = BigDecimal.ZERO;
 					if (timePercent > 0) {
 						totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
-						totalPlanned = totalPlanned.add(totalHours);
 					}
 					planningTime.setHours(totalHours);
 					planningTimeRepo.save(planningTime);
@@ -93,7 +90,6 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 				startDate = startDate.plusDays(1);
 			}
 			
-			planning.setTotalPlannedHrs(totalPlanned);
 		}
 		
 		return planning;
@@ -135,6 +131,20 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 			project = projectRepo.save(project);
 		}
 		
+	}
+
+	@Override
+	public BigDecimal getTotalPlannedHrs(ProjectPlanning planning) {
+		
+		BigDecimal totalPlannedHrs = BigDecimal.ZERO;
+		
+		if (planning.getProjectPlanningTime() != null) {
+			for (ProjectPlanningTime time : planning.getProjectPlanningTime()) {
+				totalPlannedHrs = totalPlannedHrs.add(time.getHours());
+			}
+		}
+		
+		return totalPlannedHrs;
 	}
 	
 }
