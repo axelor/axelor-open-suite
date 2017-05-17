@@ -445,7 +445,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 		
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
 			manageCancelLeaves(leaveRequest);
 		}
 		
@@ -531,7 +531,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void refuse(LeaveRequest leaveRequest) throws AxelorException  {
 		
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
 			manageRefuseLeaves(leaveRequest);
 		}
 		
