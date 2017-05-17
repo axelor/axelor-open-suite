@@ -27,6 +27,14 @@
 			<field name="timepercent" widget="SelectProgress"/>
 			<field name="description" colSpan="12" widget="html"/>
 			<panel-include view="include-project-planning-hr-form" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
+			<field name="fromEditor" />
+		</panel>
+	</form>
+	
+	<form name="project-planning-user-select-form" title="Select users"  model="com.axelor.apps.project.db.ProjectPlanning">
+		<panel>
+			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-planning-attrs-project-domain"/>
+			<button name="showPlanning" title="Show planning" onClick="action-project-planning-method-show-planning" colSpan="3" />
 		</panel>
 	</form>
 	
@@ -39,5 +47,13 @@
 		eventStart="fromDate" eventStop="toDate" title="Project planning" colorBy="user">
 		<field name="user"/>
 	</calendar>
+	
+	<action-method name="action-project-planning-method-show-planning">
+		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="showPlanning"/>
+	</action-method>
+	
+	<action-attrs name="action-project-planning-attrs-project-domain">
+	   <attribute name="domain" expr="eval:&quot;self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
+	</action-attrs>
 	
 </object-views>

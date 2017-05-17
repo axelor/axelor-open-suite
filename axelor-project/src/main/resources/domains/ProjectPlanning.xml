@@ -15,6 +15,7 @@
       <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
       <string name="description" title="Description" large="true" />
       <string name="planningAttrs" title="Attrs" json="true"/>
+	  <boolean name="fromEditor" />
 	          
   </entity>
   

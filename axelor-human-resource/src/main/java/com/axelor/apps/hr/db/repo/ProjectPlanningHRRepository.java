@@ -17,7 +17,10 @@ public class ProjectPlanningHRRepository extends ProjectPlanningRepository {
 	public ProjectPlanning save(ProjectPlanning projectPlanning) {
 		
 		try {
-			projectPlanning = planningService.updatePlanningTime(projectPlanning);
+			if (!projectPlanning.getFromEditor()) {
+				projectPlanning = planningService.updatePlanningTime(projectPlanning);
+			}
+			projectPlanning.setTotalPlannedHrs(planningService.getTotalPlannedHrs(projectPlanning));
 			planningService.updateTaskPlannedHrs(projectPlanning.getTask());
 			planningService.updateProjectPlannedHrs(projectPlanning.getProject());
 		} catch (AxelorException e) {
