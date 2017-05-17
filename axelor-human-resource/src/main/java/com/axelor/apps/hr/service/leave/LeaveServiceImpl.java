@@ -446,7 +446,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 		
 		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageCancelLeaves(leaveRequest);
+			manageCancelLeaves(leaveRequest);
 		}
 		
 		if (leaveRequest.getEvent() != null){
@@ -503,7 +503,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void validate(LeaveRequest leaveRequest) throws AxelorException  {
 		
 		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()){
-			this.manageValidateLeaves(leaveRequest);
+			manageValidateLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
@@ -532,7 +532,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void refuse(LeaveRequest leaveRequest) throws AxelorException  {
 		
 		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageRefuseLeaves(leaveRequest);
+			manageRefuseLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);
