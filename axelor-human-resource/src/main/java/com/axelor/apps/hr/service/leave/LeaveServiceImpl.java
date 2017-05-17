@@ -469,22 +469,19 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(LeaveRequest leaveRequest) throws AxelorException  {
-		
-				
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageSentLeaves(leaveRequest);
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void confirm(LeaveRequest leaveRequest) throws AxelorException {
+
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageSentLeaves(leaveRequest);
 		}
-		
+
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
 		leaveRequest.setRequestDate(generalService.getTodayDate());
-		
-		leaveRequestRepo.save(leaveRequest);
-		
+
 	}
-	
-	
+
 	public Message sendConfirmationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
