@@ -26,12 +26,18 @@
 	        <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect"/>
 	        <field name="minQty" onChange="action-stock-rules-minqty-change"
-	        	validIf="$number(minQty) >= 0"/>
-			<field name="idealQty" onChange="action-stock-rules-idealqty-change"
-				validIf="$number(idealQty) >= $number(minQty) &amp;&amp; ($number(maxQty) == 0 || $number(idealQty) &lt;= $number(maxQty))" />
-			<field name="maxQty"
-				validIf="$number(maxQty) == 0 || $number(maxQty) >= $number(minQty)" />
-	        <field name="reOrderQty"/>
+	        	validIf="$number(minQty) >= 0" colSpan="2"/>
+	        <panel colSpan="4">
+	        	<field name="useIdealQty"/>
+				<field name="idealQty" onChange="action-stock-rules-idealqty-change"
+					validIf="$number(idealQty) >= $number(minQty) &amp;&amp; ($number(maxQty) == 0 || $number(idealQty) &lt;= $number(maxQty))" />
+	        </panel>
+			<panel colSpan="4">
+	        	<field name="useMaxQty"/>
+				<field name="maxQty"
+					validIf="$number(maxQty) == 0 || $number(maxQty) >= $number(minQty)" />
+			</panel>
+	        <field name="reOrderQty" colSpan="2"/>
         </panel>
 		<panel name="reorderingManagedBy" title="Reordering managed by">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
