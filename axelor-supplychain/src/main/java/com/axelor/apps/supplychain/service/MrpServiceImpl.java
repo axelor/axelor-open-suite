@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.supplychain.db.repo.*;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,10 +57,6 @@ import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
-import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
-import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
-import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
-import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -88,7 +85,8 @@ public class MrpServiceImpl implements MrpService  {
 	protected MinStockRulesService minStockRulesService;
 	protected MrpLineService mrpLineService;
 	protected MrpForecastRepository mrpForecastRepository;
-	
+	protected MrpFamilyRepository mrpFamilyRepository;
+
 	protected LocalDate today;
 	
 	protected List<Location> locationList = Lists.newArrayList();
@@ -185,7 +183,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		this.checkInsufficientCumulativeQty();
 		
-//		this.consolidateMrp(mrp);
+		this.consolidateMrp(mrp);
 		
 		mrp.setStatusSelect(MrpRepository.STATUS_CALCULATION_ENDED);
 		
@@ -362,40 +360,61 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected void consolidateMrp()  {
+	protected void consolidateMrp(Mrp mrp)  {
 		
-		List<MrpLine> mrpLineList = mrpLineRepository.all().filter("self.mrp = ?1", mrp).order("self.product.code").order("maturityDate").order("mrpLineType.typeSelect").order("mrpLineType.sequence").order("id").fetch();
+		List<MrpLine> mrpLineList = mrpLineRepository.all().filter("self.mrp = ?1", mrp)
+				.order("self.product.code")
+				.order("maturityDate")
+				.order("mrpLineType.typeSelect")
+				.order("mrpLineType.sequence")
+				.order("id")
+				.fetch();
+
 
 		Map<List<Object>, MrpLine> map = Maps.newHashMap();
-		MrpLine consolidateMrpLine = null;
-		List<Object> keys = new ArrayList<Object>();
+		MrpLine consolidateMrpLine;
+		List<Object> keys = new ArrayList<>();
 
-		for (MrpLine mrpLine : mrpLineList){
+		if (mrpFamilyRepository != null) {
 
-			MrpLineType mrpLineType = mrpLine.getMrpLineType();
-			
-			keys.clear();
-			keys.add(mrpLineType);
-			keys.add(mrpLine.getProduct());
-			keys.add(mrpLine.getMaturityDate());
-			keys.add(mrpLine.getLocation());
+			List<MrpFamily> mrpFamilyList = mrpFamilyRepository.all().fetch();
 
-			if (map.containsKey(keys))  {
+			for (MrpFamily mrpFamily : mrpFamilyList) {
 
-				consolidateMrpLine = map.get(keys);
-				consolidateMrpLine.setQty(consolidateMrpLine.getQty().add(mrpLine.getQty()));
-				consolidateMrpLine.setCumulativeQty(consolidateMrpLine.getCumulativeQty().add(mrpLine.getCumulativeQty()));
+				for (MrpLine mrpLine : mrpLineList) {
 
-			}
-			else {
-				map.put(keys, mrpLine);
+					if (mrpLine.getProduct().getMrpFamily().equals(mrpFamily)) {
+
+						log.debug("Consolidate MRP Line ...");
+
+						MrpLineType mrpLineType = mrpLine.getMrpLineType();
+
+						keys.clear();
+						keys.add(mrpLineType);
+						keys.add(mrpLine.getProduct());
+						keys.add(mrpLine.getMaturityDate());
+						keys.add(mrpLine.getLocation());
+
+						if (map.containsKey(keys)) {
+
+							consolidateMrpLine = map.get(keys);
+							consolidateMrpLine.setQty(consolidateMrpLine.getQty().add(mrpLine.getQty()));
+							consolidateMrpLine.setCumulativeQty(consolidateMrpLine.getCumulativeQty().add(mrpLine.getCumulativeQty()));
+
+						} else {
+							map.put(keys, mrpLine);
+						}
+
+					}
+
+				}
+
+				mrp.getMrpLineList().clear();
+
+				mrp.getMrpLineList().addAll(map.values());
 			}
 
 		}
-		
-		mrp.getMrpLineList().clear();
-		
-		mrp.getMrpLineList().addAll(map.values());
 		
 	}
 	
