@@ -84,11 +84,12 @@ public class StockRulesServiceImpl implements StockRulesService  {
 
 	}
 
+
 	/**
 	 * Called on creating a new purchase or production order.
-	 * Takes into account the reorder qty and the min quantity in stock rules.
+	 * Takes into account the reorder qty and the min/ideal quantity in stock rules.
 	 *
-	 * with L the quantity that will be left in the location, M the min qty,
+	 * with L the quantity that will be left in the location, M the min/ideal qty,
 	 * R the reorder quantity and O the quantity to order :
 	 *
 	 * O = max(R, M - L)
@@ -97,26 +98,41 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	 * @param locationLine
 	 * @param type  current or future
 	 * @param stockRules
-	 * @return  the quantity to order
+	 * @param MinReOrderQty
+	 * @return the quantity to order
 	 */
 	@Override
-	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) {
-		BigDecimal qtyToOrder;
-		// get the quantity left in location line
-		if (type == StockRulesRepository.TYPE_CURRENT) {
-			qtyToOrder = locationLine.getCurrentQty().subtract(qty);
-		}
-		else {
-			qtyToOrder = locationLine.getFutureQty().subtract(qty);
-		}
-		//the quantity to reorder is the difference between the ideal
-		//quantity and the quantity left in the location
-		qtyToOrder = stockRules.getIdealQty().subtract(qtyToOrder);
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty) {
+		minReorderQty = minReorderQty.max(stockRules.getReOrderQty());
 
-		//If the quantity we need to order is less than the reorder quantity
-		//we must choose the reorder quantity instead
-		qtyToOrder = qtyToOrder.max(stockRules.getReOrderQty());
+		BigDecimal locationLineQty = (type == StockRulesRepository.TYPE_CURRENT) ? locationLine.getCurrentQty()
+				: locationLine.getFutureQty();
+
+		// Get the quantity left in location line.
+		BigDecimal qtyToOrder = locationLineQty.subtract(qty);
+
+		// The quantity to reorder is the difference between the min/ideal
+		// quantity and the quantity left in the location.
+		BigDecimal targetQty = stockRules.getUseIdealQty() ? stockRules.getIdealQty() : stockRules.getMinQty();
+		qtyToOrder = targetQty.subtract(qtyToOrder);
+
+		// If the quantity we need to order is less than the reorder quantity,
+		// we must choose the reorder quantity instead.
+		qtyToOrder = qtyToOrder.max(minReorderQty);
+
+		// Limit the quantity to order in order to not exceed to max quantity
+		// rule.
+		if (stockRules.getUseMaxQty()) {
+			BigDecimal maxQtyToReorder = stockRules.getMaxQty().subtract(locationLineQty);
+			qtyToOrder = qtyToOrder.min(maxQtyToReorder);
+		}
+
 		return qtyToOrder;
+	}
+
+	@Override
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) {
+		return getQtyToOrder(qty, locationLine, type, stockRules, BigDecimal.ZERO);
 	}
 
 	@Override

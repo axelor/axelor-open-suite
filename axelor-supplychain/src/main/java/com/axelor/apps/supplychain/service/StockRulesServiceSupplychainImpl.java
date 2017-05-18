@@ -18,10 +18,12 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -82,7 +84,8 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 			}
 			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
 
-				BigDecimal qtyToOrder = this.getQtyToOrder(qty, locationLine, type, stockRules);
+				BigDecimal minReorderQty = getDefaultSupplierMinQty(product);
+				BigDecimal qtyToOrder = this.getQtyToOrder(qty, locationLine, type, stockRules, minReorderQty);
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 
 				if(supplierPartner != null)  {
@@ -127,5 +130,17 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 	}
 
+	private BigDecimal getDefaultSupplierMinQty(Product product) {
+		Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
+		List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
+		if (defaultSupplierPartner != null && supplierCatalogList != null) {
+			for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+				if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
+					return supplierCatalog.getMinQty();
+				}
+			}
+		}
+		return BigDecimal.ZERO;
+	}
 
 }
