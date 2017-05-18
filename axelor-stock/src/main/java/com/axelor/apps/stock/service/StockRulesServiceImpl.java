@@ -84,16 +84,37 @@ public class StockRulesServiceImpl implements StockRulesService  {
 
 	}
 
+	/**
+	 * Called on creating a new purchase or production order.
+	 * Takes into account the reorder qty and the min quantity in stock rules.
+	 *
+	 * with L the quantity that will be left in the location, M the min qty,
+	 * R the reorder quantity and O the quantity to order :
+	 *
+	 * O = max(R, M - L)
+	 *
+	 * @param qty  the quantity of the stock move.
+	 * @param locationLine
+	 * @param type  current or future
+	 * @param stockRules
+	 * @return  the quantity to order
+	 */
 	@Override
 	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) {
 		BigDecimal qtyToOrder;
+		// get the quantity left in location line
 		if (type == StockRulesRepository.TYPE_CURRENT) {
 			qtyToOrder = locationLine.getCurrentQty().subtract(qty);
 		}
 		else {
 			qtyToOrder = locationLine.getFutureQty().subtract(qty);
 		}
+		//the quantity to reorder is the difference between the ideal
+		//quantity and the quantity left in the location
 		qtyToOrder = stockRules.getIdealQty().subtract(qtyToOrder);
+
+		//If the quantity we need to order is less than the reorder quantity
+		//we must choose the reorder quantity instead
 		qtyToOrder = qtyToOrder.max(stockRules.getReOrderQty());
 		return qtyToOrder;
 	}
