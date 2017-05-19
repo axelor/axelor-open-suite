@@ -53,7 +53,7 @@
 	</action-method>
 	
 	<action-attrs name="action-project-planning-attrs-project-domain">
-	   <attribute name="domain" expr="eval:&quot;self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
+	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
 	</action-attrs>
 	
 </object-views>
