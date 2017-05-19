@@ -12,7 +12,10 @@
       <integer name="elementSelect" title="Element" selection="supplychain.mrp.line.element.select" default="0"/>
       <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select" default="0"/>
       <integer name="sequence" title="Sequence to order MRP results"/>
-      
+
+      <string name="purchaseOrderStatusSelect" selection="purchase.purchase.order.status.select" />
+      <string name="saleOrderStatusSelect" selection="sale.order.status.select" />
+
       <extra-code><![CDATA[
 	
 	
