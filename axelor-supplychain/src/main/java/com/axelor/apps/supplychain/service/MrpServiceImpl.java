@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.apps.supplychain.db.repo.*;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -374,6 +375,9 @@ public class MrpServiceImpl implements MrpService  {
 		Map<List<Object>, MrpLine> map = Maps.newHashMap();
 		MrpLine consolidateMrpLine;
 		List<Object> keys = new ArrayList<>();
+		LocalDate lastMrpLineDate = null;
+		LocalDate mrpLineDate = null;
+		int nbDays = 0;
 
 		if (mrpFamilyRepository != null) {
 
@@ -384,8 +388,12 @@ public class MrpServiceImpl implements MrpService  {
 				for (MrpLine mrpLine : mrpLineList) {
 
 					if (mrpLine.getProduct().getMrpFamily().equals(mrpFamily)) {
-
-						log.debug("Consolidate MRP Line ...");
+						mrpLineDate = mrpLine.getMaturityDate();
+						if (lastMrpLineDate != null) {
+							nbDays = Days.daysBetween(lastMrpLineDate, mrpLineDate).getDays();
+						} else {
+							lastMrpLineDate = mrpLineDate;
+						}
 
 						MrpLineType mrpLineType = mrpLine.getMrpLineType();
 
@@ -395,13 +403,15 @@ public class MrpServiceImpl implements MrpService  {
 						keys.add(mrpLine.getMaturityDate());
 						keys.add(mrpLine.getLocation());
 
-						if (map.containsKey(keys)) {
+						if (map.containsKey(keys) && nbDays <= mrpLine.getProduct().getMrpFamily().getDayNb()) {
+							log.debug("Consolidate MRPLine");
 
 							consolidateMrpLine = map.get(keys);
 							consolidateMrpLine.setQty(consolidateMrpLine.getQty().add(mrpLine.getQty()));
 							consolidateMrpLine.setCumulativeQty(consolidateMrpLine.getCumulativeQty().add(mrpLine.getCumulativeQty()));
 
 						} else {
+						    log.debug("Putting in map");
 							map.put(keys, mrpLine);
 						}
 
