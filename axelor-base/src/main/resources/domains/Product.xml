@@ -108,6 +108,8 @@
 				
 				public static final int COST_TYPE_STANDARD = 1;
 				public static final int COST_TYPE_LAST_PURCHASE_PRICE = 2;
+				public static final int COST_TYPE_AVERAGE_PRICE = 3;
+				public static final int COST_TYPE_LAST_PRODUCTION_PRICE = 4;
 	   		]]>
 	   	</extra-code>
   	

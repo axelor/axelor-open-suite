@@ -264,12 +264,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 				}
 
+				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
+
 				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
 					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
 				}
-
-				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
-						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
 			}
 		}
 
@@ -281,11 +281,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				.getLocationLine(location, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(locationLine, stockMoveLine);
+			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
 		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
 			this.cancelAveragePriceLocationLine(locationLine, stockMoveLine);
+			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
-		Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 	}
 
 	protected void computeNewAveragePriceLocationLine(LocationLine locationLine, StockMoveLine stockMoveLine) {
