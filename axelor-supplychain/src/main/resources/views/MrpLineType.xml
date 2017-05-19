@@ -19,6 +19,9 @@
         	<field name="elementSelect"/>
         	<field name="typeSelect"/>
         	<field name="sequence"/>
+        	<field name="purchaseOrderStatusSelect" widget="MultiSelect" showIf="elementSelect == 2"/>
+        	<field name="saleOrderStatusSelect" widget="MultiSelect" showIf="elementSelect == 3"/>
+        	<field name="manufOrderStatusSelect" widget="MultiSelect" showIf="elementSelect == 6" if-module="axelor-production"/>
 	    </panel>
 	 </form>
 	 

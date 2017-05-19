@@ -51,6 +51,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -98,10 +99,17 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		MrpLineType manufOrderMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER);
 		MrpLineType manufOrderNeedMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED);
 		
+		String statusSelect = manufOrderMrpLineType.getManufOrderStatusSelect();
+		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+
+		if (statusList.isEmpty()) {
+			statusList.add(IManufOrder.STATUS_FINISHED);
+		}
+
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
 				.filter("self.product in (?1) AND self.prodProcess.location in (?2) "
-						+ "AND self.statusSelect != ?3 AND self.plannedStartDateT > ?4", 
-						this.productMap.keySet(), this.locationList, IManufOrder.STATUS_FINISHED, today.atStartOfDay()).fetch();
+						+ "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
+						this.productMap.keySet(), this.locationList, statusList, today.atStartOfDay()).fetch();
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		
