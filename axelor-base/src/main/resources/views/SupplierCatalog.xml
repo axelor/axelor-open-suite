@@ -25,7 +25,7 @@
 		<panel name="description" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
-		<panel-related field="shippingCoefList" form-view="shipping-coef-table-form" grid-view="shipping_coef-grid"/>
+		<panel-related field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
     </form>
     
     <action-attrs name="action-supplier-catalog-attrs-scale-and-precision">
