@@ -15,7 +15,9 @@
 	<date name="updateDate" title="Last update"/>
   	<string name="description" title="Description" large="true"/>
 	<decimal name="calculatedPrice" title="Calculated price/Qty"/>
-	<one-to-many name="shippingCoefList" title="Shipping Coefficients" ref="com.axelor.apps.base.db.ShippingCoef"/>
+	<one-to-many name="shippingCoefList" mappedBy="supplierCatalog"
+				 title="Shipping Coefficients"
+				 ref="com.axelor.apps.base.db.ShippingCoef"/>
 	<decimal name="minQty" title="Quantity min" help="true"/>
   </entity>
 

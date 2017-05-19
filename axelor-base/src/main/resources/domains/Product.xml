@@ -35,6 +35,9 @@
     <decimal name="costPrice" title="Cost price" precision="20" scale="10" massUpdate="true" help="true"/>
     
     <decimal name="managPriceCoef" title="Management coef." help="true"/>
+    <decimal name="shippingCoef" title="Shipping Coef."/>
+    <boolean name="defShipCoefByPartner"
+             title="Define the shipping coef by partner"/>
     
     <date name="startDate" title="Product launch Date" initParam="true" help="true"/>
     <date name="endDate" title="Product pulled off market Date" initParam="true" help="true"/>

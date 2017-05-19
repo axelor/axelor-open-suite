@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.time.LocalDate;
+
+import com.axelor.apps.base.service.ShippingCoefService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -348,8 +350,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		if(purchaseOrder.getPurchaseOrderLineList() != null){
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 				Product product = purchaseOrderLine.getProduct();
-				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
+				if (product.getDefShipCoefByPartner()) {
 					product.setPurchasePrice(purchaseOrderLine.getPrice());
+					BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
+							.getShippingCoef(
+									product,
+									purchaseOrder.getSupplierPartner(),
+									purchaseOrder.getCompany()
+							);
+					if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
+						product.setShippingCoef(shippingCoef);
+					}
+				}
+				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
 					product.setCostPrice(purchaseOrderLine.getPrice());
 				}
 				

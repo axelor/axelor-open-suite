@@ -143,6 +143,9 @@ public class ProductController {
 
 	public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
 	    Product product = request.getContext().asType(Product.class);
+	    if (!product.getDefShipCoefByPartner()) {
+	    	return;
+		}
 	    product = productRepo.find(product.getId());
 		BigDecimal productShippingCoef = null;
 	    for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
