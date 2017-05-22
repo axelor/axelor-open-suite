@@ -267,9 +267,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
 					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
 				}
-
 				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
+
 			}
 		}
 
@@ -281,11 +281,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				.getLocationLine(location, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(locationLine, stockMoveLine);
+			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
 		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
 			this.cancelAveragePriceLocationLine(locationLine, stockMoveLine);
+			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
-		Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 	}
 
 	protected void computeNewAveragePriceLocationLine(LocationLine locationLine, StockMoveLine stockMoveLine) {
@@ -301,7 +302,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 		BigDecimal sum = oldAvgPrice.multiply(oldQty);
 		sum = sum.add(newPrice.multiply(newQty));
-        newAvgPrice = sum.divide(oldQty.add(newQty), scale, RoundingMode.HALF_UP);
+		BigDecimal denominator = oldQty.add(newQty);
+		if (denominator.compareTo(BigDecimal.ZERO) != 0) {
+			newAvgPrice = sum.divide(denominator, scale, RoundingMode.HALF_UP);
+		}
+		else {
+			newAvgPrice = oldAvgPrice;
+		}
         locationLine.setAvgPrice(newAvgPrice);
 	}
 

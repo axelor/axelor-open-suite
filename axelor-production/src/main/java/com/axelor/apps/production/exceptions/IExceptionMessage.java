@@ -95,5 +95,10 @@ public interface IExceptionMessage {
 	static final String PROD_PROCESS_MISS_PRODUCT = /*$$(*/ "Not enough quantity in products to consume for: %s" /*)*/;
 	
 	static final String CHARGE_MACHINE_DAYS = /*$$(*/ "Too many days" /*)*/;
+
+	/**
+	 * Bill of material service
+	 */
+	static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/ "The product cost cannot be changed because the product cost type is not manual" /*)*/;
 }
 
