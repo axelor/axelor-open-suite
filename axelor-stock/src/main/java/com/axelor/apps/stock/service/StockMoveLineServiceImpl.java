@@ -302,7 +302,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 		BigDecimal sum = oldAvgPrice.multiply(oldQty);
 		sum = sum.add(newPrice.multiply(newQty));
-        newAvgPrice = sum.divide(oldQty.add(newQty), scale, RoundingMode.HALF_UP);
+		BigDecimal denominator = oldQty.add(newQty);
+		if (denominator.compareTo(BigDecimal.ZERO) != 0) {
+			newAvgPrice = sum.divide(denominator, scale, RoundingMode.HALF_UP);
+		}
+		else {
+			newAvgPrice = oldAvgPrice;
+		}
         locationLine.setAvgPrice(newAvgPrice);
 	}
 
