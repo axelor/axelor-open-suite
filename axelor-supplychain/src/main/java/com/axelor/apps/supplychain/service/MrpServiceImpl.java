@@ -458,7 +458,7 @@ public class MrpServiceImpl implements MrpService  {
 	protected void createPurchaseMrpLines() throws AxelorException  {
 		
 		MrpLineType purchaseProposalMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
-		String statusSelect = purchaseProposalMrpLineType.getPurchaseOrderStatusSelect();
+		String statusSelect = purchaseProposalMrpLineType.getStatusSelect();
 		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
 
 		if (statusList.isEmpty()) {
@@ -495,7 +495,7 @@ public class MrpServiceImpl implements MrpService  {
 	protected void createSaleOrderMrpLines() throws AxelorException  {
 		
 		MrpLineType saleForecastMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
-		String statusSelect = saleForecastMrpLineType.getSaleOrderStatusSelect();
+		String statusSelect = saleForecastMrpLineType.getStatusSelect();
 		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
 
 		if (statusList.isEmpty()) {

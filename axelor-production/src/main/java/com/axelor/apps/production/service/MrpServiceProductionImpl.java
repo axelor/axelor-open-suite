@@ -99,7 +99,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		MrpLineType manufOrderMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER);
 		MrpLineType manufOrderNeedMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED);
 		
-		String statusSelect = manufOrderMrpLineType.getManufOrderStatusSelect();
+		String statusSelect = manufOrderMrpLineType.getStatusSelect();
 		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
 
 		if (statusList.isEmpty()) {

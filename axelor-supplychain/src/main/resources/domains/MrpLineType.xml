@@ -13,8 +13,7 @@
       <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select" default="0"/>
       <integer name="sequence" title="Sequence to order MRP results"/>
 
-      <string name="purchaseOrderStatusSelect" title="Statuses to take into account" selection="purchase.purchase.order.status.select" />
-      <string name="saleOrderStatusSelect" title="Statuses to take into account" selection="sale.order.status.select" />
+      <string name="statusSelect" title="Statuses to take into account" />
 
       <extra-code><![CDATA[
 	
