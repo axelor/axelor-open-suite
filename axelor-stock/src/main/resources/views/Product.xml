@@ -31,7 +31,7 @@
 	</cards>
 	
 	<grid name="stock-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="$stockMinDate" title="Min stock date" type="date" />
 	    <field name="$stockMin" title="Min stock"  type="integer"/>

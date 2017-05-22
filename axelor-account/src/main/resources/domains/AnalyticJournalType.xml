@@ -8,7 +8,7 @@
   <entity name="AnalyticJournalType" lang="java">
   
     <string name="name" title="Name" required="true" unique="true"/>
-    <string name="code" title="Code" min="2" required="true" unique="true"/>
+    <string name="code" title="CODE" min="2" required="true" unique="true"/>
     
   </entity>
 

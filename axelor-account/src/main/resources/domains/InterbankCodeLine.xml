@@ -7,7 +7,7 @@
 
   <entity name="InterbankCodeLine" lang="java" cachable="true">
   
-    <string name="code" title="Code" required="true"/>
+    <string name="code" title="CODE" required="true"/>
     <string name="name" title="Standard label (24 caracters)" required="true" max="24"/>
     <string name="description" multiline="true" title="Usage rule" large="true"/>
     <boolean name="transferCfonbOk" title="Wire Transfer"/>

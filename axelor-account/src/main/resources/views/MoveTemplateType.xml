@@ -5,13 +5,13 @@
     
     <grid name="move-template-type-grid" title="Move template type" model="com.axelor.apps.account.db.MoveTemplateType">
     	<field name="name"/>
-        <field name="code" />
+        <field name="code" x-bind="{{code|uppercase}}" />
     </grid>
     
     <form name="move-template-type-form" title="Move template type" model="com.axelor.apps.account.db.MoveTemplateType">
         <panel name="main" >
         	<field name="name"/>
-        	<field name="code" />
+        	<field name="code" x-bind="{{code|uppercase}}" />
         </panel>
         
     </form>

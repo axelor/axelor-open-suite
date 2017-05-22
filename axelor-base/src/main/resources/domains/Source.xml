@@ -9,7 +9,7 @@
   	
   	<integer name="importId" />
     <string name="name" title="Name"/>
-    <string name="code" title="Code"/>
+    <string name="code" title="CODE"/>
     
     
   </entity>

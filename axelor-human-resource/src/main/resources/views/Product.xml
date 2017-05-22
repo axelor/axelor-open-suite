@@ -7,7 +7,7 @@
    		<toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
@@ -73,7 +73,7 @@
    		<toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>

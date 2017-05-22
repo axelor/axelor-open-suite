@@ -5,7 +5,7 @@
 	
 	<grid name="routing-grid" title="Routing rules" model="com.axelor.apps.base.db.Routing">
 		<field name="name"/>
-		<field name="code"/>
+		<field name="code" x-bind="{{code|uppercase}}"/>
 		<field name="priority"/>
 		<field name="isActive"/>
 	</grid>

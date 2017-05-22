@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     <grid name="canton-grid" title="Cantons" model="com.axelor.apps.base.db.Canton">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     	<field name="inhabitantsNbr" />
         <field name="artmin"/>
         <field name="department" grid-view="department-grid" form-view="department-form"/>

@@ -3,13 +3,13 @@
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="management-object-grid" title="Managements" model="com.axelor.apps.account.db.ManagementObject">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="name"/>
     </grid>
     
     <form name="management-object-form" title="Management" model="com.axelor.apps.account.db.ManagementObject"  >
         <panel name="main" >
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
         	<field name="name"/>
         </panel>    
     </form>

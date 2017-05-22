@@ -5,7 +5,7 @@
 
     <grid name="sale-batch-grid" title="Sale batches" model="com.axelor.apps.sale.db.SaleBatch">
     	<field name="actionSelect" />
-    	<field name="code" />
+    	<field name="code" x-bind="{{code|uppercase}}" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
@@ -14,7 +14,7 @@
 	<form onLoad="action-group-supplychain-salebatch-onload" onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch" width="large">
 	  <panel name="main" >
 	    <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 	  </panel>
 	  <panel>

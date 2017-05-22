@@ -5,7 +5,7 @@
     
     <grid name="target-grid" title="Objectives" model="com.axelor.apps.crm.db.Target">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="periodTypeSelect"/>
         <field name="fromDate"/>
         <field name="toDate"/>
@@ -71,7 +71,7 @@
 <form onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Objective" model="com.axelor.apps.crm.db.Target" width="large">
   <panel name="information" title="Information">
     <field name="name"/>
-    <field name="code"/>
+    <field name="code" x-bind="{{code|uppercase}}"/>
     <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
     <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid"/>
   </panel>

@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     <grid name="analytic-journal-type-grid" title="Analytic Journal Type" model="com.axelor.apps.account.db.AnalyticJournalType">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     <form name="analytic-journal-type-form" title="Analytic Journal Type" model="com.axelor.apps.account.db.AnalyticJournalType"  >
         <panel name="main" >
         	<field name="name"/>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
         
     </form>

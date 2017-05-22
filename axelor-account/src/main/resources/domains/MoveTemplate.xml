@@ -7,7 +7,7 @@
 
   <entity name="MoveTemplate" lang="java" cachable="true">
   	<string name="name" title="Name" required="true"/>
-  	<string name="code" title="Code" required="true"/>
+  	<string name="code" title="CODE" required="true"/>
   	<many-to-one name="moveTemplateType" ref="MoveTemplateType" title="Type"  required="1"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="1" />
   	<many-to-one name="journal" ref="Journal" title="Journal" />

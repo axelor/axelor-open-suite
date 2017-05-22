@@ -20,7 +20,7 @@
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronisable"/>
 		
-		<string name="code" title="Code" />
+		<string name="code" title="CODE" />
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 		<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 		

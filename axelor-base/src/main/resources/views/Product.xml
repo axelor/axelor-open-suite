@@ -7,7 +7,7 @@
    		<toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -18,7 +18,7 @@
     </grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
-	    <field name="code" width="120"/>
+	    <field name="code" x-bind="{{code|uppercase}}" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
 	    <field name="costPrice" width="120" x-scale="2"/>

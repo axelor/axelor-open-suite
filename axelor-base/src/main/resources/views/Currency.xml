@@ -5,14 +5,14 @@
     
     <grid name="currency-grid" title="Currencies" model="com.axelor.apps.base.db.Currency">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="symbol"/>
     </grid>
     
     <form name="currency-form" title="Currency" model="com.axelor.apps.base.db.Currency">
     	<panel name="main">
 	        <field name="name"/>
-	        <field name="code" colSpan="3" x-bind="{{code|uppercase}}"/>
+	        <field name="code" x-bind="{{code|uppercase}}" colSpan="3" x-bind="{{code|uppercase}}"/>
 	        <field name="symbol" colSpan="3"/>
         </panel>
     </form>

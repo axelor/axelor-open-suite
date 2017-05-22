@@ -5,7 +5,7 @@
     
     <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="address" form-view="address-form" grid-view="address-grid"/>
     </grid>
 

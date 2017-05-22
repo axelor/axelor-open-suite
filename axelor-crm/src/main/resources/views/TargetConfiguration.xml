@@ -5,7 +5,7 @@
     
     <grid name="target-configuration-grid" title="Target configurations" model="com.axelor.apps.crm.db.TargetConfiguration">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="user" form-view="user-form" grid-view="user-grid" />
        	<field name="team" form-view="team-form" grid-view="team-grid"/>
     </grid>
@@ -55,7 +55,7 @@
     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration" width="large">
 	  <panel name="main" >
 	    <field name="name"/>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
 	  </panel>
 	  <panel name="concerns" title="Concerns">
 	    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid" />

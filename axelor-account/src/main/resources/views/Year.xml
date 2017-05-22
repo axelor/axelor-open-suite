@@ -5,7 +5,7 @@
     
     <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="reportedBalanceDate"/>
@@ -17,7 +17,7 @@
 		  onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet" onSave="action-year-check-date" onNew="action-year-account-record-new">
 		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
-			<field name="code" colSpan="3"/>
+			<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
 			<panel name="dates" title="Dates" colSpan="12">
 				<field name="fromDate" colSpan="3"/>

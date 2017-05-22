@@ -5,14 +5,14 @@
     
     <grid name="paybox-config-grid" title="Paybox configurations" model="com.axelor.apps.account.db.PayboxConfig">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="address"/>
     </grid>
     
     <form name="paybox-config-form" title="Paybox configuration" model="com.axelor.apps.account.db.PayboxConfig"> 
         <panel name="main" >
 	        <field name="name"/>
-	       	<field name="code"/>
+	       	<field name="code" x-bind="{{code|uppercase}}"/>
 	       	<field name="payboxUrl"  />
 	       	<field name="payboxSite"/>
 	       	<field name="payboxRang"/>

@@ -9,7 +9,7 @@
   	
   	<integer name="importId"/>
   	
-	<string name="code" title="Code"/>
+	<string name="code" title="CODE"/>
 	<string name="name" title="Name"/>
 	<integer name="costTypeSelect" title="Cost type" selection="production.cost.sheet.group.cost.type.select"/>
     <many-to-many name="costSheetGroupSet" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet groups"/>  

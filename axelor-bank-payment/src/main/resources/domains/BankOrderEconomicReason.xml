@@ -7,7 +7,7 @@
 
   <entity name="BankOrderEconomicReason" lang="java">
   
-	<string name="code" title="Code" min="3" max="3"/>
+	<string name="code" title="CODE" min="3" max="3"/>
 	<string name="label" title="Label"/>
 	<string name="description" title="Description" large="true" multiline="true"/>
 	<string name="name" title="Name">

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="company-department-grid" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="name"/>
     </grid>
     

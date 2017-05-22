@@ -5,7 +5,7 @@
 
     <grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
     	<field name="actionSelect" />
-    	<field name="code" />
+    	<field name="code" x-bind="{{code|uppercase}}" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
@@ -14,7 +14,7 @@
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
 	<panel name="main" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
-		<field name="code"/>
+		<field name="code" x-bind="{{code|uppercase}}"/>
 		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived ?"/>

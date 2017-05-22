@@ -8,7 +8,7 @@
   <entity name="HrBatch" lang="java" cachable="true">
   	
   	<!-- HEADER -->
-  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+  	<string name="code" title="CODE" namecolumn="true" unique="true"/>
     <integer name="actionSelect" title="Action" required="true" selection="ihr.batch.action.select"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
     

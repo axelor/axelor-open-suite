@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     <grid name="reminder-method-grid" title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod">
     	<field name="name"/>
-    	<field name="code"/>
+    	<field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     <form name="reminder-method-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod" width="large">
     	<panel name="main" >
     		<field name="name"/>
-    		<field name="code"/>
+    		<field name="code" x-bind="{{code|uppercase}}"/>
        	</panel>
        	<panel-related field="reminderMethodLineList" colSpan="12" form-view="reminder-method-line-form" grid-view="reminder-method-line-grid"/>
     </form>

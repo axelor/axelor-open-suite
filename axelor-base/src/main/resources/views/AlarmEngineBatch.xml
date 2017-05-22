@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
-		<field name="code" />
+		<field name="code" x-bind="{{code|uppercase}}" />
 		<field name="metaModelSet" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		<field name="alarmEngineSet" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 	</grid>

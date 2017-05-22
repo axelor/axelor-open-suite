@@ -5,7 +5,7 @@
 
 	<tree name="customs-code-nomenclature-tree" title="Customs code nomenclature">
 
-		<column name="code" type="string" />
+		<column name="code" title="=CODE" type="string" />
 		<column name="wording" type="string" />
 		<column name="supplementaryUnit" type="string" />
 
@@ -27,7 +27,7 @@
 
 	<grid model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
 		title="Customs code nomenclature" name="customs-code-nomenclature-grid">
-		<field name="code" />
+		<field name="code" x-bind="{{code|uppercase}}" />
 		<field name="wording" />
 		<field name="supplementaryUnit" />
 		<field name="parentCustomsCode" />
@@ -36,7 +36,7 @@
 	<form model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
 		title="Customs code nomenclature" name="customs-code-nomenclature-form">
 		<panel readonly="true">
-			<field name="code" />
+			<field name="code" x-bind="{{code|uppercase}}" />
 			<field name="wording" />
 			<field name="supplementaryUnit" />
 			<field name="parentCustomsCode" />

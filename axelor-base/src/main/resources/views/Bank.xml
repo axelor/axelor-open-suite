@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<grid name="bank-grid" title="Bank Identifier Codes" model="com.axelor.apps.base.db.Bank" edit-icon="true">
-		<field name="code"/>
+		<field name="code" x-bind="{{code|uppercase}}"/>
 		<field name="bankName"/>
 		<field name="businessPartyPrefix"/>
 		<field name="country.alpha2Code" title="Country Code"/>
@@ -15,7 +15,7 @@
 		<panel name="main">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
 				<editor x-show-titles="false">
-					<field name="code" colSpan="3" placeholder="BIC" x-bind="{{code|uppercase}}" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
+					<field name="code" x-bind="{{code|uppercase}}" colSpan="3" placeholder="BIC" x-bind="{{code|uppercase}}" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
 					<field name="bankName" colSpan="9" placeholder="Bank Name"/>
 				</editor>
 			</field>
@@ -25,7 +25,7 @@
 		<panel>
 			<field name="bankAddressList" colSpan="12">
 				<editor x-show-titles="false">
-					<field name="code" onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
+					<field name="code" x-bind="{{code|uppercase}}" onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
 					<field name="address" onChange="action-method-bank-address-fill-full-name" colSpan="5"/>
 					<field name="label" onChange="action-method-bank-address-fill-full-name" colSpan="4"/>
 					<field name="fullName" hidden="true"/>
