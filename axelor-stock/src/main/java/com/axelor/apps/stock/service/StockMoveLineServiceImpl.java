@@ -264,12 +264,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 				}
 
-				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
-						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
-
 				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
 					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
 				}
+				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
+
 			}
 		}
 
