@@ -5,7 +5,7 @@
 
 	<entity name="MrpLineType" lang="java">
 
-		<string name="manufOrderStatusSelect" selection="production.manuf.order.status.select" />
+		<string name="manufOrderStatusSelect" title="Statuses to take into account" selection="production.manuf.order.status.select" />
 
 	</entity>
 
