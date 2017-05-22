@@ -323,6 +323,7 @@
 "Subtract the product residuals cost on Cost sheet",,,
 "Surcharge",,,
 "The product %s is not in the bill of material related to this production process",,,
+"The product cost cannot be changed because the product cost type is not manual",,,
 "There no's defined nomenclature for product %s (%s)",,,
 "There's no configured sequence for fabrication's orders",,,
 "There's no configured sequence for production's orders",,,

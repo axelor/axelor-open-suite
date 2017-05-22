@@ -323,6 +323,7 @@
 "Subtract the product residuals cost on Cost sheet","Soustraire le coût des rebuts sur la feuille de coût",,
 "Surcharge",,,
 "The product %s is not in the bill of material related to this production process","Le produit %s ne se trouve pas dans la nomenclature reliée à cette gamme",,
+"The product cost cannot be changed because the product cost type is not manual","Le prix de revient ne peut pas être modifié car le type de coût du produit n'est pas manuel.",,
 "There no's defined nomenclature for product %s (%s)","Aucune nomenclature définie pour le produit %s (%s)",,
 "There's no configured sequence for fabrication's orders","Aucune séquence configurée pour les Ordres de fabrication",,
 "There's no configured sequence for production's orders","Aucune séquence configurée pour les Ordres de production",,

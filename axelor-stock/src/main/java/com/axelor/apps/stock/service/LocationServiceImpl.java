@@ -19,6 +19,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -121,6 +122,7 @@ public class LocationServiceImpl implements LocationService{
 		product.setAvgPrice(productAvgPrice);
 		if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
 		    product.setCostPrice(productAvgPrice);
+			Beans.get(ProductService.class).updateSalePrice(product);
 		}
 		productRepo.save(product);
 	}

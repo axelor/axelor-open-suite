@@ -112,7 +112,7 @@
 		      	</panel>
 	      		<panel name="costs" title="Costs" colSpan="6">
 			        <field name="costPrice" colSpan="6" onChange="action-product-record-compute-sale-price"/>
-			        <field name="costTypeSelect" colSpan="6" onChange="action-product-attrs-cost-type-select-onchange"/>
+			        <field name="costTypeSelect" colSpan="6" onChange="action-product-group-cost-type-select-onchange"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
 					<field name="shippingCoef" showIf="!defShipCoefByPartner"/>
 					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff"/>
@@ -296,8 +296,12 @@
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-method-supplier-catalog-coeff"/>
-		<action name="action-product-attrs-cost-type-select-onchange"/>
     </action-group>
+
+	<action-group name="action-product-group-cost-type-select-onchange">
+		<action name="action-product-attrs-update-cost-price"/>
+		<action name="action-product-record-update-sale-price"/>
+	</action-group>
 
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
     	<attribute name="readonly" for="unit" expr="eval: __repo__(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
@@ -323,12 +327,18 @@
 		<attribute for="costTypeSelect" name="selection-in" expr="[1,2,3,4]" if="__config__.app.isApp('production')"/>
 	</action-attrs>
 
-	<action-attrs name="action-product-attrs-cost-type-select-onchange">
+	<action-attrs name="action-product-attrs-update-cost-price">
 		<attribute for="costPrice" name="readonly" expr="eval: costTypeSelect != 1"/>
 		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2"/>
 		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
 		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
 	</action-attrs>
+
+	<action-record name="action-product-record-update-sale-price"
+				   model="com.axelor.apps.base.db.Product">
+		<field name="salePrice" if="costTypeSelect != 1"
+			   expr="eval: managPriceCoef ? costPrice.multiply(managPriceCoef) : costPrice"/>
+	</action-record>
 
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
