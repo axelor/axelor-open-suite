@@ -133,7 +133,8 @@
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
 		
-		<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid"/>
+		<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="lead-form"/>
+		<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
 			<panel-dashlet action="action-lead-view-opportunity"/>
@@ -230,6 +231,7 @@
     
     <action-view name="action-lead-view-schedule-event" title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
+    	<view type="grid" name="event-grid"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>
     

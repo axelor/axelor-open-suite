@@ -18,15 +18,11 @@
 			<button name="sendEmail" title="Send email" colSpan="3" onClick="action-campaign-method-send-email"/>
 			<field name="emailLog" widget="binary-link" />
 		</panel>
-		<panel title="Attendees">
-		  	<field name="campaignAttendeeList" colSpan="12" showTitle="false">
-		      <editor x-show-titles="false">
-		    		<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-		      </editor>
-		    </field>
-	  	</panel>
+	  <panel title="Attendees">
+	  	<panel-related field="leads" colSpan="12" grid-view="lead-grid"/>
+	  	<panel-related field="partners" colSpan="12" grid-view="partner-grid"/>
+	  </panel>
 	</form>
-	
 	<action-method name="action-campaign-method-send-email">
 		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendEmail"/>
 	</action-method>

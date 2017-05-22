@@ -10,12 +10,11 @@
     	<hilite color="danger" if="statusSelect == 3"/>
     	<field name="startDateTime"/>
     	<field name="clientPartner" />
+    	<field name="lead" />
     	<field name="typeSelect"/>
     	<field name="subject"/>
         <field name="statusSelect" />
-        <field name="duration" widget="duration" x-big="true"/>
         <field name="user" form-view="user-form"  grid-view="user-grid"/>
-        <field name="team" form-view="team-form" grid-view="team-grid"/>
     </grid>
     
     <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" editable="false"
@@ -61,6 +60,12 @@
 			<button name="pause" help="Pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
 			<button name="accept" help="Finish" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
+		<menubar>
+			<menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+			  <item title="Create opportunity" action="save,action-event-view-create-opportunity"/>
+			  <item title="Create event" action="save,action-event-view-create-event"/>
+			</menu>
+		</menubar>
 		<panel colSpan="12" name="calendarConfig">
 			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
@@ -236,6 +241,19 @@
 	    <context name="_idEvent" expr="eval: id"/>
 	</action-view>
 	
+	<action-view name="action-event-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    	<view type="form" name="opportunity-form"/>
+    	<context name="_customer" expr="eval: clientPartner"/>
+    	<context name="_leadName" expr="eval: lead"/>
+    </action-view>
+    
+    <action-view name="action-event-view-create-event" title="Create event" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<context name="_clientPartner" expr="eval: clientPartner"/>
+    	<context name="_contactPartner" expr="eval: contactPartner"/>
+    	<context name="_eventLead" expr="eval: lead"/>
+    </action-view>
+    
 	<form model="com.axelor.apps.base.db.Wizard" title="Apply modifications" name="modifications-assistant-form">
 		<button name="applyToThis" title="Apply changes to this event only" onClick="close" colSpan="12" width="50%"/>
 		<button name="applyToAll" title="Apply changes to all recurrence's events" onClick="action-event-method-apply-changes-to-all" colSpan="12" width="50%"/>
@@ -287,6 +305,9 @@
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
+    	<field name="clientPartner" expr="eval: _clientPartner"/>
+    	<field name="contactPartner" expr="eval: _contactPartner"/>
+    	<field name="lead" expr="eval: _eventLead"/>
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
@@ -429,6 +450,21 @@
 		</filter>
 		<filter title="My Team Calls">
 			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="event-filters" model="com.axelor.apps.crm.db.Event" title="Event filters">
+		<filter title="My upcoming events">
+			<domain>self.user.internalUser.id  = :_internalUserId AND self.startDateTime &gt;= :_currentDate</domain>
+		</filter>
+		<filter title="My past events">
+			<domain>self.user.internalUser.id  = :_internalUserId AND self.startDateTime &lt;= :_currentDate</domain>
+		</filter>
+		<filter title="All upcoming events">
+			<domain>self.startDateTime &gt;= :_currentDate</domain>
+		</filter>
+		<filter title="All past events">
+			<domain>self.startDateTime &lt;= :_currentDate</domain>
 		</filter>
 	</search-filters>
 	
