@@ -12,8 +12,11 @@
 	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>  	
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="minQty" title="Min. Qty" required="true"/>
+  	<decimal name="idealQty" title="Ideal Qty" required="false"/>
   	<decimal name="maxQty" title="Max. Qty" required="false"/>
   	<decimal name="reOrderQty" title="Refill Qty" required="true"/>
+  	<boolean name="useIdealQty" title="Use Ideal Qty" default="false"/>
+  	<boolean name="useMaxQty" title="Use Max.Qty" default="false"/>
   	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" required="true"/>
   	
   	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" required="true"/>
