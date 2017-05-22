@@ -28,15 +28,15 @@ import com.google.inject.persist.Transactional;
 
 public interface StockRulesService {
 
-	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
-	
-	
-	public boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type); 
-	
-	public StockRules getStockRules(Product product, Location location, int type);
+	void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
 
-	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules);
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
+
+	boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type); 
+
+	StockRules getStockRules(Product product, Location location, int type);
+
+	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty);
+	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules);
 }

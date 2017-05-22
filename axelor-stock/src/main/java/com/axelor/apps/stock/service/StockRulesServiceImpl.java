@@ -84,20 +84,56 @@ public class StockRulesServiceImpl implements StockRulesService  {
 
 	}
 
+
+	/**
+	 * Called on creating a new purchase or production order.
+	 * Takes into account the reorder qty and the min/ideal quantity in stock rules.
+	 *
+	 * with L the quantity that will be left in the location, M the min/ideal qty,
+	 * R the reorder quantity and O the quantity to order :
+	 *
+	 * O = max(R, M - L)
+	 *
+	 * @param qty  the quantity of the stock move.
+	 * @param locationLine
+	 * @param type  current or future
+	 * @param stockRules
+	 * @param MinReOrderQty
+	 * @return the quantity to order
+	 */
 	@Override
-	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) {
-		BigDecimal qtyToOrder;
-		if (type == StockRulesRepository.TYPE_CURRENT) {
-			qtyToOrder = locationLine.getCurrentQty().subtract(qty);
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty) {
+		minReorderQty = minReorderQty.max(stockRules.getReOrderQty());
+
+		BigDecimal locationLineQty = (type == StockRulesRepository.TYPE_CURRENT) ? locationLine.getCurrentQty()
+				: locationLine.getFutureQty();
+
+		// Get the quantity left in location line.
+		BigDecimal qtyToOrder = locationLineQty.subtract(qty);
+
+		// The quantity to reorder is the difference between the min/ideal
+		// quantity and the quantity left in the location.
+		BigDecimal targetQty = stockRules.getUseIdealQty() ? stockRules.getIdealQty() : stockRules.getMinQty();
+		qtyToOrder = targetQty.subtract(qtyToOrder);
+
+		// If the quantity we need to order is less than the reorder quantity,
+		// we must choose the reorder quantity instead.
+		qtyToOrder = qtyToOrder.max(minReorderQty);
+
+		// Limit the quantity to order in order to not exceed to max quantity
+		// rule.
+		if (stockRules.getUseMaxQty()) {
+			BigDecimal maxQtyToReorder = stockRules.getMaxQty().subtract(locationLineQty);
+			qtyToOrder = qtyToOrder.min(maxQtyToReorder);
 		}
-		else {
-			qtyToOrder = locationLine.getFutureQty().subtract(qty);
-		}
-		qtyToOrder = stockRules.getMinQty().subtract(qtyToOrder);
-		qtyToOrder = qtyToOrder.max(stockRules.getReOrderQty());
+
 		return qtyToOrder;
 	}
 
+	@Override
+	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) {
+		return getQtyToOrder(qty, locationLine, type, stockRules, BigDecimal.ZERO);
+	}
 
 	@Override
 	public boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type)  {
