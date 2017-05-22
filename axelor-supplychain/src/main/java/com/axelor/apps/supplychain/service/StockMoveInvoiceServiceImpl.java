@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -609,7 +610,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 		
 		if(saleOrderLine != null)  {
-			if(saleOrderLine.getIsTitleLine())  {  isTitleLine = true;  }
+			if(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK)  {  isTitleLine = true;  }
 			sequence = saleOrderLine.getSequence();
 		}
 		else if(purchaseOrderLine != null)  {

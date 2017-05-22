@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="cost-sheet-group-grid" title="Cost sheet groups" model="com.axelor.apps.production.db.CostSheetGroup">
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
   		<field name="name"/>
   		<field name="costTypeSelect"/>
     </grid>
     
 	<form name="cost-sheet-group-form" title="Cost sheet group" model="com.axelor.apps.production.db.CostSheetGroup" width="large">
 	  <panel name="main">
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
   		<field name="name"/>
   		<field name="costTypeSelect"/>
   		<panel showIf="costTypeSelect == 3" colSpan="12">

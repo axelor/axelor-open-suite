@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,8 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -70,7 +71,7 @@ public class DoubtfulCustomerService {
 		this.moveLineRepo = moveLineRepo;
 		this.reconcileService = reconcileService;
 		this.accountConfigService = accountConfigService;
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 
@@ -85,7 +86,7 @@ public class DoubtfulCustomerService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
 		accountConfigService.getDoubtfulCustomerAccount(accountConfig);
-		accountConfigService.getMiscOperationJournal(accountConfig);
+		accountConfigService.getAutoMiscOpeJournal(accountConfig);
 		accountConfigService.getSixMonthDebtPassReason(accountConfig);
 		accountConfigService.getThreeMonthDebtPassReason(accountConfig);
 
@@ -132,8 +133,10 @@ public class DoubtfulCustomerService {
 		BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode());
-
+		Invoice invoice = move.getInvoice();
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, invoice.getCurrency(), partner, move.getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		newMove.setInvoice(invoice);
+		
 		int ref = 1;
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 		List<MoveLine> moveLineList = move.getMoveLineList();
@@ -167,7 +170,7 @@ public class DoubtfulCustomerService {
 		moveRepo.save(newMove);
 
 		for(Reconcile reconcile : reconcileList)  {
-			reconcileService.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcile, true);
 		}
 
 		this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
@@ -203,7 +206,7 @@ public class DoubtfulCustomerService {
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
 
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode());
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 
@@ -215,7 +218,7 @@ public class DoubtfulCustomerService {
 
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
 		reconcileList.add(reconcile);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		// Ecriture au débit sur le 416 (client douteux)
 		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, today, 2, null);

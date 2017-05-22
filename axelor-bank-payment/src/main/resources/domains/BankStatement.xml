@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankStatement" lang="java">
+
+	<string name="name" title="Label" namecolumn="true"/>
+    <date name="fromDate" title="From Date" />
+    <date name="toDate" title="To Date" />
+    <integer name="statusSelect" title="Status" selection="bankpayment.bank.statement.status.select" readonly="true" default="1"/>
+	<many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner" title="Ebics Partner"/>
+	<many-to-one name="bankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="File format"/>
+	<many-to-one name="bankStatementFile" ref="com.axelor.meta.db.MetaFile" title="File" />
+	<datetime name="getDateTime" title="Get date"/>
+
+	<extra-code><![CDATA[
+	
+	   	// Status select
+		public static final int STATUS_RECEIVED = 1;
+		public static final int STATUS_CHECKED = 2;
+	
+	]]></extra-code>
+
+  </entity>
+  
+</domain-models>

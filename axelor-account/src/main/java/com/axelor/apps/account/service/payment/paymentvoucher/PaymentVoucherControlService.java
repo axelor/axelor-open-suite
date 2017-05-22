@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,11 +23,11 @@ import java.util.List;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -56,19 +56,25 @@ public class PaymentVoucherControlService  {
 	 * @throws AxelorException
 	 */
 	public void checkPaymentVoucherField(PaymentVoucher paymentVoucher, Company company, Account paymentModeAccount, Journal journal) throws AxelorException  {
+		
+		if(paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) != 1)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
+					AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
+		}
+		
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
-					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
 		}
 
 		// Si on a des lignes à payer (dans le deuxième tableau)
-		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPaymentInvoiceToPayList() == null || paymentVoucher.getPaymentInvoiceToPayList().size() == 0))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0))  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 
 		if(journal == null || paymentModeAccount == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 
 		if(journal.getEditReceiptOk())  {
@@ -80,24 +86,24 @@ public class PaymentVoucherControlService  {
 	public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if(paymentVoucher.getPayboxAmountPaid() != null && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
-						GeneralServiceImpl.EXCEPTION,paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
+						AppAccountServiceImpl.EXCEPTION,paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
 		}
 	}
 
 
 	/**
 	 * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le même que celui du trop-perçu
-	 * @param paymentInvoiceToPayList
+	 * @param payVoucherElementToPayList
 	 * 			La liste des lignes à payer
 	 * @param moveLine
 	 * 			Le trop-perçu à utiliser
 	 * @return
 	 */
-	public boolean checkIfSameAccount(List<PaymentInvoiceToPay> paymentInvoiceToPayList, MoveLine moveLine)  {
+	public boolean checkIfSameAccount(List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine)  {
 		if(moveLine != null)  {
 			Account account = moveLine.getAccount();
-			for (PaymentInvoiceToPay paymentInvoiceToPay : paymentInvoiceToPayList)  {
-				if(!paymentInvoiceToPay.getMoveLine().getAccount().equals(account))  {
+			for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList)  {
+				if(!payVoucherElementToPay.getMoveLine().getAccount().equals(account))  {
 					return false;
 				}
 			}

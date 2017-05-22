@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="chart-builder-filter-grid" title="Filters" model="com.axelor.studio.db.Filter">
+      <field name="isJson" />
+      <field name="metaJsonField" readonlyIf="!isJson"  requiredIf="isJson" widget="SuggestBox" onSelect="action-chart-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
+      <field name="metaField" readonlyIf="isJson" requiredIf="!isJson" widget="SuggestBox" onChange="action-filter-method-update-target-field" onSelect="action-chart-filter-meta-field-domain"/>
+      <field name="targetField" readonlyIf="!isJson &amp;&amp; metaField.relationship == null || isJson &amp;&amp; metaJsonField.targetModel == null" requiredIf="!isJson &amp;&amp; metaField.relationship != null || isJson &amp;&amp; metaJsonField.targetModel != null"  />
+      <field name="filterOperator" readonlyIf="isJson &amp;&amp; metaJsonField == null || !isJson &amp;&amp; metaField == null" widget="SuggestBox" onSelect="action-filter-operator-domain" />
+      <field name="value" readonlyIf="isParameter"/>
+      <field name="isParameter" />
+      <field name="defaultValue" readonlyIf="!isParameter"/>
+      <field name="logicOp" />
+      <field name="filterOperator.value" hidden="true" />
+      <field name="targetType" hidden="true" />
+      <field name="metaField.relationship" hidden="true" />
+      <field name="metaJsonField.targetModel" hidden="true" />
+      <field name="metaJsonField.type" hidden="true" />
+      <field name="isTargetJson" hidden="true" />
+  </grid>
+  
+  <action-method name="action-filter-method-update-target-field">
+  	<call class="com.axelor.studio.web.FilterController" method="updateTargetField" />
+  </action-method>
+  
+  <action-method name="action-filter-method-update-target-details">
+  	<call class="com.axelor.studio.web.FilterController" method="updateTargetDetails" />
+  </action-method>
+  
+  <action-attrs name="action-filter-operator-domain">
+      <attribute name="domain" for="filterOperator" expr="eval:&quot;self.fieldTypeSet[].name in ('${metaField.typeName}','${metaField.relationship}')&quot;"  if="!isJson &amp;&amp; targetType == null"/>
+      <attribute name="domain" for="filterOperator" expr="eval:&quot;self.fieldTypeSet[].name in ('${targetType}')&quot;"  if="!isJson &amp;&amp; targetType != null"/>
+  	  <attribute name="domain" for="filterOperator" expr="eval:&quot;self.fieldTypeSet[].name in ('${metaJsonField?.type?.capitalize() }')&quot;"  if="isJson &amp;&amp; targetType == null"/>
+      <attribute name="domain" for="filterOperator" expr="eval:&quot;self.fieldTypeSet[].name in ('${targetType?.capitalize()}')&quot;"  if="isJson &amp;&amp; targetType != null"/>
+  </action-attrs>
+  
+</object-views>
+
+

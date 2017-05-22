@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -38,9 +38,9 @@ public class ElementsToInvoiceController {
 
 	public void getProductInformation(ActionRequest request, ActionResponse response){
 		ElementsToInvoice elementToInvoice = request.getContext().asType(ElementsToInvoice.class);
-		ProjectTask project = elementToInvoice.getProject();
+		Project project = elementToInvoice.getProject();
 		if(project == null){
-			project = request.getContext().getParentContext().asType(ProjectTask.class);
+			project = request.getContext().getParentContext().asType(Project.class);
 		}
 		Product product = elementToInvoice.getProduct();
 		if(project != null && product != null){

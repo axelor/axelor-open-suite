@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,12 +28,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -43,7 +43,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppProductionService appProductionService;
 	
 	@Inject
 	protected CostSheetLineRepository costSheetLineRepository;
@@ -77,7 +77,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 			costPrice = BigDecimal.ZERO;
 		}
 
-		costSheetLine.setCostPrice(costPrice.setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
+		costSheetLine.setCostPrice(costPrice.setScale(appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
 		
 		if(parentCostSheetLine != null)  {
 			parentCostSheetLine.addCostSheetLineListItem(costSheetLine);
@@ -95,7 +95,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	
 	public CostSheetLine createResidualProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException  {
 		
-		if(generalService.getGeneral().getSubtractProdResidualOnCostSheet())  {  consumptionQty = consumptionQty.negate();  }
+		if(appProductionService.getAppProduction().getSubtractProdResidualOnCostSheet())  {  consumptionQty = consumptionQty.negate();  }
 		
 		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
 		

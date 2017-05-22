@@ -1,0 +1,4 @@
+name;roles
+menu-mail;role.user
+menu-dms;role.user
+menu-dms-my;role.user

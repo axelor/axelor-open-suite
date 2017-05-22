@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,15 @@
 package com.axelor.apps.cash.management.service;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastReason;
@@ -32,40 +34,44 @@ import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.google.inject.Inject;
 
 public class ForecastService {
-	
+
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
-	public void generate(ForecastGenerator forecastGenerator){
+	public void generate(ForecastGenerator forecastGenerator) {
 		LocalDate fromDate = forecastGenerator.getFromDate();
 		LocalDate toDate = forecastGenerator.getToDate();
-		LocalDate itDate = new LocalDate(fromDate);
-		LocalDate todayDate = generalService.getTodayDate();
-		
-		if(forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()){
+		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE);
+		LocalDate todayDate = appBaseService.getTodayDate();
+		int count = 0;
+
+		if (forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()) {
 			List<Forecast> forecastList = forecastGenerator.getForecastList();
-			for (Forecast forecast : forecastList) {
-				if(forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_NO){
-					forecastList.remove(forecast);
-				}
-				else if(forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_AUTO && forecast.getEstimatedDate().isAfter(todayDate)){
-					forecastList.remove(forecast);
+			Iterator<Forecast> it = forecastList.iterator();
+			while (it.hasNext()) {
+				Forecast forecast = it.next();
+				if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_NO) {
+					it.remove();
+				} else if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_AUTO
+						&& forecast.getEstimatedDate().isAfter(todayDate)) {
+					it.remove();
 				}
 			}
 		}
-		
-		while(!itDate.isAfter(toDate)){
+
+		while (!itDate.isAfter(toDate)) {
 			Forecast forecast = this.createForecast(forecastGenerator.getCompany(), forecastGenerator.getBankDetails(),
-							forecastGenerator.getTypeSelect(), forecastGenerator.getAmount(), itDate, forecastGenerator.getForecastReason(),
-							forecastGenerator.getComments(),forecastGenerator.getRealizedSelect());
+					forecastGenerator.getTypeSelect(), forecastGenerator.getAmount(), itDate,
+					forecastGenerator.getForecastReason(), forecastGenerator.getComments(),
+					forecastGenerator.getRealizedSelect());
 			forecastGenerator.addForecastListItem(forecast);
-			itDate.plusMonths(forecastGenerator.getPeriodicitySelect());
+			itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
 		}
 	}
-	
+
 	public Forecast createForecast(Company company, BankDetails bankDetails, int typeSelect, BigDecimal amount,
-													LocalDate estimatedDate, ForecastReason reason, String comments, int realizedSelect){
-		
+			LocalDate estimatedDate, ForecastReason reason, String comments, int realizedSelect) {
+
 		Forecast forecast = new Forecast();
 		forecast.setCompany(company);
 		forecast.setBankDetails(bankDetails);
@@ -75,8 +81,8 @@ public class ForecastService {
 		forecast.setForecastReason(reason);
 		forecast.setComments(comments);
 		forecast.setRealizedSelect(realizedSelect);
-		
+
 		return forecast;
 	}
-	
+
 }

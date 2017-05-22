@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="contract" package="com.axelor.apps.contract.db" />
+
+	<entity name="CommitmentProduct" lang="java" cachable="true">
+		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+		<decimal name="minCommittedQty" title="Min committed quanity" />
+		<decimal name="consumedProductsQty" title="Current consumed products" />
+	</entity>
+
+</domain-models>

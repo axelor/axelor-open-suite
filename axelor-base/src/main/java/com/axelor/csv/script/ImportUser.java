@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,7 +45,7 @@ public class ImportUser {
 	    String fileName = (String) values.get("picture_fileName");
 	    if(Strings.isNullOrEmpty((fileName)))  {  return bean;  }
 		
-	    final File image = path.resolve(fileName).toFile(); 
+	    final File image = path.getParent().resolve(fileName).toFile(); 
         // Create the byte array to hold the data
         byte[] bytes = new byte[(int)image.length()];
 

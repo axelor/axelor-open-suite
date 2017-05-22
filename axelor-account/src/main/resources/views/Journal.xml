@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
         <field name="name"/>
-		<field name="code"/>
+		<field name="code" x-bind="{{code|uppercase}}"/>
         <field name="type"/>
         <field name="exportCode"/>
         <field name="excessPaymentOk"/>
@@ -33,8 +33,9 @@
 			<panel name="configurations" title="Configurations" hideIf="$popup()">
 				<panel name="moveLine" title="MoveLine" colSpan="12">
 					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="descriptionModel"/>
-					<field name="descriptionIdentificationOk"/>
+					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
+					<field name="descriptionModel" showIf="!isInvoiceMoveConsolidated" hidden="true"/>
+					<field name="descriptionIdentificationOk" showIf="!isInvoiceMoveConsolidated" hidden="true"/>
 				</panel>  
 				<spacer/>
 				<panel name="payments" title="Payments" colSpan="12">
@@ -66,14 +67,14 @@
     	<view type="grid" name="move-line-journal-grid"/>
     	<view type="form" name="move-line-form"/>
     	<domain>self.move.journal.id = :id and self.move.ignoreInAccountingOk IN ('false', null) and self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt; :todayDate </domain>	
-    	<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+    	<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
     </action-view>
     
     
     <action-record name="account-journal-record-default" model="com.axelor.apps.account.db.Journal">
         <field name="statusSelect" expr="eval: 0"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-record name="account-journal-record-status-active" model="com.axelor.apps.account.db.Journal">

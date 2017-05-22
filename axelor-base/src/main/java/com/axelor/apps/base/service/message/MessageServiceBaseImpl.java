@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -46,6 +46,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -57,7 +60,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	protected UserService userService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 
 	@Inject
@@ -118,7 +121,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 				
-		if(generalService.getGeneral().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
+		if(appBaseService.getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
 		
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
@@ -127,6 +130,30 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		
 		return messageRepo.save(message);
 		
+	}
+	
+	public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet)  {
+        
+	   List<String> recipients = Lists.newArrayList();
+	   if(emailAddressSet != null){
+		   for(EmailAddress emailAddress : emailAddressSet)  {
+	           
+	           if( Strings.isNullOrEmpty( emailAddress.getName() ) ) { continue; }
+	           recipients.add( emailAddress.getName() );
+	           
+		   }
+	   }
+	   
+	   return recipients;
+	}
+	
+	public String getToRecipients(Message message)  {
+		
+		if(message.getToEmailAddressSet() != null && !message.getToEmailAddressSet().isEmpty())  {
+			return Joiner.on(", \n").join(this.getEmailAddressNames(message.getToEmailAddressSet()));
+		}
+		
+		return "";
 	}
 
 }

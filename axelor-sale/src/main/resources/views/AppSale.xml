@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="app-sale-config-form" title="App sale" model="com.axelor.apps.base.db.AppSale" canDelete="false" canNew="false" width="large">
+		<panel>
+			<field name="manageSalesUnits" widget="boolean-switch"/>
+			<field name="manageSaleOrderVersion"  widget="boolean-switch"/>
+			<field name="productPackMgt" widget="boolean-switch"/>
+		</panel>
+		<panel-dashlet action="admin.root.conf.sale.config" colSpan="12"/>
+	</form>
+	
+	
+</object-views>

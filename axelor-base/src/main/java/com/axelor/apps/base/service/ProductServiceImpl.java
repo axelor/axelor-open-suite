@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
@@ -31,8 +32,12 @@ import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,7 +51,10 @@ public class ProductServiceImpl implements ProductService  {
 	private ProductVariantRepository productVariantRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	private SequenceService sequenceService;
+
+	@Inject
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	private ProductRepository productRepo;
@@ -61,6 +69,15 @@ public class ProductServiceImpl implements ProductService  {
 
 	}
 
+	public String getSequence() throws AxelorException {
+		String seq = sequenceService.getSequenceNumber(IAdministration.PRODUCT);
+
+		if (seq == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE), IException.CONFIGURATION_ERROR);
+		}
+
+		return seq;
+	}
 
 	/**
 	 * Retourne le prix d'un produit à une date t.
@@ -95,7 +112,7 @@ public class ProductServiceImpl implements ProductService  {
 
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
 
-			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
 			if(product.getProductVariant() != null)  {
 
@@ -177,7 +194,6 @@ public class ProductServiceImpl implements ProductService  {
 				productModel.getSaleSupplySelect(),
 				productModel.getProductTypeSelect(),
 				productModel.getProcurementMethodSelect(),
-				productModel.getIsRawMaterial(),
 				productModel.getSaleCurrency(),
 				productModel.getPurchaseCurrency(),
 				productModel.getStartDate(),

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,11 @@ package com.axelor.apps.stock.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
@@ -29,8 +31,8 @@ import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
 import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.stock.service.LocationServiceImpl;
-import com.axelor.apps.stock.service.MinStockRulesService;
-import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.apps.stock.service.StockRulesService;
+import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -41,7 +43,7 @@ public class StockModule extends AxelorModule {
 
     @Override
     protected void configure() {
-        bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
+        bind(StockRulesService.class).to(StockRulesServiceImpl.class);
         bind(AddressServiceStockImpl.class);
         bind(InventoryRepository.class).to(InventoryManagementRepository.class);
         bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
@@ -49,6 +51,7 @@ public class StockModule extends AxelorModule {
 		bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
         bind(LocationService.class).to(LocationServiceImpl.class);
+        bind(ProductBaseRepository.class).to(ProductStockRepository.class);
         IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
@@ -81,8 +81,8 @@
     </action-record>
     
     <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
-    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()" if="__config__.general.getMailAccountByUser()"/>
-    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true').fetchOne()" if="!__config__.general.getMailAccountByUser()"/>
+    	<field name="mailAccount" expr="eval: __repo__(MailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()" if="__config__.app.getApp('base').getMailAccountByUser()"/>
+    	<field name="mailAccount" expr="eval: __repo__(MailAccount).all().filter('self.isDefault = true').fetchOne()" if="!__config__.app.getApp('base').getMailAccountByUser()"/>
     </action-record>
     
     <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+     <grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation">
+			<field name="name" />
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
+			<field name="startingBalance" />
+			<field name="endingBalance" />
+            <field name="statusSelect"/> 
+     </grid>
+  
+	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" readonlyIf="statusSelect == 2" 
+	onNew="action-bank-reconciliation-onnew-group" >
+		<panel name="main" colSpan="12">
+			<field name="name"/>
+			<field name="bankStatement" domain="self.statusSelect = 2"/>
+			<field name="company" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid"/>
+			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+		</panel>
+		
+		<panel title="Bank reconciliation" colSpan="12">
+			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+			<field name="cashAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='cash'" form-view="account-form" grid-view="account-grid"/>
+		
+			<panel name="status" title="Status" colSpan="12">
+				<field name="statusSelect" title="Status"/>
+				<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-validate-click"/>
+			</panel>
+			
+			<panel name="balance" title="Balance" colSpan="12">
+				<field name="startingBalance"/>
+				<field name="endingBalance"/>
+				<field name="computedBalance"/>
+				<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-compute-click"/>
+			</panel>
+			
+			<panel-related field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form"/>
+		</panel>
+		
+	</form>
+
+ 
+   <action-group name="action-bank-reconciliation-onnew-group">
+	   <action name="action-bank-reconciliation-active-company"/>
+	   <action name="action-bank-reconciliation-set-months"/>
+	   <action name="action-bank-reconciliation-set-currency"/>
+   </action-group>
+ 
+   <action-group name="action-group-bankreconciliation-validate-click">
+   		<action name="save"/>
+   		<action name="action-bank-reconciliation-method-compute"/>
+   		<action name="action-bank-reconciliation-method-validate"/>
+   </action-group>	
+   
+   <action-group name="action-group-bankreconciliation-compute-click">
+   		<action name="save"/>
+   		<action name="action-bank-reconciliation-method-compute"/>
+   </action-group>
+   	
+   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-active-company">
+       <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+       <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+   </action-record>
+   
+   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-months">
+       <field name="fromDate" expr="eval: LocalDate.parse(todayDate).withDayOfMonth(1)"/>
+       <field name="toDate" expr="eval: LocalDate.parse(todayDate).toDateTimeAtCurrentTime().dayOfMonth().withMaximumValue().toLocalDate()"/>
+   </action-record>
+     
+   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-currency">
+       <field name="currency" expr="eval: company?.currency"/>
+   </action-record>
+   
+	<action-method name="action-bank-reconciliation-method-compute">
+		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-bank-reconciliation-method-validate">
+		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validate"/>
+	</action-method>
+	 
+    
+</object-views>

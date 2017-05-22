@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +45,9 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
@@ -68,16 +68,25 @@ public class AccountClearanceService{
 	protected ReconcileService reconcileService;
 	protected TaxService taxService;
 	protected TaxAccountService taxAccountService;
-	protected AccountClearanceRepository accountClearanceRepository;
-	protected DateTime todayTime;
+	protected AccountClearanceRepository accountClearanceRepo;
+	protected ZonedDateTime todayTime;
 	protected User user;
 
 	@Inject
-	public AccountClearanceService(UserService userService, GeneralService generalService) {
-
-		this.todayTime = generalService.getTodayDateTime();
-		this.user = userService.getUser();
+	public AccountClearanceService(UserService userService, AppBaseService appBaseService, MoveService moveService, MoveLineService moveLineService,
+			MoveLineRepository moveLineRepo, SequenceService sequenceService, ReconcileService reconcileService, TaxService taxService,
+			TaxAccountService taxAccountService, AccountClearanceRepository accountClearanceRepo) {
 		
+		this.todayTime = appBaseService.getTodayDateTime();
+		this.user = userService.getUser();
+		this.moveService = moveService;
+		this.moveLineService = moveLineService;
+		this.moveLineRepo = moveLineRepo;
+		this.sequenceService = sequenceService;
+		this.reconcileService = reconcileService;
+		this.taxService = taxService;
+		this.taxAccountService = taxAccountService;
+		this.accountClearanceRepo = accountClearanceRepo;
 	}
 
 
@@ -106,7 +115,7 @@ public class AccountClearanceService{
 		if(moveLineList != null && moveLineList.size() != 0)  {
 			accountClearance.getMoveLineSet().addAll(moveLineList);
 		}
-		accountClearanceRepository.save(accountClearance);
+		accountClearanceRepo.save(accountClearance);
 	}
 
 
@@ -132,7 +141,7 @@ public class AccountClearanceService{
 		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
-		accountClearanceRepository.save(accountClearance);
+		accountClearanceRepo.save(accountClearance);
 	}
 
 
@@ -140,7 +149,7 @@ public class AccountClearanceService{
 		Partner partner = moveLine.getPartner();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
@@ -159,7 +168,7 @@ public class AccountClearanceService{
 		move.getMoveLineList().add(creditMoveLine2);
 
 		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		debitMoveLine.setAccountClearance(accountClearance);
 		creditMoveLine1.setAccountClearance(accountClearance);
@@ -195,32 +204,32 @@ public class AccountClearanceService{
 
 		if(accountConfig == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getProfitAccount() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getStandardRateTax() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getClearanceAccountSet() == null || accountConfig.getClearanceAccountSet().size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(!sequenceService.hasSequence(IAdministration.ACCOUNT_CLEARANCE, company)) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getAccountClearanceJournal() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}

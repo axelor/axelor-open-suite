@@ -24,9 +24,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 import org.stringtemplate.v4.AttributeRenderer;
 import org.stringtemplate.v4.DateRenderer;
 import org.stringtemplate.v4.Interpreter;
@@ -162,9 +164,9 @@ public class TemplateMaker {
 		
 		//Internal context
 		_map.put("__user__", AuthUtils.getUser());
-		_map.put("__date__", new LocalDate());
-		_map.put("__time__", new LocalTime());
-		_map.put("__datetime__", new LocalDateTime());
+		_map.put("__date__", LocalDate.now());
+		_map.put("__time__", LocalTime.now());
+		_map.put("__datetime__", LocalDateTime.now());
 		
 		for (String key : _map.keySet()) {
 			st.add(key, _map.get(key));
@@ -217,7 +219,7 @@ public class TemplateMaker {
 		public String toString(Object o, String formatString, Locale locale) {
 	        if ( formatString==null ) return o.toString();
 	        LocalDate ld = (LocalDate) o;
-	        return ld.toString(formatString);
+	        return ld.format(DateTimeFormatter.ofPattern(formatString));
 		}
 	}
 	
@@ -227,7 +229,7 @@ public class TemplateMaker {
 		public String toString(Object o, String formatString, Locale locale) {
 	        if ( formatString==null ) return o.toString();
 	        LocalDateTime ld = (LocalDateTime) o;
-	        return ld.toString(formatString);
+	        return ld.format(DateTimeFormatter.ofPattern(formatString));
 		}
 	}
 	
@@ -237,7 +239,7 @@ public class TemplateMaker {
 		public String toString(Object o, String formatString, Locale locale) {
 	        if ( formatString==null ) return o.toString();
 	        LocalTime ld = (LocalTime) o;
-	        return ld.toString(formatString);
+	        return ld.format(DateTimeFormatter.ofPattern(formatString));
 		}
 	}
 }

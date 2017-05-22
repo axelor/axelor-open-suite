@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,9 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
 
 public interface LocationService {
 	
@@ -30,5 +32,7 @@ public interface LocationService {
 	public BigDecimal getRealQty(Long productId, Long locationId);
 	
 	public BigDecimal getFutureQty(Long productId, Long locationId);
+
+	public void computeAvgPriceForProduct(Product product, LocationLine unsavedLocationLine);
 	
 }

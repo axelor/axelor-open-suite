@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,16 +78,18 @@ public class MapRest {
 				objectNode.put("address", addressString);				
 			}
 			
-			objectNode.put("pinColor", partner.getIsCustomer() &&  !partner.getHasOrdered() ? "red" : "orange");
-			String pinChar = partner.getIsCustomer() &&  !partner.getHasOrdered() ? "P" : "C";
+			objectNode.put("pinColor", partner.getIsProspect() ? "red" : "orange");
+			String pinChar = partner.getIsProspect() ? "P" : "C";
 			if (partner.getIsSupplier()) {
 				pinChar = pinChar + "/S";
 			}									
 			objectNode.put("pinChar", pinChar);			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 	
@@ -97,7 +99,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getCustomers() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = true AND self.isContact=?", false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -123,8 +125,10 @@ public class MapRest {
 			objectNode.put("pinChar", "C");			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 
@@ -134,7 +138,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getProspects() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = false AND self.isContact=?", false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isProspect = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -160,8 +164,10 @@ public class MapRest {
 			objectNode.put("pinChar", "P");			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 
@@ -197,8 +203,10 @@ public class MapRest {
 			objectNode.put("pinChar", "S");			
 			arrayNode.add(objectNode);
 		}
+		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}
 

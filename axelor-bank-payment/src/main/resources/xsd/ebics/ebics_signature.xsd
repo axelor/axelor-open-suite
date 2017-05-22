@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:esig="http://www.ebics.org/S001" targetNamespace="http://www.ebics.org/S001" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+	<annotation>
+		<documentation xml:lang="de">ebics_signature enthält Typdefinitionen für elektronische Unterschriften der Versionen A004, A005, A006 und folgende.</documentation>
+		<documentation xml:lang="en">ebics_EU contains type definitions for electronic signatures: versions A005, A006 and et sqq.</documentation>
+	</annotation>
+	<!-- Elementdefinitionen für die EU. Die XML-Klartext-Struktur wird im EBICS-Signaturdatenkontext binär interpretiert.-->
+	<element name="EBICSSignatureData" abstract="true">
+		<annotation>
+			<documentation xml:lang="de">XML-Strukturen für bankfachliche Elektronische Unterschriften (EUs).</documentation>
+			<documentation xml:lang="en">contains the digital signatures.</documentation>
+		</annotation>
+	</element>
+	<element name="UserSignatureData" type="esig:UserSignatureDataSigBookType" substitutionGroup="esig:EBICSSignatureData">
+		<annotation>
+			<documentation xml:lang="de">enthält die EUs der Teilnehmer.</documentation>
+			<documentation xml:lang="en">contains the digital signatures.</documentation>
+		</annotation>
+	</element>
+	<complexType name="UserSignatureDataSigBookType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für Signaturdaten des Teilnehmers beim EU-Transfer.</documentation>
+			<documentation xml:lang="en">Data type for digital signature data transferred using EBICS.</documentation>
+		</annotation>
+		<sequence>
+			<choice maxOccurs="unbounded">
+				<element name="OrderSignature">
+					<annotation>
+						<documentation xml:lang="de">bankfachliche Elektronische Unterschrift oder Transportunterschrift (Binärformat).</documentation>
+						<documentation xml:lang="en">Digital signature (either autorising an order or applied for transportation), binary format.</documentation>
+					</annotation>
+					<complexType>
+						<simpleContent>
+							<extension base="esig:OrderSignatureType">
+								<attribute name="PartnerID" use="required">
+									<annotation>
+										<documentation xml:lang="de">Kunden-ID des Unterzeichners.</documentation>
+										<documentation xml:lang="en">Customer ID of the signer.</documentation>
+									</annotation>
+								</attribute>
+							</extension>
+						</simpleContent>
+					</complexType>
+				</element>
+				<element name="OrderSignatureData" type="esig:OrderSignatureDataType">
+					<annotation>
+						<documentation xml:lang="de">bankfachliche Elektronische Unterschrift oder Transportunterschrift (strukturiertes Format).</documentation>
+						<documentation xml:lang="en">Digital signature (either autorising an order or applied for transportation), structured format.</documentation>
+					</annotation>
+				</element>
+			</choice>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<simpleType name="OrderSignatureType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für kryptographische Unterschriften.</documentation>
+		</annotation>
+		<restriction base="base64Binary"/>
+	</simpleType>
+	<element name="OrderSignatureData" type="esig:OrderSignatureDataType">
+		<annotation>
+			<documentation xml:lang="de">bankfachliche Elektronische Unterschrift oder Transportunterschrift (strukturiertes Format).</documentation>
+			<documentation xml:lang="en">Digital signature (either autorising an order or applied for transportation), structured format.</documentation>
+		</annotation>
+	</element>
+	<complexType name="OrderSignatureDataType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für bankfachliche Elektronische Unterschrift oder Transportunterschrift (strukturiertes Format).</documentation>
+			<documentation xml:lang="en">Data type according for a digital signature (either autorising an order or applied for transportation), structured format.</documentation>
+		</annotation>
+		<sequence>
+			<element name="SignatureVersion" type="esig:SignatureVersionType">
+				<annotation>
+					<documentation xml:lang="de">Version des Signaturverfahrens.</documentation>
+					<documentation xml:lang="en">Version of the algorithm used for signature creation.</documentation>
+				</annotation>
+			</element>
+			<element name="SignatureValue" type="base64Binary">
+				<annotation>
+					<documentation xml:lang="de">Digitale Signatur.</documentation>
+					<documentation xml:lang="en">Digital signature.</documentation>
+				</annotation>
+			</element>
+			<element name="PartnerID" type="esig:PartnerIDType">
+				<annotation>
+					<documentation xml:lang="de">Kunden-ID des Unterzeichners.</documentation>
+					<documentation xml:lang="en">Customer ID of the signer.</documentation>
+				</annotation>
+			</element>
+			<element name="UserID" type="esig:UserIDType">
+				<annotation>
+					<documentation xml:lang="de">Teilnehmer-ID.</documentation>
+					<documentation xml:lang="en">User ID.</documentation>
+				</annotation>
+			</element>
+			<element ref="ds:X509Data" minOccurs="0">
+				<annotation>
+					<documentation xml:lang="de">Parameter zur X.509-Funktionalität</documentation>
+					<documentation xml:lang="en">Parameter for X509Data</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<simpleType name="PartnerIDType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für eine Kunden-ID.</documentation>
+		</annotation>
+		<restriction base="token">
+			<maxLength value="35"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="UserIDType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für eine Teilnehmer-ID.</documentation>
+		</annotation>
+		<restriction base="token">
+			<maxLength value="35"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="SignatureVersionType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für Versionsnummern zur Elektronischen Unterschrift (EU).</documentation>
+		</annotation>
+		<restriction base="token">
+			<length value="4"/>
+			<pattern value="A\d{3}"/>
+		</restriction>
+	</simpleType>
+	<!-- Definitionen für die Uebertragung von oeffentlichen Signierschlüsseln. z.B. ueber EBICS mit INI, PUB, HCS.-->
+	<element name="SignaturePubKeyOrderData" type="esig:SignaturePubKeyOrderDataType">
+		<annotation>
+			<documentation xml:lang="de">Element für Public Key Dateien unabhängig von der Auftragsart / Geschäftsvorfall.</documentation>
+		</annotation>
+	</element>
+	<complexType name="SignaturePubKeyOrderDataType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für Public Key Dateien unabhängig von der Auftragsart / Geschäftsvorfall.</documentation>
+		</annotation>
+		<sequence>
+			<element name="SignaturePubKeyInfo" type="esig:SignaturePubKeyInfoType">
+				<annotation>
+					<documentation xml:lang="de">öffentlicher Signaturschlüssel.</documentation>
+				</annotation>
+			</element>
+			<element name="PartnerID" type="esig:PartnerIDType">
+				<annotation>
+					<documentation xml:lang="de">Kunden-ID.</documentation>
+				</annotation>
+			</element>
+			<element name="UserID" type="esig:UserIDType">
+				<annotation>
+					<documentation xml:lang="de">Teilnehmer-ID.</documentation>
+				</annotation>
+			</element>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<element name="SignaturePubKeyInfo" type="esig:SignaturePubKeyInfoType">
+		<annotation>
+			<documentation xml:lang="de">öffentlicher Signaturschlüssel.</documentation>
+		</annotation>
+	</element>
+	<complexType name="SignaturePubKeyInfoType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für öffentliche bankfachliche Schlüssel.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="esig:PubKeyInfoType">
+				<sequence>
+					<element name="SignatureVersion" type="esig:SignatureVersionType">
+						<annotation>
+							<documentation xml:lang="de">Version des EU-Signaturverfahrens.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="PubKeyInfoType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für die Darstellung eines öffentlichen RSA-Schlüssels als Exponent-Modulus-Kombination oder als X509-Zertifikat.</documentation>
+		</annotation>
+		<sequence>
+			<sequence>
+				<element ref="ds:X509Data" minOccurs="0"/>
+				<element name="PubKeyValue" type="esig:PubKeyValueType">
+					<annotation>
+						<documentation xml:lang="de">Darstellung als Exponent-Modulus-Kombination.</documentation>
+					</annotation>
+				</element>
+			</sequence>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="PubKeyValueType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für die Exponent-Modulus-Darstellung eines öffentlichen RSA-Schlüssels.</documentation>
+		</annotation>
+		<sequence>
+			<element ref="ds:RSAKeyValue"/>
+			<element name="TimeStamp" type="esig:TimestampType" minOccurs="0">
+				<annotation>
+					<documentation xml:lang="de">Zeitpunkt der Generierung des Schlüssels.</documentation>
+				</annotation>
+			</element>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<simpleType name="TimestampType">
+		<annotation>
+			<documentation xml:lang="de">Datentyp für Zeitstempel.</documentation>
+		</annotation>
+		<restriction base="dateTime"/>
+	</simpleType>
+</schema>

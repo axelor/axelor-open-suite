@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,17 +32,15 @@ public interface ReconcileService {
 	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, boolean canBeZeroBalanceOk);
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public int confirmReconcile(Reconcile reconcile) throws AxelorException;
+	public int confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException;
 	
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
 	
-	public void updatePartnerAccountingSituation(Reconcile reconcile);
+	public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException;
 	
 	public List<Partner> getPartners(Reconcile reconcile);
 	
-	public void updateInvoiceRemainingAmount(Reconcile reconcile) throws AxelorException;
-	
-	public Reconcile reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean canBeZeroBalanceOk) throws AxelorException;
+	public Reconcile reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean canBeZeroBalanceOk, boolean updateInvoicePayments) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void unreconcile(Reconcile reconcile) throws AxelorException ;

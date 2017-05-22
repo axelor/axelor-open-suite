@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
+
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +38,14 @@ public class AssistantReportInvoiceController {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
+	private final static DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	
 	public void printSales(ActionRequest request, ActionResponse response) throws AxelorException  {
 		
 		AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
-
-		String name = I18n.get("SaleInvoicesDetails-")+assistant.getFromDate().toString("dd/MM/yyyy-")+assistant.getToDate().toString("dd/MM/yyyy");
+		
+		
+		String name = I18n.get("SaleInvoicesDetails-") + getDateString(assistant);
 		
 		String fileLink = ReportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name+"-${date}")
 				.addParam("Locale", this.getLanguageToPrinting())
@@ -50,6 +55,7 @@ public class AssistantReportInvoiceController {
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
 				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
+                .addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();
@@ -61,13 +67,16 @@ public class AssistantReportInvoiceController {
 				.add("html", fileLink).map());
 	}
 	
+	private String getDateString(AssistantReportInvoice assistant) {
+		return assistant.getFromDate().format(dtFormater) + assistant.getToDate().format(dtFormater);
+	}
 	
 	
 	public void printPurchases(ActionRequest request, ActionResponse response) throws AxelorException  {
 		
 		AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
 		
-		String name = I18n.get("PurchaseInvoicesDetails-")+assistant.getFromDate().toString("dd/MM/yyyy-")+assistant.getToDate().toString("dd/MM/yyyy");
+		String name = I18n.get("PurchaseInvoicesDetails-") + getDateString(assistant);
 		
 		String fileLink = ReportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name+"-${date}")
 				.addParam("Locale", this.getLanguageToPrinting())
@@ -77,6 +86,7 @@ public class AssistantReportInvoiceController {
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
 				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
+				.addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();

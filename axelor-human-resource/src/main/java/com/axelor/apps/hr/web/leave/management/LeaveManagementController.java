@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ public class LeaveManagementController {
 		LeaveLine leaveLine = request.getContext().asType(LeaveLine.class);
 		leaveLine = leaveManagementService.computeQuantityAvailable(leaveLine);
 		response.setValue("quantity",leaveLine.getQuantity());
+		response.setValue("totalQuantity", leaveLine.getTotalQuantity() );
 		response.setValue("leaveManagementList",leaveLine.getLeaveManagementList());
 	}
 }

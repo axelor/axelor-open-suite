@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -50,6 +44,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -59,6 +54,13 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -68,6 +70,12 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
 	
+	@Inject
+	protected AppSupplychainService appSupplychainService; 
+
+	@Inject
+	protected AccountConfigService accountConfigService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
@@ -82,6 +90,24 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 		purchaseOrder.setLocation(location);
 
+		purchaseOrder.setPaymentMode(supplierPartner.getInPaymentMode());
+		purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
+		
+		if (purchaseOrder.getPaymentMode() == null) {
+			purchaseOrder.setPaymentMode(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getInPaymentMode()
+				);
+		}
+
+		if (purchaseOrder.getPaymentCondition() == null) {
+			purchaseOrder.setPaymentCondition(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getDefPaymentCondition()
+				);
+		}
 		return purchaseOrder;
 	}
 
@@ -115,7 +141,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 			Address address = Beans.get(PartnerService.class).getDeliveryAddress(supplierPartner);
 
-			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes());
+			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes(), purchaseOrder.getShipmentMode(), purchaseOrder.getFreightCarrierMode());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
@@ -137,11 +163,17 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 						priceDiscounted = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, priceDiscounted, purchaseOrderLine.getProduct());
 					}
 					
+					BigDecimal taxRate = BigDecimal.ZERO;
+					TaxLine taxLine = purchaseOrderLine.getTaxLine();
+					if(taxLine != null)  {
+						taxRate = taxLine.getValue();
+					}
+					
 					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
 							product, purchaseOrderLine.getProductName(), 
 							purchaseOrderLine.getDescription(), qty, 
-							priceDiscounted,unit, 
-							stockMove, 2, purchaseOrder.getInAti(), purchaseOrderLine.getTaxLine().getValue());
+							priceDiscounted, unit, 
+							stockMove, StockMoveLineService.TYPE_PURCHASES, purchaseOrder.getInAti(), taxRate);
 					if(stockMoveLine != null) {
 
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
@@ -164,7 +196,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(Beans.get(StockMoveService.class).compute(stockMove));
 				Beans.get(StockMoveService.class).plan(stockMove);
 			}
 			stockMoveId = stockMove.getId();
@@ -179,7 +210,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 
-	public void clearPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
+	public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		List<StockMove> stockMoveList = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
 
@@ -270,7 +301,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			}
 		}
 		
-		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminatePurchaseOrderOnReceipt()){
+		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminatePurchaseOrderOnReceipt()){
 			purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
 		}
 		

@@ -1,0 +1,2 @@
+"code";"label";"applicationCondition";"formula"
+"incentive";"Incentive bonus";"$age$ > 25";"$employeeBonusMgtLine.employeeBonusMgt.baseAmount$ * $employeeBonusMgtLine.coef$"

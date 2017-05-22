@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.xml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -69,21 +70,24 @@ public final class Marschaller {
 		
 	}
 	
-	public static void marschalFile(Object jaxbElement, String context, String destinationFolder, String fileName) throws JAXBException, IOException{
+	public static File marschalFile(Object jaxbElement, String context, String destinationFolder, String fileName) throws JAXBException, IOException{
 		
 		JAXBContext jaxbContext = JAXBContext.newInstance(context);
-		marschalFile(jaxbElement, jaxbContext, destinationFolder, fileName);
+		return marschalFile(jaxbElement, jaxbContext, destinationFolder, fileName);
 		
 	}
 	
-	public static void marschalFile(Object jaxbElement, JAXBContext jaxbContext, String destinationFolder, String fileName) throws JAXBException, IOException{
+	public static File marschalFile(Object jaxbElement, JAXBContext jaxbContext, String destinationFolder, String fileName) throws JAXBException, IOException{
 		
 		Marshaller marshaller = jaxbContext.createMarshaller();
 		
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshaller.marshal(jaxbElement, FileTool.create(destinationFolder, fileName));
 		
+		File file = FileTool.create(destinationFolder, fileName);
+		marshaller.marshal(jaxbElement, file);
+		
+		return file;
 	}
 	
 	public static Object unmarschalFile(String context, String data) throws JAXBException{

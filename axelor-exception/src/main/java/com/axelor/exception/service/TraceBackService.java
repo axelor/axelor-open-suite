@@ -20,7 +20,7 @@ package com.axelor.exception.service;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class TraceBackService {
 		
 		TraceBack traceBack = new TraceBack();
 		traceBack.setException(e.toString());
-		traceBack.setDate(new DateTime());
+		traceBack.setDate(ZonedDateTime.now());
 		traceBack.setError(e.getStackTrace()[0].toString());
 		
 		traceBack.setOrigin(origin);

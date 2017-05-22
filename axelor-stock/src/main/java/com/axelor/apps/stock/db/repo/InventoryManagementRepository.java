@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.axelor.apps.stock.db.Inventory;
 
@@ -29,7 +29,7 @@ public class InventoryManagementRepository extends InventoryRepository {
 		
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setInventorySeq(null);
-		copy.setDateT(DateTime.now());
+		copy.setDateT(ZonedDateTime.now());
 		return copy;
 	}
 }

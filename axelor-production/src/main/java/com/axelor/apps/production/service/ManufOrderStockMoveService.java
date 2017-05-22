@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,8 +19,11 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.axelor.apps.production.db.CostSheet;
+import com.axelor.inject.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,16 +67,22 @@ public class ManufOrderStockMoveService {
 
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
-				manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
 
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				manufOrder.setInStockMove(stockMove);
+			}
+
+			//fill here the consumed stock move line list item to manage the
+			//case where we had to split tracked stock move lines
+			if (stockMove.getStockMoveLineList() != null) {
+				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+				}
 			}
 		}
 
@@ -103,6 +112,8 @@ public class ManufOrderStockMoveService {
 				fromLocation,
 				virtualLocation,
 				manufOrder.getPlannedStartDateT().toLocalDate(),
+				null,
+				null,
 				null);
 
 		return stockMove;
@@ -119,14 +130,13 @@ public class ManufOrderStockMoveService {
 
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 				manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
 
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				manufOrder.setOutStockMove(stockMove);
 			}
@@ -150,13 +160,15 @@ public class ManufOrderStockMoveService {
 				virtualLocation,
 				manufOrder.getProdProcess().getLocation(),
 				plannedEndDate,
+				null,
+				null,
 				null);
 
 		return stockMove;
 	}
 
 
-	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
+	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
@@ -165,8 +177,8 @@ public class ManufOrderStockMoveService {
 				prodProduct.getQty(),
 				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
-				null,
-				StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
+				stockMove,
+				inOrOutType, false, BigDecimal.ZERO);
 
 	}
 
@@ -175,7 +187,6 @@ public class ManufOrderStockMoveService {
 
 		this.finishStockMove(manufOrder.getInStockMove());
 		this.finishStockMove(manufOrder.getOutStockMove());
-
 	}
 
 

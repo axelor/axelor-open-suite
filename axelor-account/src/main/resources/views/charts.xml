@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
    	<chart name="chart.account.invoice.summary" title="Account Invoice Summary">
 		<dataset type="sql">
@@ -360,9 +360,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)  
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -374,7 +374,7 @@
 	  
  	  <action-record name="action.account.chart.set.date" model="com.axelor.apps.account.db.Account">
  	      <field name="toDate" expr="eval:todayDate" />
- 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+ 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonth(1)"/>
  	  </action-record>
  	  
  	  <action-record name="action.account.chart.set.from.to.date.month" model="com.axelor.apps.account.db.Account">
@@ -403,9 +403,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -432,9 +432,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
 			AND 
-				self.paymentDateTime <= DATE(:todayDate)
+				self.paymentDate <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -445,7 +445,7 @@
 	  </chart>
 
 	<action-record name="action.account.active.fiscal.year" model="com.axelor.apps.account.db.Move">
-	  <field name="year" expr="eval:__repo__.of(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
+	  <field name="year" expr="eval:__repo__(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
 	</action-record>
 	
 	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
@@ -460,8 +460,8 @@
 	    SELECT
 	      SUM(
 	        (CASE     
-	          WHEN self.account.accountType.nameSelect = 'income' then self.credit
-	          WHEN self.account.accountType.nameSelect = 'charge' then self.debit
+	          WHEN self.account.accountType.technicalTypeSelect = 'income' then self.credit
+	          WHEN self.account.accountType.technicalTypeSelect = 'charge' then self.debit
 	        END)
 	      ) AS _amount,
 	      item.title AS _label
@@ -474,7 +474,7 @@
 	    WHERE  
 	      meta.name = 'account.account.type.select'
 	      AND item.select = meta
-	      AND self.account.accountType.nameSelect = item.value  
+	      AND self.account.accountType.technicalTypeSelect = item.value  
 	      AND self.move.statusSelect = 3
 	      AND self.move.period.year = :year
 	      AND (self.move.period = :period OR :period IS NULL)

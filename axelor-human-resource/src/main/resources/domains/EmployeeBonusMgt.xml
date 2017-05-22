@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+     <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity name="EmployeeBonusMgt" lang="java" >
+    
+	    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+	    <many-to-one name="payPeriod" ref="com.axelor.apps.base.db.Period" title="Pay period" />
+	    <many-to-one name="leavePeriod" ref="com.axelor.apps.base.db.Period" title="Leave period" />
+	    <many-to-one name="employeeBonusType" ref="com.axelor.apps.hr.db.EmployeeBonusType" title="Bonus type" />
+	    <integer name="statusSelect" title="Status" selection="hr.employee.bonus.mgt.status.select" readonly="true" default="1" />
+	    <decimal name="baseAmount" title="Base amount per employee" />
+	    <one-to-many name="employeeBonusMgtLineList" ref="com.axelor.apps.hr.db.EmployeeBonusMgtLine" title="Employee bonus" mappedBy="employeeBonusMgt" />
+	    
+	    <extra-code>
+	      	<![CDATA[
+		  		public static final Integer STATUS_DRAFT = 1;
+		  		public static final Integer STATUS_ANOMALY = 2;
+		  		public static final Integer STATUS_CALCULATED = 3;
+		  ]]>
+	      </extra-code>
+      
+    </entity>
+
+</domain-models>

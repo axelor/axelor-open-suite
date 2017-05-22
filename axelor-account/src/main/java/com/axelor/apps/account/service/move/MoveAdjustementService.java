@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -27,10 +27,10 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,7 +45,7 @@ public class MoveAdjustementService {
 	protected LocalDate today;
 
 	@Inject
-	public MoveAdjustementService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, 
+	public MoveAdjustementService(AppAccountService appAccountService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, 
 			MoveToolService moveToolService, MoveDueService moveDueService, MoveRepository moveRepository) {
 
 		this.moveLineService = moveLineService;
@@ -53,7 +53,7 @@ public class MoveAdjustementService {
 		this.moveValidateService = moveValidateService;
 		this.moveRepository = moveRepository;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 
 	}
 	
@@ -75,9 +75,9 @@ public class MoveAdjustementService {
 
 		BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
 
-		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null);
+		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, account, debitAmountRemaining, false, today, 1, null);
@@ -111,9 +111,9 @@ public class MoveAdjustementService {
 		BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null);
+		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(
@@ -153,10 +153,10 @@ public class MoveAdjustementService {
 		Company company = debitMoveLineToReconcile.getMove().getCompany();
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 		// Move
-		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null);
+		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partnerCredit, creditMoveLineToReconcile.getAccount(), 
 				amount, true, today, 1, null);

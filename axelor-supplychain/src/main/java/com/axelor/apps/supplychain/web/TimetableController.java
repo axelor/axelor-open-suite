@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -39,15 +40,20 @@ public class TimetableController {
 	public void generateInvoice(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timetable timetable = request.getContext().asType(Timetable.class);
 		timetable = timeTableRepo.find(timetable.getId());
+
+		if (timetable.getInvoice() != null) {
+			response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
+			return;
+		}
+
 		Invoice invoice = timetableService.generateInvoice(timetable);
 		response.setView(ActionView
 				.define(I18n.get("Invoice generated"))
 				.model("com.axelor.apps.account.db.Invoice")
-				.add("form", "invoie-form")
+				.add("form", "invoice-form")
 				.add("grid", "invoice-grid")
 				.param("forceEdit", "true")
 				.context("_showRecord", invoice.getId().toString())
 				.map());
-		response.setCanClose(true);
 	}
 }

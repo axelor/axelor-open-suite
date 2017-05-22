@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +119,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 		ProdProcess prodProcess = manufOrder.getProdProcess();
 		
 		if(manufOrder.getPlannedStartDateT() == null){
-			manufOrder.setPlannedStartDateT(generalService.getTodayDateTime().toLocalDateTime());
+			manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 		}
 		
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {

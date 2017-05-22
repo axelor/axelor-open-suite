@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -15,6 +15,7 @@
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
+    <string name="origin" title="Origin" initParam="true"/>
     
     <one-to-many name="debitReconcileList" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
     <one-to-many name="creditReconcileList" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
@@ -29,11 +30,11 @@
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher "/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
    
-    <decimal name="currencyRate" title="Currency Rate"/>
-    <decimal name="currencyAmount" title="Amount in Acc. currency"/>
+    <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5" initParam="true"/>
+    <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
     
     <!-- 	Field not displayed, used during the payment voucher input -->
-	<decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>
+	<decimal name="maxAmountToReconcile" title="Max Amount to reconcile" />
 	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment Schedule line"/>
 	
 	<!-- 	Field not displayed, used for direct debit only -->
@@ -45,7 +46,15 @@
 	<integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
     
-    <one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="moveLine"/>
+    <one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="moveLine"/>
+    
+    <string name="accountCode" readonly="true"/>
+    <string name="accountName" readonly="true"/>
+    <string name="partnerFullName" readonly="true"/>
+    <string name="partnerSeq" readonly="true"/>
+    
+    <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
+    <string name="taxCode" readonly="true"/>
 	
     
     <string name="name" title="Name" namecolumn="true">

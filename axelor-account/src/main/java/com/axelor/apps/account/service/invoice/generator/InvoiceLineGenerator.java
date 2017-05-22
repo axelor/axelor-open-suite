@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
@@ -41,7 +42,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
@@ -86,7 +86,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected UnitConversionRepository unitConversionRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 
 
 	protected InvoiceLineGenerator() { }
@@ -109,7 +109,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.unit = unit;
         this.sequence = sequence;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = Beans.get(GeneralService.class).getTodayDate();
+        this.today = Beans.get(AppAccountService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
 	}
@@ -156,6 +156,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setProduct(product);
 		invoiceLine.setProductName(productName);
+		if(product != null)  {
+			invoiceLine.setProductCode(product.getCode());
+		}
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
 
@@ -167,7 +170,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			this.determineTaxLine();
 		}
 		invoiceLine.setTaxLine(taxLine);
-
+		
+		if(taxLine != null)  {
+			invoiceLine.setTaxRate(taxLine.getValue());
+			invoiceLine.setTaxCode(taxLine.getTax().getCode());
+		}
+		
 		if((exTaxTotal == null || inTaxTotal == null))  {
 			this.computeTotal();
 		}
@@ -230,11 +238,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		}
 		
 		invoiceLine.setCompanyExTaxTotal(
-				currencyService.getAmountCurrencyConverted(
+				currencyService.getAmountCurrencyConvertedAtDate(
 						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
 		invoiceLine.setCompanyInTaxTotal(
-				currencyService.getAmountCurrencyConverted(
+				currencyService.getAmountCurrencyConvertedAtDate(
 						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 	}
 	

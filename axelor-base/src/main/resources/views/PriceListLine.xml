@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
     <grid name="price-list-line-grid" title="Price list lines" model="com.axelor.apps.base.db.PriceListLine" > 
@@ -19,10 +19,11 @@
 		<panel name="application" title="Apply on" colSpan="11">
 			<field name="product" colSpan="5" onChange="action-price-list-line-record-product" form-view="product-form" grid-view="product-grid" requiredIf="productCategory == null" hideIf="productCategory != null"/> 
 			<label name="or" title="Or" colSpan="1" hideIf="product != null || productCategory != null"/>
-			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null"/>
+			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null" onChange="action-price-list-line-attrs-product-category-change"/>
 		</panel>
 		<panel name="calculationMethod" title="Calculation method" colSpan="12" >
-			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
+			<field name="typeSelect" hideIf="productCategory" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
+			<field name="typeSelect" hideIf="!productCategory" selection-in="[1,2]" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>
 			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
 			<field name="minQty" colSpan="12"/>
@@ -49,7 +50,7 @@
     </action-record>
     
     <action-attrs name="action-price-list-line-attrs-scale-and-precision">
-		<attribute name="scale" for="amount" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="amount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 	<action-attrs name="action-price-list-line-attrs-amount-percent-title-change">
@@ -59,6 +60,13 @@
 	
 	<action-attrs name="action-price-list-line-attrs-amount-title-change">
 		<attribute name="title" for="amount" expr="eval: com.axelor.i18n.I18n.get(&quot;Amount&quot;)" if="typeSelect == 3"/>
+	</action-attrs>
+
+	<action-attrs name="action-price-list-line-attrs-product-category-change">
+		<attribute name="value" for="typeSelect" expr="eval: 1" if="productCategory"/>
+        <attribute name="title" for="typeSelect" expr="eval: 'Discount/Additionnal'" if="productCategory"/>
+		<attribute name="value" for="typeSelect" expr="eval: 3" if="!productCategory"/>
+		<attribute name="title" for="typeSelect" expr="eval: 'Discount/Additionnal/Replace'" if="!productCategory"/>
 	</action-attrs>
 	
 </object-views>

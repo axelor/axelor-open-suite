@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="move-template-grid" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
 		<field name="name"/>
-		<field name="code" />
+		<field name="code" x-bind="{{code|uppercase}}" />
 		<field name="moveTemplateType" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
 		<field name="journal" grid-view="journal-grid" form-view="journal-form"/>
 		<field name="isValid"/>
@@ -34,7 +34,7 @@
     <form onNew="action-move-template-set-default" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
   		<panel name="main" >
 		    <field name="name" readonlyIf="isValid"/>
-		    <field name="code" readonlyIf="isValid" required="true" colSpan="3"/>
+		    <field name="code" x-bind="{{code|uppercase}}" readonlyIf="isValid" required="true" colSpan="3"/>
 		    <field name="company" readonlyIf="isValid" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
 		    <field name="moveTemplateType" readonlyIf="isValid" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
 		    <field name="journal" readonlyIf="isValid" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
@@ -77,22 +77,22 @@
 	</form>
     
     <action-validate name="action-move-template-wizard-check-value">
-    	<error if="date != null &amp;&amp; LocalDate.parse(date) &gt; __date__"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
+    	<error if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__date__)"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
     	<error if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
     </action-validate>
     
     <action-record name="action-move-template-set-default" model="com.axelor.apps.account.db.MoveTemplate">
-		<field name="company" expr="eval:__repo__.of(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>        
+		<field name="company" expr="eval:__repo__(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>        
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
-    	<field if="date != null &amp;&amp; LocalDate.parse(date) &gt; __date__" name="date" expr="eval:null"/>
+    	<field if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__date__)" name="date" expr="eval:null"/>
     	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" />
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-set-active-company">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-method name="action-move-template-method-check-validity">
@@ -117,9 +117,9 @@
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
-	    <field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
-		<field name="moveTemplate" expr="eval:__repo__.of(MoveTemplate).find(_parent.moveTemplate.id)" />
-		<field name="partnerInputSelect" expr="eval:__repo__.of(MoveTemplate).find(_parent.moveTemplate.id).partnerInputSelect"/>
+	    <field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
+		<field name="moveTemplate" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id)" />
+		<field name="partnerInputSelect" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id).partnerInputSelect"/>
 	</action-record>
 	
     

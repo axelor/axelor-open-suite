@@ -21,11 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.axelor.exception.TestModule;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules({ TestModule.class })
 public class TraceBackTest {
 
 	@Test

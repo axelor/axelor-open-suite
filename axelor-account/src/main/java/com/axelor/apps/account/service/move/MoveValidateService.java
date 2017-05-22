@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,21 +17,15 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,6 +33,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public class MoveValidateService {
 
@@ -47,16 +47,13 @@ public class MoveValidateService {
 	protected SequenceService sequenceService;
 	protected MoveCustAccountService moveCustAccountService;
 	protected MoveRepository moveRepository;
-	protected LocalDate today;
 
 	@Inject
-	public MoveValidateService(GeneralService generalService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
+	public MoveValidateService(AppAccountService appAccountService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
 
 		this.sequenceService = sequenceService;
 		this.moveCustAccountService = moveCustAccountService;
 		this.moveRepository = moveRepository;
-		today = generalService.getTodayDate();
-
 	}
 
 
@@ -75,8 +72,9 @@ public class MoveValidateService {
 			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getDueDate() == null)  {
 				moveLine.setDueDate(date);
 			}
-
-			moveLine.setPartner(partner);
+			if (partner != null){
+				moveLine.setPartner(partner);
+			}
 			moveLine.setCounter(counter);
 			counter++;
 		}
@@ -112,7 +110,6 @@ public class MoveValidateService {
 	public void validateMove(Move move, boolean updateCustomerAccount) throws AxelorException {
 
 		log.debug("Validation de l'écriture comptable {}", move.getReference());
-
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
@@ -132,13 +129,17 @@ public class MoveValidateService {
 
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
 
-		this.validateEquiponderanteMove(move);
+		if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+			move.setAdjustingMove(true);
+		}
 
+		this.validateEquiponderanteMove(move);
+		this.fillMoveLines(move);
 		moveRepository.save(move);
 			
 		moveCustAccountService.updateCustomerAccount(move);
 
-		move.setValidationDate(today);
+		move.setValidationDate(LocalDate.now());
 
 	}
 
@@ -178,8 +179,22 @@ public class MoveValidateService {
 		}
 	}
 
-
-
+	//Procédure permettant de remplir les champs dans les lignes d'écriture relatifs au compte comptable et au tiers
+	@Transactional
+	public void fillMoveLines(Move move){
+		for (MoveLine moveLine : move.getMoveLineList()) {
+			moveLine.setAccountCode(moveLine.getAccount().getCode());
+			moveLine.setAccountName(moveLine.getAccount().getName());
+			if(move.getPartner() != null){
+				moveLine.setPartnerFullName(move.getPartner().getFullName());
+				moveLine.setPartnerSeq(move.getPartner().getPartnerSeq());
+			}else if(moveLine.getPartner() != null){
+				moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
+				moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
+			}
+		}
+	}
+	
 	public boolean validateMultiple(List<? extends Move> moveList){
 		boolean error = false;
 		for(Move move: moveList){

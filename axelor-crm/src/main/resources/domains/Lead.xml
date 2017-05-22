@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -24,14 +24,14 @@
 <!--   Primary address group -->
 	<string name="primaryAddress" title="Address"/>
 	<string name="primaryCity" title="City"/>
-	<string name="primaryState" title="State"/>
+	<string name="primaryState" title="Region"/>
 	<string name="primaryPostalCode" title="Postal code"/>
   	<many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
   
 <!--   Others address group -->
 	<string name="otherAddress" title="Address"/>
 	<string name="otherCity" title="City"/>
-	<string name="otherState" title="State"/>
+	<string name="otherState" title="Region"/>
 	<string name="otherPostalCode" title="Postal code"/>
   	<many-to-one name="otherCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
   	<boolean name="isCopyAddress" title="Copy primary address" help="true"/>
@@ -56,8 +56,12 @@
     
     
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" massUpdate="true"/>
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"  massUpdate="true" />
+  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"  massUpdate="true" />
   	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
+  	
+  	<one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events" mappedBy="lead"/>
+  	<one-to-many name="opportunitiesList" ref="com.axelor.apps.crm.db.Opportunity" title="Oopportunities" mappedBy="lead"/>
+  	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
     
     <string name="fullName" title="Contact name" namecolumn="true">
 	    <![CDATA[
@@ -72,7 +76,7 @@
     <string name="companyName" title="Company name" namecolumn="true">
 	    <![CDATA[
 	    String companyName =  enterpriseName;
-	    if(companyName != null && jobTitle != null) companyName = companyName+","+jobTitle;
+	    if(companyName != null && fullName != null) companyName = companyName + "," + fullName;
 	    return companyName;
 	    ]]>
     </string>

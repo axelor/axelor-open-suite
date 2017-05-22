@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+     <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.bankpayment.db.BankStatement">
+			<toolbar>
+				<button name="showBankStatementLines" title="See bank statement lines" onClick="account.bank.statement.line" />
+			</toolbar>
+			<field name="name" />
+			<field name="fromDate" />
+			<field name="toDate" />
+            <field name="statusSelect"/> 
+     </grid>
+  
+	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 2">
+		<panel name="main" colSpan="12">
+			<field name="name"/>
+			<field name="bankStatementFile" canNew="true" widget="binary-link"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+		</panel>
+		<panel name="status" title="Status" colSpan="12">
+			<field name="statusSelect" title="Status"/>
+		</panel>
+		
+	</form>
+	
+	
+	<action-view name="account.bank.statement.line"
+		title="Bank Statement Line" model="com.axelor.apps.bankpayment.db.BankStatementLine" >
+		<view type="grid" name="bank-statement-line-grid" />
+		<view type="form" name="bank-statement-line-form" />
+	</action-view>
+ 
+    
+</object-views>

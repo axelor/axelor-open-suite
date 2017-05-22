@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,10 +23,10 @@ import java.util.Map;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -51,7 +51,7 @@ public class InvoiceLineController {
 		}
 		if(invoiceLine.getAnalyticDistributionTemplate() != null){
 			invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
-			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 		}
 		else{
 			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
@@ -65,9 +65,9 @@ public class InvoiceLineController {
 			invoice = request.getContext().getParentContext().asType(Invoice.class);
 			invoiceLine.setInvoice(invoice);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
-			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 		}
 	}
 	
@@ -86,24 +86,27 @@ public class InvoiceLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice);
+		
 		response.setValue("priceDiscounted", priceDiscounted);
 		response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(invoiceLine.getPrice()) == 0);
 
 		BigDecimal taxRate = BigDecimal.ZERO;
-		if(invoiceLine.getTaxLine() != null)  {  taxRate = invoiceLine.getTaxLine().getValue();  }
+		if(invoiceLine.getTaxLine() != null)  {
+			taxRate = invoiceLine.getTaxLine().getValue();
+			response.setValue("taxRate", taxRate);
+			response.setValue("taxCode", invoiceLine.getTaxLine().getTax().getCode());
+		}
 		
-		if(!invoice.getInAti()){
+		if(!invoice.getInAti()) {
 			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
-			companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
-			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
-
-		}
-		else  {
+		} else  {
 			inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-			companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 		}
+		
+		companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
+		companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 		
 		response.setValue("exTaxTotal", exTaxTotal);
 		response.setValue("inTaxTotal", inTaxTotal);
@@ -134,6 +137,8 @@ public class InvoiceLineController {
 
 			TaxLine taxLine = invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase);
 			response.setValue("taxLine", taxLine);
+			response.setValue("taxRate", taxLine.getValue());
+			response.setValue("taxCode", taxLine.getTax().getCode());
 			
 			BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
@@ -161,6 +166,8 @@ public class InvoiceLineController {
 	public void resetProductInformation(ActionResponse response)  {
 
 		response.setValue("taxLine", null);
+		response.setValue("taxCode", null);
+		response.setValue("taxRate", null);
 		response.setValue("productName", null);
 		response.setValue("unit", null);
 		response.setValue("discountAmount", null);
@@ -227,7 +234,6 @@ public class InvoiceLineController {
 					price = (BigDecimal) discounts.get("price");
 				}
 			}
-			
 			response.setValue("price", price);
 
 		}

@@ -23,7 +23,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.db.JPA;
 import com.axelor.db.JpaModel;

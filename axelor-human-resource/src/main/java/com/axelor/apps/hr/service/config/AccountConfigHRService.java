@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,13 +20,13 @@ package com.axelor.apps.hr.service.config;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class AccountConfigHRService extends AccountConfigService{
+public class AccountConfigHRService extends AccountConfigBankPaymentService  {
 	
 	public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException  {
 		
@@ -40,12 +40,12 @@ public class AccountConfigHRService extends AccountConfigService{
 	
 	public Account getExpenseEmployeeAccount(AccountConfig accountConfig) throws AxelorException  {
 		
-		if(accountConfig.getExpenseEmployeeAccount() == null)   {
+		if(accountConfig.getEmployeeAccount() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
 					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return accountConfig.getExpenseEmployeeAccount();
+		return accountConfig.getEmployeeAccount();
 	}
 	
 	public Account getExpenseTaxAccount(AccountConfig accountConfig) throws AxelorException  {

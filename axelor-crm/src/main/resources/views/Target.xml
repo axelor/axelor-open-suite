@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="target-grid" title="Targets" model="com.axelor.apps.crm.db.Target">
+    <grid name="target-grid" title="Objectives" model="com.axelor.apps.crm.db.Target">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="periodTypeSelect"/>
         <field name="fromDate"/>
         <field name="toDate"/>
@@ -68,12 +68,12 @@
 <!--         </group> -->
 <!-- 	</form> -->
 	
-<form onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" width="large">
+<form onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Objective" model="com.axelor.apps.crm.db.Target" width="large">
   <panel name="information" title="Information">
     <field name="name"/>
-    <field name="code"/>
+    <field name="code" x-bind="{{code|uppercase}}"/>
     <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
-    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid"/>
   </panel>
   <panel name="period" title="Period">
     <field name="periodTypeSelect"/>

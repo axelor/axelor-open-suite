@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,6 +162,16 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		return message;
 	}
 	
+	
+	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+		
+		Message message = this.generateMessage(model, template);
+		messageService.sendMessage(message);
+	
+		return message;
+	}
+	
+	
 	public Set<MetaFile> getMetaFiles( Template template ) throws AxelorException, IOException {
 		
 		List<DMSFile> metaAttachments = Query.of( DMSFile.class ).filter( "self.relatedId = ?1 AND self.relatedModel = ?2", template.getId(), EntityHelper.getEntityClass(template).getName() ).fetch();
@@ -211,4 +223,5 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		
 		return emailAddress;
 	}
+	
 }

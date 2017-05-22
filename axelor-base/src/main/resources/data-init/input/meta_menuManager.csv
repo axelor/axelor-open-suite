@@ -1,0 +1,4 @@
+name;roles
+menu-dms;role.manager
+menu-dms-all;role.manager
+menu-dms-config;role.manager

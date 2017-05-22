@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Ticket" lang="java">
+	
+	<integer name="importId" />
+	<string name="subject" required="true" namecolumn="true" title="Subject"/>
+	<string name="description" title="Description" large="true"/>
+	<string name="status" title="Status"/>
+	<datetime name="startDateTime" required="true" title="Start date"/>
+	<datetime name="endDateTime" title="End date"/>
+	<string name="subjectTeam"/>
+	
+	<integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
+    <string name="ticketNumberSeq" title="Ticket N°" help="true"/>
+    <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
+    <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
+    
+	<datetime name="limitDateT" title="Limit Date" help="true"/>
+  	
+  	<long name="duration" title="Duration"/>
+  	
+  	<many-to-one name="ticketCategory" ref="com.axelor.apps.crm.db.TicketCategory" title="Category"/>
+  	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
+  	
+  	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
+  	<integer name="relatedToSelectId"/>
+  	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
+    
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
+  	
+	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
+	
+	
+    <track>
+      <field name="subject"/>
+      <field name="startDateTime"/>
+      <field name="endDateTime" on="UPDATE"/>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 22" tag="important">Ticket In Progress</message>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 23" tag="important">Ticket Resolved</message>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 24" tag="important">Ticket in Feedback status</message>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 25" tag="important">Ticket Closed</message> 
+    </track>
+
+  </entity>
+
+</domain-models>

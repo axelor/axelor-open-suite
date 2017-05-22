@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -24,7 +24,7 @@
   	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
     
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
 	
@@ -47,18 +47,14 @@
 
 <!-- Task -->
     
-<!-- Ticket -->
-    <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
-    <string name="ticketNumberSeq" title="Ticket N°" help="true"/>
-    <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
-    <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
-<!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
-  	
   	<boolean name="isRecurrent" title="Recurrent"/>
   	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
   	
   	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
   	
+  	<!-- -Json fields -->
+	<string name="eventAttrs" title="Fields" json="true" />
+	
   	<extra-code>
       	<![CDATA[
       		// TYPE SELECT
@@ -66,8 +62,7 @@
 	  		public static final Integer TYPE_MEETING = 2;
 	  		public static final Integer TYPE_TASK = 3;
 	  		public static final Integer TYPE_LEAVE = 4;
-	  		public static final Integer TYPE_TICKET = 5;
-	  		public static final Integer TYPE_EVENT = 6;
+	  		public static final Integer TYPE_EVENT = 5;
 	  ]]>
       </extra-code>
       
@@ -77,13 +72,8 @@
       <field name="endDateTime" on="UPDATE"/>
       <field name="internalGuestSet"/>
 	   <field name="externalGuestSet"/>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 22" tag="important">Ticket In Progress</message>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 23" tag="important">Ticket Resolved</message>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 24" tag="important">Ticket in Feedback status</message>
-      <message if="typeSelect == 5 &amp;&amp; statusSelect == 25" tag="important">Ticket Closed</message> 
     </track>
       
 
   </entity>
-
 </domain-models>

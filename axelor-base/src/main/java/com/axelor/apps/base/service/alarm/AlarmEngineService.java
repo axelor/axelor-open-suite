@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.AlarmMessage;
 import com.axelor.apps.base.db.repo.AlarmEngineRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -45,11 +45,11 @@ import com.google.inject.Inject;
 public class AlarmEngineService <T extends Model> {
 
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
 
-	private DateTime dateTime;
+	private ZonedDateTime datetime;
 
 	private Templates templates;
 	
@@ -57,15 +57,15 @@ public class AlarmEngineService <T extends Model> {
 	private AlarmEngineRepository alarmEngineRepo;
 
 	@Inject
-	public AlarmEngineService(GeneralService generalService) {
-		this.generalService = generalService;
-		dateTime = this.generalService.getTodayDateTime();
+	public AlarmEngineService(AppBaseService appBaseService) {
+		this.appBaseService = appBaseService;
+		datetime = this.appBaseService.getTodayDateTime();
 
 	}
 
-	public AlarmEngineService(DateTime dateTime) {
+	public AlarmEngineService(ZonedDateTime datetime) {
 
-		this.dateTime = dateTime;
+		this.datetime = datetime;
 
 	}
 
@@ -91,6 +91,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
 
 		List<? extends AlarmEngine> alarmEngines = alarmEngineRepo.all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch();
@@ -118,6 +119,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected Map<T, List<Alarm>> get(List<? extends AlarmEngine> alarmEngines, Class<T> klass, T... params) {
 
 		Map<T, List<Alarm>> map = new HashMap<T, List<Alarm>>();
@@ -161,6 +163,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected Map<T, Alarm> get(AlarmEngine alarmEngine, Class<T> klass, T... params) {
 
 		Map<T, Alarm> map = new HashMap<T, Alarm>();
@@ -193,6 +196,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public List<T> results(String query, Class<T> klass, T... params) {
 
 		LOG.debug("Lancement de la requête {} => Objet: {}, params: {}", new Object[]{query, klass.getSimpleName(), params});
@@ -213,7 +217,7 @@ public class AlarmEngineService <T extends Model> {
 
 		Alarm alarm = new Alarm();
 
-		alarm.setDate(dateTime);
+		alarm.setDate(datetime);
 		alarm.setAlarmEngine(alarmEngine);
 		alarm.setContent( content(alarmEngine.getAlarmMessage(), t) );
 

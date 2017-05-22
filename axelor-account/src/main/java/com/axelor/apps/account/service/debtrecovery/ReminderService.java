@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +40,12 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -71,7 +72,7 @@ public class ReminderService {
 	@Inject
 	public ReminderService(ReminderSessionService reminderSessionService, ReminderActionService reminderActionService, AccountCustomerService accountCustomerService,
 			MoveLineRepository moveLineRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, ReminderRepository reminderRepo,
-			GeneralService generalService) {
+			AppAccountService appAccountService) {
 
 		this.reminderSessionService = reminderSessionService;
 		this.reminderActionService = reminderActionService;
@@ -80,7 +81,7 @@ public class ReminderService {
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.accountConfigService = accountConfigService;
 		this.reminderRepo = reminderRepo;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -134,7 +135,7 @@ public class ReminderService {
 	 * 			la plus ancienne date d'échéance
 	 */
 	public LocalDate getOldDateMoveLine(List<MoveLine> moveLineList)  {
-		LocalDate minMoveLineDate = new LocalDate();
+		LocalDate minMoveLineDate = LocalDate.now();
 
 
 		if(moveLineList != null && !moveLineList.isEmpty())  {
@@ -157,7 +158,7 @@ public class ReminderService {
 	 * 			La plus ancienne date
 	 */
 	public LocalDate getLastDate(LocalDate date1, LocalDate date2)  {
-		LocalDate minDate = new LocalDate();
+		LocalDate minDate = LocalDate.now();
 		if(date1!=null && date2!=null)  {
 			if(date1.isAfter(date2))  {	minDate=date1;	}
 			else  {  minDate=date2;  }
@@ -218,6 +219,7 @@ public class ReminderService {
 	 * @return
 	 * 			La liste de ligne d'écriture
 	 */
+	@SuppressWarnings("unchecked")
 	public List<MoveLine> getMoveLineReminder(Partner partner, Company company)  {
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 
@@ -352,7 +354,7 @@ public class ReminderService {
 
 		else  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1),
-					GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -418,7 +420,7 @@ public class ReminderService {
 				}
 				else {
 					throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2),
-							GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
 					if(reminderSessionService.getReminderMethod(reminder)!=null)  {
@@ -427,7 +429,7 @@ public class ReminderService {
 					}
 					else  {
 						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
-								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
 				else {
@@ -445,7 +447,7 @@ public class ReminderService {
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
 						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
-								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
+								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
 				}
 			}
 		}

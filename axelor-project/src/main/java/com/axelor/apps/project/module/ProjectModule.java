@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,15 +18,17 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.project.db.repo.ProjectTaskManagementRepository;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectManagementRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.app.AppProjectServiceImpl;
 
 public class ProjectModule extends AxelorModule{
 
 	@Override
 	protected void configure() {
-		bind(ProjectTaskRepository.class).to(ProjectTaskManagementRepository.class);
-		
+		bind(ProjectRepository.class).to(ProjectManagementRepository.class);
+		bind(AppProjectService.class).to(AppProjectServiceImpl.class);
 	}
 
 }

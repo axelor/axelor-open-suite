@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+     <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity name="KilometricAllowanceRule" lang="java" >
+    
+        <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HrConfig"/>
+        
+        <decimal name="rate" title="Rate" required="true" precision="20" scale="3" />
+        <decimal name="minimumCondition" title="Minimum Condition" />
+        <decimal name="maximumCondition" title="Maximum Condition" />
+        <many-to-one name="kilometricAllowanceRate" ref="com.axelor.apps.hr.db.KilometricAllowanceRate"/>
+        
+    </entity>
+
+</domain-models>

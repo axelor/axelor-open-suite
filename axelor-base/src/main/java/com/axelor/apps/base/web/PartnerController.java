@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,8 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.validator.routines.checkdigit.IBANCheckDigit;
 import org.eclipse.birt.core.exception.BirtException;
+import org.iban4j.IbanFormatException;
+import org.iban4j.IbanUtil;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,9 +288,11 @@ public class PartnerController {
 				
 				if(bankDetails.getIban() != null) {
 					LOG.debug("checking iban code : {}", bankDetails.getIban());
-					if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
+					try {
+						IbanUtil.validate(bankDetails.getIban());
+					} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
 						ibanInError.add(bankDetails.getIban());
-						}
+					}
 				}
 			}
 		}
@@ -305,5 +310,15 @@ public class PartnerController {
 	
 	public String normalizePhoneNumber(String phoneNumber){
 		return phoneNumber.replaceAll("\\s|\\.", "");
+	}
+	
+	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
+		Partner partner = request.getContext().asType(Partner.class);
+		if (partner.getId() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
+					IException.CONFIGURATION_ERROR);
+		}
+		partner = partnerRepo.find(partner.getId());
+		partnerService.convertToIndividualPartner(partner);
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,12 +22,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -59,7 +59,7 @@ public class ProductionOrderController {
 	private ProductRepository productRepo;
 	
 	@Inject
-	private GeneralService generalService;
+	private AppBaseService appBaseService;
 	
 	
 	public void addManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
@@ -88,11 +88,11 @@ public class ProductionOrderController {
 				product = billOfMaterial.getProduct();
 			}
 			
-			DateTime startDate;
+			ZonedDateTime startDate;
 			if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-				startDate = new DateTime(context.get("_startDate") );
+				startDate = ZonedDateTime.parse((CharSequence) context.get("_startDate"), DateTimeFormatter.ISO_DATE_TIME);
 			}else{
-				startDate = generalService.getTodayDateTime().toDateTime();
+				startDate = appBaseService.getTodayDateTime();
 			}
 			
 			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );

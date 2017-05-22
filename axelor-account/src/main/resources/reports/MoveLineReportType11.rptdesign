@@ -116,60 +116,70 @@
                     <property name="columnName">MoveLineName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerFullName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerFullName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PartnerFullName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">AccountCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">AccountCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">AccountCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">AccountName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">AccountName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">AccountName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">MoveId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">MoveId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Debit</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">Debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Credit</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">Credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">Description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">Description</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">Description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PartnerSeq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerSeq</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PartnerSeq</text-property>
                 </structure>
             </list-property>
@@ -182,6 +192,7 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -349,7 +360,7 @@ Move.company = MoveLineReport.company  AND
 (MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
 (MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
 (MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode)) 
-AND  Move.ignore_in_accounting_ok = false
+AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -368,6 +379,9 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>

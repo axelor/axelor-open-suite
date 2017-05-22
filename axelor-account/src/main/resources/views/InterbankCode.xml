@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="name"/>
         <field name="description"/>
     </grid>
 	
     <grid name="interbank-code-line-custom-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine"> 
-		<field name="code"/>
+		<field name="code" x-bind="{{code|uppercase}}"/>
 		<field name="name"/>
 		<field name="description"/>
 		<field name="technicalRejectOk"/>
@@ -18,7 +18,7 @@
 	
     <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
 		<panel name="main">
-			<field name="code"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="name"/>
 			<field name="endDate"/>
 		</panel>

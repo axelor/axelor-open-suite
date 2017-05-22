@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,20 +24,22 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -52,11 +54,11 @@ public class PaymentService {
 	protected LocalDate today;
 
 	@Inject
-	public PaymentService(GeneralService generalService, ReconcileService reconcileService, MoveLineService moveLineService)  {
+	public PaymentService(AppAccountService appAccountService, ReconcileService reconcileService, MoveLineService moveLineService)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 	}
 
 
@@ -129,7 +131,7 @@ public class PaymentService {
 							}
 							// End gestion du passage en 580
 
-							reconcileService.confirmReconcile(reconcile);
+							reconcileService.confirmReconcile(reconcile, true);
 
 							debitTotalRemaining= debitTotalRemaining.subtract(amount);
 							creditTotalRemaining = creditTotalRemaining.subtract(amount);
@@ -160,7 +162,7 @@ public class PaymentService {
 	 * @throws AxelorException
 	 */
 	public int createExcessPaymentWithAmount(List<MoveLine> debitMoveLines, BigDecimal remainingPaidAmount, Move move, int moveLineNo, Partner partner,
-			Company company, PaymentInvoiceToPay paymentInvoiceToPay, Account account, LocalDate paymentDate) throws AxelorException  {
+			Company company, PayVoucherElementToPay payVoucherElementToPay, Account account, LocalDate paymentDate) throws AxelorException  {
 		log.debug("In createExcessPaymentWithAmount");
 		int moveLineNo2 = moveLineNo;
 		BigDecimal remainingPaidAmount2 = remainingPaidAmount;
@@ -182,7 +184,7 @@ public class PaymentService {
 				invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
 			}
 			else  {
-				invoiceName = paymentInvoiceToPay.getPaymentVoucher().getRef();
+				invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
 			}
 
 			MoveLine creditMoveLine = moveLineService.createMoveLine(move,
@@ -196,10 +198,10 @@ public class PaymentService {
 			move.getMoveLineList().add(creditMoveLine);
 
 			// Utiliser uniquement dans le cas du paiemnt des échéances lors d'une saisie paiement
-			if(paymentInvoiceToPay != null)  {
-				creditMoveLine.setPaymentScheduleLine(paymentInvoiceToPay.getMoveLine().getPaymentScheduleLine());
+			if(payVoucherElementToPay != null)  {
+				creditMoveLine.setPaymentScheduleLine(payVoucherElementToPay.getMoveLine().getPaymentScheduleLine());
 
-				paymentInvoiceToPay.setMoveLineGenerated(creditMoveLine);
+				payVoucherElementToPay.setMoveLineGenerated(creditMoveLine);
 			}
 
 			moveLineNo2++;
@@ -222,7 +224,7 @@ public class PaymentService {
 		}
 
 		for(Reconcile reconcile : reconcileList)  {
-			reconcileService.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcile, true);
 		}
 
 		// Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -314,7 +316,7 @@ public class PaymentService {
 			}
 
 			for(Reconcile reconcile : reconcileList)  {
-				reconcileService.confirmReconcile(reconcile);
+				reconcileService.confirmReconcile(reconcile, true);
 			}
 		}
 		// Si il y a un restant à payer, alors on crée un dû.
@@ -337,6 +339,30 @@ public class PaymentService {
 		log.debug("End useExcessPaymentWithAmount");
 
 		return moveLineNo2;
+	}
+	
+	public BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl)  {
+		BigDecimal amountRemaining = BigDecimal.ZERO;
+		if(psl.getAdvanceOrPaymentMove() != null && psl.getAdvanceOrPaymentMove().getMoveLineList() != null)  {
+			for(MoveLine moveLine : psl.getAdvanceOrPaymentMove().getMoveLineList())  {
+				if(moveLine.getAccount().getReconcileOk())  {
+					amountRemaining = amountRemaining.add(moveLine.getCredit());
+				}
+			}
+		}
+		return amountRemaining;
+	}
+
+	public BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice)  {
+		BigDecimal amountRemaining = BigDecimal.ZERO;
+		if(invoice.getPaymentMove() != null && invoice.getPaymentMove().getMoveLineList() != null)  {
+			for(MoveLine moveLine : invoice.getPaymentMove().getMoveLineList())  {
+				if(moveLine.getAccount().getReconcileOk())  {
+					amountRemaining = amountRemaining.add(moveLine.getCredit());
+				}
+			}
+		}
+		return amountRemaining;
 	}
 
 }

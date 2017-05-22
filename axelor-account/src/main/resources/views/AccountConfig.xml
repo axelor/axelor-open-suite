@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -23,6 +23,7 @@
 	   	  <field name="generateMoveForInvoicePayment"/>
   	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
+			<field name="accountingDaybook"/>
     
 		</panel>
 		
@@ -41,7 +42,8 @@
 					<field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form"/>
 				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
@@ -49,7 +51,8 @@
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="advancePaymentAccount"/>
+					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<field name="advancePaymentAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				</panel>
 				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -61,6 +64,7 @@
 				</panel>
 				<panel name="exports" title="Exports" colSpan="12">
 					<field name="exportPath"/>
+<!-- 					<field name="exportFileName"/> -->
 				</panel>
 				<panel name="cashiers" title="Cashiers" colSpan="12">
 					<field name="cashRegisterTemplate" form-view="template-form" grid-view="template-grid"/>
@@ -73,9 +77,15 @@
 				 <panel name="taxPayment" title="Tax payment" colSpan="12">
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
+				<panel name="defaultPaymentModes" title="Default Payment Modes" colSpan="12">
+					<field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+					<field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+				</panel>
+				<panel name="defaultPaymentCondition" title="Default Payment Condition" colSpan="12">
+					<field name="defPaymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
+				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
-					<field name="expenseEmployeeAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
-					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
+					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
 				</panel>
 				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">
 				    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
@@ -85,11 +95,11 @@
 				</panel>
 			</panel>
 
-			<panel name="cfonb" title="CFONB" if="__config__.general.getManageDirectDebitPayment()">
+			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('account').getManageDirectDebitPayment()">
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
 					<editor itemSpan="6">
 						<field name="name" colSpan="8"/>
-						<field name="code" colSpan="4"/>
+						<field name="code" x-bind="{{code|uppercase}}" colSpan="4"/>
 					</editor>
 				</field>
 				<panel name="cfonbExport" title="CFONB Export" hidden="true" showIf="!$readonly()" >
@@ -135,6 +145,26 @@
 			<panel name="paybox" title="Paybox">
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
+			
+			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
+			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
+			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				
+				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="6">
+					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="6">
+					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="6">
+					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
 				<panel name="reimbursements" title="Reimbursements" colSpan="12">
@@ -156,7 +186,7 @@
 				<field name="sixMonthDebtPassReason"/>
 				<field name="threeMonthDebtPassReason"/>
 			</panel>
-			<panel name="directDebit" title="Direct debit" if="__config__.general.getManageDirectDebitPayment()" >
+			<panel name="directDebit" title="Direct debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()" >
 				<panel name="directDebits" title="Direct debits" colSpan="12">
 					<field name="paymentScheduleExportFolderPathCFONB"/>
 					<field name="directDebitPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
@@ -176,11 +206,11 @@
 				<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
 					<!-- TODO:Check weather this Editor works or not -->
 					<editor x-show-titles="false" x-layout="table">
-						<field name="code" colSpan="12"/>
+						<field name="code" x-bind="{{code|uppercase}}" colSpan="12"/>
 						<field name="name" colSpan="6"/>
 						<field name="accountType" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 						<field name="reconcileOk" colSpan="6"/>
-						<field name="parent" colSpan="6" grid-view="account-grid" form-view="account-form"/>
+						<field name="parentAccount" colSpan="6" grid-view="account-grid" form-view="account-form"/>
 						<field name="company" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				    </editor>
 				</field>
@@ -200,8 +230,8 @@
 	  			<field name="displayProductCodeOnPrinting"/>
 	  			<field name="displayTaxDetailOnPrinting"/>
 		 		<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
-		 		<field name="displayTimesheetOnPrinting" />
-		 		<field name="displayExpenseOnPrinting" />
+		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" />
+		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" />
 		  	</panel>
 		
 		</panel-tabs>
@@ -211,7 +241,7 @@
 	<action-record name="action-account-config-record-default" model="com.axelor.apps.account.db.AccountConfig">
 		<field name="company" expr="eval: _company" if="_company != null"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
 
 	<action-group name="action-group-account-config-installchart-click">

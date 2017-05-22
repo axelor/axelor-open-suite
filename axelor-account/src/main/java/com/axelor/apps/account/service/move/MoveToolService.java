@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,10 +34,10 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -53,13 +53,13 @@ public class MoveToolService {
 	protected MoveLineRepository moveLineRepository;
 	protected AccountCustomerService accountCustomerService;
 	protected AccountConfigService accountConfigService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 
 	@Inject
-	public MoveToolService(GeneralService generalService, MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
+	public MoveToolService(AppAccountService appAccountService, MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
 			AccountCustomerService accountCustomerService, AccountConfigService accountConfigService) {
 
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.moveLineService = moveLineService;
 		this.moveLineRepository = moveLineRepository;
 		this.accountCustomerService = accountCustomerService;
@@ -77,12 +77,6 @@ public class MoveToolService {
 			return false;
 		}
 	}
-
-
-	public boolean toDoConsolidate()  {
-		return generalService.getGeneral().getIsInvoiceMoveConsolidated();
-	}
-
 
 	/**
 	 *
@@ -332,15 +326,10 @@ public class MoveToolService {
 
 			boolean isMinus = this.isMinus(invoice);
 
-			log.debug("Methode 1 : debut"); //TODO
 			Beans.get(InvoiceRepository.class).save(invoice);
-			log.debug("Methode 1 : milieu");
-			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
-			log.debug("Methode 1 : fin");
 
-			log.debug("Methode 2 : debut");
+			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
 //			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
-			log.debug("Methode 2 : fin");
 
 			if(moveLine != null)  {
 				inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());

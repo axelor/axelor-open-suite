@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
  
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
   <entity name="MrpLineType" lang="java">
   		
       <integer name="importId" />
-      <string name="code" title="Code"/>
+      <string name="code" title="CODE"/>
       <string name="label" title="Label"/>
       <string name="name" title="Name"/>
       <integer name="elementSelect" title="Element" selection="supplychain.mrp.line.element.select" default="0"/>

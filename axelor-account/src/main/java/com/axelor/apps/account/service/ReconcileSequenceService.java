@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,8 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -52,11 +52,11 @@ public class ReconcileSequenceService {
 		String seq = sequenceService.getSequenceNumber(IAdministration.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
 		if(seq == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_6),
-					GeneralServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		return seq;
 	}
-	
+
 	public void setDraftSequence(Reconcile reconcile)  {		
 			
 		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())

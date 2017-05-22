@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,8 +19,8 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Duration;
 
@@ -28,5 +28,5 @@ public interface DurationService {
 	
 	
 	public LocalDate computeDuration(Duration duration, LocalDate date);
-	public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate);
+	public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate);
 }

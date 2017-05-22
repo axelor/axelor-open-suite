@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,18 +19,24 @@ package com.axelor.apps.supplychain.db.repo;
 
 import javax.persistence.PersistenceException;
 
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentRepository {
-
+	
+	@Inject
+	private AppService appService;
+	
 	@Override
 	public AdvancePayment save(AdvancePayment advancePayment) {
 		try {
-
-			Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
+			if (appService.isApp("supplychain")) {
+				Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
+			}
 			return super.save(advancePayment);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());

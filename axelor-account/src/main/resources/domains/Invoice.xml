@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -22,6 +22,7 @@
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account" required="true"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+    <string name="addressStr" title="Address" large="true" multiline="true"/>
     <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
     <boolean name="isSubscription" title="Subscription ?" default="false"/>
     <string name="internalReference" title="Internal Ref." help="true"/>
@@ -79,7 +80,8 @@
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
     
-	<!--     Note -->
+	<!--  Impression -->
+	<integer name="invoicesCopySelect" selection="grade.0.up.to.10.select"/>
     <string name="note" title="Notes" large="true"/>
     
     <!-- Totals & Status -->
@@ -89,6 +91,7 @@
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" />
+    <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
     
     
 	<!--     Totals based on the company currency -->

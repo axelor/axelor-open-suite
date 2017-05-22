@@ -188,8 +188,11 @@
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">MoveLineReportId</property>
+                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -286,7 +289,7 @@
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Account.id as account_id, Account.code as account_code, Account.name as account_name, Account.parent as parent_account_id, 
+            <xml-property name="queryText"><![CDATA[select Account.id as account_id, Account.code as account_code, Account.name as account_name, Account.parent_account as parent_account_id, 
 SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit - MoveLine.credit) as balance 
 
 from public.account_move_line_report as MoveLineReport 
@@ -295,12 +298,12 @@ left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
-left outer join public.account_account as ParentAccount on (Account.parent  = ParentAccount.id )
-left outer join public.account_account as ParentAccount2 on (ParentAccount.parent  = ParentAccount2.id )
-left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent  = ParentAccount3.id )
-left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent  = ParentAccount4.id )
-left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent  = ParentAccount5.id )
-left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent  = ParentAccount6.id )
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 
 left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
@@ -319,13 +322,13 @@ Move.company = MoveLineReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
 or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
 or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
-or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent) AND
+or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
 (MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = Move.cash_register) AND 
 (MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
 (MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
-(MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode)) AND 
-Move.ignore_in_accounting_ok = false 
+(MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode))  
+AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 
 group by Account.id 
 order by Account.code

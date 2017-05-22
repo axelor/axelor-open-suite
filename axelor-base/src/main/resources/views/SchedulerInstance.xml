@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="scheduler-instance-grid" title="Schedulers" model="com.axelor.apps.base.db.SchedulerInstance">
         <field name="name"/>
@@ -30,7 +30,7 @@
 	</action-validate>
 	
 	<action-record name="action-scheduler-instance-record-first-execution-date" model="com.axelor.apps.base.db.SchedulerInstance">
-		<field name="firstExecutionDate" expr="eval: _parent?.invoicedFirstDate" if="_parent._model == 'com.axelor.apps.sale.db.SaleOrder"/>
+		<field name="firstExecutionDate" expr="eval: _parent?.invoicedFirstDate" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder"/>
 	</action-record>
 	
 </object-views>

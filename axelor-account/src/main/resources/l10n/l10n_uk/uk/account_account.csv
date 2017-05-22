@@ -1,4 +1,4 @@
-"code";"parent_code";"name";"accountType.nameSelect";"reconcileOk"
+"code";"parent_code";"name";"accountType.technicalTypeSelect";"reconcileOk"
 0;;"Your Company";"view";"false"
 "BAL";0;"Balance Sheet";"view";"false"
 "A000";"BAL";"Fixed assets";"view";"false"

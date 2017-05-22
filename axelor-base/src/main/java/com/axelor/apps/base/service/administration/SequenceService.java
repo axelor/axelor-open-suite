@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,14 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.IsoFields;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +33,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -35,7 +42,8 @@ import com.google.inject.persist.Transactional;
 public class SequenceService {
 
 	private final static String
-		PATTERN_YEAR = "%Y",
+		PATTERN_FULL_YEAR = "%YYYY",	
+		PATTERN_YEAR = "%YY",
 		PATTERN_MONTH = "%M",
 		PATTERN_FULL_MONTH ="%FM",
 		PATTERN_DAY = "%D",
@@ -56,7 +64,7 @@ public class SequenceService {
 
 		this.sequenceVersionRepository = sequenceVersionRepository;
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.refDate = this.today;
 
 	}
@@ -122,21 +130,40 @@ public class SequenceService {
 
 	}
 
-	public static boolean isValid( Sequence sequence ){
+	public static boolean isYearValid( Sequence sequence ){
 
-		boolean
-			monthlyResetOk = sequence.getMonthlyResetOk(),
-			yearlyResetOk = sequence.getYearlyResetOk();
+		boolean yearlyResetOk = sequence.getYearlyResetOk();
 
-		if ( !monthlyResetOk && !yearlyResetOk ){ return true; }
+		if ( !yearlyResetOk ){ return true; }
 
 		String
 			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
 			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			seq = seqPrefixe + seqSuffixe;
 
-		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR) ){ return false; }
+
+		return true;
+
+	}
+
+	public static boolean isMonthValid( Sequence sequence ){
+
+		boolean	monthlyResetOk = sequence.getMonthlyResetOk();
+
+		if ( !monthlyResetOk ){ return true; }
+
+		String
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
+			seq = seqPrefixe + seqSuffixe;
+
+		if ( monthlyResetOk && (
+				(!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH)) ||
+				(!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR))
+            ))  {
+             return false;
+		}
 
 		return true;
 
@@ -164,11 +191,12 @@ public class SequenceService {
 
 
 		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
-				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYearOfCentury() ) )
-				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthOfYear() ) )
-				.replaceAll( PATTERN_FULL_MONTH, refDate.toString("MM") )
+				.replaceAll( PATTERN_FULL_YEAR, Integer.toString( refDate.get(ChronoField.YEAR_OF_ERA) ) )
+				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYear() ) )
+				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthValue() ) )
+				.replaceAll( PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")) )
 				.replaceAll( PATTERN_DAY, Integer.toString( refDate.getDayOfMonth() ) )
-				.replaceAll( PATTERN_WEEK, Integer.toString( refDate.getWeekOfWeekyear() ) ) ;
+				.replaceAll( PATTERN_WEEK, Integer.toString( refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) ) ) ;
 
 		log.debug( "nextSeq : : : : {}" ,nextSeq );
 
@@ -198,8 +226,8 @@ public class SequenceService {
 
 	protected SequenceVersion getVersionByMonth( Sequence sequence ){
 
-		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthOfYear(), refDate.getYear());
-		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate.dayOfMonth().withMinimumValue(), refDate.dayOfMonth().withMaximumValue(), 1L); }
+		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthValue(), refDate.getYear());
+		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate.withDayOfMonth(1), refDate.withDayOfMonth(refDate.lengthOfMonth()), 1L); }
 
 		return sequenceVersion;
 
@@ -209,11 +237,20 @@ public class SequenceService {
 
 		SequenceVersion sequenceVersion = sequenceVersionRepository.findByYear(sequence, refDate.getYear());
 		if ( sequenceVersion == null ){
-			sequenceVersion = new SequenceVersion(sequence, refDate.monthOfYear().withMinimumValue().dayOfMonth().withMinimumValue(), refDate.monthOfYear().withMaximumValue().dayOfMonth().withMaximumValue(), 1L);
+			sequenceVersion = new SequenceVersion(sequence, refDate.withDayOfMonth(1), refDate.withDayOfMonth(refDate.lengthOfMonth()), 1L);
 		}
 
 		return sequenceVersion;
 
+	}
+
+	public String getDefaultTitle(Sequence sequence) {
+		MetaSelectItem item = Beans.get(MetaSelectItemRepository.class)
+								   .all()
+								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCode())
+								   .fetchOne();
+
+		return item.getTitle();
 	}
 	
 }

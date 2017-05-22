@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,17 +17,21 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import javax.mail.MessagingException;
+
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -36,20 +40,42 @@ import com.google.inject.persist.Transactional;
 
 public interface TimesheetService {
 	public void getTimeFromTask(Timesheet timesheet);
-	public void cancelTimesheet(Timesheet timesheet);
-	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException;
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void confirm(Timesheet timesheet) throws AxelorException;
+	
+	public Message sendConfirmationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+		
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Timesheet timesheet) throws AxelorException;
+		
+	public Message sendValidationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+		
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void refuse(Timesheet timesheet) throws AxelorException;
+	
+	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
+	@Transactional(rollbackOn={Exception.class})
+	public void cancel(Timesheet timesheet) throws AxelorException;
+	
+	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
+	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, Project project, Product product) throws AxelorException;
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();
 	public Timesheet getCurrentOrCreateTimesheet();
 	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
+	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException;
 	@Transactional
 	public void computeTimeSpent(Timesheet timesheet);
-	public BigDecimal computeSubTimeSpent(ProjectTask projectTask);
-	public void computeParentTimeSpent(ProjectTask projectTask);
-	public BigDecimal computeTimeSpent(ProjectTask projectTask);
+	public BigDecimal computeSubTimeSpent(Project project);
+	public void computeParentTimeSpent(Project project);
+	public BigDecimal computeTimeSpent(Project project);
 	public void getActivities(ActionRequest request, ActionResponse response);
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response);

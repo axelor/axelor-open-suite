@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,8 @@ public interface IExceptionMessage {
 	static final String CURRENCY_5 = /*$$(*/ "Both currencies must be saved before currency rate apply" /*)*/ ;
 	static final String CURRENCY_6 = /*$$(*/ "Currency conversion webservice not working" /*)*/ ;
 	
-	
+	static final String COMPANY_CURRENCY = /*$$(*/ "%s : Please, configure a currency for the company %s" /*)*/;
+
 
 	/**
 	 * Unit conversion service
@@ -105,6 +106,11 @@ public interface IExceptionMessage {
 	 */
 	static final public String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 	static final public String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+
+	/**
+	 * Product service
+	 */
+	static final public String PRODUCT_NO_SEQUENCE = /*$$(*/ "There is no configured sequence for product" /*)*/;
 	
 	/**
 	 * Importer
@@ -188,6 +194,8 @@ public interface IExceptionMessage {
 	 * Partner controller
 	 */
 	static final public String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
+	static final public String PARTNER_2 = /*$$(*/ "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
+	static final public String PARTNER_3 = /*$$(*/ "Can’t convert into an individual partner from scratch." /*)*/;
 	
 	/**
 	 * Product controller

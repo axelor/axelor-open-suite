@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
-	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"
-		icon="fa-cogs" groups="admins,ERP" icon-background="#84429f"/>
+	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
+		icon="fa-cogs"  icon-background="#84429f"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
 		title="Bills of materials" action="manufacturing.root.bill.of.material" />
@@ -44,7 +44,7 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
@@ -55,7 +55,7 @@
 		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
 		<view-param name="search-filters" value="operation-order-filters"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
@@ -84,12 +84,12 @@
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		>
 		<view type="dashboard" name="charge.by.machine.dashboard" />
-		<context name="today" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
 		title="Reportings"/>
-
+		
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
@@ -119,34 +119,69 @@
 		<view type="form" name="cost-sheet-group-form" />
 	</action-view>
 	
+	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
+		title="Configurators"/>
 	
-	<menuitem name="admin-root-conf-production-config" parent="admin-root-conf"
-		title="Production configurations" action="admin.root.conf.production.config" />
-		
-	<action-view name="admin.root.conf.production.config" title="Production configurations"
-		model="com.axelor.apps.production.db.ProductionConfig" >
-		<view type="grid" name="production-config-grid"/>
-		<view type="form" name="production-config-form"/>
+	<menuitem name="manufacturing-conf-configurators-creator" parent="manufacturing-conf-configurators"
+		title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
+	
+	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
+		model="com.axelor.apps.production.db.ConfiguratorCreator" >
+		<view type="grid" name="configurator-creator-grid" />
+		<view type="form" name="configurator-creator-form" />
 	</action-view>
-
+	
+	<menuitem name="manufacturing-conf-configurators-configurators" parent="manufacturing-conf-configurators"
+		title="Configurators" action="manufacturing.conf.configurator.configurators"/>
+	
+	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
+		model="com.axelor.apps.production.db.Configurator" >
+		<view type="grid" name="configurator-grid" />
+		<view type="form" name="configurator-form" />
+	</action-view>
+	
 		
 	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" 
 		title="Manufacturing"  action="manufacturing.dashboard.view" />	
 
 	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
 		<view type="dashboard" name="manufacturing.dashboard.sample" />
-	    <context name="_today" expr="eval: __date__.toDate()"/>
+	    <context name="_today" expr="eval: __date__"/>
 	</action-view>
 	
 	<!-- TOP MENU -->
 	
-	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP"/>
-	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" top="true" parent="top-manufacturing" order="-100" action="top.manufacturing.create.manufacturing.order"/>
-	<action-view name="top.manufacturing.create.manufacturing.order" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
-		<view type="form" name="manuf-order-form"/>
-	</action-view>
-	<menuitem name="top-manufacturing-manufacturing-orders" title="View Manuf. Orders" order="-90" parent="top-manufacturing" top="true" action="manufacturing.root.manuf.order"/>
-	<menuitem name="top-manufacturing-operation-orders" title="View Operation Orders" parent="top-manufacturing" top="true" order="-80" action="manufacturing.root.operation.order"/>
-	<menuitem name="top-manufacturing-bill-of-material" title="View Bill Of Materials" parent="top-manufacturing" top="true" order="-70" action="manufacturing.root.bill.of.material" />
+	<menuitem name="top-manufacturing" title="Manufacturing" order="6" left="false" top="true"  if="__config__.app.isApp('production')"/>
+	
+	<menuitem name="top-manufacturing-manuf-order" parent="top-manufacturing"
+		title="Manuf. orders" action="top.manufacturing.manuf.order" top="true"/>
 
+	<action-view name="top.manufacturing.manuf.order" title="Manuf. orders"
+		model="com.axelor.apps.production.db.ManufOrder" >
+		<view type="grid" name="manuf-order-grid" />
+		<view type="form" name="manuf-order-form" />
+		<view-param name="search-filters" value="manuf-order-filters"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+	</action-view>	
+	
+	<menuitem name="top-manufacturing-operation-order" parent="top-manufacturing"
+		title="Operation orders" action="top.manufacturing.operation.order" top="true"/>
+
+	<action-view name="top.manufacturing.operation.order" title="Operation orders"
+		model="com.axelor.apps.production.db.OperationOrder" >
+		<view type="grid" name="operation-order-group-grid" />
+		<view type="form" name="operation-order-form" />
+		<view-param name="search-filters" value="operation-order-filters"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+	</action-view>	
+	
+	<menuitem name="top-manufacturing-bill-of-material" parent="top-manufacturing"
+		title="Bill of materials" action="top.manufacturing.bill.of.material" top="true"/>
+
+	<action-view name="top.manufacturing.bill.of.material" title="Bill of materials"
+		model="com.axelor.apps.production.db.BillOfMaterial" >
+		<view type="grid" name="bill-of-material-grid" />
+		<view type="form" name="bill-of-material-form" />
+		<domain>self.isRawMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL</domain>
+	</action-view>
 </object-views>

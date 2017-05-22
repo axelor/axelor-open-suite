@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,5 +55,12 @@ public class ProductionConfigService {
 		
 	}
 	
-	
+	public Location getWasteLocation(ProductionConfig productionConfig) throws AxelorException {
+		if (productionConfig.getWasteLocation() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3),
+					productionConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return productionConfig.getWasteLocation();
+	}
+
 }

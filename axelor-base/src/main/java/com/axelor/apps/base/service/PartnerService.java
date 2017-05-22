@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -34,18 +31,20 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-
+	
 public class PartnerService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
-	
 	@Inject
 	private PartnerRepository partnerRepo;
 
@@ -143,15 +142,14 @@ public class PartnerService {
 		return idList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Long> findMailsFromPartner(Partner partner){
-		String query = "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "+
-				"(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "+partner.getId()+") "+
-				"OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "+partner.getId()+")";
-		if(partner.getEmailAddress() != null){
-			query += "OR (email.fromEmailAddress.id = "+partner.getEmailAddress().getId()+"))";
-		}
-		else{
-			query += ")";
+		String query = "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND " +
+				"(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = " + partner.getId() + ") " +
+				"OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = " + partner.getId() + ")";
+		
+		if(partner.getEmailAddress() != null) {
+			query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
 		}
 		
 		return JPA.em().createQuery(query).getResultList();
@@ -269,5 +267,28 @@ public class PartnerService {
 		
 		return null;
 	}
-
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String getSIRENNumber(Partner partner)throws AxelorException{
+		char[] Str = new char[9];
+		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty() ){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PARTNER_2),
+					AppBaseServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
+		}
+		else {
+            String registrationCode = partner.getRegistrationCode();
+			//remove whitespace in the registration code before using it
+            registrationCode.replaceAll("\\s","").getChars(0, 9, Str, 0);
+		}
+		
+		return new String(Str);
+	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void convertToIndividualPartner(Partner partner) {
+		partner.setIsContact(false);
+		partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
+		partner.setContactAddress(null);
+	}
 }

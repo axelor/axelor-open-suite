@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,8 +29,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,39 +44,39 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.xsd.pain_001_001_02.AccountIdentification3Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.AmountType2Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
+import com.axelor.apps.account.xsd.pain_001_001_02.CashAccount7;
+import com.axelor.apps.account.xsd.pain_001_001_02.CreditTransferTransactionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.CurrencyAndAmount;
+import com.axelor.apps.account.xsd.pain_001_001_02.Document;
+import com.axelor.apps.account.xsd.pain_001_001_02.FinancialInstitutionIdentification5Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.GroupHeader1;
+import com.axelor.apps.account.xsd.pain_001_001_02.Grouping1Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.ObjectFactory;
+import com.axelor.apps.account.xsd.pain_001_001_02.Pain00100102;
+import com.axelor.apps.account.xsd.pain_001_001_02.PartyIdentification8;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentIdentification1;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentInstructionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentMethod3Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentTypeInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
-import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
-import com.axelor.apps.xsd.sepa.AmountType2Choice;
-import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
-import com.axelor.apps.xsd.sepa.CashAccount7;
-import com.axelor.apps.xsd.sepa.CreditTransferTransactionInformation1;
-import com.axelor.apps.xsd.sepa.CurrencyAndAmount;
-import com.axelor.apps.xsd.sepa.Document;
-import com.axelor.apps.xsd.sepa.FinancialInstitutionIdentification5Choice;
-import com.axelor.apps.xsd.sepa.GroupHeader1;
-import com.axelor.apps.xsd.sepa.Grouping1Code;
-import com.axelor.apps.xsd.sepa.ObjectFactory;
-import com.axelor.apps.xsd.sepa.Pain00100102;
-import com.axelor.apps.xsd.sepa.PartyIdentification8;
-import com.axelor.apps.xsd.sepa.PaymentIdentification1;
-import com.axelor.apps.xsd.sepa.PaymentInstructionInformation1;
-import com.axelor.apps.xsd.sepa.PaymentMethod3Code;
-import com.axelor.apps.xsd.sepa.PaymentTypeInformation1;
-import com.axelor.apps.xsd.sepa.RemittanceInformation1;
-import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
-import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -103,7 +103,7 @@ public class ReimbursementExportService {
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
 			SequenceService sequenceService, AccountBlockingService accountBlockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
-			PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
+			PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -115,7 +115,7 @@ public class ReimbursementExportService {
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
 		this.partnerRepository = partnerRepository;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 	}
 
 	/**
@@ -165,11 +165,11 @@ public class ReimbursementExportService {
 				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
+//				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
 			reimbursementRepo.save(reimbursement);
-			return reimbursement;
+//			return reimbursement;
 		}
 
 		log.debug("End runReimbursementProcess");
@@ -222,7 +222,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSED);
 
 					if(first)  {
-						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
+						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 						first = false;
 					}
 					// Création d'une ligne au débit
@@ -236,7 +236,7 @@ public class ReimbursementExportService {
 
 					//Création de la réconciliation
 					Reconcile reconcile = reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining, false);
-					reconcileService.confirmReconcile(reconcile);
+					reconcileService.confirmReconcile(reconcile, true);
 				}
 			}
 			// Création de la ligne au crédit
@@ -269,7 +269,7 @@ public class ReimbursementExportService {
 
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -347,14 +347,14 @@ public class ReimbursementExportService {
 	/**
 	 * Méthode permettant de créer un fichier xml de virement au format SEPA
 	 * @param export
-	 * @param dateTime
+	 * @param datetime
 	 * @param reimbursementList
 	 * @throws AxelorException
 	 * @throws DatatypeConfigurationException
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	public void exportSepa(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+	public void exportSepa(Company company, ZonedDateTime datetime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
 
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 
@@ -366,7 +366,7 @@ public class ReimbursementExportService {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-		Date date = dateTime.toDate();
+		Date date = Date.from(datetime.toInstant());
 		BigDecimal ctrlSum = BigDecimal.ZERO;
 		int nbOfTxs = 0;
 
@@ -398,7 +398,7 @@ public class ReimbursementExportService {
 
 		// BIC
 		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-		finInstnId.setBIC(bankDetails.getBic());
+		finInstnId.setBIC(bankDetails.getBank().getCode());
 
 		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 		dbtrAgt.setFinInstnId(finInstnId);
@@ -452,7 +452,7 @@ public class ReimbursementExportService {
 
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-			finInstnId.setBIC(bankDetails.getBic());
+			finInstnId.setBIC(bankDetails.getBank().getCode());
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);
@@ -515,6 +515,7 @@ public class ReimbursementExportService {
 	 * 			Un trop-perçu
 	 * @throws AxelorException
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createReimbursementInvoice(Partner partner, Company company, List<? extends MoveLine> moveLineList) throws AxelorException  {
 

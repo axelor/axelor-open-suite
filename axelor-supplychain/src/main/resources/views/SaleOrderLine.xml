@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="subscription-sale-order-line-form" title="Subscription" model="com.axelor.apps.sale.db.SaleOrderLine" width="large">
 		<panel colSpan="12">
@@ -31,7 +31,7 @@
 	</action-record>
 	
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">
-		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__.of(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
+		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
 	</action-validate>
 	
 </object-views>	

@@ -1,9 +1,9 @@
 "key","message","comment","context"
+"App Portal",,,
 "Can confirm online","Peut confimer en ligne",,
 "Can pay online","Peut payer en ligne",,
-"Client portal management","Gestion du portail client",,
 "Code",,,
-"Electronic signature",,,
+"Electronic signature","Signature électronique",,
 "Manage invoices","Gérer les factures",,
 "Manage sale orders","Gérer les devis/cmdes client",,
 "Manage tickets","Gérer les tickets",,
@@ -11,3 +11,4 @@
 "Online payment method","Méthode de paiement en ligne",,
 "Online payment methods","Méthodes de paiement en ligne",,
 "Password","Mot de passe",,
+"Portal",,,

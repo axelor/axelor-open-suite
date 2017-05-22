@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -98,7 +100,7 @@ public class ExportDbObjectService {
 			if(!moduleDir.exists()){ return null; }
 			
 			MetaFile metaFile = new MetaFile();
-			String fileName = "ExportObject-"+DateTime.now().toString("yyyMMddHHmmSS")+".csv";
+			String fileName = "ExportObject-"+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyMMddHHmmSS"))+".csv";
 			metaFile.setFileName(fileName);
 			metaFile.setFilePath(fileName);
 			metaFile = Beans.get(MetaFileRepository.class).save(metaFile);

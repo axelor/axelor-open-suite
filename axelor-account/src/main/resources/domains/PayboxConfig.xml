@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="PayboxConfig" lang="java" cachable="true">
   	<integer name="importId"/>
     <string name="name" title="Name"/>
-    <string name="code" title="Code"/>
+    <string name="code" title="CODE"/>
     
 	<string name="payboxUrl" title="Environment Url"/>
 	<string name="payboxSite" title="Site Nbr" min="7" max="7"/>   

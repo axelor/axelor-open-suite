@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,7 +9,7 @@
   	
     <integer name="importId" />
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="code" title="CODE" required="true" unique="true"/>
     <date name="fromDate" title="From" required="true"/>
     <date name="toDate" title="To" required="true"/>
     <one-to-many name="periodList" ref="com.axelor.apps.base.db.Period" mappedBy="year" title="Periods list" help="true"/>
@@ -17,13 +17,15 @@
 	<integer name="statusSelect" title="Status" readonly="true" selection="base.year.status.select" default="1" help="true"/>
     <integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
     <integer name="typeSelect" title="Type" selection="account.year.type.select" required="true" help="true"/>
+    <one-to-many name="adjustHistoryList" ref="com.axelor.apps.base.db.AdjustHistory" title="Adjust History" mappedBy="fiscalYear"/>
   
   	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
 		public static final int STATUS_OPENED = 1;
 		public static final int STATUS_CLOSED = 2;
-	
+		public static final int STATUS_ADJUSTING = 3;
+
 	]]></extra-code>   
   
   </entity>

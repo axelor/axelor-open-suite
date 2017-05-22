@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -34,6 +35,7 @@ public class ConvertWizardService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConvertWizardService.class);
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object createObject(Map<String, Object> context, Object obj, Mapper mapper) throws AxelorException  {
 		
 		if(context != null)  {
@@ -61,7 +63,7 @@ public class ConvertWizardService {
 						LOG.debug("Map");	
 						Map map = (Map) value;
 						Object id = map.get("id");
-						value = JPA.find((Class) p.getTarget(), Long.parseLong(id.toString()));
+						value = JPA.find((Class<Model>) p.getTarget(), Long.parseLong(id.toString()));
 					} 
 					if(value instanceof List)  {
 						LOG.debug("List");	
@@ -73,7 +75,7 @@ public class ConvertWizardService {
 							for(Object object : valueList)  {
 								Map map = (Map) object;
 								Object id = map.get("id");
-								resultList.add(JPA.find((Class) p.getTarget(), Long.parseLong(id.toString())));
+								resultList.add(JPA.find((Class<Model>) p.getTarget(), Long.parseLong(id.toString())));
 							}
 						}
 						value = resultList;

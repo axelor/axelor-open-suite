@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="product-family-grid" title="Products families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     
     <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" width="large">
@@ -18,7 +18,7 @@
 	        <panel-related field="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
 	        domain="self.typeSelect = 1" colSpan="12"/>
 	        <panel-dashlet action="action-dashlet-product-family-product-category" colSpan="12"/>
-	        <panel name="salesTurnover" title="Sales Turnover" hideIf="fromMenu == null" if-module="axelor-supplychain" colSpan="12">    
+	        <panel name="salesTurnover" title="Sales Turnover" hideIf="fromMenu == null" if-module="axelor-supplychain" colSpan="12" if="__config__.app.isApp('supplychain')">    
 				<panel-dashlet height="350" action="dashlet.family.sales.turnover.per.month" colSpan="12"/>
 	  		</panel>
         </panel>

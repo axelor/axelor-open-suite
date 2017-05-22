@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<dashboard name="project-dashboard" title="Dashboard">
+		<dashlet action="action-project-db-my-tasks-to-do"/>
+		<dashlet action="action-project-db-my-tasks-due"/>
+		<dashlet action="action-project-db-my-today-planning"/>
+		<dashlet action="action-project-db-my-upcomming-planning"/>
+	</dashboard>
+	
+	<action-view name="action-project-db-my-tasks-to-do" title="My tasks to do" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
+		<domain><![CDATA[
+      (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
+      (self.taskDeadline <= current_date OR self.taskDate <= current_date)
+    ]]></domain>
+    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+	
+	<action-view name="action-project-db-my-tasks-due" title="My tasks due" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
+		<domain><![CDATA[
+      (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
+      (self.taskDeadline <= current_date)
+    ]]></domain>
+    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+	
+	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanning">
+		<view type="grid" name="project-planning-db-grid" />
+		<view type="form" name="project-planning-form" />
+		<domain>self.fromDate &lt;= :__datetime__ AND self.toDate &gt;= :__datetime__ AND self.user = :__user__</domain>
+	</action-view>
+	
+	<action-view name="action-project-db-my-upcomming-planning" title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanning">
+		<view type="grid" name="project-planning-db-grid" />
+		<view type="form" name="project-planning-form" />
+		<domain>self.fromDate &gt; :__datetime__ AND self.user = :__user__</domain>
+	</action-view>
+	
+	
+</object-views>

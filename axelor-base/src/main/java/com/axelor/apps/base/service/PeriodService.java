@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -29,6 +25,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PeriodService {
 	
@@ -36,7 +38,10 @@ public class PeriodService {
 	
 	@Inject
 	private PeriodRepository periodRepo;
-	
+
+	@Inject
+	private AdjustHistoryService adjustHistoryService;
+
 	/**
 	 * Recupère la bonne période pour la date passée en paramètre
 	 * @param date
@@ -57,19 +62,19 @@ public class PeriodService {
 	
 	public Period getPeriod(LocalDate date, Company company)  {
 		
-		return periodRepo.all().filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
+		return periodRepo.all().filter("year.company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
 
 	}
 	
 	public Period getNextPeriod(Period period) throws AxelorException  {
 		
-		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
+		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.year.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getYear().getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
-		return period;
+		return nextPeriod;
 	}
 	
 	public void testOpenPeriod(Period period) throws AxelorException {
@@ -77,5 +82,27 @@ public class PeriodService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_2)), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void close(Period period) {
+		period = periodRepo.find(period.getId());
+
+		if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+			adjustHistoryService.setEndDate(period);
+		}
+
+		period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+		period.setClosureDateTime(LocalDateTime.now());
+		periodRepo.save(period);
+	}
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void adjust(Period period) {
+		period = periodRepo.find(period.getId());
+
+		adjustHistoryService.setStartDate(period);
+
+		period.setStatusSelect(PeriodRepository.STATUS_ADJUSTING);
+		periodRepo.save(period);
+	}
 }

@@ -40,9 +40,9 @@ public class MessageController {
 		Message message = request.getContext().asType(Message.class);
 
 		message = messageService.sendMessage( messageRepo.find( message.getId() ) );
-
+		
 		response.setReload(true);
-
+		
 		if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
 
 			if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,7 @@ import wslite.rest.Response;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,7 +51,7 @@ import com.google.inject.Inject;
 public class MapService {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
 
@@ -59,7 +59,6 @@ public class MapService {
 		if(qString == null){
 			return null;
 		}
-		Map<String,Object> response = new HashMap<String,Object>();
 		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
 		// TODO inject the rest client, or better, run it in the browser
@@ -152,6 +151,7 @@ public class MapService {
 	}
 
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public HashMap<String,Object> getMapOsm(String qString){
 		HashMap<String,Object> result = new HashMap<String,Object>();
 		try {
@@ -206,14 +206,14 @@ public class MapService {
 
 	public HashMap<String,Object> getMap(String qString){
 		LOG.debug("qString = {}", qString);
-		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
+		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
 			return getMapGoogle(qString);
 		else
 			return getMapOsm(qString);
 	}
 
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
-		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
+		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
 			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18";
 		else
 			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
@@ -223,6 +223,7 @@ public class MapService {
 			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon;
 	}
 
+	@SuppressWarnings("unchecked")
 	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
 		LOG.debug("departureString = {}", dString);
 		LOG.debug("arrivalString = {}", aString);
@@ -316,9 +317,14 @@ public class MapService {
 		
 		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
 		
+		Map<String,Object> responseQuery = new HashMap<String,Object>();
+		responseQuery.put("address", "google");
+		responseQuery.put("sensor", "false");
+		
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
+		responseMap.put("query", responseQuery);
 
 		responseMap.put("connectTimeout", 5000);
 		responseMap.put("readTimeout", 10000);

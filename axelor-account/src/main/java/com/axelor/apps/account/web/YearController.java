@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.service.YearService;
+import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.base.db.Year;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 public class YearController {
 
 	@Inject
-	private YearService ys;
+	private YearServiceAccountImpl ys;
 	
 	public void close(ActionRequest request, ActionResponse response) {
 		
@@ -39,7 +39,18 @@ public class YearController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	
 	}
-	
+
+	public void adjust(ActionRequest request, ActionResponse response) {
+		Year year = request.getContext().asType(Year.class);
+
+		try {
+			ys.adjust(year);
+			response.setReload(true);
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 	public void generatePeriods(ActionRequest request, ActionResponse response) {
 		Year year = request.getContext().asType(Year.class);
 		response.setValue("periodList", ys.generatePeriods(year));

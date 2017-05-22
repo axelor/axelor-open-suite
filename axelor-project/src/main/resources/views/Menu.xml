@@ -1,58 +1,93 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<menuitem name="menu-project-root" order="-103" title="Project" icon="fa-tasks" 
-	    groups="admins,ERP" icon-background="#3f6bb9"/> 	
-
-	<menuitem name="project-all" parent="menu-project-root"
+	<menuitem name="menu-project-root" order="-103" title="Projects" icon="fa-tasks"  if="__config__.app.isApp('project')"
+	     icon-background="#3f6bb9"/> 	
+	
+	<menuitem name="project-dasbhoard" parent="menu-project-root" order="-1"
+    	title="Dashboard"
+    	action="project.dashboard"/>
+    	
+    <action-view name="project.dashboard" title="Dashboard">
+    	<view type="dashboard" name="project-dashboard"/>
+    </action-view>
+    	    
+	<menuitem name="project-all" parent="menu-project-root" order="5"
     	title="Projects"
     	action="project.all"/>
 
-	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.Project">
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
 	    <view type="calendar" name="project-calendar"/>
 	    <view type="kanban" name="project-kanban"/>
-	    <domain>self.typeSelect = 'project'</domain>
+	    <domain>self.isProject = true</domain>
+	    <context name="_fromProject" expr="eval:true"/>
 	</action-view>
 	
-	<menuitem name="project-gantt" parent="menu-project-root"
-    	title="Project gantt"
-    	action="project.gantt"/>
-    	
-   	<action-view name="project.gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask">
-   		<view type="gantt" name="project-gantt"/>
-   		<view type="form" name="task-form"/>
+	<menuitem name="project-folder" parent="menu-project-root" title="Project Folder" action="project.folder" order="10"/>
+	
+	<action-view name="project.folder" title="Project Folder" model="com.axelor.apps.project.db.ProjectFolder">
+		<view type="grid" name="project-folder-grid"/>
+		<view type="form" name="project-folder-form"/>
 	</action-view>
 	
-	<menuitem name="task-all" parent="menu-project-root"
-    	title="Tasks"
-    	action="task.all"/>
-
-	<action-view name="task.all" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
-    	<view type="kanban" name="task-kanban"/>
-    	<view type="grid" name="task-grid"/>
-	    <view type="form" name="task-form"/>
-	    <domain>self.typeSelect = 'task'</domain>
+	<!--  Team Apps -->
+	
+	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks"/>
+	<action-view name="all.tasks" title="Project Tasks" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
 	</action-view>
 	
-	<menuitem name="menu-project-planning" parent="menu-project-root" title="Project Planning" /> 
+	<menuitem name="project-planning" title="Project planning" order="20" parent="menu-project-root" action="project.planning" />
 	
-	<menuitem name="my-planning" parent="menu-project-planning"
-    	title="My Planning"
-    	action="my.planning"/>
-
-	<action-method name="my.planning">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myPlanning"/>
-	</action-method>
+	<action-view name="project.planning" title="Project planning" model="com.axelor.apps.project.db.ProjectPlanning">
+		<view type="form" name="project-planning-user-select-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup" value="true"/>
+	</action-view>
 	
-	<menuitem name="my-team-planning" parent="menu-project-planning"
-    	title="My Team Planning"
-    	action="my.team.planning"/>
-
-	<action-method name="my.team.planning">
-		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myTeamPlanning"/>
-	</action-method>
+	<menuitem name="project-planning-calendar" title="Planning Calendar" order="25" parent="menu-project-root" action="project.planning.calendar" />
+	
+	<action-view name="project.planning.calendar" title="Planning Calendar" model="com.axelor.apps.project.db.ProjectPlanning">
+		<view type="calendar" name="project-planning-calendar" />
+		<view type="grid" name="project-planning-grid" />
+		<view type="form" name="project-planning-form" />
+	</action-view>
+	
+	<menuitem name="project-resource" title="Resources" order="30" parent="menu-project-root" action="project.resource" />
+	
+	<action-view name="project.resource" title="Resources" model="com.axelor.apps.project.db.Resource">
+		<view type="grid" name="resource-grid" />
+		<view type="form" name="resource-form" />
+	</action-view>
+	
+	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" />
+	
+	<action-view name="project.resource.booking" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
+		<view type="grid" name="resource-booking-grid" />
+		<view type="form" name="resource-booking-form" />
+		<view type="calendar" name="resource-booking-calendar" />
+	</action-view>
+	
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations" order="40"/>
+	
+	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
+	
+	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">
+		<view type="grid" name="category-grid"/>
+		<view type="form" name="category-form"/>
+	</action-view>
+	
+	<menuitem name="project-resource-category" parent="project-configurations" title="Resource categories" action="project.resource.category"/>
+	
+	<action-view name="project.resource.category" title="Resource categories" model="com.axelor.apps.project.db.ResourceCategory">
+		<view type="grid" name="resource-category-grid"/>
+		<view type="form" name="resource-category-form"/>
+	</action-view>
+	
 
 </object-views>

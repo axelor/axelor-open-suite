@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,13 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.CostSheetLineService;
 import com.axelor.apps.production.service.CostSheetServiceImpl;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -38,9 +38,9 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl  {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	public CostSheetServiceBusinessImpl(GeneralService generalService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo) {
+	public CostSheetServiceBusinessImpl(AppProductionService appProductionService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo) {
 		
-		super(generalService, unitConversionService, costSheetLineService, billOfMaterialRepo);
+		super(appProductionService, unitConversionService, costSheetLineService, billOfMaterialRepo);
 		
 	}
 

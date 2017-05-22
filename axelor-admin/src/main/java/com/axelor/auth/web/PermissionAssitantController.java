@@ -17,7 +17,7 @@
  */
 package com.axelor.auth.web;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;

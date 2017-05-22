@@ -1,10 +1,16 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-project"
-	version "4.0.0"
-	title "Axelor project"
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
 
-	// module dependencies
-	module "modules:axelor-base"
+axelor {
+	title "Axelor :: Project"
+	description "Axelor Project Module"
+
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-base")
 }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,7 +67,7 @@ public class PaymentVoucherController {
 		paymentVoucher = paymentVoucherRepo.find(paymentVoucher.getId());
 		
 		try {
-			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
+			paymentVoucherLoadService.searchDueElements(paymentVoucher);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -80,11 +80,26 @@ public class PaymentVoucherController {
 		PaymentVoucher paymentVoucher = paymentVoucherRepo.find(paymentVoucherContext.getId());
 			
 		try {
-			paymentVoucherLoadService.loadSelectedLines(paymentVoucher,paymentVoucherContext);
+			paymentVoucherLoadService.loadSelectedLines(paymentVoucher, paymentVoucherContext);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
+	// Reset imputation
+	public void resetImputation(ActionRequest request, ActionResponse response) {
+				
+		PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
+		PaymentVoucher paymentVoucher = paymentVoucherRepo.find(paymentVoucherContext.getId());
+			
+		try {
+			paymentVoucherLoadService.resetImputation(paymentVoucher);
+			response.setReload(true);
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
 	
 	// Confirm the payment voucher
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {
