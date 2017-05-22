@@ -1223,6 +1223,7 @@
 "Update & Historize conversion rate",,,
 "Update current product prices and variants",,,
 "Update products prices",,,
+"Update sale price from cost price",,,
 "Use $Product.fieldName$ to acces to the product's fields",,,
 "Use QAS Validation ?",,,
 "Use for stock only",,,

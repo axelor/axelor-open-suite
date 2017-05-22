@@ -1223,6 +1223,7 @@
 "Update & Historize conversion rate","MàJ & Historiser le taux actuel",,
 "Update current product prices and variants","MàJ prix produits & variantes",,
 "Update products prices","Maj prix produits",,
+"Update sale price from cost price","Mettre à jour le prix de vente depuis le prix de revient",,
 "Use $Product.fieldName$ to acces to the product's fields","Utiliser $Product.nomDuChamp$ pour accéder aux champs du produit",,
 "Use QAS Validation ?","Utiliser la validation QAS ? ",,
 "Use for stock only","Utiliser en stock ?",,

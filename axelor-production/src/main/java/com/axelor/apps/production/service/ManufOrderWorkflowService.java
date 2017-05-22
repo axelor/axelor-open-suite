@@ -148,7 +148,9 @@ public class ManufOrderWorkflowService {
 		//update costprice in product
 		if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE){
 			product.setCostPrice(product.getLastProductionPrice());
-			Beans.get(ProductService.class).updateSalePrice(product);
+			if (product.getAutoUpdateSalePrice()) {
+				Beans.get(ProductService.class).updateSalePrice(product);
+			}
 		}
 
 		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());

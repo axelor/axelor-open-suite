@@ -122,7 +122,9 @@ public class LocationServiceImpl implements LocationService{
 		product.setAvgPrice(productAvgPrice);
 		if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
 		    product.setCostPrice(productAvgPrice);
-			Beans.get(ProductService.class).updateSalePrice(product);
+			if (product.getAutoUpdateSalePrice()) {
+				Beans.get(ProductService.class).updateSalePrice(product);
+			}
 		}
 		productRepo.save(product);
 	}

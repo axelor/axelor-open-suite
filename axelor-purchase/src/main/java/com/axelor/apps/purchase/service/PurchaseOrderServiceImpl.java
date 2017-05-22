@@ -365,7 +365,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				}
 				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
 					product.setCostPrice(purchaseOrderLine.getPrice());
-					Beans.get(ProductService.class).updateSalePrice(product);
+					if (product.getAutoUpdateSalePrice()) {
+						Beans.get(ProductService.class).updateSalePrice(product);
+					}
                 }
 			}
 			purchaseOrderRepo.save(purchaseOrder);

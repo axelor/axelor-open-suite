@@ -79,7 +79,8 @@
     		<panel name="sale" title="Sale" showTitle="false">
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
-			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
+			        <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+					<field name="autoUpdateSalePrice" hideIf="!sellable"/>
 			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
@@ -302,7 +303,7 @@
 
 	<action-group name="action-product-group-cost-type-select-onchange">
 		<action name="action-product-attrs-update-cost-price"/>
-		<action name="action-product-record-update-sale-price"/>
+		<action name="action-product-record-compute-sale-price"/>
 	</action-group>
 
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
@@ -343,12 +344,6 @@
 				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
 
-	<action-record name="action-product-record-update-sale-price"
-				   model="com.axelor.apps.base.db.Product">
-		<field name="salePrice" if="costTypeSelect != 1"
-			   expr="eval: managPriceCoef ? costPrice.multiply(managPriceCoef) : costPrice"/>
-	</action-record>
-
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
@@ -368,7 +363,8 @@
     </action-record>
     
     <action-record name="action-product-record-compute-sale-price" model="com.axelor.apps.base.db.Product">
-    	<field name="salePrice" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
+    	<field name="salePrice" expr="eval: managPriceCoef*costPrice"
+			   if="costPrice != null &amp;&amp; managPriceCoef != null &amp;&amp; autoUpdateSalePrice"/>
     </action-record>
     
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
