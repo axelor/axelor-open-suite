@@ -165,6 +165,7 @@
 				          	</editor>
 	        			</field>
 	        			<button name="generateProductVariant" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
+						<field name="manageVariantPrice"/>
 	        			<panel-dashlet colSpan="12" action="action-product-view-product-variant"/>
 	      			</panel>
 	      			<panel name="childVariant" showIf="parentProduct" colSpan="12">
@@ -296,6 +297,7 @@
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-method-supplier-catalog-coeff"/>
+		<action name="action-product-attrs-cost-price-variant"/>
     </action-group>
 
 	<action-group name="action-product-group-cost-type-select-onchange">
@@ -332,6 +334,13 @@
 		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2"/>
 		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
 		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
+	</action-attrs>
+
+	<action-attrs name="action-product-attrs-cost-price-variant">
+		<attribute for="costPrice" name="readonly" expr="eval: true"
+				   if="parentProduct?.manageVariantPrice"/>
+        <attribute for="costTypeSelect" name="hidden" expr="eval: true"
+				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
 
 	<action-record name="action-product-record-update-sale-price"
