@@ -549,9 +549,11 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
 		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) { return; }
 
-		expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
+		if (sequence != null) {
+			expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
 
-		if (expense.getExpenseSeq() != null) { return; }
+			if (expense.getExpenseSeq() != null) { return; }
+		}
 
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 	}
