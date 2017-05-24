@@ -14,7 +14,7 @@
 		<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 	</grid>
 	
-	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project,action-project-attrs-default-category" width="large"
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project" width="large"
 	onLoad="action-project-on-load-group,save">
 		<toolbar>
 			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -281,10 +281,6 @@
 	<action-attrs name="action-task-attrs-assigned-to-domain">
 	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"
 				   if="(typeSelect == 'task')&amp;&amp;(project?.membersUserSet)&amp;&amp;(!project.membersUserSet.isEmpty())" />
-	</action-attrs>
-	
-	<action-attrs name="action-project-attrs-default-category">
-		<attribute name="domain" for="categorySet" expr="eval: &quot;self.id IN (__repo__(ProjectCategory).all().fetch().collect{it.id}.join(','))&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-defaults" model="com.axelor.apps.project.db.Project">

@@ -18,7 +18,7 @@
 		<field name="percentage"/>
     </grid>
     
-	<form model="com.axelor.apps.account.db.MoveTemplateLine" name="move-template-line-cusom-form" onLoad="action-move-template-line-set-domain" onNew="action-move-template-line-set-domain" title="Move template line">
+	<form model="com.axelor.apps.account.db.MoveTemplateLine" name="move-template-line-cusom-form" title="Move template line">
 		<panel name="main" readonlyIf="isValid">
 			<field name="name"/>
 			<field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
