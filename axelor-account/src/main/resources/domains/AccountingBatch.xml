@@ -52,6 +52,8 @@
     <!-- CREDIT TRANSFER -->
   	<integer name="creditTransfertTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
   	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+  	<boolean name="includeOtherBankAccounts" />
+
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE

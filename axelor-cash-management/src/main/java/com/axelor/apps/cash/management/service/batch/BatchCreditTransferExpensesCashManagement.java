@@ -1,8 +1,7 @@
 package com.axelor.apps.cash.management.service.batch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpenses;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -19,6 +19,8 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransferExpenses {
@@ -43,22 +45,25 @@ public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransf
 	@Override
 	protected void process() {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
+		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
+		Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
-		// Can't pass an empty collection to the query
-		List<Long> anomalies = new ArrayList<>(Arrays.asList(0L));
+		if (accountingBatch.getIncludeOtherBankAccounts()) {
+			bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+		}
 
 		Query<Expense> query = expenseRepo.all()
 				.filter("self.ventilated = true "
 						+ "AND self.paymentStatusSelect = :paymentStatusSelect "
 						+ "AND self.company = :company "
-						+ "AND self.bankDetails = :bankDetails "
+						+ "AND self.bankDetails IN (:bankDetailsSet) "
 						+ "AND self.user.partner.outPaymentMode = :paymentMode "
-						+ "AND self.id NOT IN (:anomalies)")
+						+ "AND self.id NOT IN (:anomalyList)")
 				.bind("paymentStatusSelect", InvoicePaymentRepository.STATUS_DRAFT)
 				.bind("company", accountingBatch.getCompany())
-				.bind("bankDetails", accountingBatch.getBankDetails())
+				.bind("bankDetailsSet", bankDetailsSet)
 				.bind("paymentMode", accountingBatch.getPaymentMode())
-				.bind("anomalies", anomalies);
+				.bind("anomalyList", anomalyList);
 
 		for (List<Expense> expenseList; !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Expense expense : expenseList) {
@@ -67,8 +72,8 @@ public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransf
 					incrementDone();
 				} catch (Exception ex) {
 					incrementAnomaly();
-					anomalies.add(expense.getId());
-					query = query.bind("anomalies", anomalies);
+					anomalyList.add(expense.getId());
+					query = query.bind("anomalyList", anomalyList);
 					TraceBackService.trace(ex);
 					log.error(String.format("Credit transfer batch: anomaly for expense %s", expense.getExpenseSeq()));
 				}
