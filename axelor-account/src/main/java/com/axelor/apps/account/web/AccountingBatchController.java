@@ -23,8 +23,13 @@ import java.util.Map;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.account.service.batch.BatchCreditTransferExpenses;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -191,6 +196,25 @@ public class AccountingBatchController {
 
 	}
 
+	public void actionCreditTransfer(ActionRequest request, ActionResponse response) throws AxelorException {
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Class<? extends BatchStrategy> batchStrategyClass;
+
+		switch (accountingBatch.getCreditTransfertTypeSelect()) {
+		case AccountingBatchRepository.CREDIT_TRANSFER_EXPENSE_PAYMENT:
+			batchStrategyClass = BatchCreditTransferExpenses.class;
+			break;
+		// TODO: other credit transfer types
+		default:
+			throw new AxelorException(String.format(I18n.get("Batch not implemented for credit transfer type %d"),
+					accountingBatch.getCreditTransfertTypeSelect()), IException.CONFIGURATION_ERROR);
+		}
+
+		Batch batch = Beans.get(batchStrategyClass).run(accountingBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
 
 	// WS
 

@@ -17,7 +17,30 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.db.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -26,6 +49,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -60,13 +84,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
 
 public class ExpenseServiceImpl implements ExpenseService  {
 
@@ -388,17 +405,29 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addPayment(Expense expense) throws AxelorException {
-		expense.setPaymentDate(new LocalDate());
-		
 		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
-		expense.setPaymentMode(paymentMode);
-		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
-			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+
+		if (paymentMode == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE),
+					IException.MISSING_FIELD);
 		}
-		
-		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+
+		expense.setPaymentDate(new LocalDate());
+		expense.setPaymentMode(paymentMode);
+
+		if (paymentMode.getGenerateBankOrder()) {
+			BankOrder bankOrder = Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+			expense.setBankOrder(bankOrder);
+		}
+
+		if (paymentMode.getAutomaticTransmission()) {
+			expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+		} else {
+			expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+			expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+		}
+
 		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
-		expenseRepository.save(expense);
 	}
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {

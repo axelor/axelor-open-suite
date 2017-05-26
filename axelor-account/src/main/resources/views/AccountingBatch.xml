@@ -77,7 +77,7 @@
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
 	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
-	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save" colSpan="12"/>
+	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 	</panel>
 </form>
 
@@ -123,6 +123,10 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionMoveLineExport"/>
 	</action-method>
 	
+	<action-method name="action-accounting-batch-method-action-credit-transfer">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCreditTransfer"/>
+	</action-method>
+
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-accounting-batch-attrs-bank-details-domain">

@@ -22,5 +22,10 @@ public interface IExceptionMessage {
 
 	static final String FORECAST_COMPANY = /*$$(*/ "Please select a company" /*)*/;
 
+	static final String BATCH_CREDIT_TRANSFER_EXPENSES_REPORT_TITLE = /*$$(*/ "Report for credit transfers on expenses: " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_EXPENSES_DONE_SINGULAR = /*$$(*/ "%d expense treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_EXPENSES_DONE_PLURAL = /*$$(*/ "%d expenses treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_EXPENSES_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_EXPENSES_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
 }

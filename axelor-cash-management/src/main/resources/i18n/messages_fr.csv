@@ -1,4 +1,8 @@
 "key","message","comment","context"
+"%d anomalies.","%d anomalies.",,
+"%d anomaly.","%d anomalie.",,
+"%d expense treated successfully,","%d note de frais traitée avec succès,",,
+"%d expenses treated successfully,","%d notes de frais traitées avec succès,",,
 "Amount","Montant",,
 "Auto",,,
 "Balance",,,
@@ -53,6 +57,7 @@
 "Previsional Spending","Dépenses prévisionnelles",,
 "Realized?","Réalisé?",,
 "Reason","Motif",,
+"Report for credit transfers on expenses:","Rapport pour les virements sur les notes de frais :",,
 "Sales","Ventes",,
 "SalesMan","Commercial",,
 "Show histrogram","Voir l'histogramme",,
