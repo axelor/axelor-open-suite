@@ -7,7 +7,7 @@
     	<field name="product"/>
     	<field name="qualityRate"/>
     	<field name="partnerProductMoveLineTotal"/>
-    	<field name="supplierPercentRate"/>
+    	<field name="supplierRate" selection="partner.product.quality.rate.supplier.percent.rate.select" widget="ImageSelect" x-labels="false"/>
     </grid>
     
     <form name="partner-product-quality-rate-form" model="com.axelor.apps.stock.db.PartnerProductQualityRate" title="Partner product quality rate form">
@@ -15,9 +15,7 @@
     		<field name="product" colSpan="6"/>
     		<field name="qualityRate" colSpan="3"/>
     		<field name="partnerProductMoveLineTotal" colSpan="3"/>
-    		<field name="supplierPercentRate">
-    			<viewer><![CDATA[<i class="fa fa-star" aria-hidden="true"></i>]]></viewer>
-    		</field>
+    		<field name="supplierRate"/>
     	</panel>
     </form>
     

@@ -10,7 +10,7 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product"/>
     <decimal name="qualityRate" title="Quality rate"/>
     <decimal name="partnerProductMoveLineTotal" title="Product Move Line Total"/>
-    <decimal name="supplierPercentRate"/>
+    <decimal name="supplierRate" selection="partner.product.quality.rate.supplier.percent.rate.select"/>
 	<finder-method name="findProductByName" using="product, partner"/>
 
   </entity>

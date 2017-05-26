@@ -53,4 +53,9 @@
 		<option order="5" value="stock">Stock</option>
 	</selection>
 	
+	<selection name="partner.product.quality.rate.supplier.percent.rate.select">
+		<option value="5.00" icon="img/Other/5.png">5</option>
+	</selection>
+	
+	
 </object-views>

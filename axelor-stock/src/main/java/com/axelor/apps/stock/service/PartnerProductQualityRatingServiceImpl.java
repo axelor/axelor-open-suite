@@ -1,6 +1,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import com.axelor.apps.base.db.Partner;
@@ -26,14 +27,15 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 	@Inject
 	private PartnerProductQualityRateRepository partnerProductQualityRateRepo;
 	
+	@Inject
+	private StockMoveLineRepository stockMoveLineRepo;
+	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void calculate(StockMove stockMove){
 		
 		Partner partner = stockMove.getPartner();
-		Integer valueConformity = partner.getSupplierQualityRating();
 		BigDecimal qualityRate;
-		Integer qualityRating;
 		Product product = null;
 		Integer conformity;
 		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
@@ -47,29 +49,16 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 			if(product == null ) {
 				product = line.getProduct();
 				createProductMoveLine(partner, product);
-				System.out.println("je suis dans la methode create");
 			}
 			
 			// update
 			qualityRate = BigDecimal.ZERO;
 			conformity = line.getConformitySelect();
 			updateProductMoveLine(partner, product, qualityRate, conformity, line);
-			System.out.println("je suis dans la methode de base");
-			
-			
-		/*		
-			if(conformity == StockMoveRepository.CONFORMITY_COMPLIANT) {
-				valueConformity++;
-			}
-		*/
 			
 		}
 		
-		/*qualityRating = valueConformity;
-		partner.setSupplierQualityRating(qualityRating);
-		
-		partnerRepository.save(partner);*/
-		
+		partnerRepository.save(partner);
 	}
 	
 	
@@ -108,18 +97,30 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 			if(product == partnerProductLine.getProduct()) {
 				
 				qualityRate = partnerProductLine.getQualityRate();
+				BigDecimal productTotal = BigDecimal.ZERO;
 				
 				BigDecimal partnerProductQualityRate = partnerProductLine.getQualityRate();				
-				BigDecimal lineQty = partnerProductLinesTotal(line, partnerProductLine);
-				BigDecimal supplierProductPercentRate = supplierProductPercentRate(partnerProductLine);
+				//BigDecimal lineQty = partnerProductLinesTotal(line, partnerProductLine);
+				BigDecimal supplierProductRate = supplierProductRate(partnerProductLine);
 				
 				if(conformity == StockMoveRepository.CONFORMITY_COMPLIANT) {
 					partnerProductQualityRate = partnerProductQualityRate.add(line.getRealQty());
 				}
+				
+				List<StockMoveLine> partnerProductMoveLineTotal = stockMoveLineRepo.all().filter("self.stockMove.typeSelect = 3 AND self.stockMove.partner.fullName = ?1 AND self.product = ?2", partner.getFullName(), product).fetch();
+				
+				for(StockMoveLine test : partnerProductMoveLineTotal) {
+					System.out.println("!! " + productTotal + " !!");
 
+					productTotal = productTotal.add(test.getRealQty());
+
+					System.out.println("++ " + productTotal + " ++");
+				}
+						
 				partnerProductLine.setQualityRate(partnerProductQualityRate);
-				partnerProductLine.setPartnerProductMoveLineTotal(lineQty);
-				partnerProductLine.setSupplierPercentRate(supplierProductPercentRate);
+				partnerProductLine.setSupplierRate(supplierProductRate);
+				
+				partnerProductLine.setPartnerProductMoveLineTotal(productTotal);
 
 				return partnerProductQualityRateRepo.save(partnerProductLine);
 			}
@@ -129,29 +130,22 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 		
 	}
 	
-	public BigDecimal partnerProductLinesTotal(StockMoveLine line, PartnerProductQualityRate partnerProductLine) {
-		
-		BigDecimal lineQty = line.getRealQty();
-		BigDecimal partnerProductQty = partnerProductLine.getPartnerProductMoveLineTotal();
-
-		if(partnerProductQty == BigDecimal.ZERO) {
-			lineQty = BigDecimal.ONE;
-		} else {
-			lineQty = lineQty.add(partnerProductQty);		
-		}
-			
-		return lineQty;
-	}
 	
-	
-	public BigDecimal supplierProductPercentRate(PartnerProductQualityRate partnerProductLine) {
+	public BigDecimal supplierProductRate(PartnerProductQualityRate partnerProductLine) {
 		
 		BigDecimal productQualityRate = partnerProductLine.getQualityRate();
 		BigDecimal productMoveLineRate = partnerProductLine.getPartnerProductMoveLineTotal();
-		BigDecimal supplierProductPercentRate = productQualityRate.multiply(new BigDecimal(100)).divide(productMoveLineRate);
+		BigDecimal supplierProductRate = null;
 		
-		System.out.println("++ " + supplierProductPercentRate + " ++");
-		return supplierProductPercentRate;
+		if(productMoveLineRate == BigDecimal.ZERO){
+			productMoveLineRate = BigDecimal.ONE;
+		} 
+
+		supplierProductRate = productQualityRate.multiply(new BigDecimal(5)).divide(productMoveLineRate, 2, RoundingMode.HALF_UP);
+		
+		
+		System.out.println("== " + supplierProductRate + " ==");
+		return supplierProductRate;
 	}
 	
 
