@@ -15,6 +15,7 @@
 			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsBank" />
 			<field name="testMode"/>
+			<field name="defaultSignatoryEbicsUser" domain="self.ebicsPartner.id = :id"/>
 		</panel>
 		
 		<panel title="Bank statements" colSpan="12">
@@ -26,6 +27,12 @@
 			<field name="bankStatementEndDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
 			<button name="getBankStatementButton" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bankStatementFileFormatSet"/>
 			<button name="showBankStatementButton" title="Show the bank statements" onClick="action-ebics-partner-view-show-bank-statement"/>
+		</panel>
+
+		<panel title="Filter Receiver Bank Details">
+			<field name="filterReceiverBD"/>
+			<field name="orderTypeSelect" showIf="filterReceiverBD"/>
+			<field name="receiverBankDetailsSet" colSpan="12" showIf="filterReceiverBD"/>
 		</panel>
 		
 		<panel title="Payment Status Report">
@@ -45,7 +52,7 @@
 	</action-method>
 	
 	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">
-		<attribute name="domain" for="bankDetailsSet" expr="eval: &quot; self.bank.id = ${ebicsBank?.bank?.id} &quot;"/>
+		<attribute name="domain" for="bankDetailsSet" expr="eval: &quot; self.bank.businessPartyPrefix = '${ebicsBank?.bank?.businessPartyPrefix}' AND self.active = true &quot;"/>
 	</action-attrs>
 	
 	<action-view name="action-ebics-partner-view-ebics-users" model="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics users">

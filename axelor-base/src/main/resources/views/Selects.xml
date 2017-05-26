@@ -343,7 +343,7 @@
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
 		<option value="saleOrder">Sales order</option>
 		<option value="purchaseOrder">Purchase order</option>
-		<option value="eventTicket">Ticket</option>
+		<option value="ticket">Ticket</option>
 		<option value="intStockMove">Internal stock move</option>
 		<option value="outStockMove">Delivery stock move</option>
 		<option value="inStockMove">Receipt stock move</option>
@@ -355,6 +355,7 @@
 		<option value="bankOrder">Bank order</option>
 		<option value="reconcile">Reconcile</option>
 		<option value="product">Product</option>
+		<option value="expense">Expense</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -539,6 +540,12 @@
 		<option value="5">v5</option>
 	</selection>
 
+	<selection name="base.bank.bank.details.type.select">
+		<option value="0">Other</option>
+		<option value="1">IBAN</option>
+		<option value="2">National id</option>
+	</selection>
+
 	<!-- TODO: move this selection to account module and create a copy here
 		 (ie. base.year.period.duration.select) That time also rename references
 		 of this selection in Charts.xml of CRM, Purchase, Stock modules.
@@ -609,13 +616,13 @@
 	
 	<selection name="product.inventory.type.select">
 		<option value="1">Yearly</option>
-		<option value="2">Rotating / Turning</option>
+		<option value="2">Cycle counting</option>
 	</selection>
 	
 	
 	<selection name="product.sub.type.product.select">
-		<option value="1">Product finished</option>
-		<option value="2">Product semi-finished</option>
+		<option value="1">Finished product</option>
+		<option value="2">Semi-finished product</option>
 		<option value="3">Component</option>
 	</selection>
 	

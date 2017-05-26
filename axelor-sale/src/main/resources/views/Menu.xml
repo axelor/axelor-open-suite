@@ -17,7 +17,7 @@
 		<view type="form" name="partner-customer-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = false AND self.isCustomer = true</domain>
+		<domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
@@ -168,44 +168,39 @@
 	
 	
 <!-- TOP MENU -->
+	
+	<menuitem name="top-menu-sales" top="true" order="2" title="Sales" if="__config__.app.isApp('sale')" left="false"/>
 
-	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" top="true" title="Create SO" action="supply.chain.root.sale.order" if="__config__.app.isApp('sale')"/>
+	<menuitem name="top-menu-sales-quotations" parent="top-menu-sales"
+		 title="Quotations" action="top.menu.sales.quotations" top="true"/>
 	
-	<action-view name="supply.chain.root.sale.order" title="Sales order"
-		model="com.axelor.apps.sale.db.SaleOrder" >
+	<action-view name="top.menu.sales.quotations" title="Quotations"
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="cards" name="sale-order-cards" />
+		<view type="grid" name="sale-order-quotation-grid" />
 		<view type="form" name="sale-order-form" />
-		<view type="grid" name="sale-order-grid" />
-	</action-view>	
+		<view-param name="search-filters" value="sale-order-filters"/>
+		<view-param name="forceTitle" value="true" />
+		<domain>self.template = false and self.statusSelect &lt; 3</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_template" expr="eval:false" />
+	</action-view>
+
+	<menuitem name="top-menu-sales-sale-orders" parent="top-menu-sales" 
+		 title="Sale orders" action="top.menu.sales.sale.orders" top="true"/>
 	
-	<menuitem name="top-sale" title="Sales" top="true" left="false" order="-160" if="__config__.app.isApp('sale')" />
-	
-<!-- 	<menuitem name="top-sale-create-quote" order="-100" title="Create Quote" parent="top-sale" top="true" action="sc.root.sale.new.so"/> -->
-	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" order="-70" action="sc.root.sale.orders" parent="top-sale"  top="true" left="false"/>
-	
-	<menuitem name="top-sale-offers" title="View Quotes" order="-90" action="top.sale.offers" parent="top-sale"  top="true" left="false"/>
-	<action-view name="top.sale.offers" title="Quotes"
+	<action-view name="top.menu.sales.sale.orders" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >
+		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
-		<domain>self.statusSelect = 2</domain>
+		<domain>self.template = false and self.statusSelect &gt; 2</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-	</action-view>	
-	
-	
-	<menuitem name="top-sale-orders" title="View Orders" order="-80" action="top.sale.orders" parent="top-sale"  top="true" left="false"/>		
-	
-	<action-view name="top.sale.orders" title="Orders"
-		model="com.axelor.apps.sale.db.SaleOrder" >
-		<view type="grid" name="sale-order-grid" />
-		<view type="form" name="sale-order-form" />
-		<view-param name="search-filters" value="sale-order-filters"/>
-		<domain>self.statusSelect = 3</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-	</action-view>	
-	
+		<context name="_template" expr="eval:false" />
+	</action-view>
 	
 	<menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="-205"
 		title="Salesman"  action="saleman.dashboard.view.sample" />
@@ -243,10 +238,7 @@
 		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
 	</action-view>
 
-	
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"
     	title="Customers" icon="fa-bar-chart"  action="customer.list.dashboard.view"/>
-	
-	
-		
+
 </object-views>

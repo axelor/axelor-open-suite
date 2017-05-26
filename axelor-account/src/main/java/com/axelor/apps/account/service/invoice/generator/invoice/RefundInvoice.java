@@ -72,7 +72,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));
 
 		if (refund.getPaymentMode() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REFUND_INVOICE_1), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 		}
 
 		return refund;

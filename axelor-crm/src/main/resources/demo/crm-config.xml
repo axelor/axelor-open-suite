@@ -5,7 +5,7 @@
   
 	<input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" search="self.code = :code"/>
 	
-	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
+	<input file="crm_ticketCategory.csv" separator=";" type="com.axelor.apps.crm.db.TicketCategory" search="self.importId = :importId"/>
 	
 	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead" search="self.importId = :importId">
 			<bind column="description" to="description"/>
@@ -24,7 +24,12 @@
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>
 		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTimeNow)" column="endDateTimeNow" />
-		<bind to="ticketNumberSeq" if="typeSelect.equals('5')" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
+	</input>
+	
+	<input file="crm_ticket.csv" separator=";" type="com.axelor.apps.crm.db.Ticket" search="self.importId = :importId">
+		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>
+		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTimeNow)" column="endDateTimeNow" />
+		<bind to="ticketNumberSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.TICKET)" />
 	</input>
 	
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">

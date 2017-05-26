@@ -26,7 +26,7 @@
 			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
 			<spacer/>
 			<field name="statusSelect" widget="NavSelect" colSpan="6" />
-			<button name="createJobApplication" title="Create" colSpan="3" onClick="save,action-job-position-create-application"/>
+			<button name="createJobApplication" title="Create job application" colSpan="3" onClick="save,action-job-position-create-application"/>
 			<panel-dashlet action="action-job-position-all-applications" colSpan="12" title="All applications"/>
 			<field name="nbOpenJob" />
 			<field name="nbPeopleHired" />

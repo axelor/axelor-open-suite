@@ -196,7 +196,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(Beans.get(StockMoveService.class).compute(stockMove));
 				Beans.get(StockMoveService.class).plan(stockMove);
 			}
 			stockMoveId = stockMove.getId();
@@ -211,7 +210,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 
-	public void clearPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
+	public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		List<StockMove> stockMoveList = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
 

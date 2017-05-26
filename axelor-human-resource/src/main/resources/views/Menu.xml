@@ -111,77 +111,74 @@
 	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
 	
-	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
-    	title="Timesheets" icon="fa-clock-o" icon-background="#84429f"/>
-    
-	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
+	<!-- Leave App -->
+	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f"
+    	title="Leave Requests"/>
 	
-	<action-method name="edit.timesheet">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
+	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>
+	
+	<action-method name="edit.leave.request">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="editLeave"/>
 	</action-method>
 	
-	<menuitem name="all-timesheet" parent="timesheet-root" title="All my Timesheets" action="timesheet.all"/>
-
-	<action-view name="timesheet.all" model="com.axelor.apps.hr.db.Timesheet"
-		title="My Timesheets">
-		<view name="my-timesheets-grid" type="grid" />
-		<view name="timesheet-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+	<menuitem name="all-leave-request" parent="leave-request-root" title="All my Leave Requests" action="leave.all"/>
+	
+	<action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
+		title="My Leave Requests">
+		<view name="leave-request-grid" type="grid" />
+		<view name="leave-request-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="company_id" expr="eval:__user__.activeCompany" />
-	</action-view>	
-	
-	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" />
-	
-	<action-method name="timesheet.validate">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
-	</action-method>
-	
-	<menuitem name="historic-timesheet"  parent="timesheet-root" title="Historic team timesheets" action="timesheet.historic"/>
-	
-	<action-method name="timesheet.historic">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
-	</action-method>
-	
-	<menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"/>
-	
-	<action-method name="time.sheet.timer">
-		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
-	</action-method>
-	
-	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" 
-    	title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f"/>
-	
-	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Enter extra hours" action="edit.extra.hours"/>
-	
-	<action-method name="edit.extra.hours">
-		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="editExtraHours"/>
-	</action-method>
-	
-	<menuitem name="all-extra-hours" parent="extra-hours-root" title="All my extra hours" action="extra.hours.all"/>
-	
-	<action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
-		title="My Extra Hours">
-		<view name="extra-hours-grid" type="grid" />
-		<view name="extra-hours-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
-		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
+		<context name="to_justify_leave_reason" expr="eval: false"/>
 	</action-view>
 	
-	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate"/>
+	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate"/>
 	
-	<action-method name="extra.hours.validate">
-		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
+	<action-method name="leave.validate">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
 	</action-method>
 	
-	<menuitem name="historic-extra-hours"  parent="extra-hours-root" title="Historic extra hours" action="extra.hours.historic"/>
+	<menuitem name="historic-leave-request"  parent="leave-request-root" title="Historic team leave requests" action="leave.historic"/>
 	
-	<action-method name="extra.hours.historic">
-		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="historicExtraHours"/>
+	<action-method name="leave.historic">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
+	<menuitem name="leave-request-root-leave-calender" parent="leave-request-root"
+		title="Leaves calendar" action="leave.request.root.leave.calender" />
+
+	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
+		model="com.axelor.apps.crm.db.Event" >
+		<view type="calendar" name="event-calendar-color-by-user"/>
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.typeSelect = 4</domain>
+	</action-view>
 	
+	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave Request to justify" action="leave.request.to.justify"/>
+	
+	<action-view name="leave.request.to.justify" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest">
+		<view name="leave-request-form" type="form" />
+		<view name="leave-request-validate-grid" type="grid" />
+		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="company_id" expr="eval:__user__.activeCompany" />
+		<context name="to_justify_leave_reason" expr="eval: true"/>
+	</action-view>
+	
+	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
+		
+	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" />
+	
+	<action-view name="leave.reason.all" title="Leave reason"
+		model="com.axelor.apps.hr.db.LeaveReason">
+		<view type="grid" name="leave-reason-grid" />
+		<view type="form" name="leave-reason-form" />
+	</action-view>
+	
+	
+	<!-- Expense app -->
 	<menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"
     	title="Expenses"/>
     
@@ -254,70 +251,77 @@
 	    <view type="form" name="kilometric-allow-param-form"/>
 	</action-view>
 	
-	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f"
-    	title="Leave Requests"/>
+	<!-- Timesheet app -->
+	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
+    	title="Timesheets" icon="fa-clock-o" icon-background="#84429f"/>
+    
+	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
 	
-	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>
-	
-	<action-method name="edit.leave.request">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="editLeave"/>
+	<action-method name="edit.timesheet">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
 	</action-method>
 	
-	<menuitem name="all-leave-request" parent="leave-request-root" title="All my Leave Requests" action="leave.all"/>
-	
-	<action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
-		title="My Leave Requests">
-		<view name="leave-request-grid" type="grid" />
-		<view name="leave-request-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id AND self.leaveToJustify = :leave_to_justify</domain>
+	<menuitem name="all-timesheet" parent="timesheet-root" title="All my Timesheets" action="timesheet.all"/>
+
+	<action-view name="timesheet.all" model="com.axelor.apps.hr.db.Timesheet"
+		title="My Timesheets">
+		<view name="my-timesheets-grid" type="grid" />
+		<view name="timesheet-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="company_id" expr="eval:__user__.activeCompany" />
-		<context name="leave_to_justify" expr="eval: false"/>
-	</action-view>
+	</action-view>	
 	
-	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate"/>
+	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" />
 	
-	<action-method name="leave.validate">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
+	<action-method name="timesheet.validate">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
 	</action-method>
 	
-	<menuitem name="historic-leave-request"  parent="leave-request-root" title="Historic team leave requests" action="leave.historic"/>
+	<menuitem name="historic-timesheet"  parent="timesheet-root" title="Historic team timesheets" action="timesheet.historic"/>
 	
-	<action-method name="leave.historic">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
+	<action-method name="timesheet.historic">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root-leave-calender" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calender" />
-
-	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="calendar" name="event-calendar-color-by-user"/>
-		<view type="grid" name="leave-grid"/>
-		<view type="form" name="leave-form"/>
-		<domain>self.typeSelect = 4</domain>
-	</action-view>
+	<menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"/>
 	
-	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
-		
-	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" />
-
-	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave Request to justify" action="leave.request.to.justify"/>
+	<action-method name="time.sheet.timer">
+		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
+	</action-method>
 	
-	<action-view name="leave.request.to.justify" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest">
-		<view name="leave-request-form" type="form" />
-		<view name="leave-request-validate-grid" type="grid" />
-		<domain>self.user = :user_id AND self.company = :company_id AND self.leaveToJustify = :leave_to_justify</domain>
+	<!-- Extra hours app -->
+	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" 
+    	title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f"/>
+	
+	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Enter extra hours" action="edit.extra.hours"/>
+	
+	<action-method name="edit.extra.hours">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="editExtraHours"/>
+	</action-method>
+	
+	<menuitem name="all-extra-hours" parent="extra-hours-root" title="All my extra hours" action="extra.hours.all"/>
+	
+	<action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
+		title="My Extra Hours">
+		<view name="extra-hours-grid" type="grid" />
+		<view name="extra-hours-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="company_id" expr="eval:__user__.activeCompany" />
-		<context name="leave_to_justify" expr="eval: true"/>
 	</action-view>
-		
 	
-	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
-    	<view type="grid" name="leave-reason-grid"/>
-	    <view type="form" name="leave-reason-form"/>
-	</action-view>
+	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate"/>
+	
+	<action-method name="extra.hours.validate">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
+	</action-method>
+	
+	<menuitem name="historic-extra-hours"  parent="extra-hours-root" title="Historic extra hours" action="extra.hours.historic"/>
+	
+	<action-method name="extra.hours.historic">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="historicExtraHours"/>
+	</action-method>
 	
 	<action-view name="product.root.product" title="Products" id="hr.product.root.product"
 		model="com.axelor.apps.base.db.Product" >
@@ -356,5 +360,16 @@
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
 	
+	<!-- Top Menus -->
+	
+	<menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false"/>
+	
+	<menuitem name="top-menu-hr-my-timesheet" parent="top-menu-hr" title="My timesheet" action="edit.timesheet" top="true"/>
 
+	<menuitem name="top-menu-hr-my-expense" parent="top-menu-hr" title="My expense" action="edit.expense" top="true"/>
+	
+	<menuitem name="top-menu-hr-my-leave-request" parent="top-menu-hr" title="My leave request" action="edit.leave.request" top="true"/>
+	
+	<menuitem name="top-menu-hr--my-extra-hours" parent="top-menu-hr" title="My extra hours" action="edit.extra.hours" top="true"/>
+		
 </object-views>

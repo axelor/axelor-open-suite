@@ -19,6 +19,7 @@ package com.axelor.apps.stock.db.repo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
@@ -41,25 +42,29 @@ public class ProductStockRepository extends ProductBaseRepository {
 			Long locationId = Long.parseLong(context.get("locationId").toString());
 			LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
 			LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
-			Map<LocalDate, BigDecimal> stockMap = stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
+			List<Map<String,Object>> stock = stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
 			
-			if (stockMap != null && !stockMap.isEmpty()) {
+			if (stock != null && !stock.isEmpty()) {
 				LocalDate minDate = null;
 				LocalDate maxDate = null;
-				for (LocalDate date : stockMap.keySet()){
-					if (minDate == null || stockMap.get(date).compareTo(stockMap.get(minDate)) > 0
-							|| stockMap.get(date).compareTo(stockMap.get(minDate)) == 0 && date.isAfter(minDate)) {
+				BigDecimal minQty = BigDecimal.ZERO;
+				BigDecimal maxQty = BigDecimal.ZERO;
+				for (Map<String,Object> dateStock : stock){
+					LocalDate date = (LocalDate) dateStock.get("$date");
+					BigDecimal qty = (BigDecimal) dateStock.get("$qty");
+					if (minDate == null || qty.compareTo(minQty) < 0 || qty.compareTo(minQty) == 0 && date.isAfter(minDate)) {
 						minDate = date;
+						minQty = qty;
 					}
-					if (maxDate == null || stockMap.get(date).compareTo(stockMap.get(maxDate)) < 0
-							|| stockMap.get(date).compareTo(stockMap.get(minDate)) == 0 && date.isBefore(maxDate)) {
+					if (maxDate == null || qty.compareTo(maxQty) > 0 || qty.compareTo(maxQty) == 0 &&  date.isBefore(maxDate)) {
 						maxDate = date;
+						maxQty = qty;
 					}
 				}
 				json.put("$stockMinDate", minDate);
-				json.put("$stockMin", stockMap.get(minDate));
+				json.put("$stockMin", minQty);
 				json.put("$stockMaxDate", maxDate);
-				json.put("$stockMax", stockMap.get(maxDate));
+				json.put("$stockMax", maxQty);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

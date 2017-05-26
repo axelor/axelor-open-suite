@@ -156,7 +156,7 @@
 	</action-view>
 	
 	<menuitem name="product-root-product-model" parent="referential-root-product-root"
-		title="Products models" action="product.root.product.model" />
+		title="Products models" action="product.root.product.model" if="__config__.app.getApp('base').getManageProductVariants()" />
 
 	<action-view name="product.root.product.model" title="Products models"
 		model="com.axelor.apps.base.db.Product" >
@@ -257,7 +257,15 @@
 		<view type="form" name="product-family-form"/>
 		<context name="fromMenu" expr="eval:true"/>		
 	</action-view>
+	
+	<menuitem name="referential-conf-stop-reason" parent="referential-conf"
+		title="Blocking reasons" action="referential.conf.stop.reason" />
 
+	<action-view name="referential.conf.stop.reason" title="Blocking reasons"
+		model="com.axelor.apps.base.db.StopReason" >
+		<view type="grid" name="stop-reason-grid"/>
+		<view type="form" name="stop-reason-form"/>
+	</action-view>
 	
 	<menuitem name="referential-report" parent="referential-root" order="90"
 		title="Reportings"/>
@@ -488,41 +496,5 @@
 		<view type="grid" name="indicator-generator-grid" />
 		<view type="form" name="indicator-generator-form"/>
 	</action-view>
-
 	
-	<!-- Top Menu for Create new objects.... -->
-
-
-	<menuitem name="top-menu-utility" order="-200"  title="Create"  top="true" left="false"/> 	
-
-	<menuitem name="top-menu-create-partner" order="-100" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
-		
-	<action-view name="top.new.partner.view" title="Create Partner" model="com.axelor.apps.base.db.Partner" >
-		<view type="form" name="partner-form"/>
-		<view type="grid" name="partner-grid" />
-	  	<view-param name="limit" value="39"/>
-		<domain>self.isContact = false</domain>
-		<context name="_partnerTypeSelect" expr="eval:1" />
-	</action-view>
-	
-<!-- 	<menuitem name="top-new-partner-individual" parent="top-menu-utility" title="Create Individual Partner" action="top.new.partner.individual" top="true" left="false"/> 	 -->
-		
-<!-- 	<action-view name="top.new.partner.individual" title="Create Individual Partner" model="com.axelor.apps.base.db.Partner" > -->
-<!-- 		<view type="form" name="partner-form"/> -->
-<!-- 		<context name="_partnerTypeSelect" expr="eval:2" /> -->
-<!-- 	</action-view> -->
-	
-	<menuitem name="top-menu-create-contact" order="-90" parent="top-menu-utility" top="true" title="Create Contact" action="top.new.contact.view" />
-		
-	<action-view name="top.new.contact.view" title="Create Contact" model="com.axelor.apps.base.db.Partner" >
-		<view type="form" name="partner-contact-form"/>
-		<view type="grid" name="partner-contact-grid" />
-		<domain>self.isContact = true</domain>
-	</action-view>
-
-	<menuitem name="top-relations" title="Relations"  top="true" left="false" order="-190"/>
-
-	<menuitem name="top-relations-partners" order="-90" title="View Accounts" action="referential.root.partners" parent="top-relations"  top="true" left="false"/>
-	<menuitem name="top-relations-contacts" order="-70" title="View Contacts" action="referential.root.contacts" parent="top-relations"  top="true" left="false"/>		  
-
 </object-views>

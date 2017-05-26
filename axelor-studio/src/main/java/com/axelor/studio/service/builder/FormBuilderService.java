@@ -889,7 +889,7 @@ public class FormBuilderService {
 				widget = "duration";
 			} else if (metaField.getIsUrl()) {
 				widget = "url";
-			} else if (metaField.getLarge()) {
+			} else if (metaField.getLarge() || metaField.getJson()) {
 				field.setColSpan(12);
 			}
 			if (metaField.getMultiselect()) {

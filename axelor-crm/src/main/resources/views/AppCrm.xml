@@ -5,6 +5,7 @@
 	
 	<form name="app-crm-config-form" title="App Crm" model="com.axelor.apps.base.db.AppCrm" canDelete="false" canNew="false" width="large">
 		<panel>
+			<field name="ticketMgt" widget="boolean-switch"/>
 			<panel-dashlet action="admin.root.conf.crm.config" colSpan="12"/>
 		</panel>
 	</form>

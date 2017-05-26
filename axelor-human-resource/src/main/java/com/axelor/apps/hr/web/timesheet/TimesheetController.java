@@ -24,6 +24,7 @@ import java.util.Map;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,19 +155,7 @@ public class TimesheetController {
 				   .add("form","timesheet-form")
 				   .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
 
-		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
-		.context("_activeCompany", user.getActiveCompany());
-	
-		if(employee == null || !employee.getHrManager())  {
-			if(employee != null && employee.getManager() != null) {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
-				.context("_user", user);
-			}
-			else  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
-				.context("_user", user);
-			}
-		}
+		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
 		response.setView(actionView.map());
 	}
@@ -377,5 +366,14 @@ public class TimesheetController {
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());	
+	}
+	
+	public void showTimesheetLineEditor(ActionRequest request, ActionResponse response) {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		response.setView(ActionView
+				.define(I18n.get("Timesheet lines"))
+				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
 	}
 }

@@ -33,7 +33,6 @@ public interface IEvent {
 	static final int MEETING = 2;
 	static final int TASK = 3;
 	static final int HOLIDAY = 4;
-	static final int TICKET = 5;
 	
 	/**
 	 * Static event call status select

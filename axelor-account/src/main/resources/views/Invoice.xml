@@ -123,7 +123,7 @@
 			
 	    	</panel>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
@@ -140,9 +140,9 @@
 					<viewer>{{record.addressStr}}</viewer>
 				</field>
 			</panel>
-			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
+			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<field name="bankDetails" hideIf="operationTypeSelect &gt; 3" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
@@ -373,21 +373,22 @@
     </form>
     
     <action-group name="action-group-invoice-merge-action">
-	    <action name="action-invoice-method-merge-account" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-	    <action name="action-invoice-method-merge-supplychain" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
-	    <action name="action-invoice-method-merge-business-project" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
+	    <action name="action-invoice-method-merge-account" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-invoice-method-merge-supplychain" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
+	    <action name="action-invoice-method-merge-business-project" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
 	    
 	</action-group>
 	
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
 		<action name="action-invoice-method-payment-mode-condition"/>
-	    <action name="action-invoice-record-company-change"/>
+	    <action name="action-invoice-method-fill-company-bank-details"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
+		<action name="action-invoice-attrs-hidden-bank-details"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -396,7 +397,8 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
-    </action-group>   
+		<action name="action-invoice-attrs-hidden-bank-details"/>
+    </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
@@ -406,7 +408,7 @@
     
     <action-group name="action-group-account-invoice-company-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
-    	<action name="action-invoice-record-company-change"/>
+    	<action name="action-invoice-method-fill-company-bank-details"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
     	
     </action-group>
@@ -416,13 +418,14 @@
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-due-date"/>
     	<action name="action-invoice-record-estimated-payment-date"/>
+		<action name="action-invoice-method-fill-company-bank-details"/>
     </action-group>
 
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
-										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-domain-project">
@@ -440,8 +443,8 @@
 	</action-record>
 	
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
-		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
-										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
+		<field name="inAti" expr="eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
 	</action-record>
 	
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
@@ -453,19 +456,12 @@
     	<field name="companyTaxTotal" expr="eval: 0"/>
     	<field name="companyInTaxTotal" expr="eval: 0"/>
     	<field name="companyAmountRemaining" expr="eval: 0"/>
-        <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
+        <field name="currency" expr="eval:__repo__(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
-    
-    <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
-        <field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails" 
-    		if="partner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails != null"/>
-    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
-    </action-record>
-    
+
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
         <field name="partnerAccount" expr="call:com.axelor.apps.account.service.AccountCustomerService:getPartnerAccount(partner, company, (operationTypeSelect == 1 || operationTypeSelect == 2))"/>
@@ -473,11 +469,7 @@
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault } ? partner?.bankDetailsList.find{ it -&gt; it.isDefault } : bankDetails" />
-    	<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails" 
-    		if="partner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails != null"/>
-    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
+		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     </action-record>
@@ -487,7 +479,7 @@
     </action-record>
     
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">
-    	<field name="statusSelect" expr="eval: __repo__.of(Invoice).STATUS_DRAFT"/>
+    	<field name="statusSelect" expr="eval: __repo__(Invoice).STATUS_DRAFT"/>
     </action-record>
     
 	<action-record name="action-record-load-dummy-field-confirm-merge-invoice" model="com.axelor.apps.base.db.Wizard">
@@ -502,7 +494,7 @@
     
     <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
 		<attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
-    	<attribute name="domain" for="bankDetails" expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) &quot;" if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
+    	<attribute name="domain" for="bankDetails" expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = true &quot;" if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
@@ -526,15 +518,19 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
-		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
-		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
-										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
+		<attribute name="hidden" for="printing" expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
+		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
+										&amp;&amp; __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">
     	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: !company || !currency || company?.currency == currency"/>
     </action-attrs>
-	
+
+	<action-attrs name="action-invoice-attrs-hidden-bank-details">
+		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.general.getManageMultiBanks()"/>
+	</action-attrs>
+
 	<!-- DOMAIN -->
 	
 	<action-attrs name="action-invoice-partner-account-domain">
@@ -549,6 +545,10 @@
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
+
+	<action-attrs name="action-invoice-attrs-domain-company-bank-details">
+		<attribute for="companyBankDetails" name="domain" expr="eval: &quot;self.id IN (${(paymentMode?.accountManagementList?.findAll{it.company == company &amp;&amp; it.bankDetails}.collect{it.bankDetails.id}+[null]).join(',')}) AND self.active = true&quot;"/>
+	</action-attrs>
     
     <!-- ACTION VALIDATE -->
     
@@ -605,7 +605,11 @@
     <action-method name="action-invoice-method-get-journal">
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
-    
+
+	<action-method name="action-invoice-method-fill-company-bank-details">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="fillCompanyBankDetails"/>
+	</action-method>
+
 	<action-method name="action-invoice-method-merge-account">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="mergeInvoice"/>
 	</action-method>
@@ -617,7 +621,7 @@
 	<action-method name="action-invoice-method-merge-business-project">
 		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
 	</action-method>
-    
+
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
     	<view type="form" name="invoice-payment-form"/>
     	<view-param name="popup" value="reload"/>

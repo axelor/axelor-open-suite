@@ -10,14 +10,14 @@
 		<column name="supplementaryUnit" type="string" />
 
 		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
-			domain="self.parentCustomsCode.id IS NULL">
+			domain="self.parentCustomsCode IS NULL">
 			<field as="code" name="code" />
 			<field as="wording" name="wording" />
 			<field as="supplementaryUnit" name="supplementaryUnit" />
 		</node>
 
 		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
-			parent="parentCustomsCode">
+			parent="parentCustomsCode" onClick="action-customs-code-nomenclature-view-form">
 			<field as="code" name="code" />
 			<field as="wording" name="wording" />
 			<field as="supplementaryUnit" name="supplementaryUnit" />
@@ -42,5 +42,15 @@
 			<field name="parentCustomsCode" />
 		</panel>
 	</form>
+
+	<action-view name="action-customs-code-nomenclature-view-form"
+		title="Customs code nomenclature" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+		<view type="form" name="customs-code-nomenclature-form" />
+		<view-param name="popup" value="reload" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false" />
+		<context name="_showRecord" expr="eval: id" />
+	</action-view>
 
 </object-views>

@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.talent.web;
 
+import java.util.Map;
+
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
@@ -35,6 +38,9 @@ public class JobApplicationController {
 	@Inject
 	private JobApplicationService jobApplicationService;
 	
+	@Inject
+	private PartnerService partnerService;
+	
 	public void hire(ActionRequest request, ActionResponse response) {
 		
 		JobApplication jobApplication = request.getContext().asType(JobApplication.class);
@@ -52,5 +58,12 @@ public class JobApplicationController {
 				.context("_showRecord", employee.getId())
 				.map());
 		
+	}
+	
+	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
+		
+		JobApplication application = request.getContext().asType(JobApplication.class);
+		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(application.getFirstName(), application.getLastName(), null);
+		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
 	}
 }

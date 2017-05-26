@@ -47,7 +47,8 @@ public interface IExceptionMessage {
 	 */
 	static final String LOCATION_LINE_1 = /*$$(*/ "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
 	static final String LOCATION_LINE_2 = /*$$(*/ "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
-
+	static final String LOCATION_LINE_3 = /*$$(*/ "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
+	
 	/**
 	 * Stock Move Service and Controller
 	 */
@@ -67,6 +68,9 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_14 = /*$$(*/ "No move lines to split" /*)*/;
 	static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
 	static final String STOCK_MOVE_16 = /*$$(*/ "Please entry proper split qty" /*)*/;
+	static final String STOCK_MOVE_17 = /*$$(*/ "Must set weight unit in stock configuration for customs." /*)*/;
+	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight information for customs." /*)*/;
+	static final String STOCK_MOVE_19 = /*$$(*/ "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
 	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;
 	static final String STOCK_MOVE_OUTGOING_PARTIAL_GENERATED = /*$$(*/ "An outgoing partial stock move has been generated (%s)" /*)*/;

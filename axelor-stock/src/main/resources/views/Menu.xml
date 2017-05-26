@@ -42,7 +42,14 @@
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
-	</action-view>		
+	</action-view>
+
+
+	<menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search" action="stock.root.search" order="17"/>
+
+	<action-view name="stock.root.search" title="Search">
+		<view name="tracking-number-search" type="search"/>
+	</action-view>
 	
 <!-- 	MUST BE DELETED -->
 	
@@ -131,9 +138,9 @@
 	</action-view>		
 	
 	<menuitem name="stock-root-stock-per-day" parent="stock-root"
-		title="Stock Per Day" action="stock.root.stock.per.day"  order="32"/>
+		title="Stock Availability" action="stock.root.stock.per.day"  order="32"/>
 
-	<action-view name="stock.root.stock.per.day" title="Stock Per Day"
+	<action-view name="stock.root.stock.per.day" title="Stock Availability"
 		model="com.axelor.apps.base.db.Wizard" >
 		<view type="form" name="stock-move-wizard-stock-per-day"/>
 	</action-view>		
@@ -152,13 +159,13 @@
 		<view type="form" name="location-form"/>
 	</action-view>
 	
-	<menuitem name="stock-root-conf-min-stock-rules" parent="stock-root-conf"
-		title="Minimum stock rules" action="stock.root.conf.min.Stock.rules" />
+	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"
+		title="Stock rules" action="stock.root.conf.stock.rules" />
 	
-	<action-view name="stock.root.conf.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.stock.db.MinStockRules" >
-		<view type="grid" name="min-stock-rules-grid" />
-		<view type="form" name="min-stock-rules-form" />
+	<action-view name="stock.root.conf.stock.rules" title="Stock rules"
+		model="com.axelor.apps.stock.db.StockRules" >
+		<view type="grid" name="stock-rules-grid" />
+		<view type="form" name="stock-rules-form" />
 		<context name="searchFields" expr="location;product"/>
 	</action-view>
 	
@@ -215,8 +222,8 @@
 	<action-view name="stock.root.conf.customs.code.nomenclature"
 		title="Customs code nomenclature" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
 		<view type="tree" name="customs-code-nomenclature-tree"/>
+		<view type="form" name="customs-code-nomenclature-form" />
 	</action-view>
-
 
 <!-- ADMINISTRATION -->
 
@@ -230,57 +237,6 @@
 <!-- 		<view type="form" name="stock-batch-form"/> -->
 <!-- 	</action-view> -->
 	
-
-<!-- TOP MENU -->
-
-	<menuitem name="top-stock" title="Stock"  top="true" left="false" order="-140" if="__config__.app.isApp('stock')"/>
-	
-	<menuitem name="top-stock-create-stock-move" title="Create Stock Move" order="-100" top="true" parent="top-stock" action="top.stock.move.new"/>
-	<action-view name="top.stock.move.new" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">
-		<view type="form"/>
-	</action-view>
-	<menuitem name="top-stock-moves-all" order="-90" title="View Stock moves" action="top.stock.moves.all" parent="top-stock"  top="true" left="false"/>	
-	
-	<action-view name="top.stock.moves.all" title="Stock moves"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-		<view type="form" />
-		<view-param name="search-filters" value="internal-stock-move-filters"/>
-	</action-view>	
-	
-	<menuitem name="top-stock-cust-deliveries" title="View Customer deliveries" action="top.stock.cust.deliveries" parent="top-stock"  top="true" left="false"/>		
-	
-	<action-view name="top.stock.cust.deliveries" title="Customer deliveries"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.typeSelect = 2 </domain>
-		<context name="_typeSelect" expr="eval: 2" />
-	</action-view>	
-	
-	<menuitem name="top-stock-internal-moves" title="View Internal moves" action="top.stock.internal.moves" parent="top-stock"  top="true" left="false"/>		
-	
-	<action-view name="top.stock.internal.moves" title="Internal moves"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<view-param name="search-filters" value="internal-stock-move-filters"/>
-		<domain>self.typeSelect = 1 </domain>
-		<context name="_typeSelect" expr="eval: 1" />
-	</action-view>	
-	
-	<menuitem name="top-stock-suppl-deliveries" title="View Supplier deliveries" action="top.stock.suppl.deliveries" parent="top-stock"  top="true" left="false"/>		
-	
-	<action-view name="top.stock.suppl.deliveries" title="Supplier deliveries"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<view-param name="search-filters" value="supplier-arrivals-filters"/>
-		<domain>self.typeSelect = 3 </domain>
-		<context name="_typeSelect" expr="eval: 3" />
-	</action-view>	
-		
 	<menuitem name="menu-stock-dashboard-1" parent="stock-root-report" 
 		title="General"  action="stock.dashboard.one.view" />	
 

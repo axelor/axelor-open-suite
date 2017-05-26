@@ -44,6 +44,11 @@
 
 		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
+		<boolean name="manageMultiBanks" title="Manage multi banks"/>
+
+		<boolean name="manageProductVariants" title="Manage product variants"/>
+		
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;

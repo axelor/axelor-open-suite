@@ -157,7 +157,7 @@ public class PayerQualityService {
 
 
 	public List<Partner> getPartnerList()  {
-		return  partnerRepository.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
+		return  partnerRepository.all().filter("self.isCustomer = true").fetch();
 	}
 
 

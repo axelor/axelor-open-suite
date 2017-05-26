@@ -17,7 +17,7 @@
 105;"Month";"Month";3
 106;"Year";"Year";3
 200;"Percent";"Percent";
-300;"Miligrams";"mg";1
+300;"Milligrams";"mg";1
 301;"Centigrams";"cg";1
 302;"Decigrams";"dg";1
 303;"Grams";"g";1
@@ -26,8 +26,10 @@
 306;"Kilograms";"kg";1
 307;"Quintal";"q";1
 308;"Ton";"t";1
-400;"Milimeter";"mm";2
+400;"Millimeter";"mm";2
 401;"Centimeter";"cm";2
 402;"Decimeter";"dm";2
-403;"Decameter";"dam";2
-404;"Hectometer";"hm";2
+403;"Meter";"m";2
+404;"Decameter";"dam";2
+405;"Hectometer";"hm";2
+406;"Kilometer";"km";2

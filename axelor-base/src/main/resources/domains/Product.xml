@@ -24,17 +24,21 @@
     <string name="productTypeSelect" title="Type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
     <boolean name="isPrototype" title="Prototype"/>
-    <integer name="subTypeProductSelect" title="Sub Type Product" selection="product.sub.type.product.select"/>
+    <integer name="productSubTypeSelect" title="Product Subtype" selection="product.sub.type.product.select"/>
     <integer name="inventoryTypeSelect" title="Inventory type" selection="product.inventory.type.select"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="10" massUpdate="true"/>
     <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"  />
     <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="10" massUpdate="true"/>
     <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase / Cost currency" initParam="true" />
+    <boolean name="autoUpdateSalePrice" default="false" title="Update sale price from cost price"/>
     
     <decimal name="costPrice" title="Cost price" precision="20" scale="10" massUpdate="true" help="true"/>
     
     <decimal name="managPriceCoef" title="Management coef." help="true"/>
+    <decimal name="shippingCoef" title="Shipping Coef."/>
+    <boolean name="defShipCoefByPartner"
+             title="Define the shipping coef by partner"/>
     
     <date name="startDate" title="Product launch Date" initParam="true" help="true"/>
     <date name="endDate" title="Product pulled off market Date" initParam="true" help="true"/>
@@ -50,6 +54,8 @@
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
    	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="true"/>
   	<boolean name="isModel" title="Is model?"/>
+    <boolean name="manageVariantPrice" default="false"
+             title="Manage prices for product variants"/>
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier" help="true"/>
   
@@ -86,30 +92,32 @@
 	
   	
   	<extra-code>
-   		<![CDATA[
-			// PRODUCT TYPE SELECT
-			public static final String PRODUCT_TYPE_SERVICE = "service";
-			public static final String PRODUCT_TYPE_STORABLE = "storable";
-			public static final String PRODUCT_TYPE_SUBSCRIPTABLE = "subscriptable";
-			
-			// SALE TRACKING ORDER SELECT
-			public static final int SALE_TRACKING_ORDER_FIFO = 1;
-			public static final int SALE_TRACKING_ORDER_LIFO = 2;
-			
-			// SALE SUPPLY SELECT
-			public static final int SALE_SUPPLY_FROM_STOCK = 1;
-			public static final int SALE_SUPPLY_PURCHASE = 2;
-			public static final int SALE_SUPPLY_PRODUCE = 3;
-			
-			public static final String PROCUREMENT_METHOD_BUY = "buy";
-			public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
-			
-			public static final int COST_TYPE_STANDARD = 1;
-			public static final int COST_TYPE_LAST_PURCHASE_PRICE = 2;
-   		]]>
-   	</extra-code>
+	   		<![CDATA[
+				// PRODUCT TYPE SELECT
+				public static final String PRODUCT_TYPE_SERVICE = "service";
+				public static final String PRODUCT_TYPE_STORABLE = "storable";
+				public static final String PRODUCT_TYPE_SUBSCRIPTABLE = "subscriptable";
+				
+				// SALE TRACKING ORDER SELECT
+				public static final int SALE_TRACKING_ORDER_FIFO = 1;
+				public static final int SALE_TRACKING_ORDER_LIFO = 2;
+				
+				// SALE SUPPLY SELECT
+				public static final int SALE_SUPPLY_FROM_STOCK = 1;
+				public static final int SALE_SUPPLY_PURCHASE = 2;
+				public static final int SALE_SUPPLY_PRODUCE = 3;
+				
+				public static final String PROCUREMENT_METHOD_BUY = "buy";
+				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
+				
+				public static final int COST_TYPE_STANDARD = 1;
+				public static final int COST_TYPE_LAST_PURCHASE_PRICE = 2;
+				public static final int COST_TYPE_AVERAGE_PRICE = 3;
+				public static final int COST_TYPE_LAST_PRODUCTION_PRICE = 4;
+	   		]]>
+	   	</extra-code>
 	   	
-	<track>
+	   	<track>
 		<field name="productCategory"/>
 		<field name="productFamily"/>
 		<field name="saleSupplySelect"/>
@@ -136,7 +144,6 @@
       	<message if="true" on="CREATE">Product created</message>
       	<message if="true" on="UPDATE">Product updated</message>
 	</track>
-  	
   </entity>
 
 </domain-models>

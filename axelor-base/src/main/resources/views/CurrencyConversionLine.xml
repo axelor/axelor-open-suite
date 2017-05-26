@@ -78,13 +78,13 @@
     </action-method>
     
     <action-record name="action-currency-conversion-line-set-exchange-rate" model="com.axelor.apps.base.db.Wizard">
-    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(__repo__.of(Currency).find(startCurrency.id),__repo__.of(Currency).find(endCurrency.id), __datetime__.toLocalDatetime())" />
+    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(__repo__(Currency).find(startCurrency.id),__repo__(Currency).find(endCurrency.id), __datetime__.toLocalDatetime())" />
     </action-record>
     
      <action-record name="action-currency-conversion-line-wizard-set-date" model="com.axelor.apps.base.db.Wizard">
     	<field name="date" expr="eval:_date" />
-    	<field name="startCurrency" expr="eval:__repo__.of(Currency).find(_startCurrency.id)" if="_startCurrency != null"/>
-    	<field name="endCurrency" expr="eval:__repo__.of(Currency).find(_endCurrency.id)" if="_endCurrency != null"/>
+    	<field name="startCurrency" expr="eval:__repo__(Currency).find(_startCurrency.id)" if="_startCurrency != null"/>
+    	<field name="endCurrency" expr="eval:__repo__(Currency).find(_endCurrency.id)" if="_endCurrency != null"/>
     	<field name="baseApp" expr="eval:_baseApp"  />
     </action-record>
     

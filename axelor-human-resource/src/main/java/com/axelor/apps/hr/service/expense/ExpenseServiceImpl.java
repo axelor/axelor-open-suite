@@ -34,6 +34,9 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.google.common.base.Strings;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -83,7 +86,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -348,6 +350,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 		moveService.getMoveValidateService().validateMove(move);
 
+		HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(expense.getCompany());
+		setExpenseSeq(expense, hrConfig.getExpenseSequence());
+
 		expense.setMove(move);
 		expense.setVentilated(true);
 		expenseRepository.save(expense);
@@ -372,7 +377,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
 		}
 		catch(Exception e){
-			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
 		expenseRepository.save(expense);
@@ -449,7 +454,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		else{
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
 					expenseLine.getTotalAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false) {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
@@ -515,6 +520,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expense.addExpenseLineListItem(expenseLine);
 			
 			Beans.get(ExpenseRepository.class).save(expense);
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", expenseLine.getId());
+			response.setData(data);
 			response.setTotal(1);
 		}
 	}
@@ -583,6 +591,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	 		expense.addKilometricExpenseLineListItem(expenseLine);
 	 		
 	 		Beans.get(ExpenseRepository.class).save(expense);
+	 		HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", expenseLine.getId());
+			response.setData(data);
 	 		response.setTotal(1);
 	 	}
 	}
@@ -595,4 +606,24 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		return expenseProduct;
 	}
 	
+
+	public void setDraftSequence(Expense expense)  {
+		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq()))  {
+			expense.setExpenseSeq(getDraftSequence(expense));
+		}
+	}
+
+	private String getDraftSequence(Expense expense)  {
+		return "*" + expense.getId();
+	}
+
+	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
+		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) { return; }
+
+		expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
+
+		if (expense.getExpenseSeq() != null) { return; }
+
+		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
+	}
 }

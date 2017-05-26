@@ -67,16 +67,22 @@ public class ManufOrderStockMoveService {
 
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
-				manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
 
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				manufOrder.setInStockMove(stockMove);
+			}
+
+			//fill here the consumed stock move line list item to manage the
+			//case where we had to split tracked stock move lines
+			if (stockMove.getStockMoveLineList() != null) {
+				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+				}
 			}
 		}
 
@@ -124,14 +130,13 @@ public class ManufOrderStockMoveService {
 
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 				manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
 
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				manufOrder.setOutStockMove(stockMove);
 			}
@@ -163,7 +168,7 @@ public class ManufOrderStockMoveService {
 	}
 
 
-	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
+	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
@@ -172,8 +177,8 @@ public class ManufOrderStockMoveService {
 				prodProduct.getQty(),
 				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
-				null,
-				StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
+				stockMove,
+				inOrOutType, false, BigDecimal.ZERO);
 
 	}
 

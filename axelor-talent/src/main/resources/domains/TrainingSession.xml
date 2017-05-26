@@ -13,6 +13,7 @@
 		<decimal name="duration" title="Number of hours" />
 		<decimal name="rating" title="Rating" />
 		<string name="fullName" title="Full name" namecolumn="true" />
+		<string name="location" title="Location" />
 	</entity>
 
 </domain-models>

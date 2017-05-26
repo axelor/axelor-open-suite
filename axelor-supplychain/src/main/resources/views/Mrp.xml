@@ -17,8 +17,10 @@
 	    <toolbar>
 	        <button name="runCalculation" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1"/>
    	        <button name="generateAllProposals" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect == 2"/>
+			<button name="print" title="Print" onClick="save, action-method-mrp-print" showIf="statusSelect == 2"/>
 	    </toolbar>
 	    <panel name="filters" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
+			<field name="id"/>
 	        <field name="createdOn"/>
 	        <field name="location" form-view="location-form" grid-view="location-grid" colSpan="6"/>
 	        <field name="endDate" colSpan="6"/>
@@ -42,10 +44,15 @@
 	<action-method name="action-method-mrp-generate-all-proposal">
 	    <call class="com.axelor.apps.supplychain.web.MrpController" method="generateAllProposals"/>
 	</action-method>
+
+	<action-method name="action-method-mrp-print">
+		<call class="com.axelor.apps.supplychain.web.MrpController" method="print"/>
+	</action-method>
 	 
 	<action-view name="action-mrp-view-mrp-line" title="Results" model="com.axelor.apps.supplychain.db.MrpLine">
 	    <view type="grid" name="mrp-line-grid"/>
 	    <view type="form" name="mrp-line-form"/>
+		<view-param name="limit" value="200"/>
 	    <domain>self.mrp.id = :_mrpId</domain>
 		<context name="_mrpId" expr="eval: __this__.id"/>
 	</action-view>
@@ -53,7 +60,7 @@
 	<action-attrs name="action-attrs-mrp-generate-all-proposals"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<attribute name="readonly" for="generateAllProposals"
-			expr="eval: __repo__.of(Mrp).find(id).mrpLineList.every { it.proposalGenerated || [5, 8].indexOf(it.mrpLineType.elementSelect) == -1}" />
+			expr="eval: __repo__(Mrp).find(id).mrpLineList.every { it.proposalGenerated || [5, 8].indexOf(it.mrpLineType.elementSelect) == -1}" />
 	</action-attrs>
 	
 </object-views>

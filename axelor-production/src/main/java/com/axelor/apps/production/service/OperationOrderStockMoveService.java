@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -33,6 +31,8 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
 
 public class OperationOrderStockMoveService {
 
@@ -59,16 +59,22 @@ public class OperationOrderStockMoveService {
 
 			for(ProdProduct prodProduct: operationOrder.getToConsumeProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
-				operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
 
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				operationOrder.setInStockMove(stockMove);
+			}
+
+			//fill here the consumed stock move line list item to manage the
+			//case where we had to split tracked stock move lines
+			if (stockMove.getStockMoveLineList() != null) {
+			    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+				}
 			}
 		}
 
@@ -108,7 +114,7 @@ public class OperationOrderStockMoveService {
 
 
 
-	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
+	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
@@ -117,8 +123,8 @@ public class OperationOrderStockMoveService {
 				prodProduct.getQty(),
 				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
-				null,
-				StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
+				stockMove,
+				StockMoveLineService.TYPE_IN_PRODUCTIONS, false, BigDecimal.ZERO);
 
 	}
 

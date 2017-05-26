@@ -11,7 +11,7 @@
   	
   	<input file="base_appTimesheet.csv" separator=";" type="com.axelor.apps.base.db.AppTimesheet" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
-  	<input file="base_appExtraHours.csv" separator=";" type="com.axelor.apps.base.db.AppEmployee" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	<input file="base_appExtraHours.csv" separator=";" type="com.axelor.apps.base.db.AppExtraHours" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
   	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
   	
@@ -23,4 +23,11 @@
     
     <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
 
+ 	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
+	
+	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
 </csv-inputs>

@@ -48,9 +48,10 @@ public class TrainingRegisterController {
 		
 		response.setView(ActionView.define("Meeting")
 				.model(Event.class.getCanonicalName())
-				.add("form","meeting-form")
-				.add("grid","meeting-grid")
+				.add("form","event-form")
+				.add("grid","event-grid")
 				.context("_showRecord", event.getId())
+				.context("_user", trainingRegister.getEmployee().getUser())
 				.map());
 		
 	}

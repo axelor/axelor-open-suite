@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import org.apache.commons.lang.StringUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -240,6 +242,15 @@ public class SequenceService {
 
 		return sequenceVersion;
 
+	}
+
+	public String getDefaultTitle(Sequence sequence) {
+		MetaSelectItem item = Beans.get(MetaSelectItemRepository.class)
+								   .all()
+								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCode())
+								   .fetchOne();
+
+		return item.getTitle();
 	}
 	
 }

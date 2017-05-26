@@ -7,15 +7,16 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="cashAccount" form-view="account-form" grid-view="account-grid"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-        <field name="sequence"/>
+	  	<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
     </grid>
  
 	 <form name="account-management-payment-mode-form" title="Account Management" model="com.axelor.apps.account.db.AccountManagement"  
 	 onNew="action-account-management-record-payment" width="large">
 	 	<panel name="main" >
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-account-management-fill-default-bank-details"/>
 			<field name="cashAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'" form-view="account-form" grid-view="account-grid"/>
 			<field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form" grid-view="journal-grid"/>
+            <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
 			<field name="sequence" domain="self.company = :company" canNew="true" form-view="sequence-form" grid-view="sequence-grid"/>
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 	 	</panel>
@@ -31,7 +32,7 @@
 	<action-record name="action-account-management-record-payment" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 3"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-validate name="action-account-management-product-validate">
@@ -45,5 +46,10 @@
         <field name="company"  expr="eval:null" if="purchaseAccount != null &amp;&amp; company != null &amp;&amp; purchaseAccount?.company?.id != company?.id"/>
         <field name="company"  expr="eval:null" if="cashAccount != null &amp;&amp; company != null &amp;&amp; cashAccount?.company?.id != company?.id"/>
     </action-record>
-    
+
+	<action-attrs name="action-account-management-fill-default-bank-details">
+        <attribute for="bankDetails" name="value" expr="null"/>
+		<attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
+	</action-attrs>
+
 </object-views>

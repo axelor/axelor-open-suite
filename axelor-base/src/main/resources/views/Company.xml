@@ -9,7 +9,8 @@
         <field name="address" form-view="address-form" grid-view="address-grid"/>
     </grid>
 
-	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
+	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
+		onSave="action-company-check-multi-banks">
 		<panel name="main" readonlyIf="$popup()">
 		    <panel colSpan="4">
 				<field name="logo" widget="Image"/>
@@ -49,7 +50,7 @@
 	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
 	  		</panel>
 	    	<panel name="bankDetails" title="Bank details">
-	      		<field name="defaultBankDetails"/>
+                <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
 	    	<panel name="orderBloquedMessage" title="Order Bloqued Message" if-module="axelor-sale" if="__config__.app.isApp('sale')">
@@ -106,6 +107,15 @@
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
-	
-	
+	<action-attrs name="action-company-attrs-default-bank-details-domain">
+		<attribute name="domain" for="defaultBankDetails" if="bankDetailsSet &amp;&amp; !bankDetailsSet.isEmpty()"
+				   expr="eval: &quot;self.id IN (${bankDetailsSet.collect{it.id}.join(',')})&quot;"/>
+		<attribute name="domain" for="defaultBankDetails" if="!bankDetailsSet || bankDetailsSet.isEmpty()"
+				   expr="self.id IN (0)"/>
+	</action-attrs>
+
+	<action-method name="action-company-check-multi-banks">
+		<call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks" />
+	</action-method>
+
 </object-views>

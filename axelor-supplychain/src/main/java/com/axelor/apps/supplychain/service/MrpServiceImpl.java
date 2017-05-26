@@ -18,15 +18,17 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
@@ -45,11 +47,11 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
-import com.axelor.apps.stock.service.MinStockRulesService;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpFamily;
 import com.axelor.apps.supplychain.db.MrpForecast;
@@ -61,6 +63,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -85,7 +88,7 @@ public class MrpServiceImpl implements MrpService  {
 	protected PurchaseOrderLineRepository purchaseOrderLineRepository;
 	protected SaleOrderLineRepository saleOrderLineRepository;
 	protected MrpLineRepository mrpLineRepository;
-	protected MinStockRulesService minStockRulesService;
+	protected StockRulesService stockRulesService;
 	protected MrpLineService mrpLineService;
 	protected MrpForecastRepository mrpForecastRepository;
 	
@@ -100,7 +103,7 @@ public class MrpServiceImpl implements MrpService  {
 	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
-			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
+			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
 		
 		this.mrpRepository = mrpRepository;
 		this.locationRepository = locationRepository;
@@ -110,7 +113,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.purchaseOrderLineRepository = purchaseOrderLineRepository;
 		this.saleOrderLineRepository = saleOrderLineRepository;
 		this.mrpLineRepository = mrpLineRepository;
-		this.minStockRulesService = minStockRulesService;
+		this.stockRulesService = stockRulesService;
 		this.mrpLineService = mrpLineService;
 		this.mrpForecastRepository = mrpForecastRepository;
 		
@@ -269,11 +272,11 @@ public class MrpServiceImpl implements MrpService  {
 				
 				BigDecimal reorderQty = minQty.subtract(cumulativeQty);
 				
-				MinStockRules minStockRules = minStockRulesService.getMinStockRules(product, mrpLine.getLocation(), MinStockRulesRepository.TYPE_FUTURE);
+				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE);
 				
-				if(minStockRules != null)  {   reorderQty = reorderQty.max(minStockRules.getReOrderQty());  }
+				if(stockRules != null)  {   reorderQty = reorderQty.max(stockRules.getReOrderQty());  }
 				
-				MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(minStockRules);
+				MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules);
 				
 				this.createProposalMrpLine(product, mrpLineTypeProposal, reorderQty, mrpLine.getLocation(), mrpLine.getMaturityDate(), mrpLine.getMrpLineOriginList(), mrpLine.getRelatedToSelectName());
 				
@@ -355,7 +358,7 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected MrpLineType getMrpLineTypeForProposal(MinStockRules minStockRules) throws AxelorException  {
+	protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules) throws AxelorException  {
 		
 		return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
 		
@@ -455,12 +458,18 @@ public class MrpServiceImpl implements MrpService  {
 	protected void createPurchaseMrpLines() throws AxelorException  {
 		
 		MrpLineType purchaseProposalMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
-		
+		String statusSelect = purchaseProposalMrpLineType.getStatusSelect();
+		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+
+		if (statusList.isEmpty()) {
+			statusList.add(IPurchaseOrder.STATUS_VALIDATED);
+		}
+
 		// TODO : Manage the case where order is partially delivered
 		List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrderLineRepository.all()
 				.filter("self.product in (?1) AND self.purchaseOrder.location in (?2) AND self.purchaseOrder.receiptState = ?3 "
-						+ "AND self.purchaseOrder.statusSelect = ?4", 
-						this.productMap.keySet(), this.locationList, IPurchaseOrder.STATE_NOT_RECEIVED, IPurchaseOrder.STATUS_VALIDATED).fetch();
+						+ "AND self.purchaseOrder.statusSelect IN (?4)",
+						this.productMap.keySet(), this.locationList, IPurchaseOrder.STATE_NOT_RECEIVED, statusList).fetch();
 		
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList)  {
 			
@@ -481,13 +490,18 @@ public class MrpServiceImpl implements MrpService  {
 			}
 		}
 	}
-	
-	
+
 	// Vente ferme
 	protected void createSaleOrderMrpLines() throws AxelorException  {
 		
 		MrpLineType saleForecastMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
-		
+		String statusSelect = saleForecastMrpLineType.getStatusSelect();
+		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+
+		if (statusList.isEmpty()) {
+			statusList.add(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		}
+
 		// TODO : Manage the case where order is partially delivered
 		List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
 		
@@ -495,8 +509,8 @@ public class MrpServiceImpl implements MrpService  {
 			
 			saleOrderLineList.addAll(saleOrderLineRepository.all()
 				.filter("self.product in (?1) AND self.saleOrder.location in (?2) AND self.saleOrder.deliveryState = ?3 "
-						+ "AND self.saleOrder.statusSelect = ?4", 
-						this.productMap.keySet(), this.locationList, SaleOrderRepository.STATE_NOT_DELIVERED, ISaleOrder.STATUS_ORDER_CONFIRMED).fetch());
+						+ "AND self.saleOrder.statusSelect IN (?4)",
+						this.productMap.keySet(), this.locationList, SaleOrderRepository.STATE_NOT_DELIVERED, statusList).fetch());
 			
 		}
 		else  {
@@ -744,10 +758,12 @@ public class MrpServiceImpl implements MrpService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateProposals(Mrp mrp) throws AxelorException  {
 		
+		Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
+		
 		for(MrpLine mrpLine : mrp.getMrpLineList())  {
 			
 			if (!mrpLine.getProposalGenerated()) {
-				mrpLineService.generateProposal(mrpLine);
+				mrpLineService.generateProposal(mrpLine, purchaseOrders);
 			}
 			
 		}

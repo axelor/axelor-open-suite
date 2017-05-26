@@ -82,6 +82,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		InvoicePayment invoicePayment = this.createInvoicePayment(invoice, amountConverted, paymentDate, paymentMove.getCurrency(), paymentMove.getPaymentMode(), this.determineType(paymentMove));
 		invoicePayment.setMove(paymentMove);
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+		invoicePayment.setBankDetails(paymentMove.getPaymentVoucher().getCompanyBankDetails());
 		invoice.addInvoicePaymentListItem(invoicePayment);
 		invoicePaymentToolService.updateAmountPaid(invoice);
 		invoicePaymentRepository.save(invoicePayment);

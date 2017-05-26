@@ -5,7 +5,9 @@
   <template>
   	<name>Note De Frais</name>
   	<subject>Note De Frais $DemoExpense.expenseRef$</subject>
-  	<content>Expense updated</content>
+	<content>
+			&lt;p&gt;Expense updated&lt;/p&gt;
+  	</content>
   	<mediaTypeSelect>2</mediaTypeSelect>
   	<metaModel>DemoExpense</metaModel>
   </template>

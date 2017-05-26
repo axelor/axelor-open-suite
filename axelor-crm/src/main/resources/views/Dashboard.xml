@@ -413,77 +413,77 @@
 
 
 	<action-view name="dashlet.my.urgent.tickets" title="My Urgent Tickets"
-		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect != 25 AND self.prioritySelect in (4,5) AND self.user =:__user__</domain>
+		model="com.axelor.apps.crm.db.Ticket">
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect != 25 AND self.prioritySelect in (4,5) AND self.user =:__user__</domain>
 	</action-view>
 
 	<action-view name="dashlet.my.active.tickets" title="My Active Tickets"
-		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect != 25 AND self.user =:__user__</domain>
+		model="com.axelor.apps.crm.db.Ticket">
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect != 25 AND self.user =:__user__</domain>
 	</action-view>
 	<action-view name="dashlet.my.new.tickets" title="My New Tickets"
-		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect = 21 AND self.user = :__user__</domain>
+		model="com.axelor.apps.crm.db.Ticket">
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect = 21 AND self.user = :__user__</domain>
 	</action-view>
 	<action-view name="dashlet.urgent.tickets" title="Urgent Tickets"
-		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect != 25 AND self.prioritySelect in (4,5)</domain>
+		model="com.axelor.apps.crm.db.Ticket">
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect != 25 AND self.prioritySelect in (4,5)</domain>
 	</action-view>
 
 	<action-view name="dashlet.new.urgent.tickets" title="New Urgent Tickets"
-		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect = 21 AND self.prioritySelect in (4,5)</domain>
+		model="com.axelor.apps.crm.db.Ticket">
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect = 21 AND self.prioritySelect in (4,5)</domain>
 	</action-view>
 	<action-view name="dashlet.new.tickets" title="New Tickets"
-		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect = 21</domain>
+		model="com.axelor.apps.crm.db.Ticket">
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect = 21</domain>
 	</action-view>
 
-	<action-view title="My New Urgent Tickets" model="com.axelor.apps.crm.db.Event"
+	<action-view title="My New Urgent Tickets" model="com.axelor.apps.crm.db.Ticket"
 		name="dashlet.my.new.urgent.tickets">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect=5 AND self.statusSelect = 21 AND self.prioritySelect IN (4,5) AND self.user =:__user__</domain>
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect = 21 AND self.prioritySelect IN (4,5) AND self.user =:__user__</domain>
 	</action-view>
 
 	<action-view title="My Today Support Activities" model="com.axelor.apps.crm.db.Event"
 		name="dashlet.my.today.support.activities">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-  		<domain>self.typeSelect = 5 AND self.user = :__user__ AND DATE(self.updatedOn) = DATE(:todayDate)</domain>
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+  		<domain>self.user = :__user__ AND DATE(self.updatedOn) = DATE(:todayDate)</domain>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 
 
 	<action-view title="My Late Tickets" model="com.axelor.apps.crm.db.Event"
 		name="dashlet.my.late.tickets">
-		<view type="grid" name="my-event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect != 25 AND self.user =:__user__ AND self.endDateTime &lt; date(now())</domain>
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect != 25 AND self.user =:__user__ AND self.endDateTime &lt; date(now())</domain>
 	</action-view>
 
 	<action-view title="Late Tickets" model="com.axelor.apps.crm.db.Event"
 		name="dashlet.late.tickets">
-		<view type="grid" name="event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.statusSelect != 25 AND self.endDateTime &lt; date(now())</domain>
+		<view type="grid" name="ticket-grid" />
+		<view type="form" name="ticket-form" />
+		<domain>self.statusSelect != 25 AND self.endDateTime &lt; date(now())</domain>
 	</action-view>
 	<action-view name="dashlet.human.resources.dashboard.upcoming.holidays"
 		title="All Upcoming Holidays" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="crm-task-grid" />
-		<view type="form" name="crm-task-form" />
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
 		<domain>self.endDateTime &gt;= :_today and self.typeSelect = 4</domain>
 		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>

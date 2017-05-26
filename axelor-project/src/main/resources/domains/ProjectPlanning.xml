@@ -7,13 +7,15 @@
 
   <entity name="ProjectPlanning" cachable="true">
       
-      <datetime name="fromDate" title="From" required="true"/>
-      <datetime name="toDate" title="To" required="true"/>
+      <datetime name="fromDate" title="From" />
+      <datetime name="toDate" title="To" />
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"  required="true"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"  required="true"/>
       <many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="TeamTask"  />
       <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
       <string name="description" title="Description" large="true" />
+      <string name="planningAttrs" title="Attrs" json="true"/>
+	  <boolean name="fromEditor" />
 	          
   </entity>
   

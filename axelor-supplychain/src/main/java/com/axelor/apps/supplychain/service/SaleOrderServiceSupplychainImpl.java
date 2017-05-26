@@ -18,6 +18,8 @@
 package com.axelor.apps.supplychain.service;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,7 @@ import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -139,6 +142,51 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			saleOrder.setPriceList(client.getSalePriceList());
 		}
 		return saleOrder;
+	}
+	
+	@Transactional
+	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
+			Partner clientPartner, Company company, Location location, Partner contactPartner,
+			PriceList priceList, Team team) throws AxelorException{
+		String numSeq = "";
+		String externalRef = "";
+		for (SaleOrder saleOrderLocal : saleOrderList) {
+			if (!numSeq.isEmpty()){
+				numSeq += "-";
+			}
+			numSeq += saleOrderLocal.getSaleOrderSeq();
+
+			if (!externalRef.isEmpty()){
+				externalRef += "|";
+			}
+			if (saleOrderLocal.getExternalReference() != null){
+				externalRef += saleOrderLocal.getExternalReference();
+			}
+		}
+		
+		SaleOrder saleOrderMerged = this.createSaleOrder(
+				AuthUtils.getUser(),
+				company,
+				contactPartner,
+				currency,
+				null,
+				numSeq,
+				externalRef,
+				location,
+				LocalDate.now(),
+				priceList,
+				clientPartner,
+				team);
+		
+		super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
+
+		this.computeSaleOrder(saleOrderMerged);
+
+		saleOrderRepo.save(saleOrderMerged);
+		
+		super.removeOldSaleOrders(saleOrderList);
+
+		return saleOrderMerged;
 	}
 }
 

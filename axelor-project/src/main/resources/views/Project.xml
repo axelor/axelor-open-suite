@@ -14,7 +14,7 @@
 		<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 	</grid>
 	
-	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project,action-project-attrs-default-category" width="large"
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project" width="large"
 	onLoad="action-project-on-load-group,save">
 		<toolbar>
 			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -49,7 +49,7 @@
 			<field name="dueDate" showIf="isProject"/>
 			<field name="progress" widget="Progress" onChange="action-attrs-project-compute-leadDelay" showIf="isProject"/>
 			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" showIf="isProject" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
-			<field name="imputable" widget="boolean-switch"/>
+			<field name="imputable" widget="boolean-switch" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			<field name="projInvTypeSelect" showIf="isBusinessProject"  if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="isBusinessProject &amp;&amp; (projInvTypeSelect == 2 || projInvTypeSelect == 3)" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="excludePlanning" showIf="isProject"/>
@@ -78,7 +78,7 @@
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()  &amp;&amp;  __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('production').getShowProductionOrderRelatedToProject()  &amp;&amp;  __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
 			</panel>
 			<panel name="otherElementsToInvoice" showIf="isBusinessProject" title="Other elements to invoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" >
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
@@ -131,7 +131,7 @@
 			<field name="dueDate" />
 			<field name="progress" onChange="action-attrs-project-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
-			<field name="imputable"/>
+			<field name="imputable" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			<field name="projInvTypeSelect" onChange="action-project-attrs-hide-invoicing-panel" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="projInvTypeSelect == 2 || projInvTypeSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="sequence" />
@@ -148,7 +148,7 @@
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()  &amp;&amp;  __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('production') &amp;&amp; __config__.app.isApp('business-project')  &amp;&amp; __config__.app.getApp('production').getShowProductionOrderRelatedToProject()  &amp;&amp;  __config__.app.getApp('production').getManageBusinessProduction()" />
 			</panel>
 			<panel name="logTimes" title="Log Times">
 				<field name="unitOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -287,10 +287,6 @@
 	<action-attrs name="action-task-attrs-assigned-to-domain">
 	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"
 				   if="(typeSelect == 'task')&amp;&amp;(project?.membersUserSet)&amp;&amp;(!project.membersUserSet.isEmpty())" />
-	</action-attrs>
-	
-	<action-attrs name="action-project-attrs-default-category">
-		<attribute name="domain" for="categorySet" expr="eval: self.id IN (__repo__.of(ProjectCategory).all().fetch().collect{it.id}.join(','))"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-defaults" model="com.axelor.apps.project.db.Project">

@@ -78,12 +78,6 @@ public class MoveToolService {
 		}
 	}
 
-
-	public boolean toDoConsolidate()  {
-		return appAccountService.getAppInvoice().getIsInvoiceMoveConsolidated();
-	}
-
-
 	/**
 	 *
 	 * @param invoice

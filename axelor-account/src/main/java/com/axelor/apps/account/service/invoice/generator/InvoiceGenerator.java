@@ -25,13 +25,7 @@ import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -43,12 +37,8 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -247,10 +237,20 @@ public abstract class InvoiceGenerator  {
 		if(companyBankDetails == null)  {
 			AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
 			if(accountingSituation != null)  {
-				companyBankDetails = accountingSituation.getCompanyBankDetails();
+				if(partner.getOutPaymentMode().equals(paymentMode)) {
+					companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+				}
+				else if (partner.getInPaymentMode().equals(paymentMode)) {
+					companyBankDetails = accountingSituation.getCompanyInBankDetails();
+				}
 			}
-			else  {
+			if(companyBankDetails == null)  {
 				companyBankDetails = company.getDefaultBankDetails();
+				List<BankDetails> allowedBDs = Beans.get(PaymentModeService.class).
+						getCompatibleBankDetailsList(paymentMode, company);
+				if (!allowedBDs.contains(companyBankDetails)) {
+				    companyBankDetails = null;
+				}
 			}
 		}
 		invoice.setCompanyBankDetails(companyBankDetails);

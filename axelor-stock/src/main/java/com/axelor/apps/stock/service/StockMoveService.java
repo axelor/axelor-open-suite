@@ -21,13 +21,11 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -79,8 +77,10 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String realize(StockMove stockMove) throws AxelorException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
 
@@ -112,6 +112,6 @@ public interface StockMoveService {
 	
 	public BigDecimal compute(StockMove stockMove);
 	
-	public Map<LocalDate, BigDecimal> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate);
+	public List<Map<String,Object>> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate);
 	
 }

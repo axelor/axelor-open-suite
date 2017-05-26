@@ -122,7 +122,8 @@
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
 		  <field name="team" form-view="team-form" grid-view="team-grid"/>
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-management') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
+		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+		  <field name="lostReason" canNew="true" />
 		</panel>
 		
 		<panel>
@@ -188,7 +189,7 @@
     
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="user" expr="eval:__user__"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -200,6 +201,8 @@
 	
 	<action-record name="action-opportunity-record-default" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="user" expr="eval:__user__"/>
+    	<field name="partner" expr="eval: _customer"/>
+    	<field name="lead" expr="eval: _leadName"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-record>
     
@@ -213,7 +216,7 @@
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _lead.currency"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
@@ -226,7 +229,7 @@
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _partner.currency"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">

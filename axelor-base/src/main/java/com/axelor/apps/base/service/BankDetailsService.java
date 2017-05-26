@@ -24,14 +24,16 @@ import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.tool.StringTool;
 import com.google.inject.Inject;
 
+import java.util.Collection;
+
 public class BankDetailsService {
 	
 	@Inject
 	private BankRepository bankRepo;
 	
 	/**
-	 * Méthode qui permet d'extraire les informations de l'iban
-	 * Met à jour les champs suivants :
+	 * This method allows to extract information from iban
+	 * Update following fields :
 	 * 		<ul>
      *      	<li>BankCode</li>
      *      	<li>SortCode</li>
@@ -57,8 +59,8 @@ public class BankDetailsService {
 	
 	
 	/**
-	 * Méthode permettant de créer un RIB
-	 * 
+     * Method allowing to create a bank details
+	 *
 	 * @param accountNbr
 	 * @param bankCode
 	 * @param bbanKey
@@ -83,4 +85,19 @@ public class BankDetailsService {
 		return bankDetails;
 	}
 
+	/**
+	 * Groovy equivalent : bankDetailsList.collect{it.id}.join(',')
+	 *
+	 * @param bankDetailsList
+	 * @return A string with a list of id following this format :
+	 *         13,1,5
+	 */
+	public String getIdStringListFromCollection(Collection<BankDetails> bankDetailsList) {
+		String idList = "";
+		for (BankDetails bankDetails : bankDetailsList) {
+			idList += idList.equals("") ? "" : ",";
+			idList += bankDetails.getId();
+		}
+		return idList;
+	}
 }

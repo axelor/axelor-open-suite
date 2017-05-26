@@ -33,11 +33,11 @@
 	 
 	 <action-record name="action-forecast-generator-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastGenerator">
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
-	 	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails"/>
+		<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails" if="__user__.activeCompany?.defaultBankDetails?.active"/>
 	 </action-record>
 	 
 	  <action-record name="action-forecast-generator-record-bank" model="com.axelor.apps.cash.management.db.ForecastGenerator">
-	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails"/>
+		<field name="bankDetails" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
 	 </action-record>
 	 
 	 <action-attrs name="action-forecast-generator-attrs-title-generate">

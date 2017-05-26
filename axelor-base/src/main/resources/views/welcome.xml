@@ -23,8 +23,8 @@
 
 	<action-view name="dashlet.meeting" title="Meetings"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="meeting-grid" />
-		<view type="form" name="meeting-form" />
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
 	</action-view>
 
 	<action-view name="dashlet.task" title="Tasks"

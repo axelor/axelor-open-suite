@@ -51,6 +51,9 @@ public class DInitializationResponseElement extends InitializationResponseElemen
     String	bodyRetCode;
 
     super.build();
+    if (!returnCode.isOk()) {
+    	return;
+    }
     bodyRetCode = response.getBody().getReturnCode().getStringValue();
     returnCode = ReturnCode.toReturnCode(bodyRetCode, "");
     numSegments = (int)response.getHeader().getStatic().getNumSegments();

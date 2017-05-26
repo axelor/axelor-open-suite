@@ -19,6 +19,7 @@
   	<boolean name="notExportOk" title="Do not export ?" default="false"/>
   	<integer name="statusSelect" title="Status" selection="account.journal.status.select"/>
   	<boolean name="isObsolete" title="Obsolete ?" default="false"/>
+	<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="true"/>
   	
   	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>

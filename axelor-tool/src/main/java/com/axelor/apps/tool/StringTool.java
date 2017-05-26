@@ -18,6 +18,10 @@
 package com.axelor.apps.tool;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class StringTool {
 	
@@ -124,7 +128,7 @@ public final class StringTool {
 	 * @param count
 	 * @return
 	 */
-	private static String fillString(char fillChar, int count){  
+	public static String fillString(char fillChar, int count){  
        
 	   // creates a string of 'x' repeating characters  
        char[] chars = new char[count];  
@@ -220,4 +224,15 @@ public final class StringTool {
 		return result.toString();
 	}
 	
+	/**
+	 * Get a list of integers from a string.
+	 * 
+	 * @param string
+	 * @return list of integers
+	 */
+	public static List<Integer> getIntegerListFromString(String string) {
+		return string != null ? Arrays.stream(string.split("\\D+")).map(Integer::valueOf).collect(Collectors.toList())
+				: new ArrayList<>();
+	}
+
 }

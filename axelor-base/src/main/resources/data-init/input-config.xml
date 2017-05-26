@@ -43,7 +43,7 @@
 	
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
 	
-	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId"  />
+	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId" />
 	
 <!-- 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId"  > -->
 <!-- 		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.PARTNER)" /> -->
@@ -69,6 +69,14 @@
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
     
     <input file="base_industrySector.csv" separator=";" type="com.axelor.apps.base.db.IndustrySector"  search="self.importId = :importId"/>
+    
+    <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
+	
+	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
     
 </csv-inputs>
 	

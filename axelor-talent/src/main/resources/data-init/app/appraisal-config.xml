@@ -5,4 +5,6 @@
 
 	<input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" />
 	
+	<input file="talent_hiringStage.csv" separator=";" type="com.axelor.apps.talent.db.HiringStage" search="self.name = :name" />
+	
 </csv-inputs>

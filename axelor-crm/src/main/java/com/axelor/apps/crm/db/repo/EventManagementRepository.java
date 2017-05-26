@@ -52,10 +52,6 @@ public class EventManagementRepository extends EventRepository {
 			case 3: //task s
 				entity.setStatusSelect(IEvent.STATUS_NOT_STARTED);
 				break;
-			case 5: //tickets
-				entity.setStatusSelect(IEvent.STATUS_NEW);
-				entity.setProgressSelect(0);
-				break;
 
 		}
 		return super.copy(entity, deep);

@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
@@ -109,11 +110,12 @@ public class PaymentVoucherConfirmService  {
 		Partner payerPartner = paymentVoucher.getPartner();
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
+		BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
 		boolean scheduleToBePaid = false;
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
 
 		paymentVoucherControlService.checkPaymentVoucherField(paymentVoucher, company, paymentModeAccount, journal);
 
@@ -164,9 +166,7 @@ public class PaymentVoucherConfirmService  {
 
 					paidLineTotal = paidLineTotal.add(amountToPay);
 
-					this.payMoveLine(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
-
-					moveLineNo +=1;
+					this.payMoveLine(move, moveLineNo++, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
 
 				}
 			}
@@ -178,14 +178,14 @@ public class PaymentVoucherConfirmService  {
 			// in the else case we create a classical balance on the bank account of the payment mode
 			if (paymentVoucher.getMoveLine() != null){
 				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(),
-						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
+						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
 
 				Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
 				reconcileService.confirmReconcile(reconcile, true);
 			}
 			else{
 
-				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
+				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
 			}
 			move.getMoveLineList().add(moveLine);
 			// Check if the paid amount is > paid lines total

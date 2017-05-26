@@ -1,0 +1,4 @@
+name;roles
+sc-root-purchase;role.manager
+sc-root-purchase-report;role.manager
+menu-purchase-dashboard-2;role.manager

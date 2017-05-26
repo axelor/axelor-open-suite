@@ -118,6 +118,7 @@ public class CalendarController {
 	public void showMyEvents(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		List<Long> eventIdlist = new ArrayList<Long>();
+		eventIdlist.add(new Long(0));
 		List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
 		
 		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
@@ -152,7 +153,7 @@ public class CalendarController {
 		User user = AuthUtils.getUser();
 		Team team = user.getActiveTeam();
 		List<Long> eventIdlist = new ArrayList<Long>();
-		
+		eventIdlist.add(new Long(0));
 		List<Event> eventList = null;
 		
 		Set<User> userSet = new HashSet<User>();

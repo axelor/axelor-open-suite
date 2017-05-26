@@ -49,7 +49,7 @@
   </form>
   
   <action-record name="action-meta-field-set-type-name" model="com.axelor.meta.db.MetaField">
-      <field name="typeName" expr="call:com.axelor.studio.service.ModelRecorderService:getFieldTypeName(__this__)" if="fieldType != null" />
+      <field name="typeName" expr="call:com.axelor.studio.service.ModelBuilderService:getFieldTypeName(__this__.fieldType)" if="fieldType != null" />
   </action-record> 
   
   <action-record name="action-meta-field-studio-default" model="com.axelor.meta.db.MetaField">

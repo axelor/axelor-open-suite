@@ -16,10 +16,6 @@
       <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
     </input>
     
-    <input file="meta_menuGroup.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true">
-		<bind column="groups" to="groups" search="self.code in :groups" eval="groups.split('\\|') as List"/>
-	</input>
-	
 	<input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" search="self.fileName = :fileName"/>
     
     
@@ -99,6 +95,8 @@
 	
 	<!-- A BESOIN DE PARTNER -->
 	<input file="base_bank.csv" separator=";" type="com.axelor.apps.base.db.Bank"/>
+	
+	<input file="base_bankAddress.csv" separator=";" type="com.axelor.apps.base.db.BankAddress"/>
 	
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" >
 		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />

@@ -185,13 +185,18 @@ public class OperationOrderWorkflowService {
 
 	/**
 	 * Cancels the given {@link OperationOrder} and its linked stock moves
+     * And sets its stopping time
 	 *
 	 * @param operationOrder An operation order
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(OperationOrder operationOrder) throws AxelorException {
+	    int oldStatus = operationOrder.getStatusSelect();
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
 
+		if (oldStatus == IOperationOrder.STATUS_IN_PROGRESS) {
+			stopOperationOrderDuration(operationOrder);
+		}
 		operationOrderStockMoveService.cancel(operationOrder);
 
 		operationOrderRepo.save(operationOrder);

@@ -1,5 +1,7 @@
 package com.axelor.apps.hr.service.project;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.exception.AxelorException;
@@ -12,4 +14,6 @@ public interface ProjectPlanningService {
 	public void updateTaskPlannedHrs(TeamTask teamTask);
 	
 	public void updateProjectPlannedHrs(Project project);
+	
+	public BigDecimal getTotalPlannedHrs(ProjectPlanning planning);
 }

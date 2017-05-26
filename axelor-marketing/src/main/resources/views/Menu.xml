@@ -20,5 +20,15 @@
 		<view name="target-list-grid" type="grid" />
 		<view name="target-list-form" type="form" />
 	</action-view>	
+	
+	<menuitem name="marketing-conf" title="Configuration" parent="marketing-root"/>
+	
+	<menuitem name="marketing-conf-campaign-type" parent="marketing-conf" title="Campaign types" action="marketing.conf.campaign.type"/>
+	
+	<action-view name="marketing.conf.campaign.type" model="com.axelor.apps.marketing.db.CampaignType"
+		title="Campaign types">
+		<view name="campaign-type-grid" type="grid" />
+		<view name="campaign-type-form" type="form" />
+	</action-view>	
 
 </object-views>

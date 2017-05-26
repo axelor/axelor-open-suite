@@ -42,6 +42,8 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH = /*$$(*/ "Please configure the lunch voucher export path in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_NO_EXPENSE_SEQUENCE = /*$$(*/ "Company %s does not have any expense's sequence" /*)*/;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation"/*)*/ ;
@@ -88,4 +90,14 @@ public interface IExceptionMessage {
 	
 	static final String PAYROLL_PREPARATION_DUPLICATE = /*$$(*/ "There is already a payroll preparation for the employee %s, the company %s and the period %s"/*)*/ ;
 
+	/**
+	 *  Expense service
+	 */
+	static final String EXPENSE_JOURNAL = /*$$(*/ "You must configure an expenses journal(company : %s)" /*)*/;
+	static final String EXPENSE_ACCOUNT = /*$$(*/ "You must configure an expenses account (company : %s)" /*)*/;
+	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "You must configure an account for expenses taxes (company : %s)" /*)*/;
+	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Move already used, you must unreconcile it first" /*)*/;
+
+	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
+	
 }

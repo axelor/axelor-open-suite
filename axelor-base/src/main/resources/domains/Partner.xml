@@ -21,7 +21,7 @@
     
     
     <boolean name="isCustomer" title="Customer?"/>
-    <boolean name="hasOrdered" title="Has Ordered"/>
+    <boolean name="isProspect" title="Prospect?"/>
     <boolean name="isSupplier" title="Supplier?"/>
     <boolean name="isEmployee" title="Employee"/>
     <boolean name="isContact" title="Contact ?" default="false" />
@@ -79,6 +79,13 @@
 	<!-- -Json fields -->
 	<string name="partnerAttrs" title="Fields" json="true" />
 	<string name="contactAttrs" title="Fields" json="true" />
+
+	<extra-code>
+	<![CDATA[
+		public static final int PARTNER_TYPE_COMPANY = 1;
+		public static final int PARTNER_TYPE_INDIVIDUAL = 2;
+	]]>
+	</extra-code>
 	
   </entity>
   

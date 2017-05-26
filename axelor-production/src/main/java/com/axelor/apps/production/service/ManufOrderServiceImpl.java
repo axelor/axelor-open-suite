@@ -18,13 +18,11 @@
 package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import java.time.LocalDateTime;
-
-import com.axelor.apps.stock.db.StockMoveLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,20 +32,30 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
+import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -328,6 +336,58 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			}
 		}
 		return BigDecimal.ZERO;
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException {
+		StockMove wasteStockMove = null;
+		Company company = manufOrder.getCompany();
+
+		if (manufOrder.getWasteProdProductList() == null || company == null) {
+			return wasteStockMove;
+		}
+
+		ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+		AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
+		ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfig);
+		Location wasteLocation = productionConfigService.getWasteLocation(productionConfig);
+
+		wasteStockMove = stockMoveService.createStockMove(
+				virtualLocation.getAddress(),
+				wasteLocation.getAddress(),
+				company,
+				company.getPartner(),
+				virtualLocation,
+				wasteLocation,
+				appBaseService.getTodayDate(),
+				manufOrder.getWasteProdDescription(),
+				null,
+				null);
+
+		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
+			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
+					prodProduct.getProduct(),
+					prodProduct.getProduct().getName(),
+					prodProduct.getProduct().getDescription(),
+					prodProduct.getQty(),
+					prodProduct.getProduct().getCostPrice(),
+					prodProduct.getUnit(),
+					wasteStockMove,
+					StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
+					false,
+					BigDecimal.ZERO);
+			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
+		}
+
+		stockMoveService.validate(wasteStockMove);
+
+		manufOrder.setWasteStockMove(wasteStockMove);
+		return wasteStockMove;
 	}
 
 }

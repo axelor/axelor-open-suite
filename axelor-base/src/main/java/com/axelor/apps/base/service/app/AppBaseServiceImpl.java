@@ -29,6 +29,7 @@ import java.time.ZonedDateTime;
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Unit;
@@ -37,7 +38,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
@@ -98,15 +101,21 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 		ZonedDateTime todayDateTime = ZonedDateTime.now();
 
-		User user = AuthUtils.getUser();
+		String applicationMode = AppSettings.get().get("application.mode", "prod");
 
-		if (user != null && user.getToday() != null){
-			todayDateTime = user.getToday();
+		if ("dev".equals(applicationMode)) {
+			User user = AuthUtils.getUser();
+			if (user != null && user.getToday() != null){
+				todayDateTime = user.getToday();
+			}
+			else if (getAppBase() != null && getAppBase().getToday() != null){
+				todayDateTime = getAppBase().getToday();
+				if (user != null && user.getToday() != null) {
+					return user.getToday();
+				}
+			}
 		}
-		else if (getAppBase() != null && getAppBase().getToday() != null){
-			todayDateTime = getAppBase().getToday();
-		}
-		
+
 		return todayDateTime;
 	}
 
@@ -217,6 +226,15 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 		}
 
 		return duration;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void setManageMultiBanks(boolean manageMultiBanks) {
+		getAppBase().setManageMultiBanks(manageMultiBanks);
 	}
 
 }

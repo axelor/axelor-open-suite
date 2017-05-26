@@ -35,6 +35,7 @@ public class ActionHelper {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	@SuppressWarnings("unchecked")
 	public Object execute(String name, Object entity, Object parent) {
 
 		log.debug("Execute action: {}, object: {}", name, entity);
@@ -47,9 +48,8 @@ public class ActionHelper {
 		
 		Action action = MetaStore.getAction(name);
 
-		ActionHandler handler = createHandler(action, context,
-				Mapper.toMap(parent));
-		
+		ActionHandler handler = createHandler(action, context, Mapper.toMap(parent));
+
 		Object object = action.evaluate(handler);
 		log.debug("Object id: {}", ((Model) object).getId());
 		return object;

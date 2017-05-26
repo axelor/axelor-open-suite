@@ -31,6 +31,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -208,5 +209,12 @@ public class ManufOrderController {
 		response.setReload(true);
 		
 	}
-	
+
+	public void generateWasteStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
+		StockMove wasteStockMove = manufOrderService.generateWasteStockMove(manufOrder);
+		response.setReload(true);
+	}
+
 }

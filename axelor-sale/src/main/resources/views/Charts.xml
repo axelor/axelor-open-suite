@@ -246,7 +246,7 @@
 	  		FROM 
 	    		sale_sale_order self
 	  		JOIN
-	    		base_team team ON team.id=self.team
+	    		team_team team ON team.id=self.team
 	  		JOIN 
 	    		auth_user _user ON _user.id = :_user_id AND self.company = _user.active_company
 	  		WHERE

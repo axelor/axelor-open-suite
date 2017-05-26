@@ -42,8 +42,9 @@
 					<field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form" if="__config__.app.isApp('expense')"/>
+					<field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form"/>
 				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -145,20 +146,24 @@
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
 			
-			<panel name="bankOrder" title="Bank Order">
-			  	<field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
+			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
 			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
 			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				
-				<panel name="sepaBankOrdersSequences" title="SEPA Bank orders sequences" colSpan="6">
-					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="6">
+					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="intBankOrdersSequences" title="International Bank orders sequences" colSpan="6">
-					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="6">
+					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
+				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="6">
+					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
@@ -236,7 +241,7 @@
 	<action-record name="action-account-config-record-default" model="com.axelor.apps.account.db.AccountConfig">
 		<field name="company" expr="eval: _company" if="_company != null"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
 
 	<action-group name="action-group-account-config-installchart-click">

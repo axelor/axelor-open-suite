@@ -164,7 +164,7 @@
   
   <action-view name="action.apply.updates" title="Apply updates" model="com.axelor.studio.db.ModuleRecorder">
     <view type="form" name="module-recorder-form"/>
-    <context name="_showRecord" expr="eval:__repo__.of(ModuleRecorder).all().fetchOne()?.getId()" />
+    <context name="_showRecord" expr="eval:__repo__(ModuleRecorder).all().fetchOne()?.getId()" />
   </action-view>
   
   <menuitem name="menu-custom-model-editor" title="Custom model editor" parent="menu-studio-root" action="action.custom.model.editor" order="65"/>

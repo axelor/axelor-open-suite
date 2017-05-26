@@ -25,7 +25,7 @@
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event" />
       <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
-      <boolean name="leaveToJustify" title="Leave to justify"/>
+      <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
       
       <!-- -Json fields -->
 	  <string name="leaveRequestAttrs" title="Fields" json="true" />

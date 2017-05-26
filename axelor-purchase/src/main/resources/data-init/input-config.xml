@@ -22,6 +22,14 @@
     </input>
     
     <input file="purchase_purchaseConfig.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId"/>
-  	
+
+    <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
+	
+	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
+	
 </csv-inputs>
 

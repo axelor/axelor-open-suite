@@ -447,8 +447,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			if(request.getData().get("comments") != null){
 				leave.setComments(request.getData().get("comments").toString());
 			}
-			Beans.get(LeaveRequestRepository.class).save(leave);
+			leave = Beans.get(LeaveRequestRepository.class).save(leave);
 			response.setTotal(1);
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", leave.getId());
+			response.setData(data);
 		}
 	}
 	
