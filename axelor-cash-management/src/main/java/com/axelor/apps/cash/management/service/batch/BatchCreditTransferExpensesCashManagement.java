@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.batch.BatchCreditTransferExpenses;
+import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
-public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransferExpenses {
+public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransferExpensePayment {
 
 	protected static final int FETCH_LIMIT = 10;
 

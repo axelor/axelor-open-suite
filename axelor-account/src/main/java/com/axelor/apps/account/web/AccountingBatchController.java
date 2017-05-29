@@ -23,7 +23,9 @@ import java.util.Map;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
-import com.axelor.apps.account.service.batch.BatchCreditTransferExpenses;
+import com.axelor.apps.account.service.batch.BatchCreditTransferCustomerReimbursement;
+import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
+import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
@@ -196,19 +198,24 @@ public class AccountingBatchController {
 
 	}
 
-	public void actionCreditTransfer(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
 		Class<? extends BatchStrategy> batchStrategyClass;
 
-		switch (accountingBatch.getCreditTransfertTypeSelect()) {
+		switch (accountingBatch.getCreditTransferTypeSelect()) {
 		case AccountingBatchRepository.CREDIT_TRANSFER_EXPENSE_PAYMENT:
-			batchStrategyClass = BatchCreditTransferExpenses.class;
+			batchStrategyClass = BatchCreditTransferExpensePayment.class;
 			break;
-		// TODO: other credit transfer types
+		case AccountingBatchRepository.CREDIT_TRANSFER_SUPPLIER_PAYMENT:
+			batchStrategyClass = BatchCreditTransferSupplierPayment.class;
+			break;
+		case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
+			batchStrategyClass = BatchCreditTransferCustomerReimbursement.class;
+			break;
 		default:
-			throw new AxelorException(String.format(I18n.get("Batch not implemented for credit transfer type %d"),
-					accountingBatch.getCreditTransfertTypeSelect()), IException.CONFIGURATION_ERROR);
+			throw new IllegalArgumentException(
+					String.format("Unknown credit transfer type: %d", accountingBatch.getCreditTransferTypeSelect()));
 		}
 
 		Batch batch = Beans.get(batchStrategyClass).run(accountingBatch);

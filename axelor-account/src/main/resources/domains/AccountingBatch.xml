@@ -50,7 +50,7 @@
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />
     
     <!-- CREDIT TRANSFER -->
-  	<integer name="creditTransfertTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
+  	<integer name="creditTransferTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
   	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
   	<boolean name="includeOtherBankAccounts" />
 
