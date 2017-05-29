@@ -25,8 +25,6 @@ import com.google.inject.Inject;
 
 public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransferExpensePayment {
 
-	protected static final int FETCH_LIMIT = 10;
-
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	protected final ExpenseRepository expenseRepo;
 	protected final ExpenseService expenseService;
