@@ -269,7 +269,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				}
 				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
-
+				Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}
 		}
 
@@ -281,11 +281,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				.getLocationLine(location, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(locationLine, stockMoveLine);
-			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
 		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
 			this.cancelAveragePriceLocationLine(locationLine, stockMoveLine);
-			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
 	}
 
