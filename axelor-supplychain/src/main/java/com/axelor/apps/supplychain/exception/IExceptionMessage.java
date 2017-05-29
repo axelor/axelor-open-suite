@@ -42,6 +42,8 @@ public interface IExceptionMessage {
 	 * Sale Order Invoice Service
 	 */
 	static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
+	static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
+	static final String SO_INVOICE_QTY_MAX = /*$$(*/ "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
 
 	/**
 	 * Sale Order Purchase Service

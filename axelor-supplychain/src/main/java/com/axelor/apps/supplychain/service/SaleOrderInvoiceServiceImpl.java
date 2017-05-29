@@ -20,12 +20,12 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.Query;
 
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +84,85 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 
 	@Override
+	public Invoice generateInvoice(SaleOrder saleOrder, int operationSelect,
+								   BigDecimal amount, boolean isPercent,
+								   Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
+
+	    if (isPercent) {
+	    	amount = convertPercentToQty(amount, saleOrder.getTaxTotal());
+		}
+		switch (operationSelect) {
+			case SaleOrderRepository.INVOICE_ALL:
+				return generateInvoice(saleOrder);
+
+			case SaleOrderRepository.INVOICE_PART:
+                return generateOneLineInvoice(saleOrder, amount);
+
+			case SaleOrderRepository.INVOICE_LINES:
+			    return generateInvoiceFromLines(saleOrder, qtyToInvoiceMap, isPercent);
+
+			case SaleOrderRepository.INVOICE_ADVANCE_PAYMENT:
+			    return generateAdvancePayment(saleOrder, amount);
+
+			default:
+				return null;
+		}
+	}
+
+	@Override
+	public BigDecimal convertPercentToQty(BigDecimal amount, BigDecimal total) {
+		amount = total.multiply(amount)
+				.divide(
+						new BigDecimal("100"),
+						4,
+						RoundingMode.HALF_EVEN
+				);
+	    return amount;
+	}
+
+	@Override
+	public Invoice generateOneLineInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice) throws AxelorException {
+		return null;
+	}
+
+	@Override
+	public Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amount) throws AxelorException {
+		return null;
+	}
+
+	@Override
+	public Invoice generateInvoiceFromLines(SaleOrder saleOrder,
+											Map<Long, BigDecimal> qtyToInvoiceMap,
+											boolean isPercent) throws AxelorException {
+
+		if (qtyToInvoiceMap.isEmpty()) {
+			throw new AxelorException(
+					I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED),
+					IException.INCONSISTENCY
+			);
+		}
+
+		for( SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+			Long SOrderId = saleOrderLine.getId();
+			if (qtyToInvoiceMap.containsKey(SOrderId)) {
+				if (isPercent) {
+					BigDecimal percent = qtyToInvoiceMap.get(SOrderId);
+					BigDecimal realQty = convertPercentToQty(saleOrderLine.getQty(), percent);
+					qtyToInvoiceMap.put(SOrderId, realQty);
+				}
+				if (qtyToInvoiceMap.get(SOrderId)
+						.compareTo(saleOrderLine.getQty()) > 0) {
+					throw new AxelorException(
+							I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX),
+							IException.INCONSISTENCY
+					);
+				}
+			}
+		}
+		return this.generateInvoice(saleOrder, saleOrder.getSaleOrderLineList(), qtyToInvoiceMap);
+	}
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException  {
 
@@ -96,11 +175,27 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return invoice;
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected);
 
+		Beans.get(InvoiceRepository.class).save(invoice);
+
+		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
+
+		return invoice;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateInvoice(SaleOrder saleOrder,
+								   List<SaleOrderLine> saleOrderLinesSelected,
+								   Map<Long, BigDecimal> qtyToInvoiceMap)
+			throws AxelorException {
+
+	    Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
 		Beans.get(InvoiceRepository.class).save(invoice);
 
 		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
@@ -154,12 +249,23 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	@Override
 	public Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+		Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+		for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+			qtyToInvoiceMap.put(saleOrderLine.getId(), saleOrderLine.getQty());
+		}
+	    return createInvoice(saleOrder, saleOrderLineList, qtyToInvoiceMap);
+    }
+
+	@Override
+	public Invoice createInvoice(SaleOrder saleOrder,
+								 List<SaleOrderLine> saleOrderLineList,
+								 Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException  {
 
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
 		Invoice invoice = invoiceGenerator.generate();
 
-		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
 //		advancePaymentService.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);  //TODO
 		log.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
@@ -195,15 +301,20 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	// TODO ajouter tri sur les séquences
 	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice,
+												List<SaleOrderLine> saleOrderLineList,
+												Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
 			//Lines of subscription type are invoiced directly from sale order line or from the subscription batch
-			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
+			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
+					&& qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
+				invoiceLineList.addAll(
+						this.createInvoiceLine(invoice, saleOrderLine,
+								qtyToInvoiceMap.get(saleOrderLine.getId()))
+				);
 
 				saleOrderLine.setInvoiced(true);
 			}
@@ -234,12 +345,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice,
+											   SaleOrderLine saleOrderLine,
+											   BigDecimal qtyToInvoice) throws AxelorException  {
 
 		Product product = saleOrderLine.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), 
-				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
+				saleOrderLine.getDescription(), qtyToInvoice, saleOrderLine.getUnit(),
 				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
 
 			@Override

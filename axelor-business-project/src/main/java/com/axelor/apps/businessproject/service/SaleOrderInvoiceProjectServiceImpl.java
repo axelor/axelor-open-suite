@@ -28,11 +28,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -50,27 +48,7 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 		super(appSupplychainService);
 	}
 
-	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
-
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
-		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
-
-			//Lines of subscription type are invoiced directly from sale order line or from the subscription batch
-			
-			if (saleOrderLine.getProduct() == null || (saleOrderLine.getProduct() != null && !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect()))){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
-				invoiceLineList.get(invoiceLineList.size()-1).setProject(saleOrderLine.getProject());
-				saleOrderLine.setInvoiced(true);
-			}
-		}
-
-		return invoiceLineList;
-
-	}
-
-	@Override
+    @Override
 	public List<InvoiceLine> createSubscriptionInvoiceLines(Invoice invoice, List<Subscription> subscriptionList) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();

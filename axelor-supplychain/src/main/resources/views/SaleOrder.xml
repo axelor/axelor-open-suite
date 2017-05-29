@@ -67,15 +67,13 @@
     <!--   azeaeaeaeae -->
 
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
-    	<action name="action-supplychain-sale-order-method-generate-invoice"/>
+    	<action name="action-supplychain-sale-order-view-invoicing-wizard"
+				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
+    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
     </action-group>
     
     <!--   azeaeaeaeae -->
     
-    <action-method name="action-supplychain-sale-order-method-generate-invoice">
- 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
-	</action-method>
-	
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
@@ -108,6 +106,17 @@
 		<context name="saleOrderId" expr="eval: id" />
 		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
     </action-view>
+
+	<action-view name="action-supplychain-sale-order-view-invoicing-wizard"
+				 title="Invoicing" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="form" name="sale-order-invoicing-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<view-param name="forceEdit" value="true" />
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
     
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>

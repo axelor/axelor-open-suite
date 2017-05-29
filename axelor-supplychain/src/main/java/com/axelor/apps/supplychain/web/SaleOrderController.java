@@ -17,9 +17,8 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
@@ -35,6 +34,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
@@ -54,6 +54,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
@@ -182,33 +183,50 @@ public class SaleOrderController{
 		}
 	}
 
-
+	/**
+	 * Called from the sale order invoicing wizard.
+	 * Call {@link com.axelor.apps.supplychain.service.SaleOrderInvoiceService#generateInvoice }
+     * Return to the view the generated invoice.
+	 * @param request
+	 * @param response
+	 */
+	@SuppressWarnings(value="unchecked")
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
+		Context context = request.getContext();
 		try {
+			SaleOrder saleOrder = context.asType(SaleOrder.class);
+			int operationSelect = Integer.parseInt((String) context.get("operationSelect"));
+			boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+			BigDecimal qtyToInvoice = new BigDecimal(
+						(String) context.getOrDefault("qtyToInvoice", "0")
+				);
+			Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
-			saleOrder = saleOrderRepo.find(saleOrder.getId());
-			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
-			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
-			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				if (saleOrderLine.isSelected()){
-					saleOrderLineIdSelected.add(saleOrderLine.getId());
+			List<Map<String, Object>> saleOrderLineListContext;
+			saleOrderLineListContext = (List<Map<String,Object>>)
+					request.getRawContext().get("saleOrderLineList");
+			for (Map<String, Object> map : saleOrderLineListContext ) {
+				if (map.get("qtyToInvoice") != null) {
+					BigDecimal qtyToInvoiceItem = new BigDecimal(
+							map.get("qtyToInvoice").toString()
+					);
+					if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
+						Long SOlineId = new Long((Integer) map.get("id"));
+						qtyToInvoiceMap.put(SOlineId, qtyToInvoiceItem);
+					}
 				}
 			}
 
-			Invoice invoice = null;
+			saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-			if (!saleOrderLineIdSelected.isEmpty()){
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
-			}else{
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
-			}
+			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
+							saleOrder, operationSelect, qtyToInvoice, isPercent,
+							qtyToInvoiceMap
+					);
 
 			if(invoice != null)  {
-				response.setReload(true);
+				response.setCanClose(true);
 				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
 				response.setView(ActionView
 		            .define(I18n.get("Invoice generated"))
@@ -250,7 +268,7 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				
 				response.setCanClose(true);
-				
+
 				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
 				response.setView(ActionView
 		            .define(I18n.get("Invoice generated"))

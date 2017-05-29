@@ -63,4 +63,11 @@
 		<option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
 	</selection>
 
+	<selection name="supplychain.sale.order.invoicing.wizard.select">
+		<option value="1">Invoice all</option>
+		<option value="2">Invoice a fraction</option>
+		<option value="3">Invoice selected lines</option>
+		<option value="4">Invoice an advance payment</option>
+	</selection>
+
 </object-views>
