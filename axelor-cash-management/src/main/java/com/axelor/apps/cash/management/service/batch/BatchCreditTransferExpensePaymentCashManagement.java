@@ -22,6 +22,7 @@ import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class BatchCreditTransferExpensePaymentCashManagement extends BatchCreditTransferExpensePayment {
 
@@ -97,6 +98,7 @@ public class BatchCreditTransferExpensePaymentCashManagement extends BatchCredit
 		super.stop();
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	private void addPayment(Expense expense) throws AxelorException {
 		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
 				expense.getExpenseSeq()));
