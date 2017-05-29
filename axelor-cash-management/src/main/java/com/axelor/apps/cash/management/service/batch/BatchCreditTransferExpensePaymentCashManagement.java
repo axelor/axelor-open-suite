@@ -10,7 +10,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.cash.management.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -85,14 +85,14 @@ public class BatchCreditTransferExpensePaymentCashManagement extends BatchCredit
 	@Override
 	protected void stop() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSES_REPORT_TITLE));
+		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
 		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSES_DONE_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSES_DONE_PLURAL, batch.getDone()),
+				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
+						IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL, batch.getDone()),
 				batch.getDone()));
 		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSES_ANOMALY_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSES_ANOMALY_PLURAL, batch.getAnomaly()),
+				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
+						IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL, batch.getAnomaly()),
 				batch.getAnomaly()));
 		addComment(sb.toString());
 		super.stop();
