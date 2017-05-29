@@ -23,14 +23,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
-public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransferExpensePayment {
+public class BatchCreditTransferExpensePaymentCashManagement extends BatchCreditTransferExpensePayment {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	protected final ExpenseRepository expenseRepo;
 	protected final ExpenseService expenseService;
 
 	@Inject
-	public BatchCreditTransferExpensesCashManagement(ExpenseRepository expenseRepo, ExpenseService expenseService) {
+	public BatchCreditTransferExpensePaymentCashManagement(ExpenseRepository expenseRepo, ExpenseService expenseService) {
 		this.expenseRepo = expenseRepo;
 		this.expenseService = expenseService;
 	}
@@ -73,7 +73,8 @@ public class BatchCreditTransferExpensesCashManagement extends BatchCreditTransf
 					anomalyList.add(expense.getId());
 					query = query.bind("anomalyList", anomalyList);
 					TraceBackService.trace(ex);
-					log.error(String.format("Credit transfer batch: anomaly for expense %s", expense.getExpenseSeq()));
+					log.error(String.format("Credit transfer batch for expense payment: anomaly for expense %s",
+							expense.getExpenseSeq()));
 				}
 			}
 		}
