@@ -94,7 +94,7 @@
 	</action-record>
     
     <action-record name="action-accounting-batch-record-default-currency" model="com.axelor.apps.account.db.AccountingBatch">
-    	<field name="currency" expr="eval:__repo__.of(Currency).findByCode(&quot;EUR&quot;)" if="actionSelect == 11 || actionSelect == 12 || actionSelect == 15 "/>
+    	<field name="currency" expr="eval:__repo__.of(Currency).findByCode(&quot;EUR&quot;)" if="$contains([11, 12, 15, 19], actionSelect)"/>
     </action-record>
     
     <!-- ACTION METHOD -->
