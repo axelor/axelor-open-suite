@@ -40,6 +40,8 @@
 			<field name="creditTransferTypeSelect"/>
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 			<field name="period" showIf="creditTransferTypeSelect == 1" form-view="period-form" grid-view="period-grid"/>
+			<field name="dueDate" showIf="creditTransferTypeSelect == 2" />
+			<field name="currency" showIf="creditTransferTypeSelect == 2" />
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2], creditTransferTypeSelect)" />
 		</panel>
 
