@@ -98,7 +98,8 @@ public class BatchCreditTransferExpensePaymentCashManagement extends BatchCredit
 	}
 
 	private void addPayment(Expense expense) throws AxelorException {
-		log.debug(String.format("Credit transfer batch: adding payment for expense %s", expense.getExpenseSeq()));
+		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
+				expense.getExpenseSeq()));
 		expenseService.addPayment(expense);
 	}
 
