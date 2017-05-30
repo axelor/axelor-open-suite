@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.batch;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -59,6 +60,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
 		Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+		List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
 		if (accountingBatch.getIncludeOtherBankAccounts()) {
 			bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
@@ -87,7 +89,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Invoice invoice : invoiceList) {
 				try {
-					addPayment(invoice);
+					invoicePaymentList.add(addPayment(invoice));
 					incrementDone();
 				} catch (Exception ex) {
 					incrementAnomaly();
@@ -101,6 +103,12 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 			}
 		}
 
+		try {
+			postProcess(invoicePaymentList);
+		} catch (Exception ex) {
+			TraceBackService.trace(ex);
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
@@ -120,28 +128,31 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	private void addPayment(Invoice invoice)
+	private InvoicePayment addPayment(Invoice invoice)
 			throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
 		log.debug(String.format("Credit transfer batch for supplier payment: adding payment for invoice %s",
 				invoice.getInvoiceId()));
 
-		switch (invoice.getStatusSelect()) {
-		case InvoiceRepository.STATUS_VALIDATED:
+		if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED) {
 			invoiceService.ventilate(invoice);
-		case InvoiceRepository.STATUS_VENTILATED:
-			InvoicePayment invoicePayment = new InvoicePayment();
-			invoicePayment.setAmount(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
-			invoicePayment.setPaymentDate(generalService.getTodayDate());
-			invoicePayment.setCurrency(invoice.getCurrency());
-			invoicePayment.setPaymentMode(invoice.getPaymentMode());
-			invoicePayment.setInvoice(invoice);
-			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_PAYMENT);
-			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
-			invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
-			invoicePaymentValidateService.validate(invoicePayment);
-			invoicePaymentRepository.save(invoicePayment);
 		}
+
+		InvoicePayment invoicePayment = new InvoicePayment();
+		invoicePayment.setAmount(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+		invoicePayment.setPaymentDate(generalService.getTodayDate());
+		invoicePayment.setCurrency(invoice.getCurrency());
+		invoicePayment.setPaymentMode(invoice.getPaymentMode());
+		invoicePayment.setInvoice(invoice);
+		invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_PAYMENT);
+		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
+		invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
+		invoicePaymentValidateService.validate(invoicePayment);
+		return invoicePaymentRepository.save(invoicePayment);
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected void postProcess(List<InvoicePayment> invoicePaymentList) throws Exception {
 	}
 
 }
