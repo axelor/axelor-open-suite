@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service.batch;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -37,14 +36,16 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 	protected final InvoiceRepository invoiceRepo;
 	protected final InvoiceService invoiceService;
 	protected final InvoicePaymentValidateService invoicePaymentValidateService;
+	protected final InvoicePaymentRepository invoicePaymentRepository;
 	protected final GeneralService generalService;
 
 	@Inject
 	public BatchCreditTransferSupplierPayment(InvoiceRepository invoiceRepo, InvoiceService invoiceService,
-			InvoicePaymentValidateService invoicePaymentValidateService, GeneralService generalService) {
+			InvoicePaymentValidateService invoicePaymentValidateService, InvoicePaymentRepository invoicePaymentRepository, GeneralService generalService) {
 		this.invoiceRepo = invoiceRepo;
 		this.invoiceService = invoiceService;
 		this.invoicePaymentValidateService = invoicePaymentValidateService;
+		this.invoicePaymentRepository = invoicePaymentRepository;
 		this.generalService = generalService;
 	}
 
@@ -139,6 +140,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
 			invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
 			invoicePaymentValidateService.validate(invoicePayment);
+			invoicePaymentRepository.save(invoicePayment);
 		}
 	}
 
