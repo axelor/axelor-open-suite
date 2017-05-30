@@ -765,7 +765,7 @@
     </action-attrs>
 
 	<action-attrs name="action-sale-order-attrs-hidden-bank-details">
-		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.general.getManageMultiBanks()"/>
+		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
 	</action-attrs>
 
 	<action-attrs name="action-so-attrs-domain-company-bank-details">

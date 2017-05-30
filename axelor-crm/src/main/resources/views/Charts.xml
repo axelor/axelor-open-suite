@@ -625,7 +625,7 @@
 	      sale_man.full_name AS _sale_man,
 	      selection_item.title   AS   _status
 	    FROM
-	        crm_event as self
+	        ical_event as self
 	    JOIN
 	      auth_user as sale_man ON self.user_id = sale_man.id
 	    JOIN
