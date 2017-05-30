@@ -90,7 +90,7 @@ public class LocationServiceImpl implements LocationService{
 	}
 
 	@Override
-	public void computeAvgPriceForProduct(Product product, LocationLine unsavedLocationLine) {
+	public void computeAvgPriceForProduct(Product product) {
 		Long productId = product.getId();
 		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self "
 				+ "WHERE self.product.id = " + productId + " AND self.location.typeSelect != "
@@ -103,15 +103,8 @@ public class LocationServiceImpl implements LocationService{
 			return;
 		}
 		for (List<Object> result : results) {
-			BigDecimal avgPrice;
-			BigDecimal qty;
-			if (result.get(0).equals(unsavedLocationLine.getId())) {
-				avgPrice = unsavedLocationLine.getAvgPrice();
-				qty = unsavedLocationLine.getCurrentQty();
-			} else {
-				avgPrice = (BigDecimal) result.get(1);
-				qty = (BigDecimal) result.get(2);
-			}
+			BigDecimal avgPrice = (BigDecimal) result.get(1);
+			BigDecimal qty = (BigDecimal) result.get(2);
 			productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
 			qtyTot = qtyTot.add(qty);
 		}

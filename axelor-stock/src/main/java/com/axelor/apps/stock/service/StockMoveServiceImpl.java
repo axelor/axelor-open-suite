@@ -297,6 +297,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		String newStockSeq = null;
+		stockMoveLineService.checkConformitySelection(stockMove);
 
 		stockMoveLineService.updateLocations(
 				stockMove.getFromLocation(),
