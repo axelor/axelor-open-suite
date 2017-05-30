@@ -104,7 +104,7 @@ public class BankOrderCreateService {
 		
 		bankOrder.setSenderLabel(senderLabel);
 		bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
-		bankOrderRepo.save(bankOrder);
+		bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
 		
 		return bankOrder;
 	}
@@ -138,9 +138,10 @@ public class BankOrderCreateService {
 								currency,
 								invoice.getInvoiceId(),
 								invoice.getInvoiceId());
-		
+
 		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, invoice.getInvoiceId(), null));
-		
+		bankOrder = bankOrderRepo.save(bankOrder);
+
 		return bankOrder;
 		
 	}
