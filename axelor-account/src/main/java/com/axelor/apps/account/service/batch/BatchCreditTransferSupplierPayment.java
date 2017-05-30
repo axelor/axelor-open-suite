@@ -68,8 +68,8 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 
 		Query<Invoice> query = invoiceRepo.all()
 				.filter("self.operationTypeSelect = :operationTypeSelect "
-						+ "AND (self.statusSelect = :statusSelectValidated "
-						+ "OR self.statusSelect = :statusSelectVentilated AND self.companyInTaxTotalRemaining > 0) "
+						+ "AND self.statusSelect = :statusSelect "
+						+ "AND self.companyInTaxTotalRemaining > 0 "
 						+ "AND self.company = :company "
 						+ "AND self.companyBankDetails IN (:bankDetailsSet) "
 						+ "AND self.dueDate <= :dueDate "
@@ -77,8 +77,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 						+ "AND self.paymentMode = :paymentMode "
 						+ "AND self.id NOT IN (:anomalyList)")
 				.bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-				.bind("statusSelectValidated", InvoiceRepository.STATUS_VALIDATED)
-				.bind("statusSelectVentilated", InvoiceRepository.STATUS_VENTILATED)
+				.bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
 				.bind("company", accountingBatch.getCompany())
 				.bind("bankDetailsSet", bankDetailsSet)
 				.bind("dueDate", accountingBatch.getDueDate())
@@ -133,10 +132,6 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 
 		log.debug(String.format("Credit transfer batch for supplier payment: adding payment for invoice %s",
 				invoice.getInvoiceId()));
-
-		if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED) {
-			invoiceService.ventilate(invoice);
-		}
 
 		InvoicePayment invoicePayment = new InvoicePayment();
 		invoicePayment.setAmount(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
