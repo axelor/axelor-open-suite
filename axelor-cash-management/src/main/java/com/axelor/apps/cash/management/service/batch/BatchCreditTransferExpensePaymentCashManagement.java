@@ -73,6 +73,7 @@ public class BatchCreditTransferExpensePaymentCashManagement extends BatchCredit
 					incrementAnomaly();
 					anomalyList.add(expense.getId());
 					query = query.bind("anomalyList", anomalyList);
+					TraceBackService.trace(ex);
 					ex.printStackTrace();
 					log.error(String.format("Credit transfer batch for expense payment: anomaly for expense %s",
 							expense.getExpenseSeq()));
