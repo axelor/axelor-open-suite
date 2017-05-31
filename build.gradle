@@ -59,11 +59,6 @@ task wrapper(type: Wrapper) {
 }
 
 
-tomcat {
-	httpPort = project.properties.get("http.port", 8080) as Integer
-	stopPort = 9451
-}
-
 task("dataImport", type: JavaExec) {
 	main = "com.axelor.apps.erp.Main"
 	classpath = sourceSets.main.runtimeClasspath
