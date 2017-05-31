@@ -56,7 +56,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, int useCase) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
 
 		Location location = locationLine.getLocation();
 
@@ -65,7 +65,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 			return;
 		}
 
-		StockRules stockRules = this.getStockRules(product, location, type, useCase);
+		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if(stockRules == null)  {
 			return;
