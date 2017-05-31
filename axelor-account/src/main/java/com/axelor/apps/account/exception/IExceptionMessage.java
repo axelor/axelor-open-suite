@@ -102,7 +102,7 @@ public interface IExceptionMessage {
 	/**
 	 * Irrecoverable service and controller
 	 */
-	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable ligne %s" /*)*/ ;
+	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable line %s" /*)*/ ;
 	static final String IRRECOVERABLE_2 = /*$$(*/ "%s : Error generated on invoice creation shift to irrecoverable %s" /*)*/ ;
 	static final String IRRECOVERABLE_3 = /*$$(*/ "%s : The invoice %s has no accounting document whose the remainder to be paid is positive" /*)*/ ;
 	static final String IRRECOVERABLE_4 = /*$$(*/ "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/ ;
@@ -250,7 +250,7 @@ public interface IExceptionMessage {
 	static final String BATCH_REIMBURSEMENT_1 = /*$$(*/ "Bug(Anomaly) generated during SEPA export - Batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :\n" /*)*/;
 	static final String BATCH_REIMBURSEMENT_3 = /*$$(*/ "Reimbursement(s) created" /*)*/;
-	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimboursement's export :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimbursement's export :\n" /*)*/;
 	static final String BATCH_REIMBURSEMENT_5 = /*$$(*/ "Reimbursement(s) treated" /*)*/;
 	static final String BATCH_REIMBURSEMENT_6 = /*$$(*/ "Reimbursement's import's batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_7 = /*$$(*/ "Reimbursement reject %s" /*)*/;
@@ -313,7 +313,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_4 = /*$$(*/ "%s : You must configure a TIP and cheque TIP payment's import path for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_5 = /*$$(*/ "%s : You must configure a TIP and cheque TIP temporary import path for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_6 = /*$$(*/ "%s : You must configure a TIP and cheque TIP payment rejects path for the import file for the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_7 = /*$$(*/ "%s : You must configure a TIP and chaque TIP temporary path for the payment reject's file for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_7 = /*$$(*/ "%s : You must configure a TIP and cheque TIP temporary path for the payment reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_8 = /*$$(*/ "%s : You must configure a path for the reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_9 = /*$$(*/ "%s : You must configure a path for the temporary reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_10 = /*$$(*/ "%s : You must configure a path for the reimbursements rejects import's file for the company %s" /*)*/;

@@ -8,7 +8,7 @@
   <entity name="AccountCategoryLine" lang="java" cachable="true">
     
     <many-to-one name="accountCategory" ref="AccountCategory" title="Account category"/>
-    <string name="sign" max="1" title="Signe"/>
+    <string name="sign" max="1" title="Sign"/>
     <many-to-one name="category" ref="AccountCategory" title="Category"/>
    
     <string name="fullName" namecolumn="true" search="accountCategory,sign" title="Name">

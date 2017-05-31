@@ -41,8 +41,8 @@
      
      <selection name="production.manuf.order.sheet.line.according.select">
      	<option value="0"></option>
-     	<option value="1">Conforme</option>
-     	<option value="2">Non conforme</option>
+     	<option value="1">Compliant</option>
+     	<option value="2">Non compliant</option>
      </selection>
      
 </object-views>

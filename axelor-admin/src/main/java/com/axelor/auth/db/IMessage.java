@@ -20,7 +20,7 @@ package com.axelor.auth.db;
 public interface IMessage {
 	
 	/** Common messages **/
-	static final public String IMPORT_OK = /*$$(*/ "Import completed succesfully" /*)*/;
+	static final public String IMPORT_OK = /*$$(*/ "Import completed successfully" /*)*/;
 	static final public String ERR_IMPORT = /*$$(*/ "Error in import. Please check log" /*)*/;
 	
 	/** Permission assistant & group menu assistant**/
