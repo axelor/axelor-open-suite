@@ -23,11 +23,9 @@ public class BatchCreditTransferSupplierPaymentBankPayment extends BatchCreditTr
 
 	@Inject
 	public BatchCreditTransferSupplierPaymentBankPayment(GeneralService generalService, InvoiceRepository invoiceRepo,
-			InvoicePaymentCreateService invoicePaymentCreateService,
-			InvoicePaymentValidateService invoicePaymentValidateService,
-			InvoicePaymentRepository invoicePaymentRepository, BankOrderMergeService bankOrderMergeService) {
-		super(generalService, invoiceRepo, invoicePaymentCreateService, invoicePaymentValidateService,
-				invoicePaymentRepository);
+			InvoicePaymentCreateService invoicePaymentCreateService, InvoicePaymentRepository invoicePaymentRepository,
+			BankOrderMergeService bankOrderMergeService) {
+		super(generalService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
 		this.bankOrderMergeService = bankOrderMergeService;
 	}
 
