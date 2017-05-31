@@ -128,6 +128,7 @@
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+						<field name="controlOnReceipt"/>
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice"/>
 				        <spacer/>

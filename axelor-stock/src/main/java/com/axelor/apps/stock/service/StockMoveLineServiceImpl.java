@@ -25,21 +25,27 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	@Inject
 	private TrackingNumberService trackingNumberService;
-	
+
 	@Inject
 	protected AppBaseService appBaseService;
 
@@ -170,7 +176,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
-		
+
 		if (product != null) {
 			stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
 		}
@@ -245,9 +251,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException  {
 
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
-			
+
 			Product product = stockMoveLine.getProduct();
-			
+
 			if(product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))  {
 				Unit productUnit = stockMoveLine.getProduct().getUnit();
 				Unit stockMoveLineUnit = stockMoveLine.getUnit();
@@ -259,7 +265,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				else  {
 					qty = stockMoveLine.getQty();
 				}
-				
+
 				if(productUnit != null && !productUnit.equals(stockMoveLineUnit))  {
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 				}
@@ -269,7 +275,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				}
 				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
-
+				Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}
 		}
 
@@ -281,11 +287,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				.getLocationLine(location, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(locationLine, stockMoveLine);
-			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
 		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
 			this.cancelAveragePriceLocationLine(locationLine, stockMoveLine);
-			Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct(), locationLine);
 		}
 	}
 
@@ -334,6 +338,58 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 	@Override
+    public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException {
+        Product product = stockMoveLine.getProduct();
+        //check if the product configuration forces to select a conformity
+        if ((product == null) || !product.getControlOnReceipt()) {
+	    	return;
+		}
+		//check the stock move type
+		if (stockMove.getTypeSelect()
+				!= StockMoveRepository.TYPE_INCOMING) {
+        	return;
+		}
+
+		//check the conformity
+		if (stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
+		    throw new AxelorException(
+					String.format(
+		    			I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+						product.getName()
+					),
+					IException.CONFIGURATION_ERROR);
+		}
+	}
+
+	@Override
+	public void checkConformitySelection(StockMove stockMove) throws AxelorException {
+	    List<String> productsWithErrors = new ArrayList<>();
+		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+			Product product = stockMoveLine.getProduct();
+
+			if (product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+				try {
+					checkConformitySelection(stockMoveLine, stockMove);
+				}
+				catch (AxelorException e) {
+				    productsWithErrors.add(product.getName());
+				}
+			}
+		}
+		if (!productsWithErrors.isEmpty()) {
+			String productsWithErrorStr = productsWithErrors.stream()
+					.collect(Collectors.joining(", "));
+			throw new AxelorException(
+					String.format(
+		    			I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+						productsWithErrorStr
+					),
+					IException.CONFIGURATION_ERROR);
+		}
+    }
+
+	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
 
@@ -370,7 +426,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 
 	}
-	
+
 	@Override
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException{
 		BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
@@ -384,7 +440,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			else{
 				unitPriceUntaxed = stockMoveLine.getProduct().getCostPrice();
 			}
-			
+
 		}
 		stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
 		stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
