@@ -18,7 +18,6 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
@@ -37,18 +36,15 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 	protected final GeneralService generalService;
 	protected final InvoiceRepository invoiceRepo;
 	protected final InvoicePaymentCreateService invoicePaymentCreateService;
-	protected final InvoicePaymentValidateService invoicePaymentValidateService;
 	protected final InvoicePaymentRepository invoicePaymentRepository;
 
 	@Inject
 	public BatchCreditTransferSupplierPayment(GeneralService generalService, InvoiceRepository invoiceRepo,
 			InvoicePaymentCreateService invoicePaymentCreateService,
-			InvoicePaymentValidateService invoicePaymentValidateService,
 			InvoicePaymentRepository invoicePaymentRepository) {
 		this.generalService = generalService;
 		this.invoiceRepo = invoiceRepo;
 		this.invoicePaymentCreateService = invoicePaymentCreateService;
-		this.invoicePaymentValidateService = invoicePaymentValidateService;
 		this.invoicePaymentRepository = invoicePaymentRepository;
 	}
 
@@ -143,7 +139,6 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 				invoice.getPaymentMode(),
 				InvoicePaymentRepository.TYPE_PAYMENT);
 		invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
-		invoicePaymentValidateService.validate(invoicePayment);
 		return invoicePaymentRepository.save(invoicePayment);
 	}
 
