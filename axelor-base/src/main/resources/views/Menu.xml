@@ -383,7 +383,7 @@
 		<view type="form" name="company-form"/>
 	</action-view>
 	
-	<menuitem name="alarm-root" title="Alarmes" order="30"
+	<menuitem name="alarm-root" title="Alarms" order="30"
 		  parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
