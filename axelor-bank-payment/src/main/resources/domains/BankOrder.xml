@@ -13,9 +13,10 @@
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true" unique="true"/>
   	<integer name="partnerTypeSelect" title="Partner Type" selection="bankpayment.bank.order.partner.type.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="bankpayment.bank.order.status.select"/>
-	<date name="bankOrderDate" title="Bank order Date"/>  	
+	<date name="bankOrderDate" title="Bank order due Date"/>
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
 	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format" required="true"/>
+	<datetime name="confirmationDateTime" title="Confirmation date"/>
 	<datetime name="validationDateTime" title="Validation date"/>
 	<datetime name="fileGenerationDateTime" title="File generation date"/>
 	<datetime name="sendingDateTime" title="Sending date"/>
@@ -39,7 +40,8 @@
 	
 	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory"/>
 	<many-to-one name="signatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory"/>
-	<many-to-one name="fileToSend" ref="com.axelor.meta.db.MetaFile" title="File to send" />
+	<many-to-one name="generatedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Generated file" />
+	<many-to-one name="signedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Signed file" />
 	
 	 <extra-code><![CDATA[
 	

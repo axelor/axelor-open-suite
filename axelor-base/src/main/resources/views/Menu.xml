@@ -520,7 +520,7 @@
 	<menuitem name="admin-root-conf" parent="admin-root"
 		title="Modules configurations" />
 	
-	<menuitem name="alarm-root" title="Alarmes" order="-80"
+	<menuitem name="alarm-root" title="Alarm" order="-80"
 		 groups="admins,ERP" parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"

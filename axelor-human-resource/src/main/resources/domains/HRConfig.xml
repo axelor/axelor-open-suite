@@ -21,7 +21,6 @@
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
 
-    <!--<string name="lunchVoucherExportPath" title="Lunch Voucher Export Path"/>-->
     <string name="exportCodeForLunchVoucherManagement" title="Export code for lunch voucher management" />
     
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->

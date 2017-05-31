@@ -24,7 +24,6 @@
 	  		<field name="minStockLunchVoucher"/>
 	  		<field name="availableStockLunchVoucher"/>
 	  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
-	  		<field name="lunchVoucherExportPath"/>
 	  	</panel>
 	  	<panel-tabs>
     <panel name="timesheetTemplates" title="Timesheet Templates">
@@ -67,7 +66,7 @@
   		
   	</panel>
    </panel-tabs>
-	  	<panel-related field="kilometricAllowanceRateList" colSpan="12"/>
+	  	<panel-related field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 	</form>
 	
 	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">

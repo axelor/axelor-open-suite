@@ -18,29 +18,32 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.math.BigDecimal;
-import java.util.Collection;
+import java.math.RoundingMode;
 import java.util.List;
 
-import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.inject.Beans;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.db.Model;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderLineService {
@@ -49,12 +52,14 @@ public class BankOrderLineService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	protected BankDetailsRepository bankDetailsRepo;
+	protected CurrencyService currencyService;
 
 	
 	@Inject
-	public BankOrderLineService(BankDetailsRepository bankDetailsRepo)  {
+	public BankOrderLineService(BankDetailsRepository bankDetailsRepo, CurrencyService currencyService)  {
 		
 		this.bankDetailsRepo = bankDetailsRepo;
+		this.currencyService = currencyService;
 		
 	}
 	
@@ -146,7 +151,7 @@ public class BankOrderLineService {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_PARTNER_MISSING), IException.INCONSISTENCY);
 		}
 		if (bankOrderLine.getReceiverBankDetails() == null )  {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING), IException.INCONSISTENCY);
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
 		}
 		if(bankOrderLine.getBankOrderAmount().compareTo(BigDecimal.ZERO) <= 0)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE), IException.INCONSISTENCY);
@@ -166,7 +171,8 @@ public class BankOrderLineService {
 		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() != null) {
 
-			    bankDetailsIds = this.getIdStringListFromList(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+			    bankDetailsIds = Beans.get(BankDetailsService.class)
+						.getIdStringListFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
 
 				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
 					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -179,7 +185,8 @@ public class BankOrderLineService {
 
 		//case where the bank order is for a partner
 		else if (bankOrderLine.getPartner() != null) {
-		    bankDetailsIds = this.getIdStringListFromList(bankOrderLine.getPartner().getBankDetailsList());
+		    bankDetailsIds = Beans.get(BankDetailsService.class).
+					getIdStringListFromCollection(bankOrderLine.getPartner().getBankDetailsList());
 		}
 
 		if (bankDetailsIds.equals("")) {
@@ -199,7 +206,8 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 		    domain += " AND self.id IN (" +
-					this.getIdStringListFromList(ebicsPartner.getReceiverBankDetailsSet()) +
+					Beans.get(BankDetailsService.class).
+							getIdStringListFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
 
@@ -209,14 +217,13 @@ public class BankOrderLineService {
 			if (acceptedIdentifiers != null && !acceptedIdentifiers.equals("")) {
 				domain += " AND self.bank.bankDetailsTypeSelect IN (" + acceptedIdentifiers + ")";
 			}
-			//filter on the currency if it is set in file format and in the bankdetails
-			//and if the bankOrder is multicurrency
-			Currency currency = bankOrder.getBankOrderFileFormat().getCurrency();
-			if (!bankOrder.getIsMultiCurrency() &&
-				bankOrder.getBankOrderFileFormat().getCurrency() != null) {
-				String fileFormatCurrencyId = bankOrder.getBankOrderFileFormat().getCurrency().getId().toString();
-				domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
-			}
+		}
+		//filter on the currency if it is set in bank order and in the bankdetails
+		//and if the bankOrder is not multicurrency
+		Currency currency = bankOrder.getBankOrderCurrency();
+		if (!bankOrder.getIsMultiCurrency() && currency != null) {
+			String fileFormatCurrencyId = currency.getId().toString();
+			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
 		return domain;
 	}
@@ -279,25 +286,14 @@ public class BankOrderLineService {
 		}
 
 		//filter on the currency if the bank order is not multicurrency
-		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderFileFormat() != null) {
+		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() != null) {
 			if (!Beans.get(BankOrderService.class)
-					.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
+					.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE), IException.INCONSISTENCY);
 			}
 		}
 	}
 
-	public String getIdStringListFromList(Collection<BankDetails> bankDetailsList) {
-		String idList = "";
-		for (BankDetails bankDetails : bankDetailsList) {
-			idList += bankDetails.getId() + ",";
-		}
-		//remove the last comma
-		if(!idList.equals("") && idList.substring(idList.length() - 1).equals(",")) {
-			idList = idList.substring(0, idList.length() - 1);
-		}
-		return idList;
-	}
 
 	private boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
 		return  (ebicsPartner != null) &&
@@ -307,4 +303,22 @@ public class BankOrderLineService {
 				(ebicsPartner.getOrderTypeSelect() == orderType);
 	}
 	
+	
+	public BigDecimal computeCompanyCurrencyAmount(BankOrder bankOrder, BankOrderLine bankOrderLine) throws AxelorException  {
+
+		LocalDate bankOrderDate = bankOrder.getBankOrderDate();
+		
+		if(bankOrder.getIsMultiDate())  {  bankOrderDate = bankOrderLine.getBankOrderDate();  }
+		
+		Currency bankOrderCurrency = bankOrder.getBankOrderCurrency();
+		
+		if(bankOrder.getIsMultiCurrency())  {  bankOrderCurrency = bankOrderLine.getBankOrderCurrency();  }
+		
+		return currencyService.getAmountCurrencyConvertedAtDate(
+				bankOrderCurrency, bankOrder.getCompanyCurrency(), bankOrderLine.getBankOrderAmount(), bankOrderDate)
+				.setScale(2, RoundingMode.HALF_UP);  //TODO Manage the number of decimal for currency  
+
+	}
+
+
 }

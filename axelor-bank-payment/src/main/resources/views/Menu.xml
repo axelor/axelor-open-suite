@@ -97,7 +97,7 @@
 		title="Send a Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<view type="grid" name="bank-order-grid"/>
 		<view type="form" name="bank-order-send-form"/>
-		<domain>self.fileToSend != NULL</domain>
+		<domain>self.generatedMetaFile != NULL</domain>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
@@ -123,16 +123,6 @@
 		<view type="grid" name="bank-statement-grid"/>
 		<view type="form" name="bank-statement-form"/>
 	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
-	</action-view>
-	
-	<menuitem name="account-root-bank-statement-bank-statement-line"
-		parent="account-root-bank-statement" title="Bank Statement Line"
-		action="account.bank.statement.line" />
-
-	<action-view name="account.bank.statement.line"
-		title="Bank Statement Line" model="com.axelor.apps.bankpayment.db.BankStatementLine" >
-		<view type="grid" name="bank-statement-line-grid" />
-		<view type="form" name="bank-statement-line-form" />
 	</action-view>
 	
 	<menuitem name="account-root-bank-reconciliation" parent="account-root"

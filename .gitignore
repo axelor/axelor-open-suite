@@ -11,3 +11,6 @@ application.min.*
 .#*
 [#]*#
 .metadata/
+.idea/
+out/
+*.iml

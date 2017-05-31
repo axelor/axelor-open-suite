@@ -75,4 +75,11 @@ public interface GeneralService {
 
 	public BigDecimal getGeneralDuration(BigDecimal duration);
 
+	/**
+	 * Set the manageMultiBanks boolean in the general object.
+	 * 
+	 * @param manageMultiBanks the new value for the manageMultiBanks boolean
+	 */
+	void setManageMultiBanks(boolean manageMultiBanks);
+
 }

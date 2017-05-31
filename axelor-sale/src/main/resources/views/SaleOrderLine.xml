@@ -151,7 +151,6 @@
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-title-project-task"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
-    	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
@@ -202,7 +201,6 @@
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="isOrdered" expr="true"/>
     </action-record>
     
 <!--     TODO : should be splited per module -->

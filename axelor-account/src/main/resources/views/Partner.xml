@@ -29,13 +29,13 @@
                         <dd ng-if="record.isDefault"> <b>{{record.fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
-			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
+			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
 					<field name="bank" canNew="true"></field>
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
-					<field name="ibanBic" hidden="true"/>
+					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
 					<field name="bankCode" hidden="true"/>
 					<field name="sortCode" hidden="true"/>
 					<field name="accountNbr" hidden="true"/>
@@ -98,10 +98,6 @@
          	<panel-related field="umrList" title="History" colSpan="12"/>
          </panel>
 	</form>
-	
-	<action-method name="action-create-accounting-situation" if-module="axelor-account">
-		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" />
-	</action-method>
 	
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>

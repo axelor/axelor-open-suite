@@ -17,19 +17,9 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
-//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -39,8 +29,12 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.fortuna.ical4j.model.Date;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
 
@@ -57,8 +51,8 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 	
 	@Inject
 	protected GeneralService generalService;
-	
-	
+
+	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {
 	
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");

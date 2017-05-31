@@ -27,6 +27,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -94,20 +95,8 @@ public class ExtraHoursController {
 				   .model(ExtraHours.class.getName())
 				   .add("grid","extra-hours-validate-grid")
 				   .add("form","extra-hours-form");
-		
-		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
-		.context("_activeCompany", user.getActiveCompany());
-	
-		if(employee == null || !employee.getHrManager())  {
-			if(employee != null && employee.getManager() != null) {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
-				.context("_user", user);
-			}
-			else  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
-				.context("_user", user);
-			}
-		}
+
+		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
 		response.setView(actionView.map());
 	}
@@ -169,7 +158,7 @@ public class ExtraHoursController {
 	
 /* Count Tags displayed on the menu items */
 	
-	public String extraHoursValidateTag() { 
+	public String extraHoursValidateMenuTag() {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(ExtraHours.class, ExtraHoursRepository.STATUS_CONFIRMED);
 	

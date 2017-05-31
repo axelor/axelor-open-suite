@@ -41,13 +41,16 @@ public interface BankOrderService {
 	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(BankOrder bankOrder) throws AxelorException;
+	public void confirm(BankOrder bankOrder)   throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sign(BankOrder bankOrder);
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void realize(BankOrder bankOrder) throws AxelorException;
 	
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
@@ -76,5 +79,5 @@ public interface BankOrderService {
 
 	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
 
-	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
+	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder);
 }
