@@ -11,6 +11,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -27,11 +28,14 @@ import com.google.inject.persist.Transactional;
 public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpensePayment {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
+	protected final GeneralService generalService;
 	protected final ExpenseRepository expenseRepo;
 	protected final ExpenseService expenseService;
 
 	@Inject
-	public BatchCreditTransferExpensePaymentHR(ExpenseRepository expenseRepo, ExpenseService expenseService) {
+	public BatchCreditTransferExpensePaymentHR(GeneralService generalService, ExpenseRepository expenseRepo,
+			ExpenseService expenseService) {
+		this.generalService = generalService;
 		this.expenseRepo = expenseRepo;
 		this.expenseService = expenseService;
 	}
@@ -45,24 +49,32 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 	protected void process() {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
-		Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+		boolean manageMultiBanks = generalService.getGeneral().getManageMultiBanks();
+		String filter = "self.ventilated = true "
+				+ "AND self.paymentStatusSelect = :paymentStatusSelect "
+				+ "AND self.company = :company "
+				+ "AND self.user.partner.outPaymentMode = :paymentMode "
+				+ "AND self.id NOT IN (:anomalyList)";
 
-		if (accountingBatch.getIncludeOtherBankAccounts()) {
-			bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+		if (manageMultiBanks) {
+			filter += " AND self.bankDetails IN (:bankDetailsSet)";
 		}
 
-		Query<Expense> query = expenseRepo.all()
-				.filter("self.ventilated = true "
-						+ "AND self.paymentStatusSelect = :paymentStatusSelect "
-						+ "AND self.company = :company "
-						+ "AND self.bankDetails IN (:bankDetailsSet) "
-						+ "AND self.user.partner.outPaymentMode = :paymentMode "
-						+ "AND self.id NOT IN (:anomalyList)")
+		Query<Expense> query = expenseRepo.all().filter(filter)
 				.bind("paymentStatusSelect", InvoicePaymentRepository.STATUS_DRAFT)
 				.bind("company", accountingBatch.getCompany())
-				.bind("bankDetailsSet", bankDetailsSet)
 				.bind("paymentMode", accountingBatch.getPaymentMode())
 				.bind("anomalyList", anomalyList);
+
+		if (manageMultiBanks) {
+			Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+
+			if (accountingBatch.getIncludeOtherBankAccounts()) {
+				bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+			}
+
+			query = query.bind("bankDetailsSet", bankDetailsSet);
+		}
 
 		for (List<Expense> expenseList; !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Expense expense : expenseList) {
