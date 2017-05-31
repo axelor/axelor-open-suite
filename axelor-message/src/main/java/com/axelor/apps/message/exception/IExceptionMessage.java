@@ -45,12 +45,12 @@ public interface IExceptionMessage {
 	/**
 	 * General message controller
 	 */
-	static final String MESSAGE_1 = /*$$(*/ "Veuillez configurer un template" /*)*/;
+	static final String MESSAGE_1 = /*$$(*/ "Please configure a template" /*)*/;
 	static final String MESSAGE_2 = /*$$(*/ "Select template" /*)*/;
 	static final String MESSAGE_3 = /*$$(*/ "Create message" /*)*/;
-	static final String MESSAGE_4 = /*$$(*/ "Email envoyé" /*)*/;
-	static final String MESSAGE_5 = /*$$(*/ "Message envoyé" /*)*/;
-	static final String MESSAGE_6 = /*$$(*/ "Echec envoie email" /*)*/;
+	static final String MESSAGE_4 = /*$$(*/ "Email sent" /*)*/;
+	static final String MESSAGE_5 = /*$$(*/ "Message sent" /*)*/;
+	static final String MESSAGE_6 = /*$$(*/ "Failed to send Email" /*)*/;
 	static final String MESSAGE_7 = /*$$(*/ "Sender's email address is null or empty" /*)*/;
 	
 }
