@@ -176,7 +176,7 @@ public class LeaveController {
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		Double duration = leave.getDuration().doubleValue();
 		if(duration % 0.5 != 0){
-			response.setError(I18n.get("Invalide duration (must be a 0.5's multiple)"));
+			response.setError(I18n.get("Invalid duration (must be a 0.5's multiple)"));
 		}
 	}
 
