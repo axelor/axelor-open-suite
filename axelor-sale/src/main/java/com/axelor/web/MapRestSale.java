@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 @Path("/map")
-public class MapRest {
+public class MapRestSale {
 
 	@Inject MapService mapService;
 	

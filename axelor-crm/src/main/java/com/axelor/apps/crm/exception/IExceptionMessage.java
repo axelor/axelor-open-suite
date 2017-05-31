@@ -69,8 +69,6 @@ public interface IExceptionMessage {
 	 * Lead controller
 	 */
 	static final String LEAD_1 = /*$$(*/ "Please select the Lead(s) to print." /*)*/;
-	static final String LEAD_2 = /*$$(*/ "Can not open map, Please Configure Application Home First." /*)*/;
-	static final String LEAD_3 = /*$$(*/ "Can not open map, Please Check your Internet connection." /*)*/;
 	static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
 	static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
 

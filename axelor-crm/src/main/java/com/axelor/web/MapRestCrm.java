@@ -44,7 +44,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 @Path("/map")
-public class MapRest {
+public class MapRestCrm {
 
 	@Inject MapService mapService;
 	
