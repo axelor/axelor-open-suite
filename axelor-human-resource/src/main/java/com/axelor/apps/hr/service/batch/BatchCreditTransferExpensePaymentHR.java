@@ -1,4 +1,4 @@
-package com.axelor.apps.cash.management.service.batch;
+package com.axelor.apps.hr.service.batch;
 
 import java.util.List;
 import java.util.Set;
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -24,14 +24,14 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class BatchCreditTransferExpensePaymentCashManagement extends BatchCreditTransferExpensePayment {
+public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpensePayment {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	protected final ExpenseRepository expenseRepo;
 	protected final ExpenseService expenseService;
 
 	@Inject
-	public BatchCreditTransferExpensePaymentCashManagement(ExpenseRepository expenseRepo, ExpenseService expenseService) {
+	public BatchCreditTransferExpensePaymentHR(ExpenseRepository expenseRepo, ExpenseService expenseService) {
 		this.expenseRepo = expenseRepo;
 		this.expenseService = expenseService;
 	}
