@@ -88,7 +88,6 @@ public interface StockMoveService {
 
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
 
-
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException;
 
@@ -104,7 +103,7 @@ public interface StockMoveService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generateReversion(StockMove stockMove) throws AxelorException;
+	public StockMove generateReversion(StockMove stockMove) throws AxelorException;
 
 	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
 	
