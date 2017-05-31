@@ -18,6 +18,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -34,20 +35,22 @@ import com.google.inject.persist.Transactional;
 public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
+	protected final GeneralService generalService;
 	protected final InvoiceRepository invoiceRepo;
-	protected final InvoiceService invoiceService;
+	protected final InvoicePaymentCreateService invoicePaymentCreateService;
 	protected final InvoicePaymentValidateService invoicePaymentValidateService;
 	protected final InvoicePaymentRepository invoicePaymentRepository;
-	protected final GeneralService generalService;
 
 	@Inject
-	public BatchCreditTransferSupplierPayment(InvoiceRepository invoiceRepo, InvoiceService invoiceService,
-			InvoicePaymentValidateService invoicePaymentValidateService, InvoicePaymentRepository invoicePaymentRepository, GeneralService generalService) {
+	public BatchCreditTransferSupplierPayment(GeneralService generalService, InvoiceRepository invoiceRepo,
+			InvoicePaymentCreateService invoicePaymentCreateService,
+			InvoicePaymentValidateService invoicePaymentValidateService,
+			InvoicePaymentRepository invoicePaymentRepository) {
+		this.generalService = generalService;
 		this.invoiceRepo = invoiceRepo;
-		this.invoiceService = invoiceService;
+		this.invoicePaymentCreateService = invoicePaymentCreateService;
 		this.invoicePaymentValidateService = invoicePaymentValidateService;
 		this.invoicePaymentRepository = invoicePaymentRepository;
-		this.generalService = generalService;
 	}
 
 	@Override
@@ -133,14 +136,13 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 		log.debug(String.format("Credit transfer batch for supplier payment: adding payment for invoice %s",
 				invoice.getInvoiceId()));
 
-		InvoicePayment invoicePayment = new InvoicePayment();
-		invoicePayment.setAmount(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
-		invoicePayment.setPaymentDate(generalService.getTodayDate());
-		invoicePayment.setCurrency(invoice.getCurrency());
-		invoicePayment.setPaymentMode(invoice.getPaymentMode());
-		invoicePayment.setInvoice(invoice);
-		invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_PAYMENT);
-		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
+		InvoicePayment invoicePayment = invoicePaymentCreateService.createInvoicePayment(
+				invoice,
+				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
+				generalService.getTodayDate(),
+				invoice.getCurrency(),
+				invoice.getPaymentMode(),
+				InvoicePaymentRepository.TYPE_PAYMENT);
 		invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
 		invoicePaymentValidateService.validate(invoicePayment);
 		return invoicePaymentRepository.save(invoicePayment);

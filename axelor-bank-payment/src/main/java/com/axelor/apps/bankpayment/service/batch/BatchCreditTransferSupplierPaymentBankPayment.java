@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
@@ -21,11 +22,12 @@ public class BatchCreditTransferSupplierPaymentBankPayment extends BatchCreditTr
 	protected final BankOrderMergeService bankOrderMergeService;
 
 	@Inject
-	public BatchCreditTransferSupplierPaymentBankPayment(InvoiceRepository invoiceRepo, InvoiceService invoiceService,
+	public BatchCreditTransferSupplierPaymentBankPayment(GeneralService generalService, InvoiceRepository invoiceRepo,
+			InvoicePaymentCreateService invoicePaymentCreateService,
 			InvoicePaymentValidateService invoicePaymentValidateService,
-			InvoicePaymentRepository invoicePaymentRepository, GeneralService generalService,
-			BankOrderMergeService bankOrderMergeService) {
-		super(invoiceRepo, invoiceService, invoicePaymentValidateService, invoicePaymentRepository, generalService);
+			InvoicePaymentRepository invoicePaymentRepository, BankOrderMergeService bankOrderMergeService) {
+		super(generalService, invoiceRepo, invoicePaymentCreateService, invoicePaymentValidateService,
+				invoicePaymentRepository);
 		this.bankOrderMergeService = bankOrderMergeService;
 	}
 
