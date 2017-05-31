@@ -88,8 +88,9 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 		StringBuilder sb = new StringBuilder();
 		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
 		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL, batch.getDone()),
+				I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
+						com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
+						batch.getDone()),
 				batch.getDone()));
 		sb.append(String.format(
 				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
@@ -99,7 +100,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 		super.stop();
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	private void addPayment(Expense expense) throws AxelorException {
 		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
 				expense.getExpenseSeq()));
