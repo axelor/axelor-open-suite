@@ -70,7 +70,7 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_16 = /*$$(*/ "Please entry proper split qty" /*)*/;
 	static final String STOCK_MOVE_17 = /*$$(*/ "Must set weight unit in stock configuration for customs." /*)*/;
 	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight information for customs." /*)*/;
-	static final String STOCK_MOVE_19 = /*$$(*/ "Can’t realize this stock move because of the ongoing inventory %s." /*)*/;
+	static final String STOCK_MOVE_19 = /*$$(*/ "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
 	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;
 	static final String STOCK_MOVE_OUTGOING_PARTIAL_GENERATED = /*$$(*/ "An outgoing partial stock move has been generated (%s)" /*)*/;
@@ -94,5 +94,10 @@ public interface IExceptionMessage {
 	static final String LOCATION_1 = /*$$(*/ "There's already an existing storage, you must deactivate it first" /*)*/;
 	static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
 
+	/**
+	 * Stock Move Line Service
+	 */
+	static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
+			/*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
 
 }

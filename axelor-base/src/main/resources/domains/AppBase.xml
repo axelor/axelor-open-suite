@@ -17,6 +17,8 @@
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
 		
+		<string name="googleMapApiKey" title="Google Map Api Key"/>
+		
 		<!-- Currency Conversion Webservice URL -->
 		<string name="currencyWsURL" title="Currency Ws URL" help="true"/>
 
@@ -45,6 +47,8 @@
 		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
 		<boolean name="manageMultiBanks" title="Manage multi banks"/>
+
+		<boolean name="manageProductVariants" title="Manage product variants"/>
 		
 		
 		<extra-code>

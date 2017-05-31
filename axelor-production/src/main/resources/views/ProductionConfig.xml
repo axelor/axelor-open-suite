@@ -14,6 +14,9 @@
 		<panel>
 			<field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
 		</panel>
+		<panel>
+			<field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" />
+		</panel>
     </form>
 	
 	<action-record name="action-production-config-record-default" model="com.axelor.apps.production.db.ProductionConfig">

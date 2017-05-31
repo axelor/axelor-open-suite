@@ -66,6 +66,7 @@ public interface IExceptionMessage {
 	 */
 	static final String PRODUCTION_CONFIG_1 = /*$$(*/ "You must configure a production for company %s" /*)*/;
 	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "You must configure a Production Virtual Location for company %s" /*)*/;
+	static final String PRODUCTION_CONFIG_3 = /*$$(*/ "You must configure a waste location for company %s." /*)*/;
 
 	/**
 	 * Manuf Order Controller
@@ -94,5 +95,10 @@ public interface IExceptionMessage {
 	static final String PROD_PROCESS_MISS_PRODUCT = /*$$(*/ "Not enough quantity in products to consume for: %s" /*)*/;
 	
 	static final String CHARGE_MACHINE_DAYS = /*$$(*/ "Too many days" /*)*/;
+
+	/**
+	 * Bill of material service
+	 */
+	static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/ "The product cost cannot be changed because the product cost type is not manual" /*)*/;
 }
 

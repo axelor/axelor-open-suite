@@ -11,7 +11,10 @@
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
    	<many-to-one name="productionVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Production virtual location"/>
-    
+
+	<many-to-one name="wasteLocation" ref="com.axelor.apps.stock.db.Location"
+		title="Waste location" />
+
   	<finder-method name="findByCompany" using="company"/>
   	
   </entity>

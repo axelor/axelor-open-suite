@@ -133,7 +133,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 
 
 	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
-		if (partner.getAccountingSituationList() == null) {
+		if (partner == null || partner.getAccountingSituationList() == null) {
 			return null;
 		}
 
@@ -154,27 +154,23 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 	 * @return the domain of the bank details field
 	 */
 	public String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails) {
-	    String domain = "";
-	    List<BankDetails> authorizedBankDetails;
-		if (isInBankDetails) {
-			authorizedBankDetails = Beans.get(PaymentModeService.class).
-					getCompatibleBankDetailsList(
-							accountingSituation.getPartner().getInPaymentMode(),
-							accountingSituation.getCompany()
-					);
+		String domain = "";
+		List<BankDetails> authorizedBankDetails;
+		if (accountingSituation.getPartner() != null) {
+
+			if (isInBankDetails) {
+				authorizedBankDetails = Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(
+						accountingSituation.getPartner().getInPaymentMode(), accountingSituation.getCompany());
+			} else {
+				authorizedBankDetails = Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(
+						accountingSituation.getPartner().getOutPaymentMode(), accountingSituation.getCompany());
+			}
+			String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(authorizedBankDetails);
+			if (idList.equals("")) {
+				return domain;
+			}
+			domain = "self.id IN (" + idList + ") AND self.active = true";
 		}
-		else {
-			authorizedBankDetails = Beans.get(PaymentModeService.class).
-					getCompatibleBankDetailsList(
-							accountingSituation.getPartner().getOutPaymentMode(),
-							accountingSituation.getCompany()
-					);
-		}
-		String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(authorizedBankDetails);
-		if(idList.equals("")) {
-			return domain;
-		}
-		domain = "self.id IN (" + idList + ") AND self.active = true";
 		return domain;
 	}
 

@@ -38,6 +38,7 @@ public interface StockMoveLineService {
 	public static final int TYPE_PURCHASES = 2;
 	public static final int TYPE_OUT_PRODUCTIONS = 3;
 	public static final int TYPE_IN_PRODUCTIONS = 4;
+	public static final int TYPE_WASTE_PRODUCTIONS = 5;
 
 
 	/**
@@ -94,6 +95,25 @@ public interface StockMoveLineService {
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
 
 	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
+
+	/**
+	 * Check in the product if the stock move line needs to have a conformity
+	 * selected.
+	 * @param stockMoveLine
+	 * @param stockMove
+	 * @throws AxelorException if the stock move line needs to have a
+	 * conformity selected and it is not selected.
+	 */
+	public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
+
+	/**
+	 * Check for all lines in the stock move if it needs to have a conformity
+	 * selected.
+	 * @param stockMove
+	 * @throws AxelorException  if one or more stock move line needs to have
+	 * a conformity selected and it is not selected.
+	 */
+	public void checkConformitySelection(StockMove stockMove) throws AxelorException;
 
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 

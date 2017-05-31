@@ -65,7 +65,6 @@ public class OperationOrderStockMoveService {
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				operationOrder.setInStockMove(stockMove);
 			}

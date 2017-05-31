@@ -18,7 +18,6 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,6 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
@@ -58,6 +56,9 @@ public class LeadController {
 	@Inject
 	private LeadRepository leadRepo;
 	
+	@Inject
+	private MapService mapService;
+
 	/**
 	 * Method to generate Lead as a Pdf
 	 *
@@ -126,21 +127,7 @@ public class LeadController {
 	
 	public void showLeadsOnMap(ActionRequest request, ActionResponse response) throws IOException {
 		
-		String appHome = AppSettings.get().get("application.home");
-		if (Strings.isNullOrEmpty(appHome)) {
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_2));
-			return;
-		}
-		if (!Beans.get(MapService.class).isInternetAvailable()) {
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_3));
-			return;			
-		}		
-		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=lead");
-		Map<String, Object> mapView = new HashMap<String, Object>();
-		mapView.put("title", I18n.get("Leads"));
-		mapView.put("resource", mapUrl);
-		mapView.put("viewType", "html");		
-		response.setView(mapView);
+		mapService.showMap("lead", I18n.get("Leads"), response);
 	}	
 	
 	

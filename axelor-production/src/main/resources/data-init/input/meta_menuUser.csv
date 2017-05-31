@@ -1,0 +1,11 @@
+name;roles
+manufacturing-root;role.user
+manufacturing-root-bill-of-material;role.user
+manufacturing-root-prod-process;role.user
+manufacturing-root-production-order;role.user
+manufacturing-root-manuf-order;role.user
+manufacturing-root-operation-order;role.user
+manufacturing-root-operation-order-planned-calendar;role.user
+manufacturing-root-operation-order-real-calendar;role.user
+manufacturing-root-charge-by-machine-dashboard;role.user
+manufacturing-root-report;role.user

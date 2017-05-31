@@ -19,6 +19,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -89,33 +90,36 @@ public class LocationServiceImpl implements LocationService{
 	}
 
 	@Override
-	public void computeAvgPriceForProduct(Product product, LocationLine unsavedLocationLine) {
-	    Long productId = product.getId();
-		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self " +
-				       "WHERE self.product.id = " + productId + " AND self.location.typeSelect != " + LocationRepository.TYPE_VIRTUAL;
+	public void computeAvgPriceForProduct(Product product) {
+		Long productId = product.getId();
+		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self "
+				+ "WHERE self.product.id = " + productId + " AND self.location.typeSelect != "
+				+ LocationRepository.TYPE_VIRTUAL;
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
 		BigDecimal productAvgPrice = BigDecimal.ZERO;
 		BigDecimal qtyTot = BigDecimal.ZERO;
 		List<List<Object>> results = JPA.em().createQuery(query).getResultList();
-		if (results.size() == 0) {
+		if (results.isEmpty()) {
 			return;
 		}
 		for (List<Object> result : results) {
-		    BigDecimal avgPrice = (BigDecimal) result.get(1);
+			BigDecimal avgPrice = (BigDecimal) result.get(1);
 			BigDecimal qty = (BigDecimal) result.get(2);
-			if (result.get(0).equals(unsavedLocationLine.getId())) {
-			    avgPrice = unsavedLocationLine.getAvgPrice();
-			    qty = unsavedLocationLine.getCurrentQty();
-			}
 			productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
 			qtyTot = qtyTot.add(qty);
 		}
-		if (qtyTot.equals(BigDecimal.ZERO)) {
+		if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
 			return;
 		}
 		productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
 		product.setAvgPrice(productAvgPrice);
+		if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
+		    product.setCostPrice(productAvgPrice);
+			if (product.getAutoUpdateSalePrice()) {
+				Beans.get(ProductService.class).updateSalePrice(product);
+			}
+		}
 		productRepo.save(product);
 	}
-	
+
 }

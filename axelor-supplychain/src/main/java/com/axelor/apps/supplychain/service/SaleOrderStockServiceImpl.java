@@ -99,7 +99,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				return stockMove;
 			}
