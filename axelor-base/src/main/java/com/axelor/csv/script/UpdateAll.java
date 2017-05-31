@@ -55,7 +55,8 @@ public class UpdateAll {
 							period.setFromDate(dt.dayOfMonth().withMinimumValue());
 							period.setYear(year);
 							period.setStatusSelect(PeriodRepository.STATUS_OPENED);
-							period.setCode(dt.toString().split("-")[1]+"/"+year.getCode().split("_")[0]+"_"+company.getName());
+							period.setCompany(company);
+							period.setCode((dt.toString().split("-")[1]+"/"+year.getCode().split("_")[0]+"_"+company.getCode()).toUpperCase());
 							period.setName(dt.toString().split("-")[1]+'/'+year.getName());
 							periodRepo.save(period);
 						}
