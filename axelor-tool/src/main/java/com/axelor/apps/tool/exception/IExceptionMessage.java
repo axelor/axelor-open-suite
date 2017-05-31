@@ -29,7 +29,7 @@ public interface IExceptionMessage {
 	/**
 	 * Period service
 	 */
-	static final String PERIOD_1 = /*$$(*/ "Années sur 360 jours" /*)*/;
+	static final String PERIOD_1 = /*$$(*/ "Years in 360 days" /*)*/;
 	
 	/**
 	 * URL service
