@@ -3,9 +3,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="payroll-preparation-grid" title="Payroll preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-		 <toolbar>
-		 	<button name="exportAll" title="Export all payroll preparations" onClick="action-payroll-preparation-method-export-all" prompt="Do you really wish to export not exported yet payroll preparations ? They won't be exportable anymore after that."/>
-		 </toolbar>
 		 <field name="employee"/>
 		 <field name="company" form-view="company-form" grid-view="company-grid"/>
 		 <field name="period" />
@@ -86,10 +83,6 @@
 	
 	<action-method name="action-payroll-preparation-method-export" >
 		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="exportPayrollPreparation"/>
-	</action-method>
-	
-	<action-method name="action-payroll-preparation-method-export-all" >
-		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="exportAll"/>
 	</action-method>
 	
 </object-views>

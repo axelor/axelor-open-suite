@@ -3,7 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" canDelete="false" canNew="false" width="large">
+	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" width="large">
+		<toolbar>
+		    <button name="new" title="New" hidden="true"/>
+		    <button name="delete" title="Delete" hidden="true"/>
+		    <button name="back" title="Back" hidden="true"/>
+		    <button name="copy" title="Copy" hidden="true"/>
+		    <button name="search" title="Search" hidden="true"/>
+		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects"/>
+		    <button name="remindTimesheets" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
+		</toolbar>
 		<panel>
 			<field name="today"/>
 		</panel>
@@ -24,11 +33,13 @@
 		    	<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
+				<field name="manageMultiBanks" widget="boolean-switch"/>
 			</panel>
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
 					<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
+					<field name="googleMapApiKey"/>
 				</panel>
 				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
@@ -68,18 +79,10 @@
 	    <call method="exportObjects" class="com.axelor.apps.base.web.AppBaseController"/>
 	</action-method>
 	
-	<action-validate name="action-check-string-camel-case">
-		<error message="Please input first character as capital and other as lower case" if="firstName != null &amp;&amp; !firstName.matches('^[A-Z][a-z. \\-,_;0-9]*')" action="action-check-string-camel-case-first-name-clear" />
-	</action-validate>
-	
 	<action-attrs name="action-check-duplicate-on-new-attrs" model="com.axelor.apps.base.db.Wizard">
     	<attribute name="value" for="$fieldsSet" expr="call:com.axelor.apps.base.web.AppBaseController:setFields(object)" />
     </action-attrs>
     
-	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
-		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(com.axelor.apps.tool.StringTool.toFirstUpper(firstName))"/>
-	</action-record>
-	
 	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="wizard-check-duplicate-form" />
 		<view-param name="show-toolbar" value="false"/>
@@ -92,8 +95,8 @@
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
 	</action-method>
 	
-	<action-attrs name="action-general-attrs-default-invoice-type-domain">
-		<attribute name="selection-in" for="defaultInvoiceTypeSelect" expr="[1,2]"/>
-	</action-attrs>
+	<action-method name="action-method-general-export-objects">
+	    <call method="exportObjects" class="com.axelor.apps.base.web.GeneralController"/>
+	</action-method>
 	
 </object-views>

@@ -20,7 +20,7 @@ package com.axelor.apps.base.web;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.base.db.ShippingCoefTable;
+import com.axelor.apps.base.db.ShippingCoef;
 import com.axelor.apps.base.db.SupplierCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,6 +143,9 @@ public class ProductController {
 
 	public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
 	    Product product = request.getContext().asType(Product.class);
+	    if (!product.getDefShipCoefByPartner()) {
+	    	return;
+		}
 	    product = productRepo.find(product.getId());
 		BigDecimal productShippingCoef = null;
 	    for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
@@ -150,7 +153,7 @@ public class ProductController {
 					supplierCatalog.getShippingCoefList() == null) {
 	    		continue;
 			}
-	    	for(ShippingCoefTable shippingCoef : supplierCatalog.getShippingCoefList()) {
+	    	for(ShippingCoef shippingCoef : supplierCatalog.getShippingCoefList()) {
 	    	    if (shippingCoef.getCompany() == Beans.get(UserService.class).getUserActiveCompany()) {
 	    	        productShippingCoef = shippingCoef.getShippingCoef();
 	    	        break;

@@ -14,8 +14,7 @@
         <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="fa-repeat" onClick="wizard-check-currency-conversion-rate-line" />
     </grid>
     
-    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine"  
-    onNew="action-currency-conversion-line-default-record" width="large">
+    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" width="large">
         <panel name="main">
 		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
 		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
@@ -60,10 +59,6 @@
     	<action name="action-currency-conversion-line-set-exchange-rate"/>
     	<action name="action-currency-conversion-line-method-convert"/>
     </action-group>
-   	
-   	<action-record name="action-currency-conversion-line-method-getTodayDate" model="com.axelor.apps.base.db.CurrencyConversionLine">
-    	<field name="fromDate" expr="eval: __config__.app.getTodayDate()"/>
-   	</action-record>
     
     <action-method name="action-currency-conversion-line-method-check-date">
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>

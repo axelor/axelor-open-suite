@@ -75,35 +75,29 @@ public class PartnerBaseRepository extends PartnerRepository {
 		return json;
 		
 	}
-	
+
 	@Override
 	public Partner copy(Partner partner, boolean deep) {
-		
+
 		Partner copy = super.copy(partner, deep);
-		
+
 		copy.setPartnerSeq(null);
 		copy.setEmailAddress(null);
-		
+
 		PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
-		
+
 		List<PartnerAddress> partnerAddressList = Lists.newArrayList();
-		
-		if(deep)  {
-		
-			for(PartnerAddress partnerAddress : copy.getPartnerAddressList())  {
-				
+
+		if (deep && copy.getPartnerAddressList() != null) {
+			for (PartnerAddress partnerAddress : copy.getPartnerAddressList()) {
+
 				partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
 			}
-			
 		}
 		copy.setPartnerAddressList(partnerAddressList);
 		copy.setBlockingList(null);
 		copy.setBankDetailsList(null);
-		
+
 		return copy;
 	}
-	
-	
-	
-	
 }

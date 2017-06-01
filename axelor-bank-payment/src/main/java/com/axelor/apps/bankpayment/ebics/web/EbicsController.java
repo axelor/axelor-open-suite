@@ -176,8 +176,8 @@ public class EbicsController {
 				.context("ebicsBank", bank)
 				.context("url", bank.getUrl())
 				.context("hostId", bank.getHostId())
-				.context("e002Hash", DigestUtils.sha1Hex(certificates[0].getEncoded()).toUpperCase())
-				.context("x002Hash", DigestUtils.sha1Hex(certificates[1].getEncoded()).toUpperCase())
+				.context("e002Hash", DigestUtils.sha256Hex(certificates[0].getEncoded()).toUpperCase())
+				.context("x002Hash", DigestUtils.sha256Hex(certificates[1].getEncoded()).toUpperCase())
 				.context("certificateE002", certificateService.convertToPEMString(certificates[0]))
 				.context("certificateX002", certificateService.convertToPEMString(certificates[1])).map());
 		}catch(Exception e) {

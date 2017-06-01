@@ -85,6 +85,7 @@ public class TimesheetController {
 		response.setReload(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		Context context = request.getContext();
@@ -338,7 +339,7 @@ public class TimesheetController {
 	}
 	
 	/* Count Tags displayed on the menu items */
-	public String timesheetValidateTag()  {
+	public String timesheetValidateMenuTag()  {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
 	

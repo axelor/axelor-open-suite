@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -318,4 +319,24 @@ public class AppBaseController {
 		 }
 	}
 
+	
+	public void showCustomersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		mapService.showMap("customer", I18n.get("Customers"), response);
+	
+	}
+		 	
+	public void showProspectsOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		mapService.showMap("prospect", I18n.get("Prospect"), response);
+ 	
+	}
+		 	
+ 	public void showSuppliersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+ 
+ 		mapService.showMap("supplier", I18n.get("Supplier"), response);
+ 	
+ 	}
+ 	
+		 	
 }
