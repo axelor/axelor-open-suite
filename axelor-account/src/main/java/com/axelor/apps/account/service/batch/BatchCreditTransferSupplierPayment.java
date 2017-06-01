@@ -113,6 +113,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 		} catch (Exception ex) {
 			TraceBackService.trace(ex);
 			ex.printStackTrace();
+			log.error("Credit transfer batch for supplier payment: postProcess");
 		}
 	}
 
