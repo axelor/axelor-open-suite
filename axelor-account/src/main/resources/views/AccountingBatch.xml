@@ -42,7 +42,7 @@
 			<field name="period" showIf="creditTransferTypeSelect == 1" form-view="period-form" grid-view="period-grid"/>
 			<field name="dueDate" showIf="creditTransferTypeSelect == 2" />
 			<field name="currency" showIf="creditTransferTypeSelect == 2" />
-			<field name="includeOtherBankAccounts" showIf="$contains([1, 2], creditTransferTypeSelect)" />
+			<field name="includeOtherBankAccounts" showIf="$contains([1, 2], creditTransferTypeSelect)" if="__config__.general.getManageMultiBanks()" />
 		</panel>
 
 		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >

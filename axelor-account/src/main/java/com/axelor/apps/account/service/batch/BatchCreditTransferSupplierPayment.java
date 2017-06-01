@@ -57,31 +57,39 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 	protected void process() {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
-		Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+		boolean manageMultiBanks = generalService.getGeneral().getManageMultiBanks();
 		List<InvoicePayment> invoicePaymentList = new ArrayList<>();
+		String filter = "self.operationTypeSelect = :operationTypeSelect "
+				+ "AND self.statusSelect = :statusSelect "
+				+ "AND self.companyInTaxTotalRemaining > 0 "
+				+ "AND self.company = :company "
+				+ "AND self.dueDate <= :dueDate "
+				+ "AND self.currency = :currency "
+				+ "AND self.paymentMode = :paymentMode "
+				+ "AND self.id NOT IN (:anomalyList)";
 
-		if (accountingBatch.getIncludeOtherBankAccounts()) {
-			bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+		if (manageMultiBanks) {
+			filter += " AND self.companyBankDetails IN (:bankDetailsSet)";
 		}
 
-		Query<Invoice> query = invoiceRepo.all()
-				.filter("self.operationTypeSelect = :operationTypeSelect "
-						+ "AND self.statusSelect = :statusSelect "
-						+ "AND self.companyInTaxTotalRemaining > 0 "
-						+ "AND self.company = :company "
-						+ "AND self.companyBankDetails IN (:bankDetailsSet) "
-						+ "AND self.dueDate <= :dueDate "
-						+ "AND self.currency = :currency "
-						+ "AND self.paymentMode = :paymentMode "
-						+ "AND self.id NOT IN (:anomalyList)")
+		Query<Invoice> query = invoiceRepo.all().filter(filter)
 				.bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
 				.bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
 				.bind("company", accountingBatch.getCompany())
-				.bind("bankDetailsSet", bankDetailsSet)
 				.bind("dueDate", accountingBatch.getDueDate())
 				.bind("currency", accountingBatch.getCurrency())
 				.bind("paymentMode", accountingBatch.getPaymentMode())
 				.bind("anomalyList", anomalyList);
+
+		if (manageMultiBanks) {
+			Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+
+			if (accountingBatch.getIncludeOtherBankAccounts()) {
+				bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+			}
+
+			query = query.bind("bankDetailsSet", bankDetailsSet);
+		}
 
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Invoice invoice : invoiceList) {
