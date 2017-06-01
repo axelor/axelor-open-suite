@@ -38,16 +38,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.common.base.Strings;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -171,12 +162,24 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-		
+		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+
 		if(expenseLineList != null)  {
 			for (ExpenseLine expenseLine : expenseLineList) {
-				exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-				taxTotal = taxTotal.add(expenseLine.getTotalTax());
-				inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+			    //if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
+				//so we ignore it, it will be taken into account in the next loop.
+			    if (expenseLine.getDistance() == null || expenseLine.getDistance().equals(BigDecimal.ZERO)) {
+					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
+					taxTotal = taxTotal.add(expenseLine.getTotalTax());
+					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+				}
+			}
+		}
+		if(kilometricExpenseLineList != null) {
+			for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
+                exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
+                taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
+                inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
 			}
 		}
 		expense.setExTaxTotal(exTaxTotal);
@@ -216,6 +219,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		
 		if (expense.getUser().getEmployee() == null){
 			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName())  , IException.CONFIGURATION_ERROR);
+		}
+
+		if(expense.getPeriod() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PERIOD), IException.MISSING_FIELD);
 		}
 		
 		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()){

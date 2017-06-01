@@ -24,7 +24,7 @@
        </panel>
     </form>
     
-    <action-record name="action-umr-record-new" model="com.axelor.apps.account.db.Account">
+    <action-record name="action-umr-record-new" model="com.axelor.apps.account.db.Umr">
     	<field name="debtorName"  expr="eval: _parent?.name" if="_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="debtorAddress"  expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(_parent)" if="_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="creationDate"  expr="eval: __config__.app.getTodayDate()"/>

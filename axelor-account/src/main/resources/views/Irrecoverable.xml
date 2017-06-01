@@ -37,7 +37,7 @@
   			<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
 	 		<button name="showTraceBack" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
 	 	</panel>
-		<panel-related field="moveSet" showIf="statusSelect == 2" colSpan="12" form-view="move-form" grid-view="grid-view"/>
+		<panel-related field="moveSet" showIf="statusSelect == 2" colSpan="12" form-view="move-form" grid-view="move-grid"/>
 	</form>
 
     <action-method name="action-method-account-irrecoverable-pass-in">
@@ -52,8 +52,8 @@
 	</action-record>
 	
 	<action-view name="action-irrecoverable-show-trace-back" title="Anomalies"	model="com.axelor.exception.db.TraceBack">
-		<view type="grid" name="traceback-grid"/>
-		<view type="form" name="traceback-form"/>
+		<view type="grid" name="trace-back-grid"/>
+		<view type="form" name="trace-back-form"/>
 		<domain>self.batchId = :id and self.origin = 'irrecoverable'</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>

@@ -53,7 +53,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 		int iterator = 0;
 
 		if(saleOrderLine.getToSubDate() == null){
-			throw new AxelorException(I18n.get("Fied Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
+			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
 		}
 
 		while(iterator != saleOrderLine.getPeriodNumber()){

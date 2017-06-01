@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService  {
 			}
 		}
 
-		if(product.getProductVariantConfig() != null)  {
+		if (product.getProductVariantConfig() != null && product.getManageVariantPrice())  {
 
 			this.updateSalePriceOfVariant(product);
 

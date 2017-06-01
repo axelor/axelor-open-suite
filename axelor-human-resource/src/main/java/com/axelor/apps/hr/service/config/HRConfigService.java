@@ -48,14 +48,6 @@ public class HRConfigService {
 		return leaveReason;
 	}
 	
-	public String getLunchVoucherExportPath(HRConfig hrConfig) throws AxelorException{
-		String lunchVoucherExportPath = hrConfig.getExportCodeForLunchVoucherManagement();
-		if(Strings.isNullOrEmpty(lunchVoucherExportPath)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		return lunchVoucherExportPath;
-	}
-	
 	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{
 		Product kilometricExpenseProduct = hrConfig.getKilometricExpenseProduct();
 

@@ -271,11 +271,6 @@ public class PartnerController {
 		response.setValue("$emailsList",emailsList);
 	}
 	
-	public void partnerAddressListChange(ActionRequest request, ActionResponse response) {
-		LOG.debug("Called..............");
-		
-	}
-	
 	public void checkIbanValidity(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		List<BankDetails> bankDetailsList = request.getContext().asType(Partner.class).getBankDetailsList();

@@ -136,7 +136,7 @@
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
 		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
-		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
+		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
 	</form>
 	
 	<action-group name="action-expense-group-send">
@@ -155,10 +155,6 @@
 		<action name="action-expense-refusal-popup-form"/>
 		<action name="action-expense-attrs-buttons"/>
 		<action name="save"/>
-	</action-group>
-	
-	<action-group name="action-expense-group-payment">
-		<action name="action-expense-record-reimburse"/>
 	</action-group>
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">

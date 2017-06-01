@@ -9,7 +9,7 @@
         <field name="receiverBankDetails"/>
         <field name="receiverReference"/>
         <field name="receiverLabel"/>
-        <field name="amount"/>
+        <field name="bankOrderAmount"/>
     </grid>
     
     <grid name="bank-order-line-grid" title="Bank Order lines" model="com.axelor.apps.bankpayment.db.BankOrderLine" canDelete="false" orderBy="sequence">
@@ -18,7 +18,7 @@
         <field name="receiverBankDetails"/>
         <field name="receiverReference"/>
         <field name="receiverLabel"/>
-        <field name="amount"/>
+        <field name="bankOrderAmount"/>
     </grid>
 
 <!-- TODO -->
@@ -29,17 +29,16 @@
 			<field name="bankOrder.partnerTypeSelect" readonly="true" colSpan="6" />
 			<field name="bankOrder.senderCompany" title="Sender Company" readonly="true" colSpan="6" />
 			<field name="bankOrder.senderBankDetails" title="Sender Bank details" readonly="true" colSpan="6" />
-			<field name="bankOrder.amount" readonly="true" colSpan="6" />
+			<field name="bankOrder.bankOrderTotalAmount" readonly="true" colSpan="6" />
 		</panel>
 		<panel name="receiverInfo" title="Receiver Info.">
 			<field name="sequence"/>
 			<field name="receiverCompany" showIf="bankOrder.partnerTypeSelect == 4" colSpan="6" form-view="company-form" grid-view="company-grid" />
 			<field name="partner" hideIf="bankOrder.partnerTypeSelect != 4" form-view="partner-form" grid-view="partner-grid" colSpan="6"/>
 			<field name="receiverBankDetails" colSpan="6" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="amount"/>
+			<field name="bankOrderAmount"/>
 			<field name="receiverReference" colSpan="6" />
 			<field name="receiverLabel" colSpan="6" />
-			<field name="specialInstructions" colSpan="12"/>
 			<field name="receiverCountry" colSpan="4"/>
 			<field name="receiverCountry.alpha2Code" colSpan="2"/>
 		</panel>
