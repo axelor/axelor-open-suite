@@ -112,7 +112,7 @@ public class KilometricService {
 		
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
 		
-		List<KilometricAllowanceRule> ruleList = new ArrayList();
+		List<KilometricAllowanceRule> ruleList = new ArrayList<>();
 		
 		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
 			
@@ -149,6 +149,7 @@ public class KilometricService {
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
 		log.setDistanceTravelled( log.getDistanceTravelled().add( expenseLine.getDistance().multiply( BigDecimal.valueOf(expenseLine.getKilometricTypeSelect()) )  ) );
+		log.addExpenseLineListItem(expenseLine);
 		kilometricLogRepo.save(log);
 	}
 	

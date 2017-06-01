@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import com.axelor.apps.hr.service.leave.LeaveService;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
@@ -186,10 +187,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 						employee.getUser(), LeaveRequestRepository.STATUS_VALIDATED, fromDate, toDate).fetch();
 		
 		for (LeaveRequest leaveRequest : leaveRequestList) {
-			LocalDate from = leaveRequest.getFromDate().isBefore(fromDate) ? fromDate : leaveRequest.getFromDate();
-			LocalDate to = leaveRequest.getToDate().isAfter(toDate) ? toDate : leaveRequest.getToDate();
-			
-			daysLeave = daysLeave.add(getDaysWorksInPeriod(employee, from, to));
+			daysLeave = daysLeave.add(
+					Beans.get(LeaveService.class)
+							.computeDuration(leaveRequest, fromDate, toDate)
+			);
 		}
 		
 		return daysWorks.subtract(daysLeave);

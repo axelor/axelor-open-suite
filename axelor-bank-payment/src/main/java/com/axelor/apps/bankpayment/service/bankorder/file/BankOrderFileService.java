@@ -128,6 +128,7 @@ public class BankOrderFileService {
 	 * @throws IOException 
 	 * @throws JAXBException 
 	  */
+    @SuppressWarnings("unchecked")
 	public File generateFile() throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
 		
 		switch (fileExtension) {

@@ -9,7 +9,7 @@
       
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	<decimal name="acceptedCredit" title="Accepted Credit" precision="20" scale="2" required="true"/>
-	<decimal name="usedCredit" title="Encours utilisé" precision="20" scale="2" readonly="true"/>
+	<decimal name="usedCredit" title="Used Credit" precision="20" scale="2" readonly="true"/>
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
 	
   </entity>

@@ -128,7 +128,15 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setSentDate(generalService.getTodayDate());
 		
 		if(timesheet.getToDate() == null)  {
-			timesheet.setToDate(timesheet.getSentDate());
+			List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+			LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
+			for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
+				if (timesheetLine.getDate().compareTo(timesheetLineLastDate) > 0) {
+					timesheetLineLastDate = timesheetLine.getDate();
+				}
+			}
+
+			timesheet.setToDate(timesheetLineLastDate);
 		}
 		
 		timesheetRepository.save(timesheet);
