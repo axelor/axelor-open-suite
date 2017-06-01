@@ -113,7 +113,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	private void addPayment(Expense expense) throws AxelorException {
+	protected void addPayment(Expense expense) throws AxelorException {
 		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
 				expense.getExpenseSeq()));
 		expenseService.addPayment(expense);

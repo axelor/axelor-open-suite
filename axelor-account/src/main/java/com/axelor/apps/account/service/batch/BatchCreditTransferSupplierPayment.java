@@ -134,7 +134,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	private InvoicePayment addPayment(Invoice invoice)
+	protected InvoicePayment addPayment(Invoice invoice)
 			throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
 		log.debug(String.format("Credit transfer batch for supplier payment: adding payment for invoice %s",
