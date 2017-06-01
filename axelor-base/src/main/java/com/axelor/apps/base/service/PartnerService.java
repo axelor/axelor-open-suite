@@ -206,10 +206,12 @@ public class PartnerService {
 	}
 	
 	public void addContactToPartner(Partner contact) {
-		Partner partner = contact.getMainPartner();
+		if (contact.getMainPartner() != null) {
+			Partner partner = contact.getMainPartner();
 
-		partner.addContactPartnerSetItem(contact);
-		savePartner(partner);
+			partner.addContactPartnerSetItem(contact);
+			savePartner(partner);
+		}
 	}
 
 

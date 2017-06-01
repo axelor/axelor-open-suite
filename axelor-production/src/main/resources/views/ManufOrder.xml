@@ -124,7 +124,7 @@
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<panel name="description" title="Description" colSpan="12">
+				<panel name="description" title="Waste description" colSpan="12">
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 				</panel>
 			</panel>

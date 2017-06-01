@@ -224,7 +224,7 @@ public class LeaveController {
 	}
 	
 	//validating leave request and sending an email to the applicant
-	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void validate(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
 			LeaveService leaveService = leaveServiceProvider.get();
@@ -232,7 +232,7 @@ public class LeaveController {
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 
 			leaveService.validate(leaveRequest);
-			
+
 			Message message = leaveService.sendValidationEmail(leaveRequest);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -288,11 +288,6 @@ public class LeaveController {
 		}
 	}
 
-	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		response.setValues(leaveServiceProvider.get().createEvents(leave));
-	}
-	
 	/* Count Tags displayed on the menu items */
 	
 	@Transactional
