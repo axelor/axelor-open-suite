@@ -518,7 +518,7 @@
 	<action-group name="action-group-base-partner-contact-name-onchange">
 		<action name="action-partner-record-full-name"/>
 	</action-group>
-	
+
 	<action-method name="action-partner-method-check-same-name">
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkOtherPartnerName"/>
 	</action-method>
