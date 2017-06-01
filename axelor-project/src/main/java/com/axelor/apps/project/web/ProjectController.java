@@ -34,7 +34,7 @@ public class ProjectController {
 	protected ProjectService projectService;
 
 	public void generateProjectFromPartner(ActionRequest request, ActionResponse response){
-		Partner partner = Beans.get(PartnerRepository.class).find(new Long(request.getContext().get("_idPartner").toString()));
+		Partner partner = Beans.get(PartnerRepository.class).find(Long.valueOf(request.getContext().get("_idPartner").toString()));
 		User user = AuthUtils.getUser();
 		Project project = projectService.generateProject(null, partner.getName()+" project", user, user.getActiveCompany(), partner);
 		response.setValues(project);

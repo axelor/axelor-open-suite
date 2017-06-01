@@ -38,7 +38,7 @@
     </action-validate>
     
     <action-record name="action-template-move-line-set-percent" model="com.axelor.apps.account.db.MoveTemplateLine">
-    	<field name="percent" expr="eval:0" />
+    	<field name="percentage" expr="eval: 0" />
     </action-record>
     
     

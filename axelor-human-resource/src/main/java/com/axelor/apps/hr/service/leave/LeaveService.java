@@ -37,8 +37,12 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 
 public interface LeaveService {
-	
+
 	public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException;
+
+	public BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+
+	public BigDecimal computeDuration(LeaveRequest leave, LocalDate from, LocalDate to, int startOn, int endOn) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageSentLeaves(LeaveRequest leave) throws AxelorException;

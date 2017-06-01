@@ -81,7 +81,7 @@
 				<button name="loadSelectedLines" title="Load selected lines" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
 				<button name="resetImputation" title="Reset imputation" onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
 			</panel>
-			<panel-related colSpan="12" field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-from" grid-view="pay-voucher-element-to-pay-grid"/>
+			<panel-related colSpan="12" field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form" grid-view="pay-voucher-element-to-pay-grid"/>
 		</panel-stack>
 		
 	</form>
@@ -91,12 +91,6 @@
 		<field name="paymentMode" if="(operationTypeSelect == 1 || operationTypeSelect == 4)" expr="eval: partner?.outPaymentMode"/>
 		<field name="currency" expr="eval: partner ? partner.currency : company?.currency"/>
 	</action-record>
-	
-	<action-view name="action-payment-voucher-view-show-move-lines" title="Payment move lines">
-		<view type="form" name="move-line-form"/>
-		<view type="grid" name="move-line-grid"/>
-		<domain>self.move.paymentVoucher.id = :id</domain>
-	</action-view>
     
     <action-group name="action-account-payment-voucher-onnew-group">
 	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
@@ -249,11 +243,7 @@
 			<domain>self.operationTypeSelect = 2</domain>
 		</filter>
 	</search-filters>
-	
-	<action-record name="action-payment-voucher-create-cust-payment" model="com.axelor.apps.account.db.PaymentVoucher">
-		<field name="operationTypeSelect" expr="eval: 3" />
-	</action-record>	
-	
+
 	<action-attrs name="action-set-payment-mode-domain">
 		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = ' + {inTaxTotal ? '1' : '2'}.call()" if="(operationTypeSelect == 1 || operationTypeSelect == 4) &amp;&amp; inTaxTotal &lt; 0"/>
 		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="(operationTypeSelect == 1 || operationTypeSelect == 4) &amp;&amp; inTaxTotal &gt;= 0"/>

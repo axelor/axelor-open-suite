@@ -14,7 +14,7 @@
         <field name="bankOrderDate"/>
 		<field name="confirmationDateTime"/>
         <field name="senderCompany"/>
-        <field name="amount"/>
+        <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
@@ -33,7 +33,7 @@
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
         <field name="senderCompany"/>
-        <field name="amount"/>
+        <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
@@ -293,13 +293,6 @@
 		<attribute name="hidden" for="bankOrderCurrency" expr="eval: !__parent__.bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrder.bankOrderCurrency" expr="eval: __parent__.bankOrderFileFormat?.isMultiCurrency"/>
 	</action-attrs>
-	
-	<action-attrs name="action-bank-order-attrs-bank-details-domain">
-        <attribute name="domain" expr="eval: &quot;self.id IN (${senderCompany?.bankDetailsSet?.collect{it.id}.join(',')},${senderCompany?.defaultBankDetails?.id})&quot;" for="senderBankDetails"
-        	if="senderCompany?.bankDetailsSet &amp;&amp; !senderCompany?.bankDetailsSet?.isEmpty()"/>
-    <attribute name="domain" expr="eval: &quot;self.id = ${senderCompany?.defaultBankDetails?.id}&quot;" for="senderBankDetails"
-        	if="!senderCompany?.bankDetailsSet || senderCompany?.bankDetailsSet?.isEmpty()"/>
-    </action-attrs>
 
 	<action-attrs name="action-bank-order-attrs-show-partner-or-receiver-company">
 		<attribute for="bankOrderLineList.receiverCompany" name="hidden" expr="eval: partnerTypeSelect != 4"/>
@@ -336,10 +329,6 @@
 		<field name="bankOrderFileFormat" expr="eval: paymentMode?.bankOrderFileFormat"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-carry-out" model="com.axelor.apps.bankpayment.db.BankOrder">
-		<field name="statusSelect" expr="4"/>
-	</action-record>
-	
 	<action-record name="action-bank-order-record-reject" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="statusSelect" expr="5"/>
 		<field name="rejectStatusSelect" expr="2"/>
@@ -365,10 +354,6 @@
 
 	<action-method name="action-bank-order-method-sign">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="sign"/>
-	</action-method>
-	
-	<action-method name="action-bank-order-method-check-lines">
-		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="checkLines"/>
 	</action-method>
 	
   	<action-method name="action-bank-order-method-validate">
