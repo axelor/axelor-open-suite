@@ -13,7 +13,6 @@
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="date"/>
         <field name="amount" aggregate="sum"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="typeSelect"/>
     </grid>
     
@@ -70,4 +69,5 @@
     <action-attrs if-module="axelor-business-project"  name="action-analytic-move-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
+	
 </object-views>

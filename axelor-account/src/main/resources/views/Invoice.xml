@@ -299,7 +299,7 @@
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{record.companyInTaxTotal}} {{record.company.currency.symbol}}</dd>
 					<dt x-translate>Total Amount Remaining</dt>
-		           <dd class="order-subtotal-total">{{record.companyAmountRemaining}} {{record.company.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.companyInTaxTotalRemaining}} {{record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
 		    </field>
@@ -313,7 +313,7 @@
     
     <!-- invoice-account  -->
     <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">			        
-    	<field name="invoiceTypeSelect"/>
+    	<field name="operationTypeSelect"/>
 		<field name="invoiceId"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
@@ -327,7 +327,7 @@
     
     <!-- invoice-direct-debit  -->
     <grid name="invoice-direct-debit-grid" title="Debited invoices" model="com.axelor.apps.account.db.Invoice">			        
-    	<field name="invoiceTypeSelect"/>
+    	<field name="operationTypeSelect"/>
 		<field name="invoiceId"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
@@ -347,7 +347,7 @@
     		<button name="copy" title="" hidden="true"/>
     		<button name="delete" title="" hidden="true"/>
 		</toolbar>
-        <field name="invoiceTypeSelect"/>
+        <field name="operationTypeSelect"/>
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
         <field name="statusSelect"/>
@@ -368,7 +368,7 @@
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="$paymentMode" title="Payment Mode" type="many-to-one" target="com.axelor.apps.account.db.PaymentMode"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 			<field name="$paymentCondition" title="Payment Condition" type="many-to-one" target="com.axelor.apps.account.db.PaymentCondition"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<button name="confirm" title="Confirmer" onClick="action-group-invoice-merge-action" colSpan="12" width="200px"/>
+			<button name="confirm" title="Confirm" onClick="action-group-invoice-merge-action" colSpan="12" width="200px"/>
 		</panel>
     </form>
     
@@ -455,7 +455,7 @@
     	<field name="companyExTaxTotal" expr="eval: 0"/>
     	<field name="companyTaxTotal" expr="eval: 0"/>
     	<field name="companyInTaxTotal" expr="eval: 0"/>
-    	<field name="companyAmountRemaining" expr="eval: 0"/>
+    	<field name="companyInTaxTotalRemaining" expr="eval: 0"/>
         <field name="currency" expr="eval:__repo__(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
@@ -528,7 +528,7 @@
     </action-attrs>
 
 	<action-attrs name="action-invoice-attrs-hidden-bank-details">
-		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.general.getManageMultiBanks()"/>
+		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
 	</action-attrs>
 
 	<!-- DOMAIN -->

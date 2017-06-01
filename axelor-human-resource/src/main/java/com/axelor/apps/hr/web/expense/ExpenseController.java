@@ -142,9 +142,10 @@ public class ExpenseController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void editExpenseSelected(ActionRequest request, ActionResponse response){
-		Map<String,String> expenseMap = (Map<String,String>)request.getContext().get("expenseSelect");
-		Long expenseId = Long.parseLong(expenseMap.get("id"));
+		Map<String, Object> expenseMap = (Map<String, Object>) request.getContext().get("expenseSelect");
+		Long expenseId = new Long((Integer) expenseMap.get("id"));
 		response.setView(ActionView
 				.define(I18n.get("Expense"))
 				.model(Expense.class.getName())
@@ -246,7 +247,7 @@ public class ExpenseController {
 			}
 			if(!expenseLineId.isEmpty()){
 				String ids =  Joiner.on(",").join(expenseLineId);
-				throw new AxelorException(String.format(I18n.get("Problème de date pour la (les) ligne(s) : "+ids)), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(String.format(I18n.get("Date problem for line(s) : "+ids)), IException.CONFIGURATION_ERROR);
 			}
 		}
 	}
@@ -277,13 +278,13 @@ public class ExpenseController {
 	
 	/* Count Tags displayed on the menu items */
 	
-	public String expenseValidateTag() { 
+	public String expenseValidateMenuTag() {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(Expense.class, ExpenseRepository.STATUS_CONFIRMED);
 		
 	}
 	
-	public String expenseVentilateTag() { 
+	public String expenseVentilateMenuTag() {
 		Long total = JPA.all(Expense.class).filter("self.statusSelect = 3 AND self.ventilated = false").count();
 		
 		return String.format("%s", total);

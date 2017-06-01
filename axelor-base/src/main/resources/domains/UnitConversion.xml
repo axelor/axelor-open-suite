@@ -12,7 +12,7 @@
     <many-to-one name="endUnit" ref="Unit" title="To Unit" required="true"/>
     <decimal name="coef" title="Coeff." required="true" precision="30" scale="12" help="true"/>
     <integer name="typeSelect" title="Type" selection="unit.conversion.type.select" default="1"/>
-    <string name="formula" title="Formula" help="Use $Product.fieldName$ to acces to the product's fields"/>
+    <string name="formula" title="Formula" help="Use $Product.fieldName$ to access to the product's fields"/>
   
     <string name="name" search="startUnit,endUnit" title="Name">
     	<![CDATA[

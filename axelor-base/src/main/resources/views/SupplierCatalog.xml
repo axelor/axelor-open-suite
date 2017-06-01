@@ -12,8 +12,8 @@
         <field name="price" x-scale="2" />
     </grid>
     
-    <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" 
-    onNew="action-supplier-catalog-attrs-scale-and-precision" onLoad="action-supplier-catalog-attrs-scale-and-precision" width="large">
+    <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog"
+		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
     	<panel name="main" colSpan="12">
 			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="updateDate"/>
@@ -25,11 +25,13 @@
 		<panel name="description" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
-		<panel-related field="shippingCoefList" form-view="shipping-coef-table-form" grid-view="shipping_coef-grid"/>
+		<panel-related field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
     </form>
-    
-    <action-attrs name="action-supplier-catalog-attrs-scale-and-precision">
+
+    <action-attrs name="action-supplier-catalog-attrs-init">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="hidden" for="shippingCoefList"
+				   expr="eval: __parent__ &amp;&amp; !__parent__.defShipCoefByPartner"/>
 	</action-attrs>
         
 </object-views>
