@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
@@ -59,16 +60,20 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
-		
-		invoice.setAmountPaid(this.computeAmountPaid(invoice));
+
+		invoice.setAmountPaid(computeAmountPaid(invoice));
 		invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+		invoice.setAmountPendingRemaining(invoice.getInTaxTotal().subtract(computeAmountPaid(invoice, true)));
 		invoiceRepo.save(invoice);
 		log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
 		
 	}
-	
-	
-	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
+
+	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException {
+		return computeAmountPaid(invoice, false);
+	}
+
+	protected BigDecimal computeAmountPaid(Invoice invoice, boolean withPending) throws AxelorException  {
 		
 		BigDecimal amountPaid = BigDecimal.ZERO;
 		
@@ -77,10 +82,16 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		CurrencyService currencyService = Beans.get(CurrencyService.class);
 		
 		Currency invoiceCurrency = invoice.getCurrency();
-		
-		for(InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
-			
-			if(invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED)  {
+
+		List<Integer> statusSelectList = Lists.newArrayList(InvoicePaymentRepository.STATUS_VALIDATED);
+
+		if (withPending) {
+			statusSelectList.add(InvoicePaymentRepository.STATUS_PENDING);
+		}
+
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+
+			if (statusSelectList.contains(invoicePayment.getStatusSelect())) {
 				
 				log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 				

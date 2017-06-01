@@ -61,7 +61,7 @@ public class BatchCreditTransferSupplierPayment extends BatchStrategy {
 		List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 		String filter = "self.operationTypeSelect = :operationTypeSelect "
 				+ "AND self.statusSelect = :statusSelect "
-				+ "AND self.companyInTaxTotalRemaining > 0 "
+				+ "AND self.amountPendingRemaining > 0 "
 				+ "AND self.company = :company "
 				+ "AND self.dueDate <= :dueDate "
 				+ "AND self.currency = :currency "
