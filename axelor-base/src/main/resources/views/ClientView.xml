@@ -21,7 +21,7 @@
 	
 	<action-view name="wizard-client-form-open-my-invoices" title="My invoices"
 		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
-		<view type="grid" name="invoice-client-grid"/>
+		<view type="grid" name="invoice-grid"/>
     	<view type="form" name="invoice-client-form"/>
 		<domain>self.partner = :_myPartner</domain>
 		<context name="_myPartner" expr="eval:__user__.partner"/>

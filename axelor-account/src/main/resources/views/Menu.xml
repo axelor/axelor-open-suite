@@ -293,7 +293,7 @@
 
 	<action-view name="account.conf.financial.year" title="Fiscal years"
 		model="com.axelor.apps.base.db.Year" >
-		<view type="grid" name="year-acount-grid"/>
+		<view type="grid" name="year-account-grid"/>
 		<view type="form" name="year-account-form"/>
 		<domain>self.typeSelect = 1</domain>
 	</action-view>
@@ -303,8 +303,8 @@
 
 	<action-view name="account.conf.financial.period" title="Periods"
 		model="com.axelor.apps.base.db.Period" >
-		<view type="grid" name="period-account-grid"/>
-		<view type="form" name="period-account-form"/>
+		<view type="grid" name="period-grid"/>
+		<view type="form" name="period-form"/>
 		<domain>self.year.typeSelect = 1</domain>
 	</action-view>
 
@@ -401,7 +401,7 @@
 	<action-view name="account.conf.analytic.accounting.plan"
 		title="Chart of Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount" >
 		<view type="tree" name="analytic-account-tree"/>
-		<view type="form" name="analitic-account-form" />
+		<view type="form" name="analytic-account-form" />
 	</action-view>
 
 	<menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"

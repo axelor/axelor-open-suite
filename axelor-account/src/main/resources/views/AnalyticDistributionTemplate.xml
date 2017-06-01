@@ -8,7 +8,7 @@
     </grid>
     
     <form name="analytic-distribution-template-form" title="Analytic distribution template" model="com.axelor.apps.account.db.AnalyticDistributionTemplate"  
-    	onSave="action-analytic-dist-template-validate-tot-percentage">
+    	onSave="action-analytic-dist-template-method-validate-tot-percentage">
         <panel name="main" >
 	        <field name="name"/>
         </panel>      

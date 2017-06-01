@@ -256,8 +256,14 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
-			response.setReload(true);
+			StockMove reversion = stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
+			response.setView(ActionView
+					.define(I18n.get("Stock move"))
+					.model(StockMove.class.getName())
+					.add("grid", "stock-move-grid")
+					.add("form", "stock-move-form")
+					.param("forceEdit", "true")
+					.context("_showRecord", String.valueOf(reversion.getId())).map());
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}

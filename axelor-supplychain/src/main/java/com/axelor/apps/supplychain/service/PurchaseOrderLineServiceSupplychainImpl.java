@@ -93,7 +93,6 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 //		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
 //		
 //		purchaseOrderLine.setIsInvoiced(false);
-//		purchaseOrderLine.setAmountRemainingToBeInvoiced(purchaseOrderLine.getExTaxTotal());
 			
 		return purchaseOrderLine;
 	}

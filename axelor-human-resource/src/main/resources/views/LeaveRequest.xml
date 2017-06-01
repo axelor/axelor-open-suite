@@ -49,7 +49,6 @@
 	    </panel>
 		<panel name="information">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-			<field name="toJustifyLeaveReason"/>
 			<spacer/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"/>
@@ -72,6 +71,7 @@
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
+			<field name="toJustifyLeaveReason" hidden="true"/>
 		</panel>
 		<panel>
 			<field name="leaveRequestAttrs" colSpan="12" />
@@ -84,7 +84,7 @@
 	
 	<form name="popup-leave-request-form" title="Select the leave request you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-leave-request-attrs-domain-leave-request-select">
 		<field name="$leaveSelect" title="Select Leave Request" type="many-to-one" target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox" />
-		<button name="editLeaveRequestSelected" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected"/>
+		<button name="editLeaveRequestSelected" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
 	</form>
 	
 	<action-group name="action-leave-request-group-send">
@@ -103,7 +103,6 @@
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
 		<action name="save"/>
-		<action name="action-leave-request-method-create-events"/>
 	</action-group>
 	
 	<action-group name="action-leave-request-group-refuse">
@@ -138,10 +137,9 @@
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 
-	
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<field name="toJustifyLeaveReason" expr="eval: to_justify_leave_reason"/>
-		<field name="fromDate" expr="eval:__date__"/>
+		<field name="fromDate" expr="eval:__date__" if="to_justify_leave_reason"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
@@ -184,12 +182,7 @@
 		<error message="Invalid dates" if="toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect &gt; endOnSelect)"/>
 		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>
-	
-	<action-validate name="action-leave-request-validate-duration">
-		<error message="Invalid duration (must be a 0.5's multiple)" if="call:com.axelor.apps.hr.web.leave.LeaveController:testDuration()"/>
-	</action-validate>
-	
-	
+
 	<action-method name="action-leave-request-method-leave-reason-to-justify">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveReasonToJustify"/>
 	</action-method>
@@ -216,10 +209,6 @@
 	
 	<action-method name="action-leave-request-method-cancel-leave-request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="cancel"/>
-	</action-method>
-	
-	<action-method name="action-leave-request-method-create-events">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="createEvents"/>
 	</action-method>
 	
 	<action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.LeaveRequest">

@@ -285,20 +285,32 @@
 	<menuitem name="referential-report-partner-prospects" parent="referential-report-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
 		
-	<action-view name="action-show-customers-on-map-page" title="Customers">  		
+<!-- 	<action-view name="action-show-customers-on-map-page" title="Customers">  		
  		<view type="html" name="map/gmap-objs.html?object=customer" /> 
-	</action-view>
+	</action-view> -->
 	
-	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
+	<action-method name="action-show-customers-on-map-page">
+	  <call method="showCustomersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>	
+	
+<!-- 	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
  		<view type="html" name="map/gmap-objs.html?object=prospect" /> 
-	</action-view>
+	</action-view> -->
+	
+	<action-method name="action-show-prospects-on-map-page">
+	  <call method="showProspectsOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>
 	
 	<menuitem name="referential-report-partner-suppliers" parent="referential-report-maps" 
 		title="Suppliers" action="action-show-suppliers-on-map-page"/>	
 	
-	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
+<!-- 	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
  		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
-	</action-view>
+	</action-view> -->
+	
+	<action-method name="action-show-suppliers-on-map-page">
+	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>
 	
 	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"/>
 

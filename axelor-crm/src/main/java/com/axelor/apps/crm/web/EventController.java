@@ -33,12 +33,9 @@ import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
