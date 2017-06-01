@@ -20,6 +20,8 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.exception.db.IException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +71,12 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 
 		Product product = billOfMaterial.getProduct();
+
+		if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
+		    throw new AxelorException(I18n.get(
+		    		IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED),
+					IException.CONFIGURATION_ERROR);
+		}
 
 		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty()).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 

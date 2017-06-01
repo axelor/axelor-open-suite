@@ -18,23 +18,17 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class OpportunityController {
@@ -44,6 +38,9 @@ public class OpportunityController {
 	
 	@Inject
 	private OpportunityService opportunityService;
+	
+	@Inject
+	private MapService mapService;
 	
 	@SuppressWarnings("rawtypes")
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
@@ -64,21 +61,8 @@ public class OpportunityController {
 	
 	public void showOpportunitiesOnMap(ActionRequest request, ActionResponse response) throws IOException {
 		
-		String appHome = AppSettings.get().get("application.home");
-		if (Strings.isNullOrEmpty(appHome)) {
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_2));
-			return;
-		}
-		if (!Beans.get(MapService.class).isInternetAvailable()) {
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_3));
-			return;			
-		}		
-		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=opportunity");
-		Map<String, Object> mapView = new HashMap<String, Object>();
-		mapView.put("title", I18n.get("Opportunities"));
-		mapView.put("resource", mapUrl);
-		mapView.put("viewType", "html");		
-		response.setView(mapView);
+		mapService.showMap("opportunity", I18n.get("Opportunities"), response);
+		
 	}	
 	
 	public void createClient(ActionRequest request, ActionResponse response) throws AxelorException{

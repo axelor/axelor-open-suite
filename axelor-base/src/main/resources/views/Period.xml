@@ -23,7 +23,7 @@
 	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
 	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" />
     	</panel>
-		<panel-dashlet action="action-view-linked-adjusting-moves-period-dashlet" name="linkedAdjustingMoves"/>
+		<panel-dashlet action="action-view-period-linked-adjusting-moves-dashlet" name="linkedAdjustingMoves"/>
     	<panel sidebar="true">
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
@@ -53,4 +53,5 @@
 	<action-validate name="action-validate-period-is-adjusting-year">
 		<error message="Year is not in adjusting mode" if="year.statusSelect != 3"/>
 	</action-validate>
+
 </object-views>

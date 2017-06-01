@@ -52,7 +52,7 @@
     
     <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Waste stock move"/>
     
-    <string name="wasteProdDescription" title="Description" large="true"/>
+    <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     

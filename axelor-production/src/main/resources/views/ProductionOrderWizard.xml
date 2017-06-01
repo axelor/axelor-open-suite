@@ -9,7 +9,7 @@
 		<panel name="main">
 			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" widget="decimal" title="Quantity"/>
-			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-materail-grid"
+			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-material-grid"
 			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
 			onChange="action-production-order-wizard-record-product"/>
 			<field name="_startDate" title="Planned start date" widget="dateTime" />

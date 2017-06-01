@@ -39,5 +39,12 @@
     
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
+
+    <extra-code><![CDATA[
+        //CONFORMITY SELECT
+        public static final int CONFORMITY_NONE = 1;
+        public static final int CONFORMITY_COMPLIANT = 2;
+        public static final int CONFORMITY_NON_COMPLIANT = 3;
+    ]]></extra-code>
   </entity>
 </domain-models>

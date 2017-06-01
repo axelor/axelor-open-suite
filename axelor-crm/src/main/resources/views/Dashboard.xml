@@ -480,13 +480,6 @@
 		<view type="form" name="ticket-form" />
 		<domain>self.statusSelect != 25 AND self.endDateTime &lt; date(now())</domain>
 	</action-view>
-	<action-view name="dashlet.human.resources.dashboard.upcoming.holidays"
-		title="All Upcoming Holidays" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.endDateTime &gt;= :_today and self.typeSelect = 4</domain>
-		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
-	</action-view>
 
 	<!-- Target User Graph Dashboard -->
 	<dashboard title="Target User Dashboard" name="crm.target.user.dashboard"  >

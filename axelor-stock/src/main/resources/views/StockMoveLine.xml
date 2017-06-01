@@ -29,7 +29,7 @@
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision, action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" width="large">
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-group-onload" width="large">
         <panel name="main" >
             <field name="productName" />
 	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
@@ -59,7 +59,7 @@
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
-        <field name="accordanceSelect"/>
+        <field name="conformitySelect"/>
     </grid>
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
@@ -77,7 +77,23 @@
         <field name="trackingNumber"/>
         <field name="stockMove.statusSelect"/>
     </grid>
-    
+
+	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="stockMove.stockMoveSeq" />
+		<field name="stockMove.estimatedDate" />
+		<field name="stockMove.fromLocation" />
+		<field name="stockMove.toLocation" />
+		<field name="productName" />
+		<field name="product" form-view="product-form" grid-view="product-grid" />
+		<field name="stockMove.partner" />
+		<field name="realQty" aggregate="sum" />
+		<field name="unitPriceUntaxed" x-scale="2" />
+		<field name="unitPriceTaxed" hidden="true" />
+		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
+		<field name="trackingNumber" />
+		<field name="stockMove.statusSelect" />
+	</grid>
+
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" readonlyIf="stockMove.statusSelect == 3" width="large">
         <panel name="stockMove" title="Stock Move">
@@ -146,7 +162,13 @@
     <action-attrs name="action-stock-move-attrs-change-conformity">
     	<attribute name="value" for="stockMove.conformitySelect" expr="eval: conformitySelect"  if="conformitySelect == 3"/>
     </action-attrs>
-    
+
+    <action-group name="action-stock-move-line-group-onload">
+		<action name="action-stock-move-line-attrs-scale-and-precision"/>
+        <action name="action-inventory-line-attrs-tracking-number"/>
+        <action name="action-stock-move-line-attrs-show-unit-price-taxed"/>
+	</action-group>
+
     <action-group name="action-group-stock-stockmoveline-product-onchange">
     	<action name="action-inventory-line-attrs-tracking-number"/>
     	<action name="action-stock-move-line-set-product-info"/>
@@ -161,9 +183,7 @@
     </action-group>
     
     <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">
-    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent?._model == 'com.axelor.apps.production.db.OperationOrder'"/>
-    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent?._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'consumedProductPage'"/>
-    	<field name="stockMove" expr="eval: _parent.outStockMove" if="_parent?._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'producedProductPage'"/>
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>
     </action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">
@@ -188,7 +208,7 @@
 	<action-record name="action-stock-move-line-store-product-type" model="com.axelor.apps.stock.db.StockMoveLine">
 		<field name="productTypeSelect" expr="eval: product?.productTypeSelect"/>
 	</action-record>
-	
+
 	<action-attrs name="action-stock-move-line-product-domain">
 		<attribute name="domain" for="product" expr="eval: self.parentProduct.id = :productModel" if="productModel"/>
 	</action-attrs>
@@ -199,7 +219,7 @@
 	
 	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >
-		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="grid" name="stock-move-line-all-grid-planned"/>
 		<view type="form" name="stock-move-line-all-form"/>
 		<domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product.id = :_id</domain>
 	</action-view>	

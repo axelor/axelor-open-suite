@@ -78,8 +78,8 @@
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
-    onNew="action-group-base-partner-onnew, action-partner-attrs-hide-employee"
-    onLoad="action-group-partner-onload, action-partner-attrs-hide-employee" 
+    onNew="action-group-base-partner-onnew"
+    onLoad="action-group-partner-onload"
     onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send an email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
@@ -135,7 +135,7 @@
 					</field>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
-					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" >
+					<field name="partnerAddressList" colSpan="12">
 				        <editor layout="table" x-show-titles="false" >
 				        	<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
             				<field name="address.addressL4" hidden="true" colSpan="12"/>
@@ -192,10 +192,9 @@
 		    </panel>
 			<panel-related if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
-			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails"  if="__config__.app.isApp('crm')">
-			<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
-	        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
-	        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+	        	<panel-include view="incl-activities-partner-form" from="axelor-crm" />
+	        	<panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
 			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
@@ -224,7 +223,7 @@
         <field name="fullName"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-        <field name="email"/>
+        <field name="emailAddress.address"/>
     </grid>
     
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
@@ -254,7 +253,7 @@
 	                <field name="source" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 	            </panel>
 	            <panel colSpan="12" name="postalAddresses" title="Postal addresses" hideIf="isContact">
-	                <field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
+	                <field name="partnerAddressList" colSpan="12">
 				        <editor layout="table" x-show-titles="false">
 							<field name="address" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1"/>
@@ -425,6 +424,15 @@
 		</template>
 	</cards>
 	
+	<grid title="Employee List" name="partner-employee-grid" model="com.axelor.apps.base.db.Partner">
+		<!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
+		<field name="name"/>
+		<field name="firstName"/>
+		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+		<field name="emailAddress.address"/>
+	</grid>
+	
 	<form name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-employee-record-default" 
 	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner">
@@ -511,14 +519,10 @@
 		<action name="action-partner-record-full-name"/>
 	</action-group>
 	
-	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="#{__repo__(Lead).find(_parent._lead).name}"/>
-	</action-record>
-
 	<action-method name="action-partner-method-check-same-name">
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkOtherPartnerName"/>
 	</action-method>
-	
+
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
@@ -585,7 +589,6 @@
   		<field name="isSupplier" expr="true" if="_isSupplier"/>
     	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
     	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
-    	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails"/>
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
@@ -611,11 +614,6 @@
     	<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
     	<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
     	<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
-    </action-record>
-    
-    <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="#{null}" if="#{!isContact}"/>
-    	<field name="invoiceSendingFormatSelect" expr="#{null}" if="#{!isContact}"/>
     </action-record>
 
 	<action-record name="action-partner-record-normalize-fixed-phone-number" model="com.axelor.apps.base.db.Partner">
@@ -647,10 +645,6 @@
 	<action-record name="action-partner-record-payment-condition" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="paymentCondition" expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
 	</action-record>
-
-    <action-method name="action-set-partner-seq" >
-		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
-	</action-method>
     
     <action-method name="action-print-compnay-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>
@@ -673,20 +667,9 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="findContactMails"/>
 	</action-method>
 	
-	<action-method name="action-partner-address-list-change">
-	    <call class="com.axelor.apps.base.web.PartnerController" method="partnerAddressListChange"/>
-	</action-method>
-	
 	<action-method name="action-partner-iban-check-on-save">
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkIbanValidity"/>
 	</action-method>
-
-	
-	<action-view name="action-partner-view-generate-project" title="Generated Project" model="com.axelor.apps.project.db.Project">
-    	<view type="form" name="project-form"/>
-		<view type="grid" name="project-grid"/>
-    	<context name="_idPartner" expr="eval: id"/>
-    </action-view>
     
 	<action-view name="action-contact-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>

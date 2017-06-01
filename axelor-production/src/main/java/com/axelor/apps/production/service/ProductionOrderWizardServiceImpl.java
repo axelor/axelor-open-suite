@@ -23,12 +23,8 @@ import java.util.Map;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -40,11 +36,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
-
 public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Inject
 	protected ProductionOrderService productionOrderService;
 	
@@ -57,7 +50,7 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 	@Inject
 	protected AppProductionService appProductionService;
 	
-	
+	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {
 	
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");

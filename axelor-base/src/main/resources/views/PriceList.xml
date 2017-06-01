@@ -19,10 +19,10 @@
     
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
-	   onLoad="action-price-list-attrs-hide-estimated-price" width="large">
+	   width="large">
    		<panel name="main" >
 		    <field name="title"/>
-			<field name="typeSelect" colSpan="4" onChange="action-price-list-attrs-hide-estimated-price"/>
+			<field name="typeSelect" colSpan="4"/>
 			<field name="isActive" colSpan="2"/>
 			<field name="hideDiscount"/>
     	</panel>
