@@ -75,7 +75,23 @@
         <field name="trackingNumber"/>
         <field name="stockMove.statusSelect"/>
     </grid>
-    
+
+	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="stockMove.stockMoveSeq" />
+		<field name="stockMove.estimatedDate" />
+		<field name="stockMove.fromLocation" />
+		<field name="stockMove.toLocation" />
+		<field name="productName" />
+		<field name="product" form-view="product-form" grid-view="product-grid" />
+		<field name="stockMove.partner" />
+		<field name="realQty" aggregate="sum" />
+		<field name="unitPriceUntaxed" x-scale="2" />
+		<field name="unitPriceTaxed" hidden="true" />
+		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
+		<field name="trackingNumber" />
+		<field name="stockMove.statusSelect" />
+	</grid>
+
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" readonlyIf="stockMove.statusSelect == 3" width="large">
         <panel name="stockMove" title="Stock Move">
@@ -189,7 +205,7 @@
 	
 	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >
-		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="grid" name="stock-move-line-all-grid-planned"/>
 		<view type="form" name="stock-move-line-all-form"/>
 		<domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product.id = :_id</domain>
 	</action-view>	

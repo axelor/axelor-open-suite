@@ -41,7 +41,7 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the validated extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
-	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the unjustified absence reason in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH = /*$$(*/ "Please configure the lunch voucher export path in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_NO_EXPENSE_SEQUENCE = /*$$(*/ "Company %s does not have any expense's sequence" /*)*/;
 	
@@ -57,7 +57,7 @@ public interface IExceptionMessage {
 	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Please create an employee for the user %s"/*)*/ ;
 	static final String LEAVE_LINE = /*$$(*/ "There is no leave line for the employee %s and the reason %s."/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "Employee %s is not allowed to take leave in advance."/*)*/ ;
-	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "You are not able to take leave in advance for the reason '%s'.\n Reminder : %s"/*)*/ ;
+	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "You are not able to take leave in advance for the reason '%s'."/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/ "You now have a negative amount of leave available for the reason %s"/*)*/ ;
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
