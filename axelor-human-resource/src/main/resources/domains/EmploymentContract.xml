@@ -11,7 +11,7 @@
         <many-to-one name="payCompany" ref="com.axelor.apps.base.db.Company" title="Pay Company" required="true"/>
         
         <integer name="employmentContractVersion" title="Amendment" default="0"/>
-        <integer name="amendmentTypeSelect" selection="hr.employment.contract.amendment.type.select" title="Amendent type"/>
+        <integer name="amendmentTypeSelect" selection="hr.employment.contract.amendment.type.select" title="Amendment type"/>
         <date name="amendmentDate" title="Amendment Date"/>
 
         <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />

@@ -133,10 +133,10 @@ public class InventoryController {
 			}
 			else {
 				if(succeed) {
-					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_10));
+					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
 				}
 				else  {
-					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_11));
+					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
 				}
 			}
 		}

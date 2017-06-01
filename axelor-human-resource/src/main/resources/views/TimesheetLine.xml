@@ -114,10 +114,6 @@
 		<attribute name="domain" for="project" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
-	<action-validate name="action-timesheet-validate-date">
-		<error message="Invalid Date" if="_parent.fromDate &gt; date || (_parent.toDate &lt; date &amp;&amp; _parent.toDate != null)"/>
-	</action-validate>
-	
 	<action-attrs name="action-timesheet-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>

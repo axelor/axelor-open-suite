@@ -20,11 +20,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import java.math.BigDecimal;
 
 import java.time.LocalDate;
+import com.axelor.apps.account.db.*;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Currency;
@@ -82,7 +79,10 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		InvoicePayment invoicePayment = this.createInvoicePayment(invoice, amountConverted, paymentDate, paymentMove.getCurrency(), paymentMove.getPaymentMode(), this.determineType(paymentMove));
 		invoicePayment.setMove(paymentMove);
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-		invoicePayment.setBankDetails(paymentMove.getPaymentVoucher().getCompanyBankDetails());
+		PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
+		if (paymentVoucher != null) {
+			invoicePayment.setBankDetails(paymentVoucher.getCompanyBankDetails());
+		}
 		invoice.addInvoicePaymentListItem(invoicePayment);
 		invoicePaymentToolService.updateAmountPaid(invoice);
 		invoicePaymentRepository.save(invoicePayment);

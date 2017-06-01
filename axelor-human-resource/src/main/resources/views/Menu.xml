@@ -156,9 +156,9 @@
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
 	
-	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave Request to justify" action="leave.request.to.justify"/>
+	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
 	
-	<action-view name="leave.request.to.justify" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest">
+	<action-view name="leave.request.to.justify" title="Leave to justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<view name="leave-request-form" type="form" />
 		<view name="leave-request-validate-grid" type="grid" />
 		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>

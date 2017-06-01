@@ -40,8 +40,7 @@ import com.google.inject.Inject;
 public class ProjectController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
+
 	@Inject
 	private ProjectService projectService;
 	
