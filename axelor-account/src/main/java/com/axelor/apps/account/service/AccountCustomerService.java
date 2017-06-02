@@ -288,7 +288,7 @@ public class AccountCustomerService {
 		Company company = accountingSituation.getCompany();
 
 		log.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
-				partner.getName(), company.getName(), updateCustAccount, updateDueReminderCustAccount);
+				partner.getName(), company.getName(), updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
 
 		if(updateCustAccount)  {
 			accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
