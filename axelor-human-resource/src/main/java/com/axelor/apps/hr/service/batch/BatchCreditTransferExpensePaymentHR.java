@@ -81,7 +81,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 		for (List<Expense> expenseList; !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Expense expense : expenseList) {
 				try {
-					addPayment(expense);
+					addPayment(expense, accountingBatch.getBankDetails());
 					doneList.add(expense);
 					incrementDone();
 				} catch (Exception ex) {
@@ -124,10 +124,10 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void addPayment(Expense expense) throws AxelorException {
+	protected void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
 				expense.getExpenseSeq()));
-		expenseService.addPayment(expense);
+		expenseService.addPayment(expense, bankDetails);
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
@@ -150,4 +150,5 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 			}
 		}
 	}
+
 }

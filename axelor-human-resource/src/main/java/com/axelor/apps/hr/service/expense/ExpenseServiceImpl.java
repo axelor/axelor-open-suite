@@ -50,6 +50,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -404,7 +405,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void addPayment(Expense expense) throws AxelorException {
+	public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
 
 		if (paymentMode == null) {
@@ -416,7 +417,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expense.setPaymentMode(paymentMode);
 
 		if (paymentMode.getGenerateBankOrder()) {
-			BankOrder bankOrder = Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+			BankOrder bankOrder = Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense, bankDetails);
 			expense.setBankOrder(bankOrder);
 		}
 
@@ -428,6 +429,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		}
 
 		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
+	}
+
+	public void addPayment(Expense expense) throws AxelorException {
+		addPayment(expense, expense.getCompany().getDefaultBankDetails());
 	}
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {

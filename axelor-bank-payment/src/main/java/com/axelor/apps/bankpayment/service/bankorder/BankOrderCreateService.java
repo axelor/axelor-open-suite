@@ -128,13 +128,15 @@ public class BankOrderCreateService {
 		BigDecimal amount = invoicePayment.getAmount();
 		Currency currency = invoicePayment.getCurrency();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
-		
-		BankOrder bankOrder = this.createBankOrder( 
+		BankDetails bankDetails = invoicePayment.getBankDetails() != null ? invoicePayment.getBankDetails()
+				: this.getSenderBankDetails(invoice);
+
+		BankOrder bankOrder = this.createBankOrder(
 								paymentMode,
 								this.getBankOrderPartnerType(invoice),
 								paymentDate,
 								company,
-								this.getSenderBankDetails(invoice),
+								bankDetails,
 								currency,
 								invoice.getInvoiceId(),
 								invoice.getInvoiceId());

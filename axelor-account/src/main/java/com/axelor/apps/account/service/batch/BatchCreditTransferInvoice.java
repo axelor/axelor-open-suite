@@ -87,7 +87,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Invoice invoice : invoiceList) {
 				try {
-					doneList.add(addPayment(invoice));
+					doneList.add(addPayment(invoice, accountingBatch.getBankDetails()));
 					incrementDone();
 				} catch (Exception ex) {
 					incrementAnomaly();
@@ -127,7 +127,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected InvoicePayment addPayment(Invoice invoice)
+	protected InvoicePayment addPayment(Invoice invoice, BankDetails bankDetails)
 			throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
 		log.debug(String.format("Credit transfer batch for invoices: adding payment for invoice %s",
@@ -140,7 +140,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 				invoice.getCurrency(),
 				invoice.getPaymentMode(),
 				InvoicePaymentRepository.TYPE_PAYMENT);
-		invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
+		invoicePayment.setBankDetails(bankDetails);
 		return invoicePaymentRepository.save(invoicePayment);
 	}
 
