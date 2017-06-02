@@ -29,7 +29,7 @@
 		</panel>
 	  
 		<panel-tabs>
-			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.defineSubBillOfMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	    
 			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
 			<panel name="cost" title="Cost">
@@ -49,13 +49,13 @@
     
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="priority" readonlyIf="isRawMaterial" width="71"/>
+        <field name="priority" readonlyIf="defineSubBillOfMaterial" width="71"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="isRawMaterial"/>
+        <field name="defineSubBillOfMaterial"/>
         <field name="hasNoManageStock"/>
-        <field name="prodProcess" readonlyIf="isRawMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="prodProcess" readonlyIf="defineSubBillOfMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
 
@@ -65,17 +65,17 @@
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
 			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
-			<field name="isRawMaterial" colSpan="3"/>
+			<field name="defineSubBillOfMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-			<panel name="subProcessConfiguration" title="Sub-process configuration" hideIf="isRawMaterial" colSpan="12">
+			<panel name="subProcessConfiguration" title="Sub-process configuration" hideIf="defineSubBillOfMaterial" colSpan="12">
 				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 				<field name="priority"/>
 			</panel>
 		</panel>
-		<panel-tabs hideIf="isRawMaterial">
-			<panel-related title="Components" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+		<panel-tabs showIf="defineSubBillOfMaterial">
+			<panel-related title="Components" field="billOfMaterialList" domain="self.defineSubBillOfMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
     
@@ -133,7 +133,7 @@
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
     	<field name="priority" expr="eval:__parent__?.billOfMaterialList?.max{ it.getPriority() }.getPriority() + 10"/>
-    	<field name="isRawMaterial" expr="eval:true" />
+    	<field name="defineSubBillOfMaterial" expr="eval:true" />
     </action-record>
     
     <action-record name="action-bill-of-material-record-product" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -173,8 +173,8 @@
     </action-attrs>
 
 	<action-attrs name="action-bill-of-material-attrs-product-raw-material">
-		<attribute name="value" for="isRawMaterial" expr="eval: product?.productSubTypeSelect == 3"/>
-		<attribute name="readonly" for="isRawMaterial" expr="eval: product?.productSubTypeSelect == 3"/>
+		<attribute name="value" for="defineSubBillOfMaterial" expr="eval: product?.productSubTypeSelect == 3"/>
+		<attribute name="readonly" for="defineSubBillOfMaterial" expr="eval: product?.productSubTypeSelect == 3"/>
 	</action-attrs>
 
 </object-views>
