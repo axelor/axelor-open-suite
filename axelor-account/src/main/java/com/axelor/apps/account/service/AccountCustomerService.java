@@ -54,14 +54,14 @@ public class AccountCustomerService {
 
 	protected AccountingSituationService  accountingSituationService;
 	protected AccountingSituationRepository accSituationRepo;
-	protected LocalDate today;
+	protected GeneralService generalService;
 	
 	@Inject
 	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, GeneralService generalService) {
 
-		this.accountingSituationService =accountingSituationService;
+		this.accountingSituationService = accountingSituationService;
 		this.accSituationRepo = accSituationRepo;
-		this.today = generalService.getTodayDate();
+		this.generalService = generalService;
 	}
 
 	public AccountingSituationService getAccountingSituationService()  {
@@ -146,7 +146,7 @@ public class AccountCustomerService {
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
-				.setParameter(1, today.toDate(), TemporalType.DATE)
+				.setParameter(1, generalService.getTodayDate().toDate(), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
 				.setParameter(4, MoveRepository.STATUS_VALIDATED);
@@ -200,7 +200,7 @@ public class AccountCustomerService {
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
-				.setParameter(2, today.toDate(), TemporalType.DATE)
+				.setParameter(2, generalService.getTodayDate().toDate(), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company)
 				.setParameter(5, MoveRepository.STATUS_VALIDATED);
