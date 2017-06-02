@@ -41,11 +41,6 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 	}
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-		super.start();
-	}
-
-	@Override
 	protected void process() {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
