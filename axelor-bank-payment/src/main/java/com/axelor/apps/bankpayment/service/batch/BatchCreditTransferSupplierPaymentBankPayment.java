@@ -31,18 +31,23 @@ public class BatchCreditTransferSupplierPaymentBankPayment extends BatchCreditTr
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void postProcess(List<InvoicePayment> invoicePaymentList) throws AxelorException {
+	protected void postProcess(List<InvoicePayment> doneList) throws AxelorException {
+		List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 		List<BankOrder> bankOrderList = new ArrayList<>();
 
-		for (InvoicePayment invoicePayment : invoicePaymentList) {
+		for (InvoicePayment invoicePayment : doneList) {
 			BankOrder bankOrder = invoicePayment.getBankOrder();
 			if (bankOrder != null) {
+				invoicePaymentList.add(invoicePayment);
 				bankOrderList.add(bankOrder);
 			}
 		}
 
 		if (bankOrderList.size() > 1) {
-			bankOrderMergeService.mergeBankOrderList(bankOrderList);
+			BankOrder mergedBankOrder = bankOrderMergeService.mergeBankOrderList(bankOrderList);
+			for (InvoicePayment invoicePayment : invoicePaymentList) {
+				invoicePayment.setBankOrder(mergedBankOrder);
+			}
 		}
 	}
 

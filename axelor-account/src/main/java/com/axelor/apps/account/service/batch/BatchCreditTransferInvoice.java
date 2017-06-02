@@ -48,10 +48,10 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 	}
 
 	protected void process(int operationType) {
-		AccountingBatch accountingBatch = batch.getAccountingBatch();
+		List<InvoicePayment> doneList = new ArrayList<>();
 		List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
+		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		boolean manageMultiBanks = generalService.getGeneral().getManageMultiBanks();
-		List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 		String filter = "self.operationTypeSelect = :operationTypeSelect "
 				+ "AND self.statusSelect = :statusSelect "
 				+ "AND self.amountPendingRemaining > 0 "
@@ -87,7 +87,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Invoice invoice : invoiceList) {
 				try {
-					invoicePaymentList.add(addPayment(invoice));
+					doneList.add(addPayment(invoice));
 					incrementDone();
 				} catch (Exception ex) {
 					incrementAnomaly();
@@ -102,7 +102,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		}
 
 		try {
-			postProcess(invoicePaymentList);
+			postProcess(doneList);
 		} catch (Exception ex) {
 			TraceBackService.trace(ex);
 			ex.printStackTrace();
@@ -133,15 +133,19 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		log.debug(String.format("Credit transfer batch for invoices: adding payment for invoice %s",
 				invoice.getInvoiceId()));
 
-		InvoicePayment invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice,
-				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()), generalService.getTodayDate(),
-				invoice.getCurrency(), invoice.getPaymentMode(), InvoicePaymentRepository.TYPE_PAYMENT);
+		InvoicePayment invoicePayment = invoicePaymentCreateService.createInvoicePayment(
+				invoice,
+				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
+				generalService.getTodayDate(),
+				invoice.getCurrency(),
+				invoice.getPaymentMode(),
+				InvoicePaymentRepository.TYPE_PAYMENT);
 		invoicePayment.setBankDetails(invoice.getCompanyBankDetails());
 		return invoicePaymentRepository.save(invoicePayment);
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void postProcess(List<InvoicePayment> invoicePaymentList) throws Exception {
+	protected void postProcess(List<InvoicePayment> doneList) throws Exception {
 	}
 
 }
