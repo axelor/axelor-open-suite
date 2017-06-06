@@ -38,6 +38,7 @@
 		</panel>
 		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
 			<field name="creditTransferTypeSelect"/>
+			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid"/>
 			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />

@@ -23,8 +23,9 @@ import java.util.Map;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
-import com.axelor.apps.account.service.batch.BatchCreditTransferCustomerReimbursement;
+import com.axelor.apps.account.service.batch.BatchCreditTransferCustomerRefund;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
+import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerCreditBalanceReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.db.Batch;
@@ -211,7 +212,16 @@ public class AccountingBatchController {
 			batchStrategyClass = BatchCreditTransferSupplierPayment.class;
 			break;
 		case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
-			batchStrategyClass = BatchCreditTransferCustomerReimbursement.class;
+			switch (accountingBatch.getCustomerReimbursementTypeSelect()) {
+			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND:
+				batchStrategyClass = BatchCreditTransferCustomerRefund.class;
+				break;
+			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:
+				batchStrategyClass = BatchCreditTransferPartnerCreditBalanceReimbursement.class;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown customer reimbursement type");
+			}
 			break;
 		default:
 			throw new IllegalArgumentException(

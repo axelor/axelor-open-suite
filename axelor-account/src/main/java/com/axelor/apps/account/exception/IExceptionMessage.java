@@ -269,6 +269,8 @@ public interface IExceptionMessage {
 	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch: " /*)*/;
 	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully, " /*)*/;
 	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_PARTNER_DONE_SINGULAR = /*$$(*/ "%d partners treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_PARTNER_DONE_PLURAL = /*$$(*/ "%d partners treated successfully, " /*)*/;
 	static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
 	static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
