@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
@@ -78,6 +80,7 @@ public class HumanResourceModule extends AxelorModule {
 		bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
 		bind(UserHrService.class).to(UserHrServiceImpl.class);
 		bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
+		bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
 		bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
 	}
 
