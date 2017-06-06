@@ -137,6 +137,8 @@
  	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
   	
+  	<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+  	
   	<extra-code><![CDATA[
 	
 	   	// TYPE SELECT
@@ -148,7 +150,7 @@
 	
 	]]></extra-code>
 	
-	
-  </entity>
+	  </entity>
   
 </domain-models>
+ 

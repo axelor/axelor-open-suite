@@ -63,6 +63,7 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 
 	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
+	public static final String INVOICE_TERMS_AND_CONDITIONS = /*$$(*/ "Invoice.termsAndConditions"; /*)*/
 
 	
 	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
@@ -131,5 +132,5 @@ public interface ITranslation {
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
-
+	
 }
