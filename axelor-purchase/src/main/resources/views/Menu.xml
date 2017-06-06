@@ -208,17 +208,6 @@
 		<view type="form" name="purchase-request-creator-form" />
 	</action-view>
 
-<!-- ADMINISTRATION -->
-	
-	<menuitem name="admin-root-conf-purchase-config" parent="admin-root-conf"
-		title="Purchase configurations" action="admin.root.conf.purchase.config" />
-		
-	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
-		model="com.axelor.apps.purchase.db.PurchaseConfig" >
-		<view type="grid" name="purchase-config-grid" />
-		<view type="form" name="purchase-config-form" />
-	</action-view>
-
 
 <!-- TOP MENU -->
 
