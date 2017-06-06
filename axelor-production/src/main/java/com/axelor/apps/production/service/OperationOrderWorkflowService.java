@@ -19,6 +19,8 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 
+import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
@@ -130,15 +132,21 @@ public class OperationOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(OperationOrder operationOrder)  {
 
+		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+
+			operationOrder.setRealStartDateT(today);
+
+			operationOrder.setStartedBy(AuthUtils.getUser());
+
+			operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+		}
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
-
-		operationOrder.setRealStartDateT(today);
-		
-		operationOrder.setStartedBy(AuthUtils.getUser());
-		
-		operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
-
 		Beans.get(OperationOrderRepository.class).save(operationOrder);
+
+		if (operationOrder.getManufOrder().getStatusSelect()
+				!= IManufOrder.STATUS_IN_PROGRESS) {
+		    Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		}
 
 	}
 
