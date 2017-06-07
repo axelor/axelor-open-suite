@@ -1,6 +1,9 @@
 package com.axelor.apps.account.service.batch;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.TypedQuery;
 
@@ -8,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -49,12 +53,27 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 				Partner.class);
 		partnerQuery.setParameter("company", accountingBatch.getCompany());
 		List<Partner> partnerList = partnerQuery.getResultList();
+		Map<Partner, BigDecimal> balanceCustAccountMap = new HashMap<>();
+
+		for (Partner partner : partnerList) {
+			for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+				if (accountingSituation.getCompany().equals(accountingBatch.getCompany())) {
+					balanceCustAccountMap.put(partner, accountingSituation.getBalanceCustAccount());
+					break;
+				}
+			}
+		}
 
 		for (Partner partner : partnerList) {
 			try {
-				partner = partnerRepo.find(partner.getId());
-				createReimbursement(partner, accountingBatch.getCompany());
-				incrementDone();
+				BigDecimal sum = getSumReimbursing(partner, accountingBatch.getCompany());
+				BigDecimal balanceCustAccount = balanceCustAccountMap.get(partner).add(sum);
+
+				if (balanceCustAccount.signum() < 0) {
+					partner = partnerRepo.find(partner.getId());
+					createReimbursement(partner, accountingBatch.getCompany());
+					incrementDone();
+				}
 			} catch (Exception ex) {
 				incrementAnomaly();
 				TraceBackService.trace(ex);
@@ -95,6 +114,17 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 
 		Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
 		return reimbursement;
+	}
+
+	private BigDecimal getSumReimbursing(Partner partner, Company company) {
+		TypedQuery<BigDecimal> query = JPA.em().createQuery("SELECT SUM(self.amountRemaining) FROM MoveLine self "
+				+ "WHERE self.reimbursementStatusSelect = :reimbursementStatusSelect "
+				+ "AND self.move.partner = :partner AND self.move.company = :company", BigDecimal.class);
+		query.setParameter("reimbursementStatusSelect", MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSING);
+		query.setParameter("partner", partner);
+		query.setParameter("company", company);
+		BigDecimal sum = query.getSingleResult();
+		return sum != null ? sum : BigDecimal.ZERO;
 	}
 
 }
