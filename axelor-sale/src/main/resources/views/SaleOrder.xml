@@ -149,7 +149,6 @@
 	    <field name="companyBankDetails" widget="SuggestBox" onSelect="action-so-group-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	    <field name="subscription" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect >= 3"/>
-	    <field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 1"  />
 	  </panel>
 	  <panel name="customerInformation" title="Customer information">
 	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>

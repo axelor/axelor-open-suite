@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="invoice-period-grid" title="Invoice periods" model="com.axelor.apps.contract.db.InvoicePeriod">
+       <field name="startDate"/>
+       <field name="endDate"/>
+       <field name="isLastPeriod"/>
+       <field name="statusSelect"/>
+    </grid>
+
+    <form name="invoice-period-form" title="Invoice period" model="com.axelor.apps.contract.db.InvoicePeriod">
+        <panel readonlyIf="statusSelect == 2">
+            <field name="startDate" colSpan="4"/>
+            <field name="endDate" colSpan="4"/>
+            <field name="isLastPeriod" colSpan="4"/>
+            <panel showIf="statusSelect == 2">
+                <field name="statusSelect"/>
+                <field name="invoice"/>
+            </panel>
+        </panel>
+        <panel-related field="consumptionLineList" readonlyIf="statusSelect == 2"/>
+        <panel-related field="additionalBenefitList" readonlyIf="statusSelect == 2"/>
+    </form>
+
+</object-views>

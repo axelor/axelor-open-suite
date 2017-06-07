@@ -1,77 +1,281 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="contract-grid" title="Contract" model="com.axelor.apps.contract.db.Contract">
-       <field name="name" />
-       <field name="typeSelect" />
-       <field name="partner" />
-       <field name="startDate" />
+    <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+       <field name="contractId"/>
+       <field name="name"/>
+       <field name="targetType"/>
+       <field name="company"/>
+       <field name="partner"/>
+       <field name="startDate"/>
+       <field name="statusSelect"/>
     </grid>
+
+    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
+        onNew="action-record-contract-default-record" readonlyIf="statusSelect == 3">
+        <toolbar>
+            <button name="printContractBtn" title="Print" onClick="notImplemented" icon="fa-print"/>
+        </toolbar>
+        <panel>
+            <field name="targetType" readonlyIf="id"/>
+            <field name="company"/>
+            <field name="name" css="highlight" colSpan="6"/>
+            <field name="partner" showIf="targetType" onSelect="action-attrs-contract-partner-domain" onChange="action-attrs-contract-update-partner"/>
+            <panel title="Dates" colSpan="12">
+                <panel colSpan="12" hidden="true" showIf="id">
+                    <field name="createdOn"/>
+                    <field name="createdBy"/>
+                </panel>
+                <field name="startDate" showIf="statusSelect == 2" readonly="true"/>
+                <field name="toClosed"/>
+                <field name="endDate" hidden="true" showIf="statusSelect == 3"/>
+                <panel colSpan="12" hidden="true" showIf="terminatedManually == true">
+                    <field name="terminatedDate"/>
+                    <field name="terminatedBy"/>
+                    <field name="terminatedManually"/>
+                </panel>
+				<panel colSpan="12" title="Reconductions">
+					<field name="isTacitRenewal"/>
+					<field name="renewalNumber" hidden="true" showIf="renewalNumber &gt; 0"/>
+					<field name="lastRenewalDate" hidden="true" showIf="renewalNumber &gt; 0"/>
+				</panel>
+            </panel>
+        </panel>
+        <panel sidebar="true">
+            <field name="statusSelect" readonly="true" showTitle="false">
+                <viewer>
+                    <![CDATA[
+			 			<h3>
+			             <span>{{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span>
+			             <span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
+			             <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
+			             <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
+			           </h3>
+					]]>
+                </viewer>
+            </field>
+            <field name="contractId" hidden="true"/>
+            <field name="versionNumber" hidden="true"/>
+        </panel>
+        <panel sidebar="true">
+            <button name="newVersionBtn" title="New version" onClick="save,action-view-contract-add-version" showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentVersion.statusSelect == 3"/>
+            <button name="showNextVersionBtn" title="Show next version" onClick="save,action-view-contract-show-version" showIf="id &amp;&amp; nextVersion != null"/>
+            <button name="deleteNextVersionBtn" title="Delete next version" onClick="save,com.axelor.apps.contract.web.ContractController:deleteNextVersion" showIf="id &amp;&amp; nextVersion != null"/>
+            <button name="waitingBtn" title="Waiting" onClick="save,com.axelor.apps.contract.web.ContractController:waiting" showIf="id &amp;&amp; currentVersion.statusSelect == 1"/>
+            <button name="ongoingBtn" title="Ongoing" onClick="save,com.axelor.apps.contract.web.ContractController:ongoing" showIf="id &amp;&amp; currentVersion.statusSelect == 2"/>
+            <button name="invoicingBtn" title="Invoicing" onClick="save,com.axelor.apps.contract.web.ContractController:invoicing" showIf="id &amp;&amp; currentVersion.statusSelect == 3 &amp;&amp; $get('currentVersion.isPeriodicInvoicing') == false"/>
+            <button name="terminatedBtn" title="Terminate" onClick="save,com.axelor.apps.contract.web.ContractController:terminated" showIf="id &amp;&amp; statusSelect != 3"/>
+        </panel>
+        <panel sidebar="true" title="Notes">
+            <field name="note" showTitle="false"/>
+        </panel>
+        <panel-tabs>
+            <panel title="Current version">
+                <field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12">
+                    <editor x-show-titles="true" x-viewer="true" x-show-on-new="true">
+                        <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
+                        <panel showIf="id" colSpan="12">
+                            <field name="createdOn"/>
+                            <field name="createdBy"/>
+                        </panel>
+                        <field name="supposedActivationDate" hideIf="statusSelect &gt; 2"/>
+                        <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
+                            <field name="activationDate"/>
+                            <field name="activatedBy"/>
+                        </panel>
+                        <field name="supposedEndDate"/>
+                        <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
+                        <field name="note" colSpan="12"/>
+                    </editor>
+                </field>
+            </panel>
+            <panel title="Invoicing">
+                <field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" readonlyIf="currentVersion.statusSelect &gt; 2">
+                    <editor x-show-titles="true" x-viewer="true" x-show-on-new="true">
+                        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" canEdit="false"/>
+                        <field name="paymentCondition" canEdit="false" widget="SuggestBox" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                        <field name="invoicingFrequency"/>
+                        <field name="invoicingMoment"/>
+                        <field name="isConsumptionManagement"/>
+                        <field name="isAdditionaBenefitManagement"/>
+                        <field name="automaticInvoicing"/>
+                        <field name="isPeriodicInvoicing"/>
+                        <panel showIf="isPeriodicInvoicing" colSpan="12">
+                            <field name="isProratedInvoice"/>
+                            <field name="isProratedFirstInvoice"/>
+                            <field name="isProratedLastInvoice"/>
+                        </panel>
+                    </editor>
+                </field>
+                <field name="firstPeriodEndDate" readonlyIf="currentVersion.statusSelect &gt; 2"/>
+                <label colSpan="6"/>
+                <field name="currentInvoicePeriod" readonly="true"/>
+                <field name="periodNumber" readonly="true"/>
+                <field name="invoicePeriodHistory" colSpan="12" canNew="false" canRemove="false" canEdit="true" showIf="invoicePeriodHistory &amp;&amp; invoicePeriodHistory.length &gt; 0"/>
+            </panel>
+            <panel title="Content">
+                <field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" readonlyIf="currentVersion.statusSelect &gt; 2">
+                    <editor x-show-titles="false" x-viewer="true" x-show-on-new="true">
+                        <field name="contractLineList" colSpan="12" showTitle="false"/>
+                    </editor>
+                </field>
+                <field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" showIf="$get('currentVersion.isConsumptionManagement') == true">
+                    <editor x-show-titles="false" x-viewer="true" x-show-on-new="true">
+                        <field name="consumptionLineList" colSpan="12" showTitle="false" canNew="false" canRemove="false"/>
+                    </editor>
+                </field>
+                <field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" showIf="$get('currentVersion.isAdditionaBenefitManagement') == true">
+                    <editor x-show-titles="false" x-viewer="true" x-show-on-new="true">
+                        <field name="additionalBenefitList" colSpan="12" showTitle="false"/>
+                    </editor>
+                </field>
+            </panel>
+            <panel-related field="versionHistory" hidden="true" showIf="versionHistory &amp;&amp; versionHistory.length &gt; 0" readonly="true" form-view="contract-archived-version-form">
+                <field name="createdOn"/>
+                <field name="activationDate"/>
+                <field name="endDate"/>
+                <field name="statusSelect"/>
+            </panel-related>
+        </panel-tabs>
+    </form>
+
+    <action-record name="action-record-contract-default-record" model="com.axelor.apps.contract.db.Contract">
+        <field name="statusSelect" expr="eval: 1"/>
+        <field name="company"  expr="eval: __user__.activeCompany"/>
+        <field name="targetType" expr="eval: _xTargetType" if="_xTargetType != null"/>
+        <field name="currentVersion" expr="action:action-record-contract-version-default-record"/>
+    </action-record>
     
-    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large">
-       <panel>
-	       <field name="name" />
-	       <field name="typeSelect" />
-	       <field name="partner" onSelect="action-contract-partner-domain"/>
-	       <field name="productCategories" colSpan="12" />
-	       <field name="products" colSpan="12" />
-	       <field name="priceList" />
-	       <field name="startDate" />
-	       <field name="durationSelect" />
-	       <field name="tillDate" readonlyIf="durationSelect == 2" hideIf="durationSelect == 3" />
-	       <field name="durationPeriodType" showIf="durationSelect == 2" />
-	       <field name="durationNbPeriods" showIf="durationSelect == 2" />
-	       <field name="commitment"/>
-	       <panel title="Commitment" showIf="commitment" colSpan="12">
-	       		<field name="commitmentPeriodType" />
-	       		<field name="commitmentNbPeriods" />
-	       		<panel-related field="commitmentProducts" colSpan="12" />
-	       		<field name="specificCommitement" widget="html" colSpan="12"/>
-	       </panel>
-	       <panel title="Alerts" colSpan="12">
-	       		<panel-related field="alerts" colSpan="12" />
-	       </panel>
-	       <field name="paymentMode"/>
-	       <field name="paymentCondition" />
-	       <field name="terminationDate" />
-	       <field name="terminationReason" />
-	       <field name="noticePeriod" />
-	       <spacer/>
-	       <field name="noticePeriodType" showIf="noticePeriod"/>
-	       <field name="noticeNbPeriods" showIf="noticePeriod"/>
-	       <field name="totalAmt">
-	       	  <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt x-translate&gt;Total amount of contract&lt;/dt&gt;
-	              &lt;dd&gt;{{record.totalAmt}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
-	       </field>
-	       <spacer/>
-	       <field name="saleOrderTemplate" showIf="typeSelect == 1" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
-	       <field name="purchaseOrderTemplate" showIf="typeSelect == 2" if="__config__.app.isApp('purchase')"/>
-	       <panel-dashlet action="action-contract-sale-order-dashlet" title="Sales orders" colSpan="12" showIf="typeSelect == 1" if="__config__.app.isApp('sale')"/>
-	       <panel-dashlet action="action-contract-purchase-order-dashlet" title="Purchase orders" colSpan="12" showIf="typeSelect == 2" if="__config__.app.isApp('purchase')"/>
-	       <field name="totalSO"  showIf="typeSelect == 1" if="__config__.app.isApp('sale')"/>
-	       <field name="totalPO"  showIf="typeSelect == 2" if="__config__.app.isApp('purchase')"/>
-	       <field name="totalInvoiced" if="__config__.app.isApp('invoice')"/>
-	       <button name="createSO" title="Create Sale order" showIf="typeSelect == 1" if="__config__.app.isApp('sale')" onClick="action-contract-create-so"/>
-	       <button name="createPO" title="Create PO" showIf="typeSelect == 2" if="__config__.app.isApp('purchase')" onClick="action-contract-create-po"/>
-	       <spacer colSpan="12"/>
-	       <field name="contractTemplate" onChange="action-contract-contract-template-change"/>
-	       <field name="contractContent" colSpan="12" widget="html"/>
-       </panel>
+    <action-record name="action-record-contract-version-default-record" model="com.axelor.apps.contract.db.ContractVersion">
+        <field name="statusSelect" expr="eval: 1"/>
+    </action-record>
+
+    <action-attrs name="action-attrs-contract-partner-domain">
+        <attribute for="partner" name="domain" expr="eval: &quot;self IS NULL&quot;"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer IS TRUE&quot;" if="targetType == 1"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier IS TRUE&quot;" if="targetType == 2"/>
+    </action-attrs>
+
+    <!-- Archived versions -->
+
+    <!--
+     TODO: Add invoicing fields
+     -->
+
+    <form name="contract-archived-version-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
+        <panel title="Informations">
+            <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
+            <panel showIf="id" colSpan="12">
+                <field name="createdOn"/>
+                <field name="createdBy"/>
+            </panel>
+            <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
+                <field name="activationDate"/>
+                <field name="activatedBy"/>
+            </panel>
+            <field name="supposedEndDate"/>
+            <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
+        </panel>
+        <panel title="Notes">
+            <field name="note" showTitle="false" colSpan="12"/>
+        </panel>
+        <panel sidebar="true" title="Contract" itemSpan="12" readonly="true">
+            <field name="contract.name" css="highlight"/>
+            <field name="contract.contractId"/>
+            <field name="contract.partner"/>
+        </panel>
+    </form>
+
+    <!-- Next version views -->
+
+    <action-view name="action-view-contract-show-version" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
+        <view type="grid" name="contract-version-next-grid"/>
+        <view type="form" name="contract-version-next-form"/>
+        <context name="_showRecord" expr="eval: nextVersion.id"/>
+    </action-view>
+
+    <action-view name="action-view-contract-add-version" title="Nouvelle version" model="com.axelor.apps.contract.db.ContractVersion">
+        <view type="form" name="contract-version-next-form"/>
+        <view type="grid" name="contract-version-next-grid"/>
+        <view-param name="forceEdit"  value="true"/>
+        <context name="_xContractId" expr="eval: id"/>
+        <context name="_xIsNextVersion" expr="true"/>
+    </action-view>
+
+    <grid name="contract-version-next-grid" title="Versions" model="com.axelor.apps.contract.db.ContractVersion">
+        <field name="contract.contractId"/>
+        <field name="contract.name"/>
+        <field name="contract.partner"/>
+        <field name="activationDate"/>
+        <field name="statusSelect"/>
+    </grid>
+
+    <form name="contract-version-next-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion"
+        onSave="save,com.axelor.apps.contract.web.ContractController:saveNextVersion"
+        onLoad="action-record-contract-version-load"
+        onNew="com.axelor.apps.contract.web.ContractVersionController:newVersion,action-record-contract-version-load">
+        <panel title="Informations">
+            <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
+            <panel showIf="id" colSpan="12">
+                <field name="createdOn"/>
+                <field name="createdBy"/>
+            </panel>
+            <field name="supposedActivationDate" hideIf="statusSelect &gt; 2"/>
+            <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
+                <field name="activationDate"/>
+                <field name="activatedBy"/>
+            </panel>
+            <field name="supposedEndDate"/>
+            <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
+            <field name="doNotRenew" hidden="true" showIf="$get('contractNext.isTacitRenewal') == true"/>
+        </panel>
+        <panel title="Invoicing">
+            <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" canEdit="false"/>
+            <field name="paymentCondition" canEdit="false" widget="SuggestBox" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+            <field name="invoicingMoment"/>
+            <field name="isConsumptionManagement"/>
+            <field name="isAdditionaBenefitManagement"/>
+            <field name="automaticInvoicing"/>
+            <field name="isPeriodicInvoicing"/>
+            <panel showIf="isPeriodicInvoicing" colSpan="12">
+                <field name="isProratedInvoice"/>
+                <field name="isProratedFirstInvoice"/>
+                <field name="isProratedLastInvoice"/>
+            </panel>
+            <field name="invoicingFrequency"/>
+        </panel>
+        <panel-related field="contractLineList" colSpan="12"/>
+        <!--<panel-related field="consumptionLineList" showIf="isConsumptionManagement == true" colSpan="12"/>-->
+        <panel-related field="additionalBenefitList" showIf="isAdditionaBenefitManagement == true" colSpan="12"/>
+        <panel sidebar="true">
+            <button name="waitingBtn" title="Waiting" onClick="save,com.axelor.apps.contract.web.ContractController:waitingNextVersion" showIf="id &amp;&amp; statusSelect == 1"/>
+            <button name="ongoingBtn" title="Ongoing" onClick="save,com.axelor.apps.contract.web.ContractController:activeNextVersion,close" showIf="id &amp;&amp; statusSelect == 2"/>
+        </panel>
+        <panel sidebar="true" title="Contract" itemSpan="12" readonly="true">
+            <field name="contractNext.name" css="highlight"/>
+            <field name="contractNext.contractId"/>
+            <field name="contractNext.partner"/>
+        </panel>
+        <panel title="Notes">
+            <field name="note" showTitle="false" colSpan="12"/>
+        </panel>
+        <panel hidden="true">
+            <field name="contractNext">
+                <editor>
+                    <field name="name"/>
+                    <field name="contractId"/>
+                    <field name="partner"/>
+                    <field name="isTacitRenewal"/>
+                </editor>
+            </field>
+            <field name="$_xIsNext" type="Boolean"/>
+        </panel>
     </form>
     
-    <action-attrs name="action-contract-partner-domain">
-    	<attribute name="domain" for="partner" expr="eval:&quot;self.isCustomer = true&quot;" if="typeSelect == 1"/>
-    	<attribute name="domain" for="partner" expr="eval:&quot;self.isSupplier = true&quot;" if="typeSelect == 2"/>
+    <action-attrs name="action-record-contract-version-load">
+        <attribute for="$_xIsNext" name="value" expr="eval: contractNext != null ? true : false"/>
+        <attribute for="$_xIsNext" name="value" expr="eval: _xIsNextVersion" if="_xIsNextVersion"/>
     </action-attrs>
-    
-    <action-record name="action-contract-contract-template-change" model="com.axelor.apps.contract.db.Contract">
-    	<field name="contractContent" expr="eval:contractTemplate.content" if="contractTemplate != null"/>
-    </action-record>
 
 </object-views>
