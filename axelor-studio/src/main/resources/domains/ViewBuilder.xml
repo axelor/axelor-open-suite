@@ -6,14 +6,8 @@
   <module name="studio" package="com.axelor.studio.db" />
   
   <entity name="ViewBuilder" cachable="true">
-  	<![CDATA[
-    	This is main class that represent all edited views. 
-    	At present four view types form,grid,chart and dasbhoard supported.  
-     ]]>
-    <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
-    <one-to-many name="viewPanelList" ref="ViewPanel" title="Panels" mappedBy="viewBuilder" orderBy="panelLevel"/>
-    <one-to-many name="viewSidePanelList" ref="ViewPanel" title="Side panels" mappedBy="viewBuilderSideBar" orderBy="panelLevel"/>
-    <one-to-many name="viewItemList" ref="ViewItem" title="View items" mappedBy="viewBuilder" orderBy="sequence"/>
+<!--     <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/> -->
+    <many-to-one name="customModel" title="Custom Model" ref="com.axelor.meta.db.MetaJsonModel"/>
     <string name="title" title="Title" required="true" />
     <string name="name" title="Name"  required="true"/>
     <string name="model" title="Model" />
@@ -22,16 +16,9 @@
     
     <many-to-one name="metaViewGenerated" title="View generated" ref="com.axelor.meta.db.MetaView" />
     <string name="viewType" title="View type" />
-    <boolean name="edited" title="Edited" default="true"/>
-    <boolean name="recorded"/>
-    <one-to-many name="toolbar" ref="ViewItem" title="Toolbar" mappedBy="viewBuilderToolbar" orderBy="sequence"/>
-    <string name="onSave" title="On save" />
-    <string name="onNew" title="On new" />
-    <string name="onLoad" title="On load" />
-    <boolean name="clearWkf" />
-    <boolean name="addStream" title="Add stream" />
 
     <!-- Chart fields -->
+    <boolean name="isJson" title="Json ?" />
     <one-to-many name="filterList" title="Filters" ref="com.axelor.studio.db.Filter" mappedBy="viewBuilder" />
     <many-to-one name="aggregateOn" title="Aggregate On" ref="com.axelor.meta.db.MetaField"/>
     <boolean name="isJsonAggregateOn" title="Json ?" />
@@ -52,13 +39,6 @@
     <!-- Dashboard fields -->
     <one-to-many name="dashletBuilderList" ref="com.axelor.studio.db.DashletBuilder" mappedBy="dashboard" orderBy="sequence"/>
     
-    <!-- Menubar builder -->
-    <one-to-many name="menubar" ref="ViewItem" title="Menubar" mappedBy="menubarBuilder" orderBy="sequence"/>
-    
-    <!-- Add only new panels-->
-    <boolean name="addOnly" />
-    
-    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
   </entity>
     
     

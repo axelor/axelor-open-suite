@@ -140,11 +140,13 @@ public class FilterService {
 		
 		if (targetField instanceof MetaField) {
 			metaField = (MetaField) targetField;
+			targetList.add(metaField.getName());
 		}
 		else if (targetField instanceof MetaJsonField) {
 			metaJson = (MetaJsonField) targetField;
+			targetList.add(metaJson.getName());
 		}
-		targetList.add(metaField.getName());
+		
 		
 		if (target != null) {
 			String modelName = metaField != null ? metaField.getTypeName() : metaJson.getTargetModel();
@@ -260,6 +262,9 @@ public class FilterService {
 		String fieldName = filter.getIsJson() ? json.getModelField() + ",'" + json.getName() + "'" : field.getName();
 		if (paramName == null) {
 			paramName = fieldName;
+			if (filter.getIsJson()) {
+				paramName = json.getName();
+			}
 		}
 		
 		String conditionField = filter.getIsJson() ? getJsonJpql(json) + "(self." + fieldName + ")": "self." + fieldName;
@@ -539,6 +544,52 @@ public class FilterService {
 
 		return filters;
 
+	}
+	
+	/**
+	 * Get simple field type from typeName of MetaField
+	 * 
+	 * @param metaField
+	 *            MetaField to check for typeName.
+	 * @return Simple field type.
+	 */
+	public String getFieldType(MetaField metaField) {
+
+		String relationship = metaField.getRelationship();
+
+		if (relationship != null) {
+			switch (relationship) {
+			case "OneToMany":
+				return "one-to-many";
+			case "ManyToMany":
+				return "many-to-many";
+			case "ManyToOne":
+				return "many-to-one";
+			}
+		}
+
+		switch (metaField.getTypeName()) {
+			case "String":
+				return "string";
+			case "Integer":
+				return "integer";
+			case "Boolean":
+				return "boolean";
+			case "BigDecimal":
+				return "decimal";
+			case "Long":
+				return "long";
+			case "byte[]":
+				return "binary";
+			case "LocalDate":
+				return "date";
+			case "ZonedDateTime":
+				return "datetime";
+			case "LocalDateTime":
+				return "datetime";
+			default:
+				return "string";
+		}
 	}
 
 }

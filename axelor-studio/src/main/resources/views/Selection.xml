@@ -15,20 +15,6 @@
         <option value="datetime">DateTime</option>
     </selection>
     
-    <selection name="view.item.widget.selection">
-        <option value="normal">Normal</option>
-        <option value="RadioSelect">Radio</option>
-        <option value="NavSelect">Navigation Select</option>
-        <option value="multi-select">Multi Select</option>
-        <option value="binary-link">Link</option>
-        <option value="Image">Image</option>
-    </selection>
-    
-    <selection name="form.view.builder.place.select">
-        <option value="0">Begining</option>
-        <option value="1">End</option>
-    </selection>
-    
     <selection name="studio.chart.builder.date.type">
         <option value="day">Day</option>
         <option value="month">Month</option>
@@ -72,8 +58,8 @@
     </selection>
     
     <selection name="studio.business.wkf.display.type.select">
-        <option value="0">Simple Select</option>
-        <option value="1">Nav Select</option>
+        <option value="0">Nav Select</option>
+        <option value="1">Simple Select</option>
     </selection>
     
     <selection name="studio.chart.filter.logic.operator">
@@ -92,25 +78,14 @@
     </selection>
     
     <selection name="studio.action.builder.type.select">
-    	<option value="0">Create object</option>
-    	<option value="1">Update object</option>
-    	<option value="2">Open view</option>
-    	<option value="3">Open report</option>
-    	<option value="4">Send email</option>
-    	<option value="5">Validation</option>
+    	<option value="0">Create</option>
+    	<option value="1">Update</option>
+    	<option value="2">Script</option>
     </selection>
     
     <selection name="studio.action.builder.line.type.select">
     	<option value="0">Formula</option>
     	<option value="1">Groovy</option>
-    </selection>
-    
-    <selection name="studio.view.item.type.select">
-    	<option value="0">Field</option>
-    	<option value="1">Button</option>
-    	<option value="2">Label</option>
-    	<option value="3">Spacer</option>
-    	<option value="4">Dashlet</option>
     </selection>
     
     <selection name="studio.action.builder.line.validation.type.select">
@@ -120,20 +95,13 @@
     	<option value="notify">Notification</option>
     </selection>
     
-    <selection name="record.import.rule.select">
-    	<option value="0">Create</option>
-    	<option value="1">Search</option>
-    	<option value="2">Search or Create</option>
-    </selection>
-    
-    <selection name="record.import.preference.select">
-    	<option value="0">Create</option>
-    	<option value="1">Full update</option>
-    	<option value="2">Partial update</option>
-    </selection>
-    
     <selection name="app.type.select" id="studio.app.type.select">
 		<option order="21" value="bpm">Bpm</option>
+	</selection>
+	
+	<selection name="studio.action.builder.script.type.select">
+		<option value="0">Javascript</option>
+    	<option value="1">Groovy</option>
 	</selection>
     
 </object-views>

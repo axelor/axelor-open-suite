@@ -329,7 +329,6 @@ ui.formInput('BpmnEditor', {
 	}],
 
 	link: function(scope, element, attrs, model) {
-
 		var canvas = element.find('.bpmn-canvas');
 
 		var overrideModule = {
@@ -357,9 +356,26 @@ ui.formInput('BpmnEditor', {
 		}
 
 		model.$parsers.unshift(function(value) {
-			var valid = _.all(modeler.definitions.rootElements[0].flowElements, function(item) { return item.name; });
+			
+			var invalidElements = _.filter(modeler.definitions.rootElements[0].flowElements, function(e) {
+				return !e.name;
+			});
+			
+			var elements = _.filter(modeler.definitions.rootElements[0].flowElements, function(e) {
+				return e.$type != "bpmn:SequenceFlow" && e.$type != "bpmn:StartEvent";
+			});
 
+			var start = _.filter(modeler.definitions.rootElements[0].flowElements, function(e) {
+	              return e.$type == "bpmn:StartEvent" && (e.outgoing || []).length > 0;
+	          });
+
+			var valid = _.all(elements, function(e) {
+				return (e.incoming || []).length > 0 && start.length == 1 && invalidElements.length == 0;
+			});
+			
+			
 			model.$setValidity('valid', valid);
+			
 			return valid ? value : undefined;
 		});
 

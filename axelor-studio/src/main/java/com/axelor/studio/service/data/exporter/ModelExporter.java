@@ -21,7 +21,7 @@ import com.axelor.meta.schema.actions.ActionView.View;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Field;
 import com.axelor.meta.schema.views.GridView;
-import com.axelor.studio.service.ViewLoaderService;
+import com.axelor.studio.service.data.CommonService;
 import com.google.inject.Inject;
 
 public class ModelExporter {
@@ -39,7 +39,11 @@ public class ModelExporter {
 	@Inject
 	private FormExporter formExporter;
 	
+	@Inject
+	private CommonService common;
+	
 	private ExporterService exporterService;
+	
 	
 	public void export(ExporterService exporterService, MetaAction action) throws ClassNotFoundException {
 		
@@ -122,7 +126,7 @@ public class ModelExporter {
 			GridView gridView = (GridView) views.getViews().get(0);
 			
 			String name = view.getName();
-			String defaultName = ViewLoaderService.getDefaultViewName(view.getModel(), "grid");
+			String defaultName = getDefaultViewName(view.getModel(), "grid");
 			
 			if (name.equals(defaultName)) {
 				fields.add("x");
@@ -148,7 +152,7 @@ public class ModelExporter {
 	public MetaView getMetaView(String model, String type, String name) {
 		
 		if (name == null) {
-			name = ViewLoaderService.getDefaultViewName(model, type);
+			name = getDefaultViewName(model, type);
 		}
 		
 		MetaView view =  metaViewRepo.all().filter(
@@ -173,8 +177,16 @@ public class ModelExporter {
 			processModel(module, view[0], viewMap);
 			exporterService.setMenuPath(null, null);
 		}
-				
 		
+	}
+	
+	public String getDefaultViewName(String model, String type) {
+		
+		if (model.contains(".")) {
+			model = model.substring(model.lastIndexOf("."));
+		}
+		
+		return common.inflector.dasherize(model) + "-" + type;
 	}
 
 }

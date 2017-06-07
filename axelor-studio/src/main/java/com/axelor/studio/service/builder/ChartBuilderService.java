@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
@@ -37,7 +38,6 @@ import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.studio.db.Filter;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.service.FilterService;
-import com.axelor.studio.service.ViewLoaderService;
 import com.google.inject.Inject;
 
 /**
@@ -61,9 +61,6 @@ public class ChartBuilderService {
 	private ActionRecord onNewAction;
 
 	private List<RecordField> onNewFields;
-
-	@Inject
-	private ViewLoaderService viewLoaderService;
 
 	@Inject
 	private FilterService filterService;
@@ -175,11 +172,21 @@ public class ChartBuilderService {
 		if (aggField != null) {
 			query += "," + Tab3 + aggField + " AS aggField";
 		}
-
-		query += Tab2 + "FROM " + Tab3 + viewBuilder.getMetaModel().getName()
-				+ " self";
-
+		
+		String[] models = viewBuilder.getModel().split("\\.");
 		String filters = createFilters(viewBuilder.getFilterList());
+		
+		if (viewBuilder.getIsJson()) {
+			if (filters != null) {
+				filters = "self.jsonModel = '" + models[models.length -1] + "' AND (" + filters + ")";
+			}
+			else {
+				filters = "self.jsonModel = '" + models[models.length -1] + "'" ;
+			}
+			models = new String[]{MetaJsonRecord.class.getSimpleName()};
+		}
+		
+		query += Tab2 + "FROM " + Tab3 +  models[models.length -1] + " self";
 
 		if (filters != null) {
 			query += Tab2 + "WHERE " + Tab3 + filters;
@@ -394,9 +401,9 @@ public class ChartBuilderService {
 		String[] modelField = null;
 
 		if (relationship == null) {
-			String fieldType = json ? Inflector.getInstance().camelize(typeName) : viewLoaderService.getFieldType(metaField);
+			String fieldType = json ? Inflector.getInstance().camelize(typeName, true) : filterService.getFieldType(metaField);
 			fieldStr += "\" type=\"" + fieldType;
-			String select = json ? jsonField.getSelection() : metaField.getMetaSelect() != null ? metaField.getMetaSelect().getName() : null;
+			String select = json ? jsonField.getSelection() : null;
 			if (select != null) {
 				fieldStr = fieldStr + "\" selection=\"" + select;
 			}

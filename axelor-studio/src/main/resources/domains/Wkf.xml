@@ -11,16 +11,16 @@
 	    Wkf stores the bpmn xml of the worklfow diagram. The nodes and transitions of a wkf will be created by using the bpmn xml. 
 	  ]]>
       <string name="name" title="Name" required="true" />
-      <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object" required="true"/>
-      <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" title="ViewBuilder"/>
-      <integer name="displayTypeSelect" title="Process display type" selection="studio.business.wkf.display.type.select"/>
+      <string name="metaModel" title="Object" />
+      <string name="jsonModel" title="Object" />
+      <string name="jsonField" title="Json Field"/>
+      <boolean name="isJson" title="Custom" default="true" />
+      <many-to-one name="statusField" ref="com.axelor.meta.db.MetaJsonField" title="Wkf field" required="true"/>
       <one-to-many name="nodes" ref="WkfNode" mappedBy="wkf" orderBy="sequence"/>
       <one-to-many name="transitions" ref="WkfTransition" mappedBy="wkf"/>
-      <string name="bpmnXml" title="Bpmn xml" large="true" />
       <one-to-many name="wkfTrackings" ref="WkfTracking" mappedBy="wkf"/>
-      <boolean name="edited" title="Edited" default="true"/>
-      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
-      <many-to-one name="wkfField" ref="com.axelor.meta.db.MetaField" title="Wkf field" required="true"/>
+      <integer name="displayTypeSelect" title="Process display type" selection="studio.business.wkf.display.type.select"/>
+      <string name="bpmnXml" title="Bpmn xml" large="true" />
   </entity>
     
  </domain-models>

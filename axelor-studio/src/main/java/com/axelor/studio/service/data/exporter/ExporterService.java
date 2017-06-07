@@ -37,7 +37,6 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.schema.views.AbstractWidget;
-import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.axelor.studio.service.data.importer.DataReader;
@@ -380,7 +379,7 @@ public class ExporterService {
 				
 				String view = row[CommonService.VIEW];
 				if (model != null && view == null) {
-					view = ViewLoaderService.getDefaultViewName(model, "form");
+					view = common.inflector.dasherize(model) + "-form";
 				}
 				
 				if (updateComment(lastKey, type, row)) {

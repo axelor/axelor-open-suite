@@ -17,11 +17,13 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
@@ -76,8 +79,12 @@ public class WkfDesignerService {
 	
 	@Inject
 	protected RoleRepository roleRepo;
-
 	
+	@Inject
+	private WkfRepository wkfRepo;
+	
+	@Inject
+	private WkfService wkfService;
 
 	/**
 	 * Method parse xml doc to create workflow nodes from it. It set incoming
@@ -125,8 +132,10 @@ public class WkfDesignerService {
 					node.setEndNode(true);
 			} else {
 				node.setName(element.getAttribute("name"));
+				nodeMap.remove(node);
 			}
-
+			
+			wkfService.clearNodes(nodeMap.values());
 			NodeList incomings = element.getElementsByTagName("incoming");
 
 			for (int j = 0; j < incomings.getLength(); j++) {
@@ -183,11 +192,24 @@ public class WkfDesignerService {
 				nodeSequences.add(node.getSequence());
 			}
 		}
-		else {
-			log.debug("Worklfow not saved");
-		}
 		
 		return nodeMap;
+	}
+	
+	private Map<String, WkfTransition> getTransitionMap() {
+		
+		WkfTransitionRepository wkfTransitionRepo = Beans
+				.get(WkfTransitionRepository.class);
+		
+		Map<String, WkfTransition> transitionMap = new HashMap<String, WkfTransition>();
+		if (instance != null) {
+			List<WkfTransition> transitions = wkfTransitionRepo.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
+			for (WkfTransition transition : transitions) {
+				transitionMap.put(transition.getXmlId(), transition);
+			}
+		}
+		
+		return transitionMap;
 	}
 
 	/**
@@ -197,10 +219,14 @@ public class WkfDesignerService {
 	 * 
 	 * @param instance
 	 *            Workflow instance
+	 * @throws ParserConfigurationException 
+	 * @throws IOException 
+	 * @throws SAXException 
 	 * @throws Exception
 	 */
 	@Transactional
-	public void processXml(Wkf instance) throws Exception {
+	public Wkf processXml(Wkf instance) throws ParserConfigurationException, SAXException, IOException{
+		
 		this.instance = instance;
 		String bpmnXml = instance.getBpmnXml();
 		if (bpmnXml != null) {
@@ -211,34 +237,28 @@ public class WkfDesignerService {
 
 			Document doc = db.parse(is);
 
-			WkfRepository wkfRepository = Beans.get(WkfRepository.class);
-			WkfTransitionRepository wkfTransitionRepository = Beans
-					.get(WkfTransitionRepository.class);
-
 			NodeList list;
-
+			
+			Map<String, WkfTransition> transitionMap = getTransitionMap(); 
 			list = doc.getElementsByTagName("sequenceFlow");
 			for (int i = 0; i < list.getLength(); i++) {
 				Element element = (Element) list.item(i);
-
-				WkfTransition transition = wkfTransitionRepository
-						.all()
-						.filter("self.wkf.id = ? and self.xmlId = ?",
-								instance.getId(), element.getAttribute("id"))
-						.fetchOne();
+				
+				WkfTransition transition = transitionMap.get(element.getAttribute("id"));
 
 				if (transition == null) {
 					transition = new WkfTransition();
 					transition.setXmlId(element.getAttribute("id"));
 					transition.setName(element.getAttribute("name"));
 					transition.setWkf(instance);
+					log.debug("New transition : {}, Version: {}", transition.getName(), transition.getVersion());
 				} else {
 					transition.setName(element.getAttribute("name"));
 				}
 
 				transitions.add(transition);
 			}
-
+			
 			List<WkfNode> allRemoveNodes = instance.getNodes();
 
 			if (allRemoveNodes.size() > 0) {
@@ -247,12 +267,9 @@ public class WkfDesignerService {
 					tempNode.getOutgoing().clear();
 				}
 			}
-
-			traverseXMLElement(doc);
-
+			
 			instance.getTransitions().clear();
-			instance.getNodes().clear();
-
+			
 			for (WkfTransition transition : transitions) {
 				if (transition.getVersion() == null) {
 					transition.setIsButton(true);
@@ -260,16 +277,18 @@ public class WkfDesignerService {
 				}
 				instance.addTransition(transition);
 			}
+			
+			traverseXMLElement(doc);
+			
+			instance.getNodes().clear();
 
 			for (WkfNode node : nodes) {
 				instance.addNode(node);
 			}
-
-			wkfRepository.save(instance);
-		} else {
-			return;
 		}
-
+		
+		return wkfRepo.save(instance);
 	}
+
 
 }

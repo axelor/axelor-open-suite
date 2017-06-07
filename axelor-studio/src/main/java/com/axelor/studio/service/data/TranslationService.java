@@ -42,7 +42,6 @@ public class TranslationService {
 			translation.setLanguage(lang);
 			translation.setKey(key);
 		}
-		translation.setModule(module);
 		translation.setMessage(message);
 		
 		metaTranslationRepo.save(translation);

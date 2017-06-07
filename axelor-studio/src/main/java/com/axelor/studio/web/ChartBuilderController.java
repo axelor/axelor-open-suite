@@ -1,6 +1,5 @@
 package com.axelor.studio.web;
 
-
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -26,9 +25,7 @@ public class ChartBuilderController {
 		boolean name = false;
 		boolean code = false;
 		for (MetaField field : targetModel.getMetaFields()) {
-			if (field.getNameColumn()) {
-				targetField = field;
-			}
+			targetField = field;
 			if (field.getName().equals("name")) {
 				name = true;
 			}
@@ -81,9 +78,7 @@ public class ChartBuilderController {
 		boolean name = false;
 		boolean code = false;
 		for (MetaField field : targetModel.getMetaFields()) {
-			if (field.getNameColumn()) {
-				targetField = field;
-			}
+			targetField = field;
 			if (field.getName().equals("name")) {
 				name = true;
 			}

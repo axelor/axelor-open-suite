@@ -6,17 +6,20 @@
   <module name="studio" package="com.axelor.studio.db" />
 
   <entity name="ActionBuilderLine" cachable="true">
-     <![CDATA[
-   		It represents a sub detail of the {@link ActionBuilder}. Child tags of an action xml will be created by using this class.   
-     ]]>
      <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action Builder" />
-     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field" />
-     <string name="targetField" title="Target field" />     
-     <string name="value" title="Value"/>
+     <many-to-one name="metaJsonField" ref="com.axelor.meta.db.MetaJsonField" title="Target Field" />
+     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Target Field" />
+     <many-to-one name="valueJson" ref="com.axelor.meta.db.MetaJsonField" title="Source Field" />
+     <many-to-one name="valueField" ref="com.axelor.meta.db.MetaField" title="Source Field" />
+     <string name="value" title="Value Expr"/>
      <string name="conditionText" title="Condition" />
      <string name="filter" title="Filter" />
      <string name="validationTypeSelect" title="Validation type" selection="studio.action.builder.line.validation.type.select" />
   	 <string name="validationMsg" title="Message" />
+  	 <one-to-many name="subLines" ref="ActionBuilderLine" mappedBy="parent"/>
+  	 <many-to-one name="parent" ref="ActionBuilderLine" />
+  	 <string name="name" title="Target Field" />
+  	 <boolean name="dummy" title="Dummy" />
   </entity>
 
 </domain-models>
