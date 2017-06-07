@@ -165,11 +165,11 @@ public class ReimbursementExportService {
 				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-//				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
-			reimbursementRepo.save(reimbursement);
-//			return reimbursement;
+			reimbursement = reimbursementRepo.save(reimbursement);
+			return reimbursement;
 		}
 
 		log.debug("End runReimbursementProcess");
@@ -299,6 +299,7 @@ public class ReimbursementExportService {
 	public Reimbursement createReimbursement(Partner partner, Company  company) throws AxelorException   {
 		Reimbursement reimbursement = new Reimbursement();
 		reimbursement.setPartner(partner);
+		reimbursement.setCompany(company);
 
 		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
 

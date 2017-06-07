@@ -33,8 +33,8 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 	protected ReimbursementExportService reimbursementExportService;
 
 	@Inject
-	public BatchCreditTransferPartnerReimbursement(PartnerRepository partnerRepo,
-			PartnerService partnerService, ReimbursementExportService reimbursementExportService) {
+	public BatchCreditTransferPartnerReimbursement(PartnerRepository partnerRepo, PartnerService partnerService,
+			ReimbursementExportService reimbursementExportService) {
 		this.partnerRepo = partnerRepo;
 		this.partnerService = partnerService;
 		this.reimbursementExportService = reimbursementExportService;
@@ -86,10 +86,11 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected Reimbursement createReimbursement(Partner partner, Company company) throws AxelorException {
 		List<MoveLine> moveLineList = moveLineRepo.all()
-				.filter("self.account.reconcileOk = true AND self.fromSchedulePaymentOk = false "
-						+ "AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 "
-						+ "AND self.partner = ?2 AND self.company = ?3 AND self.reimbursementStatusSelect = ?4 ",
-						MoveRepository.STATUS_VALIDATED, partner, company, MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
+				.filter("self.account.reconcileOk = true AND self.move.statusSelect = ?1 "
+						+ "AND self.amountRemaining > 0 AND self.credit > 0 "
+						+ "AND self.move.partner = ?2 AND self.move.company = ?3 "
+						+ "AND self.reimbursementStatusSelect = ?4", MoveRepository.STATUS_VALIDATED, partner, company,
+						MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
 				.fetch();
 
 		Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
