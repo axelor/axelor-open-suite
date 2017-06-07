@@ -53,7 +53,7 @@
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="defineSubBillOfMaterial"/>
+        <field name="defineSubBillOfMaterial" readonly="true"/>
         <field name="hasNoManageStock"/>
         <field name="prodProcess" readonlyIf="defineSubBillOfMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
@@ -61,7 +61,7 @@
 
 	<form name="bill-of-material-line-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial"
-		onSave="action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-raw-material"
+		onSave="action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-def-sub-bom"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
 			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
@@ -99,7 +99,7 @@
 			<field name="unit" as="unit"/>
 			<field name="prodProcess" as="prodProcess"/>
 		</node>    	
-		
+
 		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">
 			<field name="product" as="product"/>
 			<field name="qty" as="qty"/>
@@ -120,7 +120,7 @@
     </action-view>
 
 	<action-group name="action-bill-of-material-group-product">
-		<action name="action-bill-of-material-attrs-product-raw-material"/>
+		<action name="action-bill-of-material-attrs-product-def-sub-bom"/>
         <action name="action-bill-of-material-record-product"/>
 	</action-group>
     
@@ -165,16 +165,16 @@
     </action-method>
     
      <action-method name="action-bill-of-material-method-validate-prod-process">
-    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess" if="id != null"/>
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess"/>
     </action-method>
     
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
 
-	<action-attrs name="action-bill-of-material-attrs-product-raw-material">
-		<attribute name="value" for="defineSubBillOfMaterial" expr="eval: product?.productSubTypeSelect == 3"/>
-		<attribute name="readonly" for="defineSubBillOfMaterial" expr="eval: product?.productSubTypeSelect == 3"/>
+	<action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
+		<attribute name="value" for="defineSubBillOfMaterial" expr="eval: false" if="product.productSubTypeSelect == 3"/>
+		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: true" if="product.productSubTypeSelect == 3"/>
 	</action-attrs>
 
 </object-views>
