@@ -47,7 +47,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		this.invoicePaymentRepository = invoicePaymentRepository;
 	}
 
-	protected void process(int operationType) {
+	protected void process(int operationTypeSelect) {
 		List<InvoicePayment> doneList = new ArrayList<>();
 		List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
@@ -66,7 +66,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		}
 
 		Query<Invoice> query = invoiceRepo.all().filter(filter)
-				.bind("operationTypeSelect", operationType)
+				.bind("operationTypeSelect", operationTypeSelect)
 				.bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
 				.bind("company", accountingBatch.getCompany())
 				.bind("dueDate", accountingBatch.getDueDate())
@@ -81,7 +81,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 				bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
 			}
 
-			query = query.bind("bankDetailsSet", bankDetailsSet);
+			query.bind("bankDetailsSet", bankDetailsSet);
 		}
 
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
@@ -92,7 +92,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 				} catch (Exception ex) {
 					incrementAnomaly();
 					anomalyList.add(invoice.getId());
-					query = query.bind("anomalyList", anomalyList);
+					query.bind("anomalyList", anomalyList);
 					TraceBackService.trace(ex);
 					ex.printStackTrace();
 					log.error(String.format("Credit transfer batch for invoices: anomaly for invoice %s",

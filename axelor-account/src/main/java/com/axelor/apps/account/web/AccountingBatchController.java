@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferCustomerRefund;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
-import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerCreditBalanceReimbursement;
+import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.db.Batch;
@@ -217,7 +217,7 @@ public class AccountingBatchController {
 				batchStrategyClass = BatchCreditTransferCustomerRefund.class;
 				break;
 			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:
-				batchStrategyClass = BatchCreditTransferPartnerCreditBalanceReimbursement.class;
+				batchStrategyClass = BatchCreditTransferPartnerReimbursement.class;
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown customer reimbursement type");

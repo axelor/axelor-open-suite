@@ -25,7 +25,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class BatchCreditTransferPartnerCreditBalanceReimbursement extends BatchStrategy {
+public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	protected PartnerRepository partnerRepo;
@@ -33,7 +33,7 @@ public class BatchCreditTransferPartnerCreditBalanceReimbursement extends BatchS
 	protected ReimbursementExportService reimbursementExportService;
 
 	@Inject
-	public BatchCreditTransferPartnerCreditBalanceReimbursement(PartnerRepository partnerRepo,
+	public BatchCreditTransferPartnerReimbursement(PartnerRepository partnerRepo,
 			PartnerService partnerService, ReimbursementExportService reimbursementExportService) {
 		this.partnerRepo = partnerRepo;
 		this.partnerService = partnerService;
@@ -85,11 +85,11 @@ public class BatchCreditTransferPartnerCreditBalanceReimbursement extends BatchS
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected Reimbursement createReimbursement(Partner partner, Company company) throws AxelorException {
-		List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all()
+		List<MoveLine> moveLineList = moveLineRepo.all()
 				.filter("self.account.reconcileOk = true AND self.fromSchedulePaymentOk = false "
-						+ "AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND "
-						+ "self.reimbursementStatusSelect = ?4 ", MoveRepository.STATUS_VALIDATED, partner, company,
-						MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
+						+ "AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 "
+						+ "AND self.partner = ?2 AND self.company = ?3 AND self.reimbursementStatusSelect = ?4 ",
+						MoveRepository.STATUS_VALIDATED, partner, company, MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
 				.fetch();
 
 		Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, company, partner);

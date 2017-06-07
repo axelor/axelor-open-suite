@@ -75,7 +75,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 				bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
 			}
 
-			query = query.bind("bankDetailsSet", bankDetailsSet);
+			query.bind("bankDetailsSet", bankDetailsSet);
 		}
 
 		for (List<Expense> expenseList; !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
@@ -87,7 +87,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 				} catch (Exception ex) {
 					incrementAnomaly();
 					anomalyList.add(expense.getId());
-					query = query.bind("anomalyList", anomalyList);
+					query.bind("anomalyList", anomalyList);
 					TraceBackService.trace(ex);
 					ex.printStackTrace();
 					log.error(String.format("Credit transfer batch for expense payment: anomaly for expense %s",
