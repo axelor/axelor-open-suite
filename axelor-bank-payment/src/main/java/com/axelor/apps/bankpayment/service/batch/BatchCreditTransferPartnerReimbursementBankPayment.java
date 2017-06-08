@@ -20,6 +20,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class BatchCreditTransferPartnerReimbursementBankPayment extends BatchCreditTransferPartnerReimbursement {
@@ -29,6 +30,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment extends BatchCre
 	protected BankOrderLineService bankOrderLineService;
 	protected BankOrderRepository bankOrderRepo;
 
+	@Inject
 	public BatchCreditTransferPartnerReimbursementBankPayment(PartnerRepository partnerRepo,
 			PartnerService partnerService, ReimbursementExportService reimbursementExportService,
 			GeneralService generalService, ReimbursementRepository reimbursementRepo,
