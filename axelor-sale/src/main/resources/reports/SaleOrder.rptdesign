@@ -152,7 +152,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-wip</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -240,7 +240,6 @@
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
@@ -526,6 +525,12 @@
                     <text-property name="displayName">status_select</text-property>
                     <text-property name="heading">status_select</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">logoPosition</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <text-property name="heading">logoPosition</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -804,6 +809,11 @@
                     <structure>
                         <property name="position">53</property>
                         <property name="name">status_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">54</property>
+                        <property name="name">logoPosition</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1181,6 +1191,13 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">54</property>
+                    <property name="name">logoPosition</property>
+                    <property name="nativeName">logoPosition</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 SalemanPartner.full_name as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
@@ -1205,7 +1222,8 @@ InvoicingAddress.id as "invAddressId", DeliveryAddress.id as "delAddressId",
 Duration.name as "durationName", SaleOrder.delivery_date as "deliveryDate", SaleOrder.delivery_condition as "deliveryCondition",
 SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
 SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
-SaleOrder.subscription,SaleOrder.status_select
+SaleOrder.subscription,SaleOrder.status_select,
+PrintingSettings.logo_position_select as "logoPosition"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -2201,6 +2219,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">logoPosition</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">1.15in</property>
@@ -2231,30 +2255,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="borderBottomWidth">thin</property>
                 <property name="height">1.5cm</property>
                 <cell id="3350">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <image id="3419">
-                        <property name="height">71px</property>
-                        <property name="width">303px</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                            </structure>
-                        </list-property>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                    </image>
-                </cell>
-                <cell id="3353"/>
-                <cell id="4063">
-                    <property name="colSpan">4</property>
+                    <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
                     <text id="3623">
                         <property name="fontSize">8pt</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<TABLE >
+	<TR>
+		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
+		"<TD>"+row["header"]+"</TD><TD/><TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></td>"
+		} else if(row["logoPosition"] == 1) {
+		"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD/><TD>"+row["header"]+"</TD>"
+		} else if(row["logoPosition"] == 2) {
+			"<TD align='center'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' />"
+		}else if(row["logoPosition"] == null) {
+			"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' />"
+		}else {
+		"<TD/><TD/><TD>"+row["header"]+"</TD>"
+		}
+ 		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -3847,6 +3868,7 @@ else row["Column Binding_tot_sub"]</expression>
                                                     <expression name="valueExpr" type="javascript">row["is_title_line"] != true</expression>
                                                 </structure>
                                             </list-property>
+                                            <structure name="toc"/>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["ProductName"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -4012,10 +4034,10 @@ else 'Subscriptions'</value>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                         </text>
                                         <data id="4304">
-                                        	<property name="fontSize">8pt</property>
-                                        	<property name="textAlign">right</property>
-                                        	<property name="fontWeight">bold</property>
-                                        	<list-property name="visibility">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row["product_type_select"] == 'subscriptable' || row["is_title_line"] != true</expression>
@@ -4134,7 +4156,7 @@ else 'Subscriptions'</value>
                                     <property name="borderLeftWidth">thin</property>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
-                                    <label id="3668"/>
+                                    <label id="4305"/>
                                 </cell>
                                 <cell id="3442">
                                     <property name="borderBottomStyle">solid</property>
