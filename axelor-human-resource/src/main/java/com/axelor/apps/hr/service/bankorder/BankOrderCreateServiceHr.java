@@ -34,8 +34,10 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
@@ -63,7 +65,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 		PaymentMode paymentMode = partner.getOutPaymentMode();
 		BigDecimal amount = expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount());
 		Currency currency = company.getCurrency();
-		LocalDate paymentDate = new LocalDate();
+		LocalDate paymentDate = Beans.get(GeneralService.class).getTodayDate();
 
 		BankOrder bankOrder = super.createBankOrder( 
 								paymentMode,
