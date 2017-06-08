@@ -47,7 +47,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		this.invoicePaymentRepository = invoicePaymentRepository;
 	}
 
-	protected void process(int operationTypeSelect) {
+	protected List<InvoicePayment> processInvoices(int operationTypeSelect) {
 		List<InvoicePayment> doneList = new ArrayList<>();
 		List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
@@ -101,13 +101,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 			}
 		}
 
-		try {
-			postProcess(doneList);
-		} catch (Exception ex) {
-			TraceBackService.trace(ex);
-			ex.printStackTrace();
-			log.error("Credit transfer batch for invoices: postProcess");
-		}
+		return doneList;
 	}
 
 	@Override
@@ -142,10 +136,6 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 				InvoicePaymentRepository.TYPE_PAYMENT);
 		invoicePayment.setBankDetails(bankDetails);
 		return invoicePaymentRepository.save(invoicePayment);
-	}
-
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void postProcess(List<InvoicePayment> doneList) throws Exception {
 	}
 
 }

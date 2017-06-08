@@ -72,7 +72,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment extends BatchCre
 		} catch (Exception ex) {
 			TraceBackService.trace(ex);
 			ex.printStackTrace();
-			log.error("Credit transfer batch for partner credit balance reimbursement: postProcess");
+			log.error("Credit transfer batch for partner credit balance reimbursement: createBankOrder");
 		}
 
 	}

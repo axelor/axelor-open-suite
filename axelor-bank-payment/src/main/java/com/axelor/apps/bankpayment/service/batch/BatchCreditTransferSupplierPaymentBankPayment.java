@@ -12,6 +12,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -28,8 +29,20 @@ public class BatchCreditTransferSupplierPaymentBankPayment extends BatchCreditTr
 	}
 
 	@Override
+	protected void process() {
+		List<InvoicePayment> doneList = processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+
+		try {
+			mergeBankOrders(doneList);
+		} catch (Exception ex) {
+			TraceBackService.trace(ex);
+			ex.printStackTrace();
+			log.error("Credit transfer batch for invoices: mergeBankOrders");
+		}
+	}
+
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void postProcess(List<InvoicePayment> doneList) throws AxelorException {
+	protected void mergeBankOrders(List<InvoicePayment> doneList) throws AxelorException {
 		List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 		List<BankOrder> bankOrderList = new ArrayList<>();
 

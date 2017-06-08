@@ -17,7 +17,7 @@ public class BatchCreditTransferSupplierPayment extends BatchCreditTransferInvoi
 
 	@Override
 	protected void process() {
-		process(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+		processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
 	}
 
 }

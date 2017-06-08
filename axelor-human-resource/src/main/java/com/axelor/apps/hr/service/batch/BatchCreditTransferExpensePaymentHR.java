@@ -47,6 +47,43 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 
 	@Override
 	protected void process() {
+		List<Expense> doneList = processExpenses();
+
+		try {
+			mergeBankOrders(doneList);
+		} catch (Exception ex) {
+			TraceBackService.trace(ex);
+			ex.printStackTrace();
+			log.error("Credit transfer batch for expense payments: mergeBankOrders");
+		}
+
+	}
+
+	@Override
+	protected void stop() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
+		sb.append(String.format(
+				I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
+						com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
+						batch.getDone()),
+				batch.getDone()));
+		sb.append(String.format(
+				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
+						IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL, batch.getAnomaly()),
+				batch.getAnomaly()));
+		addComment(sb.toString());
+		super.stop();
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
+		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
+				expense.getExpenseSeq()));
+		expenseService.addPayment(expense, bankDetails);
+	}
+
+	protected List<Expense> processExpenses() {
 		List<Expense> doneList = new ArrayList<>();
 		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
@@ -95,42 +132,11 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 			}
 		}
 
-		try {
-			postProcess(doneList);
-		} catch (Exception ex) {
-			TraceBackService.trace(ex);
-			ex.printStackTrace();
-			log.error("Credit transfer batch for expense payments: postProcess");
-		}
-
-	}
-
-	@Override
-	protected void stop() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
-		sb.append(String.format(
-				I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
-						com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
-						batch.getDone()),
-				batch.getDone()));
-		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL, batch.getAnomaly()),
-				batch.getAnomaly()));
-		addComment(sb.toString());
-		super.stop();
+		return doneList;
 	}
 
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
-		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
-				expense.getExpenseSeq()));
-		expenseService.addPayment(expense, bankDetails);
-	}
-
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void postProcess(List<Expense> doneList) throws AxelorException {
+	protected void mergeBankOrders(List<Expense> doneList) throws AxelorException {
 		List<Expense> expenseList = new ArrayList<>();
 		List<BankOrder> bankOrderList = new ArrayList<>();
 

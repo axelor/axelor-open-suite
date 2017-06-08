@@ -17,7 +17,7 @@ public class BatchCreditTransferCustomerRefund extends BatchCreditTransferInvoic
 
 	@Override
 	protected void process() {
-		process(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+		processInvoices(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 	}
 
 }
