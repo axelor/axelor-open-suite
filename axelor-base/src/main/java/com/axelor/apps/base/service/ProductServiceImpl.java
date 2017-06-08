@@ -176,7 +176,6 @@ public class ProductServiceImpl implements ProductService  {
 				productModel.getUnit(),
 				productModel.getSaleSupplySelect(),
 				productModel.getProductTypeSelect(),
-				productModel.getProcurementMethodSelect(),
 				productModel.getIsRawMaterial(),
 				productModel.getSaleCurrency(),
 				productModel.getPurchaseCurrency(),
