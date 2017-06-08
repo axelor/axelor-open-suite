@@ -209,7 +209,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"/>
 			</panel>
@@ -391,6 +391,7 @@
 	    <action name="action-invoice-attrs-printing-fields"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
+		<action name="action-invoice-attrs-ventilate"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -424,7 +425,11 @@
     <action-attrs name="action-invoice-attrs-domain-project">
     	<attribute name="domain" for="project" expr="eval: &quot; self.typeSelect = 'project' AND self.clientPartner.id = ${partner?.id} &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
-	
+
+    <action-attrs name="action-invoice-attrs-ventilate">
+    	<attribute name="readonly" for="ventilate" expr="eval: invoiceDate > LocalDate.parse(todayDate)"/>
+    </action-attrs>
+
 	<!-- ACTION RECORD -->
 	
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
