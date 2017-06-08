@@ -6,6 +6,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
@@ -20,6 +21,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -62,6 +64,8 @@ public class BatchCreditTransferPartnerReimbursementBankPayment extends BatchCre
 		if (reimbursementList.isEmpty()) {
 			return;
 		}
+
+		accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
 
 		try {
 			createBankOrder(accountingBatch, reimbursementList);
