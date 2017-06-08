@@ -76,13 +76,11 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 		super.stop();
 	}
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
-		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
-				expense.getExpenseSeq()));
-		expenseService.addPayment(expense, bankDetails);
-	}
-
+	/**
+	 * Process expenses that need to be paid.
+	 * 
+	 * @return
+	 */
 	protected List<Expense> processExpenses() {
 		List<Expense> doneList = new ArrayList<>();
 		List<Long> anomalyList = Lists.newArrayList(0L);	// Can't pass an empty collection to the query
@@ -135,6 +133,26 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 		return doneList;
 	}
 
+	/**
+	 * Add a payment to the specified expense.
+	 * 
+	 * @param expense
+	 * @param bankDetails
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
+		log.debug(String.format("Credit transfer batch for expense payment: adding payment for expense %s",
+				expense.getExpenseSeq()));
+		expenseService.addPayment(expense, bankDetails);
+	}
+
+	/**
+	 * Merge bank orders.
+	 * 
+	 * @param doneList
+	 * @throws AxelorException
+	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected void mergeBankOrders(List<Expense> doneList) throws AxelorException {
 		List<Expense> expenseList = new ArrayList<>();

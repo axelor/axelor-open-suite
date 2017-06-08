@@ -47,6 +47,12 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		this.invoicePaymentRepository = invoicePaymentRepository;
 	}
 
+	/**
+	 * Process invoices of the specified document type.
+	 * 
+	 * @param operationTypeSelect
+	 * @return
+	 */
 	protected List<InvoicePayment> processInvoices(int operationTypeSelect) {
 		List<InvoicePayment> doneList = new ArrayList<>();
 		List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
@@ -120,6 +126,17 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		super.stop();
 	}
 
+	/**
+	 * Create an invoice payment for the specified invoice.
+	 * 
+	 * @param invoice
+	 * @param bankDetails
+	 * @return
+	 * @throws AxelorException
+	 * @throws JAXBException
+	 * @throws IOException
+	 * @throws DatatypeConfigurationException
+	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected InvoicePayment addPayment(Invoice invoice, BankDetails bankDetails)
 			throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {

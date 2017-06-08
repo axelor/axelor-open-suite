@@ -43,6 +43,8 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 	@Override
 	protected void process() {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
+
+		// Fetch all partners that have a credit balance for the specified company.
 		TypedQuery<Partner> partnerQuery = JPA.em().createQuery(
 				"SELECT self FROM Partner self JOIN self.accountingSituationList accountingSituation "
 						+ "WHERE accountingSituation.company = :company AND accountingSituation.balanceCustAccount < 0",
@@ -85,6 +87,14 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 		super.stop();
 	}
 
+	/**
+	 * Create a reimbursement for the specified partner and from the specified company.
+	 * 
+	 * @param partner
+	 * @param company
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected Reimbursement createReimbursement(Partner partner, Company company) throws AxelorException {
 		List<MoveLine> moveLineList = moveLineRepo.all()

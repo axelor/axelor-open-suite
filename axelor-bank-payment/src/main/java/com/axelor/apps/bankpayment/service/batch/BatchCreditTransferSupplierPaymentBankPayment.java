@@ -41,6 +41,12 @@ public class BatchCreditTransferSupplierPaymentBankPayment extends BatchCreditTr
 		}
 	}
 
+	/**
+	 * Merge bank orders.
+	 * 
+	 * @param doneList
+	 * @throws AxelorException
+	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected void mergeBankOrders(List<InvoicePayment> doneList) throws AxelorException {
 		List<InvoicePayment> invoicePaymentList = new ArrayList<>();

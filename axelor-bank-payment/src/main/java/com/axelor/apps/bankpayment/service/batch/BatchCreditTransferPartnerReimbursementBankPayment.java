@@ -55,6 +55,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment extends BatchCre
 			return;
 		}
 
+		// Fetch all reimbursements that are validated for the specified company.
 		Query<Reimbursement> query = reimbursementRepo.all()
 				.filter("self.statusSelect = :statusSelect AND self.company = :company");
 		query.bind("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
@@ -77,6 +78,14 @@ public class BatchCreditTransferPartnerReimbursementBankPayment extends BatchCre
 
 	}
 
+	/**
+	 * Create a bank order for the specified list of reimbursements.
+	 * 
+	 * @param accountingBatch
+	 * @param reimbursementList
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected BankOrder createBankOrder(AccountingBatch accountingBatch, List<Reimbursement> reimbursementList)
 			throws AxelorException {
