@@ -485,6 +485,7 @@ public interface IExceptionMessage {
 	static final String VENTILATE_STATE_2 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
 	static final String VENTILATE_STATE_3 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
 	static final String VENTILATE_STATE_4 = /*$$(*/ "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
+	static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/ "Invoice's date can't be in the future." /*)*/;
 
 	/**
 	 * Paybox service and controller
