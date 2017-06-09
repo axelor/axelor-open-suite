@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -226,7 +227,7 @@ public class OperationOrderWorkflowService {
 			if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
 				duration += qty.multiply(durationPerCycle).longValue();
 			} else {
-				duration += (qty.divide(maxCapacityPerCycle)).multiply(durationPerCycle).longValue();
+				duration += (qty.divide(maxCapacityPerCycle,RoundingMode.HALF_UP)).multiply(durationPerCycle).longValue();
 			}
 
 			duration += machine.getEndingDuration();
