@@ -192,10 +192,6 @@ public abstract class InvoiceGenerator  {
 		}
 		invoice.setCurrency(currency);
 
-		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
-
-		invoice.setJournal(journalService.getJournal(invoice));
-
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 
 		if(priceList == null)  {
