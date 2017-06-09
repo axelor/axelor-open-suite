@@ -123,6 +123,9 @@ public class VentilateState extends WorkflowInvoice {
 
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(generalService.getTodayDate());
+		} else if (invoice.getInvoiceDate().compareTo(generalService.getTodayDate()) > 0) {
+			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
+					IException.CONFIGURATION_ERROR);
 		}
 
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {

@@ -487,6 +487,8 @@ public interface IExceptionMessage {
 	static final String VENTILATE_STATE_4 = /*$$(*/ "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
 	static final String VENTILATE_STATE_5 = /*$$(*/ "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
 
+	static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/ "Invoice date can't be in the future." /*)*/;
+
 	/**
 	 * Paybox service and controller
 	 */
