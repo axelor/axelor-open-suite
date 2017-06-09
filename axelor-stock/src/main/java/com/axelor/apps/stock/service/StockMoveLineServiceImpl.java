@@ -131,18 +131,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException  {
+	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException {
 
 		StockMove stockMove = stockMoveLine.getStockMove();
 
-		while(stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1)  {
+		if (qtyByTracking.compareTo(BigDecimal.ZERO) == 0) {
+			throw new AxelorException(I18n.get("The tracking number configuration sale quantity is equal to zero, it must be at least one"), IException.CONFIGURATION_ERROR);
+		}
+		while (stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1) {
 
 			BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
 
 			this.splitStockMoveLine(stockMoveLine, minQty, trackingNumberService.getTrackingNumber(product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
 
 		}
-		if(stockMoveLine.getTrackingNumber() == null)  {
+		if (stockMoveLine.getTrackingNumber() == null) {
 
 			stockMoveLine.setTrackingNumber(trackingNumberService.getTrackingNumber(product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
 
