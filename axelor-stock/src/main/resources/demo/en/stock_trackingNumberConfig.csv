@@ -1,4 +1,4 @@
-"importId";"isPurchaseTrackingManaged";"isProductionTrackingManaged";"isSaleTrackingManaged";"generatePurchaseAutoTrackingNbr";"generateProductionAutoTrackingNbr";"hasSaleAutoSelectTrackingNbr";"saleAutoTrackingNbrOrderSelect";"hasProductAutoSelectTrackingNbr";"productAutoTrackingNbrOrderSelect";"saleQtyByTracking";"purchaseQtyByTracking";"productionQtyByTracking";"sequence"
-1;;"true";;;"true";;;;;;;;200
-2;;;"true";;"true";;;;;;;;201
-3;;"true";"true";;;"true";;;;;;;202
+"importId";"isPurchaseTrackingManaged";"isProductionTrackingManaged";"isSaleTrackingManaged";"generatePurchaseAutoTrackingNbr";"generateProductionAutoTrackingNbr";"hasSaleAutoSelectTrackingNbr";"saleAutoTrackingNbrOrderSelect";"hasProductAutoSelectTrackingNbr";"productAutoTrackingNbrOrderSelect";"saleQtyByTracking";"purchaseQtyByTracking";"productionQtyByTracking";"sequence.importId"
+1;;"true";;;"true";;;"true";1;"1.00";"1.00";"1.00";200
+2;;;"true";;"true";"true";1;;;"1.00";"1.00";"1.00";201
+3;;"true";"true";;;"true";1;"true";1;"1.00";"1.00";"1.00";202

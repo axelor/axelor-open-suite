@@ -59,12 +59,10 @@
     
     <action-record name="action-tracking-number-set-default-purchase-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="purchaseQtyByTracking" expr="eval:isPurchaseTrackingManaged ? 1 : 0"/>
-        <field name="isSaleTrackingManaged" expr="eval: false"/>
     </action-record>
     
     <action-record name="action-tracking-number-set-default-production-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="productionQtyByTracking" expr="eval:isProductionTrackingManaged ? 1 : 0"/>
-		<field name="isSaleTrackingManaged" expr="eval: false"/>
     </action-record>
     
     <action-record name="action-tracking-number-set-default-sale-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
