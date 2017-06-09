@@ -200,8 +200,6 @@ public class VentilateState extends WorkflowInvoice {
 	/**
 	 * Détermine le numéro de facture
 	 *
-	 * @param invoice
-	 * @param company
 	 * @throws AxelorException
 	 */
 	protected void setStatus( ) {
@@ -211,8 +209,7 @@ public class VentilateState extends WorkflowInvoice {
 	/**
 	 * Détermine le numéro de facture
 	 *
-	 * @param invoice
-	 * @param company
+	 * @param sequence
 	 * @throws AxelorException
 	 */
 	protected void setInvoiceId( Sequence sequence ) throws AxelorException {
