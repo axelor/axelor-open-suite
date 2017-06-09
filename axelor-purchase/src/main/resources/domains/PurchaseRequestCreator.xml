@@ -8,7 +8,7 @@
   <entity name="PurchaseRequestCreator" lang="java" cachable="true">
 	
 	<string name="name" title="Name" required="true" />
-	<one-to-many name="attributes" title="Attributes" ref="com.axelor.meta.db.MetaJsonField" />
+	<one-to-many name="attributes" title="Attributes" ref="com.axelor.meta.db.MetaJsonField" orphanRemoval="true" />
   	
   </entity>
   
