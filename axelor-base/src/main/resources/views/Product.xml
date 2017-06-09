@@ -79,8 +79,8 @@
     		<panel name="sale" title="Sale" showTitle="false">
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
+					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 			        <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
-					<field name="autoUpdateSalePrice" hideIf="!sellable"/>
 			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
