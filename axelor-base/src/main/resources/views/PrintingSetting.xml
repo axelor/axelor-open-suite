@@ -8,6 +8,7 @@
 			<field name="name"/>
 			<field name="languageSelect"/>
 			<field name="defaultMailBirtTemplate" form-view="birt-template-form" grid-view="birt-template-grid" />
+			<field name="logoPositionSelect" />
 			<panel name="companyHeader" title="Company Header" colSpan="12">
 				<field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
 			</panel>

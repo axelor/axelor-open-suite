@@ -70,10 +70,13 @@ public class MrpController {
 	public void print(ActionRequest request, ActionResponse response) {
 		Mrp mrp = request.getContext().asType(Mrp.class);
 		String name = I18n.get("MRP") + "-" + mrp.getId();
+		System.out.println("date : " + mrpService.findMrpEndDate(mrp).toString
+				());
 		try {
 			String fileLink = ReportFactory.createReport(IReport.MRP, name)
 					.addParam("mrpId", mrp.getId())
 					.addParam("Locale", AuthUtils.getUser().getLanguage())
+					.addParam("endDate", mrpService.findMrpEndDate(mrp).toString())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();
