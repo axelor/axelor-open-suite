@@ -137,7 +137,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		StockMove stockMove = stockMoveLine.getStockMove();
 
-		if (!(qtyByTracking.compareTo(BigDecimal.ZERO) > 0)) {
+		if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new AxelorException(I18n.get("The tracking number configuration sale quantity is equal to zero, it must be at least one"), IException.CONFIGURATION_ERROR);
 		}
 		while (stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1) {
