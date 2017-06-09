@@ -54,20 +54,6 @@ public class ManufOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(ManufOrder manufOrder)  {
 		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			OperationOrder operationOrderPriority = operationOrderRepo.all().filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
-			
-			List<OperationOrder> operationOrderList = (List<OperationOrder>)operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
-			
-			for(OperationOrder operationOrder : operationOrderList)  {
-				
-				operationOrderWorkflowService.start(operationOrder);
-				
-			}
-			
-		}
-		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		
 		manufOrderRepo.save(manufOrder);

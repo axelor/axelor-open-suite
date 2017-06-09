@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -132,7 +134,11 @@ public class OperationOrderController {
 	
 	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		
+		if (operationOrder.getManufOrder() != null
+				&& operationOrder.getManufOrder().getStatusSelect() <
+				IManufOrder.STATUS_PLANNED) {
+		    return;
+		}
 		operationOrder = operationOrderWorkflowService.plan(operationOrderRepo.find(operationOrder.getId()));
 		
 		response.setReload(true);
@@ -383,7 +389,7 @@ public class OperationOrderController {
 	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		operationOrder =operationOrderRepo.find(operationOrder.getId());
-		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 		
 	}
