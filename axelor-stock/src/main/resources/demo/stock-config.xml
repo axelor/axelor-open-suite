@@ -28,6 +28,8 @@
 		<bind to="parentCustomsCode" search="self.code = :parentCode" if="parentCode" />
 	</input>
 
+	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId"/>
+
 	<input file="stock_trackingNumberConfig.csv" separator=";" type="com.axelor.apps.stock.db.TrackingNumberConfiguration" search="self.importId = :importId"/>
 
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" update="true" search="self.importId = :importId"/>

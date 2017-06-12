@@ -79,6 +79,3 @@
 9;"productTrackingNumber";"N° de suivi";1;5;"NS";;1;0;1
 10;"productionOrder";"Ordre de production";1;5;"OP";;1;0;1
 11;"manufOrder";"Ordre de fabrication";1;5;"OF";;1;0;1
-200;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Serveur Classique";1;5;"F4";;1;1;1
-201;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Classique Pack";1;5;"F2";;1;1;1
-202;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Imprimante Jet d’encre";1;5;"A5";;1;1;1

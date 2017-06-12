@@ -79,6 +79,3 @@
 9;"productTrackingNumber";"Tracking N°";1;5;"TN";;1;0;1
 10;"productionOrder";"Production Order N°";1;5;"PDO";;1;0;1
 11;"manufOrder";"Manufacturing Order N°";1;5;"MO";;1;0;1
-200;"trackingNumberSeqForClassicServeur";"Tracking number sequence for classic serveur";1;5;"F4";;1;1;1
-201;"trackingNumberSeqForClassicPack";"Tracking number sequence for classic pack";1;5;"F2";;1;1;1
-202;"trackingNumberSeqForInkjetPrinter";"Tracking number sequence for inkjet printer";1;5;"A5";;1;1;1
