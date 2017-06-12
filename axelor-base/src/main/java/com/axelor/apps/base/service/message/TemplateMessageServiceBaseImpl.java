@@ -18,12 +18,19 @@
 package com.axelor.apps.base.service.message;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import com.axelor.meta.MetaFiles;
+import org.eclipse.birt.core.data.DataTypeUtil;
+import org.eclipse.birt.core.exception.BirtException;
+import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +68,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		Set<MetaFile> metaFiles = super.getMetaFiles(template);
 		if ( template.getBirtTemplate() == null ) { return metaFiles; }
 
-		generateMetaFile( maker, template.getBirtTemplate() , message);
+		attachBirtTemplate( maker, template.getBirtTemplate() , message);
 		
 		logger.debug("Metafile to attach: {}", metaFiles);
 
@@ -69,27 +76,37 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 	}
 
-	public void generateMetaFile( TemplateMaker maker, BirtTemplate birtTemplate , Message message) throws AxelorException, IOException {
+	public void attachBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate , Message message) throws AxelorException, IOException {
 
 		logger.debug("Generate birt metafile: {}", birtTemplate.getName());
 
-		generateFile( maker,
-				birtTemplate.getName(),
+		String fileName = birtTemplate.getName() + "-" + new DateTime().toString("yyyyMMddHHmmss");
+		File file = generateBirtTemplate( maker,
+				fileName,
 				birtTemplate.getTemplateLink(),
 				birtTemplate.getFormat(),
-				birtTemplate.getBirtTemplateParameterList(), message);
+				birtTemplate.getBirtTemplateParameterList());
+
+		try (InputStream is = new FileInputStream(file)) {
+			Beans.get(MetaFiles.class).attach(is, fileName, message);
+		}
 
 	}
 
-	public File generateFile( TemplateMaker maker, String name, String modelPath, String format, List<BirtTemplateParameter> birtTemplateParameterList , Message message) throws AxelorException {
+	public File generateBirtTemplate( TemplateMaker maker, String fileName, String modelPath, String format, List<BirtTemplateParameter> birtTemplateParameterList) throws AxelorException {
 
 		if ( modelPath == null || modelPath.isEmpty() ) { return null; }
 
-		ReportSettings reportSettings = ReportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format).toAttach(message);
+		ReportSettings reportSettings = ReportFactory.createReport(modelPath, fileName).addFormat(format);
 		
 		for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
 			maker.setTemplate(birtTemplateParameter.getValue());
-			reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
+
+			try {
+				reportSettings.addParam(birtTemplateParameter.getName(), convertValue(birtTemplateParameter.getType(), maker.make()));
+			} catch (BirtException e) {
+				throw new AxelorException(e, IException.CONFIGURATION_ERROR);
+			}
 		}
 
 		try {
@@ -99,9 +116,47 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		}
 
 	}
+
+	private Object convertValue(String type, String value) throws BirtException {
+
+		if ( DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals( type ) )
+		{
+			return DataTypeUtil.toBoolean( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_DATETIME.equals( type ) )
+		{
+			return DataTypeUtil.toDate( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_DATE.equals( type ) )
+		{
+			return DataTypeUtil.toSqlDate( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_TIME.equals( type ) )
+		{
+			return DataTypeUtil.toSqlTime( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_DECIMAL.equals( type ) )
+		{
+			return DataTypeUtil.toBigDecimal( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_FLOAT.equals( type ) )
+		{
+			return DataTypeUtil.toDouble( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_STRING.equals( type ) )
+		{
+			return DataTypeUtil.toLocaleNeutralString( value );
+		}
+		else if ( DesignChoiceConstants.PARAM_TYPE_INTEGER.equals( type ) )
+		{
+			return DataTypeUtil.toInteger( value );
+		}
+		return value;
+
+	}
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if ( !model.equals( template.getMetaModel().getFullName() ) ){
@@ -119,56 +174,54 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		int mediaTypeSelect;
 		
 		if ( !Strings.isNullOrEmpty( template.getContent() ) )  {
-			//Set template
 			maker.setTemplate(template.getContent());
 			content = maker.make();
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getAddressBlock() ) )  {
 			maker.setTemplate(template.getAddressBlock());
-			//Make it
 			addressBlock = maker.make();
 		}
 		
 		if ( !Strings.isNullOrEmpty( template.getSubject() ) )  {
 			maker.setTemplate(template.getSubject());
 			subject = maker.make();
-			logger.debug( "Subject :::", subject );
+			logger.debug( "Subject ::: {}", subject );
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getFromAdress() ) )  {
 			maker.setTemplate(template.getFromAdress());
 			from = maker.make();
-			logger.debug( "From :::", from );
+			logger.debug( "From ::: {}", from );
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getReplyToRecipients() ) )  {
 			maker.setTemplate(template.getReplyToRecipients());
 			replyToRecipients = maker.make();
-			logger.debug( "Reply to :::", replyToRecipients );
+			logger.debug( "Reply to ::: {}", replyToRecipients );
 		}
 		
 		if(template.getToRecipients() != null)  {
 			maker.setTemplate(template.getToRecipients());
 			toRecipients = maker.make();
-			logger.debug( "To :::", toRecipients );
+			logger.debug( "To ::: {}", toRecipients );
 		}
 		
 		if(template.getCcRecipients() != null)  {
 			maker.setTemplate(template.getCcRecipients());
 			ccRecipients = maker.make();
-			logger.debug( "CC :::", ccRecipients );
+			logger.debug( "CC ::: {}", ccRecipients );
 		}
 		
 		if(template.getBccRecipients() != null)  {
 			maker.setTemplate(template.getBccRecipients());
 			bccRecipients = maker.make();
-			logger.debug( "BCC :::", bccRecipients );
+			logger.debug( "BCC ::: {}", bccRecipients );
 		}
 		
 		mediaTypeSelect = template.getMediaTypeSelect();
-		logger.debug( "Media :::", mediaTypeSelect );
-		logger.debug( "Content :::", content );
+		logger.debug( "Media ::: {}", mediaTypeSelect );
+		logger.debug( "Content ::: {}", content );
 		
 		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),

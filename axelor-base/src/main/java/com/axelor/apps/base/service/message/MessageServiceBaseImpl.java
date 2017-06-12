@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,9 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.inject.Beans;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +81,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 		Message message = super.createMessage( model, id, subject, content, fromEmailAddress, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, metaFiles, addressBlock, mediaTypeSelect) ;
 
+		message.setSenderUser(AuthUtils.getUser());
 		message.setCompany(userService.getUserActiveCompany());
 
 		return messageRepo.save(message);
@@ -101,19 +106,11 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		TemplateMaker maker = new TemplateMaker( new Locale(language), '$', '$');
 		maker.setContext( messageRepo.find(message.getId()), "Message" );
 
-		String name = "Message " + message.getSubject();
-		
-		ReportSettings reportSettings = ReportFactory.createReport(birtTemplate.getTemplateLink(), name+"-${date}")
-				.addFormat(birtTemplate.getFormat())
-				.addParam("Locale", language);
-				
-		for ( BirtTemplateParameter birtTemplateParameter : birtTemplate.getBirtTemplateParameterList() )  {
-			maker.setTemplate(birtTemplateParameter.getValue());
-			reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
-		}
+		String fileName = "Message " + message.getSubject() + "-" + new DateTime().toString("yyyyMMdd");;
+		File file = Beans.get(TemplateMessageServiceBaseImpl.class).generateBirtTemplate(maker, fileName,
+				birtTemplate.getTemplateLink(), birtTemplate.getFormat(), birtTemplate.getBirtTemplateParameterList());
 
-		return reportSettings.generate().getFileLink();
-
+		return "ws/files/report/" + file.getName() + "?name=" + fileName;
 	}
 
 	
