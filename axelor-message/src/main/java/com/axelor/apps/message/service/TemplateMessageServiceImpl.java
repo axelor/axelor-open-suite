@@ -83,7 +83,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if ( !model.equals( template.getMetaModel().getFullName() ) ){
@@ -115,42 +115,42 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		if ( !Strings.isNullOrEmpty( template.getSubject() ) )  {
 			maker.setTemplate(template.getSubject());
 			subject = maker.make();
-			log.debug( "Subject :::", subject );
+			log.debug( "Subject ::: {}", subject );
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getFromAdress() ) )  {
 			maker.setTemplate(template.getFromAdress());
 			from = maker.make();
-			log.debug( "From :::", from );
+			log.debug( "From ::: {}", from );
 		}
 		
 		if( !Strings.isNullOrEmpty( template.getReplyToRecipients() ) )  {
 			maker.setTemplate(template.getReplyToRecipients());
 			replyToRecipients = maker.make();
-			log.debug( "Reply to :::", replyToRecipients );
+			log.debug( "Reply to ::: {}", replyToRecipients );
 		}
 		
 		if(template.getToRecipients() != null)  {
 			maker.setTemplate(template.getToRecipients());
 			toRecipients = maker.make();
-			log.debug( "To :::", toRecipients );
+			log.debug( "To ::: {}", toRecipients );
 		}
 		
 		if(template.getCcRecipients() != null)  {
 			maker.setTemplate(template.getCcRecipients());
 			ccRecipients = maker.make();
-			log.debug( "CC :::", ccRecipients );
+			log.debug( "CC ::: {}", ccRecipients );
 		}
 		
 		if(template.getBccRecipients() != null)  {
 			maker.setTemplate(template.getBccRecipients());
 			bccRecipients = maker.make();
-			log.debug( "BCC :::", bccRecipients );
+			log.debug( "BCC ::: {}", bccRecipients );
 		}
 		
 		mediaTypeSelect = template.getMediaTypeSelect();
-		log.debug( "Media :::", mediaTypeSelect );
-		log.debug( "Content :::", content );
+		log.debug( "Media ::: {}", mediaTypeSelect );
+		log.debug( "Content ::: {}", content );
 		
 		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
@@ -162,8 +162,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		
 		return message;
 	}
-	
-	
+
+	@Override
 	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		
 		Message message = this.generateMessage(model, template);
@@ -171,8 +171,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	
 		return message;
 	}
-	
-	
+
+	@Override
 	public Set<MetaFile> getMetaFiles( Template template ) throws AxelorException, IOException {
 		
 		List<DMSFile> metaAttachments = Query.of( DMSFile.class ).filter( "self.relatedId = ?1 AND self.relatedModel = ?2", template.getId(), EntityHelper.getEntityClass(template).getName() ).fetch();
@@ -186,8 +186,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		return metaFiles;
 
 	}
-	
-	
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public TemplateMaker initMaker( long objectId, String model, String tag ) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
 		//Init the maker

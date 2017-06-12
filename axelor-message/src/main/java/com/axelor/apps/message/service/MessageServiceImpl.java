@@ -102,7 +102,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ){
+	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ) {
 		
 		Preconditions.checkNotNull( message.getId() );
 		
@@ -111,16 +111,7 @@ public class MessageServiceImpl implements MessageService {
 		log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
 		
 		for ( MetaFile metaFile: metaFiles ){
-			//TODO : When RM#4887 is done, use MetaFiles.attach(metaFile, message)
-			final DMSFile dmsFile = new DMSFile();
-			final DMSFileRepository repository = Beans.get(DMSFileRepository.class);
-
-			dmsFile.setFileName(metaFile.getFileName());
-			dmsFile.setMetaFile(metaFile);
-			dmsFile.setRelatedId(message.getId());
-			dmsFile.setRelatedModel(EntityHelper.getEntityClass(message).getName());
-
-			repository.save(dmsFile);
+			Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
 		}
 		
 	}
@@ -156,8 +147,7 @@ public class MessageServiceImpl implements MessageService {
 		message.setRelatedTo1SelectId(relatedTo1SelectId);
 		message.setRelatedTo2Select(relatedTo2Select);
 		message.setRelatedTo2SelectId(relatedTo2SelectId);
-		message.setSentDateT(sentDate);
-		
+
 		return message;
 	}	
 	
