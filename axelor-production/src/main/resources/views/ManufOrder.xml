@@ -89,12 +89,12 @@
 			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 6">
 				<panel name="plannedDates" title="Planned dates">        
-					<field name="plannedStartDateT"  />
-					<field name="plannedEndDateT"  />
+					<field name="plannedStartDateT" title="Start date"/>
+					<field name="plannedEndDateT" title="End date"/>
 				</panel>
 				<panel name="realDates" title="Real dates">
-					<field name="realStartDateT"  />
-					<field name="realEndDateT"  />
+					<field name="realStartDateT" title="Start date"/>
+					<field name="realEndDateT" title="End date"/>
 				</panel>
 			</panel>
 			<panel name="stockMoves" title="Stock moves">
