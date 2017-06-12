@@ -45,41 +45,6 @@ import com.google.inject.persist.Transactional;
 
 public class TimetableService {
 
-	public void updateTimetable(SaleOrder saleOrder){
-		if(saleOrder.getTimetableList() != null && !saleOrder.getTimetableList().isEmpty()){
-			List<Timetable> timetableList = saleOrder.getTimetableList();
-			BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
-			BigDecimal sum = BigDecimal.ZERO;
-			for (Timetable timetable : timetableList) {
-				sum = sum.add(timetable.getAmount());
-				if(sum.compareTo(amountInvoiced) > 0){
-					timetable.setAmountToInvoice(sum.subtract(amountInvoiced));
-				}
-				else{
-					timetable.setAmountToInvoice(BigDecimal.ZERO);
-				}
-			}
-		}
-	}
-	
-	
-	public void updateTimetable(PurchaseOrder purchaseOrder){
-		if(purchaseOrder.getTimetableList() != null && !purchaseOrder.getTimetableList().isEmpty()){
-			List<Timetable> timetableList = purchaseOrder.getTimetableList();
-			BigDecimal amountInvoiced = purchaseOrder.getAmountInvoiced();
-			BigDecimal sum = BigDecimal.ZERO;
-			for (Timetable timetable : timetableList) {
-				sum = sum.add(timetable.getAmount());
-				if(sum.compareTo(amountInvoiced) > 0){
-					timetable.setAmountToInvoice(sum.subtract(amountInvoiced));
-				}
-				else{
-					timetable.setAmountToInvoice(BigDecimal.ZERO);
-				}
-			}
-		}
-	}
-
 	@Transactional
 	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
 		if(timetable.getProduct() == null){
@@ -149,9 +114,9 @@ public class TimetableService {
 		Product product = timetable.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
-				timetable.getAmountToInvoice(), timetable.getAmountToInvoice(), timetable.getComments(), timetable.getQty(),
+				timetable.getAmount(), timetable.getAmount(), timetable.getComments(), timetable.getQty(),
 				timetable.getUnit(), null, 1, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
-				timetable.getAmountToInvoice().multiply(timetable.getQty()),null, false,
+				timetable.getAmount().multiply(timetable.getQty()),null, false,
 				this.findFirstSaleOrderLine(timetable), this.findFirstPurchaseOrderLine(timetable), null) {
 
 			@Override
