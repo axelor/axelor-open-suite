@@ -197,7 +197,18 @@ public class PayrollPreparationService {
 	
 	public BigDecimal computeEmployeeBonusAmount(PayrollPreparation payrollPreparation){
 		BigDecimal employeeBonusAmount = BigDecimal.ZERO;
-		List<EmployeeBonusMgtLine> employeeBonusList = Beans.get(EmployeeBonusMgtLineRepository.class).all().filter("self.employee = ?1 AND self.employeeBonusMgt.statusSelect = ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.employeeBonusMgt.payPeriod = ?2", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod(), EmployeeBonusMgtRepository.STATUS_CALCULATED).fetch();
+		List<EmployeeBonusMgtLine> employeeBonusList =
+				Beans.get(EmployeeBonusMgtLineRepository.class).all()
+						.filter("self.employee = ?1" +
+								" AND self.employeeBonusMgt.statusSelect = ?4" +
+								" AND (self.payrollPreparation = null" +
+									" OR self.payrollPreparation.id = ?2)" +
+								" AND self.employeeBonusMgt.payPeriod = ?3",
+								payrollPreparation.getEmployee(),
+								payrollPreparation.getId(),
+								payrollPreparation.getPeriod(),
+								EmployeeBonusMgtRepository.STATUS_CALCULATED)
+						.fetch();
 		for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
 			payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);
 			employeeBonusAmount = employeeBonusAmount.add( employeeBonusMgtLine.getAmount() );
