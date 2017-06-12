@@ -44,7 +44,6 @@
 	<action-view name="hr.dashboard.leave.per.employee" title="Leave Per Employee"
 		model="com.axelor.apps.hr.db.Charts">
 		<view type="chart" name="chart.leave.per.employee"/>
-		<context name="manager_id" expr="eval: __user__.id"/>
 	</action-view>
 
 	<!-- Dashboard User -->

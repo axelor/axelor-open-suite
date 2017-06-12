@@ -32,7 +32,7 @@
 		FROM
 			LeaveLine self
 		WHERE
-			self.employee.manager.id = :manager_id
+			self.employee.manager = :__user__
 		GROUP BY
 			self.employee.name,
 			self.name,
