@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -330,7 +331,9 @@ public class OperationOrderWorkflowService {
 			if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
 				duration += qty.multiply(durationPerCycle).longValue();
 			} else {
-				duration += (qty.divide(maxCapacityPerCycle)).multiply(durationPerCycle).longValue();
+				duration += qty.divide(
+                            maxCapacityPerCycle, 0, RoundingMode.HALF_EVEN
+						).multiply(durationPerCycle).longValue();
 			}
 
 			duration += machine.getEndingDuration();

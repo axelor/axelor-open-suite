@@ -102,7 +102,7 @@ public interface IExceptionMessage {
 	/**
 	 * Irrecoverable service and controller
 	 */
-	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable ligne %s" /*)*/ ;
+	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable line %s" /*)*/ ;
 	static final String IRRECOVERABLE_2 = /*$$(*/ "%s : Error generated on invoice creation shift to irrecoverable %s" /*)*/ ;
 	static final String IRRECOVERABLE_3 = /*$$(*/ "%s : The invoice %s has no accounting document whose the remainder to be paid is positive" /*)*/ ;
 	static final String IRRECOVERABLE_4 = /*$$(*/ "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/ ;
@@ -250,7 +250,7 @@ public interface IExceptionMessage {
 	static final String BATCH_REIMBURSEMENT_1 = /*$$(*/ "Bug(Anomaly) generated during SEPA export - Batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :\n" /*)*/;
 	static final String BATCH_REIMBURSEMENT_3 = /*$$(*/ "Reimbursement(s) created" /*)*/;
-	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimboursement's export :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimbursement's export :\n" /*)*/;
 	static final String BATCH_REIMBURSEMENT_5 = /*$$(*/ "Reimbursement(s) treated" /*)*/;
 	static final String BATCH_REIMBURSEMENT_6 = /*$$(*/ "Reimbursement's import's batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_7 = /*$$(*/ "Reimbursement reject %s" /*)*/;
@@ -292,7 +292,7 @@ public interface IExceptionMessage {
 	 * Cfonb tool service
 	 */
 	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "The record is not %s characters" /*)*/;
-	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Zone is empty" /*)*/;
+	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Zone %s is empty" /*)*/;
 	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "Zone %s (%s) must be of the numeric type" /*)*/;
 	static final String CFONB_TOOL_1 = /*$$(*/ "%s : Anomaly detected (value isn't numeric : %s) for sender" /*)*/;
 	static final String CFONB_TOOL_2 = /*$$(*/ "%s : Anomaly detected (value isn't numeric : %s) for the receiver" /*)*/;

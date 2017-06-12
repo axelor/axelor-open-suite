@@ -36,26 +36,6 @@
             <property name="id">4</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">4</property>
-        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -145,6 +125,18 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3863">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="endDate" id="3866">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -336,6 +328,7 @@ where Mrp.id = ?]]></xml-property>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MrpLineDS" id="11">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">qty</property>
@@ -378,6 +371,12 @@ where Mrp.id = ?]]></xml-property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">locationName</text-property>
                     <text-property name="heading">locationName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">code</text-property>
+                    <text-property name="heading">code</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -428,6 +427,11 @@ where Mrp.id = ?]]></xml-property>
                     <structure>
                         <property name="position">7</property>
                         <property name="name">locationName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">code</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -496,6 +500,13 @@ this.queryText = this.queryText.replace("@VALUES", str);]]></method>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">code</property>
+                    <property name="nativeName">code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
     MrpLine.qty, 
@@ -535,7 +546,6 @@ SELECT
     '' as "productName", 
     '' as "locationName",
     '' as code
-
 FROM (
   VALUES @VALUES 
 ) as weekDates(week)
@@ -1105,6 +1115,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="57">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
+                    <property name="verticalAlign">bottom</property>
                     <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="469">
                         <property name="cube">Data Cube</property>
                         <property name="measures">
@@ -1448,12 +1459,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </property>
                         <property name="filter">
                             <filter-condition-element>
-                                <expression name="expr" type="javascript">dimension["Group"]["Week Of Year"]["DateTime"]</expression>
-                                <property name="operator">between</property>
+                                <expression name="expr" type="javascript">data["Week Of Year"]</expression>
+                                <property name="operator">lt</property>
                                 <simple-property-list name="value1">
-                                    <value type="javascript">row._outer["created_on"]</value>
+                                    <value type="javascript">BirtDateTime.week(params["endDate"].value)</value>
                                 </simple-property-list>
-                                <expression name="value2" type="javascript">row._outer["end_date"]</expression>
+                            </filter-condition-element>
+                            <filter-condition-element>
+                                <expression name="expr" type="javascript">data["Week Of Year"]</expression>
+                                <property name="operator">gt</property>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">BirtDateTime.week(row._outer["created_on"]) - 2</value>
+                                </simple-property-list>
                             </filter-condition-element>
                         </property>
                         <property name="pageBreakBefore">auto</property>
@@ -1500,11 +1517,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </structure>
                                 </list-property>
                                 <expression name="filterExpr" type="javascript">measure["qty"] != 0</expression>
-                            </structure>
-                            <structure>
-                                <property name="name">productName_1</property>
-                                <expression name="expression">dimension["Group1"]["productName"]</expression>
-                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                     </extended-item>

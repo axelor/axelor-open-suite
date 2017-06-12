@@ -402,10 +402,16 @@ public class AppServiceImpl implements AppService {
 		csvConfig.setInputs(new ArrayList<CSVInput>());
 		
 		List<MetaModel> metaModels = metaModelRepo.all()
-				.filter("self.name != 'App' and self.packageName =  ?1", App.class.getPackage().getName())
+				.filter("self.name != 'App' and self.name like 'App%' and self.packageName =  ?1", App.class.getPackage().getName())
 				.fetch();
 		
+		log.debug("Total app models: {}", metaModels.size());
 		for (MetaModel metaModel : metaModels) {
+			Class<?> klass = Class.forName(metaModel.getFullName());
+			if (!App.class.isAssignableFrom(klass)){
+				log.debug("Not a App class : {}", metaModel.getName());
+				continue;
+			}
 			Object obj = null;
 			Query query = JPA.em().createQuery("SELECT id FROM " + metaModel.getName());
 			try {
@@ -416,7 +422,6 @@ public class AppServiceImpl implements AppService {
 				continue;
 			}
 			log.debug("App without app record: {}", metaModel.getName());
-			Class<?> klass = Class.forName(metaModel.getFullName());
 			String csvName  = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
 			String pngName  = inflector.dasherize(klass.getSimpleName()) + ".png";
 			CSVInput input = new CSVInput();
