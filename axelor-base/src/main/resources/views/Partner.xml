@@ -304,8 +304,8 @@
 				<field name="fullName" css="bold" showTitle="false" colSpan="12">
 					<editor x-show-titles="false">
 			            <field name="titleSelect" placeholder="Civility" colSpan="2"/>
-			            <field name="name" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
-			            <field name="firstName" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			            <field name="name" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-method-check-same-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			            <field name="firstName" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-method-check-same-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
 					</editor>
 				</field>
 	            <panel name="company" title="Company" colSpan="12" >
@@ -518,7 +518,11 @@
 	<action-group name="action-group-base-partner-contact-name-onchange">
 		<action name="action-partner-record-full-name"/>
 	</action-group>
-	
+
+	<action-method name="action-partner-method-check-same-name">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkOtherPartnerName"/>
+	</action-method>
+
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>

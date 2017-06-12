@@ -24,7 +24,7 @@
 			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
 			<field name="$paymentMode" title="Payment mode" target="com.axelor.apps.account.db.PaymentMode" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"/>
 			<field name="$contactPartner" title="Contact partner" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
-			<button name="confirm" title="Confirmer" onClick="action-supplychain-stock-move-confirm-concat-invoice-check, action-supplychain-stock-move-method-generate-concat-invoice" colSpan="12" width="200px"/>
+			<button name="confirm" title="Confirm" onClick="action-supplychain-stock-move-confirm-concat-invoice-check, action-supplychain-stock-move-method-generate-concat-invoice" colSpan="12" width="200px"/>
 		</panel>
     </form>
 

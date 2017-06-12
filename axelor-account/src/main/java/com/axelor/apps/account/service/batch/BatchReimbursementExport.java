@@ -183,13 +183,13 @@ public class BatchReimbursementExport extends BatchStrategy {
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+"%s", partnerRepository.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Partner")+"%s", partnerRepository.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+"%s", partnerRepository.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Partner")+"%s", partnerRepository.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				

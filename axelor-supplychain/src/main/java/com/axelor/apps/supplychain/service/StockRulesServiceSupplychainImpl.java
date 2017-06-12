@@ -65,7 +65,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 			return;
 		}
 
-		StockRules stockRules = this.getStockRules(product, location, type);
+		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if(stockRules == null)  {
 			return;
