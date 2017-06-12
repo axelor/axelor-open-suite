@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -52,12 +41,7 @@ import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
-import com.axelor.apps.supplychain.db.Mrp;
-import com.axelor.apps.supplychain.db.MrpFamily;
-import com.axelor.apps.supplychain.db.MrpForecast;
-import com.axelor.apps.supplychain.db.MrpLine;
-import com.axelor.apps.supplychain.db.MrpLineOrigin;
-import com.axelor.apps.supplychain.db.MrpLineType;
+import com.axelor.apps.supplychain.db.*;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
@@ -74,6 +58,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 public class MrpServiceImpl implements MrpService  {
@@ -272,7 +263,7 @@ public class MrpServiceImpl implements MrpService  {
 				
 				BigDecimal reorderQty = minQty.subtract(cumulativeQty);
 				
-				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE);
+				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 				
 				if(stockRules != null)  {   reorderQty = reorderQty.max(stockRules.getReOrderQty());  }
 				
@@ -770,6 +761,16 @@ public class MrpServiceImpl implements MrpService  {
 		
 		
 		
+	}
+
+	@Override
+	public LocalDate findMrpEndDate(Mrp mrp) {
+	    if (mrp.getEndDate() != null) {
+	    	return mrp.getEndDate();
+		}
+		return mrp.getMrpLineList().stream().max(
+				Comparator.comparing(MrpLine::getMaturityDate)).get()
+				.getMaturityDate();
 	}
 
 	

@@ -14,6 +14,7 @@
         <field name="idealQty" aggregate="min"/>
         <field name="maxQty" aggregate="min"/>
         <field name="reOrderQty" aggregate="sum"/>
+		<field name="useCaseSelect"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
     </grid>
@@ -22,24 +23,25 @@
     	onNew="action-stock-rules-record-new" width="large">
     	<panel name="main" >
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
-			<field name="typeSelect"/>
+			<field name="useCaseSelect" colSpan="3"/>
+			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2"/>
 	        <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect"/>
 	        <field name="minQty" onChange="action-stock-rules-minqty-change"
 	        	validIf="$number(minQty) >= 0" colSpan="2"/>
 	        <panel colSpan="4">
 	        	<field name="useIdealQty" />
-				<field name="idealQty" onChange="action-stock-rules-idealqty-change"
+				<field name="idealQty" showIf="useIdealQty" onChange="action-stock-rules-idealqty-change"
 					validIf="!useIdealQty &amp;&amp; $number(idealQty) == 0 || $number(idealQty) >= $number(minQty) &amp;&amp; (!useMaxQty || $number(idealQty) &lt;= $number(maxQty))" />
 	        </panel>
 			<panel colSpan="4">
 	        	<field name="useMaxQty" />
-				<field name="maxQty" onChange="action-stock-rules-maxqty-change"
+				<field name="maxQty" showIf="useMaxQty" onChange="action-stock-rules-maxqty-change"
 					validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)" />
 			</panel>
 			<field name="reOrderQty" colSpan="2" validIf="$number(reOrderQty) >= 0" />
         </panel>
-		<panel name="reorderingManagedBy" title="Reordering managed by">
+		<panel name="reorderingManagedBy" title="Reordering managed by"  showIf="orderAlertSelect == 1">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" form-view="team-form" grid-view="team-grid"/>
 		</panel>
@@ -49,7 +51,7 @@
 	    <field name="minQty" expr="1"/>
 	    <field name="idealQty" expr="1"/>
 	    <field name="orderAlertSelect" expr="1"/>
-	    <field name="typeSelect" expr="2"/>
+	    <field name="useCaseSelect" expr="1"/>
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-record>
