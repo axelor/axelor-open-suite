@@ -39,7 +39,7 @@
 	  
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	  
-	  <many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
+	  <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Activities"/>
 	  
 	  <string name="fullName" namecolumn="true" title="Name"/>
 	 
