@@ -23,4 +23,27 @@
 		<series key="_duration" type="bar" title="Total" groupBy="_project" />
 	</chart>
 
+	<chart name="chart.leave.per.employee" title="Leave Per Employee" stacked="true">
+		<dataset type="jpql"><![CDATA[
+		SELECT
+			self.employee.name AS _employee,
+			self.name AS _leave_reason,
+			self.quantity AS _quantity
+		FROM
+			LeaveLine self
+		WHERE
+			self.employee.manager.id = :manager_id
+		GROUP BY
+			self.employee.name,
+			self.name,
+			self.quantity
+		ORDER BY
+			self.employee.name,
+			self.name,
+			self.quantity
+		]]></dataset>
+		<category key="_employee" type="text" title="Employee"/>
+		<series key="_quantity" groupBy="_leave_reason" type="bar" title="Quantity"/>
+	</chart>
+
 </object-views>
