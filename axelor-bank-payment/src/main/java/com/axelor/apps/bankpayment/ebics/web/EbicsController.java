@@ -207,12 +207,12 @@ public class EbicsController {
 		try {
 			
 			MetaFile testDataMetaFile = ebicsUser.getTestDataFile();
-			MetaFile testSignatureMetaFile = ebicsUser.getTestDataFile();
+			MetaFile testSignatureMetaFile = ebicsUser.getTestSignatureFile();
 
 			BankOrderFileFormat bankOrderFileFormat = ebicsUser.getTestBankOrderFileFormat();
 			
-			if(ebicsUser.getEbicsPartner().getTestMode() && testDataMetaFile != null && bankOrderFileFormat != null)  { 
-				
+			if(testDataMetaFile != null && bankOrderFileFormat != null)  { 
+
 				File testSignatureFile = null;
 				
 				if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
