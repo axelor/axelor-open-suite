@@ -89,7 +89,7 @@
 "Generate one invoice per incoming stockMove",,,
 "Generate one invoice per outgoing stockMove",,,
 "Generate proposal",,,
-"Generate purchase orders automatically","Générer les commandes fournisseurs auto.",,
+"Generate purchase orders automatically",,,
 "Generate single invoice",,,
 "Generate supplier arrivals automatically",,,
 "Import",,,

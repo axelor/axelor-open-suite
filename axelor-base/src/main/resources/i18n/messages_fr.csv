@@ -528,7 +528,7 @@
 "Error : Mapping file is unreachable.","Erreur : Fichier de mapping inacessible.",,
 "Error : There is no query set for the querie %s","Erreur : Il n’y a pas de requête",,
 "Error : a request has to be set for the indicatior generator %s","Erreur : Aucun requête de paramêtrée pour le générateur d'indicateur %s",,
-"Error : incorrrect request for the indicatior generator %s","Erreur : Requête incorrect pour le générateur d'indicateur %s",,
+"Error : incorrect request for the indicatior generator %s","Erreur : Requête incorrect pour le générateur d'indicateur %s",,
 "Error in Connection","Erreur de connexion",,
 "Error in print. Please check report configuration and print setting.","Erreur d’impression. Veuillez vérifiez les paramètres d’impression et la configuration des rapports.",,
 "Error while creating the file","Erreur lors de l'écriture du fichier",,
