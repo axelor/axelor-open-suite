@@ -17,17 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -39,11 +30,18 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
@@ -138,6 +136,16 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			saleOrder.setPriceList(client.getSalePriceList());
 		}
 		return saleOrder;
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
+		List<Timetable> timetableList = saleOrder.getTimetableList();
+		BigDecimal totalHT = saleOrder.getExTaxTotal();
+		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+		for (Timetable timetable : timetableList) {
+			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+		}
+		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
 }
 
