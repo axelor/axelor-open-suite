@@ -18,13 +18,11 @@
 package com.axelor.apps.account.web;
 
 
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
@@ -40,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 public class InvoicePaymentController  {
-	
 
 	@Inject
 	private InvoicePaymentCancelService invoicePaymentCancelService;
@@ -48,8 +45,6 @@ public class InvoicePaymentController  {
 	@Inject
 	private InvoiceRepository invoiceRepo;
 
-
-	
 	public void cancelInvoicePayment(ActionRequest request, ActionResponse response)
 	{
 		InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
@@ -65,11 +60,12 @@ public class InvoicePaymentController  {
 	}
 	
 	//filter the payment mode depending on the target invoice
-	
+
+	@SuppressWarnings("unchecked")
 	public void filterPaymentMode(ActionRequest request, ActionResponse response) {
 		Map<String, Object> partialInvoice = 
 				(Map<String, Object>) request.getContext().get("_invoice");
-		Invoice invoice = invoiceRepo.find( ((Integer) partialInvoice.get("id")).longValue());
+		Invoice invoice = invoiceRepo.find( Long.valueOf(partialInvoice.get("id").toString()) );
 		PaymentMode paymentMode = invoice.getPaymentMode();
 		if (invoice != null && paymentMode != null) {
 			if (paymentMode.getInOutSelect() != null) {
@@ -108,6 +104,7 @@ public class InvoicePaymentController  {
 	 * @param request
 	 * @param response
 	 */
+	@SuppressWarnings("unchecked")
 	public void fillBankDetails(ActionRequest request, ActionResponse response) {
 		InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 		Map<String, Object> partialInvoice =

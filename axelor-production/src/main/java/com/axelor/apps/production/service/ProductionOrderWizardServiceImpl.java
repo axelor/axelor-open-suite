@@ -51,8 +51,8 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 	
 	@Inject
 	protected GeneralService generalService;
-	
-	
+
+	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {
 	
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");

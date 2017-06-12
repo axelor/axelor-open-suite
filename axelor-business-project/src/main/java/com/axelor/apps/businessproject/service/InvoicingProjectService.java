@@ -367,7 +367,7 @@ public class InvoicingProjectService {
 		ProjectTask projectTask = saleOrder.getProject();
 		invoicingProject.setProjectTask(projectTask);
 		
-		Set<SaleOrderLine> saleOrderLineList = new HashSet();
+		Set<SaleOrderLine> saleOrderLineList = new HashSet<>();
 		
 		saleOrderLineList.addAll( Beans.get(SaleOrderLineRepository.class)
 				.all().filter("self.saleOrder = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.saleOrder.creationDate < ?2 or ?3 is null)", saleOrder, deadlineDate, deadlineDate ).fetch() );
@@ -375,12 +375,12 @@ public class InvoicingProjectService {
 		
 		
 		if (invoicingType == 2){
-			Set<TimesheetLine> timesheetLineList = new HashSet();
+			Set<TimesheetLine> timesheetLineList = new HashSet<>();
 			timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class)
 					.all().filter("self.timesheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", projectTask, deadlineDate, deadlineDate).fetch());
 			invoicingProject.setLogTimesSet(timesheetLineList);
 		}else if (invoicingType == 3) {
-			Set<ExpenseLine> expenseLineList = new HashSet();
+			Set<ExpenseLine> expenseLineList = new HashSet<>();
 			expenseLineList.addAll(Beans.get(ExpenseLineRepository.class)
 					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expenseDate < ?2 or ?3 is null)", projectTask, deadlineDate, deadlineDate).fetch());
 			invoicingProject.setExpenseLineSet(expenseLineList);

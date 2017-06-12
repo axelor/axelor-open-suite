@@ -35,11 +35,11 @@
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-task-method-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-task-method-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
+			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" type="decimal" onChange="action-project-task-method-set-stored-lead-delay, action-method-project-task-compute-progress"/>
 			<field name="imputable" if-module="axelor-human-resource"/>
 			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
@@ -77,7 +77,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="activity" title="Activities" if-module="axelor-human-resource">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
@@ -121,11 +121,11 @@
 			<field name="clientPartner" readonly="true"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-method-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-method-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" onChange="action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
+			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-method-set-stored-lead-delay, action-method-project-task-compute-progress"/>
 			<field name="imputable" if-module="axelor-human-resource"/>
 			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
@@ -159,7 +159,7 @@
 				<field name="company" hidden="true" />
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -199,11 +199,11 @@
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" readonlyIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-method-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-method-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
+			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-method-set-stored-lead-delay, action-method-project-task-compute-progress"/>
 			<field name="imputable" if-module="axelor-human-resource"/>
 			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
@@ -236,7 +236,7 @@
 				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 			<panel name="description" title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -305,7 +305,19 @@
 			  >
 			  <field name="fullName"/>
 	</calendar>
-	
+
+	<action-method name="action-project-task-method-set-stored-duration" model="com.axelor.apps.project.db.ProjectTask">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredDuration"/>
+	</action-method>
+
+	<action-method name="action-project-task-method-set-stored-time-spent" model="com.axelor.apps.project.db.ProjectTask">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredTimeSpent"/>
+	</action-method>
+
+	<action-method name="action-project-task-method-set-stored-lead-delay" model="com.axelor.apps.project.db.ProjectTask">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredLeadDelay"/>
+	</action-method>
+
 	<action-group name="action-project-task-group-on-new-project">
 		<action name="action-project-task-generate-project-from-partner" if="_idPartner != null"/>
 		<action name="action-project-project-default"/>

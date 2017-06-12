@@ -65,8 +65,6 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		populate( refund, refundLines );
 		
-		refund.setJournal(journalService.getJournal(invoice)); 
-		
 		// Payment mode should not be the invoice payment mode. It must come
 		// from the partner or the company, or be null.
 		refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));

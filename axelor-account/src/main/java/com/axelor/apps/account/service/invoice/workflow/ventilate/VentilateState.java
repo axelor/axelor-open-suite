@@ -20,13 +20,14 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.inject.Beans;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -68,15 +69,14 @@ public class VentilateState extends WorkflowInvoice {
 		this.invoice = invoice;
 	}
 
-	
-	
-
 	@Override
 	public void process( ) throws AxelorException {
 
 		Preconditions.checkNotNull(invoice.getPartner());
 
 		setDate();
+		setJournal();
+		setPartnerAccount();
 
 		Sequence sequence = this.getSequence();
 
@@ -96,10 +96,36 @@ public class VentilateState extends WorkflowInvoice {
 
 	}
 
+	protected void setPartnerAccount() throws AxelorException {
+		AccountingSituation accountSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(invoice.getPartner(), invoice.getCompany());
+		if(accountSituation == null)  {
+			accountSituation = Beans.get(AccountingSituationService.class).createAccountingSituation(invoice.getPartner(), invoice.getCompany());
+		}
+
+		if(invoice.getPartnerAccount() == null)  {
+			Account account = InvoiceToolService.isPurchase(invoice) ? accountSituation.getSupplierAccount() : accountSituation.getCustomerAccount();
+
+			if(account == null) {
+				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_5), IException.CONFIGURATION_ERROR);
+			}
+
+			invoice.setPartnerAccount(account);
+		}
+	}
+
+	protected void setJournal() throws AxelorException {
+		if(invoice.getJournal() == null)  {
+			invoice.setJournal(Beans.get(JournalService.class).getJournal(invoice));
+		}
+	}
+
 	protected void setDate( ) throws AxelorException{
 
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(generalService.getTodayDate());
+		} else if (invoice.getInvoiceDate().compareTo(generalService.getTodayDate()) > 0) {
+			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
+					IException.CONFIGURATION_ERROR);
 		}
 
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
@@ -177,8 +203,6 @@ public class VentilateState extends WorkflowInvoice {
 	/**
 	 * Détermine le numéro de facture
 	 *
-	 * @param invoice
-	 * @param company
 	 * @throws AxelorException
 	 */
 	protected void setStatus( ) {
@@ -188,8 +212,7 @@ public class VentilateState extends WorkflowInvoice {
 	/**
 	 * Détermine le numéro de facture
 	 *
-	 * @param invoice
-	 * @param company
+	 * @param sequence
 	 * @throws AxelorException
 	 */
 	protected void setInvoiceId( Sequence sequence ) throws AxelorException {

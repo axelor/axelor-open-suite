@@ -6,7 +6,7 @@
 	onNew="action-hr-ts-timer-record-default" canNew="false">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
-		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productSet)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="startDateTime"/>
 		<field name="duration"/>
 		<field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" showIf="timesheetLine != null"/>
@@ -36,7 +36,7 @@
 	</form>
 	
 	<action-attrs name="action-hr-timesheet-timer-attrs-domain-product">
-		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;"/>
+		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productSet.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productSet)&quot;"/>
 	</action-attrs>
 	
 	<action-record name="action-hr-ts-timer-record-default" model="com.axelor.apps.hr.db.TSTimer">
@@ -61,7 +61,7 @@
 	</action-record>
 	
 	<action-record name="action-hr-ts-timer-record-empty-product" model="com.axelor.apps.hr.db.TSTimer">
-		<field name="product" expr="eval:null" if="!projectTask?.productList?.contains(product)"/>
+		<field name="product" expr="eval:null" if="!projectTask?.productSet?.contains(product)"/>
 	</action-record>
 	
 	<action-method name="action-ts-timer-method-pause">

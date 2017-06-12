@@ -189,14 +189,14 @@
 	</selection>
 
 	<selection name='partner.assignor.type.select'>
-		<option value='syndicate'>Syndicat</option>
-		<option value='authority'>Collectivité</option>
+		<option value='syndicate'>Syndicate</option>
+		<option value='authority'>Authority</option>
 	</selection>
 
 	<selection name="partner.industry.sectory.select">
 		<option value="1">Agriculture</option>
 		<option value="2">Banking &amp; Insurance</option>
-		<option value="3">Biotechnologies</option>
+		<option value="3">Biotechnology</option>
 		<option value="4">Chemistry</option>
 		<option value="5">Communication</option>
 		<option value="6">Real Estate</option>
