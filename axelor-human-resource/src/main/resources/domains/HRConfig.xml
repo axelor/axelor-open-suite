@@ -63,6 +63,7 @@
   	<string name="ageVariableName" title="Name for age variable" />
   	
   	<string name="workingDaysVariableName" title="Name for working day variable" />
+	<string name="totalWorkingDaysVariableName" title="Name for total working day in a period variable"/>
   	 
   </entity>
   
