@@ -39,7 +39,7 @@ public class ProdProcessService {
 	
 	public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom) throws AxelorException{
 		Map<Product,BigDecimal> bomMap = new HashMap<Product,BigDecimal>();
-		for (BillOfMaterial bomIt : bom.getBillOfMaterialList()) {
+		for (BillOfMaterial bomIt : bom.getBillOfMaterialSet()) {
 			bomMap.put(bomIt.getProduct(), bomIt.getQty());
 		}
 		for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
