@@ -76,19 +76,6 @@ public class InventoryService {
 	private StockMoveRepository stockMoveRepo;
 
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Inventory createInventoryFromWizard(LocalDate date, String description, Location location, boolean excludeOutOfStock,
-			boolean includeObsolete, ProductFamily productFamily, ProductCategory productCategory) throws Exception {
-
-		Inventory inventory = inventoryRepo.save(this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory));
-
-		this.fillInventoryLineList(inventory);
-
-		return inventory;
-	}
-
-
-
 	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete,
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 

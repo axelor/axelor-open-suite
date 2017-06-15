@@ -5,9 +5,8 @@
     
     <grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" editable="true">
        <field name="estimatedDate"/>
-       <field name="amount" onChange="action-timetable-record-amount-to-invoice"/>
+       <field name="amount"/>
        <field name="comments"/>
-       <field name="amountToInvoice" readonly="true"/>
        <field name="product" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        <field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        <field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
@@ -19,7 +18,6 @@
 	 	<panel name="main" >
 			<field name="estimatedDate" colSpan="4"/>
       		<field name="amount" colSpan="4"/>
-      		<field name="amountToInvoice" colSpan="4" readonly="true"/>
       		<field name="product" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        		<field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        		<field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
@@ -29,11 +27,6 @@
        		<field name="comments" colSpan="12"/>
 	 	</panel>
 	 </form>
-	 
-	 <action-record name="action-timetable-record-amount-to-invoice" model="com.axelor.apps.supplychain.db.Timetable">
-	 	<field name="amountToInvoice" expr="eval: amount" if="id &lt; 1"/>
-	 	<field name="amountToInvoice" expr="eval: __self__.amountToInvoice + (__this__.amount - __self__.amount)" if="id &gt; 0"/>
-	 </action-record>
 	 
 	 <action-method name="action-timetable-method-generate-invoice">
 	 	<call class="com.axelor.apps.supplychain.web.TimetableController" method="generateInvoice"/>

@@ -21,6 +21,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import javax.xml.XMLConstants;
+
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
@@ -105,7 +107,7 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }

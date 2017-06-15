@@ -144,8 +144,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	@Transactional
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 		MetaFile metaFile = new MetaFile();
-		metaFile.setFileName(I18n.get("Lunch Voucher Mgt") + " - " + LocalDate.now().format(DateTimeFormatter.ISO_DATE) + ".csv");
-
+		metaFile.setFileName(I18n.get("LunchVoucherCommand") + " - " + LocalDate.now().format(DateTimeFormatter.ISO_DATE) + ".csv");
 		
 		Path tempFile = MetaFiles.createTempFile(null, ".csv");
 		final OutputStream os = new FileOutputStream(tempFile.toFile());

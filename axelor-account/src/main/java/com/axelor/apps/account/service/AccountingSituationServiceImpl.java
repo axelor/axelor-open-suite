@@ -128,6 +128,10 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		accountingSituation.setPartner(partner);
 		accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
 		accountingSituationList.add(accountingSituation);
+		
+		partner.addCompanySetItem(company);
+		partner.addAccountingSituationListItem(accountingSituation);
+
 		return accountingSituation;
 	}
 

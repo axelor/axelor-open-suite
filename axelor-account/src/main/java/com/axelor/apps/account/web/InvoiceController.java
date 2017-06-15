@@ -232,20 +232,6 @@ public class InvoiceController {
 		}
 	}
 
-	public void getJournal(ActionRequest request, ActionResponse response)  {
-
-		Invoice invoice = request.getContext().asType(Invoice.class);
-
-		try  {
-			response.setValue("journal", Beans.get(JournalService.class).getJournal(invoice));
-		}
-		catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
-
-
-
 	/**
 	 * Method to generate invoice as a Pdf
 	 */

@@ -30,7 +30,7 @@
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validButton" onClick="action-extra-hours-group-validate" title="Valid"/>
+	    	<button name="validateButton" onClick="action-extra-hours-group-validate" title="Validate"/>
 	    	<button name="refuseButton" onClick="action-extra-hours-group-refuse" title="Refuse"/>
 			<button name="cancelButton" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
@@ -97,7 +97,7 @@
 	</action-record>
 	
 	<action-attrs name="action-extra-hours-attrs-buttons">
-		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 	</action-attrs>

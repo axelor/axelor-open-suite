@@ -57,7 +57,6 @@ public class ManufOrderWorkflowService {
 	}
 
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -80,14 +79,6 @@ public class ManufOrderWorkflowService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(ManufOrder manufOrder) {
-		if (manufOrder.getOperationOrderList() != null) {
-			OperationOrder operationOrderPriority = operationOrderRepo.all().filter("self.manufOrder = ? AND self.statusSelect >= ? AND self.statusSelect <= ?", manufOrder, IOperationOrder.STATUS_PLANNED, IOperationOrder.STATUS_STANDBY).order("priority").fetchOne();
-
-			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.manufOrder = ? AND self.priority = ? AND self.statusSelect <> ?", manufOrder, operationOrderPriority.getPriority(), IOperationOrder.STATUS_FINISHED).fetch();
-			for (OperationOrder operationOrder : operationOrderList) {
-				operationOrderWorkflowService.start(operationOrder);
-			}
-		}
 
 		manufOrder.setRealStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		

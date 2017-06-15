@@ -23,11 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -50,19 +46,15 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-
 public class BatchPayrollPreparationExport extends BatchStrategy {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
-	
-	private int total;
-	private HrBatch hrBatch;
-	private Company company;
+	protected int total;
+	protected HrBatch hrBatch;
 	
 	protected PayrollPreparationService payrollPreparationService;
 	
 	@Inject
-	PayrollPreparationRepository payrollPreparationRepository;
+	protected PayrollPreparationRepository payrollPreparationRepository;
 	
 	@Inject
 	CompanyRepository companyRepository;
