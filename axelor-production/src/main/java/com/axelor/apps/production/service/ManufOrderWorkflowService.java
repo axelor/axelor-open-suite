@@ -57,6 +57,7 @@ public class ManufOrderWorkflowService {
 	}
 
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
