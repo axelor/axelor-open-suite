@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ import com.google.inject.Inject;
 
 public class GeneralController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ExportDbObjectService eos;

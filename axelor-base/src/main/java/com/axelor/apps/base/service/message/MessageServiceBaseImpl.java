@@ -46,13 +46,14 @@ import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected UserService userService;

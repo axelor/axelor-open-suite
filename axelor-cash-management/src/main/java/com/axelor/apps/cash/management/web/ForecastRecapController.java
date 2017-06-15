@@ -19,6 +19,7 @@ package com.axelor.apps.cash.management.web;
 
 import java.io.IOException;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 public class ForecastRecapController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ForecastRecapService forecastRecapService;

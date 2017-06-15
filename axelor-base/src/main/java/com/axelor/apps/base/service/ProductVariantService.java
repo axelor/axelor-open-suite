@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ import com.google.inject.Inject;
 
 public class ProductVariantService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ProductVariantService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ProductRepository productRepo;

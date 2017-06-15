@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class ClearMessage {
 	@Inject
 	MailMessageRepository mailRepo;
 
-	private static final Logger LOG = LoggerFactory.getLogger(ClearMessage.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	//Delete all mail messages generated on import
 	

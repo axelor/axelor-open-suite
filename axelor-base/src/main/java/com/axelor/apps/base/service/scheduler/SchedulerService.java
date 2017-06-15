@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.scheduler;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 
 import org.joda.time.DateTimeConstants;
@@ -51,7 +52,7 @@ public class SchedulerService {
 
 	protected GeneralService generalService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private LocalDate today;
 

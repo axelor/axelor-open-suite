@@ -30,9 +30,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
+import java.lang.invoke.MethodHandles;
+
 public class AccountManagementServiceAccountImpl extends AccountManagementServiceImpl {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 
 	/**

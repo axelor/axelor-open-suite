@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.alarm;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class AlarmEngineService <T extends Model> {
 
 	protected GeneralService generalService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private DateTime dateTime;
 
