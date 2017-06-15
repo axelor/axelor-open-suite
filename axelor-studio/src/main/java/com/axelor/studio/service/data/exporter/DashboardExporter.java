@@ -23,9 +23,11 @@ import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class DashboardExporter {
 	
-	private final static Logger log = LoggerFactory.getLogger(DashboardExporter.class);
+	private final static Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private MetaViewRepository metaViewRepo;

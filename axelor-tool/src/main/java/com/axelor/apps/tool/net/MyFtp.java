@@ -19,6 +19,7 @@ package com.axelor.apps.tool.net;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public final class MyFtp {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(MyFtp.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private MyFtp(){
 		

@@ -18,6 +18,7 @@
 package com.axelor.apps.message.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class GenerateMessageController {
 	@Inject
 	private TemplateRepository templateRepo;
 
-	private static final Logger LOG = LoggerFactory.getLogger(GenerateMessageController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public void callMessageWizard(ActionRequest request, ActionResponse response)   {
 		

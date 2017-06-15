@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.data.exporter;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import com.google.inject.Inject;
 
 public class FormExporter {
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private boolean newForm = false;
 	

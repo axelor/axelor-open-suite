@@ -18,6 +18,7 @@
 package com.axelor.apps.message.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,7 +59,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	private static final String RECIPIENT_SEPARATOR = ";|,";
 	private static final char TEMPLATE_DELIMITER = '$';
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected TemplateMaker maker;
 	

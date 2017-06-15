@@ -19,6 +19,7 @@ package com.axelor.studio.service.wkf;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -55,7 +56,7 @@ import com.google.inject.persist.Transactional;
  */
 public class WkfDesignerService {
 	
-	private final Logger log = LoggerFactory.getLogger(WkfDesignerService.class);
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected static final String WKF_STATUS = "wkfStatus";
 

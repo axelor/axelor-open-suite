@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ import com.google.inject.Inject;
 
 public class ChartBuilderService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private static final String Tab1 = "\n \t";
 	private static final String Tab2 = "\n \t\t";

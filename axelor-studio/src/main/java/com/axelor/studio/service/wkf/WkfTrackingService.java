@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -54,7 +55,7 @@ import com.google.inject.persist.Transactional;
  */
 public class WkfTrackingService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public static final String ACTION_TRACK = "action-method-wkf-track";
 

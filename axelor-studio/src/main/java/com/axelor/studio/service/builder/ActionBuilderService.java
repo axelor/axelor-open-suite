@@ -17,9 +17,13 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +35,7 @@ import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.repo.ActionBuilderLineRepository;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Joiner;
@@ -40,13 +45,19 @@ import com.google.inject.persist.Transactional;
 
 public class ActionBuilderService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
-	
 	private static final String INDENT = "\t";
 	
 	private List<StringBuilder> fbuilder = null;
 	
 	private int varCount = 0;
+
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
+	@Inject
+	private ActionBuilderRepository actionBuilderRepo;
+
+	@Inject
+	private ViewBuilderService viewBuilderService;
 
 	@Inject
 	private ActionBuilderLineRepository builderLineRepo;

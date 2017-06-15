@@ -20,6 +20,7 @@ package com.axelor.studio.service.data.exporter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 
 public class AsciidocExporter {
 	
-	private static final Logger log = LoggerFactory.getLogger(AsciidocExporter.class);
+	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private static final List<String> COMMENT_TYPES = Arrays.asList(
 			new String[]{"tip", "general", "warn"});

@@ -1,5 +1,6 @@
 package com.axelor.studio.service.data.exporter;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import com.google.inject.Inject;
 
 public class ModelExporter {
 	
-	private static final Logger log = LoggerFactory.getLogger(ModelExporter.class);
+	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private final List<String> SUPPORTED_TYPES = Arrays.asList(new String[]{"form", "dashboard", "grid"});
 	

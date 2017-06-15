@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,7 @@ import com.google.inject.Inject;
  */
 public class ReportBuilderService {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private List<String[]> panels;
 

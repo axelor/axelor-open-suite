@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -54,7 +55,7 @@ class WkfNodeService {
 
 	private WkfService wkfService;
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private List<String[]> nodeActions;
 

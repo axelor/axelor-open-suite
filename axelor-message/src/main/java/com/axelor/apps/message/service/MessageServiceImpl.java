@@ -18,6 +18,7 @@
 package com.axelor.apps.message.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceImpl implements MessageService {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private ZonedDateTime todayTime;
 	

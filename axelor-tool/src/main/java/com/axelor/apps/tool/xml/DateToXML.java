@@ -25,9 +25,11 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+
 public abstract class DateToXML {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DateToXML.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public static XMLGregorianCalendar convert(LocalDateTime in) {
 		

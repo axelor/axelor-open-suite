@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -54,9 +55,9 @@ import com.google.inject.persist.Transactional;
  *
  */
 public class WkfService {
-	
-	private final Logger log = LoggerFactory.getLogger(WkfService.class);
-	
+
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
 	protected Wkf workflow = null;
 
 	protected String wkfId = null;
