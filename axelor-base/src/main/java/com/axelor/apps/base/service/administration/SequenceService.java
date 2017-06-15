@@ -167,11 +167,7 @@ public class SequenceService {
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
 	 *
-	 * @param seq
-	 * @param todayYear
-	 * @param todayMoy
-	 * @param todayDom
-	 * @param todayWoy
+	 * @param sequence
 	 * @return
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
