@@ -20,6 +20,8 @@ package com.axelor.apps.bankpayment.ebics.xml;
 import java.math.BigInteger;
 import java.util.Calendar;
 
+import javax.xml.XMLConstants;
+
 import com.axelor.apps.account.ebics.schema.h003.AuthenticationPubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.h003.EncryptionPubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.h003.HIARequestOrderDataType;
@@ -92,7 +94,7 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
   @Override
   public byte[] toByteArray() {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
-    setSaveSuggestedPrefixes("http://www.ebics.org/S001", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/S001", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }

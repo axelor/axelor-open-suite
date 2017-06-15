@@ -77,7 +77,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="activity" title="Activities" if-module="axelor-human-resource">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
@@ -159,7 +159,7 @@
 				<field name="company" hidden="true" />
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -236,7 +236,7 @@
 				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 			<panel name="description" title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>

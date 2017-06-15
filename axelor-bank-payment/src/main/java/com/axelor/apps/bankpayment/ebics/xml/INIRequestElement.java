@@ -19,6 +19,8 @@ package com.axelor.apps.bankpayment.ebics.xml;
 
 import com.axelor.exception.AxelorException;
 
+import javax.xml.XMLConstants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +73,7 @@ public class INIRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return unsecuredRequest.toByteArray();
   }

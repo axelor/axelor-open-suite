@@ -107,7 +107,7 @@
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;"/>
+		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productSet.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productSet)&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-project-task">
@@ -153,7 +153,7 @@
 	</action-record>
 	
 	<action-record name="action-hr-timesheet-line-record-empty-product" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="product" expr="eval:null" if="!projectTask?.productList?.contains(product)"/>
+		<field name="product" expr="eval:null" if="!projectTask?.productSet?.contains(product)"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">

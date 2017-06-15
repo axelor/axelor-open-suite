@@ -17,33 +17,14 @@
  */
 package com.axelor.apps.hr.service.batch;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.HrBatch;
-import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
@@ -58,6 +39,14 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -65,14 +54,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
-	private int total;
-	private HrBatch hrBatch;
+	protected int total;
+	protected HrBatch hrBatch;
 	private Company company;
 	
 	protected PayrollPreparationService payrollPreparationService;
 	
 	@Inject
-	PayrollPreparationRepository payrollPreparationRepository;
+	protected PayrollPreparationRepository payrollPreparationRepository;
 	
 	@Inject
 	CompanyRepository companyRepository;
