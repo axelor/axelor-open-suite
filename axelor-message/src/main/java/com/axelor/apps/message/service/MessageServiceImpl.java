@@ -36,10 +36,7 @@ import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
-import com.axelor.dms.db.DMSFile;
-import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -111,7 +108,11 @@ public class MessageServiceImpl implements MessageService {
 		log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
 		
 		for ( MetaFile metaFile: metaFiles ){
-			Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
+			try {
+				Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
