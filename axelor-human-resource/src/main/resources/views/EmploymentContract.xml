@@ -22,7 +22,7 @@
 
     <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new">
         <toolbar>
-            <button name="createAmendment" title="Create amendment" onClick="save,action-employment-contract-method-addAmendment"/>
+            <button name="createAmendment" title="Create amendment" onClick="save,action-employment-contract-method-addAmendment" hidden="true"/>
             <button name="editContractWordML" title="Print contract" onClick="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
         	<button name="generatePayrollPreparation" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"/>
         </toolbar>

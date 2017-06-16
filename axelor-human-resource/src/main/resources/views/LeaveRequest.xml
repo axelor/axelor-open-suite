@@ -76,6 +76,10 @@
 		<panel>
 			<field name="leaveRequestAttrs" colSpan="12" />
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	<form name="popup-leave-request-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.LeaveRequest">

@@ -137,7 +137,6 @@
 		<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
-			<panel-dashlet action="action-lead-view-opportunity"/>
 			<panel-dashlet action="action-lead-view-event-ticket"/>
 			<panel-dashlet action="action-lead-view-emails"/>
 			<panel-dashlet action="action-lead-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')"/>

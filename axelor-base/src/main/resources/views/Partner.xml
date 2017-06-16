@@ -114,7 +114,7 @@
   		</panel>
   		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
   		<panel-tabs>
-  			<panel name="information" title="Informations">
+  			<panel name="information" title="Information">
 				<panel hideIf="isContact" colSpan="12">
 					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
 					<field name="isProspect" onChange="action-partner-attrs-unset-customer"/>
@@ -217,6 +217,10 @@
 		<panel>
 			<field name="partnerAttrs" colSpan="12" />
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  </panel-mail>
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -350,6 +354,10 @@
         <panel>
 			<field name="contactAttrs" colSpan="12" />
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner"> 

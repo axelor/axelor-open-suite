@@ -128,6 +128,10 @@
 	          </viewer>
 	        </field>
       </panel>
+      <panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  </panel-mail>
 	</form>
 	
 	<form name="popup-expense-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Expense">

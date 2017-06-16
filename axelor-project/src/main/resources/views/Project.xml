@@ -106,6 +106,10 @@
 		<panel>
 			<field name="projectAttrs" colSpan="12" />
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	
