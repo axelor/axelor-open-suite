@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private SaleOrderService saleOrderService;

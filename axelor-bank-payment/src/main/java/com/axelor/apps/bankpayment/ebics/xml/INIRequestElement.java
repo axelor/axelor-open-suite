@@ -29,6 +29,8 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
 
+import java.lang.invoke.MethodHandles;
+
 /**
  * The INI request XML element. This root element is to be sent
  * to the ebics server to initiate the signature certificate.
@@ -38,7 +40,7 @@ import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
  */
 public class INIRequestElement extends DefaultEbicsRootElement {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
   /**
    * Constructs a new INI request element.

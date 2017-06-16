@@ -20,9 +20,10 @@
 	        				<birtTemplateParameterList>{{record.name}} : {{record.value}}</birtTemplateParameterList>
 	        			]]>
 	        		</viewer>
-					<editor x-show-titles="false">
+					<editor x-show-titles="false" itemSpan="4">
 						<field name="name" />
 						<field name="value" />
+						<field name="type" />
 					</editor>
 				</field>
 			</panel>

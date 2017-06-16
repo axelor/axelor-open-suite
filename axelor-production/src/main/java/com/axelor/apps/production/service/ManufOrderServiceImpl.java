@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,7 +53,7 @@ import com.google.inject.persist.Transactional;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected SequenceService sequenceService;

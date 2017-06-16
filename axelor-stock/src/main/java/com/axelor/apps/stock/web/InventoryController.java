@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -49,7 +50,7 @@ import com.google.inject.Inject;
 
 public class InventoryController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	InventoryService inventoryService;
@@ -61,7 +62,7 @@ public class InventoryController {
 	ProductRepository productRepo;
 	
 	
-	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private static final String PATH = AppSettings.get().get("file.upload.dir");
 	

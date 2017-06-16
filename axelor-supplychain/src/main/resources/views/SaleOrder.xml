@@ -65,11 +65,9 @@
     
     
     <!--   azeaeaeaeae -->
-    
-    
+
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
-    	<action name="action-supplychain-sale-order-method-generate-invoice" if="eval: !__config__.general.getEnableToInvoiceExpense() &amp;&amp; !__config__.general.getEnableToInvoiceTimesheet()" />
-    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.general.getEnableToInvoiceExpense() || __config__.general.getEnableToInvoiceTimesheet()" />
+    	<action name="action-supplychain-sale-order-method-generate-invoice"/>
     </action-group>
     
     <!--   azeaeaeaeae -->

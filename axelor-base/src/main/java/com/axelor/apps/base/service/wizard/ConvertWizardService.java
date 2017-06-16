@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.wizard;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,7 +34,7 @@ import com.google.common.collect.Lists;
 
 public class ConvertWizardService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ConvertWizardService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object createObject(Map<String, Object> context, Object obj, Mapper mapper) throws AxelorException  {

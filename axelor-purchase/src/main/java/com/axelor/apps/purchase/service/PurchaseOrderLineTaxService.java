@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderLineTaxService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineTaxService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PurchaseOrderToolService purchaseOrderToolService;

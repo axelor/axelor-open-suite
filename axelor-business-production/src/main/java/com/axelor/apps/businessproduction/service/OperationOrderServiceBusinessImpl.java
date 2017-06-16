@@ -33,9 +33,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
+import java.lang.invoke.MethodHandles;
+
 public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

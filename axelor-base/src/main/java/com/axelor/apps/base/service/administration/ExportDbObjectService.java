@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class ExportDbObjectService {
 	@Inject
 	UserService uis;
 	
-	private static final Logger log = LoggerFactory.getLogger(ExportDbObjectService.class);
+	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public static String[] fieldAttrs = new String[]{"name","type","title"};
 	

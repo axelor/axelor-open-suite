@@ -19,6 +19,7 @@ package com.axelor.apps.cash.management.service;
 
 import java.io.IOException;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import org.slf4j.LoggerFactory;
 
 public class ForecastRecapService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected TimetableService timetableService;
