@@ -195,6 +195,7 @@
 		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" />
 		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" />
 		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" />
+		<bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true" if="bankDetails_importId"/>
 	</input>
 		
 	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" />
