@@ -125,7 +125,7 @@ public class ExporterService {
 		
 		List<MetaModule> modules = metaModuleRepo
 				.all()
-				.filter("(self.installed = true OR self.customised = true) and self.name != 'axelor-core'").fetch();
+				.filter("self.installed = true and self.name != 'axelor-core'").fetch();
 		
 		for (MetaModule module : modules) {
 			exportModules.add(module.getName());

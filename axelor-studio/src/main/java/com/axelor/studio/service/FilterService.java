@@ -26,8 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.Filter;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -40,8 +42,6 @@ import com.google.inject.Inject;
  */
 public class FilterService {
 	
-	public static final List<String> NO_PARAMS = Arrays.asList(new String[]{"isNull","notNull", "empty", "notEmpty"});
-	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
@@ -49,6 +49,10 @@ public class FilterService {
 	
 	@Inject
 	private MetaJsonFieldRepository metaJsonFieldRepo;
+	
+	@Inject
+	private MetaModelRepository metaModelRepo;
+
 
 	/**
 	 * Method to convert chart filter list to groovy expression string. Each
@@ -130,80 +134,7 @@ public class FilterService {
 
 	}
 
-	public List<Object> getTargetField(Object targetField, String target) {
-
-		List<Object> result = new ArrayList<Object>();
-		List<String> targetList = new ArrayList<String>();
-		
-		MetaField metaField = null;
-		MetaJsonField metaJson = null;
-		
-		if (targetField instanceof MetaField) {
-			metaField = (MetaField) targetField;
-			targetList.add(metaField.getName());
-		}
-		else if (targetField instanceof MetaJsonField) {
-			metaJson = (MetaJsonField) targetField;
-			targetList.add(metaJson.getName());
-		}
-		
-		
-		if (target != null) {
-			String modelName = metaField != null ? metaField.getTypeName() : metaJson.getTargetModel();
-			List<String> fields = Arrays.asList(target.split("\\."));
-			if (fields.size() >= 2) {
-				
-				fields = fields.subList(1, fields.size());
-
-				for (String field : fields) {
-					MetaField subMetaField = metaFieldRepo
-							.all()
-							.filter("self.name = ?1 and self.metaModel.name = ?2",
-									field, modelName).fetchOne();
-					MetaJsonField subJson = null;
-					if (subMetaField == null) {
-						subJson = metaJsonFieldRepo
-								.all()
-								.filter("self.name = ?1 and self.model = ?2",
-										field, modelName).fetchOne();
-					}
-					
-					if (subMetaField != null) {
-						targetField = subMetaField;
-					}
-					else {
-						targetField = subJson;
-					}
-
-					targetList.add(field);
-
-					if (subMetaField != null && subMetaField.getRelationship() == null) {
-						break;
-					}
-					if (subJson != null && subJson.getTargetModel() == null) {
-						break;
-					}
-
-					if (fields.get(fields.size() - 1) == field) {
-						break;
-					} else {
-						if (subMetaField != null) {
-							modelName = subMetaField.getTypeName();
-						}
-						else if(subJson != null) {
-							modelName = subJson.getTargetModel();
-						}
-					}
-				}
-
-			}
-		}
-
-		result.add(Joiner.on(".").join(targetList));
-		result.add(targetField);
-
-		return result;
-	}
+	
 	
 	private String processValue(Filter filter, String typeName) {
 
@@ -256,10 +187,23 @@ public class FilterService {
 	 */
 	public String getSimpleCondition(Filter filter, String paramName) {
 
-		MetaField field = filter.getMetaField();
+		String fieldName = null;
+		String conditionField = null;
+		String typeName =  null;
+		
 		MetaJsonField json = filter.getMetaJsonField();
-
-		String fieldName = filter.getIsJson() ? json.getModelField() + ",'" + json.getName() + "'" : field.getName();
+		if (filter.getIsJson()) {
+			fieldName = json.getModelField() + ",'" + json.getName() + "'";
+			conditionField = getJsonJpql(json) + "(self." + fieldName + ")";
+			typeName = json.getType().toUpperCase();
+		}
+		else {
+			MetaField field = filter.getMetaField();
+			fieldName =  field.getName();
+			conditionField = "self." + fieldName;
+			typeName = field.getTypeName().toUpperCase();
+		}
+		
 		if (paramName == null) {
 			paramName = fieldName;
 			if (filter.getIsJson()) {
@@ -267,7 +211,6 @@ public class FilterService {
 			}
 		}
 		
-		String conditionField = filter.getIsJson() ? getJsonJpql(json) + "(self." + fieldName + ")": "self." + fieldName;
 
 		String value = filter.getValue();
 		String[] values = new String[] { "" };
@@ -276,12 +219,86 @@ public class FilterService {
 		}
 
 		String operator = filter.getFilterOperator().getValue();
-		String typeName = filter.getIsJson() ? json.getType().toUpperCase() : field.getTypeName().toUpperCase();
 
 		value = getTagValue(value, true);
 
 		if (filter.getIsParameter()) {
 			value = ":" + paramName;
+			if (typeName.equals("STRING")) {
+				value = "CONCAT('%',LOWER(" + value + "),'%')";
+			}
+		}
+
+		switch (operator) {
+			case "=":
+				if (typeName.equals("STRING")) {
+					return getLikeCondition(conditionField, value, true);
+				}
+				return conditionField + " IN" + " (" + value + ") ";
+			case "!=":
+				if (typeName.equals("STRING")) {
+					return getLikeCondition(conditionField, value, false);
+				}
+				return conditionField + " NOT IN" + " (" + value + ") ";
+			case "isNull":
+				return conditionField + " IS NULL ";
+			case "notNull":
+				return conditionField + " IS NOT NULL ";
+			case "between":
+				if (values.length > 1) {
+					return conditionField + " BETWEEN  " + values[0] + " AND "
+							+ values[1];
+				}
+				return conditionField + " BETWEEN  " + values[0] + " AND "
+						+ values[0];
+			case "notBetween":
+				if (values.length > 1) {
+					return conditionField + " NOT BETWEEN  " + values[0] + " AND "
+							+ values[1];
+				}
+				return conditionField + " NOT BETWEEN  " + values[0] + " AND "
+						+ values[0];
+			case "TRUE":
+				return conditionField + " IS TRUE ";
+			case "FALSE":
+				return conditionField + " IS FALSE ";
+			default:
+//				operator = operator.replace("<", "&lt;");
+//				operator = operator.replace(">", "&gt;");
+				return conditionField + " " + operator + " " + value;
+		}
+
+	}
+	
+	public String getSimpleSql(Filter filter) {
+
+		String conditionField = null;
+		String typeName =  null;
+		
+		MetaJsonField json = filter.getMetaJsonField();
+		if (filter.getIsJson()) {
+			conditionField = "cast(self." + json.getModelField() + "->>'" + json.getName() + "' as " + getSqlType(json.getType()) + ")";
+			typeName = json.getType().toUpperCase();
+		}
+		else {
+			MetaField field = filter.getMetaField();
+			conditionField = "self." + field.getName();
+			typeName = field.getTypeName().toUpperCase();
+		}
+		
+		
+		String value = filter.getValue();
+		String[] values = new String[] { "" };
+		if (value != null) {
+			values = value.split(",");
+		}
+
+		String operator = filter.getFilterOperator().getValue();
+
+		value = getTagValue(value, true);
+
+		if (filter.getIsParameter()) {
+			value = ":param" + filter.getId();
 			if (typeName.equals("STRING")) {
 				value = "CONCAT('%',LOWER(" + value + "),'%')";
 			}
@@ -343,7 +360,7 @@ public class FilterService {
 		}
 		
 	}
-
+	
 	/**
 	 * Method to generate query condition for relational chart filter fields.
 	 * 
@@ -368,7 +385,6 @@ public class FilterService {
 		}
 		String value = filter.getValue();
 		String targetType = filter.getTargetType().toUpperCase();
-//		if (targetType == null) {
 //			Object targetField = getTargetField(metaField,
 //					filter.getTargetField()).get(1);
 ////		}
@@ -411,6 +427,91 @@ public class FilterService {
 		}
 
 		return conditionField + " " + operator + " (" + value + ") ";
+
+	}
+	
+	
+	private String[] getJoins(Object field, String target, int count) {
+		
+		List<String> joins = new ArrayList<String>();
+		
+		Object targetField = getTargetField(field, target, joins, count).get(1);
+		
+		log.debug("Target field: {}", targetField);
+		String fieldName = null;
+		String fieldType = null;
+		if (targetField instanceof MetaField) {
+			fieldName = ((MetaField)targetField).getName();
+			fieldType = ((MetaField)targetField).getTypeName();
+		}
+		else if (targetField instanceof MetaJsonField) {
+			MetaJsonField jsonField = ((MetaJsonField)targetField);
+			fieldName =  "target" + count + "." + jsonField.getModelField() + "->" + jsonField.getName();
+			fieldType = ((MetaJsonField)targetField).getType();
+		}
+		
+		return new String[]{Joiner.on("\n").join(joins), fieldName, fieldType};
+	}
+	
+	public String[] getRelationalSql(Filter filter, int count) {
+		
+		String targetField = filter.getTargetField();
+		String[] joins = null;
+		if (filter.getIsJson()) {
+			joins = getJoins(filter.getMetaJsonField(), targetField, count);
+		}
+		else {
+			joins = getJoins(filter.getMetaField(), targetField, count);
+		}
+		
+		String conditionField = joins[1];
+		String value = filter.getValue();
+		String targetType = joins[2];
+		log.debug("Type name {}", targetType);
+		String operator = filter.getFilterOperator().getValue();
+		
+		Boolean isParam = filter.getIsParameter();
+		if (isParam) {
+			value = ":param" + filter.getId();
+		}
+		
+		String condition = null;
+		switch (operator) {
+			case "=":
+				if (targetType.equals("STRING") && !isParam) {
+					condition = getLikeCondition(conditionField, value, true);
+					break;
+				}
+				condition = conditionField + " IN (" + value + ") ";
+				break;
+			case "!=":
+				if (targetType.equals("STRING") && !isParam) {
+					condition = getLikeCondition(conditionField, value, false);
+					break;
+				}
+				condition = conditionField + " NOT IN (" + value + ") ";
+				break;
+			case "isNull":
+				condition =  conditionField + " IS NULL ";
+				break;
+			case "notNull":
+				condition = conditionField + " IS NOT NULL ";
+				break;
+//			case "include":
+//				condition = conditionField + " IN (" + conditionField + ")";
+//				break;
+//			case "notInclude":
+//				condition getM2MCondition(fieldName, targetType, conditionField, value, false);
+//				break;
+			default:
+				break;
+		}
+		
+		if (condition == null) {
+			condition = conditionField + " " + operator + " (" + value + ") ";
+		}
+
+		return new String[]{condition, joins[0]};
 
 	}
 
@@ -513,7 +614,7 @@ public class FilterService {
 	}
 	
 	
-	public String getSqlFilters(List<Filter> filterList) {
+	public String getJpqlFilters(List<Filter> filterList) {
 
 		String filters = null;
 		
@@ -591,5 +692,132 @@ public class FilterService {
 				return "string";
 		}
 	}
+	
+	public String getSqlType(String type) {
+		
+		return type;
+	}
+	
+	
+	public List<Object> getTargetField(Object targetField, String target, List<String> joins, int joinCount) {
 
+		List<Object> result = new ArrayList<Object>();
+		List<String> targetList = new ArrayList<String>();
+		if (target != null) {
+			targetList.addAll(Arrays.asList(target.split("\\.")));
+		}
+		
+		if (targetField instanceof MetaField) {
+			if (targetList.isEmpty() || targetList.size() == 1) {
+				targetList.add(((MetaField)targetField).getName());
+			}
+			else {
+				targetField = processMeta((MetaField)targetField, targetList, 1, joins, joinCount);
+			}
+		}
+		else if (targetField instanceof MetaJsonField) {
+			if (targetList.isEmpty() || targetList.size() == 1) {
+				targetList.add(((MetaJsonField)targetField).getName());
+			}
+			else {
+				targetField = processJson((MetaJsonField) targetField, targetList, 1, joins, joinCount);
+			}
+		}
+		
+		result.add(Joiner.on(".").join(targetList));
+		result.add(targetField);
+
+		return result;
+	}
+	
+	private Object processMeta(MetaField metaField, List<String> targets, int count, List<String> joins, int joinCount) {
+		
+		String targetField = targets.get(count);
+		
+		if (metaField.getTypeName() == null) {
+			targets = targets.subList(0, count);
+			return metaField;
+		}
+		
+		MetaField subField = metaFieldRepo.all().filter("self.name = ?1 and self.metaModel.name = ?2",
+						targetField, metaField.getTypeName()).fetchOne();
+		MetaModel metaModel = metaModelRepo.findByName(metaField.getTypeName());
+		if (subField != null) {
+			String target = "target" + joinCount;
+			String source = count == 1 ? "self" : "target" + (joinCount - 1);
+			joins.add("left join " + metaModel.getTableName() + target + " on (" + target + ".id = " + source + "." + metaField.getName() );
+			joinCount++;
+			if (subField.getRelationship() != null && targets.size() > count + 1) {
+				return processMeta(subField, targets, count + 1, joins,  joinCount);
+			}
+			metaField = subField;
+		}
+		else {
+			MetaJsonField subJson = metaJsonFieldRepo.all().filter("self.name = ?1 and self.model = ?2)",
+				targetField, metaModel.getFullName()).fetchOne();
+			if (subJson != null) {
+				String target = "target" + joinCount;
+				String source = count == 1 ? "self"  : "target" + (joinCount - 1);
+				joins.add("left join meta_json_record " + target + " on (" +  target + ".id = " + "cast(" + source + "." + subJson.getModelField() +  "->" + subJson.getName() +"->>id as integer)");
+				joinCount++;
+				if ((subJson.getTargetJsonModel() != null || subJson.getTargetModel() != null) && targets.size() > count + 1) {  
+					return processJson(subJson, targets, count+ 1, joins, joinCount);
+				}
+				else {
+					targets = targets.subList(0, count);
+					return subJson;
+				}
+			}
+		}
+		
+		targets = targets.subList(0, count);
+		return metaField;
+	}
+	
+	
+	private Object processJson(MetaJsonField jsonField, List<String> targets, int count, List<String> joins, int joinCount) {
+		
+		String targetField = null;
+		if (targets.size() > count) {
+			targetField = targets.get(count);
+		}
+		
+		if (jsonField.getTargetJsonModel() != null) {
+			MetaJsonField subJson = metaJsonFieldRepo.all().filter("self.name = ?1 and self.jsonModel = ?2)",
+						targetField, jsonField.getTargetJsonModel().getName()).fetchOne();
+			if (subJson != null) {
+				String target = "target" + joinCount;
+				String source = count == 1 ? "self"  : "target" + (joinCount - 1);
+				joins.add("left join meta_json_record " + target + " on (" +  target + ".id = " + "cast(" + source + "." + subJson.getModelField() +  "->" + subJson.getName() +"->>id as integer)");
+				joinCount++;
+				if ((subJson.getTargetJsonModel() != null || subJson.getTargetModel() != null) && targets.size() > count + 1) {
+					return processJson(subJson, targets, count + 1, joins, joinCount);
+				}
+				jsonField = subJson;
+			}
+		}
+		
+		if (jsonField.getTargetModel() != null) {
+			MetaField metaField = metaFieldRepo.all().filter("self.name = ?1 and self.metaModel.fullName = ?2)",
+					targetField, jsonField.getTargetModel()).fetchOne();
+			String[] model = jsonField.getTargetModel().split("\\.");
+			MetaModel metaModel = metaModelRepo.findByName(model[model.length - 1]);
+			if (metaField != null) {
+				String target = "target" + joinCount;
+				String source = count == 1 ? "self" : "target" + (joinCount - 1);
+				joins.add("left join " + metaModel.getTableName() + target + " on (" + target + ".id = " + "cast(" + source + "." + jsonField.getModelField() + "->" + metaField.getName() +  "->>id as integer)");
+				joinCount++;
+				if (metaField.getRelationship() == null && targets.size() > count + 1) {
+					return processMeta(metaField, targets, count + 1, joins, joinCount);
+				}
+				targets = targets.subList(0, count);
+				return metaField;
+			}
+		}
+		
+		targets = targets.subList(0, count);
+		
+		return jsonField;
+		
+	}
 }

@@ -81,11 +81,11 @@
   </action-view>
   
   <!-- Import/Export menus -->
-  <menuitem name="menu-studio-import-export" title="Import/Export" parent="menu-studio-root" order="30"/>
+  <menuitem name="menu-studio-import-export" title="Export" parent="menu-studio-root" order="30"/>
   
-  <menuitem name="menu-import-export" title="Module import/export" parent="menu-studio-import-export" action="menu.import.export" order="5"/>
+  <menuitem name="menu-import-export" title="Module export" parent="menu-studio-import-export" action="menu.import.export" order="5"/>
   
-  <action-view name="menu.import.export" title="Module import/export" model="com.axelor.studio.db.DataManager">
+  <action-view name="menu.import.export" title="Module export" model="com.axelor.studio.db.DataManager">
     <view type="grid" name="data-manager-grid"/>
     <view type="form" name="data-manager-form"/>
   </action-view>

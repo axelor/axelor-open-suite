@@ -29,6 +29,9 @@ import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
@@ -63,11 +66,11 @@ public class ChartBuilderService {
 	private List<RecordField> onNewFields;
 
 	@Inject
-	private FilterService filterService;
-
-	@Inject
 	private MetaModelRepository metaModelRepo;
-
+	
+	@Inject
+	private FilterService filterService;
+	
 	/**
 	 * Root Method to access the service it generate AbstractView from
 	 * ViewBuilder.
@@ -99,16 +102,16 @@ public class ChartBuilderService {
 		
 		String groupLabel = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getGroupOnJson().getTitle() : viewBuilder.getGroupOn().getLabel();
 		String displayLabel = viewBuilder.getIsJsonDisplayField() ? viewBuilder.getDisplayFieldJson().getTitle() : viewBuilder.getDisplayField().getLabel();
-		xml += "\t<dataset type=\"jpql\">";
+		xml += "\t<dataset type=\"sql\">";
 		xml += Tab2 + queryString[0];
 		xml += Tab2 + "</dataset>";
-		xml += Tab1 + "<category key=\"groupField\" type=\"text\" title=\""
+		xml += Tab1 + "<category key=\"group_field\" type=\"text\" title=\""
 				+ groupLabel  + "\" />";
-		xml += Tab1 + "<series key=\"fieldSum\" type=\""
+		xml += Tab1 + "<series key=\"sum_field\" type=\""
 				+ viewBuilder.getChartType() + "\" title=\""
 				+ displayLabel + "\" ";
 		if (queryString[1] != null) {
-			xml += "groupBy=\"aggField\" ";
+			xml += "group by=\"agg_field\" ";
 		}
 		xml += "/>\n";
 		xml += "</chart>";
@@ -143,18 +146,15 @@ public class ChartBuilderService {
 	private String[] prepareQuery(ViewBuilder viewBuilder) {
 		
 		String query = null;
-		String jsonFunction = null;
-		MetaJsonField jsonField = null;
 		
 		if (viewBuilder.getIsJsonDisplayField()) {
-			jsonField = viewBuilder.getDisplayFieldJson();
-			jsonFunction = filterService.getJsonJpql(jsonField);
-			query = "SELECT" + Tab3 + "SUM(" + jsonFunction + "(self."
-				+ viewBuilder.getDisplayFieldJson().getModelField() + ",'" + viewBuilder.getDisplayFieldJson().getName() + "')) AS fieldSum,"
-				+ Tab3;
+			MetaJsonField jsonField = viewBuilder.getDisplayFieldJson();
+			String sqlType = filterService.getSqlType(jsonField.getType());
+			query = "SELECT" + Tab3 + "SUM(cast(self." + jsonField.getModelField() 
+					+ "->>'" + jsonField.getName() + "' as " + sqlType + ")) AS sum_field," + Tab3;
 		}else {
 			query = "SELECT" + Tab3 + "SUM(self."
-					+ viewBuilder.getDisplayField().getName() + ") AS fieldSum,"
+					+ viewBuilder.getDisplayField().getName() + ") AS sum_field,"
 					+ Tab3;
 		}
 		
@@ -167,32 +167,36 @@ public class ChartBuilderService {
 				viewBuilder.getAggregateDateType(),
 				viewBuilder.getAggregateOnTarget());
 
-		query += groupField + " AS groupField";
+		query += groupField + " AS group_field";
 
 		if (aggField != null) {
-			query += "," + Tab3 + aggField + " AS aggField";
+			query += "," + Tab3 + aggField + " AS agg_field";
 		}
 		
-		String[] models = viewBuilder.getModel().split("\\.");
-		String filters = createFilters(viewBuilder.getFilterList());
+		String model = viewBuilder.getModel();
+		String[] filters = createFilters(viewBuilder.getFilterList());
 		
 		if (viewBuilder.getIsJson()) {
-			if (filters != null) {
-				filters = "self.jsonModel = '" + models[models.length -1] + "' AND (" + filters + ")";
+			if (filters[0] != null) {
+				filters[0] = "self.json_model = '" + model + "' AND (" + filters[0] + ")";
 			}
 			else {
-				filters = "self.jsonModel = '" + models[models.length -1] + "'" ;
+				filters[0] = "self.json_model = '" + model + "'" ;
 			}
-			models = new String[]{MetaJsonRecord.class.getSimpleName()};
+			model = MetaJsonRecord.class.getName();
 		}
 		
-		query += Tab2 + "FROM " + Tab3 +  models[models.length -1] + " self";
-
-		if (filters != null) {
-			query += Tab2 + "WHERE " + Tab3 + filters;
+		query += Tab2 + "FROM " + Tab3 +  getTable(model) + " self";
+		
+		if (filters[1] != null) {
+			query += filters[1];
 		}
 
-		query += Tab2 + "GROUP BY " + Tab3 + groupField;
+		if (filters[0] != null) {
+			query += Tab2 + "WHERE " + Tab3 + filters[0];
+		}
+
+		query += Tab2 + "group by " + Tab3 + groupField;
 
 		if (aggField != null) {
 			query += "," + aggField;
@@ -200,7 +204,7 @@ public class ChartBuilderService {
 
 		return new String[] { query, aggField };
 	}
-
+	
 	/**
 	 * Method to get correct format of group field use to add in query
 	 * 
@@ -227,7 +231,7 @@ public class ChartBuilderService {
 			if (target != null) {
 				name = target;
 			}
-			name = filterService.getJsonJpql(jsonField) + "(self." + jsonField.getModelField() + ",'" + name + "')";
+			name =  "self." + jsonField.getModelField() + "->>'" + name + "'";
 			typeName = jsonField.getType();
 		}
 		else {
@@ -240,17 +244,16 @@ public class ChartBuilderService {
 			
 		}
 		
-		if (dateType != null
-				&& "Date,DateTime,LocalDate,ZonedDateTime,LocalDateTime,date,datetime".contains(typeName)) {
-			String dtype = "datetime";
+		if (dateType != null) {
+			String dtype = "timestamp";
 			if ("Date,date,LocalDate".contains(typeName)) {
 				dtype = "date";
 			}
 			switch (dateType) {
 			case "year":
-				return "YEAR(cast(" + name + " as " + dtype +")";
+				return "to_char(cast(" + name + " as " + dtype +"), 'yyyy')";
 			case "month":
-				return "concat(str(YEAR(cast(" + name + " as " + dtype + "))), '-',str(MONTH(cast(" + name + " as " + dtype +"))))";
+				return "to_char(cast(" + name + " as " + dtype +"), 'yyyy-mm')";
 			default:
 				return name;
 			}
@@ -342,9 +345,12 @@ public class ChartBuilderService {
 
 	}
 
-	private String createFilters(List<Filter> filterList) {
+	private String[] createFilters(List<Filter> filterList) {
 
 		String filters = null;
+		String joins = null;
+
+		int count = 0;
 
 		for (Filter filter : filterList) {
 
@@ -355,14 +361,19 @@ public class ChartBuilderService {
 			String condition = "";
 
 			if (relationship != null) {
-				condition = filterService.getRelationalCondition(filter, null);
+				String[] relCondition = filterService.getRelationalSql(filter, count);
+				filters = relCondition[0];
+				if (relCondition[1] != null) {
+					joins += relCondition[1];
+				}
+				count++;
 			} else {
-				condition = filterService.getSimpleCondition(filter, null);
+				condition = filterService.getSimpleSql(filter);
 			}
 
 			if (filter.getIsParameter()) {
 				Object searchField = filter.getIsJson() ? json : field;
-				addSearchField(searchField, filter.getTargetField(),
+				addSearchField(filter.getId(), searchField, filter.getTargetField(),
 						filter.getDefaultValue());
 			}
 
@@ -374,49 +385,75 @@ public class ChartBuilderService {
 			}
 		}
 
-		return filters;
+		return new String[]{filters, joins};
 
 	}
 
-	private void addSearchField(Object field, String targetField,
+	private void addSearchField(Long filterId, Object field, String targetField,
 			String defaultVal) {
 
-		field = filterService.getTargetField(field, targetField)
-				.get(1);
+		field = filterService.getTargetField(field, targetField, null, 0).get(1);
 		boolean json = field instanceof MetaJsonField;
-		MetaJsonField jsonField = null;
-		MetaField metaField = null;
+		String fieldStr = "param" + filterId;
 		if (json) {
-			jsonField = (MetaJsonField) field;
+			fieldStr = getJsonSearchField(fieldStr, (MetaJsonField) field);
 		}
 		else {
-			metaField = (MetaField) field;
-		}
-		String relationship = json ?  jsonField.getTargetModel() : metaField.getRelationship();
-		String fieldName = json ? jsonField.getName() : metaField.getName();
-		String fieldLabel = json ? jsonField.getTitle() : metaField.getLabel();
-		String typeName = json ? jsonField.getType() : metaField.getTypeName();
-		String fieldStr = "<field name=\"" + fieldName + "\" title=\""
-				+ fieldLabel;
-		String[] modelField = null;
-
-		if (relationship == null) {
-			String fieldType = json ? Inflector.getInstance().camelize(typeName, true) : filterService.getFieldType(metaField);
-			fieldStr += "\" type=\"" + fieldType;
-			String select = json ? jsonField.getSelection() : null;
-			if (select != null) {
-				fieldStr = fieldStr + "\" selection=\"" + select;
-			}
-		} else {
-			String targetRef = metaModelRepo.findByName(typeName).getFullName();
-			fieldStr += "\" type=\"reference\" target=\"" + targetRef;
-			modelField = new String[] { typeName, "self." + fieldName };
+			fieldStr = getMetaSearchField(fieldStr, (MetaField) field);
 		}
 
 		searchFields.add(fieldStr + "\" x-required=\"true\" />");
 
-		setDefaultValue(fieldName, typeName, defaultVal, modelField);
+//		setDefaultValue(fieldName, typeName, defaultVal, modelField);
 
 	}
+	
+	private String getMetaSearchField(String fieldStr, MetaField field) {
+		
+		fieldStr = "<field name=\"" + fieldStr + "\" title=\"" + field.getLabel();
 
+		if (field.getRelationship() ==  null) {
+			String fieldType = filterService.getFieldType(field);
+			fieldStr += "\" type=\"" + fieldType;
+		}
+		else {
+			String targetRef = metaModelRepo.findByName(field.getTypeName()).getFullName();
+			fieldStr += "\" type=\"reference\" target=\"" + targetRef;
+		}
+		
+		return fieldStr;
+	}
+	
+	private String getJsonSearchField(String fieldStr, MetaJsonField field) {
+		
+		fieldStr = "<field name=\"" + fieldStr + "\" title=\"" + field.getTitle();
+
+		if (field.getTargetJsonModel() == null || field.getTargetModel() == null) {
+			String fieldType = Inflector.getInstance().camelize(field.getType(), true);
+			fieldStr += "\" type=\"" + fieldType;
+		}
+		else {
+			if (field.getTargetJsonModel() != null) {
+				fieldStr += "\" type=\"reference\" target=\"com.axelor.meta.db.MetaJsonRecord\" domain=\"self.json_model = '" + field.getTargetJsonModel() + "'"; 
+			}
+			else {
+				fieldStr += "\" type=\"reference\" target=\"" + field.getTargetModel();
+			}
+		}
+			
+		return fieldStr;
+	}
+
+	private String getTable(String model) {
+		
+		String[] models = model.split("\\.");
+		MetaModel metaModel = metaModelRepo.findByName(models[models.length - 1]);
+		
+		if (metaModel != null) {
+			return metaModel.getTableName();
+		}
+		
+		return null;
+	}
+	
 }

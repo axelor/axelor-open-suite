@@ -46,7 +46,7 @@ public class TargetListController {
 		
 		TargetList targetList = request.getContext().asType(TargetList.class);
 		
-		String partnerFilters = filterService.getSqlFilters(targetList.getPartnerFilterList());
+		String partnerFilters = filterService.getJpqlFilters(targetList.getPartnerFilterList());
 		if (partnerFilters != null) {
 			List<Partner> partners = partnerRepo.all().filter(partnerFilters).fetch();
 			Set<Partner> partnerSet = new HashSet<Partner>();
@@ -54,7 +54,7 @@ public class TargetListController {
 			response.setValue("partnerSet", partnerSet);
 		}
 		
-		String leadFilers = filterService.getSqlFilters(targetList.getLeadFilterList());
+		String leadFilers = filterService.getJpqlFilters(targetList.getLeadFilterList());
 		if (leadFilers != null) {
 			List<Lead> leads = leadRepo.all().filter(leadFilers).fetch();
 			Set<Lead> leadSet = new HashSet<Lead>();
