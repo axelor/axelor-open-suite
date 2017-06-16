@@ -300,6 +300,9 @@
 	<input file="hr_hrBatch.csv" type="com.axelor.apps.hr.db.HrBatch" separator=";"/>
 	
 	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
+
+	<input file="hr_contractType.csv" separator=";"
+		   type="com.axelor.apps.hr.db.ContractType"/>
  	    
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>
