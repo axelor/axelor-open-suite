@@ -12,5 +12,10 @@
 		<panel-dashlet action="admin.root.conf.purchase.config" colSpan="12"/> 
 	</form>
 	
+	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
+		model="com.axelor.apps.purchase.db.PurchaseConfig" >
+		<view type="grid" name="purchase-config-grid" />
+		<view type="form" name="purchase-config-form" />
+	</action-view>
 	
 </object-views>

@@ -29,5 +29,10 @@
 		<call class="com.axelor.apps.account.web.AppAccountController" method="payerQualityProcess" />
 	</action-method>
 	
+	<action-view name="admin.root.conf.account.config" title="Account configurations"
+		model="com.axelor.apps.account.db.AccountConfig" >
+		<view type="grid" name="account-config-grid"/>
+		<view type="form" name="account-config-form"/>
+	</action-view>
 	
 </object-views>

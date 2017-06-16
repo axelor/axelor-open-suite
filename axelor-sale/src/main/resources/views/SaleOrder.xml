@@ -626,7 +626,7 @@
 	</action-method>
 
 	<action-method name="action-sale-order-method-generate-tasks">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTasks"/>
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProjects"/>
 	</action-method>
     
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
