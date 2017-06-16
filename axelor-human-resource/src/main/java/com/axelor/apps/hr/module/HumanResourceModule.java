@@ -77,6 +77,7 @@ public class HumanResourceModule extends AxelorModule {
 		bind(ProjectPlanningRepository.class).to(ProjectPlanningHRRepository.class);
 		bind(ProjectPlanningService.class).to(ProjectPlanningServiceImpl.class);
 		bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
+		bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
 	}
 
 }

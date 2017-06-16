@@ -34,6 +34,10 @@
 			<button name="sendAppraisal" title="Send the appraisal" showIf="statusSelected == 0" onClick="action-appraisal-method-send-appraisal"/>
 			<button name="cancelAppraisal" title="Appraisal canceled" showIf="statusSelected &lt; 2" onClick="action-appraisal-method-cancel-appraisal"/>
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	<form name="appraisal-template-form" title="Appraisal template" model="com.axelor.apps.talent.db.Appraisal" width="large" onNew="action-appraisal-template-defaults">

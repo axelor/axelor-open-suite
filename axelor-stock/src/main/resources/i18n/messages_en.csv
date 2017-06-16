@@ -347,6 +347,7 @@
 "Team",,,
 "The move doesn't contain any product, do you wish to continue ?",,,
 "The quantity by lot must be greater than 0",,,
+"The tracking number configuration sale quantity is equal to zero, it must be at least one",,,
 "There is currently no such file in the specified folder or the folder may not exists.",,,
 "There's already an existing storage, you must deactivate it first",,,
 "There's no configured sequence for inventory for company",,,

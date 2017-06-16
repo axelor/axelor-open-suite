@@ -89,12 +89,12 @@ public class ReminderActionService {
 	public void runAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 
 		if(reminder.getReminderMethod()==null )  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
 					AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		if(reminder.getReminderMethodLine()==null)  {
 			throw new AxelorException(
-					String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_2),
+					String.format("%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_2),
 							AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 
@@ -195,12 +195,12 @@ public class ReminderActionService {
 
 		log.debug("Begin runManualAction service ...");
 		if(reminder.getReminderMethod()==null )  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
 					AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 
 		if(reminder.getWaitReminderMethodLine()==null)  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_2),
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_2),
 					AppAccountServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		else  {

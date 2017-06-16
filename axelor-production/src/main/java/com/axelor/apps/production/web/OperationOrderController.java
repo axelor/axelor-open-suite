@@ -17,6 +17,21 @@
  */
 package com.axelor.apps.production.web;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.axelor.app.production.db.IManufOrder;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.DayPlanning;
@@ -36,22 +51,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class OperationOrderController {
 	protected OperationOrderRepository operationOrderRepo;
@@ -123,12 +126,14 @@ public class OperationOrderController {
 		}
 	}
 
-
-	public void plan(ActionRequest request, ActionResponse response) throws AxelorException {
-		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-		operationOrder = operationOrderRepo.find(operationOrder.getId());
-		operationOrderWorkflowService.plan(operationOrder);
-		
+	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		if (operationOrder.getManufOrder() != null
+				&& operationOrder.getManufOrder().getStatusSelect() <
+				IManufOrder.STATUS_PLANNED) {
+		    return;
+		}
+		operationOrder = operationOrderWorkflowService.plan(operationOrderRepo.find(operationOrder.getId()));
 		response.setReload(true);
 	}
 
@@ -392,7 +397,7 @@ public class OperationOrderController {
 	public void startManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		operationOrder =operationOrderRepo.find(operationOrder.getId());
-		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 	}
 

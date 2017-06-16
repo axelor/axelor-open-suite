@@ -47,7 +47,6 @@ public class PurchaseOrderSupplierLineController {
 		try {
 			purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);
 			response.setReload(true);
-			response.setSignal("refresh-app", true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}

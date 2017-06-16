@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.team.db.Team;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -43,11 +44,14 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
@@ -188,9 +192,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
 		return saleOrderMerged;
 	}
+	
+	public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
+		List<Timetable> timetableList = saleOrder.getTimetableList();
+		BigDecimal totalHT = saleOrder.getExTaxTotal();
+		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+		for (Timetable timetable : timetableList) {
+			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+		}
+		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+	}
 }
-
-
-
-
-

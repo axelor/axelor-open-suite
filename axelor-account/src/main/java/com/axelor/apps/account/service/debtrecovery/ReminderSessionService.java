@@ -229,7 +229,7 @@ public class ReminderSessionService {
 		if(reminder.getReminderMethod() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), AppAccountServiceImpl.EXCEPTION,
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), AppAccountServiceImpl.EXCEPTION,
 					reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		for(ReminderMethodLine reminderMatrixLine : reminder.getReminderMethod().getReminderMethodLineList())  {

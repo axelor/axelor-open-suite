@@ -53,9 +53,10 @@
    		<call class="com.axelor.apps.stock.web.LocationController" method="checkIsDefaultLocation"/>
 	</action-method>
 	
-    <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="create-inventory-wizard-form"/>
-		<context name="_location" expr="eval: __self__"/>
+    <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">
+		<view type="form" name="inventory-form"/>
+  		<view type="grid" name="inventory-grid"/>
+  		<context name="_location" expr="eval:__self__" if="__self__.typeSelect == 1 || __self__.typeSelect == 2"/>
 	</action-view>
 	
      <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.LocationLine">

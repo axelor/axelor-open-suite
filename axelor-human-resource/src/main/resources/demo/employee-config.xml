@@ -17,7 +17,7 @@
 	
 	<input file="hr_kilometricAllowParam.csv" type="com.axelor.apps.hr.db.KilometricAllowParam" separator=";" search="self.code = :code"/>
 	
-	<input file="hr_kilometricAllowanceRate.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRate" separator=";"/>
+	<input file="hr_kilometricAllowanceRate.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRate" separator=";"  search="self.importId = :importId"/>
 	
 	<input file="hr_kilometricAllowanceRule.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRule" separator=";"/>
 	

@@ -56,7 +56,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 	private int duplicateAnomaly;
 	private int configurationAnomaly;
 	private int total;
-	private HrBatch hrBatch;
+	protected HrBatch hrBatch;
 	private Company company;
 	
 	protected PayrollPreparationService payrollPreparationService;
