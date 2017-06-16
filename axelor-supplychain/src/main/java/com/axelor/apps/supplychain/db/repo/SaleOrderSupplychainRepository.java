@@ -22,12 +22,17 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.db.Subscription;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 	
 	@Inject
 	private AppService appService;
+	
+	@Inject
+	private AccountingSituationSupplychainServiceImpl accountingSituationSupplychainServiceImpl;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -53,5 +58,20 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 		}
 
 		return copy;
+	}
+	
+	@Override
+	public void remove(SaleOrder order) {
+		
+		Long partnerId = order.getClientPartner().getId();
+		
+		super.remove(order);
+		
+		try {
+			accountingSituationSupplychainServiceImpl.updateUsedCredit(partnerId);
+		} catch (AxelorException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

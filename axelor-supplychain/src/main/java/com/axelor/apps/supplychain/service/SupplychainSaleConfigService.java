@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.config;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleConfig;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 
-public interface SaleConfigService {
-	
-	public SaleConfig getSaleConfig(Company company) throws AxelorException;
-	
+public interface SupplychainSaleConfigService extends SaleConfigService {
+
+	public void updateCustomerCredit(SaleConfig saleConfig);
 }

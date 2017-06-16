@@ -51,17 +51,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateAcceptedCredit(Partner partner) throws AxelorException {
-		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
-		for (AccountingSituation accountingSituation : accountingSituationList) {
-			accountingSituation.setAcceptedCredit(saleConfigService.getSaleConfig(accountingSituation.getCompany()).getAcceptedCredit());
-			accountingSituationRepo.save(accountingSituation);
-		}
-	}
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateUsedCredit(Partner partner) throws AxelorException {
-		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
+	public void updateUsedCredit(Long partnerId) throws AxelorException {
+		List<AccountingSituation> accountingSituationList = accountingSituationRepo.all().filter("self.partner.id = ?1", partnerId).fetch();
 		for (AccountingSituation accountingSituation : accountingSituationList) {
 			accountingSituationRepo.save(this.computeUsedCredit(accountingSituation));
 		}

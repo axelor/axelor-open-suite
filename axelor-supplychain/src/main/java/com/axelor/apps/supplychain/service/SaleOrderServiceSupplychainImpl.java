@@ -25,16 +25,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
@@ -93,6 +90,17 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 		}
 		
+	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
+		super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
+		try {
+			Beans.get(AccountingSituationSupplychainServiceImpl.class).updateUsedCredit(saleOrder.getClientPartner().getId());
+		} catch (AxelorException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

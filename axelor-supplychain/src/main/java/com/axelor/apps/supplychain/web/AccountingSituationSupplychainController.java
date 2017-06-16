@@ -29,6 +29,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
+import java.util.List;
 import java.util.Map;
 
 public class AccountingSituationSupplychainController {
@@ -48,16 +49,6 @@ public class AccountingSituationSupplychainController {
         response.setValues(accountingSituation);
     }
 
-    public void updateCustomerCreditFromPartner(ActionRequest request, ActionResponse response) throws AxelorException {
-        Partner partnerView = request.getContext().asType(Partner.class);
-        if (partnerView.getId() != null && partnerView.getId() > 0) {
-            Partner partner = partnerRepo.find(partnerView.getId());
-            accountingSituationService.updateAcceptedCredit(partner);
-            accountingSituationService.updateUsedCredit(partner);
-            response.setValue("accountingSituationList", partner.getAccountingSituationList());
-        }
-    }
-
     public void updateCustomerCreditFromSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
         SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
         saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
@@ -67,4 +58,5 @@ public class AccountingSituationSupplychainController {
             response.setValues(map);
         }
     }
+    
 }

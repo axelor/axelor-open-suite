@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.apps.base.db.*;
-import com.axelor.apps.base.db.repo.PartnerListRepository;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;

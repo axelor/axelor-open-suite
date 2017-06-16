@@ -507,8 +507,6 @@
 	</form>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
-    	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
 		<action name="action-partner-account-attrs-hide-supplier-account"/>
@@ -662,11 +660,6 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
 	</action-method>
 
-	<action-method name="action-partner-method-update-customer-credit-from-partner" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="updateCustomerCreditFromPartner"/>
-	</action-method>
-	
-	
 	<action-method name="action-partner-method-view-emails">
 		<call class="com.axelor.apps.base.web.PartnerController" method="findPartnerMails"/>
 	</action-method>
