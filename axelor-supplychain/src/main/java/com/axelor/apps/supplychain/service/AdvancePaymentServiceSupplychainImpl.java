@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
@@ -50,7 +51,7 @@ import com.google.inject.persist.Transactional;
 
 public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceImpl  {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected PaymentModeService paymentModeService;

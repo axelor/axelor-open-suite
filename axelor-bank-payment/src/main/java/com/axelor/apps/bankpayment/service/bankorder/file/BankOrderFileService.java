@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -49,7 +50,7 @@ import com.google.common.base.Strings;
 
 public class BankOrderFileService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected final String FILE_EXTENSION_XML = "xml";
 	protected final String FILE_EXTENSION_TXT = "txt";

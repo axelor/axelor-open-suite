@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;

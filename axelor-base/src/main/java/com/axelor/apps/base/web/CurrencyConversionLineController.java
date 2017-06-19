@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 
 public class CurrencyConversionLineController {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	@Inject
 	private CurrencyConversionService ccs;
 	

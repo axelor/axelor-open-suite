@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
@@ -44,7 +45,7 @@ import com.google.inject.persist.Transactional;
 
 public class CurrencyConversionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CurrencyConversionService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private CurrencyRepository currencyRepo;

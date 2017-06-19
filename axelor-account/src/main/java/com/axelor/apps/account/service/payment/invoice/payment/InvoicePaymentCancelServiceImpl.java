@@ -33,6 +33,8 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.lang.invoke.MethodHandles;
+
 public class InvoicePaymentCancelServiceImpl  implements  InvoicePaymentCancelService  {
 	
 	protected AccountConfigService accountConfigService;
@@ -42,7 +44,7 @@ public class InvoicePaymentCancelServiceImpl  implements  InvoicePaymentCancelSe
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	public InvoicePaymentCancelServiceImpl(

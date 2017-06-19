@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
@@ -64,7 +65,7 @@ import com.google.inject.persist.Transactional;
 
 public class PayboxService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PayboxConfigService payboxConfigService;
 	protected PartnerService partnerService;

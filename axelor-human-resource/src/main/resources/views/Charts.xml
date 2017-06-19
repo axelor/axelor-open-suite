@@ -46,4 +46,35 @@
 		<series key="_quantity" groupBy="_leave_reason" type="bar" title="Quantity"/>
 	</chart>
 
+	<chart onInit="action.hr.chart.set.period.last.month" title="Expense Per Employee" name="chart.expense.per.employee">
+		<search-fields>
+			<field name="period" title="Period" type="reference"
+				   target="com.axelor.apps.base.db.Period" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql"><![CDATA[
+		SELECT
+			self.user.name as _employee,
+			SUM(self.inTaxTotal) as _amount
+		FROM
+			Expense self
+		WHERE
+			self.user.employee.manager = :__user__
+		AND
+			self.period = :period
+		GROUP BY
+			self.user.name
+		ORDER BY
+			self.user.name
+		]]></dataset>
+		<category key="_employee" type="text" title="Employee"/>
+		<series key="_amount" aggregate="sum" type="bar"
+				title="amount"/>
+	</chart>
+
+	<action-record model="com.axelor.apps.hr.db.Expense"
+				   name="action.hr.chart.set.period.last.month">
+		<field name="period"
+			   expr="eval: __repo__.of(Period).all().filter('fromDate &lt;= ?1 and toDate &gt;= ?1', __date__.minusMonths(1)).fetchOne()"/>
+	</action-record>
+
 </object-views>

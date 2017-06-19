@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class AddressController {
 	
 	
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void check(ActionRequest request, ActionResponse response) {
 

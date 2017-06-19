@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +72,7 @@ import net.fortuna.ical4j.model.ValidationException;
 
 public class EventController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private EventRepository eventRepo;

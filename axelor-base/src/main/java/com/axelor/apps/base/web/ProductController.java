@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 
 public class ProductController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private GeneralService generalService;

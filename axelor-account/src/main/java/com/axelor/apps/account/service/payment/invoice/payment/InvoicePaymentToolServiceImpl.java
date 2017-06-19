@@ -36,6 +36,7 @@ import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	protected MoveToolService moveToolService;
 
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	public InvoicePaymentToolServiceImpl(InvoiceRepository invoiceRepo, MoveToolService moveToolService)  {

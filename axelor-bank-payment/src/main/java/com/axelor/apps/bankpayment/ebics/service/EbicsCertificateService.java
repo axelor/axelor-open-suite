@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -61,7 +62,7 @@ import com.google.inject.persist.Transactional;
 
 public class EbicsCertificateService {
 	
-	private final Logger log = LoggerFactory.getLogger(EbicsCertificateService.class);
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private EbicsCertificateRepository certRepo;

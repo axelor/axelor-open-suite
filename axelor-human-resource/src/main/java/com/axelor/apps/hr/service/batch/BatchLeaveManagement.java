@@ -23,6 +23,7 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -53,7 +54,7 @@ import com.google.inject.persist.Transactional;
 
 public class BatchLeaveManagement extends BatchStrategy {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	int total;
 	int noValueAnomaly;

@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.debtrecovery;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,7 +57,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReminderService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected ReminderSessionService reminderSessionService;
 	protected ReminderActionService reminderActionService;

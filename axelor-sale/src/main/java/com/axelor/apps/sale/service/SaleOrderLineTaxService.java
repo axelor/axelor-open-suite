@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderLineTaxService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineTaxService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private SaleOrderToolService saleOrderToolService;

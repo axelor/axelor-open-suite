@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ import com.google.inject.Inject;
 
 public class MoveLineReportController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	MoveLineReportService moveLineReportService;

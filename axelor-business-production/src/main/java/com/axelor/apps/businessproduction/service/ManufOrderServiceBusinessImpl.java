@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDateTime;
@@ -38,7 +39,7 @@ import com.google.inject.persist.Transactional;
 
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
