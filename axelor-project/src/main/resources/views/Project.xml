@@ -83,9 +83,10 @@
 			<panel name="otherElementsToInvoice" showIf="isBusinessProject" title="Other elements to invoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" >
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
 			</panel>
-			<panel name="logTimes" title="Log Times">
+			<panel name="logTimes" title="Log Times"  if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" >
 <!-- 				<field name="unitOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/> -->
-				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" />
+				<field name="excludeTimesheetEditor"/>
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form"/>
 			</panel>
 			<panel name="description" title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
