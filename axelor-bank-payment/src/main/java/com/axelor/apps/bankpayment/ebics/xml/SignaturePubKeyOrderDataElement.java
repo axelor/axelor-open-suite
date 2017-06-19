@@ -20,6 +20,8 @@ package com.axelor.apps.bankpayment.ebics.xml;
 import java.math.BigInteger;
 import java.util.Calendar;
 
+import javax.xml.XMLConstants;
+
 import com.axelor.apps.account.ebics.schema.s001.PubKeyValueType;
 import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyOrderDataType;
@@ -56,13 +58,24 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
     SignaturePubKeyOrderDataType	signaturePubKeyOrderData;
     
     EbicsCertificate certificate = session.getUser().getA005Certificate();
-    x509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),certificate.getCertificate());
-    rsaKeyValue = EbicsXmlFactory.createRSAKeyValueType(  new BigInteger( certificate.getPublicKeyExponent()).toByteArray(),
-	                                               new BigInteger( certificate.getPublicKeyModulus()).toByteArray());
+    
+    System.out.println("Certificate : "+ new String(certificate.getCertificate()));
+    System.out.println("Certificate size : "+ certificate.getCertificate().length);
+
+    EbicsCertificate ebicsEertificate = session.getUser().getA005Certificate();
+    
+    // Include certificate issuer and serial (certificate informations)
+//    x509Data = EbicsXmlFactory.createX509DataType(ebicsEertificate.getSubject(), certEncoded, ebicsEertificate.getIssuer(),  new BigInteger(ebicsEertificate.getSerial(), 16));
+
+    x509Data = EbicsXmlFactory.createX509DataType(ebicsEertificate.getSubject(), ebicsEertificate.getCertificate());
+    rsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(ebicsEertificate.getPublicKeyExponent(), 16).toByteArray(),
+    														new BigInteger(ebicsEertificate.getPublicKeyModulus(), 16).toByteArray());
+    
     pubKeyValue = EbicsXmlFactory.createPubKeyValueType(rsaKeyValue, Calendar.getInstance());
     signaturePubKeyInfo = EbicsXmlFactory.createSignaturePubKeyInfoType(x509Data,
 	                                                                pubKeyValue,
 	                                                                "A005");
+    
     signaturePubKeyOrderData = EbicsXmlFactory.createSignaturePubKeyOrderData(signaturePubKeyInfo,
 									      session.getUser().getEbicsPartner().getPartnerId(),
 									      session.getUser().getUserId());
@@ -77,7 +90,7 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
   @Override
   public byte[] toByteArray() {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
-    setSaveSuggestedPrefixes("http://www.ebics.org/S001", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/S001", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }
