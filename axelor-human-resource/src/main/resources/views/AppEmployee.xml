@@ -5,7 +5,10 @@
 	
 	<form name="app-employee-config-form" title="Employees management" model="com.axelor.apps.base.db.AppEmployee" canDelete="false" canNew="false" width="large">
 		<panel>
-			<field name="dailyWorkHours" />
+			<field name="dailyWorkHours" colSpan="12"/>
+			<field name="payrollPreparation" colSpan="4"/>
+			<field name="lunchVoucher" colSpan="4"/>
+			<field name="employeeBonus" colSpan="4"/>
 		</panel>
 		<panel-dashlet action="admin.root.conf.hr.config" colSpan="12"/>
 	</form>
