@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -17,16 +17,16 @@
 	
 	<selection name="grade.0.up.to.10.select">
 		<option value="0">0</option>
-		<option value="10">1</option>
-		<option value="20">2</option>
-		<option value="30">3</option>
-		<option value="40">4</option>
-		<option value="50">5</option>
-		<option value="60">6</option>
-		<option value="70">7</option>
-		<option value="80">8</option>
-		<option value="90">9</option>
-		<option value="100">10</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
 	</selection>
 	
 	<selection name="grade.0.up.to.20.select">
@@ -189,14 +189,14 @@
 	</selection>
 
 	<selection name='partner.assignor.type.select'>
-		<option value='syndicate'>Syndicat</option>
-		<option value='authority'>Collectivité</option>
+		<option value='syndicate'>Syndicate</option>
+		<option value='authority'>Authority</option>
 	</selection>
 
 	<selection name="partner.industry.sectory.select">
 		<option value="1">Agriculture</option>
 		<option value="2">Banking &amp; Insurance</option>
-		<option value="3">Biotechnologies</option>
+		<option value="3">Biotechnology</option>
 		<option value="4">Chemistry</option>
 		<option value="5">Communication</option>
 		<option value="6">Real Estate</option>
@@ -320,7 +320,7 @@
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
 	</selection>
-
+	
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="move">Move</option>
@@ -352,7 +352,9 @@
 		<option value="proTraining">Professional training</option>
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>
-		<option value="reconcile">Reconciliation</option>
+		<option value="bankOrder">Bank order</option>
+		<option value="reconcile">Reconcile</option>
+		<option value="expense">Expense</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -445,7 +447,7 @@
 		<option value="2">Additionnal</option>
 		<option value="3">Replace</option>
 	</selection>
-	
+
 	<selection name="base.price.list.line.amount.type.select">
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
@@ -537,6 +539,12 @@
 		<option value="5">v5</option>
 	</selection>
 
+	<selection name="base.bank.bank.details.type.select">
+		<option value="0">Other</option>
+		<option value="1">IBAN</option>
+		<option value="2">National id</option>
+	</selection>
+
 	<!-- TODO: move this selection to account module and create a copy here
 		 (ie. base.year.period.duration.select) That time also rename references
 		 of this selection in Charts.xml of CRM, Purchase, Stock modules.
@@ -601,6 +609,19 @@
 		<option value="2">Last purchase price</option>
 	</selection>
 	
+	<selection name="product.inventory.type.select">
+		<option value="1">Yearly</option>
+		<option value="2">Cycle counting</option>
+	</selection>
+	
+	
+	<selection name="product.sub.type.product.select">
+		<option value="1">Finished product</option>
+		<option value="2">Semi-finished product</option>
+		<option value="3">Component</option>
+	</selection>
+	
+	
 	<selection name="crm.event.related.to.select" id="base.crm.event.related.to.select">
 		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
 		<option value="com.axelor.apps.base.db.Product">Product</option>
@@ -627,4 +648,38 @@
 		<option value="2">Available</option>
 	</selection>
 	
+	<selection name="unit.unit.type.select">
+		<option value="1">Weight unit</option>
+		<option value="2">Length unit</option>
+		<option value="3">Time unit</option>
+	</selection>
+	
+	<selection name="iaccount.payment.mode.type.select">
+		<option value="1">Other</option>
+		<option value="2">Direct debit</option>
+		<option value="3">IPO</option>
+		<option value="4">IPO + Cheque</option>
+		<option value="5">Cash</option>
+		<option value="6">Bank card</option>
+		<option value="7">Cheque</option>
+		<option value="8">Web</option>
+		<option value="9">Transfer</option>
+	</selection>
+	
+	<selection name="iaccount.payment.mode.in.out.select">
+		<option value="1">In</option>
+		<option value="2">Out</option>
+	</selection>
+
+	<selection name="base.birt.template.parameter.type.select">
+		<option value="string">String</option>
+		<option value="float">Float</option>
+		<option value="decimal">Decimal</option>
+		<option value="dateTime">DateTime</option>
+		<option value="boolean">Boolean</option>
+		<option value="integer">Integer</option>
+		<option value="date">Date</option>
+		<option value="time">Time</option>
+	</selection>
+
 </object-views>

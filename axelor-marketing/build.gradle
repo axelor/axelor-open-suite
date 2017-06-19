@@ -1,0 +1,15 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-marketing"
+	version "4.1.0"
+	title "Axelor :: Marketing"
+	
+	removable true
+
+	module "modules:axelor-crm"
+	module "modules:axelor-studio"
+
+
+}
+

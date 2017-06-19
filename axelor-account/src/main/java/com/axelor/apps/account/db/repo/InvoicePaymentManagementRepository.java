@@ -20,7 +20,7 @@ package com.axelor.apps.account.db.repo;
 import javax.persistence.PersistenceException;
 
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.service.InvoicePaymentServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.inject.Beans;
 
 public class InvoicePaymentManagementRepository extends InvoicePaymentRepository {
@@ -29,10 +29,10 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
 	public InvoicePayment save(InvoicePayment invoicePayment) {
 		try {
 
-			Beans.get(InvoicePaymentServiceImpl.class).validate(invoicePayment);
+			Beans.get(InvoicePaymentValidateServiceImpl.class).validate(invoicePayment);
 			return super.save(invoicePayment);
 		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
+			throw new PersistenceException(e);
 		}
 	}
 }

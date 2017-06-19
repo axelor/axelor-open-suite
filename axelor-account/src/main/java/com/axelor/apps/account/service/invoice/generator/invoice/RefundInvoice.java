@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.invoice;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +27,20 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RefundInvoice.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	private Invoice invoice;
+
 	
 	public RefundInvoice(Invoice invoice) {
 		
@@ -59,8 +66,14 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		populate( refund, refundLines );
 		
-		refund.setJournal(journalService.getJournal(invoice)); 
-		
+		// Payment mode should not be the invoice payment mode. It must come
+		// from the partner or the company, or be null.
+		refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));
+
+		if (refund.getPaymentMode() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REFUND_INVOICE_1), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		}
+
 		return refund;
 		
 	}

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
-    <grid name="analytic-account-grid" title="Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+	<grid name="analytic-account-grid" title="Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
         <field name="code"/>
         <field name="name"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -38,7 +39,7 @@
 			<field name="code" colSpan="6" css="bold"/>
 			<field name="name" colSpan="6" css="bold"/>
 			<field name="analyticAxis" title="Account Type" colSpan="6"/> 
-			<field name="parent" onChange="action-group-analytic-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid" colSpan="6"/>
+			<field name="parent" form-view="analytic-account-info-form" grid-view="analytic-account-grid" colSpan="6"/>
 		</panel>
 	</form>
 	
@@ -51,18 +52,5 @@
  	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
 	</action-view>
-	
-	<action-group name="action-group-analytic-account-onchange-common">
-    	<action name="action-analytic-account-clean-company"/>
-    	<action name="action-analytic-account-validate"/>
-    </action-group>
-    
-    <action-validate name="action-analytic-account-validate">
-     	<error message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company." if="parent != null &amp;&amp; company != null &amp;&amp; parent?.company?.id != company?.id"/>
-    </action-validate>
-    
-    <action-record name="action-analytic-account-clean-company" model="com.axelor.apps.account.db.AnalyticAccount">
-        <field name="company"  expr="eval:null" if="parent != null &amp;&amp; company != null &amp;&amp; parent?.company?.id != company?.id"/>
-    </action-record>
     
 </object-views>

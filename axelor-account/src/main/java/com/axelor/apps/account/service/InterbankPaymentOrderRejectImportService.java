@@ -32,7 +32,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -114,12 +115,14 @@ public class InterbankPaymentOrderRejectImportService {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_2),
 						GeneralServiceImpl.EXCEPTION, refReject), IException.INCONSISTENCY);
 			}
+			
+			//TODO manage multi bank
 
-			Account bankAccount = paymentModeService.getPaymentModeAccount(invoice.getPaymentMode(), company);
+			Account bankAccount = paymentModeService.getPaymentModeAccount(invoice.getPaymentMode(), company, null);
 
 			AccountConfig accountConfig = company.getAccountConfig();
 
-			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null);
+			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 			// Création d'une ligne au crédit
 			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, rejectImportService.createRejectDate(dateReject), 1, refReject);
@@ -162,7 +165,10 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 			}
 		}
-		return paymentModeService.getPaymentModeAccount(paymentMode, company);
+		
+		//TODO manage multi bank
+		
+		return paymentModeService.getPaymentModeAccount(paymentMode, company, null);
 	}
 
 

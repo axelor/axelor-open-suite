@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,44 +17,36 @@
  */
 package com.axelor.apps.production.db.repo;
 
-import java.awt.Font;
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 
-import net.sourceforge.barbecue.Barcode;
-import net.sourceforge.barbecue.BarcodeFactory;
-import net.sourceforge.barbecue.BarcodeImageHandler;
 
-public class OperationOrderManagementRepository extends OperationOrderRepository{
+public class OperationOrderManagementRepository extends OperationOrderRepository {
+	
+	@Inject
+	private MetaFiles metaFiles;
+	
 	@Override
 	public OperationOrder save(OperationOrder entity){
 		
-		if(entity.getBarCode() == null){
+		if(entity.getBarCode() == null) {
 			entity = super.save(entity);
-			try{
-				Barcode barcode  = BarcodeFactory.createEAN13(String.format("%012d", entity.getId()));
-				barcode.setBarHeight(86);
-			    barcode.setBarWidth(1);
-			    barcode.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-			    
-			    File uploadDir = new File(AppSettings.get().get("file.upload.dir"));
-			    
-			    if(uploadDir.exists()){
-			    	
-			    	File imgFile = new File(uploadDir, String.format("/barCode%d.png",entity.getId()));
-			    	
-			    	BarcodeImageHandler.savePNG(barcode, imgFile);
-			    
-			    	entity.setBarCode(Beans.get(MetaFiles.class).upload(imgFile));
-			    }
+			try {
+				InputStream inStream = BarcodeGeneratorService.createBarCode(entity.getId());
+				if (inStream != null) {
+			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("OppOrderBarcode%d.png", entity.getId()));
+			    	entity.setBarCode(barcodeFile);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			catch(Exception e){
-				
-			}
+	    	
 		}
 		
 		return super.save(entity);

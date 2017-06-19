@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDateTime;
@@ -38,7 +39,7 @@ import com.google.inject.persist.Transactional;
 
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;

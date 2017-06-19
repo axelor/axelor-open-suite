@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -39,6 +39,11 @@
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
     
     <string name="description" title="Description" large="true"/>
+    
+    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
+    <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
+    
+    <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
     
     <extra-code><![CDATA[
 	

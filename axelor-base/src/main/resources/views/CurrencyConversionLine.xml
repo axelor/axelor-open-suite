@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency" orderBy="-fromDate" title="Currency conversion lines" model="com.axelor.apps.base.db.CurrencyConversionLine">
         <field name="startCurrency" form-view="currency-form" grid-view="currency-grid"/>
@@ -14,8 +14,7 @@
         <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="fa-repeat" onClick="wizard-check-currency-conversion-rate-line" />
     </grid>
     
-    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine"  
-    onNew="action-currency-conversion-line-default-record" width="large">
+    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" width="large">
         <panel name="main">
 		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
 		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
@@ -60,10 +59,6 @@
     	<action name="action-currency-conversion-line-set-exchange-rate"/>
     	<action name="action-currency-conversion-line-method-convert"/>
     </action-group>
-   	
-   	<action-record name="action-currency-conversion-line-method-getTodayDate" model="com.axelor.apps.base.db.CurrencyConversionLine">
-    	<field name="fromDate" expr="eval: __config__.generalService.getTodayDate()"/>
-   	</action-record>
     
     <action-method name="action-currency-conversion-line-method-check-date">
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>

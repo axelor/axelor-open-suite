@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -19,6 +19,7 @@
   	<boolean name="notExportOk" title="Do not export ?" default="false"/>
   	<integer name="statusSelect" title="Status" selection="account.journal.status.select"/>
   	<boolean name="isObsolete" title="Obsolete ?" default="false"/>
+	<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="true"/>
   	
   	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>

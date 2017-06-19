@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -33,7 +34,9 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
@@ -51,7 +54,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected StockMoveLineService stockMoveLineService;
@@ -147,9 +150,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate, String description) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
 
-		return this.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate, description);
+		return this.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate, description, shipmentMode, freightCarrierMode);
 	}
 
 
@@ -163,7 +166,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
@@ -176,6 +179,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setFromLocation(fromLocation);
 		stockMove.setToLocation(toLocation);
 		stockMove.setDescription(description);
+		stockMove.setShipmentMode(shipmentMode);
+		stockMove.setFreightCarrierMode(freightCarrierMode);
 
 		return stockMove;
 	}
@@ -442,6 +447,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){

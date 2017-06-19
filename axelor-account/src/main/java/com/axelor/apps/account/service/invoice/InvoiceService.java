@@ -21,7 +21,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -130,10 +139,42 @@ public interface InvoiceService {
 	public void setDraftSequence(Invoice invoice);
 	
 	
-	public void updateAmountPaid(Invoice invoice) throws AxelorException;
-	
 	public void generateBudgetDistribution(Invoice invoice);
 	
-	public List<String> generateInvoice(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException;
+	/**
+	 * Print an invoice
+	 * 
+	 * @param invoice the invoice to print
+	 * @param toAttach whatever to attache the invoice to the object
+	 * 
+	 * @return ReportSettings
+	 * 
+	 * @throws AxelorException
+	 */
+	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException;
+	
+	/**
+	 * Print a list of invoices in the same output
+	 * 
+	 * @param ids the list of invoices ids
+	 * 
+	 * @return ReportSettings
+	 * 
+	 * @throws AxelorException
+	 */
+	public ReportSettings printInvoices(List<Long> ids) throws AxelorException;
+
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition) throws AxelorException  ;
+
+	public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);
+
+	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoiceMerged);
+
+	public void deleteOldInvoices(List<Invoice> invoiceList);
+	
+	public Invoice getInvoice(MoveLine moveLine);
+
 
 }

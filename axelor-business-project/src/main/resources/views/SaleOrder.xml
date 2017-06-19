@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
-	onNew="action-group-supplychain-saleorder-onnew" onSave="action-sale-order-method-advance-payment-change"
+	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-businness-project-saleorder-onload">		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -18,6 +18,47 @@
 	
 	<action-group name="action-group-businness-project-saleorder-onload">
 		<action name="action-group-supplychain-saleorder-onload"/>
+	</action-group>
+	
+	<form name="sale-order-invoicing-wizard" onLoad="action-business-project-record-sale-order-invoincing-wizard-default" title="Invoicing project wizard" model="com.axelor.apps.sale.db.SaleOrder" cols="12"  >
+    	<field name="invoicingTypeSelect" title="Invoicing type" type="INTEGER" selection="business.project.default.invoice.type.select" colSpan="6" />
+    	<field name="deadline" title="Deadline" type="DATE" hidden="true" showIf="invoicingTypeSelect > 1" colSpan="6"/>
+    	<button name="createInvoicingProject" title="Invoice" colSpan="6" onClick="action-business-project-sale-order-condition-invoicing,action-supplychain-sale-order-group-generate-invoice-popup" />
+    </form>
+    
+    <action-record name="action-business-project-record-sale-order-invoincing-wizard-default" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="invoicingTypeSelect" expr="eval: __config__.general.getDefaultInvoiceTypeSelect()"/>
+    </action-record>
+    
+    <action-group name="action-supplychain-sale-order-group-generate-invoice-popup">
+    	<action name="action-supplychain-sale-order-method-generate-invoice-from-popup" if="eval: invoicingTypeSelect == 1" />
+    	<action name="action-business-project-sale-order-method-generate-invoicing-project" if="eval: invoicingTypeSelect == 2 || invoicingTypeSelect == 3" />
+    </action-group>
+    
+    <action-method name="action-business-project-sale-order-method-generate-invoicing-project">
+    	<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateInvoicingProject"/>
+    </action-method>
+    
+    <action-condition name="action-business-project-sale-order-condition-invoicing">
+    	<check error="An invoicing type is required" field="invoicingTypeSelect" if="eval: invoicingTypeSelect == null || invoicingTypeSelect  == 0"/>
+    	<check error="A deadline is required" field="deadline" if="eval: invoicingTypeSelect > 1 &amp;&amp; deadline == null"/>
+    </action-condition>
+    
+    <action-view name="action-business-project-sale-order-view-invoicing-wizard" title="Invoicing project wizard" model="com.axelor.apps.sale.db.SaleOrder">
+    	<view type="form" name="sale-order-invoicing-wizard" />
+    	<view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
+    </action-view>
+    
+    <action-method name="action-supplychain-sale-order-method-generate-invoice-from-popup">
+ 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoiceFromPopup"/>
+	</action-method>
+
+	<action-group id="business-project-action-supplychain-sale-order-group-generate-invoice" name="action-supplychain-sale-order-group-generate-invoice">
+		<action name="action-supplychain-sale-order-method-generate-invoice" if="eval: !__config__.general.getEnableToInvoiceExpense() &amp;&amp; !__config__.general.getEnableToInvoiceTimesheet()" />
+		<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.general.getEnableToInvoiceExpense() || __config__.general.getEnableToInvoiceTimesheet()" />
 	</action-group>
 	
 </object-views>	

@@ -1,0 +1,18 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-bank-payment"
+	title "Axelor bank payment"
+	
+	version "4.1.0"
+	
+	removable true
+	
+	// module dependencies
+	module "modules:axelor-account"
+}
+
+dependencies {
+	compile files("src/main/lib/ebics-1.0.2.jar")
+	compile "org.bouncycastle:bcprov-jdk14:1.38"
+}

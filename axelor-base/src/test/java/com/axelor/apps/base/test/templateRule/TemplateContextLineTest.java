@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 
 import com.axelor.apps.base.service.template.TemplateContextLineService;
 import com.axelor.apps.base.test.TestModule;
-import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.Model;
 import com.axelor.test.GuiceModules;

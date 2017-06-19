@@ -1,40 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<grid name="bank-details-grid" id="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
-		<field name="ownerName" />
-		<field name="bankAddress" />
-		<field name="iban" />
-		<field name="bic" />
+	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+		<hilite if="!active" background="warning"/>
+		<field name="ownerName"/>
+		<field name="bankAddress"/>
+		<field name="iban"/>
+		<field name="bank.code"/>
+        <field name="active"/>
 	</grid>
 
-	<form onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" 
-	model="com.axelor.apps.base.db.BankDetails" id="bank-details-form" width="large">
+	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
+		  onLoad="action-attrs-account-bankdetails-bank-set-address-domain" model="com.axelor.apps.base.db.BankDetails" width="large">
 		<panel name="owner" title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
+        <panel>
+			<field name="label"/>
+			<field name="currency"/>
+		</panel>
+		<panel sidebar="true">
+			<field name="active" widget="Boolean-switch"/>
+		</panel>
 		<panel name="iban" title="IBAN">
-			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
-			<field name="bic" />
-			<field name="ibanBic" readonly="true" x-bind="{{iban+' '+bic}}"/>
+			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
+			<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" />
+			<field name="bank" canNew="true" form-view="bank-form" onChange="action-group-bank-details-bank-onchange"/>
+			<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
+			canNew="true" form-view="bank-address-form"/>
+			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
-		<panel name="bank" title="Bank">
-			<field name="countryCode" />
-			<field name="bankAddress" />
-		</panel>
-		<panel name="bban" title="BBAN">
+		<panel name="bban" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">
 			<field name="bankCode" colSpan="3" />
 			<field name="sortCode" colSpan="3"/>
 			<field name="accountNbr" colSpan="3"/>
 			<field name="bbanKey" colSpan="3"/>
+			<field name="bank.country.alpha2Code" hidden="true"/>
 		</panel>
 	</form>
-
+	
 	<action-group name="action-group-account-bankdetails-iban-onchange">
 		<action name="action-method_bank-details-validIban" />
+	</action-group>
+
+	<action-group name="action-group-bank-details-bank-onchange">
+		<action name="action-attrs-account-bankdetails-bank-set-address-domain"/>
+		<action name="action-attrs-account-bankdetails-bank-empty-address"/>
+	</action-group>
+
+	<action-group name="action-group-account-bank-details-form-onnew">
+		<action name="action-set-default-partner"/>
+		<action name="action-set-default-bank"/>
 	</action-group>
 
 	<action-method name="action-method_bank-details-validIban">
@@ -42,20 +61,34 @@
 	</action-method>
 
 	<action-record name="action-set-owner-name" model="com.axelor.apps.base.db.BankDetails">
-		<field name="ownerName" expr="eval:partner != null?(partner.name != null?partner.name:'')+' '+(partner.firstName != null?partner.firstName:''):''" />
+		<field name="ownerName" expr="eval:partner != null ? ((partner.name != null ? partner.name : '') + ' ' + (partner.firstName != null ? partner.firstName: ''))  : ''" />
 	</action-record>
 
 	<action-record name="action-set-default-partner" model="com.axelor.apps.base.db.BankDetails">
 		<field name="partner" expr="eval:_parent" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'" />
 		<field name="ownerName" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'"
-			expr="eval:_parent != null?(_parent.name != null?_parent.name:'')+' '+(_parent.firstName != null?_parent.firstName:''):''" />
+			expr="eval:_parent != null ? (_parent.name != null ? _parent.name : '') + ' ' + (_parent.firstName != null ? _parent.firstName : '') : ''" />
+	</action-record>
+
+	<action-record name="action-set-default-bank" model="com.axelor.apps.base.db.BankDetails">
+		<field expr="eval: __parent__.ebicsBank?.bank" name="bank" if="__parent__?._model == 'com.axelor.apps.bankpayment.db.EbicsPartner'"/>
 	</action-record>
 
 	<action-validate name="action-validate-bank-details-bbanKey">
 		<error message="Incorrect BBAN Key"
-			if="( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
+			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
 	</action-validate>
 
+	<action-attrs name="action-attrs-account-bankdetails-bank-empty-address">
+		<attribute for="bankAddress" name="value" expr="eval: null"/>
+	</action-attrs>
+
+	<action-attrs name="action-attrs-account-bankdetails-bank-set-address-domain">
+		<attribute for="bankAddress" name="domain" expr="eval: &quot; self.id IN (0) &quot;"/>
+		<attribute for="bankAddress" name="domain"
+                   if="bank &amp;&amp; !bank.bankAddressList.isEmpty()"
+				   expr="eval: &quot; self.id IN (${bank.bankAddressList.collect{it.id}.join(',')}) &quot;" />
+	</action-attrs>
 
 
 </object-views>

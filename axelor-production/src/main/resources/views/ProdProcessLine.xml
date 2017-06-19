@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="prod-process-line-grid" title="Phases" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
     	<field name="priority"/>
 		<field name="name"/>
         <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
+        <field name="outsourcing"/>
         <field name="description"/>
+        
     </grid>
     
     <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
@@ -17,6 +19,7 @@
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
 	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" onChange="action-prod-process-line-record-capacity-settings"/>
+	    	<field name="outsourcing"/>
 	    	<panel name="capacitySettings" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>

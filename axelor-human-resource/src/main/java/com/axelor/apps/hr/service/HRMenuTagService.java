@@ -17,38 +17,44 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.ExtraHours;
-import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 
 public class HRMenuTagService {
 
-	public String CountRecordsTag(Object object) {
-		Long total = null;
-		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			if(object instanceof Timesheet)
-				total= JPA.all(Timesheet.class).filter("self.company = ?1 AND  self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).count();
-			if(object instanceof Expense)
-				total= JPA.all(Expense.class).filter("self.company = ?1 AND  self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).count();
-			if(object instanceof LeaveRequest)
-				total= JPA.all(LeaveRequest.class).filter("self.company = ?1 AND  self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).count();
-			if(object instanceof ExtraHours)
-				total= JPA.all(ExtraHours.class).filter("self.company = ?1 AND  self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).count();
+	/**
+	 * 
+	 * @param modelConcerned
+	 *
+	 * @param status
+	 * 			1 : Draft
+	 * 			2 : Confirmed
+	 * 			3 : Validated
+	 * 			4 : Refused
+	 * 			5 : Canceled
+	 * @return
+	 * 		The number of records
+	 */
+	public <T extends Model> String countRecordsTag(Class<T> modelConcerned, int status) {
+		
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
+		Company activeCompany = user.getActiveCompany();
+		
+		if(employee != null && employee.getHrManager())  {
 			
-		}else{
-			if(object instanceof Timesheet)
-				total = JPA.all(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).count();
-			if(object instanceof Expense)
-				total = JPA.all(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).count();
-			if(object instanceof LeaveRequest)
-				total = JPA.all(LeaveRequest.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).count();
-			if(object instanceof ExtraHours)
-				total = JPA.all(ExtraHours.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).count();
+			return Long.toString(JPA.all(modelConcerned).filter("self.company = ?1 AND  self.statusSelect = ?2", activeCompany, status).count());
+
 		}
-		return String.format("%s", total);
+		else  {
+			
+			return Long.toString(JPA.all(modelConcerned).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = ?3", user, activeCompany, status).count());
+
+		}
 	}
 	
 

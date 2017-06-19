@@ -18,11 +18,14 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.hr.service.batch.BatchStrategy;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -34,6 +37,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.exception.AxelorException;
@@ -45,11 +49,12 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class BatchLeaveManagement extends BatchStrategy {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	int total;
 	int noValueAnomaly;
@@ -57,6 +62,9 @@ public class BatchLeaveManagement extends BatchStrategy {
 	
 	protected LeaveLineRepository leaveLineRepository;
 	protected LeaveManagementRepository leaveManagementRepository;
+	
+	@Inject
+	private Provider<LeaveService> leaveServiceProvider;
 	
 	
 	@Inject
@@ -114,9 +122,9 @@ public class BatchLeaveManagement extends BatchStrategy {
 		}
 		
 		List<Employee> employeeList = Lists.newArrayList();
-		
+		String liaison = query.isEmpty() ? "" : " AND";
 		if (hrBatch.getCompany() != null){
-			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + " AND (EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee))").bind("company", hrBatch.getCompany()).fetch();
+			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + liaison + " (EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee))").bind("company", hrBatch.getCompany()).fetch();
 		}
 		else{
 			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
@@ -154,35 +162,21 @@ public class BatchLeaveManagement extends BatchStrategy {
 	public void createLeaveManagement(Employee employee) throws AxelorException{  
 		
 		batch = batchRepo.find(batch.getId());
-		int count = 0;
 		LeaveLine leaveLine = null;
+		LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
 		
-		if (!employee.getLeaveLineList().isEmpty()){
-			for (LeaveLine line : employee.getLeaveLineList()) {
-				
-				if(line.getLeaveReason().equals(batch.getHrBatch().getLeaveReason())){
-					count ++;
-					leaveLine = line;
-				}
-			}
-		}
-		
-		if (count == 0){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason() ), IException.NO_VALUE );
-		}
-		
-		if(count > 1 ){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason() ), IException.CONFIGURATION_ERROR );
-		}
-		
-		if (count == 1){
-			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), batch.getHrBatch().getDayNumber());
-			leaveLine.setQuantity(leaveLine.getQuantity().add(batch.getHrBatch().getDayNumber()));
+		if(employee != null){
+			leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+			
+			BigDecimal dayNumber = batch.getHrBatch().getUseWeeklyPlanningCoef() ? batch.getHrBatch().getDayNumber().multiply(employee.getPlanning().getLeaveCoef()) : batch.getHrBatch().getDayNumber();
+			dayNumber = dayNumber.subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
+			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), dayNumber );
+			leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber).setScale(1));
+			
 			leaveManagementRepository.save(leaveManagement);
 			leaveLineRepository.save(leaveLine);
 			updateEmployee(employee);
-		}
-		
+		}		
 	}
 	
 	@Override

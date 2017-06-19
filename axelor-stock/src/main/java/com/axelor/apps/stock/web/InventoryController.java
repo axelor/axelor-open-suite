@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -48,7 +50,7 @@ import com.google.inject.Inject;
 
 public class InventoryController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	InventoryService inventoryService;
@@ -56,7 +58,11 @@ public class InventoryController {
 	@Inject
 	InventoryRepository inventoryRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
+	@Inject
+	ProductRepository productRepo;
+	
+	
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private static final String PATH = AppSettings.get().get("file.upload.dir");
 	
@@ -102,10 +108,12 @@ public class InventoryController {
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
 	}
 	
-	public void generateStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void realizeInventory(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		inventoryService.generateStockMove(inventory);
+		Long id = request.getContext().asType(Inventory.class).getId();
+		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+		inventoryService.realizeInventory(inventory);
+		response.setReload(true);
 	}
 	
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -125,10 +133,10 @@ public class InventoryController {
 			}
 			else {
 				if(succeed) {
-					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_10));
+					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
 				}
 				else  {
-					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_11));
+					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
 				}
 			}
 		}

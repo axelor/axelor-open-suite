@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -57,7 +58,7 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected AccountManagementServiceImpl accountManagementServiceImpl;
 	protected CurrencyService currencyService;
@@ -156,6 +157,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setProduct(product);
 		invoiceLine.setProductName(productName);
+		if(product != null)  {
+			invoiceLine.setProductCode(product.getCode());
+		}
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
 
@@ -167,7 +171,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			this.determineTaxLine();
 		}
 		invoiceLine.setTaxLine(taxLine);
-
+		
+		if(taxLine != null)  {
+			invoiceLine.setTaxRate(taxLine.getValue());
+			invoiceLine.setTaxCode(taxLine.getTax().getCode());
+		}
+		
 		if((exTaxTotal == null || inTaxTotal == null))  {
 			this.computeTotal();
 		}
@@ -230,11 +239,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		}
 		
 		invoiceLine.setCompanyExTaxTotal(
-				currencyService.getAmountCurrencyConverted(
+				currencyService.getAmountCurrencyConvertedAtDate(
 						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
 		invoiceLine.setCompanyInTaxTotal(
-				currencyService.getAmountCurrencyConverted(
+				currencyService.getAmountCurrencyConvertedAtDate(
 						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 	}
 	

@@ -17,13 +17,11 @@
  */
 package com.axelor.apps.hr.service.project;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -43,21 +41,15 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 	}
 	
 	@Transactional(rollbackOn={Exception.class})
-	public List<TimesheetLine> computeVisibleDuration(ProjectTask project){
-		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
-		Employee timesheetEmployee;
-		BigDecimal employeeDailyWorkHours;
-		BigDecimal employeeDailyWorkHoursGeneral = generalService.getGeneral().getDailyWorkHours();
+	public List<TimesheetLine> computeVisibleDuration(ProjectTask project)  {
 		
-		for(TimesheetLine timesheetLine : timesheetLineList){
-			timesheetEmployee = timesheetLine.getUser().getEmployee();
-			if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null)
-				employeeDailyWorkHours = employeeDailyWorkHoursGeneral;
-			else
-				employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
+		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
+		
+		for(TimesheetLine timesheetLine : timesheetLineList)  {
+
+			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser(), false));
+		
 		}
-			
 
 		timesheetLineList = _sortTimesheetLineByDate(timesheetLineList);
 

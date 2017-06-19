@@ -37,9 +37,11 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class PaymentVoucherController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PaymentVoucherRepository paymentVoucherRepo;
@@ -67,7 +69,7 @@ public class PaymentVoucherController {
 		paymentVoucher = paymentVoucherRepo.find(paymentVoucher.getId());
 		
 		try {
-			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
+			paymentVoucherLoadService.searchDueElements(paymentVoucher);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -80,11 +82,26 @@ public class PaymentVoucherController {
 		PaymentVoucher paymentVoucher = paymentVoucherRepo.find(paymentVoucherContext.getId());
 			
 		try {
-			paymentVoucherLoadService.loadSelectedLines(paymentVoucher,paymentVoucherContext);
+			paymentVoucherLoadService.loadSelectedLines(paymentVoucher, paymentVoucherContext);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
+	// Reset imputation
+	public void resetImputation(ActionRequest request, ActionResponse response) {
+				
+		PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
+		PaymentVoucher paymentVoucher = paymentVoucherRepo.find(paymentVoucherContext.getId());
+			
+		try {
+			paymentVoucherLoadService.resetImputation(paymentVoucher);
+			response.setReload(true);
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
 	
 	// Confirm the payment voucher
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {

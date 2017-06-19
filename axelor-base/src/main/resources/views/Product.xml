@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
    		<toolbar>
@@ -50,15 +50,17 @@
       		</panel>
     		<panel colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
-      			<field name="barCode" showTitle="false" colSpan="12" widget="Image" readonly="true" x-height="50"/>
+				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.general.getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
     		</panel>
     		<panel colSpan="10">
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service'" if-module="axelor-human-resource"/>
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain"/>
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
+			        <field name="inventoryTypeSelect" colSpan="12" />
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -75,8 +77,9 @@
     		<panel name="sale" title="Sale" showTitle="false">
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
-			        <field name="salePrice" hideIf="!sellable" colSpan="3"/>
-			        <field name="saleCurrency" hideIf="!sellable" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
+			        <field name="customsCode" colSpan="12"/>
+			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
 			          	<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.general.getManageSalesUnits()"/>
@@ -88,6 +91,7 @@
 			        	<field name="startDate" colSpan="12"/>
 			        	<field name="endDate" colSpan="12" onChange="action-group-base-product-enddate-onchange"/>
 			      	</panel>
+			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
 		        	<field name="versionSelect" colSpan="12"/>
 				</panel>
 	      		<panel name="description" title="Description" colSpan="6">
@@ -101,7 +105,7 @@
 		      	<panel name="purchase" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
-			        <field name="purchaseCurrency" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
 		      	</panel>
@@ -130,6 +134,7 @@
 	    		</panel>
 	    		<panel name="productionInformations" title="Production informations" showTitle="false" showIf="productTypeSelect != 'service'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production">
 	      			<panel-include view="product-production-form"/>
+	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
 	    		</panel>
 	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'">
 	      			<panel colSpan="12">
@@ -186,7 +191,23 @@
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical"/>
 	    	</panel>
+	    	<panel name="packaging" title="Packaging">
+	  			<panel name="weight" title="Weight" colSpan="6">
+	  				<field name="weightUnit" domain="self.unitTypeSelect = 1"/>
+	  				<field name="grossWeight"/>
+	  				<field name="netWeight"/>
+	  			</panel>
+			      <panel name="articleDimension" title="Article dimension" colSpan="6">
+			        <field name="lengthUnit" domain="self.unitTypeSelect = 2" />
+			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
+			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
+			        <field name="articleVolume" readonly="true"/>
+			      </panel>
+  			</panel>
   		</panel-tabs>
+  		
 	</form>    
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">
@@ -241,7 +262,12 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-attrs-title-sale-price"/>
+    	<action name="action-product-record-product-sub-type-select"/>
     </action-group>
+    
+    <action-record name="action-product-record-product-sub-type-select" model="com.axelor.apps.base.db.Product">
+    	<field name="productSubTypeSelect" expr="eval: null" if="productTypeSelect != 'storable'"/>
+    </action-record>
     
     <action-group name="action-group-base-product-enddate-onchange">
     	<action name="action-product-validate-end-date"/>
@@ -300,12 +326,14 @@
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
     	<field name="$totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
     </action-record>
-    
-    <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
-    </action-attrs>
+	
+	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="diameter > 0.00" expr="eval: (((diameter/2)*(diameter/2))*Math.PI)*height"/>
+	</action-record>
+	
+	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
+	</action-record>
     
     <action-validate name="action-product-validate-sale-supply-select">
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
@@ -355,6 +383,13 @@
 		<view type="grid" name="product-product-variant-grid"/>
 		<view type="form" name="product-form"/>
 		<domain>self.parentProduct.id = :_id</domain>
+	</action-view>	
+	
+	<action-view name="action-product-view-production-process" title="Production processes"
+		model="com.axelor.apps.production.db.ProdProcess">
+		<view type="grid" name="prod-process-grid"/>
+		<view type="form" name="prod-process-form"/>
+		<domain>self.product.id = :id </domain>
 	</action-view>	
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">

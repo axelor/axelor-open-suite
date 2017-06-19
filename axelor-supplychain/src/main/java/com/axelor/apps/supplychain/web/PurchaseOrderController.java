@@ -17,11 +17,10 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -99,15 +98,6 @@ public class PurchaseOrderController {
 		purchaseOrderServiceSupplychain.cancelReceipt(purchaseOrder);
 
 	}
-
-	public void updateTimetable(ActionRequest request, ActionResponse response){
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		if(purchaseOrder.getId() != null && purchaseOrder.getId() > 0){
-			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-		}
-		Beans.get(TimetableService.class).updateTimetable(purchaseOrder);
-		response.setValues(purchaseOrder);
-	}
 	
 	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
@@ -119,7 +109,7 @@ public class PurchaseOrderController {
 	}
 	
 	//Generate single purchase order from several
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergePurchaseOrder(ActionRequest request, ActionResponse response)  {
 		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
 		List<Long> purchaseOrderIdList = new ArrayList<Long>();
@@ -293,5 +283,31 @@ public class PurchaseOrderController {
 		purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
 		
 		
+	}
+
+	/**
+	 * Called on partner, company or payment change.
+	 * Fill the bank details with a default value.
+	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		PaymentMode paymentMode = purchaseOrder.getPaymentMode();
+		Company company = purchaseOrder.getCompany();
+		Partner partner = purchaseOrder.getSupplierPartner();
+		if(paymentMode == null || company == null || partner == null) {
+			return;
+		}
+		partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
+				.findDefaultBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
+		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 }

@@ -37,11 +37,12 @@ public class LeaveManagementService {
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
-		leaveLine.setQuantity(BigDecimal.ZERO);
+		leaveLine.setTotalQuantity(BigDecimal.ZERO);
 		if(leaveManagementList != null && !leaveManagementList.isEmpty()){
 			for (LeaveManagement leaveManagement : leaveManagementList) {
-				leaveLine.setQuantity(leaveLine.getQuantity().add(leaveManagement.getValue()));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(leaveManagement.getValue()));
 			}
+			leaveLine.setQuantity( leaveLine.getTotalQuantity().subtract( leaveLine.getDaysValidated()  ) );
 		}
 		return leaveLine;
 	}
@@ -62,7 +63,7 @@ public class LeaveManagementService {
 		}
 		leaveManagement.setFromDate(fromDate);
 		leaveManagement.setToDate(toDate);
-		leaveManagement.setValue(value);
+		leaveManagement.setValue(value.setScale(1));
 		
 		return leaveManagement;
 	}

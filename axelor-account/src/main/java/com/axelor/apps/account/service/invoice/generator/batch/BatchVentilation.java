@@ -31,9 +31,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 
+import java.lang.invoke.MethodHandles;
+
 public class BatchVentilation extends BatchWkf {
 
-	static final Logger LOG = LoggerFactory.getLogger(BatchVentilation.class);
+	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	public BatchVentilation(InvoiceService invoiceService) {
@@ -54,12 +56,12 @@ public class BatchVentilation extends BatchWkf {
 
 			} catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Facture")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {
 
-				TraceBackService.trace(new Exception(String.format(I18n.get("Facture")+" %s", invoice.getInvoiceId()), e), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} finally {

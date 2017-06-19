@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     	<toolbar>
@@ -16,6 +16,7 @@
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="prodProcess.outsourcing"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -39,6 +40,7 @@
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="prodProcess.outsourcing"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -76,8 +78,9 @@
 			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
 			<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
-			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3"/>
+			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3"/>
+    			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isConsProOnOperation"/>
@@ -107,21 +110,21 @@
 					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 			</panel>
-			<panel name="consumedProducts" title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed" hideIf="isConsProOnOperation">
+			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation">
 				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
-   			<panel name="consumedProducts" title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced" showIf="isConsProOnOperation">
+   			<panel name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
 	 	      <panel-dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-	 	      <panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
-	 	      <panel-dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
+	 	      <panel-dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+			  <panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
 			<panel name="finishedProducts" title="Finished products">
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<panel name="description" title="Description" colSpan="12">
+				<panel name="description" title="Waste description" colSpan="12">
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 				</panel>
 			</panel>
@@ -148,14 +151,6 @@
     <action-attrs name="action-manuf-order-attrs-isConsProOnOperation">
     	<attribute for="isConsProOnOperation" name="readonly" expr="eval: !(prodProcess?.isConsProOnOperation)"/>
     </action-attrs>
-    
-    <action-record name="action-manuf-order-record-selected-page-consumed" model="com.axelor.apps.production.db.ManufOrder">
-    	<field name="selectedPage" expr="eval: 'consumed'"/>
-    </action-record>
-    
-    <action-record name="action-manuf-order-record-selected-page-produced" model="com.axelor.apps.production.db.ManufOrder">
-    	<field name="selectedPage" expr="eval: 'produced'"/>
-    </action-record>
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>

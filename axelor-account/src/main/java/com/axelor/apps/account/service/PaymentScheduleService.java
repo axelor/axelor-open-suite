@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PaymentScheduleLineService paymentScheduleLineService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
@@ -94,9 +95,9 @@ public class PaymentScheduleService {
 	public PaymentSchedule createPaymentSchedule(Partner partner, Company company, Set<Invoice> invoices, LocalDate startDate, int nbrTerm) throws AxelorException{
 
 		Invoice invoice = null;
-
+		
 		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, startDate,
-				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getPaymentMode());
+				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getInPaymentMode());
 
 		paymentSchedule.getInvoiceSet().addAll(invoices);
 

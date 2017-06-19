@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -75,7 +75,7 @@
 				domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			   <field name="productName"/>
 			   <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
-			   <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+			   <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			   <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			   <field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
 			     <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
@@ -118,7 +118,7 @@
 	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 		<panel name="budgetDistribution" title="Budget distribution" if="__config__.general.getManageBudget()" if-module="axelor-supplychain">
 			<field name="budget" if="__config__.general.getManageBudget() &amp;&amp; !__config__.general.getManageMultiBudget()"/>
@@ -151,7 +151,7 @@
 	</action-method>
 	
 	<action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
 	
 	<action-view name="action-purchase-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	

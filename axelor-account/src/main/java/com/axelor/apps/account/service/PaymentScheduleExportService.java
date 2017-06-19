@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,14 +46,12 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -70,7 +69,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleExportService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;
@@ -79,7 +78,6 @@ public class PaymentScheduleExportService{
 	protected ReconcileService reconcileService;
 	protected SequenceService sequenceService;
 	protected PaymentModeService paymentModeService;
-	protected CfonbExportService cfonbExportService;
 	protected PaymentService paymentService;
 	protected AccountBlockingService blockingService;
 	protected AccountConfigService accountConfigService;
@@ -94,7 +92,7 @@ public class PaymentScheduleExportService{
 
 	@Inject
 	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileService reconcileService,
-			SequenceService sequenceService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, PaymentService paymentService,
+			SequenceService sequenceService, PaymentModeService paymentModeService, PaymentService paymentService,
 			AccountBlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
 			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService, PartnerService partnerService) {
 		
@@ -105,7 +103,6 @@ public class PaymentScheduleExportService{
 		this.reconcileService = reconcileService;
 		this.sequenceService = sequenceService;
 		this.paymentModeService = paymentModeService;
-		this.cfonbExportService = cfonbExportService;
 		this.paymentService = paymentService;
 		this.blockingService = blockingService;
 		this.accountConfigService = accountConfigService;
@@ -144,47 +141,6 @@ public class PaymentScheduleExportService{
 		return move;
 	}
 
-
-	public void testBankDetails(PaymentSchedule paymentSchedule) throws AxelorException  {
-		Partner partner = paymentSchedule.getPartner();
-		BankDetails bankDetails = paymentSchedule.getBankDetails();
-		if(bankDetails == null)  {
-			bankDetails = partnerService.getDefaultBankDetails(partner);
-		}
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_1),
-					GeneralServiceImpl.EXCEPTION,paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
-		}
-		else  {
-			cfonbExportService.testBankDetailsField(bankDetails);
-		}
-	}
-
-
-	public void testBankDetails(Invoice invoice) throws AxelorException  {
-		BankDetails bankDetails = partnerService.getDefaultBankDetails(invoice.getPartner());
-
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceImpl.EXCEPTION, invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
-		}
-		else  {
-			cfonbExportService.testBankDetailsField(bankDetails);
-		}
-	}
-
-
-	public void testBankDetails(Partner partner) throws AxelorException  {
-		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
-
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
-		}
-		else  {
-			cfonbExportService.testBankDetailsField(bankDetails);
-		}
-	}
 
 
 	/**
@@ -256,8 +212,6 @@ public class PaymentScheduleExportService{
 
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 
-		this.testBankDetails(paymentSchedule);
-
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		Account account = accountConfig.getCustomerAccount();
@@ -266,7 +220,8 @@ public class PaymentScheduleExportService{
 		BigDecimal amount =  paymentScheduleLine.getInTaxAmount();
 		Partner partner = paymentSchedule.getPartner();
 
-		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, partner, paymentMode);
+		//TODO manage multi bank
+		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company, null), company, null, partner, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
 
@@ -279,7 +234,7 @@ public class PaymentScheduleExportService{
 			PaymentScheduleLine rejectedPaymentScheduleLine = this.getPaymentScheduleLineRejectOrigin(paymentScheduleLine);
 			if(rejectedPaymentScheduleLine.getRejectMoveLine() != null
 					&& rejectedPaymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)  {
-				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false);
+				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false, true);
 			}
 		}
 		else  {
@@ -287,8 +242,10 @@ public class PaymentScheduleExportService{
 			this.reconcileDirectDebit(moveLine, paymentSchedule);
 		}
 
+		//TODO manage multi bank
+
 		move.addMoveLineListItem(
-				moveLineServices.createMoveLine(move, partner,	paymentModeService.getPaymentModeAccount(paymentMode, company), amount, true, today, 2, null));
+				moveLineServices.createMoveLine(move, partner,	paymentModeService.getPaymentModeAccount(paymentMode, company, null), amount, true, today, 2, null));
 
 		this.validateMove(move);
 
@@ -430,7 +387,9 @@ public class PaymentScheduleExportService{
 
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 
-		paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company);
+		//TODO manage multi bank
+
+		paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company, null);
 
 	}
 
@@ -536,7 +495,7 @@ public class PaymentScheduleExportService{
 		List<MoveLine> moveLineListResult = moveLineRepo.all().filter("self IN (?1) and self.partner = ?2", moveLineList, partner).fetch();
 
 		for(MoveLine moveLine : moveLineListResult)  {
-			Invoice invoice = cfonbExportService.getInvoice(moveLine);
+			Invoice invoice = invoiceService.getInvoice(moveLine);
 
 			DirectDebitManagement directDebitManagement = invoice.getDirectDebitManagement();
 			if(directDebitManagement != null && directDebitManagement.getId() > directDebitManagementMaxId)  {
@@ -619,8 +578,6 @@ public class PaymentScheduleExportService{
 
 		/** Important : Doit être executé avant la méthode 'createPaymentMove()' afin de récupérer le montant restant à prélever **/
 		BigDecimal amountExported = moveLine.getAmountRemaining();
-
-		this.testBankDetails(moveLine.getPartner());
 
 		// creation d'une ecriture de paiement
 		Invoice invoice = this.updateInvoice(moveLine,
@@ -710,16 +667,20 @@ public class PaymentScheduleExportService{
 
 		log.debug("Create payment move");
 
+		//TODO manage multi bank
+		
 		Move paymentMove = moveService.getMoveCreateService().createMove(
-				paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, null, paymentMode);
+				paymentModeService.getPaymentModeJournal(paymentMode, company, null), company, null, null, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 
 		this.createPaymentMoveLine(paymentMove, moveLine, 1);
 
 		log.debug("Create payment move line");
+		
+		//TODO manage multi bank
 
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, null);
 
 		String invoiceName = "";
 		if(moveLine.getMove().getInvoice()!=null)  {
@@ -761,7 +722,7 @@ public class PaymentScheduleExportService{
 		// Lettrage de la ligne 411 avec la ligne 411 de la facture
 		log.debug("Creation du lettrage de la ligne 411 avec la ligne 411 de la facture");
 
-		reconcileService.reconcile(moveLine, moveLineGenerated, false);
+		reconcileService.reconcile(moveLine, moveLineGenerated, false, true);
 
 		log.debug("generateAllExportInvoice - Sauvegarde de l'écriture");
 
@@ -782,9 +743,7 @@ public class PaymentScheduleExportService{
 	 */
 	public Invoice updateInvoice(MoveLine moveLine, Move paymentMove, List<MoveLine> mlList, BigDecimal amountExported, long directDebitManagementMaxId) throws AxelorException  {
 
-		Invoice invoice = cfonbExportService.getInvoice(moveLine);
-
-		this.testBankDetails(invoice);
+		Invoice invoice = invoiceService.getInvoice(moveLine);
 
 		Company company = invoice.getCompany();
 
@@ -820,8 +779,10 @@ public class PaymentScheduleExportService{
 
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 
+		//TODO manage multi bank
+		
 		return sequenceService.getSequenceNumber(
-				paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company));
+				paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company, null));
 
 	}
 

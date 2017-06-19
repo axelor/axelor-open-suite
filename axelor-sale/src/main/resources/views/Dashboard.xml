@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 		<!-- SALES MAN DASHBOARD -->
 		
@@ -140,15 +140,6 @@
 	  <view type="chart" name="chart.units.sold.on.cust.sale.by.category"/>
 	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	  <context name="_user_id" expr="eval:__user__.id"/>
-	</action-view>
- 		
-	
-	
-	<!-- This dashlet is used in product-form (base) -->
-	<action-view name="dashlet.product.sales.turnover.per.month" title="Product sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.product.sale.turnover.per.month"/>
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<action-view name="dashlet.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month" model="com.axelor.apps.base.db.Product">

@@ -17,8 +17,11 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+
+import javax.mail.MessagingException;
 
 import org.joda.time.LocalDate;
 
@@ -27,6 +30,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -36,7 +40,29 @@ import com.google.inject.persist.Transactional;
 
 public interface TimesheetService {
 	public void getTimeFromTask(Timesheet timesheet);
-	public void cancelTimesheet(Timesheet timesheet);
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void confirm(Timesheet timesheet) throws AxelorException;
+	
+	public Message sendConfirmationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+		
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Timesheet timesheet) throws AxelorException;
+		
+	public Message sendValidationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+		
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void refuse(Timesheet timesheet) throws AxelorException;
+	
+	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
+	@Transactional(rollbackOn={Exception.class})
+	public void cancel(Timesheet timesheet) throws AxelorException;
+	
+	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException;
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();

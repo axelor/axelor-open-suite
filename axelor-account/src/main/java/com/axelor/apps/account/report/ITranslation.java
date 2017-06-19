@@ -49,6 +49,7 @@ public interface ITranslation {
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
 	
+
 	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
 	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
 	
@@ -63,6 +64,7 @@ public interface ITranslation {
 
 	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
 
+	
 	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
 	public static final String MOVE_LINE_REPORT_1_JOURNAL = /*$$(*/ "MoveLineReportType1.journal"; /*)*/
 	public static final String MOVE_LINE_REPORT_1_COMPANY = /*$$(*/ "MoveLineReportType1.company"; /*)*/
@@ -98,7 +100,26 @@ public interface ITranslation {
 	public static final String MOVE_LINE_REPORT_2_DEBIT = /*$$(*/ "MoveLineReportType2.debit"; /*)*/
 	public static final String MOVE_LINE_REPORT_2_CREDIT = /*$$(*/ "MoveLineReportType2.credit"; /*)*/
 	public static final String MOVE_LINE_REPORT_2_GENERAL_BALANCE = /*$$(*/ "MoveLineReportType2.generalBalance"; /*)*/
-    
+	
+	public static final String MOVE_LINE_REPORT_2000_TITLE = /*$$(*/ "MoveLineReportType2000.title"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.analyticJournal"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_COMPANY = /*$$(*/ "MoveLineReportType2000.company"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_END_DATE = /*$$(*/ "MoveLineReportType2000.endDate"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_FROM = /*$$(*/ "MoveLineReportType2000.from"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_TO = /*$$(*/ "MoveLineReportType2000.to"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.analyticAxis"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_AXIS_CODE = /*$$(*/ "MoveLineReportType2000.analyticAxisCode"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_AXIS_NAME = /*$$(*/ "MoveLineReportType2000.analyticAxisName"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.analyticAccount"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT_CODE = /*$$(*/ "MoveLineReportType2000.analyticAccountCode"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT_NAME = /*$$(*/ "MoveLineReportType2000.analyticAccountName"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ACCOUNT_TYPE = /*$$(*/ "MoveLineReportType2000.accountType"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_AMOUNT = /*$$(*/ "MoveLineReportType2000.amount"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_PERCENTAGE = /*$$(*/ "MoveLineReportType2000.percentage"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticJournal"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAxis"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAccount"; /*)*/
+	
 	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/

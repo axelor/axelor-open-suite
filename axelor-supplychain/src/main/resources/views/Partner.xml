@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
  	
     <form name="incl-sales-order-dashelt-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
     	<panel-dashlet colSpan="12" action="dashlet.customer.sales.lastYear.vs.ytd.by.family" height="350" title="Sales" showIf="id != null" />
@@ -18,13 +18,6 @@
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
 	     <panel-related  field="customerCreditLineList" colSpan="12" form-view="customer-credit-line-form" grid-view="customer-credit-line-grid" />
 	</form>
-	
-    <action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="grid" name="sale-order-partner-grid"/>
-		<view type="form" name="sale-order-form"/>
-		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
 	
      <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-partner-grid"/>

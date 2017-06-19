@@ -43,7 +43,7 @@ public class PurchaseOrderLineController {
 		}
 		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.computeAnalyticDistribution(purchaseOrderLine);
-			response.setValue("analyticDistributionLineList", purchaseOrderLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class PurchaseOrderLineController {
 		}
 		if(purchaseOrderLine.getAnalyticDistributionTemplate() != null){
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(purchaseOrderLine);
-			response.setValue("analyticDistributionLineList", purchaseOrderLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
 		}
 		else{
 			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);

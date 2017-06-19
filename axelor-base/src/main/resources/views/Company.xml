@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
         <field name="name"/>
@@ -9,7 +9,8 @@
         <field name="address" form-view="address-form" grid-view="address-grid"/>
     </grid>
 
-	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
+	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
+		onSave="action-company-check-multi-banks">
 		<panel name="main" readonlyIf="$popup()">
 		    <panel colSpan="4">
 				<field name="logo" widget="Image"/>
@@ -29,7 +30,6 @@
 	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock"/>
 	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase"/>
 	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production"/>
-	    	<button name="organisationConfigButton" title="Organisation config" width="100%" colSpan="6" onClick="action-company-view-organisation-config" if-module="axelor-organisation"/>
     		<button name="hrConfigButton" title="Human Resources config" width="100%" colSpan="6" onClick="action-company-view-hr-config" if-module="axelor-human-resource"/>
     		<button name="crmConfigButton" title="CRM config" width="100%" colSpan="6" onClick="action-company-view-crm-config" if-module="axelor-crm"/>
     	</panel>
@@ -43,14 +43,14 @@
 	      		<field name="notes" showTitle="false" colSpan="12"/>
 	    	</panel>
 	    	<panel name="configurations" title="Configurations">
-	  			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	  			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  			<field name="printingSettings" canNew="true" form-view="printing-setting-form" grid-view="printing-setting-grid"/>
 	  			<field name="defaultPartnerTypeSelect"/>
 	  			<field name="customerPaymentDelay" if-module="axelor-cash-management"/>
 	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management"/>
 	  		</panel>
 	    	<panel name="bankDetails" title="Bank details">
-	      		<field name="defaultBankDetails"/>
+                <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
 	    	<panel name="orderBloquedMessage" title="Order Bloqued Message" if-module="axelor-sale">
@@ -89,12 +89,6 @@
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
-    <action-view name="action-company-view-organisation-config" title="Organisation config (${ name })" model="com.axelor.apps.organisation.db.OrganisationConfig">
-    	<view type="form" name="organisation-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.organisationConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
     <action-view name="action-company-view-hr-config" title="Human Resource config (${ name })" model="com.axelor.apps.hr.db.HRConfig">
     	<view type="form" name="hr-config-form"/>
     	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
@@ -107,6 +101,15 @@
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     
-	
-	
+	<action-attrs name="action-company-attrs-default-bank-details-domain">
+		<attribute name="domain" for="defaultBankDetails" if="bankDetailsSet &amp;&amp; !bankDetailsSet.isEmpty()"
+				   expr="eval: &quot;self.id IN (${bankDetailsSet.collect{it.id}.join(',')})&quot;"/>
+		<attribute name="domain" for="defaultBankDetails" if="!bankDetailsSet || bankDetailsSet.isEmpty()"
+				   expr="self.id IN (0)"/>
+	</action-attrs>
+
+	<action-method name="action-company-check-multi-banks">
+		<call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks" />
+	</action-method>
+
 </object-views>

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
@@ -45,22 +46,22 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveToolService moveToolService;
-	protected PaymentInvoiceToPayService paymentInvoiceToPayService;
+	protected PayVoucherElementToPayService payVoucherElementToPayService;
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherRepository paymentVoucherRepository;
 	protected LocalDate today;
 
 	@Inject
-	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PaymentInvoiceToPayService paymentInvoiceToPayService, 
+	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
 			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
 			PaymentVoucherRepository paymentVoucherRepository) {
 
 		this.moveToolService = moveToolService;
-		this.paymentInvoiceToPayService = paymentInvoiceToPayService;
+		this.payVoucherElementToPayService = payVoucherElementToPayService;
 		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherRepository = paymentVoucherRepository;
@@ -94,9 +95,9 @@ public class PaymentVoucherCreateService {
 
 		paymentVoucher.setHasAutoInput(true);
 
-		List<PaymentInvoiceToPay> lines = new ArrayList<PaymentInvoiceToPay>();
+		List<PayVoucherElementToPay> lines = new ArrayList<PayVoucherElementToPay>();
 
-		lines.add(paymentInvoiceToPayService.createPaymentInvoiceToPay(paymentVoucher,
+		lines.add(payVoucherElementToPayService.createPayVoucherElementToPay(paymentVoucher,
 				1,
 				invoice,
 				customerMoveLine,
@@ -104,7 +105,7 @@ public class PaymentVoucherCreateService {
 				customerMoveLine.getAmountRemaining(),
 				amount));
 
-		paymentVoucher.setPaymentInvoiceToPayList(lines);
+		paymentVoucher.setPayVoucherElementToPayList(lines);
 
 		paymentVoucherRepository.save(paymentVoucher);
 
@@ -146,9 +147,6 @@ public class PaymentVoucherCreateService {
 
 			paymentVoucher.setPaymentMode(paymentMode);
 			paymentVoucher.setPartner(partner);
-
-			paymentVoucher.setInvoiceToPay(invoiceToPay);
-			paymentVoucher.setRejectToPay(rejectToPay);
 
 			paymentVoucher.setPaidAmount(amount2);
 			paymentVoucher.setMoveLine(moveLine);

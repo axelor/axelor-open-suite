@@ -22,7 +22,13 @@ import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Subscription;
@@ -68,6 +74,11 @@ public interface SaleOrderInvoiceService {
 
 	@Transactional
 	public Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException;
+	
+	@Transactional
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company cmpany, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder) throws AxelorException;
 }
 
 

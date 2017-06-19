@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"
@@ -161,9 +161,9 @@
 	</action-view>
 	
 	<menuitem name="sale.conf.tax" parent="sc-root-sale-conf"
-		title="Taxes" action="account.conf.financial.tax" />
+		title="Taxes" action="sale.conf.financial.tax" />
 
-	<action-view name="account.conf.financial.tax" title="Taxes"
+	<action-view name="sale.conf.financial.tax" title="Taxes"
 		model="com.axelor.apps.account.db.Tax" >
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>

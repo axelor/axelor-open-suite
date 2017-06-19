@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
@@ -131,15 +133,21 @@ public class OperationOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(OperationOrder operationOrder)  {
 
+		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+
+			operationOrder.setRealStartDateT(today);
+
+			operationOrder.setStartedBy(AuthUtils.getUser());
+
+			operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+		}
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
-
-		operationOrder.setRealStartDateT(today);
-		
-		operationOrder.setStartedBy(AuthUtils.getUser());
-		
-		operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
-
 		Beans.get(OperationOrderRepository.class).save(operationOrder);
+
+		if (operationOrder.getManufOrder().getStatusSelect()
+				!= IManufOrder.STATUS_IN_PROGRESS) {
+		    Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		}
 
 	}
 

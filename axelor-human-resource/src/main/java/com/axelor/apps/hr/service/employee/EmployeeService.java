@@ -19,12 +19,22 @@ package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
 
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 
 public interface EmployeeService extends UserService{
 
-//	public BigDecimal getDurationHours(Object object) throws AxelorException;
-
-	public BigDecimal getUserDuration(BigDecimal hourDuration, BigDecimal dailyWorkHrs, boolean toHours);
+	public BigDecimal getUserDuration(BigDecimal hourDuration, User user, boolean toHours);
+	
+	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
+	public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
+	
+	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+	
+	public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
 
 }

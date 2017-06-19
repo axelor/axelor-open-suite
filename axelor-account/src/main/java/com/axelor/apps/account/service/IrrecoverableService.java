@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.db.repo.ManagementObjectRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -75,7 +77,7 @@ import com.google.inject.persist.Transactional;
 
 public class IrrecoverableService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SequenceService sequenceService;
 	protected MoveService moveService;
@@ -753,7 +755,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int seq = 1;
 
@@ -799,7 +801,7 @@ public class IrrecoverableService{
 		move.getMoveLineList().add(creditMoveLine);
 
 		Reconcile reconcile = reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		return move;
 	}
@@ -821,7 +823,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int seq = 1;
 
@@ -830,7 +832,7 @@ public class IrrecoverableService{
 		move.getMoveLineList().add(creditMoveLine);
 
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		Tax tax = accountConfig.getIrrecoverableStandardRateTax();
 

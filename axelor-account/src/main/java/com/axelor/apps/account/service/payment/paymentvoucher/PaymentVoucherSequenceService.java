@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class PaymentVoucherSequenceService  {
@@ -46,7 +47,7 @@ public class PaymentVoucherSequenceService  {
 
 	public void setReference(PaymentVoucher paymentVoucher) throws AxelorException  {
 
-		if (paymentVoucher.getRef() == null || paymentVoucher.getRef().equals("")){
+		if (Strings.isNullOrEmpty(paymentVoucher.getRef()))  {
 
 			paymentVoucher.setRef(this.getReference(paymentVoucher));
 		}
@@ -59,8 +60,7 @@ public class PaymentVoucherSequenceService  {
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
 
-
-		return sequenceService.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company));
+		return sequenceService.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company, paymentVoucher.getCompanyBankDetails()));
 	}
 
 

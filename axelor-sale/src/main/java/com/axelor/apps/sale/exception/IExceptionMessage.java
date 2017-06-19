@@ -18,7 +18,7 @@
 package com.axelor.apps.sale.exception;
 
 /**
- * Interface of Exceptions. Enum all exception of axelor-organisation.
+ * Interface of Exceptions.
  * 
  * @author dubaux
  * 
@@ -38,5 +38,5 @@ public interface IExceptionMessage {
 	/**
 	 * Sale Config Service
 	 */
-	static final String SALE_CONFIG_1 = /*$$(*/ "%s :\n You must configure Sales module for company %s" /*)*/ ;
+	static final String SALE_CONFIG_1 = /*$$(*/ "%s : You must configure Sales module for company %s" /*)*/ ;
 }

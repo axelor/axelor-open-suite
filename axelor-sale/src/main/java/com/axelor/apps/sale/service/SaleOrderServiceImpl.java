@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SaleOrderLineService saleOrderLineService;
 	protected SaleOrderLineTaxService saleOrderLineTaxService;
@@ -300,6 +301,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		if (generalService.getGeneral().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
+		if (saleOrder.getVersionNumber() == 1){
+			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+		}
 	}
 	
 	@Override
@@ -308,10 +312,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
 		saleOrder.setConfirmationDate(this.today);
 		saleOrder.setConfirmedByUser(this.currentUser);
-		if (saleOrder.getVersionNumber() == 1){
-			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
-		}
-
 		
 		this.validateCustomer(saleOrder);
 		

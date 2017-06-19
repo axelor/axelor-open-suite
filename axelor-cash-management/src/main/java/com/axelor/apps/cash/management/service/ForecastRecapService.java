@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.cash.management.service;
 
 import java.io.IOException;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import org.slf4j.LoggerFactory;
 
 public class ForecastRecapService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected TimetableService timetableService;
@@ -120,7 +121,7 @@ public class ForecastRecapService {
 		for (Opportunity opportunity : opportunityList) {
 			BigDecimal amountCompanyCurr = BigDecimal.ZERO;
 			if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), opportunity.getAmount().multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -128,7 +129,7 @@ public class ForecastRecapService {
 						amountCompanyCurr, forecastRecap.getCurrentBalance()));
 			}
 			else if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getBestCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -136,7 +137,7 @@ public class ForecastRecapService {
 						amountCompanyCurr, forecastRecap.getCurrentBalance()));
 			}
 			else{
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getWorstCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -159,17 +160,17 @@ public class ForecastRecapService {
 		for (Opportunity opportunity : opportunityList) {
 			BigDecimal amountCompanyCurr = BigDecimal.ZERO;
 			if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), opportunity.getAmount().multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 			}
 			else if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getBestCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 			}
 			else{
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getWorstCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 			}
@@ -271,28 +272,26 @@ public class ForecastRecapService {
 		List<Timetable> timetablePurchaseOrderList = new ArrayList<Timetable>();
 		if(forecastRecap.getBankDetails() != null){
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.companyBankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.saleOrder.companyBankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 			timetablePurchaseOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3 AND"
-					+ " self.purchaseOrder.companyBankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.purchaseOrder.companyBankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
+					+ " self.saleOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
 			timetablePurchaseOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3 AND"
-					+ " self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
+					+ " self.purchaseOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
 		}
 		for (Timetable timetable : timetableSaleOrderList) {
-			timetableService.updateTimetable(timetable.getSaleOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
-					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
+					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmount(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
 			forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(timetable.getEstimatedDate(), 1, null, amountCompanyCurr, forecastRecap.getCurrentBalance()));
 		}
 		for (Timetable timetable : timetablePurchaseOrderList) {
-			timetableService.updateTimetable(timetable.getPurchaseOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
-					timetable.getPurchaseOrder().getCurrency(), timetable.getPurchaseOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
+					timetable.getPurchaseOrder().getCurrency(), timetable.getPurchaseOrder().getCompany().getCurrency(), timetable.getAmount(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
 			forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(timetable.getEstimatedDate(), 2, null, amountCompanyCurr, forecastRecap.getCurrentBalance()));
@@ -306,30 +305,28 @@ public class ForecastRecapService {
 		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
 		if(forecastRecap.getBankDetails() != null){
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.companyBankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.saleOrder.companyBankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 			timetablePurchaseOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3 AND"
-					+ " self.purchaseOrder.companyBankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.purchaseOrder.companyBankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
+					+ " self.saleOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
 			timetablePurchaseOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3 AND"
-					+ " self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
+					+ " self.purchaseOrder.statusSelect = 3 AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
 		}
 		for (Timetable timetable : timetableSaleOrderList) {
 			saleOrderList.add(timetable.getSaleOrder());
-			timetableService.updateTimetable(timetable.getSaleOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
-					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
+					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmount(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
 			forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(timetable.getEstimatedDate(), 1, null, amountCompanyCurr, forecastRecap.getCurrentBalance()));
 		}
 		for (Timetable timetable : timetablePurchaseOrderList) {
 			purchaseOrderList.add(timetable.getPurchaseOrder());
-			timetableService.updateTimetable(timetable.getPurchaseOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
-					timetable.getPurchaseOrder().getCurrency(), timetable.getPurchaseOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
+					timetable.getPurchaseOrder().getCurrency(), timetable.getPurchaseOrder().getCompany().getCurrency(), timetable.getAmount(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
 			forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(timetable.getEstimatedDate(), 2, null, amountCompanyCurr, forecastRecap.getCurrentBalance()));
@@ -373,17 +370,16 @@ public class ForecastRecapService {
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 		if(forecastRecap.getBankDetails() != null){
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.companyBankDetails = ?4 AND (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.saleOrder.companyBankDetails = ?4 AND (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
+					+ " (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amount != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany()).fetch();
 		}
 		for (Timetable timetable : timetableSaleOrderList) {
 			saleOrderList.add(timetable.getSaleOrder());
-			timetableService.updateTimetable(timetable.getSaleOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
-					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
+					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmount(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			if(timetable.getSaleOrder().getStatusSelect() == 2){
 				if(mapExpected.containsKey(timetable.getEstimatedDate())){

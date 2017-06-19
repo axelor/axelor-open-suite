@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.alarm;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class AlarmEngineService <T extends Model> {
 
 	protected GeneralService generalService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private DateTime dateTime;
 
@@ -91,6 +92,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
 
 		List<? extends AlarmEngine> alarmEngines = alarmEngineRepo.all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch();
@@ -118,6 +120,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected Map<T, List<Alarm>> get(List<? extends AlarmEngine> alarmEngines, Class<T> klass, T... params) {
 
 		Map<T, List<Alarm>> map = new HashMap<T, List<Alarm>>();
@@ -161,6 +164,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	protected Map<T, Alarm> get(AlarmEngine alarmEngine, Class<T> klass, T... params) {
 
 		Map<T, Alarm> map = new HashMap<T, Alarm>();
@@ -193,6 +197,7 @@ public class AlarmEngineService <T extends Model> {
 	 *
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public List<T> results(String query, Class<T> klass, T... params) {
 
 		LOG.debug("Lancement de la requête {} => Objet: {}, params: {}", new Object[]{query, klass.getSimpleName(), params});

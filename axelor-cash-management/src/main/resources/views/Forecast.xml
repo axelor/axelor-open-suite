@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="forecast-grid" title="Forecasts" model="com.axelor.apps.cash.management.db.Forecast">
        <field name="company"/>
@@ -28,11 +28,11 @@
 	 
 	 <action-record name="action-forecast-record-default-on-new" model="com.axelor.apps.cash.management.db.Forecast">
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
-	 	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails"/>
+	 	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails" if="__user__.activeCompany?.defaultBankDetails?.active"/>
 	 </action-record>
 	 
 	  <action-record name="action-forecast-record-bank" model="com.axelor.apps.cash.management.db.Forecast">
-	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails"/>
+	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
 	 </action-record>
     
 </object-views>

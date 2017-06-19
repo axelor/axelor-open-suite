@@ -56,7 +56,7 @@ public class ReconcileSequenceService {
 		}
 		return seq;
 	}
-	
+
 	public void setDraftSequence(Reconcile reconcile)  {		
 			
 		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())

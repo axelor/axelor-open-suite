@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="fullName"/>
@@ -19,10 +19,10 @@
 			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<panel name="main">
-			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
+			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product"/>
 			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>

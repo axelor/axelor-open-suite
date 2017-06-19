@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +72,7 @@ import net.fortuna.ical4j.model.ValidationException;
 
 public class EventController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private EventRepository eventRepo;
@@ -289,34 +290,6 @@ public class EventController {
 			}
 		}
 		
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestUser")){
-			User user = Beans.get(UserService.class).getUser();
-			if(user != null){
-				event = eventRepo.find(event.getId());
-				eventService.addUserGuest(user, event);
-			}
-		}
-		
-		response.setReload(true);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestPartner")){
-			Partner partner = Beans.get(PartnerRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestPartner")).get("id").toString()));
-			if(partner != null){
-				event = eventRepo.find(event.getId());
-				eventService.addPartnerGuest(partner, event);
-			}
-		}
-		
-		response.setReload(true);
 	}
 	
 	@SuppressWarnings("unchecked")

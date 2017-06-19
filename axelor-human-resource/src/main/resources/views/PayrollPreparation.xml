@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 	<grid name="payroll-preparation-grid" title="Payroll preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-		 <field name="company" form-view="company-form" grid-view="company-grid"/>
 		 <field name="employee"/>
-		 <field name="employmentContract"/> 
-		 <field name="payrollPeriod" />
-		 <field name="total" aggregate="sum"/>
+		 <field name="company" form-view="company-form" grid-view="company-grid"/>
+		 <field name="period" />
+		 <field name="exported" />
 	</grid>
 	
 	<form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" 
@@ -17,20 +16,33 @@
 			<field name="company" form-view="company-form" grid-view="company-grid" colSpan="4"/>
 			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-delete-contract, action-payroll-preparation-group-fill-in"/>
 			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in"/> 
-			 <field name="monthSelect" onChange="action-payroll-preparation-group-fill-in" colSpan="2"/>
-			 <field name="yearPeriod" onChange="action-payroll-preparation-group-fill-in" colSpan="2"/>
-			 <button name="refreshButton" title="Refresh" onClick="action-payroll-preparation-group-fill-in" colSpan="4" colOffset="4"/>
+			 <field name="period" onChange="action-payroll-preparation-group-fill-in" colSpan="4"/>
+			 <button name="refreshButton" title="Refresh" onClick="action-payroll-preparation-group-fill-in,save" colSpan="4" colOffset="4"/>
 			 <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12"/>
 			 <panel-related field="extraHoursLineList" readonly="true" colSpan="12"/>
 			 <field name="duration"/>
+			 <field name="leaveDuration" />
+			 <panel-related field="expenseList" 		     colSpan="12" canEdit="false" canNew="false" grid-view="expense-payroll-preparation-grid"/>
+			 <panel-related field="employeeBonusMgtLineList" colSpan="12" canEdit="false" canNew="false" grid-view="employee-bonus-mgt-line-employee-grid"/>
+			 <panel-related field="lunchVoucherMgtLineList"  colSpan="12" canEdit="false" canNew="false" grid-view="lunch-voucher-mgt-line-payroll-grid" form-view="lunch-voucher-mgt-line-form"/>
+			 <panel-related field="otherCostsEmployeeSet"    colSpan="12" canEdit="false" canNew="false"/>
 			 <field name="expenseAmount"/>
-			 <panel-related field="expenseList" colSpan="12" grid-view="expense-payroll-preparation-grid"/>
-			 <panel-related field="otherCostsEmployeeSet" colSpan="12"/>
-			 <field name="annualGrossSalary"/>
-			 <field name="netSalary" onChange="action-payroll-preparation-record-total"/>
-			 <field name="socialCharges"/>
-			 <field name="total"/>
+			 <field name="employeeBonusAmount"/>
+			 <field name="lunchVoucherNumber"/>
+			 <field name="extraHoursNumber"/>
 			 <field name="comments" colSpan="12"/>
+		</panel>
+		<panel sidebar="true">
+			<panel hidden="true" showIf="employmentContract != null" colSpan="12" readonly="true">
+			 	<field name="annualGrossSalary"/>
+			 	<field name="netSalary" onChange="action-payroll-preparation-record-total"/>
+			 	<field name="socialCharges"/>
+			 	<field name="total"/>
+			</panel>
+			<field name="exportTypeSelect" readonlyIf="exported" />
+			<button name="export" title="Export payroll preparation" hidden="true" showIf="id != null &amp;&amp; !exported" onClick="save,action-payroll-preparation-method-export" />
+			<field name="exported" />
+			<field name="exportDate" hidden="true" showIf="exported" />
 		</panel>
 	</form>
 	
@@ -40,8 +52,7 @@
 	</action-group>
 	
 	<action-group name="action-payroll-preparation-group-fill-in">
-		<action name="action-payroll-preparation-method-fill-in" if="employee != null &amp;&amp; employmentContract != null &amp;&amp;
-																	 monthSelect != null &amp;&amp; yearPeriod != null"/>
+		<action name="action-payroll-preparation-method-fill-in" if="employee != null &amp;&amp; employmentContract != null &amp;&amp; period != null"/>
 		<action name="action-payroll-preparation-record-total"/>
 	</action-group>
 	
@@ -58,8 +69,7 @@
 	</action-method>
 	
 	<action-record name="action-payroll-preparation-record-default-on-new" model="com.axelor.apps.hr.db.PayrollPreparation">
-		<field name="monthSelect" expr="eval: __date__.monthOfYear"/>
-		<field name="yearPeriod" expr="eval: __date__.year"/>
+		<field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 		<field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 	
@@ -70,5 +80,9 @@
 	<action-record name="action-payroll-preparation-record-total" model="com.axelor.apps.hr.db.PayrollPreparation">
 		<field name="total" expr="netSalary + expenseAmount"/>
 	</action-record>
+	
+	<action-method name="action-payroll-preparation-method-export" >
+		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="exportPayrollPreparation"/>
+	</action-method>
 	
 </object-views>

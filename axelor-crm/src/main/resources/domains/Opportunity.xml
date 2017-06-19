@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -22,6 +22,7 @@
     <string name="description" large="true" title="Description"/>
    	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" help="true"/>
    	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+   	<integer name="orderByState"/>
     
     <many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
     

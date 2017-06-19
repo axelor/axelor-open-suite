@@ -82,7 +82,7 @@ public class MoveTemplateService {
 					creditPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
-				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
+				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null, MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
 				int counter = 1;
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;

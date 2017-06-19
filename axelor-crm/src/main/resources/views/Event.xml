@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
     	<field name="subject"/>
@@ -109,17 +109,6 @@
 	<action-record name="action-event-record-current-user" model="com.axelor.apps.crm.db.Event">
 		<field name="user" expr="eval:__user__"/>
 	</action-record>
-	
-    <action-view name="action-event-view-lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
-    	<view type="grid" name="lead-event-grid"/>
-    	<view type="form" name="lead-event-form"/>
-    </action-view>
-    
-    <action-view name="action-event-view-contact" title="Contacts" model="com.axelor.apps.base.db.Partner">
-    	<view type="grid" name="contact-event-grid"/>
-    	<view type="form" name="contact-event-form"/>
-    	<domain>self.isContact = true</domain>
-    </action-view>
     
     <action-method name="action-event-method-domain-calendar-crm">
     	<call class="com.axelor.apps.crm.web.EventController" method="setCalendarCrmDomain"/>
@@ -234,6 +223,10 @@
 				<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 				<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			</panel>
+			<panel title="Add Guests" name="addGuests" sidebar="true">
+				<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
+				<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
+			</panel>
 			<panel name="guests" title="Guests" colSpan="12">
 				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
 					<editor layout="table" x-show-titles="false">
@@ -244,14 +237,6 @@
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		<panel title="Add Guests" name="addGuests" sidebar="true">
-			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
-			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
-			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
-			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
-			<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
-			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
 		</panel>
 		<panel name="meetingAttributes" sidebar="true" title="Attributes">
 			<field name="meetingType" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
@@ -269,15 +254,6 @@
 		  <mail-followers />
 	  	</panel-mail>
 	</form>
-    
-    
-    <action-method name="action-event-method-add-user-guest">
-    	<call class="com.axelor.apps.crm.web.EventController" method="addUserGuest"/>
-    </action-method>
-    
-    <action-method name="action-event-method-add-partner-guest">
-    	<call class="com.axelor.apps.crm.web.EventController" method="addPartnerGuest"/>
-    </action-method>
     
     <action-method name="action-event-method-add-email-guest">
     	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>
@@ -374,7 +350,7 @@
 	    <field name="eventCategory" form-view="event-category-form" grid-view="event-category-grid"/>
 	    <field name="startDateTime"/>
 	    <field name="endDateTime"/>
-	    <field name="user" form-view="user-form" grid-view="user-gird"/>
+	    <field name="user" form-view="user-form" grid-view="user-grid"/>
 	    <field name="prioritySelect"/>
 	    <field name="statusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
@@ -401,8 +377,8 @@
 			<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead"/>
-			<field name="user" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-gird"/>
-			<field name="responsibleUser" form-view="user-form" grid-view="user-gird"/>
+			<field name="user" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-grid"/>
+			<field name="responsibleUser" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel title=" " colSpan="12">
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
@@ -450,29 +426,6 @@
     	<action name="save"/>
     	<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
     </action-group>
-	
-	<action-view name="action-event-view-recurrence-assistant" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
-		<view type="form" name="recurrence-assistant-form"/>
-		<view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
-	    <view-param name="width" value="800" />
-	    <view-param name="show-toolbar" value="false" />
-	    <view-param name="popup-save" value="false" />
-	    <context name="_idEvent" expr="eval: id"/>
-	    <context name="_startDate" expr="eval: startDateTime"/>
-	</action-view>
-	
-	<action-view name="action-event-view-change-recurrence" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
-		<view type="form" name="recurrence-assistant-form"/>
-		<view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
-	    <view-param name="width" value="800" />
-	    <view-param name="show-toolbar" value="false" />
-	    <view-param name="popup-save" value="false" />
-	    <context name="_idEvent" expr="eval: id"/>
-	    <context name="_startDate" expr="eval: startDateTime"/>
-	    <context name="_showRecord" expr="eval: recurrenceConfiguration?.id"/>
-	</action-view>
 	
 	<action-view name="action-event-view-modifications-recurrence" title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="modifications-assistant-form"/>
@@ -527,11 +480,6 @@
     </action-group>
     
 <!--     ACTION ATTRIBUTS -->
-    
-    <action-attrs name="action-event-attrs-watchers-domain">
-    	<attribute name="domain" for="userSet" expr="eval: &quot; self.id IN (${project?.memberUserSet?.collect{it.id}.join(',')})&quot;" if="project?.memberUserSet?.collect{it.id}?.size() > 0"/>
-    	<attribute name="domain" for="userSet" expr="eval:" if="project?.memberUserSet?.collect{it.id}?.size() == 0"/>
-    </action-attrs>
     
     <action-attrs name="action-event-ticket-attrs-default">
     	<attribute name="hidden" for="responsibleUser" expr="eval: true" if="_clientView"/>
@@ -606,7 +554,7 @@
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="call:com.axelor.apps.crm.service.EventService.getInvoicingAddressFullName(clientPartner)"/>
+		<field name="location" expr="call:com.axelor.apps.crm.service.EventService:getInvoicingAddressFullName(clientPartner)"/>
 	</action-record>
 
 	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
@@ -677,15 +625,6 @@
     <action-method name="action-event-method-compute-from-calendar">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeFromCalendar" />
     </action-method>
-    
-    <action-method name="action-event-method-check-modifications">
-    	<call class="com.axelor.apps.crm.web.EventController" method="checkModifications"/>
-    </action-method>
-	
-	
-	<action-validate name="action-event-validate-emails-sent">
-		<alert message="Emails will be sent to all guests" if="internalGuestSet?.size &gt; 0 || externalGuestSet?.size &gt; 0"/>
-	</action-validate>
 	
 <!-- 	FILTERS -->
 	

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     
     <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
@@ -9,7 +9,7 @@
 		<panel name="main">
 			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" widget="decimal" title="Quantity"/>
-			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-materail-grid"
+			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-material-grid"
 			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
 			onChange="action-production-order-wizard-record-product"/>
 			<field name="_startDate" title="Planned start date" widget="dateTime" />

@@ -32,6 +32,7 @@ public class LeaveManagementController {
 		LeaveLine leaveLine = request.getContext().asType(LeaveLine.class);
 		leaveLine = leaveManagementService.computeQuantityAvailable(leaveLine);
 		response.setValue("quantity",leaveLine.getQuantity());
+		response.setValue("totalQuantity", leaveLine.getTotalQuantity() );
 		response.setValue("leaveManagementList",leaveLine.getLeaveManagementList());
 	}
 }

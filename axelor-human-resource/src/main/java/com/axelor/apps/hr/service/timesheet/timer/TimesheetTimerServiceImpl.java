@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.timesheet.timer;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -40,7 +41,7 @@ import com.google.inject.persist.Transactional;
 
 public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected EventService eventService;
 	protected GeneralService generalService;

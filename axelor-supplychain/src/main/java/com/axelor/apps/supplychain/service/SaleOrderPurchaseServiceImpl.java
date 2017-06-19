@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderPurchaseServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;

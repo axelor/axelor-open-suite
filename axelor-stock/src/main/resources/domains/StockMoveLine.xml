@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -18,7 +18,7 @@
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr."/>
     
-    <integer name="accordanceSelect" title="Accordance" selection="stock.move.line.accordance.select"/>
+    <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
     
 <!--     TODO a deplacer dans Supplier management -->
     <decimal name="shippedQty" title="Shipped qty"/>

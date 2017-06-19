@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -72,7 +75,7 @@ public class OperationOrderController {
 	protected WeeklyPlanningService weeklyPlanningService;
 	
 
-	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //
@@ -132,7 +135,11 @@ public class OperationOrderController {
 	
 	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		
+		if (operationOrder.getManufOrder() != null
+				&& operationOrder.getManufOrder().getStatusSelect() <
+				IManufOrder.STATUS_PLANNED) {
+		    return;
+		}
 		operationOrder = operationOrderWorkflowService.plan(operationOrderRepo.find(operationOrder.getId()));
 		
 		response.setReload(true);
@@ -383,7 +390,7 @@ public class OperationOrderController {
 	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		operationOrder =operationOrderRepo.find(operationOrder.getId());
-		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 		
 	}

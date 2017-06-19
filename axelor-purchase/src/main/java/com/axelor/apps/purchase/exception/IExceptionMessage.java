@@ -35,7 +35,7 @@ public interface IExceptionMessage {
 	/**
 	 * Purchase config service
 	 */
-	static final public String PURCHASE_CONFIG_1 = /*$$(*/ "%s :\n You must configure Purchase module for the company %s" /*)*/;
+	static final public String PURCHASE_CONFIG_1 = /*$$(*/ "%s : You must configure Purchase module for the company %s" /*)*/;
 
 	/**
 	 * Merge purchase order

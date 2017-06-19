@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -13,6 +13,7 @@
 	
  	<many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
+    <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>
 	
 	<!-- PAGE Compte Client -->
     <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
@@ -23,8 +24,9 @@
 	<!--  PAGE Relance -->
 	<one-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" mappedBy="accountingSituation" title="Reminder"/>
 	
-	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
-	
+	<many-to-one name="companyInBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for in payment mode"/>
+	<many-to-one name="companyOutBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for out payment mode"/>
+
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	
 	<string name="name">

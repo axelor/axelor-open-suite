@@ -2,9 +2,9 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-base"
-	version "4.0.1"
+	version "4.1.0"
 	title "Axelor :: Base"
-	
+
 	removable false
 
 	module "modules:axelor-message"
@@ -13,9 +13,10 @@ module {
 dependencies {
 	compile "commons-validator:commons-validator:1.4.0"
 	compile "org.apache.commons:commons-lang3:3.1"
-	compile "org.bouncycastle:bcprov-jdk15on:1.47"
+	compile "org.bouncycastle:bcprov-jdk14:1.38"
 	compile "org.mnode.ical4j:ical4j:1.0.6"
 	compile "org.mnode.ical4j:ical4j-extensions:0.9.2"
 	compile "org.mnode.ical4j:ical4j-connector:0.9.4.3"
-	compile "net.sourceforge.barbecue:barbecue:1.5-beta1"
+	compile "com.google.zxing:core:3.3.0"
+	compile 'org.iban4j:iban4j:3.2.1'
 }

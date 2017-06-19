@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,7 +48,7 @@ import com.google.inject.persist.Transactional;
 
 public class MoveToolService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineService moveLineService;
 	protected MoveLineRepository moveLineRepository;
@@ -76,11 +77,6 @@ public class MoveToolService {
 		else  {
 			return false;
 		}
-	}
-
-
-	public boolean toDoConsolidate()  {
-		return generalService.getGeneral().getIsInvoiceMoveConsolidated();
 	}
 
 
@@ -332,15 +328,10 @@ public class MoveToolService {
 
 			boolean isMinus = this.isMinus(invoice);
 
-			log.debug("Methode 1 : debut"); //TODO
 			Beans.get(InvoiceRepository.class).save(invoice);
-			log.debug("Methode 1 : milieu");
-			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
-			log.debug("Methode 1 : fin");
 
-			log.debug("Methode 2 : debut");
+			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
 //			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
-			log.debug("Methode 2 : fin");
 
 			if(moveLine != null)  {
 				inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());

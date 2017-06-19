@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="move-template-line-grid" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
         <field name="moveTemplate" form-view="move-template-form" grid-view="move-template-grid"/>
@@ -38,7 +38,7 @@
     </action-validate>
     
     <action-record name="action-template-move-line-set-percent" model="com.axelor.apps.account.db.MoveTemplateLine">
-    	<field name="percent" expr="eval:0" />
+    	<field name="percentage" expr="eval: 0" />
     </action-record>
     
     

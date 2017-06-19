@@ -75,9 +75,9 @@ public class MoveAdjustementService {
 
 		BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
 
-		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null);
+		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, account, debitAmountRemaining, false, today, 1, null);
@@ -111,9 +111,9 @@ public class MoveAdjustementService {
 		BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null);
+		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(
@@ -153,10 +153,10 @@ public class MoveAdjustementService {
 		Company company = debitMoveLineToReconcile.getMove().getCompany();
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 		// Move
-		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null);
+		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partnerCredit, creditMoveLineToReconcile.getAccount(), 
 				amount, true, today, 1, null);

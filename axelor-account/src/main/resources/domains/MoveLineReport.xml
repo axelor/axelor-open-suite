@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -24,6 +24,7 @@
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status" selection="iaccount.move.line.report.status.select" readonly="true" default="1"/>
@@ -46,8 +47,10 @@
 		public static final int REPORT_VAT_STATEMENT = 12;
 		public static final int REPORT_PAYMENT_DIFFERENCES = 13;
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
+		public static final int REPORT_ANALYTIC_BALANCE = 2000;
 		
-		// EXPORT TYPE SELECT	
+		// EXPORT TYPE SELECT
+		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1000; 
 		public static final int EXPORT_SALES = 1006;
 		public static final int EXPORT_REFUNDS = 1007;
 		public static final int EXPORT_TREASURY = 1008;

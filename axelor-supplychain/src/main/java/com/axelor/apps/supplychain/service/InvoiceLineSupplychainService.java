@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -32,9 +32,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineService  {
 	
 	@Inject
 	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
-			GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService, ProductService productService)  {
+			GeneralService generalService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
 		
-		super(accountManagementService, currencyService, priceListService, generalService, analyticDistributionLineService, productService);
+		super(accountManagementService, currencyService, priceListService, generalService, analyticMoveLineService, productService);
 		
 	}
 	

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
     <grid name="analytic-distribution-template-grid" title="Analytic distribution templates" model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
        <field name="name"/>
     </grid>
     
     <form name="analytic-distribution-template-form" title="Analytic distribution template" model="com.axelor.apps.account.db.AnalyticDistributionTemplate"  
-    	onSave="action-analytic-dist-template-validate-tot-percentage">
+    	onSave="action-analytic-dist-template-method-validate-tot-percentage">
         <panel name="main" >
 	        <field name="name"/>
         </panel>      
-        <panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-model-grid" form-view="analytic-distribution-line-model-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+        <panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     </form>
     
     <action-method name="action-analytic-dist-template-method-validate-tot-percentage">

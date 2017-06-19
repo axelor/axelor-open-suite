@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="account-management-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement">
     	<field name="typeSelect" />
@@ -24,10 +24,10 @@
 	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"  
 	onNew="action-account-management-record-product,action-account-management-attrs-hide-sale" onLoad="action-account-management-attrs-hide-sale" width="large">
 		<panel name="main">
-			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
+			<field name="typeSelect" hidden="true"/>
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common" grid-view="company-grid"/>
-		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'charge'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
 		</panel>
 		<panel name="taxPage" title="Tax">
@@ -37,16 +37,16 @@
 	</form>
 	
 	<form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"    
-	onNew="action-account-management-record-default" onLoad="action-account-management-attrs-type" width="large">
+	onNew="action-account-management-record-default" width="large">
 		<panel name="main">
-			<field name="typeSelect" onChange="action-account-management-attrs-type"/>
+			<field name="typeSelect"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-account-management-onchange-common" form-view="company-form" grid-view="company-grid"/>
 			<panel colSpan="12" showIf="typeSelect == 1">
-				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'charge'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'income'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 			</panel>
 			<panel colSpan="12" showIf="typeSelect == 3">
-				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 			</panel>
 			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
 		</panel>
@@ -61,8 +61,9 @@
 		</panel>
 		
 		<panel name="paymentModePage" showIf="typeSelect == 3" title="Payment mode">
-		  <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-model-grid" />
+		  <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" />
 		  <field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form" grid-view="journal-grid"/>
+		  <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		  <field name="sequence" domain="self.company = :company" canNew="true" form-view="sequence-form" grid-view="sequence-grid"/>
 		</panel>
 	</form>
@@ -76,12 +77,6 @@
     
 	<action-record name="action-account-management-record-product" model="com.axelor.apps.account.db.AccountManagement">
         <field name="typeSelect" expr="eval: 1"/>
-        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-    </action-record>
-    
-	<action-record name="action-account-management-record-tax" model="com.axelor.apps.account.db.AccountManagement">
-        <field name="typeSelect" expr="eval: 2"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -50,7 +51,7 @@ import com.google.inject.persist.Transactional;
 
 public class AccountCustomerService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected AccountingSituationService  accountingSituationService;
 	protected AccountingSituationRepository accSituationRepo;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
     	<toolbar>
@@ -214,18 +214,6 @@
     	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
     	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
     </action-record>
-    
-    <action-record name="action-partner-record-normalize-fixed-phone-number" model="com.axelor.apps.base.db.Partner">
-		<field name="fixedPhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fixedPhone)"/>
-	</action-record>
-
-	<action-record name="action-partner-record-normalize-fax-phone-number" model="com.axelor.apps.base.db.Partner">
-		<field name="fax" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fax)"/>
-	</action-record>
-
-	<action-record name="action-partner-record-normalize-mobile-phone-number" model="com.axelor.apps.base.db.Partner">
-		<field name="mobilePhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(mobilePhone)"/>
-	</action-record>
     
    	<action-attrs name="action-lead-attrs-readonly-other-address">
    		<attribute name="readonly" for="otherAddress" expr="isCopyAddress"/>

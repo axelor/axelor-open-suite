@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,20 +53,6 @@ public class ManufOrderWorkflowService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(ManufOrder manufOrder)  {
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			OperationOrder operationOrderPriority = operationOrderRepo.all().filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
-			
-			List<OperationOrder> operationOrderList = (List<OperationOrder>)operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
-			
-			for(OperationOrder operationOrder : operationOrderList)  {
-				
-				operationOrderWorkflowService.start(operationOrder);
-				
-			}
-			
-		}
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		

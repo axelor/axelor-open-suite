@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105" 
@@ -93,17 +93,6 @@
 	</action-view>
 
 <!-- ADMINISTRATION -->
-
-
-	<menuitem name="admin-root-batch-purchase" parent="admin-root-batch"
-		title="Purchase batches" action="admin.root.batch.purchase" />
-
-	<action-view name="admin.root.batch.purchase" title="Purchase batches"
-		model="com.axelor.apps.purchase.db.PurchaseBatch" >
-		<view type="grid" name="purchase-batch-grid"/>
-		<view type="form" name="purchase-batch-form"/>
-	</action-view>
-	
 	
 	<menuitem name="admin-root-conf-purchase-config" parent="admin-root-conf"
 		title="Purchase configurations" action="admin.root.conf.purchase.config" />

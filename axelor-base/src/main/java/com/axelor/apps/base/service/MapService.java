@@ -22,6 +22,7 @@ import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.Node;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -53,13 +54,12 @@ public class MapService {
 	@Inject
 	protected GeneralService generalService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public JSONObject geocodeGoogle(String qString) {
 		if(qString == null){
 			return null;
 		}
-		Map<String,Object> response = new HashMap<String,Object>();
 		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
 		// TODO inject the rest client, or better, run it in the browser
@@ -152,6 +152,7 @@ public class MapService {
 	}
 
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public HashMap<String,Object> getMapOsm(String qString){
 		HashMap<String,Object> result = new HashMap<String,Object>();
 		try {
@@ -223,6 +224,7 @@ public class MapService {
 			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon;
 	}
 
+	@SuppressWarnings("unchecked")
 	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
 		LOG.debug("departureString = {}", dString);
 		LOG.debug("arrivalString = {}", aString);

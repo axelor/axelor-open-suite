@@ -91,7 +91,8 @@ public class MapRest {
 		}				
 		
 		mainNode.put("status", 0);
-		mainNode.put("data", arrayNode);
+		mainNode.set("data", arrayNode);
+		
 		return mainNode;
 	}	
 }

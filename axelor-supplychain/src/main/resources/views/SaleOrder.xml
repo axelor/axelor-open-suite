@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
-	onNew="action-group-supplychain-saleorder-onnew" onSave="action-sale-order-method-advance-payment-change"
+	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-supplychain-saleorder-onload">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
@@ -29,42 +29,48 @@
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
-	<action-view name="action-sale-order-view-select-supplier-partner" title="Confirm Purchase order generation" model="com.axelor.apps.sale.db.SaleOrder">
-	  	<view type="form" name="sale-order-generate-po-select-supplierpartner-form"/>
-	  	<view-param name="popup" value="reload"/>
-	  	<view-param name="show-toolbar" value="false"/>
-	  	<view-param name="show-confirm" value="false" />
-      	<view-param name="popup-save" value="false"/>
-	  	<view-param name="forceEdit" value="true" />
-	  	<context name="_showRecord" expr="eval: __this__.id" />
-	</action-view>
-	
 	<action-group name="action-group-supplychain-saleorder-onnew">
 		<action name="action-sale-order-record-default"/>
+		<action name="action-sale-order-record-payment-mode"/>
 		<action name="action-sale-order-record-company-configuration"/>
 		<action name="action-supplychain-sale-order-method-get-location"/>
 		<action name="action-sale-order-record-currency"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-record-in-ati"/>
 		<action name="action-sale-order-attrs-in-ati"/>
+		<action name="action-sale-order-attrs-hidden-bank-details"/>
+		<action name="action-sale-order-method-fill-company-bank-details"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-		<action name="action-sale-order-attrs-validated-read-only"/>
 		<action name="action-partner-attrs-hide-contact-partner" />
 		<action name="action-sale-order-attrs-in-ati"/>
-		<action name="action-sale-order-method-update-timetable"/>
+		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="save"/>
 	</action-group>
-	
-	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable"/>
+
+	<action-group name="action-so-group-domain-company-bank-details" id="supplychain-so-action-group-bank-details-domain">
+		<action name="action-invoice-attrs-domain-company-bank-details"/>
+	</action-group>
+
+	<action-method name="action-sale-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillCompanyBankDetails"/>
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
+    
+    
+    <!--   azeaeaeaeae -->
+
+    <action-group name="action-supplychain-sale-order-group-generate-invoice">
+    	<action name="action-supplychain-sale-order-method-generate-invoice"/>
+    </action-group>
+    
+    <!--   azeaeaeaeae -->
     
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
@@ -83,7 +89,7 @@
 	</action-method>
 	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.general.getManageCustomerCredit()"/>
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder"/>
 	</action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
@@ -92,6 +98,11 @@
 	
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="supplierPartnerSelect" expr="eval:__repo__.of(Partner).find(Long.valueOf(supplierPartnerId))"/>
+	</action-record>
+
+	<action-record name="action-sale-order-record-payment-mode" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
 	
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	

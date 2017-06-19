@@ -17,8 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
-import org.apache.commons.validator.routines.checkdigit.IBANCheckDigit;
-
+import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -26,6 +25,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import org.iban4j.IbanFormatException;
+import org.iban4j.IbanUtil;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
 
 public class BankDetailsController {
 
@@ -33,22 +36,20 @@ public class BankDetailsController {
 	private BankDetailsService bds;
 	
 	public void onChangeIban(ActionRequest request,ActionResponse response) {
-		
 		BankDetails bankDetails = request.getContext().asType(BankDetails.class);
 		
-		if(bankDetails.getIban() != null) {
-			if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
-				response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
-				response.setColor("iban", "#FF0000");
-			}
-			else{
+		if(bankDetails.getIban() != null && bankDetails.getBank().getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+			try {
+				IbanUtil.validate(bankDetails.getIban());
+
 				bankDetails = bds.detailsIban(bankDetails);
 				response.setValue("bankCode", bankDetails.getBankCode());
 				response.setValue("sortCode", bankDetails.getSortCode());
 				response.setValue("accountNbr", bankDetails.getAccountNbr());
 				response.setValue("bbanKey", bankDetails.getBbanKey());
-				response.setValue("countryCode", bankDetails.getCountryCode());
-				response.setValue("bic", bankDetails.getBic());				
+			} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
+				response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
+				response.setColor("iban", "#FF0000");
 			}
 		}
 	}

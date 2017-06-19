@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -31,8 +32,10 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -49,7 +52,7 @@ import com.google.inject.persist.Transactional;
 
 public class InterbankPaymentOrderImportService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PaymentVoucherCreateService paymentVoucherCreateService;
 	protected CfonbImportService cfonbImportService;
@@ -110,7 +113,7 @@ public class InterbankPaymentOrderImportService {
 	}
 
 
-	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode)  {
+	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode) throws AxelorException  {
 		log.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}",
 				new Object[]{invoice.getPartner().getName(),invoice.getInvoiceId(),paymentMode.getName()});
 
@@ -118,18 +121,21 @@ public class InterbankPaymentOrderImportService {
 
 		BankDetails bankDetails = bankDetailsService.createBankDetails( //TODO
 				this.getAccountNbr(payment[2]),
-				"",
 				this.getBankCode(payment[2]),
 				payment[3],
-				"",
-				"",
+				null,
 				"",
 				partner,
 				this.getSortCode(payment[2]));
 
 		partner.getBankDetailsList().add(bankDetails);
 
-		partner.setPaymentMode(paymentMode);
+		if (InvoiceToolService.isOutPayment(invoice)) {
+			partner.setOutPaymentMode(paymentMode);
+		} else {
+			partner.setInPaymentMode(paymentMode);
+		}
+		
 		partnerRepo.save(partner);
 
 	}

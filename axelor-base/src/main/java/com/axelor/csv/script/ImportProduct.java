@@ -18,7 +18,7 @@
 package com.axelor.csv.script;
 
 import java.io.File;
-import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -28,14 +28,14 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ImportProduct {
 	
-	private final Logger LOG = LoggerFactory.getLogger(getClass());
+	private final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	ProductService productService;
@@ -51,18 +51,20 @@ public class ImportProduct {
 		assert bean instanceof Product;
 		
 		Product product = (Product) bean;
-		
-		final Path path = (Path) values.get("__path__");
 		String fileName = (String) values.get("picture_fileName");
-		if(Strings.isNullOrEmpty((fileName)))  {  return bean;  }
 		
-	    final File image = path.resolve(fileName).toFile(); 
-
-		try {
-			final MetaFile metaFile = metaFiles.upload(image);
-			product.setPicture(metaFile);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!StringUtils.isEmpty(fileName)) {
+			final Path path = (Path) values.get("__path__");
+			
+			try {
+				final File image = path.resolve(fileName).toFile();
+				if(image != null && image.isFile()) {
+					final MetaFile metaFile = metaFiles.upload(image);
+					product.setPicture(metaFile);
+				}
+			} catch (Exception e) {
+				LOG.error("Error when importing product picture : {}", e);
+			}
 		}
 		
 		return productRepo.save(product);

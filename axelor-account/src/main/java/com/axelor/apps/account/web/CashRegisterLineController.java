@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.repo.CashRegisterLineRepository;
 import com.axelor.apps.account.service.CashRegisterLineService;
-import com.axelor.apps.message.db.Message;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -40,7 +39,7 @@ public class CashRegisterLineController {
 		cashRegisterLine = cashRegisterLineRepo.find(cashRegisterLine.getId());
 		
 		try  {
-			Message message = cashRegisterLineService.closeCashRegister(cashRegisterLine);
+			cashRegisterLineService.closeCashRegister(cashRegisterLine);
 //			Beans.get(MailService.class).generatePdfMail(mail);
 			response.setReload(true);
 		}

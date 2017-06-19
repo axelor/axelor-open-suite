@@ -18,14 +18,16 @@
 package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.service.ExpenseProjectService;
+import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
+import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
@@ -38,8 +40,10 @@ public class BusinessProjectModule extends AxelorModule{
 	    	 bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
 	    	 bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
 	    	 bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
-	    	 bind(ExpenseService.class).to(ExpenseProjectService.class);
+	    	 bind(ExpenseServiceImpl.class).to(ExpenseServiceProjectImpl.class);
 	    	 bind(ProjectTaskService.class).to(ProjectTaskBusinessService.class);
 	    	 bind(InvoicingProjectRepository.class).to(InvoicingProjectManagementRepository.class);
+	    	 //bind(InvoiceServiceImpl.class).to(InvoiceServiceProjectImpl.class);
+	    	 
 	    }
 }

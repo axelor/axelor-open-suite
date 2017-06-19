@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
@@ -38,7 +39,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
-import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.openssl.PEMReader;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ import com.google.inject.persist.Transactional;
 
 public class PayboxService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PayboxConfigService payboxConfigService;
 	protected PartnerService partnerService;
@@ -436,9 +437,9 @@ public class PayboxService {
      */
      private PublicKey getPubKey(String pubKeyPath) throws Exception  {
 
- 		PemReader reader = new PemReader(new FileReader(pubKeyPath));
+ 		PEMReader reader = new PEMReader(new FileReader(pubKeyPath));
 
- 		byte[] pubKey = reader.readPemObject().getContent();
+ 		byte[] pubKey = ((X509EncodedKeySpec)reader.readObject()).getEncoded();
 
  		reader.close();
 

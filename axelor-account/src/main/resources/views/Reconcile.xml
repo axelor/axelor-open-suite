@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
     	<field name="reconcileSeq"/>
@@ -10,6 +10,7 @@
         <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
         <field name="amount" aggregate="sum"/>
+         <field name="reconciliationDate"/>
         <field name="statusSelect"/>
     </grid>
 
@@ -18,6 +19,7 @@
         <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="amount" aggregate="sum"/>
+         <field name="reconciliationDate"/>
         <field name="statusSelect"/>
     </grid>
 
@@ -33,11 +35,12 @@
 		<panel sidebar="true" name="info" title="Info">
 		  <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 		  <field name="statusSelect"/>
+		  <field name="reconciliationDate"/>
  		  <field name="reconcileSeq" colSpan="12" readonly="true"/>
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions">
-			<button name="reconcile" title="Reconcile" showIf="statusSelect == 1"   onClick="save,action-reconcile-method-reconcile"/>
+    		<button name="reconcile" title="Reconcile" showIf="statusSelect == 1 || statusSelect == 3 " onClick="save,action-reconcile-method-reconcile"/>
 			<button name="unreconcile" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
 		</panel>
 	  

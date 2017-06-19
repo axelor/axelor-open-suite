@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 
 public class LocationController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private LocationRepository locationRepo;
@@ -62,6 +63,7 @@ public class LocationController {
 		}
 	}
 	
+
 	/**
 	 * Method that generate inventory as a pdf
 	 *

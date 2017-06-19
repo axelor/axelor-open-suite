@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -40,14 +40,10 @@ import com.google.inject.Inject;
 
 public class ProjectTaskController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
 	@Inject
 	private ProjectTaskService projectTaskService;
-	
-	@Inject
-	private GeneralService generalService;
 	
 	public void printProjectTask(ActionRequest request,ActionResponse response) throws AxelorException  {
 
@@ -94,7 +90,7 @@ public class ProjectTaskController {
 
 		BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
 
-		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration,generalService.getGeneral().getDailyWorkHours(),false);
+		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
 
 		response.setValue("duration", duration);
 		response.setValue("$visibleDuration", visibleDuration);

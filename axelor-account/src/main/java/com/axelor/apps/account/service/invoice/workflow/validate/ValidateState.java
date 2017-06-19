@@ -19,10 +19,15 @@ package com.axelor.apps.account.service.invoice.workflow.validate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class ValidateState extends WorkflowInvoice {
 
@@ -40,6 +45,11 @@ public class ValidateState extends WorkflowInvoice {
 
 	@Override
 	public void process( ) throws AxelorException {
+
+		if ((InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
+		 || (!InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
+			throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_VALIDATE_1), IException.INCONSISTENCY);
+		}
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );

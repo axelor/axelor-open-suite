@@ -34,4 +34,5 @@ public interface IExceptionMessage {
 	static final String INVOICING_PROJECT_PROJECT_TASK_COMPANY = /*$$(*/ "You haven't select a company on the main project"/*)*/ ;
 	static final String SALE_ORDER_NO_PROJECT = /*$$(*/ "No Project selected"/*)*/ ;
 	static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks"/*)*/ ;
+	static final String INVOICING_PROJECT_GENERATION = /*$$(*/ "Invoicing project generated"/*)*/ ;
 }

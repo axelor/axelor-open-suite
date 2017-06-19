@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,7 +39,7 @@ import com.beust.jcommander.internal.Maps;
 
 public class ReportSettings {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public static String FORMAT_PDF = "pdf";
 	public static String FORMAT_XLS = "xls";
@@ -70,7 +71,12 @@ public class ReportSettings {
 		
 	}
 	
-
+	/**
+	 * This method generate the Birt report output.
+	 * @return
+	 * 		The ReportSettings instance.
+	 * @throws AxelorException
+	 */
 	public ReportSettings generate() throws AxelorException  {
 		
 		this.computeFileName();
@@ -80,6 +86,11 @@ public class ReportSettings {
         
 	}
 	
+	/**
+	 * The method get the generated report file link.
+	 * @return
+	 * 		The generated report file link.
+	 */
 	public String getFileLink()  {
 		
 		if(output == null)  {  return null;  }
@@ -92,10 +103,17 @@ public class ReportSettings {
 		
 	}
 	
+	public String getOutputName()  {
+		return outputName;
+	}
+	
+	/**
+	 * This method get the generated report file.
+	 * @return
+	 * 		The generated report file.
+	 */
 	public File getFile()  {
-		
 		return output;
-		
 	}
 	
 	protected void attach() throws FileNotFoundException, IOException  {
@@ -123,6 +141,21 @@ public class ReportSettings {
 		
 	}
 	
+	
+	/**
+	 * This method can be use to define a specific report output format. The default format is PDF.
+	 * @param format
+	 * 		The ouput format
+	 * 		<p><ul>
+	 * 		<li>FORMAT_PDF = "pdf"
+	 * 		<li>FORMAT_XLS = "xls"
+	 * 		<li>FORMAT_DOC = "doc"
+	 * 		<li>FORMAT_HTML = "html"
+	 * 		<li>Or any value supported by Birt
+	 * 		</ul><p>
+	 * @return
+	 * 		The ReportSettings instance.
+	 */
 	public ReportSettings addFormat(String format)  {
 		
 		if(format != null)  {
@@ -133,6 +166,13 @@ public class ReportSettings {
 		
 	}
 	
+	/**
+	 * Method that link the generated report as attachment to the model passed in parameter
+	 * @param model
+	 * 		An Axelor Model
+	 * @return
+	 * 		The ReportSettings instance
+	 */
 	public ReportSettings toAttach(Model model)  {
 		
 		this.model = Objects.requireNonNull(model);
@@ -142,6 +182,15 @@ public class ReportSettings {
 		
 	}
 
+	/**
+	 * This method is use to pass a parameter to the Birt report.
+	 * @param param
+	 * 		A string key.
+	 * @param value
+	 * 		An object value. The type of value must be a supported type per the Birt report. 
+	 * @return
+	 * 		The ReportSettings instance.
+	 */
 	public ReportSettings addParam(String param, Object value)  {
 		
 		this.params.put(param, value);

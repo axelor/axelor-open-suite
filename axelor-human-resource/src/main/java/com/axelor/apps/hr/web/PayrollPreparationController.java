@@ -17,13 +17,16 @@
  */
 package com.axelor.apps.hr.web;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
+import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
+import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -37,8 +40,11 @@ public class PayrollPreparationController {
 	protected PayrollPreparationService payrollPreparationService;
 	
 	@Inject
+	protected PayrollPreparationRepository payrollPreparationRepo;
+	
+	@Inject
 	protected PayrollLeaveRepository payrollLeaveRepo;
-
+	
 	public void generateFromEmploymentContract(ActionRequest request, ActionResponse response){
 
 		PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
@@ -55,11 +61,14 @@ public class PayrollPreparationController {
 		response.setValue("extraHoursLineList",payrollPreparation.getExtraHoursLineList());
 		response.setValue("$payrollLeavesList", payrollLeaveList);
 		response.setValue("duration",payrollPreparation.getDuration());
-		response.setValue("duration",payrollPreparation.getDuration());
+		response.setValue("leaveDuration",payrollPreparation.getLeaveDuration());
 		response.setValue("expenseAmount",payrollPreparation.getExpenseAmount());
 		response.setValue("expenseList",payrollPreparation.getExpenseList());
 		response.setValue("otherCostsEmployeeSet",payrollPreparation.getEmploymentContract().getOtherCostsEmployeeSet());
 		response.setValue("annualGrossSalary",payrollPreparation.getEmploymentContract().getAnnualGrossSalary());
+		response.setValue("employeeBonusMgtLineList", payrollPreparation.getEmployeeBonusMgtLineList());
+		response.setValue("lunchVoucherNumber", payrollPreparation.getLunchVoucherNumber());
+		response.setValue("lunchVoucherMgtLineList", payrollPreparation.getLunchVoucherMgtLineList());
 	}
 	
 	public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -69,4 +78,20 @@ public class PayrollPreparationController {
 		
 		response.setValue("$payrollLeavesList", payrollLeaveList);
 	}
+	
+	
+	public void exportPayrollPreparation(ActionRequest request, ActionResponse response) throws IOException, AxelorException{
+		
+		PayrollPreparation payrollPreparation = payrollPreparationRepo.find( request.getContext().asType(PayrollPreparation.class).getId() );
+		
+		if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD){
+			response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
+		}else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION){
+			response.setExportFile( payrollPreparationService.exportMeilleureGestionPayrollPreparation(payrollPreparation) );
+		}
+		
+		response.setReload(true);
+		
+	}
+	
 }

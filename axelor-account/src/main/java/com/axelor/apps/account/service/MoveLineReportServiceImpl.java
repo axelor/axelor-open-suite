@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ import com.google.inject.persist.Transactional;
 
 public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineReportRepository moveLineReportRepo;
 
@@ -76,6 +77,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException  {
 
 		this.buildQuery(moveLineReport);
@@ -176,15 +178,15 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		
 		// FOR EXPORT ONLY :
 		
-		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_SALES)  {
+		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = ?%d))", moveLineReport);
 		}
 
-		if(moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_SALES)  {
+		if(moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("self.move.journal.notExportOk = false ");
 		}
 		
-		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_SALES)  {
+		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("self.move.journal.type = ?%d", this.getJournalType(moveLineReport));
 		}
 

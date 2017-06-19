@@ -45,6 +45,7 @@ public class OpportunityController {
 	@Inject
 	private OpportunityService opportunityService;
 	
+	@SuppressWarnings("rawtypes")
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
 		
 		if(request.getContext().get("id") != null){

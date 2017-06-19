@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -48,7 +49,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected CurrencyService currencyService;
@@ -95,7 +96,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		
 		BigDecimal price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), purchaseOrder);
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
 			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
@@ -111,7 +112,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		
 		BigDecimal price = this.convertUnitPrice(product, saleTaxLine, product.getSalePrice(), purchaseOrder);
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getSaleCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
 			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
@@ -125,7 +126,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		price = this.convertUnitPrice(product, saleTaxLine, price, purchaseOrder);
 		price = price.multiply(product.getManagPriceCoef());
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getSaleCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
 				.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
@@ -151,7 +152,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	@Override
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}

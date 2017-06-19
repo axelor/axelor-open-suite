@@ -17,21 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -41,12 +27,8 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -54,11 +36,19 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class InvoiceGenerator  {
 	
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected JournalService journalService;
 
@@ -77,6 +67,7 @@ public abstract class InvoiceGenerator  {
 	protected String externalReference;
 	protected Boolean inAti;
 	protected BankDetails companyBankDetails;
+	protected static int DEFAULT_INVOICE_COPY = 1;
 
 	protected InvoiceGenerator(int operationType, Company company, PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, Boolean inAti, 
@@ -168,7 +159,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setPartner(partner);
 
 		if(paymentCondition == null)  {
-			paymentCondition = partner.getPaymentCondition();
+			paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		}
 		if(paymentCondition == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
@@ -176,7 +167,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setPaymentCondition(paymentCondition);
 
 		if(paymentMode == null)  {
-			paymentMode = partner.getPaymentMode();
+			paymentMode = InvoiceToolService.getPaymentMode(invoice);
 		}
 		if(paymentMode == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
@@ -201,10 +192,6 @@ public abstract class InvoiceGenerator  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 		}
 		invoice.setCurrency(currency);
-
-		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
-
-		invoice.setJournal(journalService.getJournal(invoice));
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 
@@ -246,13 +233,25 @@ public abstract class InvoiceGenerator  {
 		if(companyBankDetails == null)  {
 			AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
 			if(accountingSituation != null)  {
-				companyBankDetails = accountingSituation.getCompanyBankDetails();
+				if(partner.getOutPaymentMode().equals(paymentMode)) {
+					companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+				}
+				else if (partner.getInPaymentMode().equals(paymentMode)) {
+					companyBankDetails = accountingSituation.getCompanyInBankDetails();
+				}
 			}
-			else  {
+			if(companyBankDetails == null)  {
 				companyBankDetails = company.getDefaultBankDetails();
+				List<BankDetails> allowedBDs = Beans.get(PaymentModeService.class).
+						getCompatibleBankDetailsList(paymentMode, company);
+				if (!allowedBDs.contains(companyBankDetails)) {
+				    companyBankDetails = null;
+				}
 			}
 		}
 		invoice.setCompanyBankDetails(companyBankDetails);
+		
+		invoice.setInvoicesCopySelect(getInvoiceCopy());
 		
 		initCollections(invoice);
 
@@ -261,6 +260,12 @@ public abstract class InvoiceGenerator  {
 
 
 
+	public int getInvoiceCopy() {
+		if(partner.getIsCustomer()) {
+			return partner.getInvoicesCopySelect();
+		} 
+		return DEFAULT_INVOICE_COPY;
+	}
 
 	/**
 	 * Peupler une facture.
@@ -315,7 +320,7 @@ public abstract class InvoiceGenerator  {
 
 
 	/**
-	 * Initialiser l'ensemble des listes de ligne de tva d'une facture
+	 * Initiate the list of invoice tax lines
 	 *
 	 * @param invoice
 	 */
@@ -364,14 +369,15 @@ public abstract class InvoiceGenerator  {
 
 		}
 		
+		invoice.setAmountRemaining(invoice.getInTaxTotal());
+
 		// In the invoice currency
 		invoice.setInTaxTotal(invoice.getExTaxTotal().add( invoice.getTaxTotal() ));
 
 		// In the company accounting currency
 		invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add( invoice.getCompanyTaxTotal() ));
-		
 
-		logger.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
+		logger.debug("Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
 
 	}

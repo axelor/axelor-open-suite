@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -11,6 +11,7 @@
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
+    <string name="productCode" title="Product Code"/>
     
     <decimal name="price" title="Unit price" precision="20" scale="10"/>
     <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
@@ -32,13 +33,16 @@
   	<date name="subscriptionFromDate" title="From"/>
     <date name="subscriptionToDate" title="To"/>
   	
-  	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
+  	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
     <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
     <one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="invoiceLine"/>
     
     <boolean name="isTitleLine" title="Title Line"/>
+    
+    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <string name="taxCode" readonly="true"/>
     
     <string name="name" title="Name" search="invoice,productName">
    	    <![CDATA[

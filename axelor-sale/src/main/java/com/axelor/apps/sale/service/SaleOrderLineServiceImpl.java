@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
@@ -44,7 +45,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private CurrencyService currencyService;
@@ -91,7 +92,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		BigDecimal price = this.convertUnitPrice(product, taxLine, product.getSalePrice(), saleOrder);
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getSaleCurrency(), saleOrder.getCurrency(), price, saleOrder.getCreationDate())
 			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
@@ -108,7 +109,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 	public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
@@ -118,7 +119,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		Product product = saleOrderLine.getProduct();
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}

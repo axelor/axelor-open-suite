@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -30,9 +31,16 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -54,7 +62,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private LocalDate today;
 
@@ -62,7 +70,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-
+	
+	@Inject
+	private InvoiceService invoiceService;
 
 	@Inject
 	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
@@ -226,7 +236,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Product product = saleOrderLine.getProduct();
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), 
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
 				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
 
@@ -379,8 +389,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	public void fillInLines(Invoice invoice){
 		List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-		for (InvoiceLine invoiceLine : invoiceLineList) {
-			invoiceLine.setSaleOrder(invoice.getSaleOrder());
+		if(invoiceLineList != null){
+			for (InvoiceLine invoiceLine : invoiceLineList) {
+				invoiceLine.setSaleOrder(invoice.getSaleOrder());
+			}
 		}
 	}
 
@@ -412,6 +424,70 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			return this.generateSubscriptionInvoice(subscriptionList, saleOrderLine.getSaleOrder());
 		}
 		return null;
+	}
+
+
+	@Override
+	@Transactional
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder)
+					throws AxelorException {
+		log.debug("service supplychain 1 (saleOrder) {}", saleOrder);
+		if (saleOrder != null){
+			String numSeq = "";
+			String externalRef = "";
+			
+			for (Invoice invoiceLocal : invoiceList) {
+				if (!numSeq.isEmpty()){
+					numSeq += "-";
+				}
+				if (invoiceLocal.getInternalReference() != null){
+					numSeq += invoiceLocal.getInternalReference();
+				}
+
+				if (!externalRef.isEmpty()){
+					externalRef += "|";
+				}
+				if (invoiceLocal.getExternalReference() != null){
+					externalRef += invoiceLocal.getExternalReference();
+				}
+			}
+			InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
+			Invoice invoiceMerged = invoiceGenerator.generate();
+			invoiceMerged.setExternalReference(externalRef);
+			invoiceMerged.setInternalReference(numSeq);
+			
+			if( paymentMode != null)
+				invoiceMerged.setPaymentMode(paymentMode);
+			if( paymentCondition != null)
+				invoiceMerged.setPaymentCondition(paymentCondition);
+			
+			List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
+			invoiceGenerator.populate(invoiceMerged, invoiceLines);
+			invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+			if(!generalService.getGeneral().getManageInvoicedAmountByLine()){
+				this.fillInLines(invoiceMerged);
+			}
+			else{
+				invoiceMerged.setSaleOrder(null);
+			}
+			Beans.get(InvoiceRepository.class).save(invoiceMerged);
+			invoiceService.deleteOldInvoices(invoiceList);
+			return invoiceMerged;
+		}
+		else{
+			if(!generalService.getGeneral().getManageInvoicedAmountByLine()){
+				Invoice invoiceMerged = invoiceService.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition);
+				this.fillInLines(invoiceMerged);
+				return invoiceMerged;
+			}
+			else{
+				return invoiceService.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition);
+			}
+			
+		}
+		
 	}
 
 

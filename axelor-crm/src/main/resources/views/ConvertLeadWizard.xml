@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
 	<form onNew="action-group-crm-convlead-wizard-onnew" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large">
 	  	<toolbar>
@@ -136,7 +136,7 @@
 				        <label title="Financial terms" css="label-bold"/>
 					  	<spacer/>
 				        <field name="amount" colSpan="3"/>
-				        <field name="currency" colSpan="3"/>
+				        <field name="currency" canEdit="false" colSpan="3"/>
 				        <field name="bestCase" colSpan="3"/>
 				        <field name="worstCase" colSpan="3"/>
 					    <label title="Description" css="label-bold"/>
@@ -301,11 +301,11 @@
 			<field name="fax"/>
 			
 			<panel name="address" title="Address" css="address-list">
-				<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
-				<field name="primaryCity" title="City" colSpan="4"/>
-				<field name="primaryState" title="State" colSpan="4"/>
-				<field name="primaryPostalCode" title="Postal code" colSpan="4"/>
-				<field colSpan="12" name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+				<field name="primaryAddress" title="Address" type="string" colSpan="12"/>
+				<field name="primaryCity" title="City" colSpan="4" type="string"/>
+				<field name="primaryState" title="State" colSpan="4" type="string"/>
+				<field name="primaryPostalCode" title="Postal code" colSpan="4" type="string"/>
+				<field colSpan="12" name="primaryCountry" title="Country" type="many-to-one" target="com.axelor.apps.base.db.Country" target-name="name"/>
 			</panel>
 		</panel>
 		<panel-tabs>
@@ -370,10 +370,10 @@
 		  </panel>
 		  <panel name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact">
 		    <field name="invoiceSendingFormatSelect"/>
-		    <field name="paymentMode"/>
-		    <field name="paymentCondition"/>
-		    <field name="currency"/>
-		    <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
+			<field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+			<field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+		    <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
+		    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 		    <field name="bankDetailsList" showTitle="false" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
 		  </panel>
 		  <panel name="settings" title="Settings" >
@@ -484,7 +484,7 @@
     	<field name="id" expr="eval: _lead.otherCountry.id"/>
     </action-record>
 	
-	<form   name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
+	<form name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
 	  <panel name="informations" title="Informations">
 	    <panel title="Context" colSpan="12">
 	      <field name="name"/>
@@ -496,12 +496,12 @@
 	      <field name="expectedCloseDate"/>
 	      <field name="nextStep"/>
 	      <field name="probability"/>
-	      <field name="campaign"/>
+	      <field name="campaign" type="string"/>
 	    </panel>
 	    <panel>
 	      <panel name="financialTerms" title="Financial terms" colSpan="12">
 	        <field name="amount"/>
-	        <field name="currency"/>
+	        <field name="currency" canEdit="false"/>
 	        <field name="bestCase"/>
 	        <field name="worstCase"/>
 	      </panel>

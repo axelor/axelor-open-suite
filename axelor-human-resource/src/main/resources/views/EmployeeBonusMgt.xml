@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+	<grid name="employee-bonus-mgt-grid" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusMgt" >
+		<field name="company" />
+		<field name="payPeriod" />
+		<field name="leavePeriod" />
+		<field name="employeeBonusType" />
+		<field name="baseAmount" />
+		<field name="statusSelect" />
+    </grid>
+
+    <form name="employee-bonus-mgt-form" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusMgt" onNew="action-employee-bonus-mgt-record-default">
+	    <toolbar>
+	    	<button name="print" title="Print" onClick="action-employee-bonus-mgt-method-print" />
+	    </toolbar>
+    	<panel name="main" readonlyIf="statusSelect == 2">
+    		<field name="company" required="true"/>
+    		<field name="employeeBonusType" required="true" form-view="employee-bonus-type-form" canEdit="false" canNew="false" />
+			<field name="payPeriod" required="true" />
+			<field name="leavePeriod" required="true" />
+			<field name="baseAmount" />
+        </panel>
+        <panel-related field="employeeBonusMgtLineList" title="Employee bonuses" form-view="employee-bonus-mgt-line-form" grid-view="employee-bonus-mgt-line-grid" canNew="false" />
+        <panel sidebar="true">
+	        <field name="statusSelect" />
+	        <button name="compute" title="Compute amounts" onClick="save,action-employee-bonus-mgt-method-compute"/>
+        </panel>
+    </form>
+    
+    <action-record name="action-employee-bonus-mgt-record-default" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
+    	<field name="company" expr="eval: __user__.activeCompany"/>
+    </action-record>
+    
+    <action-method name="action-employee-bonus-mgt-method-compute">
+    	<call class="com.axelor.apps.hr.web.EmployeeBonusController" method="compute"/>
+    </action-method>
+    
+    <action-method name="action-employee-bonus-mgt-method-print">
+    	<call class="com.axelor.apps.hr.web.EmployeeBonusController" method="print"/>
+    </action-method>
+    
+</object-views>

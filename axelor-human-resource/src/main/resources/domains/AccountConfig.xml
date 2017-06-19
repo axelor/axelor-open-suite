@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -9,7 +9,6 @@
   	
     <many-to-one name="expenseJournal" ref="com.axelor.apps.account.db.Journal" title="Expense Journal"/>
     
-    <many-to-one name="expenseEmployeeAccount" ref="com.axelor.apps.account.db.Account" title="Expense employee account"/>
     <many-to-one name="expenseTaxAccount" ref="com.axelor.apps.account.db.Account" title="Expense tax account"/>
 	   
   </entity>

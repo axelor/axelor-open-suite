@@ -32,7 +32,6 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class ConvertLeadWizardService {
@@ -106,6 +105,7 @@ public class ConvertLeadWizardService {
 		
 	}
 		
+	@SuppressWarnings("unchecked")
 	public Address createPrimaryAddress(Map<String, Object> context)  {
 
 		String addressL4 = (String) context.get("primaryAddress");
@@ -130,6 +130,7 @@ public class ConvertLeadWizardService {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public Address createOtherAddress(Map<String, Object> context)  {
 
 		String addressL4 = (String) context.get("otherAddress");

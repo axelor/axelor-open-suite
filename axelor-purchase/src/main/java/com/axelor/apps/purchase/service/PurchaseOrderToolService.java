@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -31,7 +32,7 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderToolService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderToolService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private CurrencyService currencyService;
@@ -60,7 +61,7 @@ public class PurchaseOrderToolService {
 	
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				purchaseOrder.getCurrency(), purchaseOrder.getSupplierPartner().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	

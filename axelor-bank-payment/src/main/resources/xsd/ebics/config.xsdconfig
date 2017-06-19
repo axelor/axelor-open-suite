@@ -1,0 +1,24 @@
+<xb:config xmlns:xb="http://xml.apache.org/xmlbeans/2004/02/xbean/config"
+	       xmlns:H000="http://www.ebics.org/H000"
+	       xmlns:H003="http://www.ebics.org/H003"
+	       xmlns:DSIG="http://www.w3.org/2000/09/xmldsig#"
+	       xmlns:S001="http://www.ebics.org/S001"
+	       >
+	       
+  <xb:namespace uri="http://www.ebics.org/H000">
+    <xb:package>org.kopi.ebics.schema.h000</xb:package>
+  </xb:namespace>
+  
+  <xb:namespace uri="http://www.ebics.org/H003">
+    <xb:package>org.kopi.ebics.schema.h003</xb:package>
+  </xb:namespace>
+  
+  <xb:namespace uri="http://www.w3.org/2000/09/xmldsig#">
+    <xb:package>org.kopi.ebics.schema.xmldsig</xb:package>
+  </xb:namespace>
+
+  <xb:namespace uri="http://www.ebics.org/S001">
+    <xb:package>org.kopi.ebics.schema.s001</xb:package>
+  </xb:namespace>
+
+</xb:config>

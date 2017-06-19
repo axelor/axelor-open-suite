@@ -18,14 +18,18 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.validator.routines.checkdigit.IBANCheckDigit;
 import org.eclipse.birt.core.exception.BirtException;
+import org.iban4j.IbanFormatException;
+import org.iban4j.IbanUtil;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +77,7 @@ public class PartnerController {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
@@ -270,11 +274,6 @@ public class PartnerController {
 		response.setValue("$emailsList",emailsList);
 	}
 	
-	public void partnerAddressListChange(ActionRequest request, ActionResponse response) {
-		LOG.debug("Called..............");
-		
-	}
-	
 	public void checkIbanValidity(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		List<BankDetails> bankDetailsList = request.getContext().asType(Partner.class).getBankDetailsList();
@@ -285,9 +284,11 @@ public class PartnerController {
 				
 				if(bankDetails.getIban() != null) {
 					LOG.debug("checking iban code : {}", bankDetails.getIban());
-					if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
+					try {
+						IbanUtil.validate(bankDetails.getIban());
+					} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
 						ibanInError.add(bankDetails.getIban());
-						}
+					}
 				}
 			}
 		}
@@ -305,5 +306,15 @@ public class PartnerController {
 	
 	public String normalizePhoneNumber(String phoneNumber){
 		return phoneNumber.replaceAll("\\s|\\.", "");
+	}
+	
+	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
+		Partner partner = request.getContext().asType(Partner.class);
+		if (partner.getId() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
+					IException.CONFIGURATION_ERROR);
+		}
+		partner = partnerRepo.find(partner.getId());
+		partnerService.convertToIndividualPartner(partner);
 	}
 }

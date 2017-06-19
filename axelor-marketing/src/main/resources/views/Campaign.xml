@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+    
+    <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
+        <field name="name"/>
+    </grid>
+    
+    <form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large">
+		<panel name="main" >
+		  <field name="name"/>
+		  <field name="stageSelect" widget="NavSelect" colSpan="12"/>
+		  <panel-related field="targetListSet" colSpan="12"/>
+		  <field name="partnerTemplate" domain="self.metaModel.name = 'Partner'" />
+		  <field name="leadTemplate" domain="self.metaModel.name = 'Lead'" />
+		  <button name="sendEmail" title="Send email" colSpan="3" onClick="action-campaign-method-send-email"/>
+		  <field name="emailLog" widget="binary-link" />
+		</panel>
+	</form>
+	
+	<action-method name="action-campaign-method-send-email">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendEmail"/>
+	</action-method>
+    
+</object-views>

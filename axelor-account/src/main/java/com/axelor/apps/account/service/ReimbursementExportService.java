@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,6 +48,26 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.xsd.pain_001_001_02.AccountIdentification3Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.AmountType2Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
+import com.axelor.apps.account.xsd.pain_001_001_02.CashAccount7;
+import com.axelor.apps.account.xsd.pain_001_001_02.CreditTransferTransactionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.CurrencyAndAmount;
+import com.axelor.apps.account.xsd.pain_001_001_02.Document;
+import com.axelor.apps.account.xsd.pain_001_001_02.FinancialInstitutionIdentification5Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.GroupHeader1;
+import com.axelor.apps.account.xsd.pain_001_001_02.Grouping1Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.ObjectFactory;
+import com.axelor.apps.account.xsd.pain_001_001_02.Pain00100102;
+import com.axelor.apps.account.xsd.pain_001_001_02.PartyIdentification8;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentIdentification1;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentInstructionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentMethod3Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentTypeInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -57,26 +78,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
-import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
-import com.axelor.apps.xsd.sepa.AmountType2Choice;
-import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
-import com.axelor.apps.xsd.sepa.CashAccount7;
-import com.axelor.apps.xsd.sepa.CreditTransferTransactionInformation1;
-import com.axelor.apps.xsd.sepa.CurrencyAndAmount;
-import com.axelor.apps.xsd.sepa.Document;
-import com.axelor.apps.xsd.sepa.FinancialInstitutionIdentification5Choice;
-import com.axelor.apps.xsd.sepa.GroupHeader1;
-import com.axelor.apps.xsd.sepa.Grouping1Code;
-import com.axelor.apps.xsd.sepa.ObjectFactory;
-import com.axelor.apps.xsd.sepa.Pain00100102;
-import com.axelor.apps.xsd.sepa.PartyIdentification8;
-import com.axelor.apps.xsd.sepa.PaymentIdentification1;
-import com.axelor.apps.xsd.sepa.PaymentInstructionInformation1;
-import com.axelor.apps.xsd.sepa.PaymentMethod3Code;
-import com.axelor.apps.xsd.sepa.PaymentTypeInformation1;
-import com.axelor.apps.xsd.sepa.RemittanceInformation1;
-import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
-import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -86,7 +87,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReimbursementExportService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;
@@ -165,11 +166,11 @@ public class ReimbursementExportService {
 				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
+//				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
 			reimbursementRepo.save(reimbursement);
-			return reimbursement;
+//			return reimbursement;
 		}
 
 		log.debug("End runReimbursementProcess");
@@ -222,7 +223,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSED);
 
 					if(first)  {
-						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
+						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 						first = false;
 					}
 					// Création d'une ligne au débit
@@ -236,7 +237,7 @@ public class ReimbursementExportService {
 
 					//Création de la réconciliation
 					Reconcile reconcile = reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining, false);
-					reconcileService.confirmReconcile(reconcile);
+					reconcileService.confirmReconcile(reconcile, true);
 				}
 			}
 			// Création de la ligne au crédit
@@ -398,7 +399,7 @@ public class ReimbursementExportService {
 
 		// BIC
 		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-		finInstnId.setBIC(bankDetails.getBic());
+		finInstnId.setBIC(bankDetails.getBank().getCode());
 
 		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 		dbtrAgt.setFinInstnId(finInstnId);
@@ -452,7 +453,7 @@ public class ReimbursementExportService {
 
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-			finInstnId.setBIC(bankDetails.getBic());
+			finInstnId.setBIC(bankDetails.getBank().getCode());
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);
@@ -515,6 +516,7 @@ public class ReimbursementExportService {
 	 * 			Un trop-perçu
 	 * @throws AxelorException
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createReimbursementInvoice(Partner partner, Company company, List<? extends MoveLine> moveLineList) throws AxelorException  {
 

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ import com.axelor.i18n.I18n;
 
 public class BatchInvoicing extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchInvoicing.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
@@ -73,12 +74,12 @@ public class BatchInvoicing extends BatchStrategy {
 
 			} catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Devis")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {
 
-				TraceBackService.trace(new Exception(String.format(I18n.get("Devis")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
 
 				incrementAnomaly();
 

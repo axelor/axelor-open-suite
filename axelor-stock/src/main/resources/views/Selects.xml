@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -43,9 +43,10 @@
 		<option value="3">Production order</option>
 	</selection>
 	
-	<selection name="stock.move.line.accordance.select">
-		<option value="1">Compliant</option>
-		<option value="2">Non compliant</option>
+	<selection name="stock.move.line.conformity.select">
+		<option value="1"></option>
+		<option value="2">Compliant</option>
+		<option value="3">Non compliant</option>
 	</selection>
 	
 </object-views>

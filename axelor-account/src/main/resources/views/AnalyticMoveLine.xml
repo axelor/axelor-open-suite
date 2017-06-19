@@ -1,40 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
     <grid name="analytic-move-line-grid" title="Analytic Move Lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
+    	<hilite if="typeSelect == 1" color="warning"/>
+    	<hilite if="typeSelect == 2" color="info"/>
+    	<hilite if="typeSelect == 3" color="success"/>
+    	<hilite if="typeSelect == 4" color="primary"/>
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
+        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="date"/>
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="amount" aggregate="sum"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="toInvoice"/>
-        <field name="invoiced"/>
+        <field name="typeSelect"/>
     </grid>
-    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project-task"
+    
+    <grid name="analytic-move-line-distribution-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis">
+        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
+        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
+        <field name="percentage"/>
+        <field name="amount"/>
+        <field name="date"/>
+        <field name="projectTask" if-module="axelor-business-project"/>
+        <field name="typeSelect"/>
+    </grid>
+    
+    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-attrs-title-project-task"
     	onLoad="action-analytic-move-line-attrs-title-project-task" width="large">
        <panel name="main" >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
+       		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
 	        <field name="date"/>
-	        <field name="product"/>
+	        <field name="percentage"/>
 	        <field name="amount"/>
-	        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-	        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-task-form" grid-view="project-task-grid"/>
-	        <field name="generalAccount" form-view="account-form" grid-view="account-grid"/>
-	        <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-	        <field name="toInvoice"/>
-			<field name="invoiced" showIf="toInvoice"/>
+	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-task-form" grid-view="project-task-grid" />
+  			<field name="account"/>
+			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
+	        <field name="typeSelect"/>
        </panel>
         
     </form>
     
-    <action-record name="action-analytic-move-line-record-currency" model="com.axelor.apps.account.db.AnalyticMoveLine">
-    	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
-    </action-record>
+    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine"  >
+        <panel name="main" >
+   	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
+	        <field name="percentage" colSpan="4" onChange="action-analytic-move-line-method-compute-amount"/>
+	        <field name="amount" colSpan="4" readonly="true"/>
+	        <field name="date" colSpan="4"/>
+	        <field name="projectTask" grid-view="project-task-grid" form-view="project-task-form" if-module="axelor-business-project"/>
+	        <field name="typeSelect"/>
+        </panel>      
+    </form>
+    
+    <action-method name="action-analytic-move-line-method-compute-amount">
+    	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="computeAmount"/>
+    </action-method>
     
     <action-attrs if-module="axelor-business-project" name="action-analytic-move-line-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>

@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
-	<form name="incl-invoice-payment-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner">
+	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
 	    <panel colSpan="12">
-	    	<field name="invoiceSendingFormatSelect"/>
-	        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
-	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
+	    	<field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
+	        <field name="invoicesCopySelect" hideIf="!isCustomer || isEmployee"/>
+	        <field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+	        <field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
+	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
-	        <field name="payerQuality"/>
-	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"/>
+	        <field name="payerQuality" hideIf="!isCustomer || isEmployee"/>
+	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" hideIf="!isCustomer"/>
 	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
-	        <panel colSpan="6">
+	        <panel colSpan="6" hideIf="isEmployee">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
         		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
 	    	</panel>
 	    </panel>
 	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
-			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
-					<field name="bankAddress" />
+                <viewer><![CDATA[
+                    <dl>
+                        <dd ng-if="!record.isDefault"> {{record.fullName}} </dd>
+                        <dd ng-if="record.isDefault"> <b>{{record.fullName}}</b> </dd>
+                    </dl>
+                ]]></viewer>
+			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner" x-show-on-new="false">
+					<field name="ownerName"/>
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
-					<field name="bic" />
+					<field name="bank" canNew="true"></field>
+					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
-					<field name="ownerName" hidden="true" />
-					<field name="ibanBic" hidden="true"/>
-					<field name="countryCode" hidden="true"/>
+					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
 					<field name="bankCode" hidden="true"/>
 					<field name="sortCode" hidden="true"/>
 					<field name="accountNbr" hidden="true"/>
@@ -46,16 +53,24 @@
 	    
 	</form>
 	
-	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	<form name="incl-customer-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+		<panel title="Customer balance" colSpan="12">
+			<field name="accountingSituationList" colSpan="12" widget="MasterDetail" title="Customer balance" hideIf="isContact"
+					grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
+					onSelect="action-account-accounting-situation-method-update-customer-account"/>
+		</panel>
 	</form>
 	
-	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	     <panel-related  field="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
+	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
+	     <panel title="Blockings" colSpan="12" hideIf="isEmployee">
+	     	<field name="blockingList" colSpan="12" widget="MasterDetail" title="Blockings" hideIf="isContact" grid-view="blocking-grid" form-view="blocking-form"/>
+	     </panel>
 	</form>
 	
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
+		<panel title="Reported balance" colSpan="12">
+			<field name="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
+		</panel>
 	</form>
 	
 	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
@@ -84,10 +99,6 @@
          </panel>
 	</form>
 	
-	<action-method name="action-create-accounting-situation" if-module="axelor-account">
-		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" />
-	</action-method>
-	
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -105,5 +116,6 @@
 	<action-method name="action-partner-method-show-client-situation" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
+
 	
 </object-views>

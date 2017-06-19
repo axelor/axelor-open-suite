@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
@@ -9,11 +9,9 @@
 		<field name="actionSelect"/>
 		<field name="company"/>
 		<field name="description"/>
-		<field name="leaveReason"/>
-		<field name="dayNumber"/>
     </grid>
  
-	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large">
+	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
 	  	<panel name="main">
 		    <field name="actionSelect"/>
 		    <field name="code"/>
@@ -21,14 +19,37 @@
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
-			    <field name="leaveReason" colSpan="4" requiredIf="actionSelect == 1"/>
+			    <field name="leaveReason" colSpan="3" onChange="action-hr-batch-record-day-number-default" requiredIf="actionSelect == 1"/>
+			    <field name="comments" colSpan="9"/>
+			    <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>
+			    <field name="useWeeklyPlanningCoef" colSpan="3"/>
+   				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect"/>
+			    <field name="startDate" colSpan="3"/>
+			    <field name="endDate" colSpan="3"/>
+		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
+				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
+			</panel>
+			<panel name="seniorityLeaveManagementPage" title="Seniority leave management page" hidden="true" showIf="actionSelect == 2">
+			    <field name="leaveReason" colSpan="4" />
 			    <field name="comments" colSpan="8"/>
-			    <field name="dayNumber" colSpan="4" requiredIf="actionSelect == 1"/>
 			    <field name="startDate" colSpan="4"/>
 			    <field name="endDate" colSpan="4"/>
-		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
-				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
-				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-leave-management"/>
+			    <field name="referentialDate" colSpan="4" />
+				<button name="seniorityLeaveManagementBatch" readonlyIf="leaveReason == null" title="Seniority leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
+			</panel>
+			<panel name="payrollPreparationGenerationPage" title="Payroll preparation generation page" hidden="true" showIf="actionSelect == 3">
+			    <field name="period" domain="self.year.company = :company" colSpan="4" />
+   				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect" colSpan="8"/>
+   			    <field name="comments" colSpan="12"/>
+		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
+				<button name="payrollPreparationGenerationBatch" readonlyIf="period == null" title="Payroll preparation generation batch" onClick="save,action-hrbatch-method-hr-batch"/>
+			</panel>
+			<panel  name="payrollPreparationExportPage" title="Payroll preparation export page" hidden="true" showIf="actionSelect == 4">
+				<field name="period" domain="self.year.company = :company" colSpan="4"/>
+				<field name="payrollPreparationExportTypeSelect" colSpan="4"/>
+				<field name="exportAlreadyExported" colSpan="4"/>
+				<spacer/>
+				<button name="payrollPreparationExportBatch" readonlyIf="period == null || payrollPreparationExportTypeSelect == null" title="Payroll preparation export batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
 			<panel name="informations" title="Informations">
 				<field name="createdOn" title="Created on"/>
@@ -39,12 +60,17 @@
 			</panel-tabs>
 	</form>
 
-
-	<action-method name="action-hrbatch-method-leave-management">
-		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionLeaveManagement"/>
+	<action-method name="action-hrbatch-method-hr-batch">
+		<call class="com.axelor.apps.hr.web.HrBatchController" method="launchHrBatch"/>
 	</action-method>
-
-
-
+	
+	<action-record name="action-hr-batch-record-default" model="com.axelor.apps.hr.db.HrBatch">
+		<field name="company" expr="eval: __user__.activeCompany"/>
+	</action-record>
+	
+	<action-record name="action-hr-batch-record-day-number-default" model="com.axelor.apps.hr.db.HrBatch">
+		<field name="dayNumber" expr="eval: leaveReason?.defaultDayNumberGain"/>
+	</action-record>
+	
 
 </object-views>

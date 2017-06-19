@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	
     <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
@@ -10,12 +10,19 @@
     	<field name="isActive"/>
     </grid>
     
+    <grid name="price-list-hist-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
+    	<field name="createdOn" title="Date"></field>
+    	<field name="title"/>
+    	<field name="typeSelect"/>
+    	<field name="isActive"/>
+    </grid>
+    
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
-	   onLoad="action-price-list-attrs-hide-estimated-price" width="large">
+	   width="large">
    		<panel name="main" >
 		    <field name="title"/>
-			<field name="typeSelect" colSpan="4" onChange="action-price-list-attrs-hide-estimated-price"/>
+			<field name="typeSelect" colSpan="4"/>
 			<field name="isActive" colSpan="2"/>
 			<field name="hideDiscount"/>
     	</panel>
@@ -28,8 +35,8 @@
 			<field name="comments" colSpan="12" height="3"/>    					
 		</panel>
 		<panel colSpan="12">
-			<panel-related field="historizedPriceLists" colSpan="12" readonly="true" form-view="historized-price-list-form" grid-view="historized-price-list-grid"/>
-			<button name="historizePriceList" hideIf="!id" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
+			<panel-related field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
+			<button name="historizePriceList" hideIf="!id || $popup()" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
    </form>
    

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
@@ -59,7 +60,7 @@ import com.google.inject.persist.Transactional;
 
 public class AccountClearanceService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveService moveService;
 	protected MoveLineService moveLineService;
@@ -68,16 +69,25 @@ public class AccountClearanceService{
 	protected ReconcileService reconcileService;
 	protected TaxService taxService;
 	protected TaxAccountService taxAccountService;
-	protected AccountClearanceRepository accountClearanceRepository;
+	protected AccountClearanceRepository accountClearanceRepo;
 	protected DateTime todayTime;
 	protected User user;
 
 	@Inject
-	public AccountClearanceService(UserService userService, GeneralService generalService) {
-
+	public AccountClearanceService(UserService userService, GeneralService generalService, MoveService moveService, MoveLineService moveLineService,
+			MoveLineRepository moveLineRepo, SequenceService sequenceService, ReconcileService reconcileService, TaxService taxService,
+			TaxAccountService taxAccountService, AccountClearanceRepository accountClearanceRepo) {
+		
 		this.todayTime = generalService.getTodayDateTime();
 		this.user = userService.getUser();
-		
+		this.moveService = moveService;
+		this.moveLineService = moveLineService;
+		this.moveLineRepo = moveLineRepo;
+		this.sequenceService = sequenceService;
+		this.reconcileService = reconcileService;
+		this.taxService = taxService;
+		this.taxAccountService = taxAccountService;
+		this.accountClearanceRepo = accountClearanceRepo;
 	}
 
 
@@ -106,7 +116,7 @@ public class AccountClearanceService{
 		if(moveLineList != null && moveLineList.size() != 0)  {
 			accountClearance.getMoveLineSet().addAll(moveLineList);
 		}
-		accountClearanceRepository.save(accountClearance);
+		accountClearanceRepo.save(accountClearance);
 	}
 
 
@@ -132,7 +142,7 @@ public class AccountClearanceService{
 		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
-		accountClearanceRepository.save(accountClearance);
+		accountClearanceRepo.save(accountClearance);
 	}
 
 
@@ -140,7 +150,7 @@ public class AccountClearanceService{
 		Partner partner = moveLine.getPartner();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
@@ -159,7 +169,7 @@ public class AccountClearanceService{
 		move.getMoveLineList().add(creditMoveLine2);
 
 		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		debitMoveLine.setAccountClearance(accountClearance);
 		creditMoveLine1.setAccountClearance(accountClearance);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -51,7 +51,7 @@
     
     <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Waste stock move"/>
     
-    <string name="wasteProdDescription" title="Description" large="true"/>
+    <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     

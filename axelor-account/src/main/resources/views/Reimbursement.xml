@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="reimbursement-grid" title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement">
     	<field name="ref"/>
         <field name="statusSelect"/>
-        <field name="total" aggregate="sum"/>
+        <field name="amountToReimburse" aggregate="sum"/>
     </grid>
     
 	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  onNew="action-reimbursement-set-default">
@@ -19,7 +19,7 @@
 		<panel name="reimbursementDetails" title="Reimbursement details">
 			<field name="amountToReimburse"/>
 			<field name="amountReimbursed"/>
-			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="bankDetails" domain="self.active = true" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 		
 		<panel name="reason" title="Reason">
@@ -37,7 +37,7 @@
 		
 		<panel sidebar="true" name="info" title="Info">
 			<field name="statusSelect"/>
-			<button name="validateReimbursement" title="Validate" onClick="save,action-group-account-reimbursement-validate,save" showIf="statusSelect == 2"/>
+			<button name="validateReimbursement" title="Validate" onClick="save,com.axelor.apps.account.web.ReimbursementController:validateReimbursement,save" showIf="statusSelect == 2"/>
 		</panel>
 	</form>
     

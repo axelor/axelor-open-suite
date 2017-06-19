@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
@@ -37,7 +38,7 @@ import com.google.inject.Inject;
 
 public class RejectImportService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected GeneralService generalService;
 	protected CfonbImportService cfonbImportService;

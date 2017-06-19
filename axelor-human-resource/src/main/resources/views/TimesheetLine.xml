@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 	<grid name="timesheet-line-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project-task" orderBy="date">
@@ -24,6 +24,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
 		<field name="comments" />
+		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 
 	<grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
@@ -48,6 +49,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
 		<field name="comments" />
+		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 
 	<form name="timesheet-line-project-form" title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" 
@@ -78,6 +80,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -94,6 +97,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 
@@ -103,16 +107,12 @@
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;"/>
+		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productSet.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productSet)&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-project-task">
 		<attribute name="domain" for="projectTask" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
 	</action-attrs>
-	
-	<action-validate name="action-timesheet-validate-date">
-		<error message="Invalid Date" if="_parent.fromDate &gt; date || (_parent.toDate &lt; date &amp;&amp; _parent.toDate != null)"/>
-	</action-validate>
 	
 	<action-attrs name="action-timesheet-line-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
@@ -137,11 +137,11 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored,user.employee.dailyWorkHours,false)"/>
+	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored,user,false)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-stored-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(visibleDuration,user.employee.dailyWorkHours,true)"/>
+	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(visibleDuration,user,true)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">
@@ -153,11 +153,11 @@
 	</action-record>
 	
 	<action-record name="action-hr-timesheet-line-record-empty-product" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="product" expr="eval:null" if="!projectTask?.productList?.contains(product)"/>
+		<field name="product" expr="eval:null" if="!projectTask?.productSet?.contains(product)"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">
-		<error message="This date is invalide, it must be included in the timesheet's period and can't be in the future" if="date != null &amp;&amp; (date &lt; _parent.fromDate || date &gt; __date__)" action="action-timesheet-line-null-date"/>
+		<error message="This date is invalide, it must be included in the timesheet's period" if="date != null &amp;&amp; (date &lt; _parent.fromDate || ( _parent.toDate != null &amp;&amp; date &gt; _parent.toDate))" action="action-timesheet-line-null-date"/>
 	</action-validate>
 	
 	<action-record name="action-timesheet-line-null-date" model="com.axelor.apps.hr.db.TimesheetLine">

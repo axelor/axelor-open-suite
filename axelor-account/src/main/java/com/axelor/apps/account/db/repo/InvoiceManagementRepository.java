@@ -39,6 +39,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setMove(null);
 		copy.setOriginalInvoice(null);
 		copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
+		copy.setAmountPaid(BigDecimal.ZERO);
 		copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		copy.setAmountRejected(BigDecimal.ZERO);
 		copy.clearBatchSet();
@@ -57,6 +58,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setCanceledPaymentSchedule(null);
 		copy.setDirectDebitAmount(BigDecimal.ZERO);
 		copy.setImportId(null);
+		copy.setPartnerAccount(null);
+		copy.setJournal(null);
 		copy.clearInvoicePaymentList();
 
 		return copy;

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountType" lang="java" cachable="true">
   
 <!--   	TODO - REPLACE PER INTEGER ... -->
-    <string name="nameSelect" title="Type" required="true" unique="true" namecolumn="true" selection="account.account.type.select"/> 
-	<string name="name" title="Label"/>
+    <string name="technicalTypeSelect" title="Technical type" required="true" selection="account.account.technical.type.select"/> 
+	<string name="name" title="Name" required="true"/>
 	
 	 <extra-code><![CDATA[
 	

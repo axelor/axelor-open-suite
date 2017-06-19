@@ -214,14 +214,14 @@ public class AccountConfigService {
 		return accountConfig.getCustomerCreditNoteJournal();
 	}
 
-	public Journal getMiscOperationJournal(AccountConfig accountConfig) throws AxelorException  {
+	public Journal getAutoMiscOpeJournal(AccountConfig accountConfig) throws AxelorException  {
 
-		if(accountConfig.getMiscOperationJournal() == null)   {
+		if(accountConfig.getAutoMiscOpeJournal() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_18),
 					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		return accountConfig.getMiscOperationJournal();
+		return accountConfig.getAutoMiscOpeJournal();
 	}
 
 	public Journal getReimbursementJournal(AccountConfig accountConfig) throws AxelorException  {
@@ -316,6 +316,17 @@ public class AccountConfigService {
 
 	}
 	
+	public Account getEmployeeAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getEmployeeAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_40),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getEmployeeAccount();
+
+	}
+	
 	public Account getAdvancePaymentAccount(AccountConfig accountConfig) throws AxelorException  {
 
 		if(accountConfig.getAdvancePaymentAccount() == null)   {
@@ -359,7 +370,6 @@ public class AccountConfigService {
 		return accountConfig.getDoubtfulCustomerAccount();
 
 	}
-
 
 	/******************************** TVA ********************************************/
 
@@ -521,9 +531,6 @@ public class AccountConfigService {
 
 	}
 	
-	
-	
-	
 	public boolean getInvoiceInAti(AccountConfig accountConfig) throws AxelorException  {
 		
 		int atiChoice = accountConfig.getInvoiceInAtiSelect();
@@ -534,6 +541,13 @@ public class AccountConfigService {
 		return false;
 	}
 	
-
+	/******************************** FEC *********************************************/
+	public String getExportFileName(AccountConfig accountConfig) throws AxelorException  {
+		if(accountConfig.getExportFileName() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_39),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return accountConfig.getExportFileName();
+	}
 
 }
