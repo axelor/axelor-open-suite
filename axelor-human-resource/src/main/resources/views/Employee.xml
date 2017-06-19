@@ -7,13 +7,13 @@
 		 <field name="hourlyRate" />
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
-		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.department" form-view="department-form" grid-view="department-grid"/>
 	</grid>
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
 		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
-		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.department" form-view="department-form" grid-view="department-grid"/>
 	</grid>
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
@@ -70,7 +70,7 @@
 					   x-bind="{{hourlyRate*dailyWorkHours}}" title="Daily cost"/>
         			<field name="product" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
         			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid"/>
-        			<field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
+        			<field name="mainEmploymentContract.department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
         			<field name="planning" colSpan="4" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
