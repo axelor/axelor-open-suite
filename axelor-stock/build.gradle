@@ -2,7 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-stock"
-	version "4.1.0"
+	version "4.1.1"
 	title "Axelor :: Stock"
 
 	removable true
