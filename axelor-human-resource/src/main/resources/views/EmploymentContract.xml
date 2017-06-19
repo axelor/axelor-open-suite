@@ -29,8 +29,8 @@
         <panel-stack>
 			<panel>
 			  <field name="employee" canSuggest="false" hideIf="$popup()" requiredIf="!$popup()"/>
-			  <field name="payCompany" canSuggest="false"/>
-			  <field name="department" />
+			  <field name="payCompany" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
+			  <field name="department" onSelect="action-employment-contract-attrs-department-domain"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>
 			  <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox" domain=":payCompany MEMBER OF self.companySet" />
 			</panel>
@@ -67,7 +67,20 @@
 			<field name="endContractDetails"/>
 		</panel>
     </form>
-	
+
+	<action-attrs name="action-employment-contract-attrs-department-domain">
+		<attribute name="domain" for="department"
+			expr="eval: &quot;self.id IN (${payCompany.companyDepartmentList.collect{it.id}.join(',')})&quot;"
+			if="payCompany != null &amp;&amp; !payCompany.companyDepartmentList.isEmpty()" />
+		<attribute name="domain" for="department" expr="self.id IN (0)"
+			if="payCompany == null || payCompany.companyDepartmentList.isEmpty()" />
+	</action-attrs>
+
+	<action-record name="action-employment-contract-paycompany-onchange"
+		model="com.axelor.apps.hr.db.EmploymentContract">
+		<field name="department" expr="eval: null" />
+	</action-record>
+
 <!--     <action-record name="action-employment-contract-record-contract-type-on-change" model="com.axelor.apps.hr.db.EmploymentContract"> -->
 <!--         <field name="duration" expr="35" if="!duration &amp;&amp; (contractTypeSelect == 1 || contractTypeSelect == 3)"/> -->
 <!--     </action-record> -->
