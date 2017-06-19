@@ -7,6 +7,7 @@
 	<entity name="AppEmployee" lang="java" cachable="true" extends="App">
 		
 		<decimal name="dailyWorkHours" title="Daily work hours"/>
+		<boolean name="advanceManagement" default="true" />
 		
 		<extra-code>
    		<![CDATA[
