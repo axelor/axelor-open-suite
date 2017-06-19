@@ -46,7 +46,6 @@
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
         			<field name="socialSecurityNumber" colSpan="4"/>
-        			<field name="kilometricAllowParam" colSpan="4"/>
       			</panel>
 	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
@@ -89,7 +88,10 @@
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
-	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
+	       	<panel name="kilometricLog" title="Kilometric log" if="__config__.app.isApp('expense')">
+				<field name="kilometricAllowParam" colSpan="12" />
+		       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" colSpan="12" />
+	       	</panel>
 	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
 	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
        	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
