@@ -46,9 +46,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected BankOrderRepository bankOrderRepo;
 	protected MoveService moveService;

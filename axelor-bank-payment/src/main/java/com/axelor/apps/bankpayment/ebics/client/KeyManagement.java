@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.ebics.client;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
@@ -60,7 +61,7 @@ public class KeyManagement {
   public KeyManagement(EbicsSession session) {
     this.session = session;
   }
-  private final Logger log = LoggerFactory.getLogger( getClass() );
+  private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
   /**
    * Sends the user's signature key (A005) to the bank.
    * After successful operation the user is in state "initialized".

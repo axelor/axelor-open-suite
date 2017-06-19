@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +33,7 @@ import com.axelor.inject.Beans;
 
 public abstract class BatchWkf extends BatchStrategy {
 
-	static final Logger LOG = LoggerFactory.getLogger(BatchWkf.class);
+	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected BatchWkf(InvoiceService invoiceService) {
 		

@@ -17,11 +17,17 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -32,7 +38,9 @@ import com.axelor.apps.stock.db.MinStockRules;
 import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -51,6 +59,15 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 
 	@Inject
 	private PurchaseOrderRepository purchaseOrderRepo;
+	
+	@Inject
+	private TemplateRepository templateRepo;
+	
+	@Inject
+	private TemplateMessageService templateMessageService;
+	
+	@Inject
+	private MessageRepository messageRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -72,9 +89,18 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
 
 			if(minStockRules.getOrderAlertSelect() ==  MinStockRulesRepository.ORDER_ALERT_ALERT)  {
-
-				//TODO
-
+				
+				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  MinStockRules.class.getName()).fetchOne();
+				try {
+					Message message = templateMessageService.generateMessage(minStockRules, template);
+					messageRepo.save(message);
+//					if (JPA.em().getTransaction().isActive()) {
+//						JPA.em().getTransaction().commit();
+//						JPA.em().getTransaction().begin();
+//					}
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
+					throw new AxelorException(e, IException.TECHNICAL);
+				}
 			}
 			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
 

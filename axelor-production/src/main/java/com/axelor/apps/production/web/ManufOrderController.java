@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 public class ManufOrderController {
 
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private ManufOrderWorkflowService manufOrderWorkflowService;

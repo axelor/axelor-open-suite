@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.tax;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 
 public class TaxInvoiceLine extends TaxGenerator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TaxInvoiceLine.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
 

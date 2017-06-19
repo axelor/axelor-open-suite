@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -86,7 +87,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReimbursementExportService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;

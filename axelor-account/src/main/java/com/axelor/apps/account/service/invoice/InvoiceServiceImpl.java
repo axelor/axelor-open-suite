@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Inject
 	protected PartnerService partnerService;
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected ValidateFactory validateFactory;
 	protected VentilateFactory ventilateFactory;

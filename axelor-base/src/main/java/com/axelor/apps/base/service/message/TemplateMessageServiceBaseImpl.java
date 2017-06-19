@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ import com.google.inject.persist.Transactional;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	public TemplateMessageServiceBaseImpl(MessageService messageService, EmailAddressRepository emailAddressRepo) {
