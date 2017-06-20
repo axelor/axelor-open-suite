@@ -26,37 +26,45 @@
 	  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 	  	</panel>
 	  	<panel-tabs>
-    <panel name="timesheetTemplates" title="Timesheet Templates">
-		<field name="timesheetMailNotification" colSpan="12"/>
-    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-    	<field name="validatedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-    	<field name="refusedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-		<field name="canceledTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-  	</panel>
-    <panel name="extraHoursTemplates" title="Extra Hours Templates">
-		<field name="extraHoursMailNotification" colSpan="12"/>
-    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-    	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-    	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-		<field name="canceledExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-  	</panel>
-    <panel name="expenseTemplates" title="Expense Templates">
-		<field name="expenseMailNotification" colSpan="12"/>
-    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-    	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-		<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-  	</panel>
-  	<panel name="leavesTemplates" title="Leaves Templates">
-		<field name="leaveMailNotification" colSpan="12"/>
-    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-		<field name="canceledLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-  	</panel>
-  	<panel title="Leave Batch rules">
-  		<panel-related field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
-  	</panel>
+	<panel name="timesheet" title="Timesheet">
+	    <panel name="timesheetTemplates" title="Timesheet Templates">
+			<field name="timesheetMailNotification" colSpan="12"/>
+	    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
+	    	<field name="validatedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
+	    	<field name="refusedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
+			<field name="canceledTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
+	  	</panel>
+	</panel>
+	<panel name="extraHours" title="Extra Hours">
+	    <panel name="extraHoursTemplates" title="Extra Hours Templates">
+			<field name="extraHoursMailNotification" colSpan="12"/>
+	    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
+	    	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
+	    	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
+			<field name="canceledExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
+	  	</panel>
+	</panel>
+	<panel name="expense" title="Expense">
+	    <panel name="expenseTemplates" title="Expense Templates">
+			<field name="expenseMailNotification" colSpan="12"/>
+	    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
+	    	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
+	    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
+			<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
+	  	</panel>
+	</panel>
+	<panel name="leaves" title="Leaves">
+	  	<panel name="leavesTemplates" title="Leaves Templates" colSpan="12">
+			<field name="leaveMailNotification" colSpan="12"/>
+	    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
+	    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
+	    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
+			<field name="canceledLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
+	  	</panel>
+	  	<panel title="Leave Batch rules" colSpan="12">
+	  		<panel-related field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
+	  	</panel>
+	</panel>
 	<panel title="Formula variables configuration">
 		<field name="seniorityVariableName" />
 		<field name="ageVariableName" />
