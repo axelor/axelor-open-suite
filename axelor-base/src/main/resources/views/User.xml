@@ -43,8 +43,9 @@
         		<field name="teamSet" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
         	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm"  if="__config__.app.isApp('crm')" >
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        		<panel-related field="followersCalUserSet" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
+        		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
         </panel-tabs>
     </form>
@@ -62,7 +63,13 @@
 				<field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length &gt;= 4 &amp;&amp; confirm == newPassword)"/>
 				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 			</panel>
+			<field name="email"/>
+			<field name="theme"/>
+			<field name="noHelp"/>
+			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>
+			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+			<panel-related field="calendarManagementList" colSpan="12"/>
 		</panel>
 	</form>
     
