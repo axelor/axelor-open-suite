@@ -126,6 +126,24 @@ public class AccountingSituationService	{
 			
 		return accountingSituation;
 	}
+
+	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
+		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
+
+		if(accountingSituationList == null) {
+			accountingSituationList = new ArrayList<>();
+		}
+
+		AccountingSituation accountingSituation = this.createAccountingSituation(company);
+		accountingSituation.setPartner(partner);
+		accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
+		accountingSituationList.add(accountingSituation);
+
+		partner.addCompanySetItem(company);
+		partner.addAccountingSituationListItem(accountingSituation);
+
+		return accountingSituation;
+	}
 	
 	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
 		

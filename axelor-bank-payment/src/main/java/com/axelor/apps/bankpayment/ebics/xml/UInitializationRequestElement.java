@@ -17,12 +17,18 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.XMLConstants;
+
+import org.jdom.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
 import com.axelor.apps.account.ebics.schema.h003.FULOrderParamsType;
@@ -31,11 +37,13 @@ import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
+import com.axelor.apps.account.ebics.schema.h003.DataDigestType;
 import com.axelor.apps.account.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.SignatureData;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body;
+import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.PreValidation;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
 import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter;
 import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter.Value;
@@ -43,6 +51,7 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
+import com.axelor.apps.account.ebics.schema.xmldsig.ReferenceType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
@@ -52,6 +61,7 @@ import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Splitter;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
 /**
  * The <code>UInitializationRequestElement</code> is the common initialization
@@ -62,6 +72,10 @@ import com.axelor.exception.AxelorException;
  */
 public class UInitializationRequestElement extends InitializationRequestElement {
 
+	
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	
   /**
    * Constructs a new <code>UInitializationRequestElement</code> for uploads initializations.
    * @param session the current ebics session.
@@ -105,8 +119,13 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     
     EbicsUser ebicsUser = session.getUser();
     
-    if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
-    	userSignature = new UserSignature(ebicsUser,
+//     Transport user
+//	EbicsUser signataire = ebicsUser.getEbicsPartner().getBankStatementEbicsUser();
+
+    EbicsUser signataire = ebicsUser.getEbicsPartner().getDefaultSignatoryEbicsUser();
+    
+    if(signataire.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+    	userSignature = new UserSignature(signataire,
 			      generateName("UserSignature"),
                           "A005",
                           userSignatureData);
@@ -118,9 +137,15 @@ public class UInitializationRequestElement extends InitializationRequestElement 
                             "A005",
                             userData);
     }
-
+    
     userSignature.build();
+    
+    log.debug("user signature pretty print : {}", userSignature.toString());
+
 	userSignature.validate();
+	
+    log.debug("user signature pretty print : {}", userSignature.toString());
+
 
     splitter.readInput(true, keySpec);
 
@@ -181,22 +206,55 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest("E002",
 								          "http://www.w3.org/2001/04/xmlenc#sha256",
 								          decodeHex(KeyUtil.getKeyDigest(session.getBankE002Key())));
+    
+    System.out.println("signature ----------------------------------------------------------------------------");
+	System.out.println(userSignature.toString());
+    
+    
+    //USE PREVALIDATION
+//    PreValidation preValidation = PreValidation.Factory.newInstance();
+//    preValidation.setAuthenticate(true);
+//    DataDigestType dataDigest = DataDigestType.Factory.newInstance();
+//    dataDigest.setSignatureVersion("A005");
+//    dataDigest.setStringValue("XXXXXXX);
+//    preValidation.setDataDigestArray(new DataDigestType[] {dataDigest});
+    
+    
     signatureData = EbicsXmlFactory.createSignatureData(true, EbicsUtils.encrypt(EbicsUtils.zip(userSignature.prettyPrint()), keySpec));
+
     dataEncryptionInfo = EbicsXmlFactory.createDataEncryptionInfo(true,
 	                                                          encryptionPubKeyDigest,
 	                                                          generateTransactionKey());
     dataTransfer = EbicsXmlFactory.createDataTransferRequestType(dataEncryptionInfo, signatureData);
+  
+    //USE PREVALIDATION
+//    body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer, preValidation);
+    
     body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer);
+
+    
     request = EbicsXmlFactory.createEbicsRequest(1,
 	                                         "H003",
 	                                         header,
 	                                         body);
     document = EbicsXmlFactory.createEbicsRequestDocument(request);
+    
+    
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    try {
+		this.save(bout);
+	} catch (JDOMException e) {
+		// TODO Bloc catch généré automatiquement
+		e.printStackTrace();
+	}
+    
+    System.out.println("Requete signature ----------------------------------------------------------------------------");
+	System.out.println(bout.toString());
   }
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }

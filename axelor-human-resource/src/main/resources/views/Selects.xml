@@ -78,13 +78,6 @@
         <option value="3">Extension and Miscellaneous Amendment</option>
     </selection>
     
-    <selection name="hr.employment.contract.contract.type.select">
-        <option value="1">Fixed-term full-time</option>
-        <option value="2">Fixed-term part-time</option>
-        <option value="3">Permanent full-time</option>
-        <option value="4">Permanent part-time</option>
-    </selection>
-    
     <selection name="hr.employment.contract.executiveStatus.select">
         <option value="1">Executive</option>
         <option value="2">Non-Executive</option>

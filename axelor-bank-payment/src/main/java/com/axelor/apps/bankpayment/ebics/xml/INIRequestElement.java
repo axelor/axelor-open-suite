@@ -19,6 +19,8 @@ package com.axelor.apps.bankpayment.ebics.xml;
 
 import com.axelor.exception.AxelorException;
 
+import javax.xml.XMLConstants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,8 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
+
+import java.lang.invoke.MethodHandles;
 
 /**
  * The INI request XML element. This root element is to be sent
@@ -36,7 +40,7 @@ import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
  */
 public class INIRequestElement extends DefaultEbicsRootElement {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
   /**
    * Constructs a new INI request element.
@@ -71,7 +75,7 @@ public class INIRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return unsecuredRequest.toByteArray();
   }

@@ -18,6 +18,7 @@
 package com.axelor.csv.script;
 
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ import com.google.inject.Inject;
 
 public class ImportCompany {
 	
-	private final Logger LOG = LoggerFactory.getLogger(getClass());
+	private final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	MetaFiles metaFiles;

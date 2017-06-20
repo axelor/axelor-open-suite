@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.bankorder;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
@@ -41,7 +42,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {

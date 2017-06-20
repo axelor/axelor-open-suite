@@ -31,9 +31,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 
+import java.lang.invoke.MethodHandles;
+
 public class BatchValidation extends BatchWkf {
 
-	static final Logger LOG = LoggerFactory.getLogger(BatchValidation.class);
+	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	public BatchValidation(InvoiceService invoiceService) {

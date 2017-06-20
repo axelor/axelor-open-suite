@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -48,7 +49,7 @@ public abstract class Importer {
 
 	private static final File DEFAULT_WORKSPACE = createDefaultWorkspace();
 	
-	protected Logger log = LoggerFactory.getLogger(getClass());
+	protected Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private ImportConfiguration configuration;
 	private File workspace;

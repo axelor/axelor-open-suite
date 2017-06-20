@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -46,7 +47,7 @@ import com.google.inject.Inject;
 
 public class BatchEventReminder extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchEventReminder.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private boolean stop = false;
 	private LocalDateTime today;

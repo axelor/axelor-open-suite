@@ -35,6 +35,7 @@
 
 package com.axelor.apps.hr.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
@@ -78,7 +79,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 	protected HRConfigService hrConfigService;
 
 	
-		private final Logger log = LoggerFactory.getLogger( getClass() );
+		private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 		
 		int total;
 		int noValueAnomaly;

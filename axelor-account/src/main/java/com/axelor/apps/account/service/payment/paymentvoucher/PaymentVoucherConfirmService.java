@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherConfirmService  {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
