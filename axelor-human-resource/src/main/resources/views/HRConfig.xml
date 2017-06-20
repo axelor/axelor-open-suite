@@ -16,7 +16,7 @@
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
 	  	<panel-tabs>
-	<panel name="timesheet" title="Timesheet">
+	<panel name="timesheet" title="Timesheet" if="__config__.app.isApp('timesheet')">
 	    <panel name="timesheetTemplates" title="Timesheet Templates" colSpan="12">
 			<field name="timesheetMailNotification" colSpan="12"/>
 	    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
@@ -25,7 +25,7 @@
 			<field name="canceledTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
 	  	</panel>
 	</panel>
-	<panel name="extraHours" title="Extra Hours">
+	<panel name="extraHours" title="Extra Hours" if="__config__.app.isApp('exthrs')">
 	    <panel name="extraHoursTemplates" title="Extra Hours Templates" colSpan="12">
 			<field name="extraHoursMailNotification" colSpan="12"/>
 	    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
@@ -34,7 +34,7 @@
 			<field name="canceledExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
 	  	</panel>
 	</panel>
-	<panel name="expense" title="Expense">
+	<panel name="expense" title="Expense" if="__config__.app.isApp('expense')">
 	    <panel name="expenseTemplates" title="Expense Templates" colSpan="12">
 			<field name="expenseMailNotification" colSpan="12"/>
 	    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
@@ -46,7 +46,7 @@
 		<field name="expenseSequence" domain="self.code = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 	  	<panel-related field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 	</panel>
-	<panel name="leaves" title="Leaves">
+	<panel name="leaves" title="Leaves" if="__config__.app.isApp('leave')">
 	  	<panel name="leavesTemplates" title="Leaves Templates" colSpan="12">
 			<field name="leaveMailNotification" colSpan="12"/>
 	    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
