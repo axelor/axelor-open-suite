@@ -9,7 +9,6 @@
 			<field name="consolidateTSLine" widget="boolean-switch"/>
 			<field name="editModeTSTimer" widget="boolean-switch"/>
 			<field name="keepProject" widget="boolean-switch"/>
-			<field name="timesheetLineEditor" widget="boolean-switch"/>
 		</panel>
 	</form>
 	

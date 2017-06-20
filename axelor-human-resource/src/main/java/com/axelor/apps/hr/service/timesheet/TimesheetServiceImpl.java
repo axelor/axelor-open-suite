@@ -273,7 +273,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
-				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
+				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek().getValue()))){
 					dayPlanningCurr = dayPlanning;
 					break;
 				}
