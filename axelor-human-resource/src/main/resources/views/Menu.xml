@@ -284,7 +284,8 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
-	<menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"/>
+	<menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"
+		if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
 	
 	<action-method name="time.sheet.timer">
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
