@@ -84,7 +84,8 @@
 	    <view type="form" name="employment-contract-template-form"/>
 	</action-view>
 	
-	<menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
+	<menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf" title="Employee bonus type" action="employee.bonus.type.all"
+			  if="__config__.app.getApp('employee').getEmployeeBonus()"/>
 	
 	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
     	<view type="grid" name="employee-bonus-type-grid"/>
