@@ -15,16 +15,21 @@
   	<decimal name="idealQty" title="Ideal Qty" required="false"/>
   	<decimal name="maxQty" title="Max. Qty" required="false"/>
   	<decimal name="reOrderQty" title="Refill Qty" required="true"/>
-  	<boolean name="useIdealQty" title="Use Ideal Qty" default="false"/>
-  	<boolean name="useMaxQty" title="Use Max.Qty" default="false"/>
+  	<boolean name="useIdealQty" title="Define ideal Qty" default="false"/>
+  	<boolean name="useMaxQty" title="Define max Qty" default="false"/>
+	  <integer name="useCaseSelect" title="Use Case" selection="stock.stock.rules.use.case.select" required="true"/>
   	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" required="true"/>
   	
-  	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" required="true"/>
+  	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select"
+			 required="true"/>
   	
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	 <extra-code><![CDATA[
+	   	// USE CASE SELECT
+	   	public static final int USE_CASE_USED_FOR_MRP = 1;
+	   	public static final int USE_CASE_STOCK_CONTROL = 2;
 	
 	   	// TYPE SELECT
 		public static final int TYPE_CURRENT = 1;

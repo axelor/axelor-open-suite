@@ -10,4 +10,10 @@
 		</panel>
 	</form>
 	
+	<action-view name="admin.root.conf.crm.config" title="CRM configurations"
+		model="com.axelor.apps.crm.db.CrmConfig" >
+		<view type="grid" name="crm-config-grid" />
+		<view type="form" name="crm-config-form"/>
+	</action-view>
+	
 </object-views>

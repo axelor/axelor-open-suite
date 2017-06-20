@@ -194,7 +194,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	
 	protected BigDecimal getMinQty(Product product, Location location)  {
 		
-		StockRules stockRules = stockRulesService.getStockRules(product, location, StockRulesRepository.TYPE_FUTURE);
+		StockRules stockRules = stockRulesService.getStockRules(product, location, StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 		
 		if(stockRules != null)  {
 			return stockRules.getMinQty();

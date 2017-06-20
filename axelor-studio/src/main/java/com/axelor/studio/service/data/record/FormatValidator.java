@@ -1,5 +1,6 @@
 package com.axelor.studio.service.data.record;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import com.google.common.collect.Sets;
 
 public class FormatValidator {
 	
-	private final Logger log = LoggerFactory.getLogger(FormatValidator.class);
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private static Set<String> RULES = Sets.newHashSet("Search","Unique");
 	

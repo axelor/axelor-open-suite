@@ -68,6 +68,8 @@ import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SubscriptionService;
 import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
@@ -106,5 +108,6 @@ public class SupplychainModule extends AxelorModule {
         bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
         bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
         bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
+        bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
     }
 }

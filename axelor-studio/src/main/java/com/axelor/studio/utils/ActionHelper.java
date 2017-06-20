@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.utils;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ import com.google.common.collect.Maps;
 
 public class ActionHelper {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@SuppressWarnings("unchecked")
 	public Object execute(String name, Object entity, Object parent) {

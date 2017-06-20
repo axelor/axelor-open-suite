@@ -13,7 +13,7 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty"/>
   	<integer name="priority" title="Priority"/>
-    <boolean name="isRawMaterial" title="Raw material"/>
+    <boolean name="defineSubBillOfMaterial" title="Define sub bill of material"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
   	<one-to-many name="billOfMaterialList" ref="com.axelor.apps.production.db.BillOfMaterial" mappedBy="parentBillOfMaterial" title="BOMs"/>

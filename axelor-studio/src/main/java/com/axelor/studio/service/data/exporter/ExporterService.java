@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.data.exporter;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +38,6 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.schema.views.AbstractWidget;
-import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.axelor.studio.service.data.importer.DataReader;
@@ -46,7 +46,7 @@ import com.google.inject.Inject;
 
 public class ExporterService {
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private String menuPath = null;
 	
@@ -126,7 +126,7 @@ public class ExporterService {
 		
 		List<MetaModule> modules = metaModuleRepo
 				.all()
-				.filter("(self.installed = true OR self.customised = true) and self.name != 'axelor-core'").fetch();
+				.filter("self.installed = true and self.name != 'axelor-core'").fetch();
 		
 		for (MetaModule module : modules) {
 			exportModules.add(module.getName());
@@ -380,7 +380,7 @@ public class ExporterService {
 				
 				String view = row[CommonService.VIEW];
 				if (model != null && view == null) {
-					view = ViewLoaderService.getDefaultViewName(model, "form");
+					view = common.inflector.dasherize(model) + "-form";
 				}
 				
 				if (updateComment(lastKey, type, row)) {

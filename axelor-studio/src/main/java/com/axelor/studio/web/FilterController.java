@@ -76,11 +76,11 @@ public class FilterController {
 		if (!isJson && metaField != null
 				&& metaField.getRelationship() != null) {
 			target = filterService.getTargetField(metaField,
-					targetField);
+					targetField, null, 0);
 		} else if(isJson && metaJson != null
 				&& metaJson.getTargetJsonModel() != null) {
 			target = filterService.getTargetField(metaJson,
-					targetField);
+					targetField, null, 0);
 		} 
 		
 		if (target != null) {

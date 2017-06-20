@@ -27,7 +27,6 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface StockRulesService {
-
 	void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -35,7 +34,7 @@ public interface StockRulesService {
 
 	boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type); 
 
-	StockRules getStockRules(Product product, Location location, int type);
+	StockRules getStockRules(Product product, Location location, int type, int useCase);
 
 	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty);
 	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules);

@@ -225,15 +225,6 @@
 		<view type="form" name="customs-code-nomenclature-form" />
 	</action-view>
 	
-	<menuitem name="admin-root-conf-stock-config" parent="admin-root-conf"
-		title="Stock configurations" action="admin.root.conf.stock.config" />
-		
-	<action-view name="admin.root.conf.stock.config" title="Stock configurations"
-		model="com.axelor.apps.stock.db.StockConfig" >
-		<view type="grid" name="stock-config-grid" />
-		<view type="form" name="stock-config-form"/>
-	</action-view>
-
 <!-- ADMINISTRATION -->
 
 

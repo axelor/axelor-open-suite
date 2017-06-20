@@ -43,6 +43,8 @@ import java.util.stream.Collectors;
 
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
+	int generateTrakingNumberCounter = 0;
+
 	@Inject
 	private TrackingNumberService trackingNumberService;
 
@@ -131,18 +133,26 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException  {
+	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException {
 
 		StockMove stockMove = stockMoveLine.getStockMove();
 
-		while(stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1)  {
+		if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new AxelorException(I18n.get("The tracking number configuration sale quantity is equal to zero, it must be at least one"), IException.CONFIGURATION_ERROR);
+		}
+		while (stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1) {
 
 			BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
 
 			this.splitStockMoveLine(stockMoveLine, minQty, trackingNumberService.getTrackingNumber(product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
 
+			generateTrakingNumberCounter++;
+
+			if (generateTrakingNumberCounter == 1000) {
+				break;
+			}
 		}
-		if(stockMoveLine.getTrackingNumber() == null)  {
+		if (stockMoveLine.getTrackingNumber() == null) {
 
 			stockMoveLine.setTrackingNumber(trackingNumberService.getTrackingNumber(product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
 
@@ -236,7 +246,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				stockMoveLine.getStockMove(),
 				trackingNumber);
 
-		stockMoveLine.getStockMove().getStockMoveLineList().add(newStockMoveLine);
+		stockMoveLine.getStockMove().addStockMoveLineListItem(newStockMoveLine);
 
 		stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
 		stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));

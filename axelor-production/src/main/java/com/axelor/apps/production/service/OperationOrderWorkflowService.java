@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
@@ -30,10 +35,10 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +47,7 @@ public class OperationOrderWorkflowService {
 	protected OperationOrderStockMoveService operationOrderStockMoveService;
 	protected OperationOrderRepository operationOrderRepo;
 	protected OperationOrderDurationRepository operationOrderDurationRepo;
+	protected AppProductionService appProductionService;
 
 	protected LocalDateTime now;
 	
@@ -136,6 +142,12 @@ public class OperationOrderWorkflowService {
 
 			operationOrderRepo.save(operationOrder);
 		}
+
+		if (operationOrder.getManufOrder().getStatusSelect()
+				!= IManufOrder.STATUS_IN_PROGRESS) {
+		    Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		}
+
 	}
 
 	/**
@@ -330,7 +342,7 @@ public class OperationOrderWorkflowService {
 			if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
 				duration += qty.multiply(durationPerCycle).longValue();
 			} else {
-				duration += (qty.divide(maxCapacityPerCycle)).multiply(durationPerCycle).longValue();
+				duration += (qty.divide(maxCapacityPerCycle,RoundingMode.HALF_UP)).multiply(durationPerCycle).longValue();
 			}
 
 			duration += machine.getEndingDuration();

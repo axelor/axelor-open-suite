@@ -42,12 +42,8 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
-import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderStockService;
-import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.*;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -349,15 +345,6 @@ public class SaleOrderController{
 	            .map());
 	}
 	
-	public void updateTimetable(ActionRequest request, ActionResponse response){
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if(saleOrder.getId() != null && saleOrder.getId() > 0){
-			saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-		}
-		Beans.get(TimetableService.class).updateTimetable(saleOrder);
-		response.setValues(saleOrder);
-	}
-	
 	@Transactional
 	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
 		
@@ -578,5 +565,11 @@ public class SaleOrderController{
 		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
 				.findDefaultBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
+		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 }

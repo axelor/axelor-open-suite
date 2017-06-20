@@ -83,9 +83,10 @@
 			<panel name="otherElementsToInvoice" showIf="isBusinessProject" title="Other elements to invoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" >
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
 			</panel>
-			<panel name="logTimes" title="Log Times">
+			<panel name="logTimes" title="Log Times"  if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" >
 <!-- 				<field name="unitOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/> -->
-				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" />
+				<field name="excludeTimesheetEditor"/>
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form"/>
 			</panel>
 			<panel name="description" title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -93,7 +94,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="configurations" title="Configurations">
-				<field name="productList" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
+				<field name="productSet" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
 				<field name="projectFolder"/>
 				<field name="projectTypeSelect"/>
@@ -106,6 +107,10 @@
 		<panel>
 			<field name="projectAttrs" colSpan="12" />
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	
@@ -160,7 +165,7 @@
 				<field name="company" hidden="true" />
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel>

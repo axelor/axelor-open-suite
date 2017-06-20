@@ -1659,6 +1659,12 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                     <image id="3822">
                                         <property name="height">122px</property>
                                         <property name="width">129px</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["picture"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="source">file</property>
                                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["picture"]</expression>
                                     </image>

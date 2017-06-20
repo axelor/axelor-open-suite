@@ -17,9 +17,9 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -47,16 +47,8 @@ import com.axelor.meta.schema.views.Panel;
 import com.axelor.meta.schema.views.PanelField;
 import com.axelor.meta.schema.views.PanelRelated;
 import com.axelor.meta.schema.views.PanelTabs;
-import com.axelor.studio.db.ActionBuilder;
-import com.axelor.studio.db.ReportBuilder;
-import com.axelor.studio.db.ViewBuilder;
-import com.axelor.studio.db.ViewItem;
-import com.axelor.studio.db.repo.ActionBuilderRepo;
-import com.axelor.studio.db.repo.ReportBuilderRepository;
-import com.axelor.studio.db.repo.ViewItemRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 /**
  * Service class generate html template from selected metaView for
@@ -68,7 +60,7 @@ import com.google.inject.persist.Transactional;
  */
 public class ReportBuilderService {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private List<String[]> panels;
 
@@ -89,14 +81,6 @@ public class ReportBuilderService {
 	@Inject
 	private MetaModelRepository metaModelRepo;
 
-	@Inject
-	private ViewItemRepository viewItemRepo;
-
-	@Inject
-	private ActionBuilderRepo actionBuilderRepo;
-
-	@Inject
-	private ReportBuilderRepository reportBuilderRepo;
 
 	/**
 	 * Method create html template from MetaView. This is root method to create
@@ -416,70 +400,6 @@ public class ReportBuilderService {
 		return metaField;
 	}
 
-	public void processReports() {
-
-		List<ReportBuilder> builders = reportBuilderRepo.all()
-				.filter("self.edited = true and self.buttonView != null")
-				.fetch();
-
-		updateButtonView(builders.iterator());
-	}
-
-	/**
-	 * Add print button in toolbar.
-	 * 
-	 * @param viewBuilder
-	 *            ViewBuilder to add button.
-	 */
-	@Transactional
-	public void updateButtonView(Iterator<ReportBuilder> builderIter) {
-
-		if (!builderIter.hasNext()) {
-			return;
-		}
-
-		ReportBuilder builder = builderIter.next();
-		ViewBuilder viewBuilder = builder.getButtonView();
-		inflector = Inflector.getInstance();
-		String builderName = builder.getName();
-		String buttonName = "customPrint" + inflector.simplify(builderName);
-		ViewItem viewButton = viewItemRepo
-				.all()
-				.filter("self.name = ? and self.viewBuilderToolbar.id = ?",
-						buttonName, viewBuilder.getId()).fetchOne();
-
-		String actionName = "action-custom-print-"
-				+ inflector.dasherize(builderName);
-
-		if (viewButton == null) {
-			viewBuilder.setEdited(true);
-			viewButton = new ViewItem(buttonName);
-			viewButton.setTypeSelect(1);
-			viewButton.setColSpan(4);
-			viewButton.setTitle("Print");
-			viewButton.setViewBuilderToolbar(viewBuilder);
-			viewButton.setOnClick("save," + actionName);
-			viewButton = viewItemRepo.save(viewButton);
-		}
-
-		ActionBuilder actionBuilder = actionBuilderRepo.findByName(actionName);
-		log.debug("Action builder searched: {}, action found: {}", actionName,
-				actionBuilder);
-		if (actionBuilder == null) {
-			actionBuilder = new ActionBuilder(actionName);
-			actionBuilder.setMetaModel(viewBuilder.getMetaModel());
-			actionBuilder.setTypeSelect(3);
-			actionBuilder.setEdited(true);
-			actionBuilder.addReportBuilderSetItem(builder);
-			actionBuilder.setMetaModule(builder.getMetaModule());
-			actionBuilder = actionBuilderRepo.save(actionBuilder);
-		}
-
-		builder.setEdited(false);
-		reportBuilderRepo.save(builder);
-
-		updateButtonView(builderIter);
-	}
 
 	/**
 	 * Process panelRelated and update 'panels' or 'sidePanels' list with new

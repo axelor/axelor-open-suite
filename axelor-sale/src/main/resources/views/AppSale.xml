@@ -12,5 +12,10 @@
 		<panel-dashlet action="admin.root.conf.sale.config" colSpan="12"/>
 	</form>
 	
+	<action-view name="admin.root.conf.sale.config" title="Sale configurations"
+		model="com.axelor.apps.sale.db.SaleConfig" >
+		<view type="grid" name="sale-config-grid" />
+		<view type="form" name="sale-config-form"/>
+	</action-view>
 	
 </object-views>

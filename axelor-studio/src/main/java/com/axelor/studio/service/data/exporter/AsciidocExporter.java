@@ -20,6 +20,7 @@ package com.axelor.studio.service.data.exporter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,13 +37,13 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.importer.DataReader;
-import com.axelor.studio.service.data.validator.ValidatorService;
+//import com.axelor.studio.service.data.validator.ValidatorService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class AsciidocExporter {
 	
-	private static final Logger log = LoggerFactory.getLogger(AsciidocExporter.class);
+	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private static final List<String> COMMENT_TYPES = Arrays.asList(
 			new String[]{"tip", "general", "warn"});
@@ -67,8 +68,8 @@ public class AsciidocExporter {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	@Inject
-	private ValidatorService validatorService;
+//	@Inject
+//	private ValidatorService validatorService;
 	
 	public MetaFile export(MetaFile input, DataReader reader, String lang, String name) throws IOException, AxelorException {
 		
@@ -108,9 +109,9 @@ public class AsciidocExporter {
 				continue;
 			}
 			
-			if(!validatorService.validateModelHeaders(reader, key)) {
-				throw new AxelorException("Invalid headers for sheets '%s'", 1, key);
-			}
+//			if(!validatorService.validateModelHeaders(reader, key)) {
+//				throw new AxelorException("Invalid headers for sheets '%s'", 1, key);
+//			}
 			
 		}
 		

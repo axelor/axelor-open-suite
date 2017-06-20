@@ -17,8 +17,9 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,25 +28,21 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
-import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaAction;
-import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaSelect;
-import com.axelor.meta.db.repo.MetaActionRepository;
-import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.ActionGroup;
 import com.axelor.meta.schema.actions.ActionGroup.ActionItem;
-import com.axelor.studio.db.ViewBuilder;
-import com.axelor.studio.db.ViewItem;
-import com.axelor.studio.db.ViewPanel;
 import com.axelor.studio.db.Wkf;
-import com.axelor.studio.db.repo.ViewBuilderRepository;
-import com.axelor.studio.db.repo.ViewItemRepository;
-import com.axelor.studio.db.repo.WkfRepository;
-import com.google.common.base.Strings;
+import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.service.StudioMetaService;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -59,23 +56,16 @@ import com.google.inject.persist.Transactional;
  */
 public class WkfService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected Wkf workflow = null;
 
-	protected String dasherizeModel = null;
-
-	protected String moduleName;
-
+	protected String wkfId = null;
+	
 	protected Inflector inflector;
-
-	protected ViewBuilder viewBuilder;
-
+	
 	@Inject
 	protected RoleRepository roleRepo;
-
-	@Inject
-	private ViewBuilderRepository viewBuilderRepo;
 
 	@Inject
 	private WkfNodeService nodeService;
@@ -84,23 +74,17 @@ public class WkfService {
 	private WkfTransitionService transitionService;
 
 	@Inject
-	private MetaActionRepository metaActionRepo;
+	private MetaJsonFieldRepository jsonFieldRepo;
 
 	@Inject
-	private MetaFieldRepository metaFieldRepo;
-
-	@Inject
-	private ViewItemRepository viewItemRepo;
-
-	@Inject
-	private WkfTrackingService trackingService;
-
+	private MetaJsonModelRepository jsonModelRepo;
+	
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
-
+	
 	@Inject
-	private WkfRepository wkfRepo;
-
+	private StudioMetaService metaService;
+	
 	/**
 	 * Method to process workflow. It call node and transition service for nodes
 	 * and transitions linked with workflow.
@@ -109,33 +93,20 @@ public class WkfService {
 	 *            Worklfow to process.
 	 * @return Exception string if any issue in processing else null.
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String process(Wkf wkf) {
 
 		try {
 			workflow = wkf;
 			inflector = Inflector.getInstance();
-			moduleName = wkf.getMetaModule().getName();
-			dasherizeModel = inflector.dasherize(workflow.getMetaModel().getName());
-			viewBuilder = wkf.getViewBuilder();
-			ActionGroup actionGroup = nodeService.process();
-
-			viewBuilder.setEdited(true);
-			addWkfStatus(viewBuilder, workflow.getDisplayTypeSelect());
-
-			transitionService.process(actionGroup);
-
-			trackingService.addTracking(viewBuilder);
-
-			viewBuilderRepo.save(viewBuilder);
-
-			workflow.setEdited(false);
-			workflow.getMetaModel().setEdited(true);
-			if (workflow.getWkfField().getMetaModule() == null) {
-				workflow.getWkfField().setMetaModule(wkf.getMetaModule());
-			}
-			wkfRepo.save(workflow);
-
+			setWkfId();
+			setView();
+			List<String[]> actions = nodeService.process();
+			actions.addAll(transitionService.process());
+			actions.add(new String[]{"save"});
+			actions.add(new String[]{WkfTrackingService.ACTION_TRACK});
+			updateActionGroup("action-group-" + wkfId, actions);
+			MetaStore.clear();
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.toString();
@@ -144,11 +115,57 @@ public class WkfService {
 		return null;
 	}
 	
+	private void setWkfId() {
+		
+		String model = null;
+		if (workflow.getIsJson()) {
+			model = workflow.getJsonModel();
+			wkfId = inflector.dasherize(model) + "-wkf";
+		}
+		else {
+			model = workflow.getMetaModel();
+			model = model.substring(model.lastIndexOf(".") + 1);
+			wkfId = inflector.dasherize(model) + inflector.dasherize(workflow.getJsonField()) + "-wkf";
+		}
+		
+	}
+	
+	private void setView() {
+		
+		MetaJsonField panel = getJsonField("wkfPanel", "panel");
+		panel.setSequence(-103);
+		panel.setHiddenInGrid(true);
+		panel.setIsWkf(true);
+		panel.setWidgetAttrs("{\"colSpan\": \"12\"}");
+		saveJsonField(panel);
+		
+		MetaJsonField status = workflow.getStatusField();
+		status.setSequence(-102);
+		status.setSelection(getSelectName());
+		status.setWidget(null);
+		status.setWidgetAttrs("{\"colSpan\": \"10\"}");
+		if (workflow.getDisplayTypeSelect() == 0) {
+			status.setWidget("NavSelect");
+		}
+		saveJsonField(workflow.getStatusField());
+		
+		MetaJsonField trackFlow = getJsonField("trackFlow", "button");
+		trackFlow.setSequence(-101);
+		trackFlow.setTitle("Track flow");
+		trackFlow.setWidgetAttrs("{\"colSpan\": \"2\"}");
+		trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
+		trackFlow.setIsWkf(true);
+		saveJsonField(trackFlow);
+		
+		setTrackOnSave(workflow, false);
+		
+	}
+	
 	public String getSelectName() {
 		
-		if (workflow != null && viewBuilder != null) {
-			MetaField wkfField = workflow.getWkfField();
-			String selectName = "wkf." + inflector.dasherize(viewBuilder.getName()).replace("_", ".");
+		if (workflow != null) {
+			MetaJsonField wkfField = workflow.getStatusField();
+			String selectName = "wkf." + inflector.dasherize(workflow.getName()).replace("_", ".");
 			selectName += "." + inflector.dasherize(wkfField.getName()).replace("_", ".") + ".select";
 			
 			return selectName;
@@ -157,321 +174,6 @@ public class WkfService {
 		return null;
 	}
 
-	/**
-	 * Method add 'wkfStatus' field in ViewBuilder linked with Workflow.
-	 * 
-	 * @param viewBuilder
-	 *            ViewBuilder linked with workflow.
-	 * @param navSelect
-	 *            Selection of widget type for 'wkfStatus' field.
-	 */
-	private void addWkfStatus(ViewBuilder viewBuilder, Integer navSelect) {
-		
-		List<ViewPanel> viewPanels = viewBuilder.getViewPanelList();
-		
-		if (viewPanels.isEmpty()) {
-			ViewPanel panel = new ViewPanel();
-			panel.setPanelLevel("0");
-			panel.setNewPanel(true);
-			viewBuilder.addViewPanelListItem(panel);
-		}
-		ViewPanel viewPanel = viewBuilder.getViewPanelList().get(0);
-
-		String selectName = getSelectName();
-		
-		MetaField statusField = workflow.getWkfField();
-		List<ViewItem> viewItemList = viewPanel.getViewItemList();
-		if (viewItemList != null) {
-			for (ViewItem item : viewItemList) {
-				if (item.getMetaField() != null && item.getMetaField().equals(statusField)) {
-					if (navSelect > 0) {
-						item.setWidget("NavSelect");
-					} else {
-						item.setWidget("normal");
-					}
-					item.setMetaSelect(metaSelectRepo.findByName(selectName));
-					if (statusField.getTypeName().equals("Integer")) {
-						item.setDefaultValue(statusField.getDefaultString());
-					}
-					else {
-						item.setDefaultValue("'" + statusField.getDefaultString() + "'");
-					}
-					item.setColSpan(12);
-					return;
-				}
-			}
-		}
-
-		ViewItem viewField = new ViewItem(statusField.getName());
-		viewField.setTypeSelect(0);
-		viewField.setFieldType("string");
-		viewField.setMetaField(statusField);
-		viewField.setColSpan(12);
-		viewField.setSequence(0);
-		viewField.setReadonly(true);
-		viewField.setMetaSelect(metaSelectRepo.findByName(selectName));
-		viewField.setDefaultValue("'" + statusField.getDefaultString() + "'");
-
-		if (navSelect > 0) {
-			viewField.setWidget("NavSelect");
-		}
-
-		viewPanel.addViewItemListItem(viewField);
-
-	}
-
-	/**
-	 * Method set 'clearWkf' boolean in ViewBuilder. Also call methods to remove
-	 * wkf related buttons, actions and status. Method call when related
-	 * workflow deleted.
-	 * 
-	 * @param viewBuilder
-	 *            ViewBuilder linked with deleted workflow.
-	 * @return Error string if issue in setting boolean, else return null.
-	 */
-	@Transactional
-	public String clearViewBuilder(ViewBuilder viewBuilder) {
-
-		try {
-			MetaModel metaModel = viewBuilder.getMetaModel();
-			String modelName = "";
-			if (metaModel != null) {
-				inflector = Inflector.getInstance();
-				modelName = inflector.dasherize(metaModel.getName());
-			}
-
-			String actions = clearViewButtons(viewBuilder.getToolbar(),
-					"action-" + modelName + "-wkf", new ArrayList<String>());
-			removeMetaActions(actions);
-			viewBuilder.setClearWkf(false);
-			String onSave = viewBuilder.getOnSave();
-			if (onSave != null) {
-				onSave = onSave.replace("action-group-" + modelName + "-wkf",
-						"");
-				onSave = onSave.replace("action-" + modelName + "-wkf", "");
-				onSave = onSave.replace("save,"
-						+ WkfTrackingService.ACTION_TRACK, "");
-				onSave = onSave.replace(",,", ",");
-			}
-			viewBuilder.setOnSave(onSave);
-			viewBuilder = viewBuilderRepo.save(viewBuilder);
-			log.debug("viewBuilder onSave : {}", viewBuilder.getOnSave());
-			removeWkfStatus(viewBuilder);
-		} catch (Exception e) {
-			return e.toString();
-		}
-
-		return null;
-
-	}
-
-	/**
-	 * Method delete ViewButtons of deleted workflow.
-	 * 
-	 * @param viewButtons
-	 *            List of ViewButton to remove.
-	 * @param actionNames
-	 *            Comma separated names of actions related with buttons.
-	 * @param skipList
-	 *            Buttons names to skip from deleting
-	 * @return Comma separated names of actions related with button.
-	 */
-	@Transactional
-	public String clearViewButtons(List<ViewItem> viewButtons,
-			String actionNames, List<String> skipList) {
-
-		if (viewButtons == null) {
-			return null;
-		}
-
-		Iterator<ViewItem> buttonIter = viewButtons.iterator();
-
-		while (buttonIter.hasNext()) {
-
-			ViewItem viewButton = buttonIter.next();
-			log.debug("Button : {}, onClick: {}", viewButton.getName(),
-					viewButton.getOnClick());
-			String buttonName = viewButton.getName();
-
-			if (viewButton.getWkfButton() && !skipList.contains(buttonName)) {
-
-				String onClick = viewButton.getOnClick();
-
-				if (onClick != null
-						&& !onClick
-								.equals(WkfTrackingService.ACTION_OPEN_TRACK)
-						&& !onClick.equals(WkfTrackingService.ACTION_TRACK)) {
-					if (actionNames == null) {
-						actionNames = onClick;
-					} else {
-						actionNames += "," + onClick;
-
-					}
-				}
-
-				buttonIter.remove();
-				viewItemRepo.remove(viewButton);
-
-			}
-
-		}
-
-		return actionNames;
-
-	}
-
-	/**
-	 * Remove MetaActions from comma separated names in string.
-	 * 
-	 * @param actionNames
-	 *            Comma separated string of action names.
-	 */
-	@Transactional
-	public void removeMetaActions(String actionNames) {
-
-		if (actionNames != null) {
-			List<MetaAction> metaActions = metaActionRepo
-					.all()
-					.filter("self.name in ?1",
-							Arrays.asList(actionNames.split(","))).fetch();
-
-			for (MetaAction action : metaActions) {
-				metaActionRepo.remove(action);
-			}
-		}
-	}
-
-	/**
-	 * Remove wkfStatus field from ViewBuilder
-	 * 
-	 * @param viewBuilder
-	 *            ViewBuilder having 'wkfStatus' field.
-	 */
-	@Transactional
-	public void removeWkfStatus(ViewBuilder viewBuilder) {
-		
-		final String WKF_STATUS = "wkfStatus";
-		MetaField metaField = metaFieldRepo
-				.all()
-				.filter("self.name = '" + WKF_STATUS
-						+ "' AND self.metaModel = ?1",
-						viewBuilder.getMetaModel()).fetchOne();
-
-		if (metaField != null) {
-			List<ViewItem> viewFields = viewItemRepo
-					.all()
-					.filter("self.name = '" + WKF_STATUS
-							+ "' AND self.metaField = ?1", metaField).fetch();
-
-			for (ViewItem viewItem : viewFields) {
-				viewItemRepo.remove(viewItem);
-			}
-			// metaField.getMetaModel().setEdited(true);
-			metaField = metaFieldRepo.save(metaField);
-			MetaSelect metaSelect = metaField.getMetaSelect();
-			log.debug("Meta select to remove: {}", metaSelect);
-			if (metaSelect != null) {
-				metaSelectRepo.remove(metaSelect);
-			}
-		}
-
-	}
-
-	/**
-	 * It update comma separated string of action with new action.
-	 * 
-	 * @param actions
-	 *            String of comma separated action names.
-	 * @param action
-	 *            Name of action to add in actions string.
-	 * @param save
-	 *            Boolean to check if needs to add 'save' in actions string.
-	 * @return Updated actions with new action.
-	 */
-	protected String getUpdatedActions(String actions, String action,
-			boolean save) {
-
-		if (!Strings.isNullOrEmpty(actions)) {
-			List<String> actionList = Arrays.asList(actions.split(","));
-			if (actionList.contains(action)) {
-				return actions;
-			}
-			if (save && !actions.endsWith(",save")) {
-				actions += ",save";
-			}
-			return actions += "," + action;
-		}
-
-		if (save) {
-			return "save," + action;
-		}
-
-		return action;
-	}
-
-	/**
-	 * Method to find/create ViewButton by button name from ViewBuilder.
-	 * 
-	 * @param viewBuilder
-	 *            ViewBuilder to check for button.
-	 * @param buttonName
-	 *            Name of button to search.
-	 * @return Button searched or created.
-	 */
-	protected ViewItem getViewButton(ViewBuilder viewBuilder, String buttonName) {
-
-		ViewItem viewButton = null;
-
-		if (viewBuilder.getToolbar() != null) {
-			for (ViewItem button : viewBuilder.getToolbar()) {
-				if (button.getName().equals(buttonName)) {
-					viewButton = button;
-					break;
-				}
-			}
-		}
-
-		if (viewButton == null) {
-			viewButton = new ViewItem(buttonName);
-			viewButton.setTypeSelect(1);
-			viewBuilder.addToolbar(viewButton);
-		}
-
-		return viewButton;
-
-	}
-
-	/**
-	 * Method to find all edited workflow and process it. Also it clear all
-	 * ViewBuilders having 'clearWkf' boolean true.
-	 * 
-	 * @return Result string in clearing views or processing workflow.
-	 */
-	public String processWkfs() {
-
-		List<ViewBuilder> clearWkfList = viewBuilderRepo.all()
-				.filter("self.clearWkf = true").fetch();
-		String result = null;
-
-		for (ViewBuilder viewBuilder : clearWkfList) {
-			result = clearViewBuilder(viewBuilder);
-			if (result != null) {
-				return result;
-			}
-		}
-
-		List<Wkf> processWkfs = wkfRepo.all().filter("self.edited = true")
-				.fetch();
-
-		for (Wkf wkf : processWkfs) {
-			result = process(wkf);
-			if (result != null) {
-				return result;
-			}
-		}
-
-		return result;
-	}
 
 	/**
 	 * Update xml of MetaAction with xml string passed. It creates new
@@ -484,45 +186,209 @@ public class WkfService {
 	 * @param xml
 	 *            Xml to update in MetaAction.
 	 */
-	@Transactional
-	public void updateMetaAction(String actionName, String actionType,
-			String xml) {
-
-		MetaAction action = metaActionRepo.findByName(actionName);
-
-		if (action == null) {
-			action = new MetaAction(actionName);
-			action.setModel(workflow.getMetaModel().getFullName());
-			action.setModule(moduleName);
-			action.setType(actionType);
-		}
-		action.setXml(xml);
-		action = metaActionRepo.save(action);
-
-	}
-
-	protected ActionGroup createActionGroup(String name, List<String> actions,
-			String condition) {
-
+	protected ActionGroup updateActionGroup(String name, List<String[]> actions) {
+		
 		ActionGroup actionGroup = new ActionGroup();
 		actionGroup.setName(name);
-
 		List<ActionItem> actionItems = new ArrayList<ActionGroup.ActionItem>();
 
-		for (String action : actions) {
+		for (String[] action : actions) {
 			ActionItem actionItem = new ActionItem();
-			actionItem.setCondition(condition);
-			actionItem.setName(action);
+			actionItem.setName(action[0]);
+			if (action.length > 1) {
+				actionItem.setCondition(action[1]);
+			}
 			actionItems.add(actionItem);
 		}
-
+		
 		actionGroup.setActions(actionItems);
 
 		String xml = XMLViews.toXml(actionGroup, true);
 
-		updateMetaAction(name, "action-group", xml);
+		metaService.updateMetaAction(name, "action-group", xml);
 
 		return actionGroup;
 	}
+	
+	public MetaJsonField getJsonField(String name, String type) {
+		
+		MetaJsonField field  = null;
+		if (workflow.getIsJson()) {
+			field = jsonFieldRepo.all().filter("self.isWkf = true and self.jsonModel.name = ?1 and self.name = ?2 and self.type = ?3", 
+					workflow.getJsonModel(), name, type).fetchOne();
+			if (field == null) {
+				field = new MetaJsonField();
+				field.setModel(MetaJsonRecord.class.getName());
+				field.setModelField("attrs");
+				field.setType(type);
+				field.setName(name);
+				field.setIsWkf(true);
+				field.setJsonModel(jsonModelRepo.findByName(workflow.getJsonModel()));
+				field = saveJsonField(field);
+			}
+		}
+		else {
+			field = jsonFieldRepo.all().filter("self.isWkf = true and self.model = ?1 and self.modelField = ?2 and self.name = ?3 and self.type = ?4",
+					workflow.getMetaModel(), workflow.getJsonField(), name, type).fetchOne();
+			
+			log.debug("Searching json field with model: {}, field: {}, name: {}, type: {}", workflow.getJsonModel(), workflow.getJsonField(), name, type );
+			if (field == null) {
+				field = new MetaJsonField();
+				field.setModel(workflow.getMetaModel());
+				field.setModelField(workflow.getJsonField());
+				field.setType(type);
+				field.setIsWkf(true);
+				field.setName(name);
+				field = saveJsonField(field);
+			}
+		}
+		
+		return saveJsonField(field);
+	}
+	
+	@Transactional
+	public MetaJsonField saveJsonField(MetaJsonField jsonField) {
+		
+		return jsonFieldRepo.save(jsonField);
+	}
+	
+	
+	@Transactional
+	public void clearWkf(Wkf wkf) {
+		
+		String actions = "action-" + wkfId + ",action-group" + wkfId;
+		
+		actions = clearFields(wkf, actions);
+		
+		for (WkfNode node : wkf.getNodes()) {
+			if (!node.getMetaActionSet().isEmpty()) {
+				actions += "," + nodeService.getActionName(node.getName());
+			}
+		}
+		
+		metaService.removeMetaActions(actions);
+		
+		String select = getSelectName();
+		MetaSelect metaSelect = metaSelectRepo.findByName(select);
+		if (metaSelect != null) {
+			metaSelectRepo.remove(metaSelect);
+		}
+		
+		MetaJsonField status = wkf.getStatusField();
+		status.setWidget(null);
+		status.setSelection(null);
+		status.setWidgetAttrs(null);
+		saveJsonField(status);
+		
+		setTrackOnSave(wkf, true);
+	}
 
+	private String clearFields(Wkf wkf, String actions) {
+		
+		List<MetaJsonField> fields = getFields(wkf);
+		
+		for (MetaJsonField field : fields) {
+			if (field.getIsWkf()) {
+				if (field.getOnClick() != null) {
+					actions  += "," + field.getOnClick();
+				}
+				jsonFieldRepo.remove(field);
+			}
+		}
+		
+		return actions;
+	}
+
+	private List<MetaJsonField> getFields(Wkf wkf) {
+		
+		List<MetaJsonField> fields = new ArrayList<MetaJsonField>();
+		
+		if (wkf.getIsJson()) {
+			fields = jsonFieldRepo.all().filter("self.isWkf = true and self.jsonModel.name = ?1", wkf.getJsonModel()).fetch();
+		}
+		else {
+			fields = jsonFieldRepo.all().filter("self.isWkf = true and self.model = ?1 and self.modelField = ?2", wkf.getMetaModel(), wkf.getJsonField()).fetch();
+		}
+		return fields;
+	
+	}
+	
+	@Transactional
+	public String clearOldButtons(List<String> skipList) {
+		
+		log.debug("Cleaning old buttons. Skip list: {}", skipList);
+		if (skipList.isEmpty()) {
+			return null;
+		}
+		
+		skipList.add("trackFlow");
+		
+		ArrayList<String> actions = new ArrayList<String>();
+		
+		List<MetaJsonField>  fields = null;
+		if (workflow.getIsJson()) {
+			fields = jsonFieldRepo.all()
+					.filter("self.type = 'button' and self.jsonModel.name = ?1 and self.isWkf = true and self.name not in (?2)",
+					workflow.getJsonModel(), skipList).fetch();
+		}
+		else {
+			fields = jsonFieldRepo.all()
+					.filter("self.type = 'button' and self.model = ?1 and self.modelField = ?2 and self.name not in (?3)",
+					workflow.getMetaModel(), workflow.getJsonField(), skipList).fetch();
+		}
+		
+		log.debug("Total Buttons to remove: {}", fields.size());
+		
+		Iterator<MetaJsonField> buttons = fields.iterator();
+		
+		while (buttons.hasNext()) {
+			
+			MetaJsonField button = buttons.next();
+			String onClick = button.getOnClick();
+			log.debug("Removing button : {}, onClick: {}", button.getName(), onClick);
+			
+			if (onClick != null) {
+				for (String action : onClick.split(",")) {
+					if(!action.equals("action-group" + wkfId)) {
+						actions.add(action);
+					}
+				}
+			}
+			buttons.remove();
+			jsonFieldRepo.remove(button);
+		}
+
+
+		return Joiner.on(",").join(actions);
+	}
+	
+	public void clearNodes(Collection<WkfNode> nodes) {
+		
+		List<String> actions = new ArrayList<String>();
+		
+		for (WkfNode node : nodes) {
+			if (workflow == null) {
+				workflow = node.getWkf();
+				inflector = Inflector.getInstance();
+				setWkfId();
+			}
+			if (!node.getMetaActionSet().isEmpty()) {
+				actions.add(nodeService.getActionName(node.getName()));
+			}
+		}
+		
+		metaService.removeMetaActions(Joiner.on(",").join(actions));
+	}	
+	
+	private void setTrackOnSave(Wkf wkf, boolean remove) {
+		
+		if (wkf.getIsJson()) {
+			MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getJsonModel());
+			if (jsonModel != null) {
+				String onSave = metaService.updateAction(jsonModel.getOnSave(), "save," + WkfTrackingService.ACTION_TRACK, remove);
+				jsonModel.setOnSave(onSave);
+				jsonModelRepo.save(jsonModel);
+			}
+		}
+	}
 }

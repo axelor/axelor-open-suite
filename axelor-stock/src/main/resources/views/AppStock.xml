@@ -9,5 +9,10 @@
 		</panel> 
 	</form>
 	
+	<action-view name="admin.root.conf.stock.config" title="Stock configurations"
+		model="com.axelor.apps.stock.db.StockConfig" >
+		<view type="grid" name="stock-config-grid" />
+		<view type="form" name="stock-config-form"/>
+	</action-view>
 	
 </object-views>

@@ -197,7 +197,8 @@
 		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >   
 			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
 			<label title="OR"/>
-			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" />   
+			<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
+			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 		</panel>
 		
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
@@ -554,6 +555,7 @@
     	<action name="action-partner-attrs-hide-contact-partner" />
     	<action name="action-sale-oder-attrs-generate-stockmove-readonly"/>
     	<action name="action-sale-order-attrs-in-ati"/>
+		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
     </action-group>
     
@@ -590,6 +592,10 @@
     	<field name="inAti" expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
     </action-record>
+
+	<action-method name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateAmountToBeSpreadOverTheTimetable"/>
+	</action-method>
     
     <action-method name="action-sale-order-method-finalize">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="finalizeSaleOrder"/>
@@ -620,7 +626,7 @@
 	</action-method>
 
 	<action-method name="action-sale-order-method-generate-tasks">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTasks"/>
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProjects"/>
 	</action-method>
     
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
@@ -832,7 +838,7 @@
 	</action-method>
 
 	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate" if="_idCopy != null"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-method-create-order">

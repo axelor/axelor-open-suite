@@ -17,12 +17,14 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -42,7 +44,7 @@ import com.axelor.studio.db.ViewBuilder;
  */
 public class DashboardBuilderService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private List<ActionView> actions;
 
@@ -77,7 +79,7 @@ public class DashboardBuilderService {
 			String actionName = null;
 			if (viewBuilder != null) {
 				name = viewBuilder.getName();
-				model = viewBuilder.getMetaModel().getFullName();
+				model = viewBuilder.getModel();
 				actionName = getAction(boardName, name, model,
 						dashletBuilder);
 			} else if (metaView != null) {
@@ -87,7 +89,7 @@ public class DashboardBuilderService {
 						dashletBuilder);
 			}
 			else if (action != null) {
-				model = action.getMetaModel().getFullName();
+				model = MetaJsonRecord.class.getName();
 				actionName = action.getName();
 			}
 			

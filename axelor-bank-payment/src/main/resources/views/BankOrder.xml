@@ -105,7 +105,7 @@
 					<field name="receiverReference"/>
 					<field name="receiverLabel"/>
 					
-					<panel name="additionnalInformationPanel" title="Additionnal informations" colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
+					<panel name="additionnalInformationPanel" title="Additional informations" colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
 						<field name="bankOrderEconomicReason"/>
 						<field name="receiverCountry" colSpan="4"/>
 						<field name="receiverCountry.alpha2Code" colSpan="2" showTitle="false"/>

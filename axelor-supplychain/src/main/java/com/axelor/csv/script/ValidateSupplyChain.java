@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
@@ -28,8 +29,10 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
@@ -44,6 +47,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -77,10 +81,16 @@ public class ValidateSupplyChain {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
+	
+	@Inject
+	private SaleConfigRepository saleConfigRepo;
+	
+	@Inject
+	private SupplychainSaleConfigService configService;
 
 //	@Inject
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
-
+	
 	@SuppressWarnings("rawtypes")
 	public Object validateSupplyChain(Object bean, Map values) {
 		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
@@ -88,6 +98,11 @@ public class ValidateSupplyChain {
 		"UNION ALL(SELECT 'po' as type,id,order_date as date from purchase_purchase_order) order by date";
 
 		Query query = JPA.em().createNativeQuery(objectQuery);
+		List<SaleConfig> configs = saleConfigRepo.all().fetch();
+		for (SaleConfig config : configs) {
+			configService.updateCustomerCredit(config);
+		}
+		
 		for(Object objects : query.getResultList()){
 			Object[] object = (Object[]) objects;
 			if(object[0].toString().equals("inv"))

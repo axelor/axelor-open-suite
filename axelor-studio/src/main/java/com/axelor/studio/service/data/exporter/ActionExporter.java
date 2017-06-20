@@ -9,13 +9,10 @@ import java.util.Set;
 import com.axelor.apps.message.db.Template;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.MetaView;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ReportBuilder;
-import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.google.inject.Inject;
 
@@ -109,30 +106,28 @@ public class ActionExporter {
 		
 		String[] values = new String[HEADERS.length];
 		
-		values[MODULE] = builder.getMetaModule().getName();
+		values[MODULE] = "";
 		values[NAME] = builder.getName();
-		MetaModel model = builder.getMetaModel();
-		if (model != null) {
-			values[OBJECT] = model.getName();
+		if (builder.getMetaJsonModel() != null) {
+			values[OBJECT] = builder.getMetaJsonModel().getName();
 		}
 		
 		values[TYPE] = typeMap.get(builder.getTypeSelect());
-		setViews(builder, values);
+//		setViews(builder, values);
 		
-		model = builder.getTargetModel();
-		if (model != null) {
-			values[TARGET_OBJECT] = model.getName();
+		if (builder.getTargetJsonModel() != null) {
+			values[TARGET_OBJECT] = builder.getTargetJsonModel().getName();
 		}
 		
-		MetaField field = builder.getTargetField();
+		MetaField field = builder.getAssignValueTo();
 		if (field != null) {
 			values[TARGET_FIELD] = field.getName();
 		}
 		
-		field = builder.getLoopOnField();
-		if (field != null) {
-			values[LOOOP_FIELD] = field.getName();
-		}
+//		field = builder.getLoopOnField();
+//		if (field != null) {
+//			values[LOOOP_FIELD] = field.getName();
+//		}
 		
 		values[FIRST_GROUPBY] = builder.getFirstGroupBy();
 		values[SECOND_GROUPBY] = builder.getSecondGroupBy();
@@ -146,33 +141,33 @@ public class ActionExporter {
 		return values;
 	}
 
-	private void setViews(ActionBuilder builder, String[] values) {
-		
-		Set<ViewBuilder> views = builder.getViewBuilderSet();
-		
-		if (!views.isEmpty()) {
-			for (ViewBuilder view : views) {
-				if (values[VIEW] == null) {
-					values[VIEW] = view.getName();
-				}
-				else {
-					values[VIEW] += "," + view.getName();
-				}
-			}
-		}
-		else {
-			Set<MetaView> metaViews = builder.getMetaViewSet();
-			for (MetaView view: metaViews) {
-				if (values[VIEW] == null) {
-					values[VIEW] = view.getName();
-				}
-				else {
-					values[VIEW] += "," + view.getName();
-				}
-			}
-		}
-		
-	}
+//	private void setViews(ActionBuilder builder, String[] values) {
+//		
+//		Set<ViewBuilder> views = builder.getViewBuilderSet();
+//		
+//		if (!views.isEmpty()) {
+//			for (ViewBuilder view : views) {
+//				if (values[VIEW] == null) {
+//					values[VIEW] = view.getName();
+//				}
+//				else {
+//					values[VIEW] += "," + view.getName();
+//				}
+//			}
+//		}
+//		else {
+//			Set<MetaView> metaViews = builder.getMetaViewSet();
+//			for (MetaView view: metaViews) {
+//				if (values[VIEW] == null) {
+//					values[VIEW] = view.getName();
+//				}
+//				else {
+//					values[VIEW] += "," + view.getName();
+//				}
+//			}
+//		}
+//		
+//	}
 	
 	private String getReportBuilders(Set<ReportBuilder> reportBuilders) {
 		
@@ -194,7 +189,7 @@ public class ActionExporter {
 		
 		String[] vals = Arrays.copyOf(values, HEADERS.length);
 		
-		vals[LINE_TARGET] = line.getTargetField();
+		vals[LINE_TARGET] = "";
 		vals[LINE_VALUE] = line.getValue();
 		vals[LINE_CONDITIONS] = line.getConditionText();
 		vals[LINE_FILTERS] = line.getFilter();

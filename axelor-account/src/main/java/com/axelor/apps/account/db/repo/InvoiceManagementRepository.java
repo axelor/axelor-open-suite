@@ -58,6 +58,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setCanceledPaymentSchedule(null);
 		copy.setDirectDebitAmount(BigDecimal.ZERO);
 		copy.setImportId(null);
+		copy.setPartnerAccount(null);
+		copy.setJournal(null);
 		copy.clearInvoicePaymentList();
 
 		return copy;
