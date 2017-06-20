@@ -45,7 +45,7 @@ public class ImporterListener implements Listener {
 	public String getImportLog(){
 		
 		String log = importLog;
-		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1)+ totalRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2)  + successRecord + " - Non null : " + notNull;
+		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1)+ totalRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2)  + successRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_5) + notNull;
 		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_3) + anomaly;
 		
 		return log;

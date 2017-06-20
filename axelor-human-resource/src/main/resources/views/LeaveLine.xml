@@ -4,6 +4,7 @@
 
 	<grid name="leave-line-grid" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
 		<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form"/>
+		<field name="totalQuantity"/>
 	    <field name="quantity"/>
 	    <field name="daysToValidate"/>
 	</grid>

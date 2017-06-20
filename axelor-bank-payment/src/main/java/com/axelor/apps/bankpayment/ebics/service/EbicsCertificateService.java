@@ -197,8 +197,9 @@ public class EbicsCertificateService {
 		cert.setSubject(certificate.getSubjectDN().getName());
 		cert.setCertificate(certificate.getEncoded());
 		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
-		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
-		cert.setPublicKeyModulus(publicKey.getModulus().toString());
+		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString(16));
+		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
+		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
 		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
 		sha = sha.toUpperCase();
@@ -207,6 +208,7 @@ public class EbicsCertificateService {
 		
 		return cert;
 	}
+	
 	
 	@Transactional
 	public EbicsCertificate createCertificate(X509Certificate certificate, EbicsBank bank, String type) throws CertificateEncodingException, IOException {

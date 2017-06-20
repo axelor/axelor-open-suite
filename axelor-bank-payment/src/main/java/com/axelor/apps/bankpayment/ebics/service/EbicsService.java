@@ -296,8 +296,6 @@ public class EbicsService {
 	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
-	    	File testSignatureFile = null;
-			
 			if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, IOUtils.getFileContent(signature.getAbsolutePath()));
 			}
