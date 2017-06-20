@@ -44,6 +44,8 @@ import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.ModelService;
+import com.axelor.apps.base.service.ModelServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -99,5 +101,6 @@ public class BaseModule extends AxelorModule {
         bind(CompanyService.class).to(CompanyServiceImpl.class);
         bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
         bind(UserRepository.class).to(UserBaseRepository.class);
+        bind(ModelService.class).to(ModelServiceImpl.class);
     }
 }

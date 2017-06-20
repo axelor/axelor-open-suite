@@ -3,6 +3,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		<toolbar>
+			<button name="Archive" title="Archive" prompt="Are you sure you want to archive those records?" onClick="action-employee-method-mass-archive"/>
+			<button name="Unarchive" title="Unarchive" prompt="Are you sure you want to unarchive those records?" onClick="action-employee-method-mass-unarchive"/>
+		</toolbar>
 		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
 		 <field name="hourlyRate" />
 		 <field name="timeLoggingPreferenceSelect" />
@@ -142,5 +146,13 @@
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
-	
+
+	<action-method name="action-employee-method-mass-archive">
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="massArchive"/>
+	</action-method>
+
+	<action-method name="action-employee-method-mass-unarchive">
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="massUnarchive"/>
+	</action-method>
+
 </object-views>
