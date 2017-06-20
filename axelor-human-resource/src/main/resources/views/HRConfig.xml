@@ -44,6 +44,7 @@
 	    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 			<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 	  	</panel>
+	  	<panel-related field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 	</panel>
 	<panel name="leaves" title="Leaves">
   		<field name="toJustifyLeaveReason" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
@@ -77,7 +78,6 @@
   		
   	</panel>
    </panel-tabs>
-	  	<panel-related field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 	</form>
 	
 	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">
