@@ -157,7 +157,7 @@
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">
-		<error message="This date is invalide, it must be included in the timesheet's period" if="date != null &amp;&amp; (date &lt; _parent.fromDate || ( _parent.toDate != null &amp;&amp; date &gt; _parent.toDate))" action="action-timesheet-line-null-date"/>
+		<error message="This date is invalid. It must be included in the timesheet's period." if="date != null &amp;&amp; (date &lt; _parent.fromDate || ( _parent.toDate != null &amp;&amp; date &gt; _parent.toDate))" action="action-timesheet-line-null-date"/>
 	</action-validate>
 	
 	<action-record name="action-timesheet-line-null-date" model="com.axelor.apps.hr.db.TimesheetLine">
