@@ -15,13 +15,6 @@
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
-	  	<panel name="lunchVoucher" title="Lunch Vouchers">
-	  		<field name="lunchVoucherWageShare"/>
-	  		<field name="lunchVoucherEmployersShare"/>
-	  		<field name="minStockLunchVoucher"/>
-	  		<field name="availableStockLunchVoucher"/>
-	  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
-	  	</panel>
 	  	<panel-tabs>
 	<panel name="timesheet" title="Timesheet">
 	    <panel name="timesheetTemplates" title="Timesheet Templates" colSpan="12">
@@ -71,6 +64,13 @@
 		<field name="workingDaysVariableName" />
         <field name="totalWorkingDaysVariableName"/>
 	</panel>
+  	<panel name="lunchVoucher" title="Lunch Vouchers">
+  		<field name="lunchVoucherWageShare"/>
+  		<field name="lunchVoucherEmployersShare"/>
+  		<field name="minStockLunchVoucher"/>
+  		<field name="availableStockLunchVoucher"/>
+  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+  	</panel>
   	<panel title="Export" >
   		<field name="exportCodeForLunchVoucherManagement" />
   		<field name="exportCodeForExtraHours" />
