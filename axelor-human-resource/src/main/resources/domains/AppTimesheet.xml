@@ -10,6 +10,7 @@
 		<boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>
 		
 		<!-- Timesheet Timer configuration -->
+		<boolean name="enableTimer" title="Start&amp;Stop" default="true"/>
 		<boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
 		<boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
 		<boolean name="timesheetLineEditor" title="Timesheet line editor" />
