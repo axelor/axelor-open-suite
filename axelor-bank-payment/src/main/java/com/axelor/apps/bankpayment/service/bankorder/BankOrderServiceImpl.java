@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -65,7 +66,7 @@ import com.google.inject.persist.Transactional;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected BankOrderRepository bankOrderRepo;
 	protected InvoicePaymentRepository invoicePaymentRepo;

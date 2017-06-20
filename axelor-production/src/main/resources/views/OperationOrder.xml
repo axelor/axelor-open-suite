@@ -30,11 +30,16 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect &gt;= 3"/>
+		<field name="manufOrder.statusSelect" hidden="true"/>
+        <button name="plan" icon="fa-calendar" help="Plan"
+				onClick="action-operation-order-method-plan"
+				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
         <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-group-start,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-record-pause,save" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel"  onClick="action-operation-order-record-cancel,save" readonlyIf="statusSelect == 2"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel"
+				onClick="action-operation-order-record-cancel,save"
+				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     </grid>
     
@@ -48,11 +53,16 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" help="Plan" onClick="save,action-operation-order-method-plan" readonlyIf="statusSelect &gt;= 3"/>
+		<field name="manufOrder.statusSelect" hidden="true"/>
+        <button name="plan" icon="fa-calendar" help="Plan"
+				onClick="save,action-operation-order-method-plan"
+				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
         <button name="start" icon="fa-play" help="Start" onClick="save,action-operation-order-group-start,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" help="Pause" onClick="save,action-operation-order-record-pause,save" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="fa-power-off" help="Finish" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="save,action-operation-order-record-cancel,save" readonlyIf="statusSelect == 2"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel"
+				onClick="save,action-operation-order-record-cancel,save"
+				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
    		<button name="print" title="Print" icon="fa-print" onClick="save,action-operation-order-method-print"/>
     </grid>
     
@@ -71,6 +81,7 @@
 			<field name="prodProcessLine.outsourcing" colSpan="3"/>
 			<field name="isToInvoice" colSpan="3"/>
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
+			<field name="manufOrder.statusSelect" hidden="true"/>
 		</panel>
 		<panel name="dates" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
 	      <panel name="plannedDates" title="Planned dates" colSpan="6">
@@ -97,9 +108,13 @@
 			</panel>
 		</panel>
 		<panel name="actions" title="Actions" sidebar="true" colSpan="12" showIf="id" readonlyIf="statusSelect == 6">
-			<button name="plan" title="Plan" icon="fa-calendar" hideIf="statusSelect &gt;= 3" colSpan="12" onClick="save,action-operation-order-method-plan"/>
+			<button name="plan" title="Plan" icon="fa-calendar" colSpan="12"
+					hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
+					onClick="save,action-operation-order-method-plan"/>
 			<button name="start" title="Start" icon="fa-play" showIf="statusSelect == 3" colSpan="12" onClick="save,action-operation-order-group-start,action-operation-order-method-compute-duration,save"/>
-			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect != 2" colSpan="12" onClick="save,action-operation-order-record-cancel,save"/>
+			<button name="cancel" title="Cancel" icon="fa-times-circle"
+					showIf="statusSelect != 2 &amp;&amp; statusSelect != 6"
+					colSpan="12" onClick="save,action-operation-order-record-cancel,save"/>
 			<button name="finish" title="Finish" icon="fa-power-off"  showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration,save"/>
 			<button name="pause" title="Pause" icon="fa-pause" showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-record-pause,save"/>
 			<button name="resume" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-record-resume,save"/>
@@ -138,7 +153,7 @@
     <action-group name="action-operation-order-group-start">
     	<action name="action-operation-order-record-started"/>
     	<action name="action-operation-order-record-start"/>
-    	<action name="action-operation-order-method-start" if="_parent?.statusSelect == 3"/>
+    	<action name="action-operation-order-method-start"/>
     </action-group>
     
     <action-record name="action-operation-order-record-started" model="com.axelor.apps.production.db.OperationOrder">

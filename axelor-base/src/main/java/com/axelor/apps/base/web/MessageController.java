@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -44,7 +45,7 @@ import com.google.inject.Inject;
 public class MessageController extends com.axelor.apps.message.web.MessageController {
 
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private MessageRepository messageRepo;

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ import com.google.inject.Inject;
 
 public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWizardServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;

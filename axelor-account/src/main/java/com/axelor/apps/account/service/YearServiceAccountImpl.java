@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ import com.google.inject.persist.Transactional;
 
 public class YearServiceAccountImpl extends YearServiceImpl {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected AccountConfigService accountConfigService;
 	protected ReportedBalanceRepository reportedBalanceRepo;

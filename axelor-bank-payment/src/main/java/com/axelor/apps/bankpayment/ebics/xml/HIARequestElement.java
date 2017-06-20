@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
+import javax.xml.XMLConstants;
+
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
@@ -68,7 +70,7 @@ public class HIARequestElement extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return unsecuredRequest.toByteArray();
   }

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ import com.axelor.i18n.I18n;
 
 public class BatchInvoicing extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchInvoicing.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;

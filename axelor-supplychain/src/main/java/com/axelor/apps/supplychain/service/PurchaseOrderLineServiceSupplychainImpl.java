@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	@Inject
 	protected UnitConversionService unitConversionService;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceSupplychainImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
 

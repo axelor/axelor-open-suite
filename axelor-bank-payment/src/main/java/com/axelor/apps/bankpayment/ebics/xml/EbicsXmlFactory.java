@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,50 +26,52 @@ import javax.xml.namespace.QName;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
+
 import com.axelor.apps.account.ebics.schema.h003.AuthenticationPubKeyInfoType;
+import com.axelor.apps.account.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
+import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
+import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.SignatureData;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
+import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
+import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
+import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.PreValidation;
+import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.TransferReceipt;
 import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument;
+import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest;
+import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body;
+import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer;
+import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer.OrderData;
+import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Header;
 import com.axelor.apps.account.ebics.schema.h003.EmptyMutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.EncryptionPubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.h003.FDLOrderParamsDocument;
 import com.axelor.apps.account.ebics.schema.h003.FDLOrderParamsType;
+import com.axelor.apps.account.ebics.schema.h003.FDLOrderParamsType.DateRange;
 import com.axelor.apps.account.ebics.schema.h003.FULOrderParamsDocument;
 import com.axelor.apps.account.ebics.schema.h003.FULOrderParamsType;
 import com.axelor.apps.account.ebics.schema.h003.FileFormatType;
 import com.axelor.apps.account.ebics.schema.h003.HIARequestOrderDataDocument;
 import com.axelor.apps.account.ebics.schema.h003.HIARequestOrderDataType;
 import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
+import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType.SegmentNumber;
 import com.axelor.apps.account.ebics.schema.h003.NoPubKeyDigestsRequestStaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
+import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter;
+import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter.Value;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.h003.StandardOrderParamsDocument;
 import com.axelor.apps.account.ebics.schema.h003.StandardOrderParamsType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.UnsecuredRequestStaticHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
-import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
-import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.SignatureData;
-import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
-import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
-import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.TransferReceipt;
-import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest;
-import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body;
-import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Header;
-import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer;
-import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer.OrderData;
-import com.axelor.apps.account.ebics.schema.h003.FDLOrderParamsType.DateRange;
-import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType.SegmentNumber;
-import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter;
-import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter.Value;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.TransactionPhaseType.Enum;
+import com.axelor.apps.account.ebics.schema.h003.UnsecuredRequestStaticHeaderType;
 import com.axelor.apps.account.ebics.schema.s001.OrderSignatureDataType;
 import com.axelor.apps.account.ebics.schema.s001.PubKeyValueType;
 import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyInfoType;
@@ -88,6 +91,7 @@ import com.axelor.apps.account.ebics.schema.xmldsig.SignedInfoType;
 import com.axelor.apps.account.ebics.schema.xmldsig.TransformType;
 import com.axelor.apps.account.ebics.schema.xmldsig.TransformsType;
 import com.axelor.apps.account.ebics.schema.xmldsig.X509DataType;
+import com.axelor.apps.account.ebics.schema.xmldsig.X509IssuerSerialType;
 
 
 /**
@@ -283,6 +287,33 @@ public class EbicsXmlFactory {
     newOrderSignatureDataType.setUserID(userID);
     newOrderSignatureDataType.setSignatureValue(signatureValue);
 
+    System.out.println("signature value : " +new String(newOrderSignatureDataType.getSignatureValue()));
+    
+    return newOrderSignatureDataType;
+  }
+  
+  /**
+   * Creates a new <code>OrderSignatureDataType</code> XML object
+   * @param signatureVersion the signature version
+   * @param partnerID the partner id
+   * @param userID the user id
+   * @param signatureValue the signature value
+   * @return the <code>OrderSignatureDataType</code> XML object
+   */
+  public static OrderSignatureDataType createOrderSignatureDataType(String signatureVersion,
+                                                                    String partnerID,
+                                                                    String userID,
+                                                                    byte[] signatureValue, X509DataType x509Data)
+  {
+    OrderSignatureDataType newOrderSignatureDataType = OrderSignatureDataType.Factory.newInstance();
+    newOrderSignatureDataType.setSignatureVersion(signatureVersion);
+    newOrderSignatureDataType.setPartnerID(partnerID);
+    newOrderSignatureDataType.setUserID(userID);
+    newOrderSignatureDataType.setSignatureValue(signatureValue);
+    newOrderSignatureDataType.setX509Data(x509Data);
+
+    System.out.println("signature value : " +new String(newOrderSignatureDataType.getSignatureValue()));
+    
     return newOrderSignatureDataType;
   }
 
@@ -338,6 +369,27 @@ public class EbicsXmlFactory {
     return newSignaturePubKeyInfoType;
   }
 
+  /**
+   * Creates a new <code>X509DataType</code> XML object
+   * @param x509SubjectName the subject name
+   * @param x509Certificate the certificate
+   * @return the <code>X509DataType</code> XML object
+   */
+  public static X509DataType createX509DataType(String x509SubjectName, byte[] x509Certificate, String x509IssuerName, BigInteger x509SerialNumber) {
+    X509DataType newX509DataType = X509DataType.Factory.newInstance();
+    newX509DataType.setX509SubjectNameArray(new String [] {x509SubjectName});
+    newX509DataType.setX509CertificateArray(new byte[][] {x509Certificate});
+    X509IssuerSerialType x509IssuerSerialType = X509IssuerSerialType.Factory.newInstance();
+    x509IssuerSerialType.setX509IssuerName(x509IssuerName);
+    x509IssuerSerialType.setX509SerialNumber(x509SerialNumber);
+    
+    X509IssuerSerialType[] x509IssuerSerialTypes = {x509IssuerSerialType};
+    
+    newX509DataType.setX509IssuerSerialArray(x509IssuerSerialTypes);
+
+    return newX509DataType;
+  }
+  
   /**
    * Creates a new <code>X509DataType</code> XML object
    * @param x509SubjectName the subject name
@@ -1140,10 +1192,22 @@ public class EbicsXmlFactory {
    * @param dataTransfer the <code>DataTransferRequestType</code> element
    * @return the <code>com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body</code> XML object
    */
+  //TODO COMPLETE
+  public static com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body createEbicsRequestBody(DataTransferRequestType dataTransfer, PreValidation preValidation) {
+    com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body newBody = com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.Factory.newInstance();
+    newBody.setDataTransfer(dataTransfer);
+    newBody.setPreValidation(preValidation);
+    return newBody;
+  }
+  
+  /**
+   * Create the <code>com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body</code> XML object
+   * @param dataTransfer the <code>DataTransferRequestType</code> element
+   * @return the <code>com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body</code> XML object
+   */
   public static com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body createEbicsRequestBody(DataTransferRequestType dataTransfer) {
     com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body newBody = com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.Factory.newInstance();
     newBody.setDataTransfer(dataTransfer);
-
     return newBody;
   }
 

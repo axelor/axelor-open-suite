@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,7 +39,7 @@ import com.beust.jcommander.internal.Maps;
 
 public class ReportSettings {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public static String FORMAT_PDF = "pdf";
 	public static String FORMAT_XLS = "xls";

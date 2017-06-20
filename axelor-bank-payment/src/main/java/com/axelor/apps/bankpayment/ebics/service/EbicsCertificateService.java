@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -61,7 +62,7 @@ import com.google.inject.persist.Transactional;
 
 public class EbicsCertificateService {
 	
-	private final Logger log = LoggerFactory.getLogger(EbicsCertificateService.class);
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private EbicsCertificateRepository certRepo;
@@ -196,8 +197,9 @@ public class EbicsCertificateService {
 		cert.setSubject(certificate.getSubjectDN().getName());
 		cert.setCertificate(certificate.getEncoded());
 		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
-		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
-		cert.setPublicKeyModulus(publicKey.getModulus().toString());
+		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString(16));
+		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
+		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
 		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
 		sha = sha.toUpperCase();
@@ -206,6 +208,7 @@ public class EbicsCertificateService {
 		
 		return cert;
 	}
+	
 	
 	@Transactional
 	public EbicsCertificate createCertificate(X509Certificate certificate, EbicsBank bank, String type) throws CertificateEncodingException, IOException {

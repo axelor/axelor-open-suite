@@ -40,6 +40,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.List;
 public abstract class InvoiceGenerator  {
 	
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected JournalService journalService;
 
@@ -191,10 +192,6 @@ public abstract class InvoiceGenerator  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 		}
 		invoice.setCurrency(currency);
-
-		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
-
-		invoice.setJournal(journalService.getJournal(invoice));
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 

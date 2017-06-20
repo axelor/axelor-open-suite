@@ -148,6 +148,9 @@ public class EmployeeBonusService {
 		if ( !Strings.isNullOrEmpty( hrConfig.getWorkingDaysVariableName() ) ){
 			formula = formula.replace(hrConfig.getWorkingDaysVariableName(), String.valueOf(employeeService.getDaysWorkedInPeriod(employee, period.getFromDate(), period.getToDate())));
 		}
+		if ( !Strings.isNullOrEmpty( hrConfig.getTotalWorkingDaysVariableName() ) ){
+			formula = formula.replace(hrConfig.getTotalWorkingDaysVariableName(), String.valueOf(employeeService.getDaysWorksInPeriod(employee, period.getFromDate(), period.getToDate())));
+		}
 		return formula;
 	}
 

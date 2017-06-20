@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import com.google.inject.persist.Transactional;
 
 public class MoveLineService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected TaxAccountService taxAccountService;

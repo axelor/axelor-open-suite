@@ -69,6 +69,7 @@ public class HumanResourceModule extends AxelorModule {
 		bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
 		bind(UserHrService.class).to(UserHrServiceImpl.class);
 		bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
+		bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
 	}
 
 }

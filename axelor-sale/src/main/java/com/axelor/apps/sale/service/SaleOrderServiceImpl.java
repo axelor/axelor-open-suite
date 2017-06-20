@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SaleOrderLineService saleOrderLineService;
 	protected SaleOrderLineTaxService saleOrderLineTaxService;

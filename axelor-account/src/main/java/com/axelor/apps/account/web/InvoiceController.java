@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ import javax.annotation.Nullable;
 public class InvoiceController {
 
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private InvoiceService invoiceService;
@@ -234,20 +235,6 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
-
-	public void getJournal(ActionRequest request, ActionResponse response)  {
-
-		Invoice invoice = request.getContext().asType(Invoice.class);
-
-		try  {
-			response.setValue("journal", Beans.get(JournalService.class).getJournal(invoice));
-		}
-		catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
-
-
 
 	/**
 	 * Method to generate invoice as a Pdf

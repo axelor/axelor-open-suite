@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ import com.google.inject.Inject;
 
 public class CfonbImportService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected CfonbConfigService cfonbConfigService;
 	protected PaymentModeRepository paymentModeRepo;

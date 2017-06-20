@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -76,7 +77,7 @@ public class PartnerController {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
