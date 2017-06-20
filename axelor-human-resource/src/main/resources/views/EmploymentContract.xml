@@ -9,6 +9,7 @@
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="amendmentTypeSelect"/>
+		<field name="status"/>
     </grid>
 	
     <grid name="employment-contract-employee-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
@@ -18,6 +19,7 @@
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="amendmentTypeSelect"/>
+		<field name="status"/>
     </grid>
 
     <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new">
@@ -29,6 +31,7 @@
         </toolbar>
         <panel-stack>
 			<panel>
+				<field name="status" colSpan="12" widget="NavSelect" canEdit="true"/>
 			  <field name="employee" canSuggest="false" hideIf="$popup()" requiredIf="!$popup()"/>
 			  <field name="payCompany" canSuggest="false"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>
