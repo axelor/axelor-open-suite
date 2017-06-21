@@ -279,6 +279,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		
 		if(moveDate == null){
 			moveDate = generalService.getTodayDate();
+			expense.setMoveDate(moveDate);
 		}
 
 		Account account = null;
