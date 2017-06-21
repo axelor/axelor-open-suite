@@ -400,7 +400,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 					IException.MISSING_FIELD);
 		}
 
-		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
+		if (paymentMode.getGenerateBankOrder()) {
 			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
 		}
 		
