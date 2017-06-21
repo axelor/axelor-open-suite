@@ -116,8 +116,8 @@
 	              &lt;dd ng-show="record.withdrawnCash != 0" &gt;-{{record.withdrawnCash | number:2}}&lt;/dd&gt;
 	              &lt;dt ng-show="record.advanceAmount != 0" x-translate&gt;Advance&lt;/dt&gt;
 	              &lt;dd ng-show="record.advanceAmount != 0" &gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
-	              &lt;dt ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
-             	  &lt;dd ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
+	              &lt;dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
+             	  &lt;dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;TotalToRefund&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}&lt;/dd&gt;
 	            &lt;/dl&gt;
