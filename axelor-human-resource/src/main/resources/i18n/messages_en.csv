@@ -188,7 +188,7 @@
 "Expense.employeeName","Employee",,
 "Expense.employeeSignature","Employee's signature",,
 "Expense.employerSignature","Employer's signature",,
-"Expense.expenseDate","Expense date",,
+"Expense.expenseDate","Request date",,
 "Expense.expenseOf","Expense of",,
 "Expense.multipleUsers","Multiple users",,
 "Expense.period","Period",,
