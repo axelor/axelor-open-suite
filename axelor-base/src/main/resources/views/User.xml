@@ -99,7 +99,7 @@
     
     <action-group name="action-user-group-employee">
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
-		<action name="action-hr-user-show-employee" if="partner != null"/>
+		<action name="action-employee-user-show-employee" if="partner != null"/>
     </action-group>
     
 	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">

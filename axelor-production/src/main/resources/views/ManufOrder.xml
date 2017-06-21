@@ -72,6 +72,7 @@
 <!--     TODO avec propagation -->
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print"/>
+			<button name="print" title="Print Production Process" icon="fa-print" onClick="save,action-production-process-method-print"/>
 		</toolbar>
 		<panel name="main">
 			<field name="manufOrderSeq" readonly="true" css="bold"/>
@@ -213,6 +214,10 @@
     
     <action-method name="action-manuf-order-method-print">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="print"/>
+	</action-method>
+
+	<action-method name="action-production-process-method-print">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess"/>
 	</action-method>
     
     <action-method name="action-manuf-order-method-start">

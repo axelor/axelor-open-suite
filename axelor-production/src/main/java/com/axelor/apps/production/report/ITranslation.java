@@ -65,4 +65,32 @@ public interface ITranslation {
 	public static final String MANUF_ORDER_FROM = /*$$(*/ "ManufOrder.from"; /*)*/
 	public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
 	public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
+	
+	public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
+	public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
+	public static final String PRODUCTION_PROCESS_LOCATION = /*$$(*/ "ProdProcess.location"; /*)*/
+	public static final String PRODUCTION_PROCESS_PRODUCT = /*$$(*/ "ProdProcess.product"; /*)*/
+	public static final String PRODUCTION_PROCESS_ISOPERATION = /*$$(*/ "ProdProcess.isOperation"; /*)*/
+	public static final String PRODUCTION_PROCESS_ISOUTSOURCING = /*$$(*/ "ProdProcess.isOutsourcing"; /*)*/
+	public static final String PRODUCTION_PROCESS_COMPANY = /*$$(*/ "ProdProcess.company"; /*)*/
+	public static final String PRODUCTION_PROCESS_PHASES = /*$$(*/ "ProdProcess.phases"; /*)*/
+	public static final String PRODUCTION_PROCESS_PRIORITY = /*$$(*/ "ProdProcess.priority"; /*)*/
+	public static final String PRODUCTION_PROCESS_WORK_CENTER = /*$$(*/ "ProdProcess.workcenter"; /*)*/
+	public static final String PRODUCTION_PROCESS_OUTSOURCING = /*$$(*/ "ProdProcess.outsourcing"; /*)*/
+	public static final String PRODUCTION_PROCESS_DESCRIPTION = /*$$(*/ "ProdProcess.description"; /*)*/
+	
+	public static final String PRODUCTION_PROCESS_QTY = /*$$(*/ "ProdProcess.qty"; /*)*/
+	public static final String PRODUCTION_PROCESS_UNIT = /*$$(*/ "ProdProcess.unit"; /*)*/
+	public static final String PRODUCTION_PROCESS_CONSUME_PRODUCT = /*$$(*/ "ProdProcess.consumeProduct"; /*)*/
+	
+	public static final String BILL_OF_MATERIAL_TITLE = /*$$(*/ "BOM.title"; /*)*/
+	public static final String BILL_OF_MATERIAL_COMPANY = /*$$(*/ "BOM.company"; /*)*/
+	public static final String BILL_OF_MATERIAL_UNIT = /*$$(*/ "BOM.unit"; /*)*/
+	public static final String BILL_OF_MATERIAL_QTY = /*$$(*/ "BOM.qty"; /*)*/
+	public static final String BILL_OF_MATERIAL_VERSION_NUMBER = /*$$(*/ "BOM.versionNumber"; /*)*/
+	public static final String BILL_OF_MATERIAL_COMPONENTS = /*$$(*/ "BOM.billOfMaterialList"; /*)*/
+	public static final String BILL_OF_MATERIAL_PRIORITY = /*$$(*/ "BOM.priority"; /*)*/
+	public static final String BILL_OF_MATERIAL_DEFINE_SUB_BOM = /*$$(*/ "BOM.defineSubBillOfMaterial"; /*)*/
+	public static final String BILL_OF_MATERIAL_HAS_NO_MANAGE_STOCK = /*$$(*/ "BOM.hasNoManageStock"; /*)*/
+	 
 }
