@@ -26,7 +26,7 @@
     	return name;
     	]]>
    	</string>
-   	
+   	<many-to-one name="iCalendar" ref="com.axelor.apps.base.db.ICalendar" title="Main calendar"/>
     
   </entity>
 

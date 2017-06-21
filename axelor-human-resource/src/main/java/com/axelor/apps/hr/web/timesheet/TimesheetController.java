@@ -374,7 +374,7 @@ public class TimesheetController {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
 		response.setView(ActionView
-				.define(I18n.get("Timesheet lines"))
+				.define(I18n.get("Timesheet Lines"))
 				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
 	}
 }
