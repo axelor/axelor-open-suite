@@ -25,6 +25,7 @@ import com.axelor.exception.db.IException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -32,6 +33,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -138,6 +140,36 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		
 		return latestVersion;
 	}
+
+	@Override
+	public String getLanguageForPrinting(BillOfMaterial billOfMaterial) {
+		String language="";
+		try{
+			language = billOfMaterial.getCompany().getPrintingSettings().getLanguageSelect() != null ? billOfMaterial.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+		}catch (NullPointerException e) {
+			language = "en";
+		}
+		language = language.equals("")? "en": language;
+		
+		return language;
+	}
 	
+	@Override
+	public String getFileName(BillOfMaterial billOfMaterial) {
+		
+		return I18n.get("Bill of Material") + "-" + billOfMaterial.getName() + ((billOfMaterial.getVersionNumber() > 1) ? "-V" + billOfMaterial.getVersionNumber() : "");
+	}
+
+	@Override
+	public String getReportLink(BillOfMaterial billOfMaterial, String name, String language, String format)
+			throws AxelorException {
+		
+		return ReportFactory.createReport(IReport.BILL_OF_MATERIAL, name+"-${date}")
+				.addParam("Locale", language)
+				.addParam("BillOfMaterialId", billOfMaterial.getId())
+				.addFormat(format)
+				.generate()
+				.getFileLink();
+	}
 
 }
