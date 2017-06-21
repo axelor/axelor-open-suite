@@ -15,6 +15,7 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="action-bill-of-material-method-print"/>
 			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
 			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
@@ -168,6 +169,10 @@
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess"/>
     </action-method>
     
+    <action-method name="action-bill-of-material-method-print">
+		<call class="com.axelor.apps.production.web.BillOfMaterialController" method="print"/>
+	</action-method>
+    
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
@@ -176,7 +181,7 @@
 		<attribute name="value" for="defineSubBillOfMaterial" expr="eval: false" if="product.productSubTypeSelect == 3"/>
 		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: true" if="product.productSubTypeSelect == 3"/>
 	</action-attrs>
-
+	
 </object-views>
 
 

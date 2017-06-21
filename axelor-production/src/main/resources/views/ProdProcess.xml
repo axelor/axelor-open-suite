@@ -13,6 +13,9 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
     	onSave="action-prod-process-method-validate-prod-process" width="large">
+    	<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
+		</toolbar>
 		<panel name="main">
 	    	<field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}"/>
@@ -42,4 +45,7 @@
     	<call class="com.axelor.apps.production.web.ProdProcessController" method="changeProdProcessListOutsourcing"/>
     </action-method>
     
+    <action-method name="action-production-process-print">
+		<call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
+	</action-method>
 </object-views>

@@ -34,6 +34,8 @@
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
+				<field name="enterpriseCommunication" widget="boolean-switch"/>
+				<field name="document" widget="boolean-switch"/>
 			</panel>
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">

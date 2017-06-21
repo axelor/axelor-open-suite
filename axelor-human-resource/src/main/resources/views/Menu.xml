@@ -15,29 +15,32 @@
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	</action-view>
+
+	<menuitem name="all-employment-contract" parent="hr-root-emp-mgt" title="Employment Contracts" action="employment.contracts.all"/>
+
+	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
+		<view type="grid" name="employment-contract-grid"/>
+		<view type="form" name="employment-contract-form"/>
+	</action-view>
 	
-	<menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt" title="Payroll Preparations" action="payroll.preparation.all"/>
+	<menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt" title="Payroll Preparations" action="payroll.preparation.all"
+			  if="__config__.app.getApp('employee').getPayrollPreparation()"/>
 	
 	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
     	<view type="grid" name="payroll-preparation-grid"/>
 	    <view type="form" name="payroll-preparation-form"/>
 	</action-view>
 	
-	<menuitem name="all-employment-contract" parent="hr-root-emp-mgt" title="Employment Contracts" action="employment.contracts.all"/>
-	
-	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
-    	<view type="grid" name="employment-contract-grid"/>
-	    <view type="form" name="employment-contract-form"/>
-	</action-view>
-	
-	<menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
+	<menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
+			  if="__config__.app.getApp('employee').getLunchVoucher()"/>
 	
 	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
     	<view type="grid" name="lunch-voucher-mgt-grid"/>
 	    <view type="form" name="lunch-voucher-mgt-form"/>
 	</action-view>
 	
-	<menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
+	<menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt" title="Employee bonus mgt" action="employee.bonus.mgt.all"
+			  if="__config__.app.getApp('employee').getEmployeeBonus()"/>
 	
 	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
     	<view type="grid" name="employee-bonus-mgt-grid"/>
@@ -81,7 +84,8 @@
 	    <view type="form" name="employment-contract-template-form"/>
 	</action-view>
 	
-	<menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
+	<menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf" title="Employee bonus type" action="employee.bonus.type.all"
+			  if="__config__.app.getApp('employee').getEmployeeBonus()"/>
 	
 	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
     	<view type="grid" name="employee-bonus-type-grid"/>
@@ -169,7 +173,7 @@
 	
 	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
 		
-	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" />
+	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" action="leave.reason.all" />
 	
 	<action-view name="leave.reason.all" title="Leave reason"
 		model="com.axelor.apps.hr.db.LeaveReason">
@@ -344,7 +348,7 @@
 		<view type="form" name="hr-batch-form"/>
 	</action-view>
 
-	<menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="300"/>
+	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300"/>
     	
     <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager" 
     	action="hr.manager.dashboard.view"/>
