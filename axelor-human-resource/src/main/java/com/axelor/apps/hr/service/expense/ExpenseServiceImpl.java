@@ -226,9 +226,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
 		expense.setValidatedBy(AuthUtils.getUser());
 		expense.setValidationDate(generalService.getTodayDate());
-		
-		expenseRepository.save(expense);
-		
+		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+		expense.setPaymentMode(paymentMode);
+
 	}
 	
 	
@@ -393,9 +393,14 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	public void addPayment(Expense expense) throws AxelorException {
 		expense.setPaymentDate(new LocalDate());
 		
-		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
-		expense.setPaymentMode(paymentMode);
-		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
+		PaymentMode paymentMode = expense.getPaymentMode();
+
+		if (paymentMode == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE),
+					IException.MISSING_FIELD);
+		}
+
+		if (paymentMode.getGenerateBankOrder()) {
 			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
 		}
 		
