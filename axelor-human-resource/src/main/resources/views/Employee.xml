@@ -86,13 +86,15 @@
 				<field name="timeLoggingPreferenceSelect" colSpan="4"/>
 				<field name="product" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 				<field name="timesheetReminder" colSpan="4"/>
-				<panel-dashlet action="action-hr-view-user-timesheets" colSpan="12"/>
+				<panel-dashlet action="action-employee-view-user-timesheets"
+							   colSpan="12"/>
 			</panel>
 	       	<panel name="lunchVoucher" title="Lunch Vouchers"
 				   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
 	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
 	       		<button name="addLunchVoucherAdvance" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
-	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
+	       		<panel-dashlet title="Lunch Vouchers" colSpan="12"
+							   action="action-employee-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
@@ -100,7 +102,8 @@
 						   grid-view="kilometric-log-grid"
 						   form-view="kilometric-log-form" readonly="true"
 						   if="__config__.app.isApp('timesheet')"/>
-	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses"
+	       	<panel-dashlet action="employee.dashlet.employee.bonus"
+						   title="Bonuses"
 						   colSpan="12" readonly="true"
 						   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"/>
 	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
@@ -126,20 +129,23 @@
 		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
 	</action-record>
 	
-	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
+	<action-view name="action-employee-user-show-employee" title="Employee"
+				 model="com.axelor.apps.hr.db.Employee">
 	    <view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	    <context name="_showRecord" expr="eval:employee?.id"/>
 	</action-view>
 	
-	<action-view name="action-hr-view-show-lunch-voucher" title="Lunch Vouchers" model="com.axelor.apps.hr.db.LunchVoucherMgtLine">
+	<action-view name="action-employee-view-show-lunch-voucher"
+				 title="Lunch Vouchers" model="com.axelor.apps.hr.db.LunchVoucherMgtLine">
 		<view type="grid" name="lunch-voucher-mgt-line-employee-grid"/>
 		<view type="form" name="lunch-voucher-mgt-line-form"/>
 		<domain>self.employee.id = :employeeId</domain>
 		<context name="employeeId" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="hr.dashlet.employee.bonus" title="Bonuses" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
+	<action-view name="employee.dashlet.employee.bonus" title="Bonuses"
+				 model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
 		<view type="grid" name="employee-bonus-mgt-line-employee-grid"/>
 		<view type="form" name="employee-bonus-mgt-line-employee-form"/>
 		<domain>self.employee.id = :employeeId</domain>
@@ -155,7 +161,7 @@
  	  	<view-param name="width" value="800"/>
 	</action-view>
 
-	<action-view name="action-hr-view-user-timesheets" title="Timesheets"
+	<action-view name="action-employee-view-user-timesheets" title="Timesheets"
 				 model="com.axelor.apps.hr.db.Timesheet">
 		<view type="grid" name="my-timesheets-grid"/>
 		<view type="form" name="timesheet-form"/>
