@@ -77,6 +77,12 @@
         <option value="2">Miscellaneous Amendment</option>
         <option value="3">Extension and Miscellaneous Amendment</option>
     </selection>
+
+	<selection name="hr.employment.contract.status">
+		<option value="1">In Trial</option>
+		<option value="2">Active</option>
+		<option value="3">Closed</option>
+	</selection>
     
     <selection name="hr.employment.contract.contract.type.select">
         <option value="1">Fixed-term full-time</option>
