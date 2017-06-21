@@ -36,6 +36,13 @@ public class HRConfigService {
 		if(hrConfig == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG), company.getName()),IException.CONFIGURATION_ERROR);
 		}
+
+		if (hrConfig.getExpenseSequence() == null) {
+			throw new AxelorException(
+					String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), company.getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+
 		return hrConfig;
 	}
 	
