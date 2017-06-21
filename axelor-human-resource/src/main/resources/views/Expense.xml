@@ -49,7 +49,9 @@
 	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
-	    	<button name="cancelPaymentButton" title="Cancel payment" showIf="paymentStatusSelect == 1 || paymentStatusSelect == 3"/>
+	    	<button name="cancelPaymentButton" title="Cancel payment"
+					showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3) &amp;&amp; !bankOrder"
+					onClick="action-expense-method-cancel-payment"/>
 	    </panel>
 		<panel>
 			<field name="expenseSeq"/>
@@ -205,6 +207,10 @@
 	
 	<action-method name="action-expense-method-add-payment">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="addPayment"/>
+	</action-method>
+
+	<action-method name="action-expense-method-cancel-payment">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancelPayment"/>
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">

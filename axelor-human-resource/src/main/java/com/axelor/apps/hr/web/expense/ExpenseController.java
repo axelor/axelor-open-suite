@@ -326,6 +326,22 @@ public class ExpenseController {
 			response.setException(e);
 		}
 	}
+
+	/**
+	 * Called on clicking cancelPaymentButton, call {@link ExpenseService#cancelPayment(Expense)}.
+	 * @param request
+	 * @param response
+	 */
+	public void cancelPayment(ActionRequest request, ActionResponse response) {
+		Expense expense = request.getContext().asType(Expense.class);
+		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+		try {
+			expenseServiceProvider.get().cancelPayment(expense);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+		}
+	}
 	
 	//sending expense and sending mail to manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
