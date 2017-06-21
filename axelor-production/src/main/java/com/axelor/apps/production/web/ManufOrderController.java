@@ -217,4 +217,12 @@ public class ManufOrderController {
 		response.setReload(true);
 	}
 
+	public void updateQty(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
+		ManufOrder newManufOrder = manufOrderService.updateQty(manufOrder);
+		response.setReload(true);
+		response.setCanClose(true);
+	}
+
 }
