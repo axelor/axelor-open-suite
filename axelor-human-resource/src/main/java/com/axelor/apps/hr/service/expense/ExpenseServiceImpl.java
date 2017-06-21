@@ -394,6 +394,12 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expense.setPaymentDate(new LocalDate());
 		
 		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+
+		if (paymentMode == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_NO_OUT_PAYMENT_MODE),
+					expense.getUser().getPartner().getFullName()), IException.CONFIGURATION_ERROR);
+		}
+
 		expense.setPaymentMode(paymentMode);
 		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
 			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
