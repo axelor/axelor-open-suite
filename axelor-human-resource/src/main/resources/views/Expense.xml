@@ -96,7 +96,7 @@
 			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
 			<field name="paymentStatusSelect" colSpan="4"/>
 			<field name="paymentDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4"/>
-			<field name="paymentMode" hidden="true" colSpan="4" showIf="paymentMode"/>
+			<field name="paymentMode" hidden="true" colSpan="4" showIf="paymentMode" readonlyIf="$contains([1, 3], paymentStatusSelect)"/>
 			<field name="bankOrder" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; paymentMode &amp;&amp; paymentMode.generateBankOrder" colSpan="4"/>
 		    <field name="ventilated" hidden="true" title="Expense Ventilated" readonly="true" colSpan="4" showIf="ventilated"/>
 		</panel>
