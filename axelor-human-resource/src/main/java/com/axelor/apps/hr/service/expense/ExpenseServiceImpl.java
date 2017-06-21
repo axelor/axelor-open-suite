@@ -404,6 +404,17 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expenseRepository.save(expense);
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancelPayment(Expense expense) throws AxelorException {
+		expense.setPaymentDate(null);
+		expense.setBankOrder(null);
+		expense.setPaymentAmount(BigDecimal.ZERO);
+
+		expense.setPaymentMode(null);
+		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+	    expenseRepository.save(expense);
+	}
+
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();

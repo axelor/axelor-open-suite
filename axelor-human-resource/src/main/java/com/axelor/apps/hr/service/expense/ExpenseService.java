@@ -68,6 +68,15 @@ public interface ExpenseService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addPayment(Expense expense) throws AxelorException;
 
+	/**
+	 * Cancel the payment in the expense in argument.
+     * Revert the payment status and clear all payment fields.
+	 * @param expense
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancelPayment(Expense expense) throws AxelorException;
+
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException;
