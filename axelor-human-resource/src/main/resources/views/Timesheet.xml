@@ -74,9 +74,13 @@
 			<field name="$logTime" type="decimal"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
-		<panel-dashlet action="action-timesheet-line-method-show-timesheet-line-editor" if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetLineEditor()" height="365"/>
-		<panel-related field="timesheetLineList"  height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()" x-can-copy="true" if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetLineEditor())"/>
-		<panel-related field="timesheetLineList" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" x-can-copy="true" if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetLineEditor())"/>
+		<panel>
+			<field name="showEditor" widget="boolean-switch"  colSpan="2"/>
+			<button name="fullScreenEditor" colSpan="3" title="Open fullscreen editor" showIf="showEditor" onClick="action-timesheet-line-method-show-timesheet-line-editor"/>
+			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-line-method-show-timesheet-line-editor" showIf="showEditor" height="365"/>
+			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly()" x-can-copy="true"/>
+			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly()" x-can-copy="true" />
+		</panel>
 		<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
 		<panel colSpan="12" showIf="sentDate != null">
 		 	<field name="sentDate"/>
