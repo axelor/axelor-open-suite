@@ -332,8 +332,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			taxTotal = taxTotal.add(exTaxTotal);
 		}
 
-		MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, moveDate, moveDate, moveLineId++, "");
-		moveLines.add(moveLine);
+		if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {
+			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, moveDate, moveDate, moveLineId++, "");
+			moveLines.add(moveLine);
+		}
 
 		move.getMoveLineList().addAll(moveLines);
 
