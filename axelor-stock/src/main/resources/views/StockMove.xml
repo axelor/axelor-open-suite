@@ -77,6 +77,8 @@
 	      <field name="realDate" colSpan="6"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" form-view="address-partner-address-form"/>
 	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+	      <field name="isWithReturnSurplus" colSpan="3"/>
+	      <field name="isWithBackorder" colSpan="3"/>
 		</panel>
 	  </panel>
 	  <panel-tabs>
@@ -86,8 +88,6 @@
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
-   	      <field name="isWithReturnSurplus" colSpan="3"/>
-	      <field name="isWithBackorder" colSpan="3"/>
 	    </panel>
 	  </panel-tabs>
 	  
