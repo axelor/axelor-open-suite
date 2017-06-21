@@ -11,6 +11,16 @@
         <field name="minQty"/>
         <field name="price" x-scale="2" />
     </grid>
+
+	<grid name="supplier-catalog-partner-grid" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog">
+		<field name="product.code"/>
+		<field name="product.name"/>
+		<field name="productSupplierName"/>
+		<field name="productSupplierCode"/>
+		<field name="updateDate"/>
+		<field name="minQty"/>
+		<field name="price" x-scale="2" />
+	</grid>
     
     <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog"
 		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
@@ -27,6 +37,22 @@
 		</panel>
 		<panel-related field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
     </form>
+
+	<form name="supplier-catalog-partner-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog"
+		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
+		<panel name="main" colSpan="12">
+			<field name="product" form-view="product-form" grid-view="product-grid"/>
+			<field name="updateDate"/>
+			<field name="productSupplierName"/>
+			<field name="productSupplierCode"/>
+			<field name="minQty"/>
+			<field name="price"/>
+		</panel>
+		<panel name="description" title="Description" colSpan="12">
+			<field name="description" showTitle="false" colSpan="12"/>
+		</panel>
+		<panel-related field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
+	</form>
 
     <action-attrs name="action-supplier-catalog-attrs-init">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>

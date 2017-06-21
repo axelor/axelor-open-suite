@@ -213,6 +213,7 @@
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
 				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
 			</panel>
+			<panel-related field="supplierCatalogList" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
 		</panel-tabs>
 		<panel>
 			<field name="partnerAttrs" colSpan="12" />
