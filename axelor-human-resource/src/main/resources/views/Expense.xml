@@ -97,7 +97,7 @@
 			<field name="paymentStatusSelect" colSpan="4"/>
 			<field name="paymentDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4"/>
 			<field name="paymentMode" hidden="true" colSpan="4" showIf="paymentMode"/>
-			<field name="bankOrder" showIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+			<field name="bankOrder" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; paymentMode &amp;&amp; paymentMode.generateBankOrder" colSpan="4"/>
 		    <field name="ventilated" hidden="true" title="Expense Ventilated" readonly="true" colSpan="4" showIf="ventilated"/>
 		</panel>
 		<panel sidebar="true" readonly="true"  colSpan="4">  
