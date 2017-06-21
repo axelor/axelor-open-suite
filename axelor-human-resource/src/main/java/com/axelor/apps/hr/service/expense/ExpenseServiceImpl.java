@@ -342,8 +342,8 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 		moveService.getMoveValidateService().validateMove(move);
 
-		HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(expense.getCompany());
-		setExpenseSeq(expense, Beans.get(HRConfigService.class).getExpenseSequence(hrConfig));
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
 
 		expense.setMove(move);
 		expense.setVentilated(true);
