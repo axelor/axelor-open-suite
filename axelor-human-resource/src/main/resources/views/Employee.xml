@@ -19,7 +19,7 @@
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
 		<toolbar>
-			<button name="annualReport" title="Show annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
@@ -104,7 +104,7 @@
 	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
 		<panel>
 			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
-			<button name="showAnnualReport" title="Show annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
 	
