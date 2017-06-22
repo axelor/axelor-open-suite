@@ -25,7 +25,16 @@ import com.axelor.exception.AxelorException;
 public interface LunchVoucherMgtLineService {
 	
 	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
-	
+
+	/**
+	 * Set the lunch voucher format in the line.
+	 * If the format in employee is null, uses format from HR configuration.
+	 * @param employee
+	 * @param lunchVoucherMgt
+	 *@param lunchVoucherMgtLine  @throws AxelorException
+	 */
+	void fillLunchVoucherFormat(Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
+
 	public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
 
 	public void computeAllAttrs(Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine);
