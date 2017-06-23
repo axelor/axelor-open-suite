@@ -51,7 +51,7 @@
 			    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-				<field name="fromDate" onChange="action-timesheet-validate-fromDate"/>
+				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
 				<field name="toDate" onChange="action-timesheet-validate-toDate"/>
 			</panel>
 		    <panel name="actions" title="Actions" colSpan="4"  itemSpan="12">
@@ -145,6 +145,7 @@
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
+		<action name="action-timesheet-record-to-date" if="fromDate != null"/>
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 	</action-group>
@@ -165,6 +166,11 @@
 	<action-record name="action-timesheet-record-default-generation-date" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="$fromGenerationDate" expr="eval:fromDate"/>
 	    <field name="$toGenerationDate" expr="eval:toDate" if="toDate != null"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
+		<field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">

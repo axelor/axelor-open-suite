@@ -182,4 +182,10 @@
 		<option value="3">Cohabitee</option>
 	</selection>
 	
+	<selection name="hr.timesheet.default.end.format" >
+		<option value="0">None</option>
+		<option value="1">End of the week</option>
+		<option value="2">End of month</option>
+	</selection>
+	
 </object-views>

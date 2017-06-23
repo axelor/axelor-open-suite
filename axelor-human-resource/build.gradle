@@ -17,3 +17,10 @@ dependencies {
 	compile project(":modules:axelor-crm")
 	compile project(":modules:axelor-bank-payment")
 }
+
+task copyWebapp(type: Copy) {
+	destinationDir = file(rootProject.buildDir)
+	into("webapp/hr") {
+		from "src/main/webapp"
+	}
+}
