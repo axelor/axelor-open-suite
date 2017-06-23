@@ -262,7 +262,7 @@ public class AppServiceImpl implements AppService {
 		if (type == null) {
 			return null;
 		}
-		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).fetchOne();
+		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).cacheable().fetchOne();
 	}
 
 	@Override
