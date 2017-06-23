@@ -50,6 +50,10 @@
 
 		<boolean name="manageProductVariants" title="Manage product variants"/>
 		
+		<boolean name="enterpriseCommunication" title="Messaging" default="true"/>
+		
+		<boolean name="document" title="Documents" default="true" />
+		
 		
 		<extra-code>
 	   		<![CDATA[

@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 		for (SaleOrder saleOrder : saleOrderList) {
 			sum = sum.add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced()));
 		}
-		accountingSituation.setUsedCredit(accountingSituation.getBalanceCustAccount().add(sum));
+		sum = accountingSituation.getBalanceCustAccount().add(sum);
+		accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_EVEN));
 
 		return accountingSituation;
 	}
