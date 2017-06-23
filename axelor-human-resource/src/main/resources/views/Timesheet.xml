@@ -42,7 +42,7 @@
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project,action-timesheet-attrs-from-date,save" canNew="false"
-	    onSave="action-timesheet-validate-toDate" canCopy="false">
+	    onSave="action-timesheet-validate-toDate,action-timesheet-attrs-refresh-editor" canCopy="false">
 	    <toolbar>
 	    	<button name="printTimesheet" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-timesheet"/>
 	    </toolbar>
@@ -78,7 +78,7 @@
 				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 		    </panel>
-			<field name="fromDate" onChange="action-timesheet-validate-fromDate"/>
+			<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate"/>
 	    </panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
@@ -87,11 +87,15 @@
 			<field name="$project" title="Project" target="com.axelor.apps.project.db.Project" domain="self.imputable=true" type="many-to-one" form-view="project-form" grid-view="project-grid" onSelect="action-hr-timesheet-attrs-domain-project" onChange="action-hr-timesheet-record-empty-product"/>
 			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
-			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
+			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
 		</panel>
-		<panel-dashlet action="action-timesheet-line-method-show-timesheet-line-editor" if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetLineEditor()" height="365"/>
-		<panel-related field="timesheetLineList"  height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()" x-can-copy="true" if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetLineEditor())"/>
-		<panel-related field="timesheetLineList" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" x-can-copy="true" if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetLineEditor())"/>
+		<panel>
+			<field name="showEditor" widget="boolean-switch"  colSpan="2" onChange="action-timesheet-attrs-refresh-editor"/>
+			<button name="fullScreenEditor" colSpan="3" title="Open fullscreen editor" showIf="showEditor" onClick="action-timesheet-line-method-show-timesheet-line-editor"/>
+			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-line-method-show-timesheet-line-editor" showIf="showEditor" height="365"/>
+			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly()" x-can-copy="true"/>
+			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly()" x-can-copy="true" />
+		</panel>
 		<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
 		<panel showIf="sentDate != null" sidebar="true" stacked="true">
 		 	<field name="sentDate"/>
@@ -156,6 +160,7 @@
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
+		<action name="action-timesheet-record-to-date" if="fromDate != null"/>
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 	</action-group>
@@ -176,6 +181,11 @@
 	<action-record name="action-timesheet-record-default-generation-date" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="$fromGenerationDate" expr="eval:fromDate"/>
 	    <field name="$toGenerationDate" expr="eval:toDate" if="toDate != null"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
+		<field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">
@@ -242,6 +252,10 @@
 	
 	<action-attrs name="action-timesheet-attrs-from-date">
 		<attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-refresh-editor">
+		<attribute name="refresh" for="timesheetLineEditor" expr="eval:true"/>
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">

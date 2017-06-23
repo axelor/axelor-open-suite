@@ -67,6 +67,8 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -105,6 +107,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected TemplateMessageService  templateMessageService;
+	
+	@Inject
+	private ProjectRepository projectRepo;
+	
+	@Inject
+	private UserRepository userRepo;
 
 	
 	@Override
@@ -273,7 +281,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
-				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
+				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek().getValue()))){
 					dayPlanningCurr = dayPlanning;
 					break;
 				}
@@ -655,8 +663,35 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		}
 	}
-
-
+	
+	@Override
+	public List<Map<String,Object>> createDefaultLines(Timesheet timesheet) {
+		
+		List<Map<String,Object>> lines =  new ArrayList<Map<String,Object>>();
+		User user = timesheet.getUser();
+		if (user == null || timesheet.getFromDate() == null) {
+			return lines;
+		}
+		
+		user = userRepo.find(user.getId());
+		
+		Employee employee = user.getEmployee();
+		if (employee == null || employee.getProduct() == null) {
+			return lines;
+		}
+		
+		List<Project> projects = projectRepo.all().filter("self.membersUserSet.id = ?1 and "
+				+ "self.imputable = true and self.excludeTimesheetEditor = false "
+				+ "and self.statusSelect != 3", user.getId()).fetch();
+		
+		for (Project project : projects) {
+			TimesheetLine line = createTimesheetLine(project, employee.getProduct(), user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
+			lines.add(Mapper.toMap(line));
+		}
+		
+		
+		return lines;
+		
+	}
+	
 }
-
-

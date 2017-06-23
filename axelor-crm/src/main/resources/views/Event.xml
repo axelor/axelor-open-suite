@@ -110,8 +110,7 @@
 			<field name="callTypeSelect"  showIf="typeSelect == 1" />
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid" />
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
-			<field name="statusSelect" hidden="true" showIf="!typeSelect"/>
-			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2" />
+			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 5" />
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
  			<field name="limitDateT" showIf="typeSelect == 4"/>
 		</panel>
@@ -121,6 +120,8 @@
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
+			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>	
+			
 		</panel>
 		
 		<panel>
@@ -267,7 +268,8 @@
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
-    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    	<field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
+    	<field name="typeSelect" expr="eval:5" if="_typeSelect == null"/>
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>

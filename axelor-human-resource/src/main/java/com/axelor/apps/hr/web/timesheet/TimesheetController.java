@@ -60,7 +60,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
@@ -374,7 +373,8 @@ public class TimesheetController {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
 		response.setView(ActionView
-				.define(I18n.get("Timesheet lines"))
-				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
+				.define(I18n.get("Timesheet Lines"))
+				.add("html", "hr/timesheet?timesheetId=" + timesheet.getId()).map());	
 	}
+	
 }

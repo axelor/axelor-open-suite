@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="vehicle-contract-grid" title="Vehicle Contract" model="com.axelor.apps.fleet.db.VehicleContract">
+       <field name="name" />
+       <field name="dateStart" />
+       <field name="expiryDate" />
+       <field name="typeSelect" />
+       <field name="insurerPartner" />
+    </grid>
+    
+    <form name="vehicle-contract-form" title="Vehicle Contract" model="com.axelor.apps.fleet.db.VehicleContract" width="large" >
+       <panel>
+     		<field name="statusSelect" colSpan="12" widget="NavSelect"/>
+     		<field name="name" />
+     		<field name="vehicle" title="Vehicle">
+      			<editor>
+        			<field name="name"/>
+        			<field name="vehicleOdometer"/>
+      			</editor>
+    		</field>
+    		<panel title="Contract details" itemSpan="12">
+	     		<field name="typeSelect"/>
+	     		<field name="activationCost"/>
+	     		<field name="costFrequencySelect"/>	
+	   		</panel>
+	  		<panel itemSpan="12">
+	   			<field name="invoiceDate"/>
+	   			<field name="dateStart"/>
+	   			<field name="expiryDate"/>
+	   		</panel>
+	   		<panel itemSpan="12">
+	   			<field name="insurerPartner"/>
+	   			<field name="purchaserPartner"/>
+	   			<field name="reference"/>
+	   		</panel>
+	   </panel>
+	   <panel-tabs>
+			<panel-related field="vehicleService" title="Included Services" colSpan="12">
+				<field name="serviceType"/>
+				<field name="cost"/>
+			</panel-related>
+			<panel title="Terms and Conditions">
+				<field name="notes" widget="html" colSpan="12" showTitle="false" />
+			</panel>
+			<panel title="Recurring Cost Generated">
+				<field name="recurringCost" colSpan="12"/>
+			</panel>
+	   </panel-tabs>
+    </form>
+     
+</object-views>
