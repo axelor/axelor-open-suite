@@ -8,6 +8,9 @@
 		
 		<decimal name="dailyWorkHours" title="Daily work hours"/>
 		<boolean name="advanceManagement" default="true" />
+		<boolean name="payrollPreparation" title="Payroll preparation"/>
+		<boolean name="lunchVoucher" title="Lunch Voucher"/>
+		<boolean name="employeeBonus" title="Employee bonus"/>
 		
 		<extra-code>
    		<![CDATA[

@@ -9,6 +9,7 @@
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="amendmentTypeSelect"/>
+		<field name="status"/>
     </grid>
 	
     <grid name="employment-contract-employee-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
@@ -18,16 +19,19 @@
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="amendmentTypeSelect"/>
+		<field name="status"/>
     </grid>
 
     <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new">
         <toolbar>
             <button name="createAmendment" title="Create amendment" onClick="save,action-employment-contract-method-addAmendment" hidden="true"/>
             <button name="editContractWordML" title="Print contract" onClick="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
-        	<button name="generatePayrollPreparation" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"/>
+        	<button name="generatePayrollPreparation" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"
+					if="__config__.app.getApp('employee').getPayrollPreparation()"/>
         </toolbar>
         <panel-stack>
 			<panel>
+				<field name="status" colSpan="12" widget="NavSelect" canEdit="true"/>
 			  <field name="employee" canSuggest="false" hideIf="$popup()" requiredIf="!$popup()"/>
 			  <field name="payCompany" canSuggest="false"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="vehicle-fuel-log-grid" title="Vehicle Fuel" model="com.axelor.apps.fleet.db.VehicleFuelLog">
+		<field name="liter" />
+		<field name="pericePerLiter" />
+		<field name="date" />
+    </grid>
+	
+	<form name="vehicle-fuel-log-form" title="Vehicle Fuel" model="com.axelor.apps.fleet.db.VehicleFuelLog" width="large" >
+		 <panel>
+		  	<panel colSpan="12">
+    			<field name="vehicle" title="Vehicle">
+      				<editor>
+        				<field name="name"/>
+        				<field name="vehicleOdometer"/>
+      				</editor>
+    			</field>
+      		</panel>
+    		<panel title="Information">
+		  		<field name="purchasePartner"/>
+		  	    <field name="invocieRef"/>
+		  	    <field name="vendorPartner"/>
+		  	    <field name="date"/>
+		  	</panel>
+		  	<panel title="Refueling details">
+		  		<field name="liter" onChange="action-method-calculate-total-price"/>
+		  	    <field name="pericePerLiter" onChange="action-method-calculate-total-price"/>
+		  	    <field name="totalPrice"/>
+		  	</panel>
+     	 </panel>
+     	 <panel>
+      		<field name="notes" colSpan="12"/>
+    	</panel>
+   </form>
+   
+   <action-method name="action-method-calculate-total-price">
+   	<call class="com.axelor.apps.fleet.web.VehicleFuelLogController" method="calculateTotalPrice"/>
+   </action-method>
+   
+ </object-views>

@@ -39,7 +39,7 @@ public class CampaignController {
 		Campaign campaign = request.getContext().asType(Campaign.class);
 		campaign = campaignRepo.find(campaign.getId());
 		
-		if (campaign.getTargetListSet().isEmpty()) {
+		if (campaign.getTargetModelSet().isEmpty()) {
 			response.setFlash(I18n.get("Please select target"));
 			return;
 		}
@@ -54,5 +54,20 @@ public class CampaignController {
 		}
 		
 		response.setValue("emailLog", logFile);
+	}
+	
+	public void generateEvents(ActionRequest request, ActionResponse response) {
+		
+		Campaign campaign = request.getContext().asType(Campaign.class);
+		campaign = campaignRepo.find(campaign.getId());
+		campaignService.generateEvents(campaign);
+	}
+	
+	public void generateTargets(ActionRequest request, ActionResponse response) {
+		
+		Campaign campaign = request.getContext().asType(Campaign.class);
+		campaign = campaignRepo.find(campaign.getId());
+		campaignService.generateTargets(campaign);
+		response.setReload(true);
 	}
 }

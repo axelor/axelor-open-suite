@@ -194,8 +194,9 @@ public class FilterService {
 		String conditionField = null;
 		String typeName =  null;
 		
+		boolean isJson = filter.getIsJson() != null && filter.getIsJson();
 		MetaJsonField json = filter.getMetaJsonField();
-		if (filter.getIsJson()) {
+		if (isJson) {
 			fieldName = json.getModelField() + ",'" + json.getName() + "'";
 			conditionField = getJsonJpql(json) + "(self." + fieldName + ")";
 			typeName = json.getType().toUpperCase();
@@ -209,7 +210,7 @@ public class FilterService {
 		
 		if (paramName == null) {
 			paramName = fieldName;
-			if (filter.getIsJson()) {
+			if (isJson) {
 				paramName = json.getName();
 			}
 		}
@@ -225,13 +226,13 @@ public class FilterService {
 
 		value = getTagValue(value, true);
 
-		if (filter.getIsParameter()) {
+		if (filter.getIsParameter() != null && filter.getIsParameter()) {
 			value = ":" + paramName;
 			if (typeName.equals("STRING")) {
 				value = "CONCAT('%',LOWER(" + value + "),'%')";
 			}
 		}
-
+		
 		switch (operator) {
 			case "=":
 				if (typeName.equals("STRING")) {
@@ -278,8 +279,8 @@ public class FilterService {
 		String conditionField = null;
 		String typeName =  null;
 		
-		MetaJsonField json = filter.getMetaJsonField();
 		if (filter.getIsJson()) {
+			MetaJsonField json = filter.getMetaJsonField();
 			conditionField = "cast(self." + json.getModelField() + "->>'" + json.getName() + "' as " + getSqlType(json.getType()) + ")";
 			typeName = json.getType().toUpperCase();
 		}
@@ -300,7 +301,7 @@ public class FilterService {
 
 		value = getTagValue(value, true);
 
-		if (filter.getIsParameter()) {
+		if (filter.getIsParameter() != null && filter.getIsParameter()) {
 			value = ":param" + filter.getId();
 			if (typeName.equals("STRING")) {
 				value = "CONCAT('%',LOWER(" + value + "),'%')";
@@ -376,7 +377,7 @@ public class FilterService {
 		MetaField metaField = filter.getMetaField();
 		MetaJsonField metaJson = filter.getMetaJsonField();
 		
-		boolean json = filter.getIsJson();
+		boolean json = filter.getIsJson() != null ? filter.getIsJson() : false;
 		
 		String fieldName = json ? metaJson.getName() : metaField.getName();
 		if (paramName == null) {
@@ -391,7 +392,7 @@ public class FilterService {
 //			Object targetField = getTargetField(metaField,
 //					filter.getTargetField()).get(1);
 ////		}
-		Boolean isParam = filter.getIsParameter();
+		Boolean isParam = filter.getIsParameter() != null ? filter.getIsParameter() : false;
 
 		String operator = filter.getFilterOperator().getValue();
 
@@ -399,7 +400,7 @@ public class FilterService {
 			value = ":" + paramName;
 			// conditionField = "self." + fieldName;
 		}
-
+		
 		switch (operator) {
 			case "=":
 				if (targetType.equals("STRING") && !isParam) {
@@ -593,15 +594,15 @@ public class FilterService {
 
 		String likeCondition = null;
 
-		conditionField = "LOWER(" + conditionField + ")";
+//		conditionField = "LOWER(" + conditionField + ")";
 
 		String likeOpr = "LIKE";
 		if (!isLike) {
 			likeOpr = "NOT LIKE";
 		}
-
+		
 		if (value.contains(",")) {
-			for (String val : Arrays.asList(value.split(";"))) {
+			for (String val : Arrays.asList(value.split(","))) {
 				if (likeCondition == null) {
 					likeCondition = conditionField + " " + likeOpr + " " + val;
 				} else {
@@ -641,11 +642,12 @@ public class FilterService {
 			if (filters == null) {
 				filters = condition;
 			} else {
-				String opt = filter.getLogicOp() == 0 ? " AND " : " OR ";
+				String opt = filter.getLogicOp() != null && filter.getLogicOp() == 0 ? " AND " : " OR ";
 				filters = filters + opt + condition;
 			}
 		}
-
+		
+		log.debug("JPQL filter: {}", filters);
 		return filters;
 
 	}
@@ -748,8 +750,10 @@ public class FilterService {
 		if (subField != null) {
 			String target = "target" + joinCount;
 			String source = count == 1 ? "self" : "target" + (joinCount - 1);
-			joins.add("left join " + metaModel.getTableName() + target + " on (" + target + ".id = " + source + "." + metaField.getName() );
-			joinCount++;
+			if (joins != null) {
+				joins.add("left join " + metaModel.getTableName() + target + " on (" + target + ".id = " + source + "." + metaField.getName() );
+				joinCount++;
+			}
 			if (subField.getRelationship() != null && targets.size() > count + 1) {
 				return processMeta(subField, targets, count + 1, joins,  joinCount);
 			}

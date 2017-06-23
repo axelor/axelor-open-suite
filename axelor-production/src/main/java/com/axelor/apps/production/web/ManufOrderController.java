@@ -217,4 +217,23 @@ public class ManufOrderController {
 		response.setReload(true);
 	}
 
+	
+	public void printProdProcess(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+		String prodProcessId = manufOrder.getProdProcess().getId().toString();
+		String prodProcessLable = manufOrder.getProdProcess().getName().toString();
+		
+		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable+"-${date}")
+				.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+				.addParam("ProdProcessId", prodProcessId)
+				.generate()
+				.getFileLink();
+		
+		response.setView(ActionView
+				.define(prodProcessLable)
+				.add("html", fileLink).map());
+		
+	}
+	
 }
