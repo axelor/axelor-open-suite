@@ -21,12 +21,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.CostSheetService;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -35,6 +39,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 
 public class BillOfMaterialController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
 
 	@Inject
 	BillOfMaterialService billOfMaterialService;
@@ -126,5 +132,22 @@ public class BillOfMaterialController {
 				prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
 			}
 		}
+	}
+	
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+		
+		String language = billOfMaterialService.getLanguageForPrinting(billOfMaterial);
+		
+		String name = billOfMaterialService.getFileName(billOfMaterial);
+		
+		String fileLink = billOfMaterialService.getReportLink(billOfMaterial, name, language, ReportSettings.FORMAT_PDF);
+		
+		LOG.debug("Printing "+name);
+		
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 }

@@ -23,6 +23,8 @@
       
       <!-- -Json fields -->
 	  <string name="timesheetAttrs" title="Fields" json="true" />
+	  
+	  <boolean name="showEditor" title="Show editor" />
 
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

@@ -185,6 +185,9 @@
 				<panel name="notes" title="Notes" colSpan="12">
 					<field name="description" colSpan="12" height="8" showTitle="false"/>
 				</panel>
+				<panel colSpan="12">
+					<panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
+				</panel>
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
