@@ -95,7 +95,10 @@
 	<action-method name="action-expense-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAnalyticDistribution"/>
 	</action-method>
-	
+
+	<action-method name="action-kilometric-allowance-method-update-date">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateDate"/>
+	</action-method>
 	
 	<action-method name="action-expense-line-method-fill-kilometric-expense-product">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="fillKilometricExpenseProduct"/>

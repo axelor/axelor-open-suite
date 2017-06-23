@@ -38,6 +38,9 @@ import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.Vehicle;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
@@ -72,6 +75,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 	protected MoveService moveService;
 	protected ExpenseRepository expenseRepository;
+	protected ExpenseLineRepository expenseLineRepository;
 	protected MoveLineService moveLineService;
 	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected GeneralService generalService;
@@ -81,13 +85,14 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected TemplateMessageService  templateMessageService;
 	
 	@Inject
-	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
-			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
-			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
+	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
+							  AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
+							  AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
+							  HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
 		
 		this.moveService = moveService;
 		this.expenseRepository = expenseRepository;
+		this.expenseLineRepository = expenseLineRepository;
 		this.moveLineService = moveLineService;
 		this.accountManagementService = accountManagementService;
 		this.generalService = generalService;
@@ -575,5 +580,36 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		}
 
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
+	}
+
+	@Override
+	@Transactional
+	public void updateDate(ExpenseLine expenseLine) {
+		List<Vehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getVehicle();
+		LocalDate expenseDate = expenseLine.getExpenseDate();
+
+		if (vehicleList.size() == 1) {
+			Vehicle vehicle = vehicleList.get(0);
+			if (expenseDate.compareTo(vehicle.getStartDate())>0 && expenseDate.compareTo(vehicle.getEndDate())<0) {
+				expenseLine.setKilometricAllowParam(vehicle.getKilometricAllowParam());
+			} else {
+				expenseLine.setKilometricAllowParam(null);
+			}
+		} else {
+			boolean vehicleOk = false;
+			KilometricAllowParam currentkilometricAllowParam = expenseLine.getKilometricAllowParam();
+			for (Vehicle vehicle : vehicleList) {
+				if (expenseDate.compareTo(vehicle.getStartDate())>0 && expenseDate.compareTo(vehicle.getEndDate())<0 &&
+						currentkilometricAllowParam.equals(vehicle.getKilometricAllowParam())) {
+					vehicleOk = true;
+					break;
+				}
+			}
+			if (!vehicleOk) {
+				expenseLine.setKilometricAllowParam(null);
+			}
+
+			expenseLineRepository.save(expenseLine);
+		}
 	}
 }

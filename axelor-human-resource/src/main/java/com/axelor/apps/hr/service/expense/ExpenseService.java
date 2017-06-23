@@ -90,4 +90,6 @@ public interface ExpenseService  {
 	public BigDecimal computeAdvanceAmount(Expense expense);
 
 	public void setDraftSequence(Expense expense);
+
+	public void updateDate(ExpenseLine expenseLine);
 }

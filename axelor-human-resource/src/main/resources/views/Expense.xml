@@ -69,10 +69,10 @@
 		<panel-tabs>
 			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances">
-				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
+				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
-					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute" />
-					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true" />
+					<field name="expenseDate" title="Date" onChange="save,action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-date" />
+					<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-attrs-domain" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true"/>
 			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
 			        <field name="fromCity" required="true" />
 			        <field name="toCity" required="true"/>
@@ -154,6 +154,10 @@
 		<action name="action-expense-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
+
+	<action-attrs name="action-kilometric-allowance-attrs-domain">
+		<attribute for="kilometricAllowParam" name="domain" expr="eval: &quot;self.id IN (${(__repo__.of(Vehicle).all().filter('self.employee = ?1 AND ?2 &gt;= self.startDate AND ?2 &lt;= self.endDate', __parent__.user.employee, expenseDate).fetch().collect{it.kilometricAllowParam?.id}+[0]).join(',')})&quot;"/>
+	</action-attrs>
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>

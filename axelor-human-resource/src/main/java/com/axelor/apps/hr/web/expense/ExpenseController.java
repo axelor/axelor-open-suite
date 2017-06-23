@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.axelor.apps.hr.service.HRMenuValidateService;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Company;
@@ -41,10 +30,12 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -67,6 +58,15 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ExpenseController {
 
@@ -82,6 +82,8 @@ public class ExpenseController {
 	private Provider<GeneralService> generalServiceProvider;
 	@Inject
 	private Provider<ExpenseRepository> expenseRepositoryProvider;
+	@Inject
+	private Provider<ExpenseLineRepository> expenseLineRepositoryProvider;
 	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -459,8 +461,10 @@ public class ExpenseController {
 	 		expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
 	 		
 	 		Employee employee = user.getEmployee();
-	 		if(employee != null && employee.getKilometricAllowParam() != null)  {
-	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+	 		if(employee != null)  {
+	 			if (employee.getVehicle().size() == 1) {
+					expenseLine.setKilometricAllowParam(user.getEmployee().getVehicle().get(0).getKilometricAllowParam());
+				}
 	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
 	 		}
@@ -525,5 +529,15 @@ public class ExpenseController {
 		response.setValue("totalAmount", amount);
 		response.setValue("untaxedAmount", amount);
 	}
-	
+
+	@Transactional
+	public void updateDate(ActionRequest request, ActionResponse response) {
+
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		expenseLine = expenseLineRepositoryProvider.get().find(expenseLine.getId());
+
+		expenseServiceProvider.get().updateDate(expenseLine);
+
+		response.setReload(true);
+	}
 }

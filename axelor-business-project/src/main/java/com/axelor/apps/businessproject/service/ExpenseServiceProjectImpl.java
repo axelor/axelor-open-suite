@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -39,12 +40,12 @@ import com.google.inject.Inject;
 public class ExpenseServiceProjectImpl extends ExpenseServiceImpl  {
 
 	@Inject
-	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
-			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
-			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
+	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
+									 AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
+									 AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
+									 HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
 		
-		super(moveService, expenseRepository, moveLineService, accountManagementService, generalService, accountConfigService, analyticMoveLineService, hrConfigService, templateMessageService);
+		super(moveService, expenseRepository, expenseLineRepository, moveLineService, accountManagementService, generalService, accountConfigService, analyticMoveLineService, hrConfigService, templateMessageService);
 	
 	}
 
