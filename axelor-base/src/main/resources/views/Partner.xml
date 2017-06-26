@@ -502,7 +502,6 @@
 	</form>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.general.getManageCustomerCredit()"/>
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
