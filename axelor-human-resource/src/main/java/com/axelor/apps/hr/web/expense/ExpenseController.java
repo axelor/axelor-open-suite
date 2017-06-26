@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -41,6 +42,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -462,9 +464,7 @@ public class ExpenseController {
 	 		
 	 		Employee employee = user.getEmployee();
 	 		if(employee != null)  {
-	 			if (employee.getVehicle().size() == 1) {
-					expenseLine.setKilometricAllowParam(user.getEmployee().getVehicle().get(0).getKilometricAllowParam());
-				}
+	 			expenseLine.setKilometricAllowParam(expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
 	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
 	 		}
@@ -530,10 +530,31 @@ public class ExpenseController {
 		response.setValue("untaxedAmount", amount);
 	}
 
-	@Transactional
-	public void updateDate(ActionRequest request, ActionResponse response) {
+	public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response) {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-		expenseLine = expenseServiceProvider.get().updateDate(expenseLine);
-		response.setValue("kilometricAllowParam",expenseLine.getKilometricAllowParam());
+
+		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
+		boolean vehicleOk = false;
+
+		if (kilometricAllowParamList.size() == 1) {
+			expenseLine.setKilometricAllowParam(kilometricAllowParamList.get(0));
+			response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
+		} else {
+			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
+				if (currentKilometricAllowParam.equals(kilometricAllowParam)) {
+					expenseLine.setKilometricAllowParam(kilometricAllowParam);
+					vehicleOk = true;
+					break;
+				}
+			}
+			if (!vehicleOk) {
+				expenseLine.setKilometricAllowParam(null);
+				String domainKilometricAllowParamList = "self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")";
+				response.setAttr("kilometricAllowParam","domain",domainKilometricAllowParamList);
+			} else {
+				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
+			}
+		}
 	}
 }

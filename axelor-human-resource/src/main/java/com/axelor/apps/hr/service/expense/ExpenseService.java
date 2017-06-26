@@ -17,22 +17,24 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 public interface ExpenseService  {
 
@@ -91,5 +93,5 @@ public interface ExpenseService  {
 
 	public void setDraftSequence(Expense expense);
 
-	public ExpenseLine updateDate(ExpenseLine expenseLine);
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
 }

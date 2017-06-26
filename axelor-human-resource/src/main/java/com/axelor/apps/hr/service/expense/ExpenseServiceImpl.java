@@ -17,7 +17,16 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -69,7 +78,12 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExpenseServiceImpl implements ExpenseService {
 
@@ -582,43 +596,17 @@ public class ExpenseServiceImpl implements ExpenseService {
 	}
 
 	@Override
-	@Transactional
-	public ExpenseLine updateDate(ExpenseLine expenseLine) {
-		List<Vehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getVehicle();
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
+		List<Vehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getVehicleList();
 		LocalDate expenseDate = expenseLine.getExpenseDate();
+		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
 
-		if (vehicleList.size() == 1) {
-			Vehicle vehicle = vehicleList.get(0);
-			if (expenseDate.compareTo(vehicle.getStartDate()) > 0 && expenseDate.compareTo(vehicle.getEndDate()) < 0) {
-				expenseLine.setKilometricAllowParam(vehicle.getKilometricAllowParam());
-			} else {
-				expenseLine.setKilometricAllowParam(null);
-			}
-		} else {
-			boolean vehicleOk = false;
-			int counter = 0;
-			KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
-			KilometricAllowParam newKilometricAllowParam = new KilometricAllowParam();
-			for (Vehicle vehicle : vehicleList) {
-				if (expenseDate.compareTo(vehicle.getStartDate()) > 0 && expenseDate.compareTo(vehicle.getEndDate()) < 0) {
-					if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(vehicle.getKilometricAllowParam())) {
-						vehicleOk = true;
-						break;
-					} else {
-						counter++;
-						newKilometricAllowParam = vehicle.getKilometricAllowParam();
-					}
-				}
-			}
-			if (!vehicleOk) {
-				if (counter == 1) {
-					expenseLine.setKilometricAllowParam(newKilometricAllowParam);
-				} else {
-					expenseLine.setKilometricAllowParam(null);
-				}
+		for (Vehicle vehicle : vehicleList) {
+			if (expenseDate.isAfter(vehicle.getStartDate()) && expenseDate.isBefore(vehicle.getEndDate())) {
+				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}
 
-		return expenseLine;
+		return kilometricAllowParamList;
 	}
 }
