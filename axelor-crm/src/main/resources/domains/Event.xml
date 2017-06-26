@@ -10,9 +10,9 @@
 <!-- Commun   -->
 	<many-to-one name="calendarCrm" ref="com.axelor.apps.crm.db.Calendar" title="Calendar"/>
 	<integer name="importId" />
-  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2" help="true"/>
+  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2"/>
   	
-	<datetime name="limitDateT" title="Limit Date" help="true"/>
+	<datetime name="limitDateT" title="Limit Date"/>
   	
   	<long name="duration" title="Duration"/>
   	

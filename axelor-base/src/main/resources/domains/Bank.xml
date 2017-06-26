@@ -20,7 +20,7 @@
     <string name="businessPartySuffix" title="Business Party Suffix (Location Code)" min="2" max="2"/>
     <string name="branchIdentifier" title="Branch Identifier (Branch Code)" max="3"/>
     
-    <one-to-many name="bankAddressList" ref="com.axelor.apps.base.db.BankAddress" mappedBy="bank" title="SWIFT address" help="true"/>
+    <one-to-many name="bankAddressList" ref="com.axelor.apps.base.db.BankAddress" mappedBy="bank" title="SWIFT address"/>
     
     <one-to-many name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" mappedBy="bank"/>
     

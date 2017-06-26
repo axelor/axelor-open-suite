@@ -27,14 +27,14 @@
     <boolean name="isContact" title="Contact ?" default="false" />
     
     
-    <string name="languageSelect" title="Language" selection="select.language" massUpdate="true" help="true"/>
+    <string name="languageSelect" title="Language" selection="select.language" massUpdate="true"/>
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
     
     <integer name="deliveryDelay" title="Delivery delay (days)"/>
     
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
-    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" help="true" index="false"/>
+    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" index="false"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" index="false"/>
     
     <!-- From contact -->
@@ -46,13 +46,13 @@
     
     <string name="department" title="Dept./Div."/>
     
-    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to" help="true"/>
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to"/>
    
     <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails" mappedBy="partner" title="Bank Details list"/>
    
     <!--  Page règle de facturation/paiement -->
-<!--     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details" help="true"/> -->
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true" index="false"/>
+<!--     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details"/> -->
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
   	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List" index="false"/>
   	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List" index="false"/>
    
@@ -61,19 +61,19 @@
 	
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
    
-    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" help="true" index="false"/>
-	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" help="true" index="false"/>
-	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" help="true" index="false"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" index="false"/>
+	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" index="false"/>
+	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" index="false"/>
     <string name="description" title="Description"  large="true"/>
    	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector" index="false"/> 
 	<integer name="nbrEmployees" title="Employees (Nbr)"/>
 	<integer name="saleTurnover" title="Turnover"/>
-	<string name="registrationCode" title="Registration code" help="true"/>
+	<string name="registrationCode" title="Registration code"/>
 	<string name="taxNbr" title="Tax N°"/>
 	
  	<string name="fullName" title="Name" namecolumn="true"/>
 	 
-   	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" help="true"/>
+   	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
 	<many-to-one name="contactAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 	
 	<!-- -Json fields -->

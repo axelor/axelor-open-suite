@@ -9,8 +9,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml
   	<string name="name" namecolumn="true"/>
     <string name="typeSelect" title="Import type" default="csv" required="true" selection="iimport.type.select"/>
     <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
-    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile" title="Binding file" required="true" help="Configuration file" />
-    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true" help="File format can be a csv, xml, or zip depending on the binding file settings."/>
+    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile" title="Binding file" required="true" />
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true" />
     <one-to-many name="importHistoryList" ref="ImportHistory" mappedBy="importConfiguration" title="Historical"/>
     <string name="description" large="true" title="Description" />
     

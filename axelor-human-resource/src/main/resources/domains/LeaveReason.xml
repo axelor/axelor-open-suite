@@ -15,7 +15,7 @@
       
       <boolean name="payrollPreprationExport" title="Export for payroll preparation ?" />
       <string name="exportCode" title="Export code" />
-      <decimal name="defaultDayNumberGain" title="Default day number gain" help="Used with coefficient on weekly planning to define how many days are to be granted each month" />
+      <decimal name="defaultDayNumberGain" title="Default day number gain"/>
   </entity>
   
 </domain-models>

@@ -17,7 +17,7 @@
     
     <!-- LUNCH VOUCHERS MANAGEMENT -->
     
-    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers" help="Alert threshold"/>
+    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers"/>
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
 

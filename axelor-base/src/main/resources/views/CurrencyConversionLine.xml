@@ -44,8 +44,8 @@
 	  <panel name="rateUpdation" title="Rate updation">
 	    <field name="newExchangeRate" title="New exchange rate" widget="DECIMAL"/>
 	    <field name="variations" title="Variation"/>
-	    <button name="checkRate" title="Check / Update rate" help="Get new rate at present from internet" readonlyIf="startCurrency == null || endCurrency == null" onClick="action-currency-conversion-line-method-convert"/>
-	    <button name="updateRate" title="Save new rate" help="Create currency conversion lines with new rate" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null"   onClick="action-currency-conversion-line-method-apply-conversion-rate"/>
+	    <button name="checkRate" title="Check / Update rate" readonlyIf="startCurrency == null || endCurrency == null" onClick="action-currency-conversion-line-method-convert"/>
+	    <button name="updateRate" title="Save new rate" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null"   onClick="action-currency-conversion-line-method-apply-conversion-rate"/>
 	  </panel>
     </form>
     

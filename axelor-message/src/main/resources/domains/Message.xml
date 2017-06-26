@@ -7,10 +7,10 @@
   
   <entity name="Message" lang="java">
   
-  	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true" default="2" initParam="true" help="true"/>
+  	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true" default="2" initParam="true"/>
   	<string name="subject" title="Subject" initParam="true"/>
   	<string name="content" title="Content" large="true" initParam="true"/>
-	<datetime name="sentDateT" title="Sent date" readonly="true" help="true"/>
+	<datetime name="sentDateT" title="Sent date" readonly="true"/>
  	<date name="sendScheduleDate" title="Forecasted Sent Date" />
 	<string name="relatedTo1Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo1SelectId"/>
@@ -18,15 +18,15 @@
   	<integer name="relatedTo2SelectId"/>
 	<integer name="statusSelect" title="Status" selection="message.status.select" readonly="true" default="1" initParam="true"/>
 
-  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select" initParam="true" help="true"/>
-	<string name="addressBlock" large="true" multiline="true" title="Address Block" initParam="true" help="true"/>
+  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select" initParam="true"/>
+	<string name="addressBlock" large="true" multiline="true" title="Address Block" initParam="true"/>
 	
   	<!-- Email -->
   	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="From" initParam="true"/>
   	<many-to-many name="replyToEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Reply to" initParam="true" />
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To" initParam="true"/>
-  	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="true" initParam="true"/>
-  	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="true" initParam="true"/>
+  	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" initParam="true"/>
+  	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" initParam="true"/>
   	<boolean name="sentByEmail" title="Sent by email" initParam="true"/>
   	<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Mail account" initParam="true"/>
   	

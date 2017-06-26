@@ -14,8 +14,8 @@
 		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
 		
-		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false" help="Automatically finish a sale order when all of the stock moves bound to it are realised"/>
-		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false" help="Automatically finish a purchase order when all of the stock moves bound to it are realised"/>
+		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false"/>
+		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false"/>
 		
 		<boolean name="purchaseOrderGenerationAuto" title="Generate purchase orders automatically" default="false"/>
 		
