@@ -532,12 +532,8 @@ public class ExpenseController {
 
 	@Transactional
 	public void updateDate(ActionRequest request, ActionResponse response) {
-
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-		expenseLine = expenseLineRepositoryProvider.get().find(expenseLine.getId());
-
-		expenseServiceProvider.get().updateDate(expenseLine);
-
-		response.setReload(true);
+		expenseLine = expenseServiceProvider.get().updateDate(expenseLine);
+		response.setValue("kilometricAllowParam",expenseLine.getKilometricAllowParam());
 	}
 }

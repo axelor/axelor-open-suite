@@ -91,5 +91,5 @@ public interface ExpenseService  {
 
 	public void setDraftSequence(Expense expense);
 
-	public void updateDate(ExpenseLine expenseLine);
+	public ExpenseLine updateDate(ExpenseLine expenseLine);
 }
