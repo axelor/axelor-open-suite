@@ -132,15 +132,13 @@ public class SaleOrderController {
 	}
 
 	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
-
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-
+		saleOrderService.finalizeSaleOrder(saleOrder);
 		response.setReload(true);
-
 	}
-	
+
 	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
