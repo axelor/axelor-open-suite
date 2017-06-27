@@ -17,6 +17,9 @@
 		<panel>
 			<field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" />
 		</panel>
+		<panel>
+			<field name="stockMoveRealizeOrderSelect"/>
+		</panel>
     </form>
 	
 	<action-record name="action-production-config-record-default" model="com.axelor.apps.production.db.ProductionConfig">

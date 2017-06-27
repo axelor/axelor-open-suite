@@ -14,6 +14,11 @@
 		<option value="5">Standby</option>
 		<option value="6">Finished</option>	
 	</selection>
+
+	<selection name="production.manuf.order.stock.move.realize.order.select">
+		<option value="0">On Start</option>
+		<option value="1">On Finish</option>
+	</selection>
 	
 	<selection name="production.order.priority.select">
 		<option value="1">Low</option>

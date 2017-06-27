@@ -77,7 +77,7 @@ public class ManufOrderController {
 //	}
 	
 	
-	public void start (ActionRequest request, ActionResponse response) {
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Long manufOrderId = (Long)request.getContext().get("id");
 		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
