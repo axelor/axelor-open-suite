@@ -146,14 +146,36 @@
 			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
 			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish"/>
 			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
+			<button name="updateQty" title="Update quantities (Components and PF)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view"/>
 		</panel>
 	  
+	</form>
+	
+	<form title="Update quantities (Components and PF)" name="popup-manuf-order-form-update-qty" model="com.axelor.apps.production.db.CostSheetLine">
+		<panel>
+			<field name="qty" colSpan="8"/>
+			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-qty,close"/>
+		</panel>
 	</form>
 
 	<action-view name="action-manuf-order-cost-sheet-line-view-tree" title="Cost sheet line detail" model="com.axelor.apps.production.db.CostSheetLine">
 		<view type="tree" name="cost-sheet-line-tree"/>
 		<context name="_costSheetId" expr="eval: costSheet.id"/>
 	</action-view>
+	
+	<action-view name="action-manuf-order-update-qty-popup-form-view" title="Update quantities (Components and PF)" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="form" name="popup-manuf-order-form-update-qty"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="forceEdit" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+
+	<action-method name="action-manuf-order-method-update-qty">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateQty"/>
+	</action-method>
 	
 	<action-method name="action-manuf-order-method-is-to-invoice">
 		<call class="com.axelor.apps.businessproduction.web.ManufOrderBusinessController" method="propagateIsToInvoice"/>

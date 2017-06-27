@@ -389,4 +389,16 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return wasteStockMove;
 	}
 
+	@Transactional
+	public ManufOrder updateQty(ManufOrder manufOrder) {
+		manufOrder.clearToConsumeProdProductList();
+		manufOrder.clearToProduceProdProductList();
+		this.createToConsumeProdProductList(manufOrder);
+		this.createToProduceProdProductList(manufOrder);
+
+		manufOrderRepo.save(manufOrder);
+
+		return manufOrder;
+	}
+
 }
