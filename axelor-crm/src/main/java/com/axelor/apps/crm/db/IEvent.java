@@ -43,7 +43,7 @@ public interface IEvent {
 	/**
 	 * Static event status select
 	 */
-	//Status for all kind of event, except tasks and tickets
+	//Status for all kind of event, except tasks
 	static final int STATUS_PLANIFIED = 1;
 	static final int STATUS_REALIZED = 2;
 	static final int STATUS_CANCELED = 3;
@@ -55,12 +55,6 @@ public interface IEvent {
 	static final int STATUS_FINISHED = 14;
 	static final int STATUS_REPORTED = 15;
 	
-	// Status for tickets only
-	static final int STATUS_NEW = 21;
-	static final int STATUS_IN_PROGRESS = 22;
-	static final int STATUS_RESOLVED = 23;
-	static final int STATUS_FEEDBACK = 24;
-	static final int STATUS_CLOSED = 25;
 	
 	/**
 	 * Static event related to select

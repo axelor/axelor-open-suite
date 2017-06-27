@@ -22,7 +22,7 @@
        		<button name="populateRecap" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate, action-forecast-recap-method-populate"/>
        		<panel-related field="forecastRecapLineList" readonly="true" colSpan="12"/>
        		<field name="endingBalance"/>
-       		<field name="currency" help="Company's currency" readonly="true"/>
+       		<field name="currency" readonly="true"/>
        		<button name="showReport" title="Show histrogram" colOffset="6" onClick="save,action-forecast-recap-method-show-report"/>
        		<field name="isReport" hidden="true"/>
 	 	</panel>

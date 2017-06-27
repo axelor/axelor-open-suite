@@ -31,13 +31,13 @@
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
 		<field name="manufOrder.statusSelect" hidden="true"/>
-		<button name="plan" icon="fa-calendar" help="Plan"
+		<button name="plan" icon="fa-calendar"
 				onClick="action-operation-order-method-plan"
 				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-        <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel"
+        <button name="start" icon="fa-play" onClick="action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pause" icon="fa-pause" onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle"
 				onClick="action-operation-order-method-cancel,save"
 				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
@@ -54,13 +54,13 @@
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
 		<field name="manufOrder.statusSelect" hidden="true"/>
-        <button name="plan" icon="fa-calendar" help="Plan"
+        <button name="plan" icon="fa-calendar"
 				onClick="save,action-operation-order-method-plan"
 				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-        <button name="start" icon="fa-play" help="Start" onClick="save,action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="fa-pause" help="Pause" onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" help="Finish" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel"
+        <button name="start" icon="fa-play" onClick="save,action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pause" icon="fa-pause" onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle"
 				onClick="save,action-operation-order-method-cancel,save"
 				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
    		<button name="print" title="Print" icon="fa-print" onClick="save,action-operation-order-method-print"/>

@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.timesheet;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 
@@ -81,4 +82,6 @@ public interface TimesheetService {
 	public void insertTSLine(ActionRequest request, ActionResponse response);
 	public String computeFullName(Timesheet timesheet);
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
+	
+	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 }

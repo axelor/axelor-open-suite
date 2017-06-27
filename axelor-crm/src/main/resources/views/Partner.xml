@@ -7,13 +7,11 @@
 	    <panel-dashlet colSpan="12" action="action-partner-view-upcoming-events"/>
 	    <panel-dashlet colSpan="12" action="action-partner-view-historical-events-completed"/>
 	    <panel-dashlet colSpan="12" action="action-partner-view-opportunities"/>
-	    <panel-dashlet colSpan="12" action="action-partner-view-tickets"/>
 	</form>
 	
 	<form name="incl-activities-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
 	    <panel-dashlet colSpan="12" action="action-contact-view-upcoming-events"/>
 	    <panel-dashlet colSpan="12" action="action-contact-view-historical-events-completed"/>
-	    <panel-dashlet colSpan="12" action="action-contact-view-tickets"/>
 	</form>
 	
     <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
@@ -83,20 +81,5 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
    	
-   	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid"/>
-		<view type="form" name="ticket-form"/>
-		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-	
-	<action-view name="action-contact-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid"/>
-		<view type="form" name="ticket-form"/>
-		<domain>self.contactPartner.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-    	
-    
 
 </object-views>

@@ -12,7 +12,7 @@
 	    <field name="typeSelect"/>
     	<field name="move" form-view="move-form" grid-view="move-grid"/>
     	<field name="statusSelect"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="cancel" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>
     
 	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-group-new">

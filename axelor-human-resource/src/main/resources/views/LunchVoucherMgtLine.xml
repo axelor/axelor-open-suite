@@ -12,7 +12,7 @@
         <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" title="Given"/>
-        <field name="employee.lunchVoucherFormatSelect"/>
+        <field name="lunchVoucherFormatSelect"/>
         <field name="statusSelect"/>
     </grid>
     

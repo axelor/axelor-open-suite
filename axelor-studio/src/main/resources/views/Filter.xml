@@ -44,7 +44,4 @@
   	<attribute name="value" for="isJson" expr="eval:_parent?.isJson" />
   </action-attrs>
   
-  
 </object-views>
-
-

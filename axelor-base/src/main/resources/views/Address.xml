@@ -8,8 +8,8 @@
 		<button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
 		</toolbar>
 		<field name="fullName" />
-		<button name="map" icon="fa-map-marker" help="Locate" onClick="action-base-address-method-view-map" />
-		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="action-base-address-method-view-direction" />
+		<button name="map" icon="fa-map-marker" onClick="action-base-address-method-view-map" />
+		<button name="directions" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" />
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 

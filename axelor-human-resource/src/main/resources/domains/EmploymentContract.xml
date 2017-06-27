@@ -13,6 +13,7 @@
         <integer name="employmentContractVersion" title="Amendment" default="0"/>
         <integer name="amendmentTypeSelect" selection="hr.employment.contract.amendment.type.select" title="Amendment type"/>
         <date name="amendmentDate" title="Amendment Date"/>
+        <integer name="status" title="Status" selection="hr.employment.contract.status"/>
 
         <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />
         <date name="startDate" title="Start date"/>
@@ -28,7 +29,7 @@
         <many-to-one name="endOfContractReason" ref="com.axelor.apps.hr.db.EndOfContractReason" title="End of contract reason"/>
         <date name="signatureDate" title="Signature date"/>
         <string name="hoursDistribution" title="Hours distribution" large="true"/>
-        <integer name="executiveStatusSelect" selection="hr.employment.contract.executiveStatus.select" title="Status"/>
+        <integer name="executiveStatusSelect" selection="hr.employment.contract.executiveStatus.select" title="Executive Status"/>
         <decimal name="minMonthlyRemuneration" title="Min monthly remuneration"/>
         <many-to-one name="employmentContractTemplate" ref="com.axelor.apps.hr.db.EmploymentContractTemplate" title="Employment contract template" /> 
 		
@@ -66,6 +67,11 @@
             // EXECUTIVE STATUS SELECT
             public static final int EXECUTIVE_STATUS_EXECUTIVE = 1;
             public static final int EXECUTIVE_STATUS_NON_EXECUTIVE = 2;
+
+            // STATUS SELECT
+            public static final int STATUS_IN_TRIAL = 1;
+            public static final int STATUS_ACTIVE = 2;
+            public static final int STATUS_CLOSED = 3;
         ]]>
         </extra-code>
     </entity>

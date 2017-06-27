@@ -85,10 +85,12 @@ public class FilterController {
 		
 		if (target != null) {
 			if (target.get(1) instanceof MetaField) {
-				updateTarget(response, (MetaField)target.get(0));
+				updateTarget(response, (MetaField)target.get(1));
+				response.setValue("targetField", target.get(1));
 			}
 			else if (target.get(1) instanceof MetaJsonField) {
-				updateTarget(response, (MetaJsonField)target.get(0));
+				updateTarget(response, (MetaJsonField)target.get(1));
+				response.setValue("targetField", target.get(1));
 			}
 			response.setValue("targetField", target.get(0));
 		}

@@ -34,6 +34,8 @@
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
+				<field name="enterpriseCommunication" widget="boolean-switch"/>
+				<field name="document" widget="boolean-switch"/>
 			</panel>
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">
@@ -58,7 +60,7 @@
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-check-duplicate-on-new-attrs">
-		<panel-related field="$fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
+		<panel-related field="$fieldsSet" title="Fields" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
   		<panel name="main" >
     		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-base-method-show-duplicate"/>
   		</panel>

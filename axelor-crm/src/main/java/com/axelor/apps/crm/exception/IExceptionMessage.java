@@ -60,11 +60,7 @@ public interface IExceptionMessage {
 	 */
 	static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;
 	
-	/**
-	 * Ticket controller
-	 */
-	static final String TICKET_1 = /*$$(*/ "There's no configured sequence for the tickets" /*)*/;
-
+	
 	/**
 	 * Lead controller
 	 */

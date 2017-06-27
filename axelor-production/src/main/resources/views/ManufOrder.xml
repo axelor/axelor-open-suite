@@ -22,11 +22,11 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-   		<button name="pause" icon="fa-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+        <button name="plan" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+   		<button name="pause" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
@@ -46,11 +46,11 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-   		<button name="pause" icon="fa-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+        <button name="plan" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+   		<button name="pause" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
@@ -72,6 +72,7 @@
 <!--     TODO avec propagation -->
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print"/>
+			<button name="print" title="Print Production Process" icon="fa-print" onClick="save,action-production-process-method-print"/>
 		</toolbar>
 		<panel name="main">
 			<field name="manufOrderSeq" readonly="true" css="bold"/>
@@ -191,6 +192,10 @@
     
     <action-method name="action-manuf-order-method-print">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="print"/>
+	</action-method>
+
+	<action-method name="action-production-process-method-print">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess"/>
 	</action-method>
     
     <action-method name="action-manuf-order-method-start">
