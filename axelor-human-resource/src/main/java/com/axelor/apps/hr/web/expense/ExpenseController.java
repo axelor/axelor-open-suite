@@ -550,8 +550,7 @@ public class ExpenseController {
 				}
 			}
 			if (!vehicleOk) {
-				expenseLine.setKilometricAllowParam(null);
-				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
+				response.setValue("kilometricAllowParam", null);
 			} else {
 				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
 			}
