@@ -550,8 +550,7 @@ public class ExpenseController {
 			}
 			if (!vehicleOk) {
 				expenseLine.setKilometricAllowParam(null);
-				String domainKilometricAllowParamList = "self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")";
-				response.setAttr("kilometricAllowParam","domain",domainKilometricAllowParamList);
+				response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
 			} else {
 				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
 			}
