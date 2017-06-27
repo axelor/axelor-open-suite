@@ -155,13 +155,18 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
 
-	@Override
 	@Transactional
-	public void updateCustomerCreditLines(SaleOrder saleOrder) throws Exception {
+	protected void updateCustomerCreditLines(SaleOrder saleOrder) throws Exception {
 		Partner partner = saleOrder.getClientPartner();
 		if (partner != null) {
 			Beans.get(CustomerCreditLineService.class).updateLinesFromOrder(partner, saleOrder);
 		}
+	}
+
+	@Override
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		updateCustomerCreditLines(saleOrder);
+		super.finalizeSaleOrder(saleOrder);
 	}
 
 }
