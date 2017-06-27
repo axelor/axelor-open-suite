@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -93,7 +94,7 @@ public class InvoicePaymentController  {
 			response.setAttr("bankDetails", "domain", "self.id IN (0)");
 		}
 		else {
-		    String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(bankDetailsList);
+		    String idList = StringTool.getIdFromCollection(bankDetailsList);
 			response.setAttr("bankDetails", "domain", "self.id IN (" + idList + ")");
 		}
 	}

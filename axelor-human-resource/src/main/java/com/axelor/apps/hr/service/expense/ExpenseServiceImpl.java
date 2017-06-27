@@ -17,7 +17,16 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -38,6 +47,9 @@ import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.Vehicle;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
@@ -66,28 +78,35 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class ExpenseServiceImpl implements ExpenseService  {
+public class ExpenseServiceImpl implements ExpenseService {
 
 	protected MoveService moveService;
 	protected ExpenseRepository expenseRepository;
+	protected ExpenseLineRepository expenseLineRepository;
 	protected MoveLineService moveLineService;
 	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected GeneralService generalService;
 	protected AccountConfigHRService accountConfigService;
 	protected AnalyticMoveLineService analyticMoveLineService;
-	protected HRConfigService  hrConfigService;
-	protected TemplateMessageService  templateMessageService;
-	
+	protected HRConfigService hrConfigService;
+	protected TemplateMessageService templateMessageService;
+
 	@Inject
-	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
-			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
-			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
-		
+	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
+							  AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
+							  AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
+							  HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
+
 		this.moveService = moveService;
 		this.expenseRepository = expenseRepository;
+		this.expenseLineRepository = expenseLineRepository;
 		this.moveLineService = moveLineService;
 		this.accountManagementService = accountManagementService;
 		this.generalService = generalService;
@@ -95,54 +114,54 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		this.analyticMoveLineService = analyticMoveLineService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
-		
+
 	}
-	
-	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException{
-		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return expenseLine;  }
-		
+
+	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException {
+
+		if (generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE) {
+			return expenseLine;
+		}
+
 		Expense expense = expenseLine.getExpense();
 		List<AnalyticMoveLine> analyticMoveLineList = expenseLine.getAnalyticMoveLineList();
-		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
+		if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
 			analyticMoveLineList = analyticMoveLineService.generateLines(expenseLine.getUser().getPartner(), expenseLine.getExpenseProduct(), expense.getCompany(), expenseLine.getUntaxedAmount());
 			expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
 		}
-		if(analyticMoveLineList != null)  {
+		if (analyticMoveLineList != null) {
 			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
 				this.updateAnalyticMoveLine(analyticMoveLine, expenseLine);
 			}
 		}
 		return expenseLine;
 	}
-	
-	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, ExpenseLine expenseLine)  {
-		
+
+	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, ExpenseLine expenseLine) {
+
 		analyticMoveLine.setExpenseLine(expenseLine);
 		analyticMoveLine.setAmount(
 				analyticMoveLine.getPercentage().multiply(analyticMoveLine.getExpenseLine().getUntaxedAmount()
-				.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
+						.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP)));
 		analyticMoveLine.setDate(generalService.getTodayDate());
 		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
-		
+
 	}
-	
-	public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) throws AxelorException{
+
+	public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) throws AxelorException {
 		List<AnalyticMoveLine> analyticMoveLineList = null;
 		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
-		if(analyticMoveLineList != null)  {
-			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList)  {
+		if (analyticMoveLineList != null) {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
 				analyticMoveLine.setExpenseLine(expenseLine);
 			}
 		}
 		expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
 		return expenseLine;
 	}
-	
-	
-	
-	
-	public Expense compute (Expense expense){
+
+
+	public Expense compute(Expense expense) {
 
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal taxTotal = BigDecimal.ZERO;
@@ -150,22 +169,22 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
 		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
 
-		if(expenseLineList != null)  {
+		if (expenseLineList != null) {
 			for (ExpenseLine expenseLine : expenseLineList) {
-			    //if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
+				//if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
 				//so we ignore it, it will be taken into account in the next loop.
-			    if (expenseLine.getDistance() == null || expenseLine.getDistance().equals(BigDecimal.ZERO)) {
+				if (expenseLine.getDistance() == null || expenseLine.getDistance().equals(BigDecimal.ZERO)) {
 					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
 					taxTotal = taxTotal.add(expenseLine.getTotalTax());
 					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
 				}
 			}
 		}
-		if(kilometricExpenseLineList != null) {
+		if (kilometricExpenseLineList != null) {
 			for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
-                exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
-                taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
-                inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
+				exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
+				taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
+				inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
 			}
 		}
 		expense.setExTaxTotal(exTaxTotal);
@@ -173,55 +192,55 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expense.setInTaxTotal(inTaxTotal);
 		return expense;
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(Expense expense) throws AxelorException  {
-				
+	public void confirm(Expense expense) throws AxelorException {
+
 		expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
 		expense.setSentDate(generalService.getTodayDate());
-		
+
 		expenseRepository.save(expense);
-		
+
 	}
-	
-	
-	public Message sendConfirmationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
+
+
+	public Message sendConfirmationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException {
+
 		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		
-		if(hrConfig.getExpenseMailNotification())  {
-				
+
+		if (hrConfig.getExpenseMailNotification()) {
+
 			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig));
-				
-		}
-		
-		return null;
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Expense expense) throws AxelorException  {
-		
-		if (expense.getUser().getEmployee() == null){
-			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName())  , IException.CONFIGURATION_ERROR);
+
 		}
 
-		if(expense.getPeriod() == null) {
+		return null;
+
+	}
+
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Expense expense) throws AxelorException {
+
+		if (expense.getUser().getEmployee() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName()), IException.CONFIGURATION_ERROR);
+		}
+
+		if (expense.getPeriod() == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PERIOD), IException.MISSING_FIELD);
 		}
-		
-		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()){
-			for (ExpenseLine line : expense.getKilometricExpenseLineList()){
+
+		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()) {
+			for (ExpenseLine line : expense.getKilometricExpenseLineList()) {
 				BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(line, expense.getUser().getEmployee());
 				line.setTotalAmount(amount);
 				line.setUntaxedAmount(amount);
-				
+
 				Beans.get(KilometricService.class).updateKilometricLog(line, expense.getUser().getEmployee());
 			}
 			compute(expense);
 		}
-		
+
 		Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
 		expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
 		expense.setValidatedBy(AuthUtils.getUser());
@@ -230,63 +249,63 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expense.setPaymentMode(paymentMode);
 
 	}
-	
-	
-	public Message sendValidationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
+
+
+	public Message sendValidationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException {
+
 		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		
-		if(hrConfig.getExpenseMailNotification())  {
-				
+
+		if (hrConfig.getExpenseMailNotification()) {
+
 			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
-				
+
 		}
-		
+
 		return null;
-		
+
 	}
-	
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void refuse(Expense expense) throws AxelorException  {
-		
+	public void refuse(Expense expense) throws AxelorException {
+
 		expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
 		expense.setRefusedBy(AuthUtils.getUser());
 		expense.setRefusalDate(generalService.getTodayDate());
-		
+
 		expenseRepository.save(expense);
-		
+
 	}
-	
-	public Message sendRefusalEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
+
+	public Message sendRefusalEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException {
+
 		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		
-		if(hrConfig.getExpenseMailNotification())  {
-				
+
+		if (hrConfig.getExpenseMailNotification()) {
+
 			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig));
-				
+
 		}
-		
+
 		return null;
-		
+
 	}
-	
+
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Move ventilate(Expense expense) throws AxelorException{
+	public Move ventilate(Expense expense) throws AxelorException {
 
 		LocalDate moveDate = expense.getMoveDate();
-		
-		if(moveDate == null){
+
+		if (moveDate == null) {
 			moveDate = generalService.getTodayDate();
 			expense.setMoveDate(moveDate);
 		}
 
 		Account account = null;
-		AccountConfig accountConfig= accountConfigService.getAccountConfig(expense.getCompany());
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(expense.getCompany());
 
-		if(expense.getUser().getPartner() == null){
-			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
+		if (expense.getUser().getPartner() == null) {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER), expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getInPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
@@ -299,18 +318,18 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 		int moveLineId = 1;
 		int expenseLineId = 1;
-		moveLines.add( moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
+		moveLines.add(moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
 
-		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
+		for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
 			analyticAccounts.clear();
 			Product product = expenseLine.getExpenseProduct();
 			accountManagement = accountManagementService.getAccountManagement(product, expense.getCompany());
 
 			account = accountManagementService.getProductAccount(accountManagement, true);
 
-			if(account == null)  {
+			if (account == null) {
 				throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4),
-						 expenseLineId,expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
+						expenseLineId, expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			exTaxTotal = expenseLine.getUntaxedAmount();
@@ -324,11 +343,11 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expenseLineId++;
 
 		}
-		
+
 		moveLineService.consolidateMoveLines(moveLines);
 		account = accountConfigService.getExpenseTaxAccount(accountConfig);
 		BigDecimal taxTotal = BigDecimal.ZERO;
-		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
+		for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
 			exTaxTotal = expenseLine.getTotalTax();
 			taxTotal = taxTotal.add(exTaxTotal);
 		}
@@ -353,33 +372,31 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel (Expense expense) throws AxelorException{
+	public void cancel(Expense expense) throws AxelorException {
 		Move move = expense.getMove();
-		if(move == null)
-		{
+		if (move == null) {
 			expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
 			expenseRepository.save(expense);
 			return;
 		}
 		Beans.get(PeriodService.class).testOpenPeriod(move.getPeriod());
-		try{
+		try {
 			Beans.get(MoveRepository.class).remove(move);
 			expense.setMove(null);
 			expense.setVentilated(false);
 			expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
 		expenseRepository.save(expense);
 	}
-	
-	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException {
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-		if(hrConfig.getTimesheetMailNotification())  {
+		if (hrConfig.getTimesheetMailNotification()) {
 
 			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
 
@@ -392,7 +409,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addPayment(Expense expense) throws AxelorException {
 		expense.setPaymentDate(new LocalDate());
-		
+
 		PaymentMode paymentMode = expense.getPaymentMode();
 
 		if (paymentMode == null) {
@@ -403,7 +420,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		if (paymentMode.getGenerateBankOrder()) {
 			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
 		}
-		
+
 		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
 		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
 		expenseRepository.save(expense);
@@ -417,16 +434,16 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 		expense.setPaymentMode(null);
 		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-	    expenseRepository.save(expense);
+		expenseRepository.save(expense);
 	}
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		int count = 0;
-		for(ExpenseLine expenseLine : expenseLineList)  {
+		for (ExpenseLine expenseLine : expenseLineList) {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
 			count++;
 			expenseLine.setInvoiced(true);
 
@@ -436,15 +453,15 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException {
 
 		Product product = expenseLine.getExpenseProduct();
 		InvoiceLineGenerator invoiceLineGenerator = null;
 		Integer atiChoice = invoice.getCompany().getAccountConfig().getInvoiceInAtiSelect();
-		if(atiChoice == 1 || atiChoice == 3){
+		if (atiChoice == 1 || atiChoice == 3) {
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
-					expenseLine.getUntaxedAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
+					expenseLine.getUntaxedAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false) {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
@@ -457,12 +474,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 					return invoiceLines;
 				}
 			};
-		}
-
-		else{
+		} else {
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
-					expenseLine.getTotalAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
+					expenseLine.getTotalAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false) {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
@@ -478,33 +493,32 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		}
 		return invoiceLineGenerator.creates();
 	}
-	
-	public void getExpensesTypes(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
-		try{
+
+	public void getExpensesTypes(ActionRequest request, ActionResponse response) {
+		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+		try {
 			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
 			for (Product product : productList) {
-				Map<String, String> map = new HashMap<String,String>();
+				Map<String, String> map = new HashMap<String, String>();
 				map.put("name", product.getName());
 				map.put("id", product.getId().toString());
 				dataList.add(map);
 			}
 			response.setData(dataList);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			response.setStatus(-1);
 			response.setError(e.getMessage());
 		}
 	}
-	
+
 	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response){
+	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
 		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
-		if(user != null){
+		if (user != null) {
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if(expense == null){
+			if (expense == null) {
 				expense = new Expense();
 				expense.setUser(user);
 				expense.setCompany(user.getActiveCompany());
@@ -520,60 +534,79 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
 			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
 			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
-			expenseLine.setJustification((byte[])request.getData().get("justification"));
+			expenseLine.setJustification((byte[]) request.getData().get("justification"));
 			expense.addExpenseLineListItem(expenseLine);
-			
+
 			Beans.get(ExpenseRepository.class).save(expense);
 		}
 	}
-	
-	public BigDecimal computePersonalExpenseAmount(Expense expense){
-		
+
+	public BigDecimal computePersonalExpenseAmount(Expense expense) {
+
 		BigDecimal personalExpenseAmount = new BigDecimal("0.00");
-		
-		if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()){
+
+		if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()) {
 			for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
-				if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense() ){
+				if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense()) {
 					personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
 				}
 			}
 		}
 		return personalExpenseAmount;
 	}
-	
-	
-	public BigDecimal computeAdvanceAmount(Expense expense){
-		
+
+
+	public BigDecimal computeAdvanceAmount(Expense expense) {
+
 		BigDecimal advanceAmount = new BigDecimal("0.00");
-		
-		if (expense.getEmployeeAdvanceUsageList() != null && !expense.getEmployeeAdvanceUsageList().isEmpty()){
-			for (EmployeeAdvanceUsage advanceLine : expense.getEmployeeAdvanceUsageList() ) {
+
+		if (expense.getEmployeeAdvanceUsageList() != null && !expense.getEmployeeAdvanceUsageList().isEmpty()) {
+			for (EmployeeAdvanceUsage advanceLine : expense.getEmployeeAdvanceUsageList()) {
 				advanceAmount = advanceAmount.add(advanceLine.getUsedAmount());
 			}
 		}
-		
+
 		return advanceAmount;
 	}
 
-	public void setDraftSequence(Expense expense)  {
-		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq()))  {
+	public void setDraftSequence(Expense expense) {
+		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq())) {
 			expense.setExpenseSeq(getDraftSequence(expense));
 		}
 	}
 
-	private String getDraftSequence(Expense expense)  {
+	private String getDraftSequence(Expense expense) {
 		return "*" + expense.getId();
 	}
 
 	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
-		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) { return; }
+		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) {
+			return;
+		}
 
 		if (sequence != null) {
 			expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
 
-			if (expense.getExpenseSeq() != null) { return; }
+			if (expense.getExpenseSeq() != null) {
+				return;
+			}
 		}
 
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
+	}
+
+	@Override
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
+		List<Vehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getVehicleList();
+		LocalDate expenseDate = expenseLine.getExpenseDate();
+		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
+
+		for (Vehicle vehicle : vehicleList) {
+			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
+				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+			}
+		}
+
+		return kilometricAllowParamList;
 	}
 }

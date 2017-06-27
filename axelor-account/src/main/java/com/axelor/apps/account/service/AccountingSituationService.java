@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -186,7 +187,7 @@ public class AccountingSituationService	{
 							accountingSituation.getCompany()
 					);
 		}
-		String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(authorizedBankDetails);
+		String idList = StringTool.getIdFromCollection(authorizedBankDetails);
 		if(idList.equals("")) {
 			return domain;
 		}
