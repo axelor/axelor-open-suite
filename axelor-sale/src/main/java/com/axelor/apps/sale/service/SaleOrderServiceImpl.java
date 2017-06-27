@@ -294,6 +294,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 	@Override
+	@Transactional
+	public void updateCustomerCreditLines(SaleOrder saleOrder) throws Exception {
+	}
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
