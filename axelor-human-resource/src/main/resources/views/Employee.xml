@@ -94,21 +94,24 @@
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
-	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
+	       	<panel name="kilometricLog" title="Kilometric log">
+				<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" colSpan="12"/>
+				<panel name="vehicles" title="Vehicles" colSpan="12">
+					<field name="vehicleList" colSpan="12" showTitle="false">
+						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
+							<field name="plateNo"/>
+							<field name="vehicleModel"/>
+							<field name="vehicleMake"/>
+							<field name="kilometricAllowParam" widget="SuggestBox"/>
+							<field name="startDate"/>
+							<field name="endDate"/>
+						</editor>
+					</field>
+				</panel>
+			</panel>
+			<!--<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />-->
 	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
        	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
-			<panel name="vehicles" title="Vehicles" colSpan="12">
-				<field name="vehicleList" colSpan="12" showTitle="false">
-					<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
-						<field name="plateNo"/>
-						<field name="vehicleModel"/>
-						<field name="vehicleMake"/>
-						<field name="kilometricAllowParam" widget="SuggestBox"/>
-						<field name="startDate"/>
-						<field name="endDate"/>
-					</editor>
-				</field>
-			</panel>
 		</panel-tabs>
 	</form>
 	

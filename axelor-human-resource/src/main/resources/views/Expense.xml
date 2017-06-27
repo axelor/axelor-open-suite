@@ -72,7 +72,7 @@
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
 					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-kap" />
-					<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-update-kap" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true"/>
+					<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true"/>
 			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
 			        <field name="fromCity" required="true" />
 			        <field name="toCity" required="true"/>

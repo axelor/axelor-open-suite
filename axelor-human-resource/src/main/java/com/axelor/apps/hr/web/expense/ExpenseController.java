@@ -532,8 +532,9 @@ public class ExpenseController {
 
 	public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response) {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
 
@@ -542,7 +543,7 @@ public class ExpenseController {
 			response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
 		} else {
 			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
-				if (currentKilometricAllowParam.equals(kilometricAllowParam)) {
+				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
 					expenseLine.setKilometricAllowParam(kilometricAllowParam);
 					vehicleOk = true;
 					break;
@@ -550,10 +551,16 @@ public class ExpenseController {
 			}
 			if (!vehicleOk) {
 				expenseLine.setKilometricAllowParam(null);
-				response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
 			} else {
 				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
 			}
 		}
+	}
+
+	public void domainOnSelectOnKAP(ActionRequest request, ActionResponse response) {
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
 	}
 }

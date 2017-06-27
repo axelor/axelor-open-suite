@@ -96,6 +96,10 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAnalyticDistribution"/>
 	</action-method>
 
+	<action-method name="action-kilometric-allowance-method-domain-on-select-on-kap">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="domainOnSelectOnKAP"/>
+	</action-method>
+
 	<action-method name="action-kilometric-allowance-method-update-kap">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateKAPOfKilometricAllowance"/>
 	</action-method>
