@@ -539,8 +539,7 @@ public class ExpenseController {
 		boolean vehicleOk = false;
 
 		if (kilometricAllowParamList.size() == 1) {
-			expenseLine.setKilometricAllowParam(kilometricAllowParamList.get(0));
-			response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
+			response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
 		} else {
 			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
 				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
