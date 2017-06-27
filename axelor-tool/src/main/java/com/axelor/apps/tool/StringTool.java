@@ -56,11 +56,12 @@ public final class StringTool {
 		return string.replaceFirst("\\w", Character.toString(string.toUpperCase().charAt(0)));
 		
 	}
-	
+
 	/**
 	 * Complete string with fixed length.
-	 * 
-	 * @param string
+	 * @param s
+	 * @param fillChar
+	 * @param size
 	 * @return
 	 */
 	public static String fillStringRight(String s, char fillChar, int size){
@@ -73,11 +74,12 @@ public final class StringTool {
 		return string;
 		
 	}
-	
+
 	/**
 	 * Complete string with fixed length.
-	 * 
-	 * @param string
+	 * @param s
+	 * @param fillChar
+	 * @param size
 	 * @return
 	 */
 	public static String fillStringLeft(String s, char fillChar, int size){
@@ -208,12 +210,11 @@ public final class StringTool {
 		
 		return sb.toString();
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de mettre la première lettre d'une chaine de caractère en majuscule
-	 * @param value
-	 * 			Une chaine de caractère
+	 * @param s
 	 * @return
 	 */
 	public static String capitalizeFirstLetter(String s) {
@@ -241,15 +242,22 @@ public final class StringTool {
 
 
 	/**
-	 * Fonction permettant de recupérer une liste d'ID depuis une collection de n'importe quel objet
+	 * Retrieve an ID list from a collection of any object
+	 * if the collection is empty, this method will return "0"
 	 * @param collection
 	 * @return
 	 */
 	public static String getIdFromCollection(Collection<? extends Model> collection) {
 		List<Long> idList = new ArrayList<>();
-		for (Model item : collection) {
-			idList.add(item.getId());
+		String idString;
+		if (collection.isEmpty()) {
+			idString = "0";
+		} else {
+			for (Model item : collection) {
+				idList.add(item.getId());
+			}
+			idString = Joiner.on(",").join(idList);
 		}
-		return Joiner.on(",").join(idList);
+		return idString;
 	}
 }
