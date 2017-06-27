@@ -27,7 +27,9 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -79,10 +81,17 @@ public class ManufOrderWorkflowService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(ManufOrder manufOrder) {
+	public void start(ManufOrder manufOrder) throws AxelorException {
 
 		manufOrder.setRealStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-		
+
+		int beforeOrAfterConfig = Beans
+				.get(ProductionConfigService.class)
+				.getProductionConfig(manufOrder.getCompany())
+				.getStockMoveRealizeOrderSelect();
+		if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
+			manufOrderStockMoveService.finishStockMove(manufOrder.getInStockMove());
+		}
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		manufOrderRepo.save(manufOrder);
 	}
