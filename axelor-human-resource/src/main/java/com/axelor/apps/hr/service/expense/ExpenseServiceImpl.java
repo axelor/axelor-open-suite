@@ -602,7 +602,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
 
 		for (Vehicle vehicle : vehicleList) {
-			if (expenseDate.isAfter(vehicle.getStartDate()) && expenseDate.isBefore(vehicle.getEndDate())) {
+			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}
