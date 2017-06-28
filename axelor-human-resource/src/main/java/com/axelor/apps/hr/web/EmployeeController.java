@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.hr.web;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.ModelService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.auth.AuthUtils;
@@ -60,6 +65,31 @@ public class EmployeeController {
 		
 		response.setCanClose(true);
 	}
-	
+
+	public void massArchive(ActionRequest request, ActionResponse response) {
+		@SuppressWarnings("unchecked")
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+		if (idList == null) {
+			return;
+		}
+		EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
+		List<Employee> employeeList = idList.stream().map(id -> employeeRepo.find(id.longValue()))
+				.collect(Collectors.toList());
+		Beans.get(ModelService.class).massArchive(employeeList);
+		response.setReload(true);
+	}
+
+	public void massUnarchive(ActionRequest request, ActionResponse response) {
+		@SuppressWarnings("unchecked")
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+		if (idList == null) {
+			return;
+		}
+		EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
+		List<Employee> employeeList = idList.stream().map(id -> employeeRepo.find(id.longValue()))
+				.collect(Collectors.toList());
+		Beans.get(ModelService.class).massUnarchive(employeeList);
+		response.setReload(true);
+	}
 
 }
