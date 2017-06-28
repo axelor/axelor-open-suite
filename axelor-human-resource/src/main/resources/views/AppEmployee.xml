@@ -6,6 +6,7 @@
 	<form name="app-employee-config-form" title="Employees management" model="com.axelor.apps.base.db.AppEmployee" canDelete="false" canNew="false" width="large">
 		<panel>
 			<field name="dailyWorkHours" colSpan="12"/>
+			<field name="advanceManagement" />
 			<field name="payrollPreparation" colSpan="4" widget="boolean-switch" />
 			<field name="lunchVoucher" colSpan="4" widget="boolean-switch" />
 			<field name="employeeBonus" colSpan="4" widget="boolean-switch" />

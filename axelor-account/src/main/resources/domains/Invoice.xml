@@ -25,8 +25,8 @@
     <string name="addressStr" title="Address" large="true" multiline="true"/>
     <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
     <boolean name="isSubscription" title="Subscription ?" default="false"/>
-    <string name="internalReference" title="Internal Ref." help="true"/>
-    <string name="externalReference" title="External Ref." help="true"/>
+    <string name="internalReference" title="Internal Ref."/>
+    <string name="externalReference" title="External Ref."/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
     
@@ -41,7 +41,7 @@
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
     <many-to-one name="oldMove" ref="com.axelor.apps.account.db.Move" title="Previous Move" readonly="true"/>
     <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     
     
@@ -50,7 +50,7 @@
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax Lines" readonly="true" />
     
     <!-- Configuration -->
-    <boolean name="alreadyPrintedOk" title="Already printed ?" default="true" help="true"/>
+    <boolean name="alreadyPrintedOk" title="Already printed ?" default="true"/>
     <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
     <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice" title="Refunds"/>
     <integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
@@ -87,9 +87,9 @@
     <!-- Totals & Status -->
     
 	<!--     Total based on the partner currency in the company accounts -->
-    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true" help="true"/>
-    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" />
     <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
     

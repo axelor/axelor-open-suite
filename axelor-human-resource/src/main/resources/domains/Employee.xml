@@ -15,7 +15,6 @@
       <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20" />
       <decimal name="dailyWorkHours" title="Daily work hours" scale="2" precision="20" />
       <many-to-one name="manager" ref="com.axelor.auth.db.User" title="Manager" />
-      <many-to-one name="department" ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department" />
       <boolean name="timesheetReminder" title="Timesheet reminder" />
       <boolean name="external" title="External" />
       <many-to-one name="planning" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
@@ -45,7 +44,7 @@
       <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances" mappedBy="employee" orphanRemoval="true"/>
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
-      <string name="exportCode" title="Export code" help="May be used as registration number in export" />
+      <string name="exportCode" title="Export code"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
 	       		if(contactPartner != null) { return contactPartner.getFullName(); }

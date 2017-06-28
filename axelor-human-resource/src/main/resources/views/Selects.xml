@@ -188,4 +188,8 @@
 		<option value="2">End of month</option>
 	</selection>
 	
+	<selection id="hr.icalendar.event.type.select" name="icalendar.event.type.select">
+		<option value="4">Leave</option>
+	</selection>
+	
 </object-views>

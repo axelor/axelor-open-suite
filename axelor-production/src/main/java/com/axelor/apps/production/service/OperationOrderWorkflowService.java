@@ -32,7 +32,9 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -133,13 +135,22 @@ public class OperationOrderWorkflowService {
 	 * @param operationOrder An operation order
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(OperationOrder operationOrder) {
+	public void start(OperationOrder operationOrder) throws AxelorException {
 		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
 			operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
 			operationOrder.setRealStartDateT(now);
 
 			startOperationOrderDuration(operationOrder);
 
+			if (operationOrder.getManufOrder() != null) {
+				int beforeOrAfterConfig = Beans
+						.get(ProductionConfigService.class)
+						.getProductionConfig(operationOrder.getManufOrder().getCompany())
+						.getStockMoveRealizeOrderSelect();
+				if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
+					operationOrderStockMoveService.finish(operationOrder);
+				}
+			}
 			operationOrderRepo.save(operationOrder);
 		}
 

@@ -343,7 +343,6 @@
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
 		<option value="saleOrder">Sales order</option>
 		<option value="purchaseOrder">Purchase order</option>
-		<option value="ticket">Ticket</option>
 		<option value="intStockMove">Internal stock move</option>
 		<option value="outStockMove">Delivery stock move</option>
 		<option value="inStockMove">Receipt stock move</option>
@@ -686,5 +685,23 @@
 		<option value="2">Center</option>
 		<option value="3">Right</option>
 	</selection>	
+	
+	<selection name="icrm.calendar.type.select">
+		<option value="1">ICAL_SERVER</option>
+		<option value="2">CALENDAR_SERVER</option>
+		<option value="3">GCAL</option>
+		<option value="4">ZIMBRA</option>
+		<option value="5">KMS</option>
+		<option value="6">CGP</option>
+		<option value="7">CHANDLER</option>
+	</selection>
+	
+	<selection name="icalendar.event.type.select">
+		<option value="0">Event</option>
+		<option value="1">Call</option>
+		<option value="2">Meeting</option>
+		<option value="3">Task</option>
+		<option value="4">Leave</option>
+	</selection>
 	
 </object-views>

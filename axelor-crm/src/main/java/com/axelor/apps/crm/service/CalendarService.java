@@ -19,7 +19,6 @@ package com.axelor.apps.crm.service;
 
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -47,20 +46,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.CalendarManagement;
+import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.ical.ICalendarStore;
 import com.axelor.apps.crm.db.Calendar;
-import com.axelor.apps.crm.db.CalendarManagement;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.ICalendar;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.db.User;
@@ -96,7 +95,6 @@ import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Trigger;
-import net.fortuna.ical4j.model.property.XProperty;
 
 public class CalendarService extends ICalendarService{
 
@@ -141,34 +139,6 @@ public class CalendarService extends ICalendarService{
          }
      }
 	
-	
-	public PathResolver getPathResolver(int typeSelect)  {
-		switch (typeSelect) {
-		case ICalendar.ICAL_SERVER :
-			return PathResolver.ICAL_SERVER;
-
-		case ICalendar.CALENDAR_SERVER :
-			return PathResolver.CALENDAR_SERVER;
-
-		case ICalendar.GCAL :
-			return PathResolver.GCAL;
-
-		case ICalendar.ZIMBRA :
-			return PathResolver.ZIMBRA;
-
-		case ICalendar.KMS :
-			return PathResolver.KMS;
-
-		case ICalendar.CGP :
-			return PathResolver.CGP;
-					
-		case ICalendar.CHANDLER :
-			return PathResolver.CHANDLER;
-			
-		default:
-			return null;
-		}
-	}
 	
 	
 	public Protocol getProtocol(boolean isSslConnection)  {
@@ -236,9 +206,6 @@ public class CalendarService extends ICalendarService{
 		if (event == null) {
 			event = new Event();
 			event.setUid(uid);
-		}
-		if(event.getTypeSelect() == null || event.getTypeSelect() == 0){
-			event.setTypeSelect(EventRepository.TYPE_EVENT);
 		}
 		
 		ZoneId zoneId = ZoneOffset.UTC;
@@ -426,31 +393,6 @@ public class CalendarService extends ICalendarService{
 	}
 
 
-	public void export(Calendar calendar) throws IOException, ValidationException, ParseException {
-		String path = AppSettings.get().get("file.upload.dir");
-		if (!path.endsWith("/")) {
-			path += "/";
-        }	
-		String name = calendar.getName();
-		if (!name.endsWith(".ics")) {
-			name += ".ics";
-        }
-		FileOutputStream fout = new FileOutputStream(path + name );
-		Preconditions.checkNotNull(calendar, "calendar can't be null");
-		Preconditions.checkNotNull(calendar.getEventsCrm(), "can't export empty calendar");
-
-		net.fortuna.ical4j.model.Calendar cal = newCalendar();
-		cal.getProperties().add(new XProperty(X_WR_CALNAME, calendar.getName()));
-
-		for (ICalendarEvent item : calendar.getEventsCrm()) {
-			VEvent event = createVEvent(item);
-			cal.getComponents().add(event);
-		}
-		
-		CalendarOutputter outputter = new CalendarOutputter();
-		outputter.output(cal, fout);
-	}
-	
 	public File export(net.fortuna.ical4j.model.Calendar calendar) throws IOException, ValidationException, ParseException {
 		String path = AppSettings.get().get("file.upload.dir");
 		if (!path.endsWith("/")) {
@@ -514,7 +456,7 @@ public class CalendarService extends ICalendarService{
 		final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
 
 		final Map<String, VEvent> remoteEvents = new HashMap<>();
-		final Map<VEvent, Integer> localEvents = new HashMap<>();
+		final Map<Integer, VEvent> localEvents = new HashMap<>();
 		final Set<String> synced = new HashSet<>();
 		for (VEvent item : ICalendarStore.getEvents(collection)) {
 			remoteEvents.put(item.getUid().getValue(), item);
@@ -567,7 +509,7 @@ public class CalendarService extends ICalendarService{
 					}
 				}
 				Event item2 = (Event) item;
-				localEvents.put(target, item2.getTypeSelect()); // Associate event with typeSelect for further use 
+				localEvents.put(item2.getTypeSelect(), target); // Associate event with typeSelect for further use 
 				synced.add(target.getUid().getValue());
 
 				if (source == target) {
@@ -615,15 +557,15 @@ public class CalendarService extends ICalendarService{
 						t.setDateTime((DateTime) start.getDate());
 					}
 				}
-				localEvents.put(vEvent, 2); // events imported from remote calendar are by default 'meetings' (typeSelect = 2)
+				localEvents.put(2, vEvent); // events imported from remote calendar are by default 'meetings' (typeSelect = 2)
 			}
 		}
 
 		// update local events
 		final List<Event> iEvents = new ArrayList<>();
-		for (Map.Entry<VEvent, Integer> item : localEvents.entrySet()) {
-			Event iEvent = findOrCreateEventCRM(item.getKey());
-			iEvent.setTypeSelect(item.getValue()); // set 'typeSelect' to new event created
+		for (Map.Entry<Integer, VEvent> item : localEvents.entrySet()) {
+			Event iEvent = findOrCreateEventCRM(item.getValue());
+			iEvent.setTypeSelect(item.getKey()); // set 'typeSelect' to new event created
 			iEvents.add(iEvent);
 		}
 		calendar.getEventsCrm().clear();
@@ -632,7 +574,7 @@ public class CalendarService extends ICalendarService{
 		}
 
 		// update remote events
-		for (VEvent item : localEvents.keySet()) {
+		for (VEvent item : localEvents.values()) {
 			if (!synced.contains(item.getUid().getValue())) {
 				continue;
 			}
@@ -768,8 +710,8 @@ public class CalendarService extends ICalendarService{
 							}
 						}
 						if(calendarManagement.getIcalCalendars()){
-							for (Calendar calendar : calendarManagement.getCalendarSet()) {
-								for (Event event : calendar.getEventsCrm()) {
+							for (ICalendar calendar : calendarManagement.getCalendarSet()) {
+								for (ICalendarEvent event : calendar.getEvents()) {
 									eventIdlist.add(event.getId());
 								}
 							}
@@ -817,7 +759,7 @@ public class CalendarService extends ICalendarService{
 						}
 					}
 					else if(calendarManagement.getIcalCalendars()){
-						for (Calendar calendar : calendarManagement.getCalendarSet()) {
+						for (ICalendar calendar : calendarManagement.getCalendarSet()) {
 							calendarIdlist.add(calendar.getId());
 						}
 					}

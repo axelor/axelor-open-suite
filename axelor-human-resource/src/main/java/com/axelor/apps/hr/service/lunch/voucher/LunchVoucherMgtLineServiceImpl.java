@@ -22,12 +22,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -67,6 +70,7 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 					).setScale(0, RoundingMode.HALF_UP).intValue()
 			);
             compute(lunchVoucherMgtLine);
+            fillLunchVoucherFormat(employee, lunchVoucherMgt, lunchVoucherMgtLine);
 		}
 		catch (AxelorException e) {
 			TraceBackService.trace(e);
@@ -84,6 +88,19 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 		}
 		
 		return number;
+	}
+
+	@Override
+	public void fillLunchVoucherFormat(Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException {
+		int employeeFormat = employee.getLunchVoucherFormatSelect();
+		if (employeeFormat != 0) {
+		    lunchVoucherMgtLine.setLunchVoucherFormatSelect(employeeFormat);
+		}
+		else {
+			Company company = lunchVoucherMgt.getCompany();
+			HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(company);
+		    lunchVoucherMgtLine.setLunchVoucherFormatSelect(hrConfig.getLunchVoucherFormatSelect());
+		}
 	}
 
 	@Override

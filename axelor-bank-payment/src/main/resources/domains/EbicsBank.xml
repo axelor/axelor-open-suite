@@ -7,7 +7,7 @@
   
   <entity name="EbicsBank" lang="java">
 	<string name="fullName" namecolumn="true"/>
-	<string name="hostId" title="Host ID" help="true"/>
+	<string name="hostId" title="Host ID"/>
 	<string name="name" title="Name"/>
   
 	<many-to-one name="bank" ref="com.axelor.apps.base.db.Bank" required="true"/>
