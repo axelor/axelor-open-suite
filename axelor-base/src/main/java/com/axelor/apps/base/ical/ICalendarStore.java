@@ -59,6 +59,7 @@ public class ICalendarStore {
 		try {
 			return deligateStore.connect(username, password.toCharArray());
 		} catch (ObjectStoreException e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -89,6 +90,7 @@ public class ICalendarStore {
 		try {
 			return deligateStore.getCollections();
 		} catch (ObjectNotFoundException e) {
+			e.printStackTrace();
 		}
 		return new ArrayList<>();
 	}

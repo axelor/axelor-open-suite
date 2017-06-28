@@ -202,4 +202,12 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
+	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
+	
+	
 }

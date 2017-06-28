@@ -153,10 +153,10 @@
 		title="Leaves calendar" action="leave.request.root.leave.calender" />
 
 	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="calendar" name="event-calendar-color-by-user"/>
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
+		model="com.axelor.apps.base.db.IcalendarEvent" >
+		<view type="calendar" name="calendar-all"/>
+		<view type="grid" name="calendar-event-grid"/>
+		<view type="form" name="calendar-event-form"/>
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
 	

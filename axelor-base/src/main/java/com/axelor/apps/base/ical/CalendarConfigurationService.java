@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.service;
+package com.axelor.apps.base.ical;
 
 import java.util.HashSet;
 
 import com.axelor.inject.Beans;
-import com.axelor.apps.crm.db.CalendarConfiguration;
-import com.axelor.apps.crm.db.repo.CalendarConfigurationRepository;
+import com.axelor.apps.base.db.CalendarConfiguration;
+import com.axelor.apps.base.db.repo.CalendarConfigurationRepository;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -34,7 +34,7 @@ import com.google.inject.persist.Transactional;
 
 public class CalendarConfigurationService {
 	
-	private final String NAME = "crm-root-event-calendar-";
+	private final String NAME = "ical-root-event-calendar-";
 	
 	@Inject
 	protected CalendarConfigurationRepository calendarConfigurationRepo;
@@ -84,7 +84,7 @@ public class CalendarConfigurationService {
 		metaMenu.setAction(metaAction);
 		metaMenu.setGroups(new HashSet<Group>());
 		metaMenu.getGroups().add(group);
-		metaMenu.setModule("axelor-crm");
+		metaMenu.setModule("axelor-base");
 		metaMenu.setTitle(title);
 		
 		return metaMenu;
@@ -93,16 +93,16 @@ public class CalendarConfigurationService {
 	public MetaAction createMetaAction(String name, String title)  {
 		
 		MetaAction metaAction = new MetaAction();
-		metaAction.setModel("com.axelor.apps.crm.db.Event");
-		metaAction.setModule("axelor-crm");
+		metaAction.setModel("com.axelor.apps.base.db.ICalendarEvent");
+		metaAction.setModule("axelor-base");
 		metaAction.setName(name);
 		metaAction.setType("action-view");
 		
 		
-		String xml = "<action-view title=\""+title+"\" icon=\"img/16px/calendarTask_16px.png\" model=\"com.axelor.apps.crm.db.Event\" name=\""+name+"\"> "+
-    "<view type=\"calendar\" name=\"event-calendar\"/>" +
-    "<view type=\"grid\" name=\"event-grid\"/>" +
-    "<view type=\"form\" name=\"event-form\"/>" +
+		String xml = "<action-view title=\""+title+"\" icon=\"img/16px/calendarTask_16px.png\" model=\"com.axelor.apps.base.db.ICalendarEvent\" name=\""+name+"\"> "+
+    "<view type=\"calendar\" name=\"calendar-all\"/>" +
+    "<view type=\"grid\" name=\"calendar-event-grid\"/>" +
+    "<view type=\"form\" name=\"calendar-event-form\"/>" +
     "<context name=\"_typeSelect\" expr=\"2\"/>" +
     "</action-view>";
 		

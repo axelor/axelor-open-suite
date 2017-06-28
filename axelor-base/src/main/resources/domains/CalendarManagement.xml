@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="crm" package="com.axelor.apps.crm.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="CalendarManagement" lang="java">
   
@@ -13,7 +13,7 @@
     <boolean name="allCalendars" title="All my calendars"/>
     <boolean name="erpCalendars" title="My ERP calendars"/>
     <boolean name="icalCalendars" title="Selected imported/synchronized calendars"/>
-    <many-to-many name="calendarSet" ref="com.axelor.apps.crm.db.Calendar" title="Selected imported/synchronized calendars"/>
+    <many-to-many name="calendarSet" ref="com.axelor.apps.base.db.ICalendar" title="Selected imported/synchronized calendars"/>
   </entity>
 
 </domain-models>

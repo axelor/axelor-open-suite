@@ -15,14 +15,6 @@
 		<option value="6">Dead</option>
 	</selection>
 	
-	<selection name="crm.event.type.select">
-		<option value="1">Call</option>
-		<option value="2">Meeting</option>
-		<option value="3">Task</option>
-		<option value="4">Leave</option>
-		<option value="5">Event</option>
-	</selection>
-		
 	<selection name="crm.event.related.to.select">
 		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
 		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
@@ -34,16 +26,6 @@
 		<option value="15">15</option>
 		<option value="30">30</option>
 		<option value="45">45</option>
-	</selection>
-	
-	<selection name="crm.calendar.type.select">
-		<option value="1">ICAL_SERVER</option>
-		<option value="2">CALENDAR_SERVER</option>
-		<option value="3">GCAL</option>
-		<option value="4">ZIMBRA</option>
-		<option value="5">KMS</option>
-		<option value="6">CGP</option>
-		<option value="7">CHANDLER</option>
 	</selection>
 	
 	<selection name="crm.opportunity.type.select">
@@ -151,6 +133,12 @@
 	
 	<selection name="app.type.select" id="crm.app.type.select">
 		<option order="8" value="crm">CRM</option>
+	</selection>
+	
+	<selection id="crm.icalendar.event.type.select" name="icalendar.event.type.select">
+		<option value="1">Call</option>
+		<option value="2">Meeting</option>
+		<option value="3">Task</option>
 	</selection>
 	
 </object-views>

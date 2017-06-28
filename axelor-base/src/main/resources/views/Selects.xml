@@ -686,4 +686,22 @@
 		<option value="3">Right</option>
 	</selection>	
 	
+	<selection name="icrm.calendar.type.select">
+		<option value="1">ICAL_SERVER</option>
+		<option value="2">CALENDAR_SERVER</option>
+		<option value="3">GCAL</option>
+		<option value="4">ZIMBRA</option>
+		<option value="5">KMS</option>
+		<option value="6">CGP</option>
+		<option value="7">CHANDLER</option>
+	</selection>
+	
+	<selection name="icalendar.event.type.select">
+		<option value="0">Event</option>
+		<option value="1">Call</option>
+		<option value="2">Meeting</option>
+		<option value="3">Task</option>
+		<option value="4">Leave</option>
+	</selection>
+	
 </object-views>
