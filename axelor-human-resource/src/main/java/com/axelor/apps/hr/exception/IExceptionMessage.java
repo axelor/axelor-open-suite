@@ -103,7 +103,6 @@ public interface IExceptionMessage {
 
 	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
 	static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
-	
-	static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/ "Payment mode required" /*)*/;
+	static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/ "Please fill the payment mode." /*)*/;
 
 }

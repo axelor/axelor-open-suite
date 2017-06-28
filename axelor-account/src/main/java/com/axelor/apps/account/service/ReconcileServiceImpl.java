@@ -208,7 +208,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	}
 
 
-	public void updatePartnerAccountingSituation(Reconcile reconcile)  {
+	public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException {
 		
 		List<Partner> partnerList = this.getPartners(reconcile);
 

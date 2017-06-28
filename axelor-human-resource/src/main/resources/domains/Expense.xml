@@ -29,7 +29,7 @@
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <boolean name="ventilated"/>
-      <integer name="companyCbSelect" title="Expense paied with company's credit card" selection="hr.expense.company.cb.payment" default="1"/>
+      <integer name="companyCbSelect" title="Expense paid with company's credit card" selection="hr.expense.company.cb.payment" default="1"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
       <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
       <one-to-many name="employeeAdvanceUsageList" ref="com.axelor.apps.hr.db.EmployeeAdvanceUsage" mappedBy="expense" title="Employee advances" readonly="true" orphanRemoval="false"/>

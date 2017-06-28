@@ -17,8 +17,21 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -36,13 +49,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
@@ -148,9 +154,19 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
+
+	@Transactional
+	protected void updateCustomerCreditLines(SaleOrder saleOrder) throws Exception {
+		Partner partner = saleOrder.getClientPartner();
+		if (partner != null) {
+			Beans.get(CustomerCreditLineService.class).updateLinesFromOrder(partner, saleOrder);
+		}
+	}
+
+	@Override
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		updateCustomerCreditLines(saleOrder);
+		super.finalizeSaleOrder(saleOrder);
+	}
+
 }
-
-
-
-
-

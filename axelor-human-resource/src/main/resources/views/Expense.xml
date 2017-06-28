@@ -46,20 +46,22 @@
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
 	    	<button name="validateButton" onClick="action-expense-group-validate" title="Validate"/>
 	    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" title="Cancel" icon="fa-close"/>
+	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" readonlyIf="move != null" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
-	    	<button name="cancelPaymentButton" title="Cancel payment" showIf="paymentStatusSelect == 1 || paymentStatusSelect == 3"/>
+	    	<button name="cancelPaymentButton" title="Cancel payment"
+					showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3) &amp;&amp; !bankOrder"
+					onClick="action-expense-method-cancel-payment"/>
 	    </panel>
 		<panel>
 			<field name="expenseSeq"/>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-			<field name="company" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
-			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
-			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"/>
+			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
+			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
 			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" />
 			<field name="personalExpenseAmount" hidden="true" />
 			<field name="advanceAmount" hidden="true" />
@@ -67,10 +69,10 @@
 		<panel-tabs>
 			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances">
-				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
+				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
-					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute" />
-					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true" />
+					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-kap" />
+					<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true"/>
 			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
 			        <field name="fromCity" required="true" />
 			        <field name="toCity" required="true"/>
@@ -92,12 +94,12 @@
 			<field name="refusedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
 			<field name="refusalDate" hidden="true" showIf="refusalDate"/>
 			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
-			<field name="moveDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4"/>
-			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
+			<field name="moveDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="ventilated"/>
+			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"  readonlyIf="ventilated"/>
 			<field name="paymentStatusSelect" colSpan="4"/>
 			<field name="paymentDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4"/>
-			<field name="paymentMode" hidden="true" colSpan="4" showIf="paymentMode"/>
-			<field name="bankOrder" showIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+			<field name="paymentMode" hidden="true" colSpan="4" showIf="paymentMode" readonlyIf="$contains([1, 3], paymentStatusSelect)"/>
+			<field name="bankOrder" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; paymentMode &amp;&amp; paymentMode.generateBankOrder" colSpan="4"/>
 		    <field name="ventilated" hidden="true" title="Expense Ventilated" readonly="true" colSpan="4" showIf="ventilated"/>
 		</panel>
 		<panel sidebar="true" readonly="true"  colSpan="4">  
@@ -116,8 +118,8 @@
 	              &lt;dd ng-show="record.withdrawnCash != 0" &gt;-{{record.withdrawnCash | number:2}}&lt;/dd&gt;
 	              &lt;dt ng-show="record.advanceAmount != 0" x-translate&gt;Advance&lt;/dt&gt;
 	              &lt;dd ng-show="record.advanceAmount != 0" &gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
-	              &lt;dt ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
-             	  &lt;dd ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
+	              &lt;dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
+             	  &lt;dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;TotalToRefund&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}&lt;/dd&gt;
 	            &lt;/dl&gt;
@@ -205,6 +207,10 @@
 	
 	<action-method name="action-expense-method-add-payment">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="addPayment"/>
+	</action-method>
+
+	<action-method name="action-expense-method-cancel-payment">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancelPayment"/>
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">
