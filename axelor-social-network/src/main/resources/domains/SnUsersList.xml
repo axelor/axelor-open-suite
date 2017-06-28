@@ -14,6 +14,8 @@
   	<string name="other" title="Other"/>
   	<string name="sn" title="Social Network"/>
   	<many-to-one name="snSearch" ref="com.axelor.apps.network.db.SnSearch"/>
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <one-to-one name="snProfile" ref="com.axelor.apps.network.db.SnProfile"/>
   </entity>
   
 </domain-models>

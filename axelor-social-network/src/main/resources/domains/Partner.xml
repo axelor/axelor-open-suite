@@ -8,6 +8,7 @@
   <entity name="Partner" lang="java" cachable="true">
   	<one-to-many name="snProfileList" ref="com.axelor.apps.network.db.SnProfile" mappedBy="partner" title="SN Profile"/>
   	<one-to-many name="snSearchList" ref="com.axelor.apps.network.db.SnSearch" mappedBy="partner"/>
+  	<one-to-many name="snUsersList" ref="com.axelor.apps.network.db.SnUsersList" mappedBy="partner"/>
   </entity>
   
 </domain-models>

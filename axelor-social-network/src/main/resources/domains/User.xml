@@ -4,11 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
-
-  <entity name="User" sequential="true" lang="java">
-  
-    <one-to-many name="snPersonalCredentialList" ref="com.axelor.apps.network.db.SnPersonalCredential" title="Personal Credential" mappedBy="user"/>
-    
+  	<entity name="User" sequential="true" lang="java">
+    <many-to-one name="snPersonalCredential" ref="com.axelor.apps.network.db.SnPersonalCredential" title="Personal Credential"/>
   </entity>
 
 </domain-models>

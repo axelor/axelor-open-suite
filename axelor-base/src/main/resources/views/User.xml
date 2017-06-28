@@ -46,7 +46,9 @@
         		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
         	</panel>
-        	<panel-related name="snPersonalCredential" title="SN Personal Credential" if-module="axelor-social-network" field="snPersonalCredentialList" form-view="sn-personal-credential-form" grid-view="sn-personal-credential-grid"/>
+        	<panel name="personalCredential" if-module="axelor-social-network" title="SN Personal Credential" > 
+		    	<field name="snPersonalCredential" form-view="sn-personal-credential-form" grid-view="sn-personal-credential-grid" canNew="true"/>
+		    </panel>  
         </panel-tabs>
     </form>
     

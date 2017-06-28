@@ -9,6 +9,7 @@
     <string name="uniqueID" title="Unique ID"/>
     <integer name="snTypeSelect" selection="sn.profile.sn.type"/>    
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <one-to-one name="snUserDetail" title="Details" ref="com.axelor.apps.network.db.SnUsersList" mappedBy="snProfile"/>
   </entity>
   
 </domain-models>

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 	<grid name="sn-profile-network-grid" title="SN Profile List" model="com.axelor.apps.network.db.SnProfile">
-		<field name="uniqueId"/>
+		<field name="uniqueID"/>
 		<field name="snTypeSelect"/>
 	</grid>
 
@@ -11,8 +11,12 @@
 		<panel title="Overview">
 			<field name="uniqueID"/>
 			<field name="snTypeSelect"/>
-			<button name="profile"/>
 		</panel>
+		<panel title="Details">
+			<field name="snUserDetail" form-view="sn-user-profile-form"/>
+		</panel>
+		
 	</form>
+
 
 </object-views>

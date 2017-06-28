@@ -16,6 +16,7 @@
 			<field name="email" readonly="true"/>
 			<field name="uniqueID"  readonly="true"/>
 			<button name="profile" title="Open Profile" onClick="action-sn-user-method-profile"/>
+			<button name="import" title="Import Profile" onClick="action-sn-user-method-import-profile"/>
 		</panel>
 	</form>
 	

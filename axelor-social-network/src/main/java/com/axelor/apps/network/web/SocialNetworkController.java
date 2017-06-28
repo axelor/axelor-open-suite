@@ -7,19 +7,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.network.db.SnProfile;
 import com.axelor.apps.network.db.SnSearch;
 import com.axelor.apps.network.db.SnUsersList;
+import com.axelor.apps.network.db.repo.SnProfileRepository;
+import com.axelor.apps.network.db.repo.SnUsersListRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.persist.Transactional;
 
 public class SocialNetworkController {
 	
+	
+	@Inject
+	SnProfileRepository snProfileRepository;
+	
+	@Inject
+	SnUsersListRepository snUsersListRepository;
 	
 	public void searchPartner(ActionRequest request, ActionResponse response) {
 		Partner partner = Beans.get(PartnerRepository.class).find(new Long(request.getContext().get("_idPartner").toString()));
@@ -71,13 +82,14 @@ public class SocialNetworkController {
 		for(Map element : requestedElements) {
 			if(element.containsValue(lastName)){
 				if(element.containsValue(firstName)){
-					listResult.add(addUserIntoList(element));
+					listResult.add(addUserIntoList(element, partner));
 					
 				}
 			}
 		}
 		
 		snSearch.setSnProfile(listResult);
+		snSearch.setPartner(partner);
 		
 		response.setValue("snProfile", listResult);
 		
@@ -85,7 +97,7 @@ public class SocialNetworkController {
 	
 	}
 	
-	public SnUsersList addUserIntoList(Map element) {
+	public SnUsersList addUserIntoList(Map element, Partner partner) {
 		SnUsersList newUser = new SnUsersList();
 		
 		newUser.setLastName(element.get("lastName").toString());
@@ -93,6 +105,7 @@ public class SocialNetworkController {
 		newUser.setEmail(element.get("email").toString());
 		newUser.setUniqueID(element.get("uniqueID").toString());
 		newUser.setSn(element.get("sn").toString());
+		newUser.setPartner(partner);
 		
 		return newUser;
 		
@@ -100,6 +113,9 @@ public class SocialNetworkController {
 	
 	public void seeProfile(ActionRequest request, ActionResponse response) {
 		String userUniqueID = request.getContext().asType(SnUsersList.class).getUniqueID();
+		
+		Partner partner = request.getContext().asType(SnUsersList.class).getPartner();
+		
 		List<Map> requestedElements = new ArrayList<>();
 		HashMap<String, String> elements = new HashMap<>();
 		
@@ -153,8 +169,6 @@ public class SocialNetworkController {
 				uniqueID = element.get("uniqueID").toString();
 				sn = element.get("sn").toString();
 				
-				System.out.println(birth);
-				
 			}
 		}
 		
@@ -169,14 +183,35 @@ public class SocialNetworkController {
 		  		.context("_uniqueID", uniqueID)
 		  		.context("_birthDate", birth)
 		  		.context("_sn", sn)
+		  		.context("_partner", partner)
 		  		.map());
 		
 	}
-	
-	
-	public void importProfile(ActionRequest request, ActionResponse response) {
-		SnProfile userProfile = new SnProfile();
-	}
 
+	@Transactional
+	public void importProfile(ActionRequest request, ActionResponse response) {
+		
+		SnUsersList snUser = request.getContext().asType(SnUsersList.class);
+		snUser = snUsersListRepository.find(snUser.getId());
+		Integer snType = 0;
+		String snUserSN = snUser.getSn();
+
+		SnProfile snProfile = new SnProfile();
+		snProfile.setUniqueID(snUser.getUniqueID());
+		snProfile.setPartner(snUser.getPartner());
+		if(snUserSN.equals("facebook")) {
+			snType = 1;
+		} else if (snUserSN.equals("linkedin")) {
+			snType = 2;
+		} else if (snUserSN.equals("twitter")) {
+			snType = 3;
+		}
+		
+		snProfile.setSnTypeSelect(snType);
+		
+		snProfile.setSnUserDetail(snUser);
+		snUser.setSnProfile(snProfile);
+		snProfileRepository.save(snProfile);
+	}
 	
 }
