@@ -68,7 +68,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		Set<TagSkill> tagSkillSet = new HashSet<TagSkill>();
 		tagSkillSet.addAll(jobApplication.getTagSkillSet());
 		employee.setTagSkillSet(tagSkillSet);
-		employee.getMainEmploymentContract().setDepartment(jobApplication.getJobPosition().getCompanyDepartment());
+		employee.getMainEmploymentContract().setCompanyDepartment(jobApplication.getJobPosition().getCompanyDepartment());
 		employee.setName(employee.getContactPartner().getName());
 		
 		return employee;
