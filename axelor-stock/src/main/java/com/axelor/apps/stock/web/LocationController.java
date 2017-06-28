@@ -17,29 +17,35 @@
  */
 package com.axelor.apps.stock.web;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.eclipse.birt.core.exception.BirtException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LocationController {
 
@@ -126,6 +132,35 @@ public class LocationController {
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
 		}	
+	}
+
+	public void dashletLocationBadFuturStockMini(ActionRequest request, ActionResponse response) {
+
+		List<LocationLine> locationLineList = Beans.get(LocationLineRepository.class)
+				.all().filter("self.location.typeSelect = 1 OR self.location.typeSelect = 2").fetch();
+
+		List<LocationLine> newLocationLineList = new ArrayList<>();
+
+		for (LocationLine locationLine : locationLineList) {
+			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
+					.filter("self.location = ?1 AND self.product = ?2",locationLine.getLocation(),locationLine.getProduct()).fetchOne();
+			if (locationLine.getFutureQty().compareTo(stockRules.getMinQty())<0) {
+				newLocationLineList.add(locationLine);
+			}
+		}
+
+		String idString = (newLocationLineList.isEmpty()) ? "0" : newLocationLineList.stream()
+				.map(locationLine -> locationLine.getId().toString())
+				.collect(Collectors.joining(","));
+
+		response.setView(ActionView
+				.define(I18n.get("Location lines to be replenished"))
+				.model(LocationLine.class.getName())
+				.add("grid","location-line-bad-line-grid")
+				.add("form","location-line-bad-line-form")
+				.domain("self.id IN (" + idString + ")")
+				.map()
+		);
 	}
 	
 }
