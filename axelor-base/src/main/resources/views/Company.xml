@@ -41,7 +41,7 @@
 	  	<panel-tabs hideIf="$popup()">
 	    	<panel name="informations" title="Informations">
 	      		<field name="notes" colSpan="12"/>
-	    		<field name="companyDepartmentList" canSelect="true" domain="self.company IS NULL" colSpan="12"/>
+	    		<field name="companyDepartmentList" grid-view="company-department-company-grid" form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL" colSpan="12"/>
 	    	</panel>
 	    	<panel name="configurations" title="Configurations">
 	  			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>

@@ -16,5 +16,17 @@
         	<field name="company"/>
         </panel>
     </form>
-    
+
+    <grid name="company-department-company-grid" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
+        <field name="code"/>
+        <field name="name"/>
+    </grid>
+
+    <form name="company-department-company-form" title="Company department" model="com.axelor.apps.base.db.CompanyDepartment">
+    	<panel name="main">
+        	<field name="code" x-bind="{{code|uppercase}}"/>
+        	<field name="name"/>
+        </panel>
+    </form>
+
 </object-views>
