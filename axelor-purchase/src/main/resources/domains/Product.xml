@@ -5,7 +5,7 @@
  
   <entity name="Product" lang="java">
   
-    <many-to-one name="purchasesUnit" ref="com.axelor.apps.base.db.Unit" title="Purchases unit" initParam="true" massUpdate="true" help="true"/>
+    <many-to-one name="purchasesUnit" ref="com.axelor.apps.base.db.Unit" title="Purchases unit" initParam="true" massUpdate="true" />
   	
   </entity>
 

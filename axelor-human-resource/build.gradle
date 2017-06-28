@@ -24,3 +24,5 @@ task copyWebapp(type: Copy) {
 		from "src/main/webapp"
 	}
 }
+
+rootProject.tasks.war.dependsOn copyWebapp

@@ -54,11 +54,11 @@
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 	onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" onSave="action-event-group-on-save">
 		<toolbar>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+			<button name="grabEvent" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
-			<button name="start" help="Start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
-			<button name="pause" help="Pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
-			<button name="accept" help="Finish" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
+			<button name="start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
+			<button name="pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
+			<button name="accept" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
 		<menubar>
 			<menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">

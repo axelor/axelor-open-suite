@@ -16,8 +16,6 @@ perm.sale.saleOrderLine.r;com.axelor.apps.sale.db.SaleOrderLine;true;false;false
 perm.sale.saleOrderLineTax.r;com.axelor.apps.sale.db.SaleOrderLineTax;true;false;false;false;false;;
 perm.crm.event.r;com.axelor.apps.crm.db.Event;true;true;true;false;false;;
 perm.crm.eventCategory.r;com.axelor.apps.crm.db.EventCategory;true;false;false;false;false;;
-perm.crm.ticket.r;com.axelor.apps.crm.db.Ticket;true;true;true;false;false;;
-perm.crm.ticketCategory.r;com.axelor.apps.crm.db.TicketCategory;true;false;false;false;false;;
 perm.account.invoice.r;com.axelor.apps.account.db.Invoice;true;false;false;false;false;;
 perm.account.invoiceLine.r;com.axelor.apps.account.db.InvoiceLine;true;false;false;false;false;;
 perm.account.invoiceLineTax.r;com.axelor.apps.account.db.InvoiceLineTax;true;false;false;false;false;;

@@ -77,7 +77,7 @@ public class ManufOrderController {
 //	}
 	
 	
-	public void start (ActionRequest request, ActionResponse response) {
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Long manufOrderId = (Long)request.getContext().get("id");
 		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
@@ -216,7 +216,14 @@ public class ManufOrderController {
 		StockMove wasteStockMove = manufOrderService.generateWasteStockMove(manufOrder);
 		response.setReload(true);
 	}
-
+  
+	public void updateQty(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
+		ManufOrder newManufOrder = manufOrderService.updateQty(manufOrder);
+		response.setReload(true);
+		response.setCanClose(true);
+	}
 	
 	public void printProdProcess(ActionRequest request, ActionResponse response) throws AxelorException {
 		
@@ -235,5 +242,5 @@ public class ManufOrderController {
 				.add("html", fileLink).map());
 		
 	}
-	
+  
 }

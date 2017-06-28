@@ -8,7 +8,7 @@
   <entity name="EmailAddress" lang="java">
   	
 	<one-to-one name="partner"  ref="com.axelor.apps.base.db.Partner" title="Contact" mappedBy="emailAddress"/>
-	<string name="address" title="Address" help="true" initParam="true"/>
+	<string name="address" title="Address" initParam="true"/>
 	<string name="name" readonly="true" required="true" namecolumn="true">
 		<![CDATA[
 		String name = "";
