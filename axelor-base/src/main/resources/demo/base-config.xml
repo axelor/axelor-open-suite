@@ -118,6 +118,7 @@
  		<bind column="id" to="importId"/>
  		<bind column="code" to="code"/>
  		<bind column="name" to="name"/>
+ 		<bind column="company" to="company"/>
  	</input>
  	
 	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" search="self.code = :code" />

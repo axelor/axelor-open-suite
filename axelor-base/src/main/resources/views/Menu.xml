@@ -397,7 +397,19 @@
 		<view type="grid" name="company-grid"/>
 		<view type="form" name="company-form"/>
 	</action-view>
-	
+
+	<menuitem name="admin-root-user-configuration" parent="admin-root-user"
+		title="Configuration" />
+
+	<menuitem name="company-department-all" parent="admin-root-user-configuration"
+    	title="Departments"
+    	action="company.department.all"/>
+
+	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
+    	<view type="grid" name="company-department-grid"/>
+	    <view type="form" name="company-department-form"/>
+	</action-view>
+
 	<menuitem name="alarm-root" title="Alarms" order="30"
 		  parent="admin-root"/>
 
