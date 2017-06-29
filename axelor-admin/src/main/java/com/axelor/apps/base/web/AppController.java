@@ -75,7 +75,7 @@ public class AppController {
 		String viewName = "app-" + type + "-config-form";
 		
 		if (metaViewRepo.findByName(viewName) == null) {
-			response.setFlash(I18n.get("No configuraiton required"));
+			response.setFlash(I18n.get("No configuration required"));
 		}
 		else {
 			response.setView(ActionView.define(I18n.get("Configure: ") + app.getName())

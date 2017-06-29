@@ -32,9 +32,11 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import java.lang.invoke.MethodHandles;
+
 public class PeriodService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PeriodService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PeriodRepository periodRepo;

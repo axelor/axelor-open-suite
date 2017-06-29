@@ -27,6 +27,8 @@
     	]]>
    	</string>
    	<many-to-one name="iCalendar" ref="com.axelor.apps.base.db.ICalendar" title="Main calendar"/>
+   	<many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followed users"/>
+    <one-to-many name="calendarManagementList" ref="com.axelor.apps.base.db.CalendarManagement" title="Calendars permissions" mappedBy="parentUser"/>
     
   </entity>
 

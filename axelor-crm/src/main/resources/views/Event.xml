@@ -67,7 +67,7 @@
 			</menu>
 		</menubar>
 		<panel colSpan="12" name="calendarConfig">
-			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
+			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
 		</panel>
 		<panel colSpan="12" name="meetingGeneral">
@@ -235,7 +235,7 @@
     
     <action-group name="action-event-new-record">
     	<action name="action-event-default-record"/>
-    	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
+    	<action name="action-event-record-default-duration" if="typeSelect != 0"/>
     	<action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     	<action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
@@ -269,7 +269,6 @@
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     	<field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
-    	<field name="typeSelect" expr="eval:5" if="_typeSelect == null"/>
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>

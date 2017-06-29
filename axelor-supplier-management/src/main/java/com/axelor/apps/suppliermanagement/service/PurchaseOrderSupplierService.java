@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.suppliermanagement.service;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,7 @@ import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderSupplierService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderSupplierService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;

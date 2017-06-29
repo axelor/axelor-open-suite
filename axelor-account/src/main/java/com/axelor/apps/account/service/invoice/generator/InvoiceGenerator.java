@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -44,11 +43,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.lang.invoke.MethodHandles;
 
 public abstract class InvoiceGenerator  {
 	
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected JournalService journalService;
 

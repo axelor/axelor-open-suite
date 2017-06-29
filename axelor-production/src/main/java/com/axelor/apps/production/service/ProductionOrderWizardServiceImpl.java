@@ -20,8 +20,13 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import java.lang.invoke.MethodHandles;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -37,6 +42,8 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
+
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected ProductionOrderService productionOrderService;

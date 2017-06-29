@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import com.google.inject.Inject;
 
 public class BatchReimbursementExport extends BatchStrategy {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected boolean stop = false;
 	

@@ -70,4 +70,6 @@ public interface ManufOrderService {
 	 */
 	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException;
 
+	public ManufOrder updateQty(ManufOrder manufOrder);
+
 }

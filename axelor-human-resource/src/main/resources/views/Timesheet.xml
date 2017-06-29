@@ -63,7 +63,8 @@
 		    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 		    	<button name="getTimeFromTask" title="Get time from Tasks" showIf="statusSelect == 1" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 		    	<button name="generateLinesButton" showIf="statusSelect == 1" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
-		    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"/>
+		    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
+			    	if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
 		    </panel>
 		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
@@ -182,7 +183,7 @@
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-toDate">
-		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate" action="action-timesheet-null-toDate"/>
+		<error message="Invalid date" if="(toDate != null &amp;&amp; toDate &lt; fromDate) || (toDate != null &amp;&amp; toDate &gt; __date__)" action="action-timesheet-null-toDate"/>
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-fromDate">

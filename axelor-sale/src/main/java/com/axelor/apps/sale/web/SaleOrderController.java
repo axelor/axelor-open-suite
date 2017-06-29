@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.lang.invoke.MethodHandles;
 
 import com.axelor.i18n.I18n;
 import org.eclipse.birt.core.exception.BirtException;
@@ -50,7 +51,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private SaleOrderService saleOrderService;
@@ -145,15 +146,13 @@ public class SaleOrderController {
 	}
 
 	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
-
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-
+		saleOrderService.finalizeSaleOrder(saleOrder);
 		response.setReload(true);
-
 	}
-	
+
 	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);

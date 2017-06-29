@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
+import java.io.ByteArrayOutputStream;
+
+import org.jdom.JDOMException;
+
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
 import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
@@ -77,12 +81,24 @@ public class UTransferRequestElement extends TransferRequestElement {
     header = EbicsXmlFactory.createEbicsRequestHeader(true, mutable, xstatic);
     orderData = EbicsXmlFactory.createEbicsRequestOrderData(IOUtils.getFactoryContent(content));
     dataTransfer = EbicsXmlFactory.createDataTransferRequestType(orderData);
-    body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer);
+    body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer);  //TODO CHECK
     request = EbicsXmlFactory.createEbicsRequest(1,
 	                                         "H003",
 	                                         header,
 	                                         body);
     document = EbicsXmlFactory.createEbicsRequestDocument(request);
+    
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    try {
+		this.save(bout);
+	} catch (JDOMException e) {
+		// TODO Bloc catch généré automatiquement
+		e.printStackTrace();
+	}
+    
+    System.out.println("Requete data ----------------------------------------------------------------------------");
+	System.out.println(bout.toString());
+    
   }
 
   // --------------------------------------------------------------------

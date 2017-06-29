@@ -9,6 +9,7 @@
     
         <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
         <many-to-one name="payCompany" ref="com.axelor.apps.base.db.Company" title="Pay Company" required="true"/>
+		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department" />
         
         <integer name="employmentContractVersion" title="Amendment" default="0"/>
         <integer name="amendmentTypeSelect" selection="hr.employment.contract.amendment.type.select" title="Amendment type"/>
@@ -16,6 +17,7 @@
         <integer name="status" title="Status" selection="hr.employment.contract.status"/>
 
         <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />
+
         <date name="startDate" title="Start date"/>
         <date name="endDate" title="End date"/>
         <time name="startTime" title="Start time"/>
@@ -58,11 +60,6 @@
         </string>
 
         <extra-code><![CDATA[
-            // CATEGORY SELECT
-            public static final int CONTRACT_TYPE_FIXED_TERM_FULL_TIME = 1;
-            public static final int CONTRACT_TYPE_FIXED_TERM_PART_TIME = 2;
-            public static final int CONTRACT_TYPE_PERMANENT_TERM_FULL_TIME = 3;
-            public static final int CONTRACT_TYPE_PERMANENT_TERM_PART_TIME = 4;
 
             // EXECUTIVE STATUS SELECT
             public static final int EXECUTIVE_STATUS_EXECUTIVE = 1;

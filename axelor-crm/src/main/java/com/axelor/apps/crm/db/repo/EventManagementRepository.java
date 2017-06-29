@@ -108,6 +108,7 @@ public class EventManagementRepository extends EventRepository {
 			calendarService.removeEventFromIcal(entity);
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			TraceBackService.trace(e);
 		}
 		Calendar calendar = entity.getCalendarCrm();
@@ -117,6 +118,7 @@ public class EventManagementRepository extends EventRepository {
 				calendarService.sync(calendar);
 			}
 			catch(Exception e){
+				e.printStackTrace();
 				TraceBackService.trace(e);
 			}
 		}

@@ -235,6 +235,9 @@
 	
 	<action-attrs name="action-leave-request-attrs-line-domain">
 		<attribute name="domain" for="leaveLine"  expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id}&quot; "/>
+		<attribute for="leaveLine" name="domain"
+				   if="!__user__.employee?.hrManager"
+				   expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id} AND (self.leaveReason IS NULL OR self.leaveReason.selectedByMgtOnly = false) &quot;"/>
 	</action-attrs>
 	
 	

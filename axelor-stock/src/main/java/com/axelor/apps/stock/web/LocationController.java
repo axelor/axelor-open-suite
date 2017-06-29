@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.stock.web;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.eclipse.birt.core.exception.BirtException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.Location;
@@ -49,7 +57,7 @@ import java.util.stream.Collectors;
 
 public class LocationController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private LocationRepository locationRepo;

@@ -22,6 +22,8 @@
 	  <integer name="visibilitySelect" title="Visibility" selection="i.cal.event.visibility.select" default="1"/>
 	  <integer name="disponibilitySelect" title="Availability" selection="i.cal.event.disponibility.select" default="1"/>
 	  <string name="subjectTeam"/>
+	  <integer name="typeSelect" title="Type" selection="icalendar.event.type.select" required="true" />
+	  <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  <finder-method name="findByUid" using="uid" />
 	  
 	  <extra-code>

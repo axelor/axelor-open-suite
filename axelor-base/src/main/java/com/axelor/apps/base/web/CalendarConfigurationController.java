@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.web;
+package com.axelor.apps.base.web;
 
-import com.axelor.apps.crm.db.CalendarConfiguration;
-import com.axelor.apps.crm.service.CalendarConfigurationService;
+import com.axelor.apps.base.db.CalendarConfiguration;
+import com.axelor.apps.base.ical.CalendarConfigurationService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;

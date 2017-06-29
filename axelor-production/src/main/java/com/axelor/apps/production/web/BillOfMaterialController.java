@@ -90,14 +90,14 @@ public class BillOfMaterialController {
 		
 		BillOfMaterial billOfMaterial = billOfMaterialRepo.find( request.getContext().asType(BillOfMaterial.class).getId() );
 		
-		List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
-		billOfMaterialList = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin").bind("origin", billOfMaterial).fetch();
+		List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
+		BillOfMaterialSet = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin").bind("origin", billOfMaterial).fetch();
 		String message;
 		
-		if(!billOfMaterialList.isEmpty()){
+		if(!BillOfMaterialSet.isEmpty()){
 			
 			String existingVersions = "";
-			for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
+			for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
 				existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
 			}
 			message = String.format(I18n.get("This bill of material already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"), existingVersions);
@@ -120,7 +120,7 @@ public class BillOfMaterialController {
 				.model(BillOfMaterial.class.getName())
 				   .add("form","bill-of-material-form")
 				   .add("grid","bill-of-material-grid")
-				   .domain("self.defineSubBillOfMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL")
+				   .domain("self.defineSubBillOfMaterial = false AND self.personalized = false")
 				   .context("_showRecord", String.valueOf(copy.getId()))
 				   .map());
 	}

@@ -17,15 +17,16 @@
  */
 package com.axelor.apps.hr.service.timesheet.timer;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -40,16 +41,14 @@ import com.google.inject.persist.Transactional;
 
 public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	protected EventService eventService;
 	protected AppBaseService appBaseService;
 	protected TimesheetService timesheetService;
 	
 	@Inject 
-	public TimesheetTimerServiceImpl(EventService eventService, AppBaseService appBaseService, TimesheetService timesheetService){
+	public TimesheetTimerServiceImpl(AppBaseService appBaseService, TimesheetService timesheetService){
 		
-		this.eventService = eventService;
 		this.appBaseService = appBaseService;
 		this.timesheetService = timesheetService;
 	}
@@ -71,8 +70,8 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
-		Duration duration = eventService.computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
-		BigDecimal secondes = BigDecimal.valueOf((eventService.getDuration(duration) + currentDuration));
+		Duration duration = computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
+		BigDecimal secondes = BigDecimal.valueOf((getDuration(duration) + currentDuration));
 		timer.setDuration(secondes.longValue());
 	}
 
@@ -103,4 +102,15 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 		return Beans.get(TSTimerRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetchOne();
 	}
 	
+	private Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
+
+		return Duration.between(startDateTime, endDateTime);
+
+	}
+
+	private int getDuration(Duration duration)  {
+
+		return new Integer(new Long(duration.getSeconds()).toString());
+
+	}
 }

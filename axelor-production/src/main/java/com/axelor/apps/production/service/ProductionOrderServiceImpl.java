@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import java.time.ZonedDateTime;
@@ -40,7 +41,7 @@ import com.google.inject.persist.Transactional;
 
 public class ProductionOrderServiceImpl implements ProductionOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private ManufOrderService manufOrderService;

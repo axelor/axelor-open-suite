@@ -15,8 +15,19 @@
 	<many-to-one name="wasteLocation" ref="com.axelor.apps.stock.db.Location"
 		title="Waste location" />
 
-  	<finder-method name="findByCompany" using="company"/>
-  	
+	<integer name="stockMoveRealizeOrderSelect" default="1"
+			 selection="production.manuf.order.stock.move.realize.order.select"/>
+
+	  <finder-method name="findByCompany" using="company"/>
+
+	  <extra-code>
+		<![CDATA[
+   			public static final int REALIZE_START = 0;
+   			public static final int REALIZE_FINISH = 1;
+   		]]>
+	  </extra-code>
+
+
   </entity>
   
 </domain-models>

@@ -7,19 +7,19 @@
 		 <field name="hourlyRate" />
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
-		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.department" form-view="department-form" grid-view="department-grid"/>
 	</grid>
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
 		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
-		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.department" form-view="department-form" grid-view="department-grid"/>
 	</grid>
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
 		<toolbar>
-			<button name="annualReport" title="Show annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
@@ -46,7 +46,6 @@
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
         			<field name="socialSecurityNumber" colSpan="4"/>
-        			<field name="kilometricAllowParam" colSpan="4"/>
       			</panel>
 	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
@@ -56,14 +55,19 @@
         			<field name="dateOfHire" colSpan="4"/>
         			<field name="seniorityDate" colSpan="4"/>
         			<field name="profitSharingBeneficiary" colSpan="4"/>
-        			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id"/>
-        			<field name="mainEmploymentContract.executiveStatusSelect" showIf="mainEmploymentContract != null" colSpan="4"/>
+         			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id">
+						<editor x-viewer="true">
+							<field name="payCompany"/>
+							<field name="executiveStatusSelect"/>
+						</editor>
+					</field>
         			<field name="bonusCoef" colSpan="4" />
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
-        			<field if="__config__.app.getApp('base').getManageMultiBanks()" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+        			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid"/>
-        			<field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
+        			<field name="mainEmploymentContract.department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
+        			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
         			<field name="planning" colSpan="4" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
@@ -97,11 +101,26 @@
 							   action="action-employee-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
-	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
-	       	<panel-related field="kilometricLogList" title="Kilometric log"
-						   grid-view="kilometric-log-grid"
-						   form-view="kilometric-log-form" readonly="true"
-						   if="__config__.app.isApp('timesheet')"/>
+	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
+	       	<panel name="kilometricLog" title="Kilometric log" if="__config__.app.isApp('expense')">
+				<field name="kilometricAllowParam" colSpan="12" />
+		       	<panel-related field="kilometricLogList" title="Kilometric log"
+							   grid-view="kilometric-log-grid"
+							   form-view="kilometric-log-form" readonly="true" colSpan="12"
+							   if="__config__.app.isApp('timesheet')"/>
+				<panel name="vehicles" title="Vehicles" colSpan="12">
+					<field name="employeeVehicleList" colSpan="12" showTitle="false">
+						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
+							<field name="plateNo"/>
+							<field name="vehicleModel"/>
+							<field name="vehicleMake"/>
+							<field name="kilometricAllowParam" widget="SuggestBox"/>
+							<field name="startDate"/>
+							<field name="endDate"/>
+						</editor>
+					</field>
+				</panel>
+	       	</panel>
 	       	<panel-dashlet action="employee.dashlet.employee.bonus"
 						   title="Bonuses"
 						   colSpan="12" readonly="true"
@@ -118,7 +137,7 @@
 	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
 		<panel>
 			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
-			<button name="showAnnualReport" title="Show annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
 	

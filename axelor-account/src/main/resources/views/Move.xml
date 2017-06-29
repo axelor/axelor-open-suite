@@ -26,6 +26,7 @@
 	onNew="action-account-move-onnew-group" onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status">
 	
 		<toolbar>
+			<button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
 			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
 			<button name="deleteMove" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
 		</toolbar>
@@ -167,6 +168,10 @@
 		<view type="form" name="move-line-form" />
 		<view-param name="search-filters" value="move-line-filters"/>
 	</action-view>
+
+	<action-method name="action-account-move-method-print-move">
+		<call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
+	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">

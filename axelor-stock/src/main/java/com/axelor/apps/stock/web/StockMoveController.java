@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -55,7 +56,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private StockMoveService stockMoveService;

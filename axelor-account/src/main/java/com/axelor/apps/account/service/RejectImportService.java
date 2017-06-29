@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ import com.google.inject.Inject;
 
 public class RejectImportService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected AppAccountService appAccountService;
 	protected CfonbImportService cfonbImportService;

@@ -10,7 +10,6 @@
 <!-- Commun   -->
 	<many-to-one name="calendarCrm" ref="com.axelor.apps.crm.db.Calendar" title="Calendar"/>
 	<integer name="importId" />
-  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2"/>
   	
 	<datetime name="limitDateT" title="Limit Date"/>
   	
@@ -22,7 +21,6 @@
   	<integer name="relatedToSelectId"/>
   	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
     
-    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
@@ -60,8 +58,6 @@
 	  		public static final Integer TYPE_CALL = 1;
 	  		public static final Integer TYPE_MEETING = 2;
 	  		public static final Integer TYPE_TASK = 3;
-	  		public static final Integer TYPE_LEAVE = 4;
-	  		public static final Integer TYPE_EVENT = 5;
 	  ]]>
       </extra-code>
       

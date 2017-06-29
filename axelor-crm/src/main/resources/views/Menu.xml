@@ -140,15 +140,6 @@
 		<view type="form" name="crm-calendar-form"/>
 	</action-view>
 	
-	<menuitem name="crm-conf-calendar-configuration" parent="crm-conf"
-		title="Calendar Configurations" action="crm.conf.calendar.configuration" />
-
-	<action-view name="crm.conf.calendar.configuration" title="Calendar Configurations"
-		model="com.axelor.apps.crm.db.CalendarConfiguration" >
-		<view type="grid" name="calendar-configuration-grid"/>
-		<view type="form" name="calendar-configuration-form"/>
-	</action-view>
-	
 	<menuitem name="crm-conf-target-configuration" parent="crm-conf"
 		title="Objectives configurations" action="crm.conf.target.configuration" />
 
