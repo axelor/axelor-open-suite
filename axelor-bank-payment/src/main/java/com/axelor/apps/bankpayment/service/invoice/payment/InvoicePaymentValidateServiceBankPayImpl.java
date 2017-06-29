@@ -110,6 +110,7 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+		invoicePaymentRepository.save(invoicePayment);
 	}
 	
 	

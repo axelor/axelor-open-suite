@@ -113,6 +113,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+		invoicePaymentRepository.save(invoicePayment);
 	}
 	
 	
