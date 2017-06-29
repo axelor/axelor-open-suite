@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -90,8 +91,8 @@ public class EbicsCertificateService {
 		ByteArrayInputStream instream = new ByteArrayInputStream(certificate);
 		X509Certificate cert;
 		try {
-			cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(instream);
-		} catch (CertificateException e) {
+			cert = (X509Certificate) CertificateFactory.getInstance("X.509", "BC").generateCertificate(instream);
+		} catch (CertificateException | NoSuchProviderException e) {
 			throw new AxelorException(I18n.get("Error in bank certificate of type %s"), IException.CONFIGURATION_ERROR, type);
 		}
 		
@@ -201,6 +202,7 @@ public class EbicsCertificateService {
 		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
+		cert.setPrivateKey(null);
 		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);

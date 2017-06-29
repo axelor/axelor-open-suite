@@ -7,7 +7,7 @@
 
   <entity name="LeaveLine" cachable="true">
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"/>
-    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
+    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" />
     <decimal name="quantity" title="Remaining" scale="1" precision="5"/>
     <decimal name="daysToValidate" title="Waiting for validation" scale="1"
              precision="5"/>

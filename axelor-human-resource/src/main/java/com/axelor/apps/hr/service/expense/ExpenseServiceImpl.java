@@ -60,11 +60,11 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
+import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowParam;
-import com.axelor.apps.hr.db.Vehicle;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -617,11 +617,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
-		List<Vehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getVehicleList();
+		List<EmployeeVehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getEmployeeVehicleList();
 		LocalDate expenseDate = expenseLine.getExpenseDate();
 		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
 
-		for (Vehicle vehicle : vehicleList) {
+		for (EmployeeVehicle vehicle : vehicleList) {
 			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}

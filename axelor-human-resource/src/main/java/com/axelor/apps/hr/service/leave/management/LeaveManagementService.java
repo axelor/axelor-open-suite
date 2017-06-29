@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -66,6 +67,19 @@ public class LeaveManagementService {
 		leaveManagement.setValue(value.setScale(1));
 		
 		return leaveManagement;
+	}
+
+	/**
+	 * Reset leave management list.
+	 * 
+	 * @param leaveLine
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void reset(LeaveLine leaveLine) throws AxelorException {
+		leaveLine.clearLeaveManagementList();
+		leaveLine.setQuantity(BigDecimal.ZERO);
+		leaveLine.setTotalQuantity(BigDecimal.ZERO);
 	}
 
 }

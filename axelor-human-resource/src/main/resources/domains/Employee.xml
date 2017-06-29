@@ -45,7 +45,7 @@
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
       <string name="exportCode" title="Export code" help="May be used as registration number in export" />
-      <one-to-many name="vehicleList" ref="com.axelor.apps.hr.db.Vehicle" mappedBy="employee"/>
+      <one-to-many name="employeeVehicleList" ref="com.axelor.apps.hr.db.EmployeeVehicle" mappedBy="employee"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
 	       		if(contactPartner != null) { return contactPartner.getFullName(); }

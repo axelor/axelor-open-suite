@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form onSave="action-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+    <form onSave="action-year-check-date" onLoad="action-attrs-account-year-read-only-dates" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
 		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" colSpan="3"/>
@@ -24,7 +24,7 @@
 				<field name="reportedBalanceDate" colSpan="3"/>
 			</panel>
 		</panel>
-		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-form" grid-view="period-grid"/>
+		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
 		<panel sidebar="true" readonlyIf="statusSelect == 2">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
@@ -33,7 +33,7 @@
 		</panel>
 		<panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
-			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />    
+			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
 		</panel>
 	</form>
 
@@ -49,8 +49,14 @@
     	<action name="save"/>
     	<action name="action-year-validate-generate-period"/>
     	<action name="action-method-account-year-generate-periods"/>
+		<action name="action-attrs-account-year-read-only-dates"/>
     	<action name="save"/>
     </action-group>
+
+	<action-attrs name="action-attrs-account-year-read-only-dates">
+		<attribute for="fromDate" name="readonly" expr="true" if="!periodList?.isEmpty()"/>
+		<attribute for="toDate" name="readonly" expr="true" if="!periodList?.isEmpty()"/>
+	</action-attrs>
     
     <action-method name="action-method-account-year-generate-periods">
     	<call class="com.axelor.apps.account.web.YearController" method="generatePeriods"/>
