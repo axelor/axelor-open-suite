@@ -35,12 +35,13 @@ import com.axelor.inject.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PaymentModeServiceImpl implements PaymentModeService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public Account getPaymentModeAccount(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException{
 

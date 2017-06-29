@@ -37,9 +37,11 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class PaymentVoucherController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PaymentVoucherRepository paymentVoucherRepo;

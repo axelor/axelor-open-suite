@@ -23,10 +23,17 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.team.db.Team;
-import com.axelor.apps.base.db.*;
+
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -48,11 +55,9 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.math.BigDecimal;
-
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
@@ -210,4 +215,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
+
+	@Override
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		super.finalizeSaleOrder(saleOrder);
+		Beans.get(AccountingSituationSupplychainServiceImpl.class).updateUsedCredit(saleOrder.getClientPartner().getId());
+	}
+
 }

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -64,7 +65,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected StockMoveLineService stockMoveLineService;

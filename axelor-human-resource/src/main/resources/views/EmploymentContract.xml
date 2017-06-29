@@ -45,7 +45,10 @@
 		</panel-stack>  
 		<panel name="main">
 			<field name="signatureDate" colSpan="4"/>
-			<field name="contractType" colSpan="4"/>
+			<field name="contractType" canNew="true"
+				   grid-view="employment-contract-type-grid"
+				   form-view="employment-contract-type-form" colSpan="4"
+				   onChange="action-employment-contract-record-contract-type-on-change"/>
 			<field name="executiveStatusSelect" colSpan="4"/>
 			<panel name="organization" title="Organization" colSpan="12">
 				<field name="startDate" colSpan="3"/>

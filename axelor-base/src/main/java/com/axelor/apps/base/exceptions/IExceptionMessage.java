@@ -125,7 +125,8 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
 	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
 	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
-	
+	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ " - Not null : " /*)*/;
+
 	/**
 	 * Template message service base impl
 	 */

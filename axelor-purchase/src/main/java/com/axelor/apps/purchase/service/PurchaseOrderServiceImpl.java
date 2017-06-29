@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PurchaseOrderLineTaxService purchaseOrderLineVatService;

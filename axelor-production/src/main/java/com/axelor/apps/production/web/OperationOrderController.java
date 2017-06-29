@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class OperationOrderController {
 	
 	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	public OperationOrderController(OperationOrderRepository operationOrderRepo, OperationOrderWorkflowService operationOrderWorkflowService,
@@ -77,6 +78,8 @@ public class OperationOrderController {
 		this.manufOrderWorkflowService = manufOrderWorkflowService;
 		this.weeklyPlanningService = weeklyPlanningService;
 	}
+
+	
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //

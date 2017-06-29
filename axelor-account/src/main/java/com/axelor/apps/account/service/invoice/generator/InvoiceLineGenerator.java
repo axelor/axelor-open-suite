@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -57,7 +58,7 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected AccountManagementServiceImpl accountManagementServiceImpl;
 	protected CurrencyService currencyService;

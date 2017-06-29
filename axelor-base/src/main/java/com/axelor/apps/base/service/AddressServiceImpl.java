@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class AddressServiceImpl implements AddressService  {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public boolean check(String wsdlUrl) {
 		return ads.doCanSearch(wsdlUrl);

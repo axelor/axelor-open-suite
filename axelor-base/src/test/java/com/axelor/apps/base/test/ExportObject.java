@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class ExportObject {
 	
 	public static List<String> fieldAttrs = Arrays.asList("object","module", "name","type","title","help");
 	
-	private static final Logger log = LoggerFactory.getLogger(ExportObject.class);
+	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 	

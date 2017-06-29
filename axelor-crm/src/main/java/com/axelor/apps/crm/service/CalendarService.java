@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -98,7 +99,7 @@ import net.fortuna.ical4j.model.property.Trigger;
 
 public class CalendarService extends ICalendarService{
 
-	private final Logger log = LoggerFactory.getLogger(CalendarService.class);
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	static final String X_WR_CALNAME = "X-WR-CALNAME";
 	
 	@Inject

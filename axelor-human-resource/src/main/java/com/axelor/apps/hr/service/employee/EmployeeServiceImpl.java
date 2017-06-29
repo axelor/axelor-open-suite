@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.employee;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -54,7 +55,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	/**
 	 * Convert hours duration to user duration using time logging preference of user

@@ -18,4 +18,3 @@ dependencies {
 	compile project(":modules:axelor-human-resource")
 	compile project(":modules:axelor-account")
 }
-

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ import com.google.inject.persist.Transactional;
 
 public class BatchPayrollPreparationGeneration extends BatchStrategy {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private int duplicateAnomaly;
 	private int configurationAnomaly;

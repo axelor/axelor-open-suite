@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -42,7 +43,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceSupplychainImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private AppSupplychainService appSupplyChainService;

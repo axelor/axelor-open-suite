@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ import com.google.inject.persist.Transactional;
 
 public class OperationOrderServiceImpl implements OperationOrderService  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

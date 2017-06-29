@@ -73,10 +73,9 @@
 		  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 		  		<field name="lunchVoucherFormatSelect"/>
 		  	</panel>
-		  	<panel title="Export" >
+		  	<panel title="Exports" >
 		  		<field name="exportCodeForLunchVoucherManagement" />
 		  		<field name="exportCodeForExtraHours" />
-		  		
 		  	</panel>
 		</panel-tabs>
 	</form>

@@ -32,7 +32,7 @@ public interface BillOfMaterialService {
 	static final String UNIT_DAY_CODE = "JR";
 	
 	
-	public List<BillOfMaterial> getBillOfMaterialList(Product product);
+	public List<BillOfMaterial> getBillOfMaterialSet(Product product);
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

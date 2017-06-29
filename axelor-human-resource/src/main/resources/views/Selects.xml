@@ -84,13 +84,6 @@
 		<option value="3">Closed</option>
 	</selection>
     
-    <selection name="hr.employment.contract.contract.type.select">
-        <option value="1">Fixed-term full-time</option>
-        <option value="2">Fixed-term part-time</option>
-        <option value="3">Permanent full-time</option>
-        <option value="4">Permanent part-time</option>
-    </selection>
-    
     <selection name="hr.employment.contract.executiveStatus.select">
         <option value="1">Executive</option>
         <option value="2">Non-Executive</option>
@@ -123,6 +116,7 @@
 		<option value="1">Draft</option>
 		<option value="2">Calculated</option>
 		<option value="3">Validated</option>
+		<option value="4">Closed</option>
 	</selection>
 	
 	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">

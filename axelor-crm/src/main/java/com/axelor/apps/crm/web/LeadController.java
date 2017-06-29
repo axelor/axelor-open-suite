@@ -18,6 +18,8 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ import com.google.inject.Inject;
 
 public class LeadController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private LeadService leadService;

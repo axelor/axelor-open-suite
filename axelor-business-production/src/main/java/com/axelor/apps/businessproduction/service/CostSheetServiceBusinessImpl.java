@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ import com.google.inject.Inject;
 
 public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	public CostSheetServiceBusinessImpl(AppProductionService appProductionService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo) {

@@ -19,7 +19,7 @@
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
 		<toolbar>
-			<button name="annualReport" title="Show annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
@@ -55,12 +55,16 @@
         			<field name="dateOfHire" colSpan="4"/>
         			<field name="seniorityDate" colSpan="4"/>
         			<field name="profitSharingBeneficiary" colSpan="4"/>
-        			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id"/>
-        			<field name="mainEmploymentContract.executiveStatusSelect" showIf="mainEmploymentContract != null" colSpan="4"/>
+         			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id">
+						<editor x-viewer="true">
+							<field name="payCompany"/>
+							<field name="executiveStatusSelect"/>
+						</editor>
+					</field>
         			<field name="bonusCoef" colSpan="4" />
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
-        			<field if="__config__.app.getApp('base').getManageMultiBanks()" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+        			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid"/>
         			<field name="mainEmploymentContract.department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
@@ -104,6 +108,18 @@
 							   grid-view="kilometric-log-grid"
 							   form-view="kilometric-log-form" readonly="true" colSpan="12"
 							   if="__config__.app.isApp('timesheet')"/>
+				<panel name="vehicles" title="Vehicles" colSpan="12">
+					<field name="vehicleList" colSpan="12" showTitle="false">
+						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
+							<field name="plateNo"/>
+							<field name="vehicleModel"/>
+							<field name="vehicleMake"/>
+							<field name="kilometricAllowParam" widget="SuggestBox"/>
+							<field name="startDate"/>
+							<field name="endDate"/>
+						</editor>
+					</field>
+				</panel>
 	       	</panel>
 	       	<panel-dashlet action="employee.dashlet.employee.bonus"
 						   title="Bonuses"
@@ -121,7 +137,7 @@
 	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
 		<panel>
 			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
-			<button name="showAnnualReport" title="Show annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
 	
