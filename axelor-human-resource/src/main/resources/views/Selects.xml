@@ -99,6 +99,7 @@
 		<option value="2">Seniority leave Management</option>
 		<option value="3">Payroll preparation generation</option>
 		<option value="4">Payroll preparation export</option>
+		<option value="5">Leave Management Reset</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
