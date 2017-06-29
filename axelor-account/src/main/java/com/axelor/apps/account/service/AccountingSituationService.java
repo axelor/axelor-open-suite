@@ -79,7 +79,7 @@ public class AccountingSituationService	{
 			List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
 
 			if(accountingSituationList == null) {
-				accountingSituationList = new ArrayList<AccountingSituation>();
+				accountingSituationList = new ArrayList<>();
 			}
 
 			for(Company company : companySet) {
@@ -92,15 +92,15 @@ public class AccountingSituationService	{
 					if(inPaymentMode != null) {
 						List<BankDetails> authorizedInBankDetails = Beans.get(PaymentModeService.class)
 								.getCompatibleBankDetailsList(inPaymentMode, company);
-						if(authorizedInBankDetails.equals(defaultBankDetails)) {
-							accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
+						if(authorizedInBankDetails.contains(defaultBankDetails)) {
+							accountingSituation.setCompanyInBankDetails(defaultBankDetails);
 						}
 					}
 					if(outPaymentMode != null) {
 						List<BankDetails> authorizedOutBankDetails = Beans.get(PaymentModeService.class)
 								.getCompatibleBankDetailsList(outPaymentMode, company);
-						if(authorizedOutBankDetails.equals(defaultBankDetails)) {
-							accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
+						if(authorizedOutBankDetails.contains(defaultBankDetails)) {
+							accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
 						}
 					}
 					accountingSituationList.add(accountingSituation);
