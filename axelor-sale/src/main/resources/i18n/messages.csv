@@ -201,6 +201,7 @@
 "SaleOrder.deliveryDate",,,
 "SaleOrder.description",,,
 "SaleOrder.discountAmount",,,
+"SaleOrder.duration",,,
 "SaleOrder.invoicingAddrs",,,
 "SaleOrder.law",,,
 "SaleOrder.no",,,
