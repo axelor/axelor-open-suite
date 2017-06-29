@@ -109,7 +109,7 @@
 							   form-view="kilometric-log-form" readonly="true" colSpan="12"
 							   if="__config__.app.isApp('timesheet')"/>
 				<panel name="vehicles" title="Vehicles" colSpan="12">
-					<field name="vehicleList" colSpan="12" showTitle="false">
+					<field name="employeeVehicleList" colSpan="12" showTitle="false">
 						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
 							<field name="plateNo"/>
 							<field name="vehicleModel"/>
