@@ -58,26 +58,29 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		boolean manageMultiBanks = generalService.getGeneral().getManageMultiBanks();
-		String filter = "self.operationTypeSelect = :operationTypeSelect "
+		StringBuilder filter = new StringBuilder();
+		filter.append("self.operationTypeSelect = :operationTypeSelect "
 				+ "AND self.statusSelect = :statusSelect "
 				+ "AND self.amountRemaining > 0 "
 				+ "AND self.hasPendingPayments = FALSE "
 				+ "AND self.company = :company "
 				+ "AND self.dueDate <= :dueDate "
-				+ "AND self.currency = :currency "
 				+ "AND self.paymentMode = :paymentMode "
-				+ "AND self.id NOT IN (:anomalyList)";
+				+ "AND self.id NOT IN (:anomalyList)");
 
 		if (manageMultiBanks) {
-			filter += " AND self.companyBankDetails IN (:bankDetailsSet)";
+			filter.append(" AND self.companyBankDetails IN (:bankDetailsSet)");
 		}
 
-		Query<Invoice> query = invoiceRepo.all().filter(filter)
+		if (accountingBatch.getCurrency() != null) {
+			filter.append(" AND self.currency = :currency");
+		}
+
+		Query<Invoice> query = invoiceRepo.all().filter(filter.toString())
 				.bind("operationTypeSelect", operationTypeSelect)
 				.bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
 				.bind("company", accountingBatch.getCompany())
 				.bind("dueDate", accountingBatch.getDueDate())
-				.bind("currency", accountingBatch.getCurrency())
 				.bind("paymentMode", accountingBatch.getPaymentMode())
 				.bind("anomalyList", anomalyList);
 
@@ -89,6 +92,10 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 			}
 
 			query.bind("bankDetailsSet", bankDetailsSet);
+		}
+
+		if (accountingBatch.getCurrency() != null) {
+			query.bind("currency", accountingBatch.getCurrency());
 		}
 
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
