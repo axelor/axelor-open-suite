@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -169,7 +170,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 				authorizedBankDetails = Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(
 						accountingSituation.getPartner().getOutPaymentMode(), accountingSituation.getCompany());
 			}
-			String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(authorizedBankDetails);
+			String idList = StringTool.getIdFromCollection(authorizedBankDetails);
 			if (idList.equals("")) {
 				return domain;
 			}

@@ -617,12 +617,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 	 		expenseLine.setExpenseProduct(getKilometricExpenseProduct(expense));
 	 		expenseLine.setUser(user);
 	 		
-	 		Employee employee = user.getEmployee();
-	 		if(employee != null && employee.getKilometricAllowParam() != null)  {
-	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
-	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
-	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
-	 		}
+//	 		Employee employee = user.getEmployee();
+//	 		if(employee != null && employee.getKilometricAllowParam() != null)  {
+//	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+//	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+//	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
+//	 		}
 	 		
 	 		expense.addKilometricExpenseLineListItem(expenseLine);
 	 		
