@@ -16,9 +16,5 @@
 	        <field name="usedCredit"/>
         </panel>
     </form>
-    
-    <action-method name="action-supplychain-method-compute-used-credit">
-    	<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="computeUsedCredit"/>
-    </action-method>
 
 </object-views>

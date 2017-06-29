@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 //import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,7 +51,7 @@ public class AddressController {
 	@Inject
 	protected GeneralService generalService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private AddressRepository addressRepo;

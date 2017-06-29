@@ -91,10 +91,68 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
 	}
-	
-	
-	public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException{
-		if(leave.getFromDate()!=null && leave.getToDate()!=null){
+
+	/**
+	 * Compute the duration of a given leave request but restricted
+	 * inside a period.
+	 * @param leave
+	 * @param fromDate  the first date of the period
+	 * @param toDate  the last date of the period
+	 * @return  the computed duration in days
+	 * @throws AxelorException
+	 */
+	public BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate) throws AxelorException {
+		LocalDate leaveFromDate = leave.getFromDate();
+		LocalDate leaveToDate = leave.getToDate();
+
+		int startOn = leave.getStartOnSelect();
+		int endOn = leave.getEndOnSelect();
+
+		LocalDate from = leaveFromDate;
+		LocalDate to = leaveToDate;
+		//if the leave starts before the beginning of the period,
+		//we use the beginning date of the period.
+		if (leaveFromDate.isBefore(fromDate)) {
+			from = fromDate;
+			startOn = LeaveRequestRepository.SELECT_MORNING;
+		}
+		//if the leave ends before the end of the period,
+		//we use the last date of the period.
+		if (leaveToDate.isAfter(toDate)) {
+			to = toDate;
+			endOn = LeaveRequestRepository.SELECT_AFTERNOON;
+		}
+
+		BigDecimal duration = this.computeDuration(leave, from, to, startOn, endOn);
+
+		return duration;
+	}
+
+	/**
+	 * Compute the duration of a given leave request.
+	 * @param leave
+	 * @return  the computed duration in days
+	 * @throws AxelorException
+	 */
+	public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException {
+		return this.computeDuration(leave, leave.getFromDate(), leave.getToDate(),
+				leave.getStartOnSelect(), leave.getEndOnSelect());
+	}
+
+	/**
+	 * Compute the duration of a given leave request.
+     *
+	 * @param leave
+	 * @param from  the beginning of the period
+	 * @param to  the ending of the period
+	 * @param startOn  If the period starts in the morning or in the afternoon
+	 * @param endOn  If the period ends in the morning or in the afternoon
+	 * @return  the computed duration in days
+	 * @throws AxelorException
+	 */
+	public BigDecimal computeDuration(LeaveRequest leave, LocalDate from,
+									  LocalDate to, int startOn, int endOn)	throws AxelorException {
+		if(from!=null && to!=null){
 			Employee employee = leave.getUser().getEmployee();
 			if(employee == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -121,35 +179,35 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			BigDecimal duration = BigDecimal.ZERO;
 			
 			//If the leave request is only for 1 day
-			if(leave.getFromDate().isEqual(leave.getToDate())){
-				if(leave.getStartOnSelect() == leave.getEndOnSelect()){
-					if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
-						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getFromDate(), true, false)));
+			if(from.isEqual(to)){
+				if(startOn == endOn){
+					if(startOn == LeaveRequestRepository.SELECT_MORNING){
+						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, from, true, false)));
 					}
 					else{
-						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getFromDate(), false, true)));
+						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, from, false, true)));
 					}
 				}
 				else{
-					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getFromDate(), true, true)));
+					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, from, true, true)));
 				}
 			}
 			
 			//Else if it's on several days
 			else{
-				duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getFromDate(), leave.getStartOnSelect(), weeklyPlanning)));
-				LocalDate itDate = new LocalDate(leave.getFromDate().plusDays(1));
+				duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(from, startOn, weeklyPlanning)));
+				LocalDate itDate = new LocalDate(from.plusDays(1));
 
-				while(!itDate.isEqual(leave.getToDate()) && !itDate.isAfter(leave.getToDate())){
+				while(!itDate.isEqual(to) && !itDate.isAfter(to)){
 					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
 					itDate = itDate.plusDays(1);
 				}
 
-				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getToDate(), leave.getEndOnSelect(), weeklyPlanning)));
+				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(to, endOn, weeklyPlanning)));
 			}
 			
 			if(publicHolidayPlanning != null){
-				duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getFromDate(),leave.getToDate(), weeklyPlanning, publicHolidayPlanning));
+				duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(from,to, weeklyPlanning, publicHolidayPlanning));
 			}
 
 			if(duration.compareTo(BigDecimal.ZERO) < 0){
@@ -178,12 +236,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		else{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageValidLeaves(LeaveRequest leave) throws AxelorException{
+	public void manageValidateLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -201,12 +258,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),leave.getLeaveLine().getLeaveReason().getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+			leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
 		}
 		else{
 			leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -226,7 +283,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		else{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -247,6 +303,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			else{
 				leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
 			}
+			leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
 		}
 		else if(leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION){
 			if(leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME){
@@ -256,7 +313,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 			}
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -289,7 +345,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		return value;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
@@ -443,8 +499,13 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 	}
 	
-	@Transactional
-	public void cancel(LeaveRequest leaveRequest) {
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void cancel(LeaveRequest leaveRequest) throws AxelorException {
+		
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageCancelLeaves(leaveRequest);
+		}
 		
 		if (leaveRequest.getEvent() != null){
 			Event event = leaveRequest.getEvent();
@@ -452,7 +513,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			eventRepo.remove(eventRepo.find(event.getId()));
 		}
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
-		leaveRequestRepo.save(leaveRequest);
 	}
 	
 	public Message sendCancellationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
@@ -469,22 +529,19 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(LeaveRequest leaveRequest) throws AxelorException  {
-		
-				
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageSentLeaves(leaveRequest);
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void confirm(LeaveRequest leaveRequest) throws AxelorException {
+
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageSentLeaves(leaveRequest);
 		}
-		
+
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
 		leaveRequest.setRequestDate(generalService.getTodayDate());
-		
-		leaveRequestRepo.save(leaveRequest);
-		
+
 	}
-	
-	
+
 	public Message sendConfirmationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
@@ -504,15 +561,14 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void validate(LeaveRequest leaveRequest) throws AxelorException  {
 		
 		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()){
-			this.manageValidLeaves(leaveRequest);
+			manageValidateLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
 		leaveRequest.setValidatedBy(AuthUtils.getUser());
 		leaveRequest.setValidationDate(generalService.getTodayDate());
-		
-		leaveRequestRepo.save(leaveRequest);
-		
+
+		createEvents(leaveRequest);
 	}
 	
 	
@@ -533,8 +589,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void refuse(LeaveRequest leaveRequest) throws AxelorException  {
 		
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageRefuseLeaves(leaveRequest);
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageRefuseLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);

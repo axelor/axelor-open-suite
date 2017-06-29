@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +41,17 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MoveService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineService moveLineService;
 	protected MoveCreateService moveCreateService;
@@ -122,9 +126,7 @@ public class MoveService {
 
 				boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
-				boolean consolidate = moveToolService.toDoConsolidate();
-
-				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer));
+				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, journal.getIsInvoiceMoveConsolidated(), isPurchase, isDebitCustomer));
 
 				moveRepository.save(move);
 
@@ -256,7 +258,7 @@ public class MoveService {
 			Account account = invoice.getPartnerAccount();
 			MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-			Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
+			Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
 			if(moveToolService.isSameAccount(creditMoveLineList, account))  {
@@ -301,7 +303,7 @@ public class MoveService {
 		Partner partner = invoice.getPartner();
 		Account account = invoice.getPartnerAccount();
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
 		log.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
@@ -348,7 +350,7 @@ public class MoveService {
 	 */
 	public void createExcessMove(Invoice refund, Company company, Partner partner, Account account, BigDecimal amount, MoveLine invoiceCustomerMoveLine) throws AxelorException  {
 
-		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
 
 		Move excessMove = moveCreateService.createMove(journal, company, refund.getCurrency(), partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		excessMove.setInvoice(refund);
@@ -416,5 +418,24 @@ public class MoveService {
 		return moveRepository.save(newMove);
 	}
 
+	public String getLanguageToPrinting(Move move)  {
+		
+		User user = AuthUtils.getUser();
+		
+		String language = "en";
+		
+		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
+			return user.getLanguage();
+		}
+		
+		if(move == null)  {  return language;  }
+		Company company = move.getCompany();
+		
+		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
+			language = company.getPrintingSettings().getLanguageSelect();
+		}
+		
+		return language;
+	}
 		
 }

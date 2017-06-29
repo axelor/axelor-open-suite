@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.db.mapper.Adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -37,11 +42,6 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -62,7 +62,7 @@ import javax.annotation.Nullable;
 public class InvoiceController {
 
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private InvoiceService invoiceService;
@@ -235,20 +235,6 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
-
-	public void getJournal(ActionRequest request, ActionResponse response)  {
-
-		Invoice invoice = request.getContext().asType(Invoice.class);
-
-		try  {
-			response.setValue("journal", Beans.get(JournalService.class).getJournal(invoice));
-		}
-		catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
-
-
 
 	/**
 	 * Method to generate invoice as a Pdf
@@ -515,6 +501,26 @@ public class InvoiceController {
 		}catch(AxelorException ae){
 			response.setFlash(ae.getLocalizedMessage());
 		}
+	}
+
+	/**
+	 * Called on load and in partner, company or payment mode change.
+	 * Fill the bank details with a default value.
+ 	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		PaymentMode paymentMode = invoice.getPaymentMode();
+		Company company = invoice.getCompany();
+		Partner partner = invoice.getPartner();
+		if(paymentMode == null || company == null || partner == null) {
+			return;
+		}
+		partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
+				.findDefaultBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
 }

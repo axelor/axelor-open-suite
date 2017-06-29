@@ -30,9 +30,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class PeriodService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PeriodService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PeriodRepository periodRepo;

@@ -22,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 import javax.crypto.Cipher;
+import javax.xml.XMLConstants;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -78,7 +79,7 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }

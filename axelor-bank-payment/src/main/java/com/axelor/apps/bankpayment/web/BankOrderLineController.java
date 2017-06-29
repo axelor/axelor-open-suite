@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,7 +46,7 @@ public class BankOrderLineController {
         }
         else {
             response.setAttr("receiverBankDetails","domain", domain);
-        }
+       }
     }
 
     public void fillBankDetail(ActionRequest request, ActionResponse response) {
@@ -56,4 +57,20 @@ public class BankOrderLineController {
         response.setValue("receiverBankDetails", bankDetails);
 
     }
+    
+    public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {
+    	
+        BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
+        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+
+        try {
+        	
+			response.setValue("companyCurrencyAmount", bankOrderLineService.computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
+			
+        } catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+    }
+    
+    
 }

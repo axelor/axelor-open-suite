@@ -17,9 +17,16 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.DatatypeConverter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.ebics.schema.s001.OrderSignatureDataType;
 import com.axelor.apps.account.ebics.schema.s001.UserSignatureDataSigBookType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.inject.Beans;
 
@@ -33,6 +40,9 @@ import com.axelor.inject.Beans;
  *
  */
 public class UserSignature extends DefaultEbicsRootElement {
+	
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
 	
   /**
    * Constructs a new <code>UserSignature</code> element for
@@ -51,6 +61,7 @@ public class UserSignature extends DefaultEbicsRootElement {
     this.name = name;
     this.signatureVersion = signatureVersion;
   }
+  
 
   @Override
   public void build() {
@@ -59,12 +70,45 @@ public class UserSignature extends DefaultEbicsRootElement {
     byte[]				signature = null;
 
     try {
-      signature = Beans.get(EbicsUserService.class).sign(user, toSign);
+        if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+        	System.out.println("\n");
+        	System.out.println(new String(toSign));
+        	System.out.println("\n");
+
+        	signature = EbicsUserService.removeOSSpecificChars(toSign);
+
+        	signature = DatatypeConverter.parseHexBinary(new String(signature));
+        	
+            System.out.println("Signature length (in bytes) : " + signature.length);
+        	
+        	System.out.println("\n");
+        	System.out.println(new String(signature));
+        	System.out.println("\n");
+        	
+        }
+        else  {
+        	signature = Beans.get(EbicsUserService.class).sign(user, toSign);
+        	System.out.println(new String(signature));
+        }
     } catch (Exception e) {
     	e.printStackTrace();
-    	//throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
     } 
+    
+    
+    
+    // Include certificate informations
+    
+//    EbicsCertificate ebicsEertificate = user.getA005Certificate();
 
+//    X509DataType x509Data = EbicsXmlFactory.createX509DataType(ebicsEertificate.getSubject(), 
+//    		ebicsEertificate.getCertificate(), ebicsEertificate.getIssuer(), new BigInteger(ebicsEertificate.getSerial(), 16));
+    
+//    orderSignatureData = EbicsXmlFactory.createOrderSignatureDataType(signatureVersion,
+//            user.getEbicsPartner().getPartnerId(),
+//            user.getUserId(),
+//            signature,
+//            x509Data);
+    
     orderSignatureData = EbicsXmlFactory.createOrderSignatureDataType(signatureVersion,
                                                                       user.getEbicsPartner().getPartnerId(),
                                                                       user.getUserId(),
@@ -80,7 +124,11 @@ public class UserSignature extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.ebics.org/S001", "");
+	addNamespaceDecl("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+
+	setSaveSuggestedPrefixes("http://www.ebics.org/S001", XMLConstants.DEFAULT_NS_PREFIX);
+    
+	insertSchemaLocation("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", "xsi", "http://www.ebics.org/S001 http://www.ebics.org/S001/ebics_signature.xsd");
 
     return super.toByteArray();
   }
@@ -93,4 +141,9 @@ public class UserSignature extends DefaultEbicsRootElement {
   private String 			signatureVersion;
   private byte[]			toSign;
   private String			name;
+  
+  
 }
+
+
+

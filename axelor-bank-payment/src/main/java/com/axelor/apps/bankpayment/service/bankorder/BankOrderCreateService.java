@@ -38,12 +38,13 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class BankOrderCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	protected BankOrderRepository bankOrderRepo;
     protected BankOrderService bankOrderService;
 	protected AccountConfigService accountConfigService;

@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.ebics.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -53,6 +54,7 @@ import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -68,7 +70,7 @@ import com.axelor.i18n.I18n;
  */
 public class HttpRequestSender {
  
-  private final Logger log = LoggerFactory.getLogger(HttpRequestSender.class);
+  private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
   /**
    * Constructs a new <code>HttpRequestSender</code> with a
@@ -92,8 +94,8 @@ public class HttpRequestSender {
 	  
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
     String url = bank.getUrl();
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    	throw new AxelorException(I18n.get("Invalid bank url. It must be start with http:// or https://"),1);
+    if (url == null || !url.startsWith("http://") && !url.startsWith("https://")) {
+    	throw new AxelorException(I18n.get(IExceptionMessage.EBICS_INVALID_BANK_URL),1);
     }
     
     if (bank.getProtocolSelect().equals("ssl")) {

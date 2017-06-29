@@ -19,6 +19,7 @@ package com.axelor.apps.account.service;
 
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ import com.google.inject.persist.Transactional;
 
 public class CashRegisterLineService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected TemplateMessageService templateMessageService;
 	protected CashRegisterLineRepository cashRegisterLineRepo;

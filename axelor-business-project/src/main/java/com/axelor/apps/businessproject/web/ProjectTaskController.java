@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
@@ -39,9 +40,8 @@ import com.google.inject.Inject;
 
 public class ProjectTaskController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
 	@Inject
 	private ProjectTaskService projectTaskService;
 	

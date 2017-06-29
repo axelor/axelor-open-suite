@@ -15,14 +15,23 @@
 		<panel name="main">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
 				<editor x-show-titles="false">
-					<field name="code" colSpan="3" placeholder="BIC" x-bind="{{code|uppercase}}"/>
+					<field name="code" colSpan="3" placeholder="BIC" x-bind="{{code|uppercase}}" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
 					<field name="bankName" colSpan="9" placeholder="Bank Name"/>
 				</editor>
 			</field>
-	
-			<field name="bankAddress"/>
+
+			<field name="bankDetailsTypeSelect"/>
 		</panel>
-	
+		<panel>
+			<field name="bankAddressList" colSpan="12">
+				<editor x-show-titles="false">
+					<field name="code" onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
+					<field name="address" onChange="action-method-bank-address-fill-full-name" colSpan="5"/>
+					<field name="label" onChange="action-method-bank-address-fill-full-name" colSpan="4"/>
+					<field name="fullAddress" hidden="true"/>
+				</editor>
+			</field>
+        </panel>
 		<panel title="Details" colSpan="12" readonly="true">
 			<field name="businessPartyPrefix" colSpan="3"/>
 			<field name="country.alpha2Code" title="Country Code" colSpan="3"/>

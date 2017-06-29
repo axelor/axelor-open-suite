@@ -26,10 +26,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -37,44 +41,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 
 public class TimetableService {
 
-	public void updateTimetable(SaleOrder saleOrder){
-		if(saleOrder.getTimetableList() != null && !saleOrder.getTimetableList().isEmpty()){
-			List<Timetable> timetableList = saleOrder.getTimetableList();
-			BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
-			BigDecimal sum = BigDecimal.ZERO;
-			for (Timetable timetable : timetableList) {
-				sum = sum.add(timetable.getAmount());
-				if(sum.compareTo(amountInvoiced) > 0){
-					timetable.setAmountToInvoice(sum.subtract(amountInvoiced));
-				}
-				else{
-					timetable.setAmountToInvoice(BigDecimal.ZERO);
-				}
-			}
-		}
-	}
-	
-	
-	public void updateTimetable(PurchaseOrder purchaseOrder){
-		if(purchaseOrder.getTimetableList() != null && !purchaseOrder.getTimetableList().isEmpty()){
-			List<Timetable> timetableList = purchaseOrder.getTimetableList();
-			BigDecimal amountInvoiced = purchaseOrder.getAmountInvoiced();
-			BigDecimal sum = BigDecimal.ZERO;
-			for (Timetable timetable : timetableList) {
-				sum = sum.add(timetable.getAmount());
-				if(sum.compareTo(amountInvoiced) > 0){
-					timetable.setAmountToInvoice(sum.subtract(amountInvoiced));
-				}
-				else{
-					timetable.setAmountToInvoice(BigDecimal.ZERO);
-				}
-			}
-		}
-	}
-	
+	@Transactional
 	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
 		if(timetable.getProduct() == null){
 			throw new AxelorException(I18n.get("Select a product"), IException.CONFIGURATION_ERROR);
@@ -84,6 +55,8 @@ public class TimetableService {
 		}
 		Invoice invoice = this.createInvoice(timetable);
 		Beans.get(InvoiceRepository.class).save(invoice);
+		timetable.setInvoice(invoice);
+		Beans.get(TimetableRepository.class).save(timetable);
 		return invoice;
 	}
 	
@@ -141,8 +114,10 @@ public class TimetableService {
 		Product product = timetable.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
-				timetable.getComments(), timetable.getQty(), timetable.getUnit(),
-				1, false, null, null, null, null)  {
+				timetable.getAmount(), timetable.getAmount(), timetable.getComments(), timetable.getQty(),
+				timetable.getUnit(), null, 1, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+				timetable.getAmount().multiply(timetable.getQty()),null, false,
+				this.findFirstSaleOrderLine(timetable), this.findFirstPurchaseOrderLine(timetable), null) {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -151,11 +126,34 @@ public class TimetableService {
 
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.add(invoiceLine);
-
 				return invoiceLines;
 			}
 		};
 
 		return invoiceLineGenerator.creates();
+	}
+
+	public SaleOrderLine findFirstSaleOrderLine(Timetable timetable) {
+	    SaleOrder saleOrder = timetable.getSaleOrder();
+	    if (saleOrder != null) {
+	    	for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+	    		if (!saleOrderLine.getIsTitleLine()) {
+	    			return saleOrderLine;
+				}
+			}
+		}
+		return null;
+	}
+
+	public PurchaseOrderLine findFirstPurchaseOrderLine(Timetable timetable) {
+		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
+		if (purchaseOrder != null) {
+			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+				if (!purchaseOrderLine.getIsTitleLine()) {
+					return purchaseOrderLine;
+				}
+			}
+		}
+		return null;
 	}
 }

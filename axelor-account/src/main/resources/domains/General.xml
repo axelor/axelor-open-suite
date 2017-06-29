@@ -7,7 +7,6 @@
 	<entity name="General" lang="java" cachable="true">
 
 		<!-- Comptabilité -->
-		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="true"/>
 		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"
 			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
 		<many-to-one name="chequeInterbankCode" ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques" />

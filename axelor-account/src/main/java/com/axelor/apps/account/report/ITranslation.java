@@ -131,5 +131,21 @@ public interface ITranslation {
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
-
+	
+	public static final String ACCOUNT_MOVE_REFERENCE = /*$$(*/ "move.reference"; /*)*/
+	public static final String ACCOUNT_MOVE_JOURNAL = /*$$(*/ "move.journal"; /*)*/
+	public static final String ACCOUNT_MOVE_PARTNER = /*$$(*/ "move.partner"; /*)*/
+	public static final String ACCOUNT_MOVE_TECHNICAL_ORIGIN = /*$$(*/ "move.technical.origin"; /*)*/
+	public static final String ACCOUNT_MOVE_PERIOD = /*$$(*/ "move.period"; /*)*/
+	public static final String ACCOUNT_MOVE_CURRENCY = /*$$(*/ "move.currency"; /*)*/
+	public static final String ACCOUNT_MOVE_COMPANY = /*$$(*/ "move.company"; /*)*/
+	
+	public static final String ACCOUNT_MOVE_LINE_DATE = /*$$(*/ "moveLine.date"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_PARTNER = /*$$(*/ "moveLine.partner"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_ACCOUNT = /*$$(*/ "moveLine.account"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_DEBIT = /*$$(*/ "moveLine.debit"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_CREDIT = /*$$(*/ "moveLine.credit"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_CURRENCY_AMOUNT = /*$$(*/ "moveLine.currency.amount"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_TAX_RATE = /*$$(*/ "moveLine.tax.rate"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_RECONCILE_LIST = /*$$(*/ "moveLine.reconcile.list"; /*)*/
 }

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -53,7 +54,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReconcileServiceImpl  implements ReconcileService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveToolService moveToolService;
 	protected AccountCustomerService accountCustomerService;
@@ -207,7 +208,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	}
 
 
-	public void updatePartnerAccountingSituation(Reconcile reconcile)  {
+	public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException {
 		
 		List<Partner> partnerList = this.getPartners(reconcile);
 

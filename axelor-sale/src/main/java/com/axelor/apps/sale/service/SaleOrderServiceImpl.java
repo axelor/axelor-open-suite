@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.persistence.Query;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SaleOrderLineService saleOrderLineService;
 	protected SaleOrderLineTaxService saleOrderLineTaxService;
@@ -294,7 +293,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
 		if (generalService.getGeneral().getManageSaleOrderVersion()){
@@ -304,7 +303,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
 	}
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {

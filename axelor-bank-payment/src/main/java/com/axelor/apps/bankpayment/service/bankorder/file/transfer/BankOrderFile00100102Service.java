@@ -29,6 +29,7 @@ import com.axelor.apps.account.xsd.pain_001_001_02.AmountType2Choice;
 import com.axelor.apps.account.xsd.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
 import com.axelor.apps.account.xsd.pain_001_001_02.CashAccount7;
 import com.axelor.apps.account.xsd.pain_001_001_02.CreditTransferTransactionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.CreditorReferenceInformation1;
 import com.axelor.apps.account.xsd.pain_001_001_02.CurrencyAndAmount;
 import com.axelor.apps.account.xsd.pain_001_001_02.Document;
 import com.axelor.apps.account.xsd.pain_001_001_02.FinancialInstitutionIdentification5Choice;
@@ -44,11 +45,13 @@ import com.axelor.apps.account.xsd.pain_001_001_02.PaymentTypeInformation1;
 import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
 import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
 import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.StructuredRemittanceInformation6;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class BankOrderFile00100102Service extends BankOrderFileService  {
@@ -103,6 +106,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		dbtrAgt.setFinInstnId(finInstnId);
 
 		PaymentInstructionInformation1 pmtInf = factory.createPaymentInstructionInformation1();
+		pmtInf.setPmtInfId(bankOrderSeq);
 		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
 		pmtInf.setPmtTpInf(pmtTpInf);
 		
@@ -132,7 +136,8 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 			// Reference
 			pmtId = factory.createPaymentIdentification1();
-			pmtId.setEndToEndId(bankOrderLine.getReceiverReference());
+//			pmtId.setInstrId(bankOrderLine.getSequence());
+			pmtId.setEndToEndId(bankOrderLine.getSequence());
 
 			// Amount
 			instdAmt = factory.createCurrencyAndAmount();
@@ -159,10 +164,28 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);
-
+			
 			rmtInf = factory.createRemittanceInformation1();
 
-			rmtInf.getUstrd().add(bankOrderLine.getReceiverLabel());
+			String ustrd = "";
+			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference()))  {  ustrd += bankOrderLine.getReceiverReference();  }
+			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverLabel()))  {  
+				if(!Strings.isNullOrEmpty(ustrd))  {  ustrd += " - ";  }
+				ustrd += bankOrderLine.getReceiverLabel();
+			}
+			
+			if(!Strings.isNullOrEmpty(ustrd))  {  
+				rmtInf.getUstrd().add(ustrd);
+			}
+			
+//			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();
+//			
+//			CreditorReferenceInformation1 cdtrRefInf = factory.createCreditorReferenceInformation1();
+//			cdtrRefInf.setCdtrRef(bankOrderLine.getReceiverReference());
+//			
+//			strd.setCdtrRefInf(cdtrRefInf);
+//			
+//			rmtInf.getStrd().add(strd);
 
 			// Transaction
 			cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
@@ -180,13 +203,18 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		GroupHeader1 grpHdr = factory.createGroupHeader1();
 		
 		/**
+		 * Référence du message qui n'est pas utilisée comme référence fonctionnelle.
+		 */
+		grpHdr.setMsgId(bankOrderSeq);
+
+		/**
 		 * CreationDateTime
 		 * Definition : Date and Time at which a (group of) payment instruction(s) was created by the instructing party.
 		 * XML Tag : <CreDtTm>
 		 * Occurrences : [1..1]
 		 * Format : YYYY-MM-DDThh:mm:ss 
 		 */
-		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(validationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
+		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
 		grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
 		grpHdr.setCtrlSum(arithmeticTotal);
 		grpHdr.setGrpg(Grouping1Code.MIXD);

@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.hr.service.employee;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import com.axelor.apps.hr.service.leave.LeaveService;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
@@ -53,7 +55,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	/**
 	 * Convert hours duration to user duration using time logging preference of user
@@ -79,15 +81,20 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			timePref = employee.getTimeLoggingPreferenceSelect();
 			dailyWorkHrs = employee.getDailyWorkHours();
 		}
-		else {
+		if (timePref ==  null) {
 			timePref = generalService.getGeneral().getTimeLoggingPreferenceSelect();
 		}
+		
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
 			dailyWorkHrs = generalService.getGeneral().getDailyWorkHours();
 		}
 
 		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
-
+		
+		if (timePref ==  null) {
+			return duration;
+		}
+		
 		if(toHours)  {
 			if(timePref.equals("days"))  {
 				duration = duration.multiply(dailyWorkHrs);
@@ -181,10 +188,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 						employee.getUser(), LeaveRequestRepository.STATUS_VALIDATED, fromDate, toDate).fetch();
 		
 		for (LeaveRequest leaveRequest : leaveRequestList) {
-			LocalDate from = leaveRequest.getFromDate().isBefore(fromDate) ? fromDate : leaveRequest.getFromDate();
-			LocalDate to = leaveRequest.getToDate().isAfter(toDate) ? toDate : leaveRequest.getToDate();
-			
-			daysLeave = daysLeave.add(getDaysWorksInPeriod(employee, from, to));
+			daysLeave = daysLeave.add(
+					Beans.get(LeaveService.class)
+							.computeDuration(leaveRequest, fromDate, toDate)
+			);
 		}
 		
 		return daysWorks.subtract(daysLeave);

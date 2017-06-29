@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,7 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -47,7 +52,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
@@ -139,9 +144,29 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		return saleOrder;
 	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
+		List<Timetable> timetableList = saleOrder.getTimetableList();
+		BigDecimal totalHT = saleOrder.getExTaxTotal();
+		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+		for (Timetable timetable : timetableList) {
+			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount().multiply(timetable.getQty()));
+		}
+		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+	}
+
+	@Transactional
+	protected void updateCustomerCreditLines(SaleOrder saleOrder) throws Exception {
+		Partner partner = saleOrder.getClientPartner();
+		if (partner != null) {
+			Beans.get(CustomerCreditLineService.class).updateLinesFromOrder(partner, saleOrder);
+		}
+	}
+
+	@Override
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		updateCustomerCreditLines(saleOrder);
+		super.finalizeSaleOrder(saleOrder);
+	}
+
 }
-
-
-
-
-

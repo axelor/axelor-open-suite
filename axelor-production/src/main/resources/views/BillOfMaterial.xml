@@ -19,7 +19,7 @@
 			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<panel name="main">
-			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
+			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product"/>
@@ -29,9 +29,9 @@
 		</panel>
 	  
 		<panel-tabs>
-			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related field="billOfMaterialSet" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.general.manageResidualProductOnBom"/>	    
-			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
+			<!--<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>-->
 			<panel name="cost" title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
@@ -49,7 +49,7 @@
     
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="priority" readonlyIf="isRawMaterial" width="20"/>
+        <field name="priority" readonlyIf="isRawMaterial" width="71"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -74,39 +74,39 @@
 			</panel>
 		</panel>
 		<panel-tabs hideIf="isRawMaterial">
-			<panel-related title="Components" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related title="Components" field="billOfMaterialSet" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
     
-    <action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<view type="tree" name="bill-of-material-tree"/>
-    	<view type="form" name="bill-of-material-line-form"/>
-    	<domain>self.parentBillOfMaterial.id = :id</domain>
-     	<context name="id" expr="eval: id"/>
-    </action-view>
-    
-    <tree name="bill-of-material-tree" title="Bills of material">
-    	
-    	<column name="product" type="reference"/>
-    	<column name="qty" type="decimal"/>
-    	<column name="unit" type="reference"/>
-    	<column name="prodProcess" type="reference"/>
-		
-		<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.parentBillOfMaterial.id = :id" onClick="action-bill-of-material-line-view">
-			<field name="product" as="product"/>
-			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
-		</node>    	
-		
-		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">
-			<field name="product" as="product"/>
-			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
-		</node>
-    
-	</tree>
+    <!--<action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">-->
+    	<!--<view type="tree" name="bill-of-material-tree"/>-->
+    	<!--<view type="form" name="bill-of-material-line-form"/>-->
+    	<!--<domain>sself.id IN :billOfMaterialSet</domain>-->
+     	<!--<context name="billOfMaterialSet" expr="eval: billOfMaterialSet"/>-->
+    <!--</action-view>-->
+    <!---->
+    <!--<tree name="bill-of-material-tree" title="Bills of material">-->
+    	<!---->
+    	<!--<column name="product" type="reference"/>-->
+    	<!--<column name="qty" type="decimal"/>-->
+    	<!--<column name="unit" type="reference"/>-->
+    	<!--<column name="prodProcess" type="reference"/>-->
+		<!---->
+		<!--<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.id IN :billOfMaterialSet" onClick="action-bill-of-material-line-view">-->
+			<!--<field name="product" as="product"/>-->
+			<!--<field name="qty" as="qty"/>-->
+			<!--<field name="unit" as="unit"/>-->
+			<!--<field name="prodProcess" as="prodProcess"/>-->
+		<!--</node>    	-->
+		<!---->
+		<!--<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">-->
+			<!--<field name="product" as="product"/>-->
+			<!--<field name="qty" as="qty"/>-->
+			<!--<field name="unit" as="unit"/>-->
+			<!--<field name="prodProcess" as="prodProcess"/>-->
+		<!--</node>-->
+    <!---->
+	<!--</tree>-->
 	
 	
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -126,7 +126,7 @@
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
-    	<field name="priority" expr="eval:__parent__?.billOfMaterialList?.max{ it.getPriority() }.getPriority() + 10"/>
+    	<field name="priority" expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }.getPriority() + 10"/>
     	<field name="isRawMaterial" expr="eval:true" />
     </action-record>
     

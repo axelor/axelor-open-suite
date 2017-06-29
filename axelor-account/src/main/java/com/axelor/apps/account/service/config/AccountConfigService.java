@@ -214,14 +214,14 @@ public class AccountConfigService {
 		return accountConfig.getCustomerCreditNoteJournal();
 	}
 
-	public Journal getMiscOperationJournal(AccountConfig accountConfig) throws AxelorException  {
+	public Journal getAutoMiscOpeJournal(AccountConfig accountConfig) throws AxelorException  {
 
-		if(accountConfig.getMiscOperationJournal() == null)   {
+		if(accountConfig.getAutoMiscOpeJournal() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_18),
 					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		return accountConfig.getMiscOperationJournal();
+		return accountConfig.getAutoMiscOpeJournal();
 	}
 
 	public Journal getReimbursementJournal(AccountConfig accountConfig) throws AxelorException  {

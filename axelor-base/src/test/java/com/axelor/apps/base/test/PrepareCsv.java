@@ -19,6 +19,7 @@ package com.axelor.apps.base.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ import com.google.inject.Inject;
 
 public class PrepareCsv {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PrepareCsv.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	CsvTool cTool;

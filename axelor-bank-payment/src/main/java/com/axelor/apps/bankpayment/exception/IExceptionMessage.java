@@ -39,7 +39,7 @@ public interface IExceptionMessage {
 	 * Account config Bank Payment Service
 	 */
 	
-	static final String ACCOUNT_CONFIG_41 = /*$$(*/ "%s : Veuillez configurer un signataire par défaut pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_41 = /*$$(*/ "%s : Please, configure a default signer for the company %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/ "%s : Please, configure a sequence for the SEPA Credit Transfers and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_6 = /*$$(*/ "%s : Please, configure a sequence for the SEPA Direct Debits and the company %s" /*)*/;
@@ -73,7 +73,10 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
 	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
 	static final String BANK_ORDER_COMPANY_NO_SEQUENCE = /*$$(*/ "The company %s does not have bank order sequence" /*)*/;
-	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/ "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The bank details is inactive." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in bank order." /*)*/;
 
 	
 	/**
@@ -84,7 +87,12 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_LINE_PARTNER_MISSING = /*$$(*/ "Please select a partner for the bank order lines inserted" /*)*/;
 	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
 	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
-	
+	static final String BANK_ORDER_LINE_BANK_DETAILS_MISSING = /*$$(*/ "Please fill the receiver bank details" /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/ "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The receiver bank details is inactive." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
+	static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
+
 	
 	/**
 	 * BankOrder merge
@@ -102,6 +110,7 @@ public interface IExceptionMessage {
 	/**
 	 * BankOrder file
 	 */
+	static final String BANK_ORDER_FILE_NO_SENDER_ADDRESS = /*$$(*/ "No address has been defined in the sender company %s" /*)*/;
 	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
 	static final String BANK_ORDER_FILE_UNKNOW_FORMAT = /*$$(*/ "Unknow format for file generation for payment mode %s" /*)*/;
 
@@ -114,7 +123,7 @@ public interface IExceptionMessage {
 	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
 	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
 	static final String EBICS_MISSING_CERTIFICATES = /*$$(*/  "Please add certificates to print" /*)*/;
-
+	static final String EBICS_INVALID_BANK_URL = /*$$(*/  "Invalid bank url. It must be start with http:// or https://" /*)*/;
 	
 	
 	

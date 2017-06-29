@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -31,7 +32,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderToolService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderToolService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private CurrencyService currencyService;

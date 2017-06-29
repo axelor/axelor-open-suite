@@ -35,14 +35,6 @@
     	<domain>self.createdOn &gt;= date(now())-15 AND self.isContact = true</domain>
 	</action-view>
 	
-	
-			
-	<action-view name="dashlet.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">
-		<view type="grid" name="partner-grid"/>
-		<view type="form" name="partner-form"/>
-		<domain>self.updatedOn &gt;= date(now())-30 AND self.user=:__user__ AND self.isCustomer=true</domain>
-	</action-view>
-	
 	<action-view name="dashlet.partner.by.saleman" title="Customers by saleman" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid-group"/>
 		<view type="form" name="partner-form"/>
@@ -67,10 +59,6 @@
 	
 	<action-view name="dashlet.customers.by.country" title="Customers by country" model="com.axelor.apps.base.db.Partner">
 		<view type="chart" name="chart.customers.by.country.bar"/>
-	</action-view>
-	
-	<action-view name="dashlet.suppliers.by.country" title="Suppliers by country" model="com.axelor.apps.base.db.Partner">
-	  <view type="chart" name="chart.suppliers.by.country.bar"/>
 	</action-view>
 		
 	<action-view title="Prospects by country" model="com.axelor.apps.base.db.Partner" name="dashlet.prospects.by.country">

@@ -17,24 +17,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -51,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -61,6 +48,14 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -73,7 +68,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	protected AccountConfigService accountConfigService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
@@ -208,7 +203,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 
-	public void clearPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
+	public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		List<StockMove> stockMoveList = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
 
@@ -305,5 +300,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		
 		purchaseOrderRepo.save(purchaseOrder);
 		
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder) {
+		List<Timetable> timetableList = purchaseOrder.getTimetableList();
+		BigDecimal totalHT = purchaseOrder.getExTaxTotal();
+		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+		for (Timetable timetable : timetableList) {
+			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+		}
+		purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
 }

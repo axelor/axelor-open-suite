@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.debtrecovery;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,7 +57,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReminderService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected ReminderSessionService reminderSessionService;
 	protected ReminderActionService reminderActionService;
@@ -352,7 +353,7 @@ public class ReminderService {
 		}
 
 		else  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1),
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1),
 					GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
@@ -418,7 +419,7 @@ public class ReminderService {
 					reminder.setReferenceDate(referenceDate);
 				}
 				else {
-					throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2),
+					throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2),
 							GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
@@ -427,7 +428,7 @@ public class ReminderService {
 						reminderSessionService.reminderSession(reminder);
 					}
 					else  {
-						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
+						throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
 								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
@@ -445,7 +446,7 @@ public class ReminderService {
 					log.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
-						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
+						String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
 								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
 				}
 			}

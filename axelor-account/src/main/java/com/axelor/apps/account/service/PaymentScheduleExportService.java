@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,7 +69,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleExportService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;
@@ -219,7 +220,8 @@ public class PaymentScheduleExportService{
 		BigDecimal amount =  paymentScheduleLine.getInTaxAmount();
 		Partner partner = paymentSchedule.getPartner();
 
-		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, partner, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		//TODO manage multi bank
+		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company, null), company, null, partner, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
 
@@ -240,8 +242,10 @@ public class PaymentScheduleExportService{
 			this.reconcileDirectDebit(moveLine, paymentSchedule);
 		}
 
+		//TODO manage multi bank
+
 		move.addMoveLineListItem(
-				moveLineServices.createMoveLine(move, partner,	paymentModeService.getPaymentModeAccount(paymentMode, company), amount, true, today, 2, null));
+				moveLineServices.createMoveLine(move, partner,	paymentModeService.getPaymentModeAccount(paymentMode, company, null), amount, true, today, 2, null));
 
 		this.validateMove(move);
 
@@ -383,7 +387,9 @@ public class PaymentScheduleExportService{
 
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 
-		paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company);
+		//TODO manage multi bank
+
+		paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company, null);
 
 	}
 
@@ -661,16 +667,20 @@ public class PaymentScheduleExportService{
 
 		log.debug("Create payment move");
 
+		//TODO manage multi bank
+		
 		Move paymentMove = moveService.getMoveCreateService().createMove(
-				paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, null, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+				paymentModeService.getPaymentModeJournal(paymentMode, company, null), company, null, null, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 
 		this.createPaymentMoveLine(paymentMove, moveLine, 1);
 
 		log.debug("Create payment move line");
+		
+		//TODO manage multi bank
 
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, null);
 
 		String invoiceName = "";
 		if(moveLine.getMove().getInvoice()!=null)  {
@@ -769,8 +779,10 @@ public class PaymentScheduleExportService{
 
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 
+		//TODO manage multi bank
+		
 		return sequenceService.getSequenceNumber(
-				paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company));
+				paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company, null));
 
 	}
 

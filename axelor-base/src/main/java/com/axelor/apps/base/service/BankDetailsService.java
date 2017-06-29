@@ -24,14 +24,16 @@ import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.tool.StringTool;
 import com.google.inject.Inject;
 
+import java.util.Collection;
+
 public class BankDetailsService {
 	
 	@Inject
 	private BankRepository bankRepo;
 	
 	/**
-	 * Méthode qui permet d'extraire les informations de l'iban
-	 * Met à jour les champs suivants :
+	 * This method allows to extract information from iban
+	 * Update following fields :
 	 * 		<ul>
      *      	<li>BankCode</li>
      *      	<li>SortCode</li>
@@ -57,8 +59,8 @@ public class BankDetailsService {
 	
 	
 	/**
-	 * Méthode permettant de créer un RIB
-	 * 
+     * Method allowing to create a bank details
+	 *
 	 * @param accountNbr
 	 * @param bankCode
 	 * @param bbanKey
@@ -82,5 +84,4 @@ public class BankDetailsService {
 		
 		return bankDetails;
 	}
-
 }

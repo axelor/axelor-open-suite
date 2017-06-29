@@ -22,6 +22,7 @@ import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.Node;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -53,7 +54,7 @@ public class MapService {
 	@Inject
 	protected GeneralService generalService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public JSONObject geocodeGoogle(String qString) {
 		if(qString == null){

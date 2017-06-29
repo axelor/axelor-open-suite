@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-//import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -41,12 +41,13 @@ import com.google.inject.Inject;
 
 public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWizardServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {
 
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");

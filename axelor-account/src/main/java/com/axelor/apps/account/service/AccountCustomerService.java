@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -50,7 +51,7 @@ import com.google.inject.persist.Transactional;
 
 public class AccountCustomerService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected AccountingSituationService  accountingSituationService;
 	protected AccountingSituationRepository accSituationRepo;
@@ -239,7 +240,7 @@ public class AccountCustomerService {
 	 * @param company
 	 * 				Une société
 	 */
-	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
+	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount) throws AxelorException {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 			if(accountingSituation != null)  {
@@ -265,7 +266,7 @@ public class AccountCustomerService {
 	 * 				Un compte client
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCustomerAccount(AccountingSituation accountingSituation)  {
+	public void updateCustomerAccount(AccountingSituation accountingSituation) throws AxelorException {
 
 		log.debug("Begin updateCustomerAccount service ...");
 
@@ -283,7 +284,7 @@ public class AccountCustomerService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
+	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount) throws AxelorException {
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
 
@@ -377,5 +378,8 @@ public class AccountCustomerService {
 
 	}
 
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateCustomerCreditLines(Partner partner) throws AxelorException {
+	}
 
 }

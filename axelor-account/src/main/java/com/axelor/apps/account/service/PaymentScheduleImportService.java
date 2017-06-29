@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleImportService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineService moveLineService;
 	protected MoveLineRepository moveLineRepo;
@@ -431,9 +432,11 @@ public class PaymentScheduleImportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createRejectOppositeMoveLine(Company company, Move move, int ref, LocalDate rejectDate) throws AxelorException  {
 
+		//TODO manage multi bank
+
 		//On récupère l'objet mode de paiement pour pouvoir retrouver le numéro de compte associé
 		PaymentMode paymentMode = company.getAccountConfig().getRejectionPaymentMode();
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, null);
 
 		// Création d'une seule contrepartie
 		log.debug("Création d'une seule contrepartie");

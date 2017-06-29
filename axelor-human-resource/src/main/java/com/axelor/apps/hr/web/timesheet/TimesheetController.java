@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +63,7 @@ import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
@@ -82,6 +84,7 @@ public class TimesheetController {
 		response.setReload(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		Context context = request.getContext();
@@ -152,19 +155,7 @@ public class TimesheetController {
 				   .add("form","timesheet-form")
 				   .context("todayDate", Beans.get(GeneralService.class).getTodayDate());
 
-		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
-		.context("_activeCompany", user.getActiveCompany());
-	
-		if(employee == null || !employee.getHrManager())  {
-			if(employee != null && employee.getManager() != null) {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
-				.context("_user", user);
-			}
-			else  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
-				.context("_user", user);
-			}
-		}
+		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
 		response.setView(actionView.map());
 	}
@@ -347,7 +338,7 @@ public class TimesheetController {
 	}
 	
 	/* Count Tags displayed on the menu items */
-	public String timesheetValidateTag()  {
+	public String timesheetValidateMenuTag()  {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
 	

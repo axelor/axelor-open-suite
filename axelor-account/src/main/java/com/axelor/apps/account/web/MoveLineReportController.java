@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ import com.google.inject.Inject;
 
 public class MoveLineReportController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	MoveLineReportService moveLineReportService;
@@ -141,23 +142,7 @@ public class MoveLineReportController {
 		MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 		
 		try {
-			switch(moveLineReport.getTypeSelect()) {
-			
-				case MoveLineReportRepository.EXPORT_SALES:
-					moveLineExportService.exportMoveLineTypeSelect1006(moveLineReport, true);
-					break;
-				case MoveLineReportRepository.EXPORT_REFUNDS:
-					moveLineExportService.exportMoveLineTypeSelect1007(moveLineReport, true);
-					break;
-				case MoveLineReportRepository.EXPORT_TREASURY:
-					moveLineExportService.exportMoveLineTypeSelect1008(moveLineReport, true);
-					break;
-				case MoveLineReportRepository.EXPORT_PURCHASES:
-					moveLineExportService.exportMoveLineTypeSelect1009(moveLineReport, true);
-					break;
-				default:
-					break;
-			}
+		    moveLineExportService.replayExportMoveLine(moveLineReport);
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}

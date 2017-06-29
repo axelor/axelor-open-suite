@@ -22,6 +22,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Calendar;
 
+import javax.xml.XMLConstants;
+
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest.Body;
@@ -31,8 +33,10 @@ import com.axelor.apps.account.ebics.schema.h003.NoPubKeyDigestsRequestStaticHea
 import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
+import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -97,16 +101,23 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     ProductElementType 				product;
     OrderDetailsType 				orderDetails;
     
+
+	EbicsUser ebicsUser = session.getUser();
+
+	OrderAttribute orderAttribute = new OrderAttribute(OrderType.HPB, ebicsUser.getEbicsTypeSelect());
+    orderAttribute.build();
+	
+    
     product = EbicsXmlFactory.creatProductElementType(session.getProduct().getLanguage(), session.getProduct().getName());
-    orderDetails = EbicsXmlFactory.createOrderDetailsType("DZHNN", null, OrderType.HPB.getOrderType());
+    orderDetails = EbicsXmlFactory.createOrderDetailsType(orderAttribute.getOrderAttributes(), null, OrderType.HPB.getOrderType());
     xstatic = EbicsXmlFactory.createNoPubKeyDigestsRequestStaticHeaderType(session.getBankID(),
     																   EbicsUtils.generateNonce(),
 	                                                                   Calendar.getInstance(),
-	                                                                   session.getUser().getEbicsPartner().getPartnerId(),
-	                                                                   session.getUser().getUserId(),
+	                                                                   ebicsUser.getEbicsPartner().getPartnerId(),
+	                                                                   ebicsUser.getUserId(),
 	                                                                   product,
 	                                                                   orderDetails,
-	                                                                   session.getUser().getSecurityMedium());
+	                                                                   ebicsUser.getSecurityMedium());
     mutable = EbicsXmlFactory.createEmptyMutableHeaderType();
     header = EbicsXmlFactory.createDigestsRequestHeader(true, mutable, xstatic);
     body = EbicsXmlFactory.createDigestsRequestBody();
@@ -119,8 +130,16 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+//    setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");  //TODO TO CHECK
+    
+	  
+	  setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");
+	  setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+
+//	  
+//    addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
+//
+//    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }

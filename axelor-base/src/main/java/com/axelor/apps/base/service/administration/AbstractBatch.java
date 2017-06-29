@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 
 import org.joda.time.DateTime;
@@ -41,7 +42,7 @@ public abstract class AbstractBatch {
 	@Inject
 	protected GeneralService generalService;
 
-	static final Logger LOG = LoggerFactory.getLogger(AbstractBatch.class);
+	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected Batch batch;
 	protected Model model;

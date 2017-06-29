@@ -272,16 +272,20 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file, String format) throws AxelorException {
+	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file, String format, File signature) throws AxelorException {
 		  
 		EbicsSession session = new EbicsSession(user);
-	    boolean test = isTest(user, false);
+	    boolean test = isTest(user);
 	    if (test) {
 	    	session.addSessionParam("TEST", "true");
 	    }
 	    if (file == null) {
 	    	throw new AxelorException("File is required to send FUL request", IException.CONFIGURATION_ERROR);
 	    }
+	    if (user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && signature == null)  {
+	    	throw new AxelorException("Signature file is required to send FUL request", IException.CONFIGURATION_ERROR);
+	    }
+	    
 	    session.addSessionParam("EBCDIC", "false");
 	    session.addSessionParam("FORMAT", format);
 	    
@@ -292,8 +296,13 @@ public class EbicsService {
 	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
-	      transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL);
-	      userService.getNextOrderId(user);
+			if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, IOUtils.getFileContent(signature.getAbsolutePath()));
+			}
+			else  {
+				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, null);
+			}
+			userService.getNextOrderId(user);
 	    } catch (IOException | AxelorException e) {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e,IException.TECHNICAL);
@@ -347,7 +356,7 @@ public class EbicsService {
 		EbicsSession session = new EbicsSession(user);
 		File file = null;
 		try {
-		    boolean test = isTest(user, true);
+		    boolean test = isTest(user);
 		    if (test) {
 		    	session.addSessionParam("TEST", "true");
 		    }
@@ -377,7 +386,7 @@ public class EbicsService {
 		return file;
 	}
 	
-	private boolean isTest(EbicsUser user, boolean download) throws AxelorException {
+	private boolean isTest(EbicsUser user) throws AxelorException {
 		
 		EbicsPartner partner = user.getEbicsPartner();
 		

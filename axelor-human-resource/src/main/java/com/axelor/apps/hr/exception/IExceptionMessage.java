@@ -41,8 +41,9 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the validated extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
-	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the unjustified absence reason in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH = /*$$(*/ "Please configure the lunch voucher export path in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_NO_EXPENSE_SEQUENCE = /*$$(*/ "Company %s does not have any expense's sequence" /*)*/;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation"/*)*/ ;
@@ -56,7 +57,7 @@ public interface IExceptionMessage {
 	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Please create an employee for the user %s"/*)*/ ;
 	static final String LEAVE_LINE = /*$$(*/ "There is no leave line for the employee %s and the reason %s."/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "Employee %s is not allowed to take leave in advance."/*)*/ ;
-	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "You are not able to take leave in advance for the reason '%s'.\n Reminder : %s"/*)*/ ;
+	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "You are not able to take leave in advance for the reason '%s'."/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/ "You now have a negative amount of leave available for the reason %s"/*)*/ ;
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
@@ -81,7 +82,7 @@ public interface IExceptionMessage {
 	static final String BATCH_PAYROLL_PREPARATION_CONFIGURATION_RECAP = /*$$(*/ "Payroll preparations failed to be generated due to missing data : %s"/*)*/ ;
 	static final String BATCH_PAYROLL_PREPARATION_EXPORT_RECAP = /*$$(*/ "Payroll preparations exported : %s"/*)*/ ;
 	
-	static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/ "Minimum stock of lunch vouchers will be reached for the company %s.\n  Minimum Stock allowed : %s.\n Available Stock : %s" /*)*/ ;
+	static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/ "Minimum stock of lunch vouchers will be reached for the company %s. Minimum Stock allowed : %s. Available Stock : %s" /*)*/ ;
 	
 	static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/ "There is no year for society %s which includes date %s"/*)*/ ;
 	
@@ -95,8 +96,10 @@ public interface IExceptionMessage {
 	static final String EXPENSE_JOURNAL = /*$$(*/ "You must configure an expenses journal(company : %s)" /*)*/;
 	static final String EXPENSE_ACCOUNT = /*$$(*/ "You must configure an expenses account (company : %s)" /*)*/;
 	static final String EXPENSE_ACCOUNT_TAX = /*$$(*/ "You must configure an account for expenses taxes (company : %s)" /*)*/;
-	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Move already used, you must deletter it first" /*)*/;
+	static final String EXPENSE_CANCEL_MOVE = /*$$(*/ "Move already used, you must unreconcile it first" /*)*/;
 
 	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
+	static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
+	static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/ "Please fill the payment mode." /*)*/;
 	
 }

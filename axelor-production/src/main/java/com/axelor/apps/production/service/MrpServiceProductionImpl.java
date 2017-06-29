@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -58,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected BillOfMaterialRepository billOfMaterialRepository;
 	protected ManufOrderRepository manufOrderRepository;
@@ -164,7 +165,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 			
 			MrpLineType manufProposalNeedMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED);
 			
-			for(BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialList())  {
+			for(BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialSet())  {
 				
 				Product subProduct = billOfMaterial.getProduct();
 				
@@ -237,7 +238,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	 */
 	protected void assignProductLevel(BillOfMaterial billOfMaterial, int level)  {
 		
-		if(billOfMaterial.getBillOfMaterialList() == null || billOfMaterial.getBillOfMaterialList().isEmpty() || level > 100)  {
+		if(billOfMaterial.getBillOfMaterialSet() == null || billOfMaterial.getBillOfMaterialSet().isEmpty() || level > 100)  {
 		
 			Product subProduct = billOfMaterial.getProduct();
 			
@@ -249,7 +250,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		
 			level = level + 1;
 
-			for(BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialList())  {
+			for(BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet())  {
 				
 				Product subProduct = subBillOfMaterial.getProduct();
 					

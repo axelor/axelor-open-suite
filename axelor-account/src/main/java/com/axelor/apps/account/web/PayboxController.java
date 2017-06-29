@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ import com.axelor.rpc.Context;
 
 public class PayboxController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PayboxController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public void paybox(ActionRequest request, ActionResponse response)  {
 		

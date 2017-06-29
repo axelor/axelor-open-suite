@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import com.google.inject.persist.Transactional;
 
 public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected UnitConversionService unitConversionService;
@@ -54,10 +55,10 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	@Inject
 	protected BillOfMaterialRepository billOfMaterialRepo;
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Override
-	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
+	public List<BillOfMaterial> getBillOfMaterialSet(Product product)  {
 
 		return billOfMaterialRepo.all().filter("self.product = ?1", product).fetch();
 
@@ -112,14 +113,14 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	
 	public int getLatestBillOfMaterialVersion(BillOfMaterial billOfMaterial, int latestVersion, boolean deep){
 		
-		List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
+		List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
 		BillOfMaterial up = billOfMaterial;
 		Long previousId = Long.valueOf(0);
 		do{
-			billOfMaterialList = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin AND self.id != :id").bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
-			if (!billOfMaterialList.isEmpty()){
-				latestVersion = (billOfMaterialList.get(0).getVersionNumber() > latestVersion) ? billOfMaterialList.get(0).getVersionNumber() : latestVersion;
-				for (BillOfMaterial billOfMaterialIterator : billOfMaterialList) {
+			BillOfMaterialSet = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin AND self.id != :id").bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
+			if (!BillOfMaterialSet.isEmpty()){
+				latestVersion = (BillOfMaterialSet.get(0).getVersionNumber() > latestVersion) ? BillOfMaterialSet.get(0).getVersionNumber() : latestVersion;
+				for (BillOfMaterial billOfMaterialIterator : BillOfMaterialSet) {
 					int search = this.getLatestBillOfMaterialVersion(billOfMaterialIterator, latestVersion, false);
 					latestVersion = (search > latestVersion) ?  search : latestVersion;
 				}

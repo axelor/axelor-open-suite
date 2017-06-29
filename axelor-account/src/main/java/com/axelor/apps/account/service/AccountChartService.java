@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
@@ -44,7 +45,7 @@ import com.google.inject.persist.Transactional;
 
 public class AccountChartService{
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected AccountConfigRepository accountConfigRepo;
 	protected CompanyRepository companyRepo;

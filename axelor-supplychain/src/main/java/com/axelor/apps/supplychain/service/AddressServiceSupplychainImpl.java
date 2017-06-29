@@ -26,10 +26,12 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.inject.Beans;
 
+import java.lang.invoke.MethodHandles;
+
 
 public class AddressServiceSupplychainImpl extends AddressServiceImpl  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceSupplychainImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Override
 	public boolean checkAddressUsed(Long addressId){

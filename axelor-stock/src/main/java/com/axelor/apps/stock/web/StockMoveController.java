@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private StockMoveService stockMoveService;
@@ -253,8 +254,14 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
-			response.setReload(true);
+			StockMove reversion = stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
+			response.setView(ActionView
+					.define(I18n.get("Stock move"))
+					.model(StockMove.class.getName())
+					.add("grid", "stock-move-grid")
+					.add("form", "stock-move-form")
+					.param("forceEdit", "true")
+					.context("_showRecord", String.valueOf(reversion.getId())).map());
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}

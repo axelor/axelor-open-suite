@@ -18,7 +18,7 @@
 package com.axelor.apps.base.exceptions;
 
 /**
- * Interface of Exceptions. Enum all exception of axelor-organisation.
+ * Interface of Exceptions.
  * 
  * @author dubaux
  * 
@@ -27,7 +27,7 @@ public interface IExceptionMessage {
 
 	static final public String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 	
-	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correclty configured (%s)" /*)*/;
+	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 	
 	
 	/**
@@ -120,7 +120,8 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
 	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
 	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
-	
+	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ " - Not null : " /*)*/;
+
 	/**
 	 * Template message service base impl
 	 */
@@ -190,6 +191,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 	static final public String PARTNER_2 = /*$$(*/ "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
+	static final public String PARTNER_3 = /*$$(*/ "Can’t convert into an individual partner from scratch." /*)*/;
 	
 	/**
 	 * Product controller

@@ -206,10 +206,12 @@ public class PartnerService {
 	}
 	
 	public void addContactToPartner(Partner contact) {
-		Partner partner = contact.getMainPartner();
+		if (contact.getMainPartner() != null) {
+			Partner partner = contact.getMainPartner();
 
-		partner.addContactPartnerSetItem(contact);
-		savePartner(partner);
+			partner.addContactPartnerSetItem(contact);
+			savePartner(partner);
+		}
 	}
 
 
@@ -284,4 +286,11 @@ public class PartnerService {
 		return new String(Str);
 	}
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void convertToIndividualPartner(Partner partner) {
+		partner.setIsContact(false);
+		partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
+		partner.setContactAddress(null);
+	}
 }

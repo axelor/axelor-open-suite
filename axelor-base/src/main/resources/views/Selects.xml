@@ -189,14 +189,14 @@
 	</selection>
 
 	<selection name='partner.assignor.type.select'>
-		<option value='syndicate'>Syndicat</option>
-		<option value='authority'>Collectivité</option>
+		<option value='syndicate'>Syndicate</option>
+		<option value='authority'>Authority</option>
 	</selection>
 
 	<selection name="partner.industry.sectory.select">
 		<option value="1">Agriculture</option>
 		<option value="2">Banking &amp; Insurance</option>
-		<option value="3">Biotechnologies</option>
+		<option value="3">Biotechnology</option>
 		<option value="4">Chemistry</option>
 		<option value="5">Communication</option>
 		<option value="6">Real Estate</option>
@@ -354,6 +354,7 @@
 		<option value="manufOrder">Manufacturing order</option>
 		<option value="bankOrder">Bank order</option>
 		<option value="reconcile">Reconcile</option>
+		<option value="expense">Expense</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -538,6 +539,12 @@
 		<option value="5">v5</option>
 	</selection>
 
+	<selection name="base.bank.bank.details.type.select">
+		<option value="0">Other</option>
+		<option value="1">IBAN</option>
+		<option value="2">National id</option>
+	</selection>
+
 	<!-- TODO: move this selection to account module and create a copy here
 		 (ie. base.year.period.duration.select) That time also rename references
 		 of this selection in Charts.xml of CRM, Purchase, Stock modules.
@@ -662,6 +669,17 @@
 	<selection name="iaccount.payment.mode.in.out.select">
 		<option value="1">In</option>
 		<option value="2">Out</option>
-	</selection>			
-	
+	</selection>
+
+	<selection name="base.birt.template.parameter.type.select">
+		<option value="string">String</option>
+		<option value="float">Float</option>
+		<option value="decimal">Decimal</option>
+		<option value="dateTime">DateTime</option>
+		<option value="boolean">Boolean</option>
+		<option value="integer">Integer</option>
+		<option value="date">Date</option>
+		<option value="time">Time</option>
+	</selection>
+
 </object-views>

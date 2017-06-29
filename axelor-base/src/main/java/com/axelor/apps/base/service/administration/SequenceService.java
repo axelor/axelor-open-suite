@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -32,6 +34,8 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.lang.invoke.MethodHandles;
+
 public class SequenceService {
 
 	private final static String
@@ -43,7 +47,7 @@ public class SequenceService {
 		PATTERN_WEEK = "%WY",
 		PADDING_STRING = "0";
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private SequenceVersionRepository sequenceVersionRepository;
 
@@ -165,11 +169,7 @@ public class SequenceService {
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
 	 *
-	 * @param seq
-	 * @param todayYear
-	 * @param todayMoy
-	 * @param todayDom
-	 * @param todayWoy
+	 * @param sequence
 	 * @return
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -235,6 +235,15 @@ public class SequenceService {
 
 		return sequenceVersion;
 
+	}
+
+	public String getDefaultTitle(Sequence sequence) {
+		MetaSelectItem item = Beans.get(MetaSelectItemRepository.class)
+								   .all()
+								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCode())
+								   .fetchOne();
+
+		return item.getTitle();
 	}
 	
 }

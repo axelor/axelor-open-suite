@@ -34,9 +34,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class IrrecoverableController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject 
 	private IrrecoverableService irrecoverableService;
@@ -93,7 +95,7 @@ public class IrrecoverableController {
 		} 
 		else {
 
-			String name = I18n.get("Irrecouverable reporting")+" "+irrecoverable.getName();
+			String name = I18n.get("Irrecoverable reporting")+" "+irrecoverable.getName();
 			
 			String fileLink = ReportFactory.createReport(IReport.IRRECOVERABLE, name+"-${date}")
 					.addParam("IrrecoverableID", irrecoverable.getId())

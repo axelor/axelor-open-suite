@@ -3,38 +3,78 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<chart name="chart.total.hours.per.day" title="">
-  		<dataset type="jpql"><![CDATA[
+	<chart name="chart.total.hours.per.day" title="" stacked="true">
+		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
-			self.date AS _day
-		FROM
-			TimesheetLine self
-		WHERE
-			self.timesheet.id= :timesheet_id
-		GROUP BY
-			self.date
-		ORDER BY 
-			self.date
-		]]></dataset>
- 	 	<category key="_day" type="text" title="Day"/>
-  		<series key="_duration" type="bar" title="Total"/>
-	</chart>
-	
-	<chart name="chart.total.duration.per.project" title="">
-  		<dataset type="jpql"><![CDATA[
-		SELECT
-			SUM(self.visibleDuration) AS _duration,
+			self.date AS _day,
 			self.projectTask.fullName AS _project
 		FROM
 			TimesheetLine self
 		WHERE
 			self.timesheet.id= :timesheet_id
 		GROUP BY
+			self.date,
 			self.projectTask.fullName
+		ORDER BY 
+			self.date
 		]]></dataset>
- 	 	<category key="_project" type="text" title="Project"/>
-  		<series key="_duration" type="pie" title="Total"/>
+		<category key="_day" type="text" title="Day" />
+		<series key="_duration" type="bar" title="Total" groupBy="_project" />
 	</chart>
+
+	<chart name="chart.leave.per.employee" title="Leave Per Employee" stacked="true">
+		<dataset type="jpql"><![CDATA[
+		SELECT
+			self.employee.name AS _employee,
+			self.name AS _leave_reason,
+			self.quantity AS _quantity
+		FROM
+			LeaveLine self
+		WHERE
+			self.employee.manager = :__user__
+		GROUP BY
+			self.employee.name,
+			self.name,
+			self.quantity
+		ORDER BY
+			self.employee.name,
+			self.name,
+			self.quantity
+		]]></dataset>
+		<category key="_employee" type="text" title="Employee"/>
+		<series key="_quantity" groupBy="_leave_reason" type="bar" title="Quantity"/>
+	</chart>
+
+	<chart onInit="action.hr.chart.set.period.last.month" title="Expense Per Employee" name="chart.expense.per.employee">
+		<search-fields>
+			<field name="period" title="Period" type="reference"
+				   target="com.axelor.apps.base.db.Period" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql"><![CDATA[
+		SELECT
+			self.user.name as _employee,
+			SUM(self.inTaxTotal) as _amount
+		FROM
+			Expense self
+		WHERE
+			self.user.employee.manager = :__user__
+		AND
+			self.period = :period
+		GROUP BY
+			self.user.name
+		ORDER BY
+			self.user.name
+		]]></dataset>
+		<category key="_employee" type="text" title="Employee"/>
+		<series key="_amount" aggregate="sum" type="bar"
+				title="amount"/>
+	</chart>
+
+	<action-record model="com.axelor.apps.hr.db.Expense"
+				   name="action.hr.chart.set.period.last.month">
+		<field name="period"
+			   expr="eval: __repo__.of(Period).all().filter('fromDate &lt;= ?1 and toDate &gt;= ?1', __date__.minusMonths(1)).fetchOne()"/>
+	</action-record>
 
 </object-views>

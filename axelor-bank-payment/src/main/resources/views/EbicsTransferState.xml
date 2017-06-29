@@ -6,7 +6,7 @@
   
     <grid name="ebics-transfer-state-grid" title="Ebics transfer state" model="com.axelor.apps.bankpayment.db.EbicsTransferState" >
 		<field name="transactionId" />
-		<field name="seqmentNumber" />
+		<field name="segmentNumber" />
 		<field name="numSegments" />
 		<field name="lastSegment" />
 	</grid>
@@ -15,7 +15,7 @@
 	
 		<panel>
 			<field name="transactionId" />
-			<field name="seqmentNumber" />
+			<field name="segmentNumber" />
 			<field name="numSegments" />
 			<field name="lastSegment" />
 		</panel>

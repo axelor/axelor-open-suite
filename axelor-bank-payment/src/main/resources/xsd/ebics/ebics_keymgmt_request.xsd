@@ -385,9 +385,9 @@
 							<documentation xml:lang="de">Auftragsnummer von Sendeaufträgen gemaess DFÜ-Abkommen.</documentation>
 						</annotation>
 					</element>
-					<element name="OrderAttribute" type="ebics:OrderAttributeBaseType" fixed="DZHNN">
+					<element name="OrderAttribute" type="ebics:OrderAttributeBaseType">
 						<annotation>
-							<documentation xml:lang="de">Auftragsattribut: DZHNN.</documentation>
+							<documentation xml:lang="de">Auftragsattribut.</documentation>
 						</annotation>
 					</element>
 				</sequence>

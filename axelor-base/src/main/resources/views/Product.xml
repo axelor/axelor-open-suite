@@ -56,7 +56,7 @@
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
-			        <field name="subTypeProductSelect" colSpan="12"  showIf="productTypeSelect == 'storable'"/>
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service'" if-module="axelor-human-resource"/>
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain"/>
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
@@ -193,12 +193,12 @@
 	    	</panel>
 	    	<panel name="packaging" title="Packaging">
 	  			<panel name="weight" title="Weight" colSpan="6">
-	  				<field name="weightUnit" domain="self.lengthUnit.unitTypeSelect = 1"/>
+	  				<field name="weightUnit" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossWeight"/>
 	  				<field name="netWeight"/>
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
-			        <field name="lengthUnit" domain="self.lengthUnit.unitTypeSelect = 2" />
+			        <field name="lengthUnit" domain="self.unitTypeSelect = 2" />
 			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
@@ -262,7 +262,12 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-attrs-title-sale-price"/>
+    	<action name="action-product-record-product-sub-type-select"/>
     </action-group>
+    
+    <action-record name="action-product-record-product-sub-type-select" model="com.axelor.apps.base.db.Product">
+    	<field name="productSubTypeSelect" expr="eval: null" if="productTypeSelect != 'storable'"/>
+    </action-record>
     
     <action-group name="action-group-base-product-enddate-onchange">
     	<action name="action-product-validate-end-date"/>
@@ -330,12 +335,6 @@
 		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
 	</action-record>
     
-    <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
-    </action-attrs>
-    
     <action-validate name="action-product-validate-sale-supply-select">
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
 	</action-validate> 
@@ -394,11 +393,11 @@
 	</action-view>	
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
-		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL&quot;"/>
+		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.isRawMaterial = false&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-readonly-create-production-order">
-		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__.of(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL', parentProduct?.id, id).fetch().isEmpty()"/>
+		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__.of(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.isRawMaterial = false', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-title-sale-price">
@@ -431,7 +430,7 @@
 	<action-view name="action-product-view-show-bill-of-material" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
-		<domain>self.product.id = :productId AND self.isRawMaterial = 'false' AND self.parentBillOfMaterial IS NULL</domain>
+		<domain>self.product.id = :productId AND self.isRawMaterial = 'false'</domain>
 		<context name="productId" expr="eval: id"/>
 	</action-view>
 	

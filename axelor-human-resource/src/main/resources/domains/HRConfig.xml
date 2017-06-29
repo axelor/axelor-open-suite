@@ -21,7 +21,6 @@
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
 
-    <!--<string name="lunchVoucherExportPath" title="Lunch Voucher Export Path"/>-->
     <string name="exportCodeForLunchVoucherManagement" title="Export code for lunch voucher management" />
     
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
@@ -48,6 +47,8 @@
   	<many-to-one name="validatedExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Expense Template"/>
   	<many-to-one name="refusedExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Expense Template"/>
   	<many-to-one name="canceledExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Expense Template"/>
+
+	<many-to-one name="expenseSequence" ref="com.axelor.apps.base.db.Sequence" title="Expense Sequence"/>
   	
   	<!-- EXTRA HOURS MAIL NOTIFICATION -->
   	<boolean name="extraHoursMailNotification" title="Extra Hours Notification Mail"/>
@@ -62,6 +63,7 @@
   	<string name="ageVariableName" title="Name for age variable" />
   	
   	<string name="workingDaysVariableName" title="Name for working day variable" />
+	<string name="totalWorkingDaysVariableName" title="Name for total working day in a period variable"/>
   	 
   </entity>
   

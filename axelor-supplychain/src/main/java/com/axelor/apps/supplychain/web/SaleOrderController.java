@@ -22,7 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -35,10 +40,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
-import com.axelor.apps.supplychain.service.SaleOrderStockService;
-import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.*;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -63,6 +65,9 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
+
+	@Inject
+	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
@@ -335,15 +340,6 @@ public class SaleOrderController{
 	            .map());
 	}
 	
-	public void updateTimetable(ActionRequest request, ActionResponse response){
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if(saleOrder.getId() != null && saleOrder.getId() > 0){
-			saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-		}
-		Beans.get(TimetableService.class).updateTimetable(saleOrder);
-		response.setValues(saleOrder);
-	}
-	
 	@Transactional
 	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
 		
@@ -367,5 +363,30 @@ public class SaleOrderController{
 		saleOrderRepo.save(so);
 		
 	}
-	
+
+	/**
+	 * Called on partner, company or payment change.
+	 * Fill the bank details with a default value.
+	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		PaymentMode paymentMode = saleOrder.getPaymentMode();
+		Company company = saleOrder.getCompany();
+		Partner partner = saleOrder.getClientPartner();
+		if(paymentMode == null || company == null || partner == null) {
+			return;
+		}
+		partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
+				.findDefaultBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
+		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
+	}
 }

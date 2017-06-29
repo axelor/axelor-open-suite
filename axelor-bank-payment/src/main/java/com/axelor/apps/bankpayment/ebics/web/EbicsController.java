@@ -176,8 +176,8 @@ public class EbicsController {
 				.context("ebicsBank", bank)
 				.context("url", bank.getUrl())
 				.context("hostId", bank.getHostId())
-				.context("e002Hash", DigestUtils.sha1Hex(certificates[0].getEncoded()).toUpperCase())
-				.context("x002Hash", DigestUtils.sha1Hex(certificates[1].getEncoded()).toUpperCase())
+				.context("e002Hash", DigestUtils.sha256Hex(certificates[0].getEncoded()).toUpperCase())
+				.context("x002Hash", DigestUtils.sha256Hex(certificates[1].getEncoded()).toUpperCase())
 				.context("certificateE002", certificateService.convertToPEMString(certificates[0]))
 				.context("certificateX002", certificateService.convertToPEMString(certificates[1])).map());
 		}catch(Exception e) {
@@ -206,12 +206,20 @@ public class EbicsController {
 		
 		try {
 			
-			MetaFile testMetaFile = ebicsUser.getTestFile();
-			
+			MetaFile testDataMetaFile = ebicsUser.getTestDataFile();
+			MetaFile testSignatureMetaFile = ebicsUser.getTestSignatureFile();
+
 			BankOrderFileFormat bankOrderFileFormat = ebicsUser.getTestBankOrderFileFormat();
 			
-			if(ebicsUser.getEbicsPartner().getTestMode() && testMetaFile != null && bankOrderFileFormat != null)  { 
-				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect());
+			if(testDataMetaFile != null && bankOrderFileFormat != null)  { 
+
+				File testSignatureFile = null;
+				
+				if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
+					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
+				}
+				
+				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));

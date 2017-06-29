@@ -31,6 +31,28 @@
 		bankStatementFileFormat += "</bankStatementFileFormat>"
 	})
 	
+	receiverBankDetails = ""
+	u.ebicsPartner?.receiverBankDetailsSet.each( {b->
+	    receiverBankDetails += "<bankDetails>"
+		receiverBankDetails += "<importId>${b.importId}</importId>"
+		receiverBankDetails += "<partnerFullName>${b.fullName}</partnerFullName>"
+		receiverBankDetails += "<ownerName>${b.ownerName}</ownerName>"
+		receiverBankDetails += "<bank>${b.bank?.code}</bank>"
+		receiverBankDetails += "<bankCode>${b.bankCode}</bankCode>"
+		receiverBankDetails += "<iban>${b.iban}</iban>"
+		receiverBankDetails += "<sortCode>${b.sortCode}</sortCode>"
+		receiverBankDetails += "<accountNbr>${b.accountNbr}</accountNbr>"
+		receiverBankDetails += "<bbanKey>${b.bbanKey}</bbanKey>"
+		receiverBankDetails += "<ibanBic>${b.ibanBic}</ibanBic>"
+		receiverBankDetails += "<fullName>${b.fullName}</fullName>"
+		receiverBankDetails += "<active>${b.active}</active>"
+		receiverBankDetails += "<bankAddress>"
+		receiverBankDetails += "<code>${b.bankAddress.code}</code>"
+		receiverBankDetails += "<address>${b.bankAddress.address}</address>"
+		receiverBankDetails += "<label>${b.bankAddress.label}</label>"
+		receiverBankDetails += "</bankAddress>"
+		receiverBankDetails += "</bankDetails>"
+	})
 	bankDetails = ""
 	u.ebicsPartner?.bankDetailsSet.each( {b->
 	    bankDetails += "<bankDetails>"
@@ -45,6 +67,12 @@
 		bankDetails += "<bbanKey>${b.bbanKey}</bbanKey>"
 		bankDetails += "<ibanBic>${b.ibanBic}</ibanBic>"
 		bankDetails += "<fullName>${b.fullName}</fullName>"
+		bankDetails += "<active>${b.active}</active>"
+		bankDetails += "<bankAddress>"
+		bankDetails += "<code>${b.bankAddress.code}</code>"
+		bankDetails += "<address>${b.bankAddress.address}</address>"
+		bankDetails += "<label>${b.bankAddress.label}</label>"
+		bankDetails += "</bankAddress>"
 		bankDetails += "</bankDetails>"
 	})
 	
@@ -71,6 +99,10 @@
 			<bankStatementEbicsUserId>${u.ebicsPartner?.bankStatementEbicsUser?.userId}</bankStatementEbicsUserId>
 			<bankStatementGetModeSelect>${u.ebicsPartner?.bankStatementGetModeSelect}</bankStatementGetModeSelect>
 			<bankStatementLastExeDateT>${u.ebicsPartner?.bankStatementLastExeDateT}</bankStatementLastExeDateT>
+			<filterReceiverBD>${u.ebicsPartner?.filterReceiverBD}</filterReceiverBD>
+			<receiverBankDetailsSet>
+				$receiverBankDetails
+			</receiverBankDetailsSet>
 			<usePSR>${u.ebicsPartner?.usePSR}</usePSR>
 			<bankDetailsSet>
 				$bankDetails
@@ -80,6 +112,8 @@
 				<hostId>${u.ebicsPartner?.ebicsBank?.hostId}</hostId>
 				<name>${u.ebicsPartner?.ebicsBank?.name}</name>
 				<url>${u.ebicsPartner?.ebicsBank?.url}</url>
+				<fax>${u.ebicsPartner?.ebicsBank?.fax}</fax>
+				<emailAddress>${u.ebicsPartner?.ebicsBank?.emailAddress}</emailAddress>
 				<languageSelect>${u.ebicsPartner?.ebicsBank?.languageSelect}</languageSelect>
 				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
 				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
@@ -87,7 +121,6 @@
 				<bank>
 					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
 					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>
-					<bankAddress>${u.ebicsPartner?.ebicsBank?.bank.bankAddress}</bankAddress>
 				</bank>
 				<ebicsCertificateList>
 				 $bankCerts
@@ -99,16 +132,16 @@
 		<associatedUserCode>${u.associatedUser?.code}</associatedUserCode>
 		<dn>${u.dn}</dn>
 		<a005Certificate>
-			<pem>${u.a005Certificate.pemString}</pem>
-			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.a005Certificate.privateKey)}</privateKey>
+			<pem>${u.a005Certificate?.pemString}</pem>
+			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.a005Certificate?.privateKey)}</privateKey>
 		</a005Certificate>
 		<e002Certificate>
-			<pem>${u.e002Certificate.pemString}</pem>
-			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.e002Certificate.privateKey)}</privateKey>
+			<pem>${u.e002Certificate?.pemString}</pem>
+			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.e002Certificate?.privateKey)}</privateKey>
 		</e002Certificate>
 		<x002Certificate>
-			<pem>${u.x002Certificate.pemString}</pem>
-			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.x002Certificate.privateKey)}</privateKey>
+			<pem>${u.x002Certificate?.pemString}</pem>
+			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.x002Certificate?.privateKey)}</privateKey>
 		</x002Certificate>
 		<ebicsRequestLogList>
 		 $requestLog

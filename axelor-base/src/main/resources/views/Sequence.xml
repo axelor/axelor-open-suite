@@ -14,7 +14,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
 		<panel name="main" itemSpan="12">
-			<field name="code" onChange="action-sequence-attrs"/>
+			<field name="code" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="name"/>
 		</panel>
@@ -62,7 +62,6 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">
     	<field name="padding" expr="3"/>
     	<field name="toBeAdded" expr="1"/>
-		<field name="resetDate" expr="eval: __config__.generalService.getTodayDate()"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
@@ -73,12 +72,16 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     
     <action-attrs name="action-sequence-attrs">
     	<attribute name="hidden" for="company" expr="eval: code in ['partner','eventTicket','productTrackingNumber']"/>
-    	<attribute name="required" for="company" expr="eval: !(code in ['partner','eventTicket','productTrackingNumber'])"/>
+    	<attribute name="required" for="company" expr="eval: !(code in ['partner','eventTicket','productTrackingNumber','bankOrder'])"/>
     </action-attrs>
 
     <action-validate name="action-sequence-validate">
     	<error message="Prefix or suffix must contain %YY or %YYYY since yearly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isYearValid(__this__)"/>
 		<error message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
     </action-validate>
+
+	<action-method name="action-method-sequence-document-concerned-onchange">
+		<call class="com.axelor.apps.base.web.SequenceController" method="getDefaultTitle"/>
+	</action-method>
 
 </object-views>

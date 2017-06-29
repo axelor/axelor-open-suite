@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 
 import org.joda.time.LocalDate;
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 
 public class MoveCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PeriodService periodService;
 	protected MoveRepository moveRepository;

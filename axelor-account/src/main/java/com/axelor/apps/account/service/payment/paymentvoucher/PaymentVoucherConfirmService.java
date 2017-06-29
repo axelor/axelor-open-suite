@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
@@ -57,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherConfirmService  {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
@@ -109,11 +111,12 @@ public class PaymentVoucherConfirmService  {
 		Partner payerPartner = paymentVoucher.getPartner();
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
+		BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
 		boolean scheduleToBePaid = false;
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
 
 		paymentVoucherControlService.checkPaymentVoucherField(paymentVoucher, company, paymentModeAccount, journal);
 

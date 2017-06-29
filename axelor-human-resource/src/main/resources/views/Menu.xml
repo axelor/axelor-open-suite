@@ -26,7 +26,7 @@
 	</action-view>	
 	
 	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
@@ -65,7 +65,7 @@
 	</action-view>
 	
 	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="extra.hours.validate">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
@@ -99,14 +99,14 @@
 	</action-view>
 	
 	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
 	
 	<menuitem name="ventilate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
@@ -151,7 +151,7 @@
 	</action-view>
 	
 	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateMenuTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
@@ -174,9 +174,9 @@
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
 	
-	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave Request to justify" action="leave.request.to.justify"/>
+	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
 	
-	<action-view name="leave.request.to.justify" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest">
+	<action-view name="leave.request.to.justify" title="Leave to justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<view name="leave-request-form" type="form" />
 		<view name="leave-request-validate-grid" type="grid" />
 		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
@@ -186,7 +186,8 @@
 	</action-view>
 		
 	
-	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
+	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch vouchers mgt" action="lunch.voucher.mgt.all"/>
+	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Bonuses mgt" action="employee.bonus.mgt.all"/>
 	
 	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
     	<view type="grid" name="lunch-voucher-mgt-grid"/>
@@ -330,7 +331,6 @@
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
 	
-	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
 	<menuitem name="hr-employee-bonus-type" parent="hr-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
 	
 	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">

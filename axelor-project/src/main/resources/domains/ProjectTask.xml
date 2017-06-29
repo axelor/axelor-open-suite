@@ -16,7 +16,7 @@
 	  <integer name="statusSelect" selection="project.task.status.select" title="Status" default="1"/>
 	  
 	  <string name="code" title="Code" />
-	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Members"/>
 	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 	  <string name="description" title="Description" large="true"/>
 	  
@@ -39,7 +39,7 @@
 	  
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	  
-	  <many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
+	  <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Activities"/>
 	  
 	  <string name="fullName" namecolumn="true" title="Name"/>
 	 

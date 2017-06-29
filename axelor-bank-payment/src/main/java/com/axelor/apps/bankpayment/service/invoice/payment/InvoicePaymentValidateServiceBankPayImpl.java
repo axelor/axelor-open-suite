@@ -17,10 +17,16 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -34,6 +40,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -69,10 +76,13 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 	 * 			An invoice payment
 	 * 
 	 * @throws AxelorException
+	 * @throws DatatypeConfigurationException 
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 * 		
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException  {
+	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
 		
 		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
 		
@@ -92,6 +102,8 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 				
 		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment() && !paymentMode.getGenerateBankOrder())  {
 			this.createMoveForInvoicePayment(invoicePayment);
+		} else {
+			Beans.get(AccountCustomerService.class).updateCustomerCreditLines(invoicePayment.getInvoice().getPartner());
 		}
 		if(paymentMode.getGenerateBankOrder())  {
 			this.createBankOrder(invoicePayment);
@@ -111,10 +123,13 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 	 * 			An invoice payment
 	 * 
 	 * @throws AxelorException
+	 * @throws DatatypeConfigurationException 
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 * 		
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException  {
+	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
 		
 		BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
 		

@@ -21,25 +21,27 @@ import java.util.Calendar;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
-import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.StandardOrderParamsType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
+import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.SignatureData;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
+import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
+import com.axelor.apps.account.ebics.schema.h003.StandardOrderParamsType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
+import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.exception.AxelorException;
 
 
@@ -81,7 +83,9 @@ public class SPRRequestElement extends InitializationRequestElement {
     StandardOrderParamsType		standardOrderParamsType;
     UserSignature			userSignature;
 
-    userSignature = new UserSignature(session.getUser(),
+    EbicsUser ebicsUser = session.getUser();
+    
+    userSignature = new UserSignature(ebicsUser,
 				      generateName("SIG"),
 	                              "A005",
 	                              " ".getBytes());
@@ -99,17 +103,21 @@ public class SPRRequestElement extends InitializationRequestElement {
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     standardOrderParamsType = EbicsXmlFactory.createStandardOrderParamsType();
-    orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getNextOrderId(),
-	                                                              "UZHNN",
+    
+    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsUser.getEbicsTypeSelect());
+    orderAttribute.build();
+    
+    orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(ebicsUser.getNextOrderId(),
+    															  orderAttribute.getOrderAttributes(),
 	                                                              orderType,
 	                                                              standardOrderParamsType);
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 	                                             nonce,
 	                                             0,
-	                                             session.getUser().getEbicsPartner().getPartnerId(),
+	                                             ebicsUser.getEbicsPartner().getPartnerId(),
 	                                             product,
-	                                             session.getUser().getSecurityMedium(),
-	                                             session.getUser().getUserId(),
+	                                             ebicsUser.getSecurityMedium(),
+	                                             ebicsUser.getUserId(),
 	                                             Calendar.getInstance(),
 	                                             orderDetails,
 	                                             bankPubKeyDigests);
@@ -123,7 +131,7 @@ public class SPRRequestElement extends InitializationRequestElement {
 	                                                          encryptionPubKeyDigest,
 	                                                          generateTransactionKey());
     dataTransfer = EbicsXmlFactory.createDataTransferRequestType(dataEncryptionInfo, signatureData);
-    body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer);
+    body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer); 
     request = EbicsXmlFactory.createEbicsRequest(1,
 	                                         "H003",
 	                                         header,

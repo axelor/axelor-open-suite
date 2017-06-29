@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.invoice;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ import com.axelor.inject.Beans;
 
 public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RefundInvoice.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	private Invoice invoice;
 
 	
@@ -64,8 +65,6 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		}
 		
 		populate( refund, refundLines );
-		
-		refund.setJournal(journalService.getJournal(invoice)); 
 		
 		// Payment mode should not be the invoice payment mode. It must come
 		// from the partner or the company, or be null.

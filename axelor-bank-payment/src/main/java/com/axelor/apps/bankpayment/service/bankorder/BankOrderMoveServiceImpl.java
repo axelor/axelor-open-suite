@@ -36,6 +36,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -45,9 +46,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
+import java.lang.invoke.MethodHandles;
+
 public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected BankOrderRepository bankOrderRepo;
 	protected MoveService moveService;
@@ -63,6 +66,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	protected LocalDate bankOrderDate;
 	protected Currency bankOrderCurrency;
 	protected Account senderBankAccount;
+	protected BankDetails senderBankDetails;
 	protected boolean isMultiDate;
 	protected boolean isMultiCurrency;
 	protected boolean isDebit;
@@ -92,8 +96,10 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 		
 		orderTypeSelect = bankOrder.getOrderTypeSelect();
 		senderCompany = bankOrder.getSenderCompany();
-		journal = paymentModeService.getPaymentModeJournal(paymentMode, senderCompany);
-		senderBankAccount = paymentModeService.getPaymentModeAccount(paymentMode, senderCompany);
+		senderBankDetails = bankOrder.getSenderBankDetails();
+		
+		journal = paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
+		senderBankAccount = paymentModeService.getPaymentModeAccount(paymentMode, senderCompany, senderBankDetails);
 		
 		isMultiDate = bankOrder.getIsMultiDate();
 		isMultiCurrency = bankOrder.getIsMultiCurrency();
@@ -158,13 +164,18 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 		Partner partner = bankOrderLine.getPartner();
 		Company receiverCompany = bankOrderLine.getReceiverCompany();
 		
+		BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+		
+		Journal receiverJournal = paymentModeService.getPaymentModeJournal(paymentMode, receiverCompany, receiverBankDetails);
+		Account receiverBankAccount = paymentModeService.getPaymentModeAccount(paymentMode, receiverCompany, receiverBankDetails);
+		
 		Move receiverMove = moveService.getMoveCreateService()
-				.createMove(journal, receiverCompany, 
+				.createMove(receiverJournal, receiverCompany, 
 						this.getCurrency(bankOrderLine), partner, 
 						this.getDate(bankOrderLine), paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		MoveLine bankMoveLine = moveService.getMoveLineService().createMoveLine(
-				receiverMove, partner, senderBankAccount,
+				receiverMove, partner, receiverBankAccount,
 				bankOrderLine.getBankOrderAmount(), isDebit,
 				receiverMove.getDate(), 1, bankOrderLine.getReceiverReference());
 		receiverMove.addMoveLineListItem(bankMoveLine);
@@ -233,28 +244,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

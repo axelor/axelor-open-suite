@@ -13,7 +13,6 @@
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="date"/>
         <field name="amount" aggregate="sum"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="typeSelect"/>
     </grid>
     
@@ -28,7 +27,7 @@
         <field name="typeSelect"/>
     </grid>
     
-    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project-task"
+    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-attrs-title-project-task"
     	onLoad="action-analytic-move-line-attrs-title-project-task" width="large">
        <panel name="main" >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
@@ -37,7 +36,6 @@
 	        <field name="date"/>
 	        <field name="percentage"/>
 	        <field name="amount"/>
-	        <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" />
 	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-task-form" grid-view="project-task-grid" />
   			<field name="account"/>
 			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
@@ -62,10 +60,6 @@
     <action-method name="action-analytic-move-line-method-compute-amount">
     	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="computeAmount"/>
     </action-method>
-    
-    <action-record name="action-analytic-move-line-record-currency" model="com.axelor.apps.account.db.AnalyticMoveLine">
-    	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
-    </action-record>
     
     <action-attrs if-module="axelor-business-project" name="action-analytic-move-line-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>

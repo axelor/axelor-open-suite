@@ -28,7 +28,12 @@
 	    <field name="moveLine" onSelect="action-bank-reconciliation-line-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
 	    <field name="isPosted"/>
 	  </panel>
-</form>
+	</form>
+
+	<action-attrs name="action-bank-reconciliation-line-move-line-domain">
+		<attribute name="domain" for="moveLine" expr="eval: &quot;self.move.company.id = ${_parent?.company?.id} AND self.partner.id = ${partner?.id} AND self.account = ${account?.id}&quot;" if="_parent"/>
+		<attribute name="domain" for="moveLine" expr="eval: &quot;self.move.company.id = ${bankReconciliation?.company?.id} AND self.partner.id = ${partner?.id} AND self.account = ${account?.id}&quot;" if="bankReconciliation"/>
+	</action-attrs>
     
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliationLine" name="action-bank-reconciliation-line-set-account">
        <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
@@ -36,12 +41,5 @@
        <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankReconciliation"/>
        <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankReconciliation"/>
    </action-record>
- 
-	<action-attrs name="action-bank-statement-line-move-line-domain">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.move.company.id = ${_parent?.company?.id} AND self.partner.id = ${partner?.id} AND self.account = ${account?.id}&quot;" if="_parent"/>
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.move.company.id = ${bankReconciliation?.company?.id} AND self.partner.id = ${partner?.id} AND self.account = ${account?.id}&quot;" if="bankReconciliation"/>
-	</action-attrs>
-    
-    
     
 </object-views>

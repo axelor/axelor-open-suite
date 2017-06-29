@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -48,7 +50,7 @@ import com.google.common.base.Strings;
 
 public class BankOrderFileService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected final String FILE_EXTENSION_XML = "xml";
 	protected final String FILE_EXTENSION_TXT = "txt";
@@ -62,7 +64,6 @@ public class BankOrderFileService {
 	protected BigDecimal bankOrderTotalAmount;
 	protected BigDecimal arithmeticTotal;
 	protected int nbOfLines;
-	protected LocalDateTime validationDateTime;
 	protected LocalDateTime generationDateTime;
 	protected String bankOrderSeq;
 	protected boolean isMultiDates;
@@ -85,11 +86,25 @@ public class BankOrderFileService {
 		this.arithmeticTotal = bankOrder.getArithmeticTotal();
 		this.nbOfLines = bankOrder.getNbOfLines();
 		this.generationDateTime = bankOrder.getFileGenerationDateTime();
-		this.validationDateTime = bankOrder.getValidationDateTime();
 		this.bankOrderSeq = bankOrder.getBankOrderSeq();
 		this.bankOrderLineList = bankOrder.getBankOrderLineList();
 		this.isMultiDates = bankOrder.getIsMultiDate();
 		this.isMultiCurrencies = bankOrder.getIsMultiCurrency();
+	}
+	
+	
+	protected String getSenderAddress() throws AxelorException  {
+		
+		Address senderAddress = this.senderCompany.getAddress();
+		
+		if(senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName()))  {
+			
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName()), IException.INCONSISTENCY);
+			
+		}
+		
+		return senderAddress.getFullName();
+		
 	}
 	
 	
@@ -114,6 +129,7 @@ public class BankOrderFileService {
 	 * @throws IOException 
 	 * @throws JAXBException 
 	  */
+    @SuppressWarnings("unchecked")
 	public File generateFile() throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
 		
 		switch (fileExtension) {

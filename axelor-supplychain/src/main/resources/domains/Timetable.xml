@@ -8,13 +8,13 @@
 	<decimal name="amount" title="Amount"/>
 	<date name="estimatedDate" title="Date"/>
 	<string name="comments" title="Comments" large="true"/>
-	<decimal name="amountToInvoice" title="Amount to invoice"/>
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
 	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	<string name="productName" title="Product name"/>
+	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"/>
 	
   </entity>
   
