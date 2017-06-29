@@ -24,9 +24,16 @@
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
-					<field name="titleSelect" css="bold" colSpan="2"/>
-					<field name="name" title="Name" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
-					<field name="firstName" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+	            	<panel colSpan="3">
+	            		<field name="picture" showTitle="false" widget="Image" colSpan="4"/>
+	            	</panel>
+	            	<panel colSpan="9">
+						<field name="titleSelect" css="bold" colSpan="6"/>
+						<spacer/>
+						<field name="name" title="Name" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="6"/>
+						<field name="firstName" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="6"/>
+	            	</panel>
+					
 		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
