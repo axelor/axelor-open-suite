@@ -10,7 +10,7 @@
  	<integer name="importId"/> 	
   
     <string name="name" title="Label" required="true"/>
-    <string name="code" title="Code"/>
+    <string name="code" title="CODE"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
     <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>

@@ -8,7 +8,7 @@
   <entity name="CfonbConfig" lang="java" cachable="true">
   	<integer name="importId"/>
     <string name="name" title="Name"/>
-    <string name="code" title="Code"/>
+    <string name="code" title="CODE"/>
     
    	<!-- Export CFONB -->
    	<string name="senderRecordCodeExportCFONB" title="Sender record code" default="03"/>

@@ -5,7 +5,7 @@
 	
     <grid name="payment-mode-grid" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     
     <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default" width="large">

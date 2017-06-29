@@ -5,7 +5,7 @@
   
   <entity name="IndicatorGenerator" lang="java">
   
-  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+  	<string name="code" title="CODE" namecolumn="true" unique="true"/>
   	<string name="name" title="Description"/>
     <integer name="requestLanguage" title="Query language" default="0" selection="iadministration.indicator.generator.request.type.select" />
     <string name="request"  title="Query" multiline="true" large="true" formula="true"/>

@@ -7,7 +7,7 @@
 
   <entity name="MoveTemplateType" lang="java" cachable="true">
   	<string name="name" title="Name" required="true"/>
-  	<string name="code" title="Code" />
+  	<string name="code" title="CODE" />
   </entity>
  
 </domain-models>

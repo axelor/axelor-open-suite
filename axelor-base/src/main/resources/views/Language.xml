@@ -5,7 +5,7 @@
     
     <grid name="language-grid" title="Languages" model="com.axelor.apps.base.db.Language" editable="true">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     
     <form name="language-form" title="Language" model="com.axelor.apps.base.db.Language"  >

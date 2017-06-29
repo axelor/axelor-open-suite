@@ -7,7 +7,7 @@
 
     <entity name="EmployeeBonusType" lang="java" >
     
-	    <string name="code" title="Code" />
+	    <string name="code" title="CODE" />
 	    <string name="label" title="Label" namecolumn="true" />
 	    
 	    <string name="applicationCondition" title="Application condition" />

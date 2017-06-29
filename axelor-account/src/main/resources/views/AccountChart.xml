@@ -5,14 +5,14 @@
     
     <grid name="account-chart-grid" title="Account Chart" model="com.axelor.apps.account.db.AccountChart">
         <field name="name"/>
-        <field name="code" />
+        <field name="code" x-bind="{{code|uppercase}}" />
         <field name="countryCode"/>
     </grid>
     
     <form name="account-chart-form" title="Account Chart" model="com.axelor.apps.account.db.AccountChart">
         <panel name="general" title="General">
 	        <field name="name" />
-	        <field name="code" readonly="true"/>
+	        <field name="code" x-bind="{{code|uppercase}}" readonly="true"/>
 	        <field name="countryCode" readonly="true"/>
         </panel>
     </form>

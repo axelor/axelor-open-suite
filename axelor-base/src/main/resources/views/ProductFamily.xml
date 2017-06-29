@@ -5,7 +5,7 @@
 
     <grid name="product-family-grid" title="Products families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     
     <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" width="large">

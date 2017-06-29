@@ -9,7 +9,7 @@
   
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true"/>
+    <string name="code" title="CODE" required="true"/>
 
 	<one-to-many name="taxEquivList" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax equivalences" mappedBy="fiscalPosition"/>
     

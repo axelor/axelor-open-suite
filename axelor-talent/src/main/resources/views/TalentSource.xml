@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="talent-source-grid" title="Source" model="com.axelor.apps.talent.db.TalentSource">
-		<field name="code" />
+		<field name="code" x-bind="{{code|uppercase}}" />
 		<field name="name" />
 	</grid>
 	
 	<form name="talent-source-form" title="Source" model="com.axelor.apps.talent.db.TalentSource" width="large">
 		<panel>
-			<field name="code" />
+			<field name="code" x-bind="{{code|uppercase}}" />
 			<field name="name" />
 		</panel>
 	</form>

@@ -7,7 +7,7 @@
 
 	<entity name="CustomsCodeNomenclature" lang="java" cachable="true">
 	
-		<string name="code" max="10" namecolumn="true" unique="true" nullable="false"/>
+		<string name="code" title="CODE" max="10" namecolumn="true" unique="true" nullable="false"/>
 		<string name="wording" large="true"/>
 		<string name="supplementaryUnit" required="false"/>
 		<many-to-one name="parentCustomsCode" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>

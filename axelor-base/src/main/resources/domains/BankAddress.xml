@@ -6,7 +6,7 @@
     <module name="base" package="com.axelor.apps.base.db"/>
 
     <entity name="BankAddress" lang="java">
-        <string name="code" title="Code"/>
+        <string name="code" title="CODE"/>
         <string name="address" title="SWIFT address" max="255" nullable="false"/>
         <string name="label" title="Label"/>
         <many-to-one name="bank" ref="com.axelor.apps.base.db.Bank"/>

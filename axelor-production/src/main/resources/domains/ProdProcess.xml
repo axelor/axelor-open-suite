@@ -11,7 +11,7 @@
   
   	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases"/>
   	<string name="name" title="Label" required="true"/>
-  	<string name="code" title="Code"/>
+  	<string name="code" title="CODE"/>
   	<boolean name="outsourcing" title="Outsourcing"/>
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
   	

@@ -10,7 +10,7 @@
 		<string name="typeSelect" title="Type" selection="app.type.select"  required="true" unique="true"/>
 	    <integer name="importId"/>
 	    <string name="name" title="Name" required="true" translatable="true"/>
-	    <string name="code" title="Code"/>
+	    <string name="code" title="CODE"/>
 	    <string name="description" title="Description" large="true" translatable="true"/>
 	    <string name="modules" title="Modules contains in the app" required="true" />
 	    <string name="dependsOn" title="Depends on" selection="app.type.select"/>

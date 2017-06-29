@@ -9,7 +9,7 @@
   	
     <integer name="importId" />
     <string name="name" title="Name" required="true" />
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="code" title="CODE" required="true" unique="true"/>
 	<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>
 	<integer name="paymentTime" title="Payment period (N days)"/>    
 	<integer name="daySelect" title="Day (end of month)" selection="day.month.select"/>

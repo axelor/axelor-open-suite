@@ -5,13 +5,13 @@
     
     <grid name="online-payment-method-grid" title="Online payment methods" model="com.axelor.apps.client.portal.db.OnlinePaymentMethod">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     
     <form name="online-payment-method-form" title="Online payment method" model="com.axelor.apps.client.portal.db.OnlinePaymentMethod">
     	<panel name="main" >
         	<field name="name"/>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
     </form>
 </object-views>

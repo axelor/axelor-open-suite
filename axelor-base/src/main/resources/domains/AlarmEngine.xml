@@ -8,7 +8,7 @@
   <entity name="AlarmEngine" lang="java" cachable="true">
   
   	<!-- HEADER -->
-    <string name="code" title="Code" required="true" />
+    <string name="code" title="CODE" required="true" />
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
     <many-to-one name="alarmMessage" ref="com.axelor.apps.base.db.AlarmMessage" title="Message" required="true"/>
     <integer name="managerTypeSelect" title="Manager Type" selection="alarm.engine.manager.type"/>

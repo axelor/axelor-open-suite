@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="partner-list-grid" title="Partner lists" model="com.axelor.apps.base.db.PartnerList">
-         <field name="code"/>
+         <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="description"  />
     </grid>
     
@@ -18,7 +18,7 @@
 
 	<!--  Mapping -->
     <grid name="partner-list-map-grid" title="Sales maps" model="com.axelor.apps.base.db.PartnerList">
-         <field name="code"/>
+         <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="description"  />
     </grid>
 	

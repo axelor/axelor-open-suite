@@ -5,7 +5,7 @@
     
     <grid name="source-grid" title="Source" model="com.axelor.apps.base.db.Source">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
     
     <form name="source-form" title="Source" model="com.axelor.apps.base.db.Source">

@@ -8,7 +8,7 @@
     <entity name="KilometricAllowParam" lang="java" >
     
         <string name="name" title="Name"/>
-        <string name="code" title="Code" unique="true"/>
+        <string name="code" title="CODE" unique="true"/>
         
     </entity>
 

@@ -5,7 +5,7 @@
     
     <grid name="currency-grid" title="Currencies" model="com.axelor.apps.base.db.Currency">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="symbol"/>
     </grid>
     

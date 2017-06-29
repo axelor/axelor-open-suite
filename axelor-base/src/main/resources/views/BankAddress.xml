@@ -5,7 +5,7 @@
     <form name="bank-address-form" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress"
           onNew="action-attrs-bank-address-form-bank" onLoad="action-attrs-bank-address-form-bank">
         <panel>
-            <field name="code"/>
+            <field name="code" x-bind="{{code|uppercase}}"/>
             <field name="address"/>
             <field name="label"/>
             <field name="bank"/>
@@ -13,7 +13,7 @@
     </form>
 
     <grid name="bank-address-grid" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|uppercase}}"/>
         <field name="address"/>
         <field name="label"/>
         <field name="bank"/>

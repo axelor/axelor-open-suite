@@ -9,7 +9,7 @@
 
 	<integer name="importId"/>
 	<string name="name" title="Name"/>
-	<string name="code" title="Code"/>
+	<string name="code" title="CODE"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 
 	</entity>

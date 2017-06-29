@@ -3,7 +3,7 @@
     <models name="ProductCategory" packageName="com.axelor.apps.custom.db" title="Product category">
         <fields>
             <field fieldType="boolean" label="Active" name="active" typeName="Boolean"/>
-            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Code" name="code" typeName="String" x-bind="{{code|uppercase}}"/>
             <field fieldType="string" label="Name" name="name" typeName="String"/>
         </fields>
     </models>
@@ -19,7 +19,7 @@
             </field>
             <field fieldType="decimal" label="Price" name="price" typeName="BigDecimal"/>
             <field fieldType="integer" label="Minimum Qty" name="minumQty" typeName="Integer"/>
-            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Code" name="code" typeName="String" x-bind="{{code|uppercase}}"/>
             <field fieldType="string" label="Name" name="name" typeName="String"/>
         </fields>
     </models>
@@ -29,14 +29,14 @@
             <field fieldType="integer" label="Total categories" name="totalCategories" typeName="Integer"/>
             <field fieldType="many-to-many" label="Product categories" name="productCategories" typeName="ProductCategory"/>
             <field fieldType="string" label="Address" name="address" typeName="String"/>
-            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Code" name="code" typeName="String" x-bind="{{code|uppercase}}"/>
             <field fieldType="string" label="Name" name="name" typeName="String"/>
             <field fieldType="date" label="Dob" name="dob" typeName="LocalDate"/>
         </fields>
     </models>
     <models name="OrderPolicy" packageName="com.axelor.apps.custom.db" title="Order policy">
         <fields>
-            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Code" name="code" typeName="String" x-bind="{{code|uppercase}}"/>
             <field fieldType="string" label="Name" name="name" typeName="String"/>
         </fields>
     </models>

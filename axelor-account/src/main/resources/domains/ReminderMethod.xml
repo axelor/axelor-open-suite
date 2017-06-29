@@ -7,7 +7,7 @@
   
     <integer name="importId"/>
     <string name="name" title="Method name" />
-    <string name="code" title="Code" unique="true"/>
+    <string name="code" title="CODE" unique="true"/>
     
   	<one-to-many name="reminderMethodLineList" ref="com.axelor.apps.account.db.ReminderMethodLine" mappedBy ="reminderMethod" title="Reminder method lines"/>
     

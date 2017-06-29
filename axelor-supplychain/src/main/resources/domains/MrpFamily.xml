@@ -5,7 +5,7 @@
  
 	<entity name="MrpFamily" lang="java">
   
-      	<string name="code" title="Code"/>
+      	<string name="code" title="CODE"/>
       	<string name="name" title="Name"/>
 		<integer name="dayNb" title="Number of days"/>
       

@@ -9,7 +9,7 @@
   
     <integer name="importId"/>
   	<integer name="name" title="Level" unique="true" required="true"/>
-    <string name="code"  title="Code"/> 
+    <string name="code"  title="CODE"/>
   	<string name="label" title="Label"/>
   
   </entity>

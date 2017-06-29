@@ -8,7 +8,7 @@
     
 	<integer name="importId"/>
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" unique="true" required="true"/>
+    <string name="code" title="CODE" unique="true" required="true"/>
     <string name="artmin" title="ARTMIN" selection="iterritory.artmin.select"/>
     <integer name="inhabitantsNbr" title="Nb of Inhabitants"/>
     <many-to-one name="department" title="Department" ref="Department"/>

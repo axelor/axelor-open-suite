@@ -5,13 +5,13 @@
     
     <grid name="kilometric-allow-param-grid" title="Kilometrice Allowance Params" model="com.axelor.apps.hr.db.KilometricAllowParam" orderBy="code">
         <field name="name"/>
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|uppercase}}"/>
     </grid>
 
 	<form name="kilometric-allow-param-form" title="Kilometrice Allowance Param" model="com.axelor.apps.hr.db.KilometricAllowParam" width="large">
 	  	<panel name="main">
 	    	<field name="name"/>
-	    	<field name="code"/>
+	    	<field name="code" x-bind="{{code|uppercase}}"/>
 	  	</panel>
 	</form>
 	
