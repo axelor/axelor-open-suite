@@ -12,6 +12,7 @@
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
+		<field name="ventilated"/>
 	</grid>
 	
 	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
@@ -55,6 +56,17 @@
 	    </panel>
 		<panel>
 			<field name="expenseSeq"/>
+			<panel itemSpan="12" colSpan="6">
+				<field name="move" readonly="true" showTitle="false" showIf="move">
+					<viewer>
+						<![CDATA[
+			 			<h3>
+			             <span class="label label-important" x-translate>Ventilated</span>
+			           </h3>
+					]]>
+					</viewer>
+				</field>
+			</panel>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
