@@ -33,15 +33,13 @@
     	</panel>
     </form>
 
-	<form name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period" width="large" onNew="action-period-year-on-new">
+	<form name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period" width="large">
 		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
-			<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
-			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
-			<field name="fromDate" colSpan="3" onChange="action-period-year-on-change-from-date-validate"/>
-			<field name="toDate" colSpan="3" onChange="action-period-year-on-change-to-date-validate"/>
-			<field name="allowExpenseCreation" if-module="axelor-human-resource" colSpan="3"/>
-			<field name="year" title="Fiscal year" hidden="true" form-view="year-form" grid-view="year-grid" colSpan="3"/>
+			<field name="code" x-bind="{{code|uppercase}}"/>
+			<field name="fromDate" colSpan="3" onChange="action-period-year-on-change-from-date-validate" colSpan="4"/>
+			<field name="toDate" colSpan="3" onChange="action-period-year-on-change-to-date-validate" colSpan="4"/>
+			<field name="allowExpenseCreation" if-module="axelor-human-resource" colSpan="4"/>
 		</panel>
 		<panel>
 			<panel colSpan="6">
@@ -52,10 +50,6 @@
 			<field name="closureDateTime" showIf="statusSelect == 2"/>
 		</panel>
 	</form>
-
-	<action-attrs name="action-period-year-on-new">
-		<attribute for="year" name="value" expr="eval: __parent__"/>
-	</action-attrs>
 
 	<action-validate name="action-period-year-on-change-from-date-validate">
 		<error message="The from date is incorrect"
