@@ -60,7 +60,8 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 		boolean manageMultiBanks = generalService.getGeneral().getManageMultiBanks();
 		String filter = "self.operationTypeSelect = :operationTypeSelect "
 				+ "AND self.statusSelect = :statusSelect "
-				+ "AND self.amountPendingRemaining > 0 "
+				+ "AND self.amountRemaining > 0 "
+				+ "AND self.hasPendingPayments = FALSE "
 				+ "AND self.company = :company "
 				+ "AND self.dueDate <= :dueDate "
 				+ "AND self.currency = :currency "

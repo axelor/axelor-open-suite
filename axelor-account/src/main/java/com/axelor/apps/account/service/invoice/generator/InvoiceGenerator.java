@@ -370,7 +370,7 @@ public abstract class InvoiceGenerator  {
 		}
 		
 		invoice.setAmountRemaining(invoice.getInTaxTotal());
-		invoice.setAmountPendingRemaining(invoice.getInTaxTotal());
+		invoice.setHasPendingPayments(false);
 
 		// In the invoice currency
 		invoice.setInTaxTotal(invoice.getExTaxTotal().add( invoice.getTaxTotal() ));

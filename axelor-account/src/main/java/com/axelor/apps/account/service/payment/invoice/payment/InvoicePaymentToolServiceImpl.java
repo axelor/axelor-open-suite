@@ -59,22 +59,25 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	}
 	
 	
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
 
 		invoice.setAmountPaid(computeAmountPaid(invoice));
 		invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
-		invoice.setAmountPendingRemaining(invoice.getInTaxTotal().subtract(computeAmountPaid(invoice, true)));
+		updateHasPendingPayments(invoice);
 		invoiceRepo.save(invoice);
 		log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
 		
 	}
 
-	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException {
-		return computeAmountPaid(invoice, false);
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateHasPendingPayments(Invoice invoice) {
+		invoice.setHasPendingPayments(checkPendingPayments(invoice));
 	}
 
-	protected BigDecimal computeAmountPaid(Invoice invoice, boolean withPending) throws AxelorException  {
+	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
 		
 		BigDecimal amountPaid = BigDecimal.ZERO;
 		
@@ -84,15 +87,9 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		
 		Currency invoiceCurrency = invoice.getCurrency();
 
-		List<Integer> statusSelectList = Lists.newArrayList(InvoicePaymentRepository.STATUS_VALIDATED);
-
-		if (withPending) {
-			statusSelectList.add(InvoicePaymentRepository.STATUS_PENDING);
-		}
-
 		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
 
-			if (statusSelectList.contains(invoicePayment.getStatusSelect())) {
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
 				
 				log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 				
@@ -111,6 +108,20 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return amountPaid;
 	}
 
+	/**
+	 * Check whether there are any pending payments.
+	 * 
+	 * @param invoice
+	 * @return
+	 */
+	protected boolean checkPendingPayments(Invoice invoice) {
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @inheritDoc
