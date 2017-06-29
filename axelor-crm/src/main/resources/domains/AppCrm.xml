@@ -5,7 +5,6 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppCrm" lang="java" cachable="true" extends="App">
-		<boolean name="ticketMgt" title="Ticket management" />
 	</entity>
 
 </domain-models>

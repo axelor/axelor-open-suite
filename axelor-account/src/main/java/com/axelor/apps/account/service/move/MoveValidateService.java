@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+import java.time.LocalDate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -33,16 +41,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public class MoveValidateService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SequenceService sequenceService;
 	protected MoveCustAccountService moveCustAccountService;

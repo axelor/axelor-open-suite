@@ -22,9 +22,11 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+
 public class EventReminderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EventReminderService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 		

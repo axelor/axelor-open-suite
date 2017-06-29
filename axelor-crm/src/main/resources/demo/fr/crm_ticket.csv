@@ -1,7 +1,0 @@
-importId;subject;statusSelect;startDateTimeNow;endDateTimeNow;duration;ticketCategory.importId;prioritySelect;user.importId;team.importId;clientPartner.importId;contactPartner.importId;progressSelect;responsibleUser.importId;project.importId;task.importId
-500;Ou télécharger les sources de l'ERP ?;23;NOW[-2d14H00m];NOW[-2d16H00m];300;1;1;8;3;77;78;100;8;;
-501;Comment accéder à la doc technique ? ;23;NOW[-1d09H00m];NOW[-1d12H00m];300;1;1;8;3;70;71;100;8;;
-502;Impossible de se connecter avec le user Admin;23;NOW[-1d10H00m];NOW[09H30m];1800;1;3;17;4;88;90;100;17;3;10
-503;Comment rattacher une pièce jointe ?;22;NOW[-1d14H00m];;;2;2;9;1;88;90;10;9;3;10
-504;Comment effectuer une recherche avancée ? ;21;NOW[09H00m];;;2;3;9;1;88;90;0;9;3;10
-505;Comment effectuer une mise à jour en masse d'enregistrements ?;21;NOW[09H30m];;;2;4;8;3;88;90;0;8;3;10

@@ -12,7 +12,7 @@
  	<many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
     <integer name="sequence" title="Sequence"/>
     <string name="description" title="Description" large="true"/>
-    <many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Picture" help="true"/>
+    <many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Picture"/>
     
   </entity>
 </domain-models>

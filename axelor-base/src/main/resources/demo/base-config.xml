@@ -91,6 +91,9 @@
 		    <bind to="isDefaultAddr" eval="true" />
 		</bind>
 		<bind to="contactAddress" search="self.importId = :address" if="address != null &amp;&amp; isContact == 'true'" update="true" />
+		<bind to="inPaymentMode" column="inPaymentMode.importId" if="false"/>
+ 		<bind to="outPaymentMode" column="outPaymentMode.importId" if="false"/>
+ 		<bind to="paymentCondition" column="paymentCondition.importId" if="false"/>
 	</input>
 	
 	<!-- A BESOIN DE PARTNER -->
@@ -118,6 +121,7 @@
  		<bind column="id" to="importId"/>
  		<bind column="code" to="code"/>
  		<bind column="name" to="name"/>
+ 		<bind column="company" to="company"/>
  	</input>
  	
 	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" search="self.code = :code" />
@@ -151,6 +155,10 @@
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List" update="true"/>
 		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
+		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" if="mainPartner_importId"/>
+ 		<bind to="inPaymentMode" column="inPaymentMode.importId" if="false"/>
+ 		<bind to="outPaymentMode" column="outPaymentMode.importId" if="false"/>
+ 		<bind to="paymentCondition" column="paymentCondition.importId" if="false"/>
 	</input>
 	
 	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner"
@@ -176,7 +184,12 @@
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
 	
-	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>	
+	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User" search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser">
+ 		<bind to="partner" column="partner.importId" if="false"/>
+ 		<bind to="activeTeam" column="activeTeam.importId" if="false"/>
+ 		<bind to="teamSet" column="teamSet.importId" if="false"/>
+ 		<bind to="employee" column="employee.importId" if="false"/>
+ 	</input>
 	
 </csv-inputs>
 

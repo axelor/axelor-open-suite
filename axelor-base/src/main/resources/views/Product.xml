@@ -186,7 +186,7 @@
 	        			<field name="parentProduct" form-view="product-form" grid-view="product-grid"/>
 	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant"/>
 	      			</panel>
-	      			<button name="updateProductsPrices" title="Update products prices" help="Update current product prices and variants" onClick="save,action-product-method-update-products-prices"/>
+	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 	    		</panel>
 	    	<panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned"/>

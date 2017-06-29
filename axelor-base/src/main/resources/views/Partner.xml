@@ -13,8 +13,8 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-		<button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 	
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
@@ -27,8 +27,8 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-		<button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmail" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 	
 	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
@@ -41,8 +41,8 @@
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-		<button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -53,8 +53,8 @@
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address" placeholder="whatever@example.com"/>
-	    <button name="scheduleEvent" title="Schedule Event"   help="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
+	    <button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
@@ -185,6 +185,9 @@
 				<panel name="notes" title="Notes" colSpan="12">
 					<field name="description" colSpan="12" height="8" showTitle="false"/>
 				</panel>
+				<panel colSpan="12">
+					<panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
+				</panel>
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
@@ -213,6 +216,7 @@
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
 				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
 			</panel>
+			<panel-related field="supplierCatalogList" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
 		</panel-tabs>
 		<panel>
 			<field name="partnerAttrs" colSpan="12" />

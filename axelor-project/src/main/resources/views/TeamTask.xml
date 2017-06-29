@@ -15,10 +15,10 @@
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onNew="action-task-defaults">
 		<toolbar>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" />
-			<button name="start" help="Start" icon="fa-play"/>
-			<button name="accept" help="Validate" icon="fa-check"/>
-			<button name="stop" help="Finish" icon="fa-power-off"/>
+			<button name="grabEvent" icon="fa-suitcase" />
+			<button name="start" icon="fa-play"/>
+			<button name="accept" icon="fa-check"/>
+			<button name="stop" icon="fa-power-off"/>
 			<button name="bookResource" title="Book resource" onClick="save,action-task-book-resource" />
 		</toolbar>
 		

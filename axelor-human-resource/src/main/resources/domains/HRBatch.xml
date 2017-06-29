@@ -23,8 +23,8 @@
   	<date name="startDate" title="Start date"/>
   	<date name="endDate" title="End date"/>
  	<string name="comments" title="Comment" />
-	<many-to-many name="employeeSet" ref="com.axelor.apps.hr.db.Employee" title="Employees" help="Leave empty to select every employee"/>
-	<many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Plannings" help="Leave empty to select every planning"/>
+	<many-to-many name="employeeSet" ref="com.axelor.apps.hr.db.Employee" title="Employees"/>
+	<many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Plannings"/>
 	<boolean name="useWeeklyPlanningCoef" title="Use weekly plannning coef." />
 	
 	

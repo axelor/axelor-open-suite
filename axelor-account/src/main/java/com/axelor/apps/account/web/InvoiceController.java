@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ import javax.annotation.Nullable;
 public class InvoiceController {
 
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private InvoiceService invoiceService;

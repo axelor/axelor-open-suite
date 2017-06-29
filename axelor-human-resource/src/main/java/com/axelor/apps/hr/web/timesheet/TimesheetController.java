@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -60,11 +61,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
@@ -375,6 +375,7 @@ public class TimesheetController {
 		
 		response.setView(ActionView
 				.define(I18n.get("Timesheet Lines"))
-				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
+				.add("html", "hr/timesheet?timesheetId=" + timesheet.getId()).map());	
 	}
+	
 }

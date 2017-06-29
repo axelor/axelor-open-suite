@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import com.google.inject.Inject;
 
 public class MoveDueService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private MoveLineRepository moveLineRepository;
 	

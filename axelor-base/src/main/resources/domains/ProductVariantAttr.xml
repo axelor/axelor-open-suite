@@ -8,8 +8,8 @@
   <entity name="ProductVariantAttr" lang="java">
 	
 	<string name="name" title="Name" required="true"/>
-	<string name="code" title="CODE" required="true"/>
-	<one-to-many name="productVariantValueList" ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttr" help="true"/>
+  <string name="code" title="CODE" required="true"/>
+	<one-to-many name="productVariantValueList" ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttr"/>
 	
   </entity>
 

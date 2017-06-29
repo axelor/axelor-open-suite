@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="fleet" package="com.axelor.apps.fleet.db"/>
+
+	<entity name="VehicleOdometer" lang="java" cachable="true">
+		<string name="name" title="Name" required="true" />
+		<date name="date" title="Date" column="date_val" />
+		<decimal name="value" title="Value" />
+		<many-to-one name="vehicle" ref="Vehicle" />
+		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Odometer unit" />
+	</entity>
+
+</domain-models>

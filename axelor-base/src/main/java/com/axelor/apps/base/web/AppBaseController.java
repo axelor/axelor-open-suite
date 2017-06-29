@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -59,7 +59,7 @@ import com.google.inject.Inject;
 
 public class AppBaseController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ExportDbObjectService eos;

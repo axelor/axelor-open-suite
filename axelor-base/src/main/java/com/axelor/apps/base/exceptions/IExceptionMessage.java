@@ -125,7 +125,8 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
 	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
 	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
-	
+	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ " - Not null : " /*)*/;
+
 	/**
 	 * Template message service base impl
 	 */
@@ -202,4 +203,12 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
+	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
+	
+	
 }

@@ -15,7 +15,7 @@
   	
   	<string name="comments" title="Comments" large="true"/>
   	
-	<date name="estimatedDelivDate" title="Estim. delivery date" help="true"/>  	
+	<date name="estimatedDelivDate" title="Estim. delivery date"/>  	
   	
   	<integer name="stateSelect" title="State" selection="isuppliermanagement.purchase.order.supplier.line.state.select" initParam="true"/>
   	

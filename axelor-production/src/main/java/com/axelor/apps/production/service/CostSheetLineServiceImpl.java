@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -40,7 +41,7 @@ import com.google.inject.Inject;
 
 public class CostSheetLineServiceImpl implements CostSheetLineService  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected AppProductionService appProductionService;

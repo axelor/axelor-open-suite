@@ -210,7 +210,7 @@
 	  </panel>
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-group-finalize"/>
+	    <button name="finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button name="generateCustomerStockMove" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCustomerStockMoveManagement() &amp;&amp; !__config__.app.getApp('supplychain').getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
@@ -558,13 +558,7 @@
 		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
     </action-group>
-    
-    <action-group name="action-sale-order-group-finalize">
-    	<action name="action-sale-method-update-customer-credit"/>
-    	<action name="action-sale-order-validate-bloqued"/>
-    	<action name="action-sale-order-method-finalize"/>
-    </action-group>
-    
+
     <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-sale-order-method-confirm"/>
@@ -844,9 +838,5 @@
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder"/>
 	</action-method>
-	
-	<action-validate name="action-sale-order-validate-bloqued" model="com.axelor.apps.sale.db.SaleOrder">
-		<error message="${message}" if="bloqued &amp;&amp; !manualUnblock"/>
-	</action-validate>
-	
+
 </object-views>

@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import java.time.LocalDate;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.db.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +50,7 @@ import com.google.inject.Inject;
 public class BankOrderLineService {
 	
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected BankDetailsRepository bankDetailsRepo;
 	protected CurrencyService currencyService;
@@ -169,8 +172,7 @@ public class BankOrderLineService {
 		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() != null) {
 
-			    bankDetailsIds = Beans.get(BankDetailsService.class)
-						.getIdStringListFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+			    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
 
 				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
 					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -183,8 +185,7 @@ public class BankOrderLineService {
 
 		//case where the bank order is for a partner
 		else if (bankOrderLine.getPartner() != null) {
-		    bankDetailsIds = Beans.get(BankDetailsService.class).
-					getIdStringListFromCollection(bankOrderLine.getPartner().getBankDetailsList());
+		    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getPartner().getBankDetailsList());
 		}
 
 		if (bankDetailsIds.equals("")) {
@@ -204,8 +205,7 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 		    domain += " AND self.id IN (" +
-					Beans.get(BankDetailsService.class).
-							getIdStringListFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
+					StringTool.getIdFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
 

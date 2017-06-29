@@ -14,7 +14,7 @@
     <string name="name" title="Name" required="true" unique="true" />
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
     <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" title="View Builder"/>
-    <many-to-one name="buttonView" ref="com.axelor.studio.db.ViewBuilder" title="Add button to" help="true" />
+    <many-to-one name="buttonView" ref="com.axelor.studio.db.ViewBuilder" title="Add button to" />
     <string name="header" title="Header" large="true" />
     <string name="footer" title="Footer" large="true" />
     <string name="language" title="Language"  selection="select.language"/>

@@ -7,12 +7,11 @@
 
   <entity name="Period" lang="java" cachable="true">
   
-    <string name="name" title="Name" required="true"/>
-    <string name="code" title="CODE"/>
-    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" help="true" required="true"/>
+    <string name="name" title="Name" required="true"/><string name="code" title="CODE"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" required="true"/>
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
-    <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1" help="true"/>
+    <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1"/>
     <datetime name="closureDateTime" title="Closure date"/>
     <one-to-many name="adjustHistoryList" ref="com.axelor.apps.base.db.AdjustHistory" title="Adjust History" mappedBy="period"/>
   

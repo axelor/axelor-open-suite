@@ -5,10 +5,10 @@
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
     	<toolbar>
-    		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+    		<button name="grabLeads" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
 <!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->
-    		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records" help=""/>
+    		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records"/>
     		<button name="importLeads" title="Import leads" onClick="action-crm-method-lead-import-leads" /> 
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
@@ -25,7 +25,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
+        <button name="grabLead" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -137,7 +137,7 @@
 		<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
-			<panel-dashlet action="action-lead-view-event-ticket"/>
+			<panel-dashlet action="action-lead-view-opportunity"/>
 			<panel-dashlet action="action-lead-view-emails"/>
 			<panel-dashlet action="action-lead-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')"/>
  		</panel>
@@ -244,13 +244,6 @@
    	<action-view name="action-lead-view-opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-dashlet-grid"/>
 		<view type="form" name="opportunity-form"/>
-		<domain>self.lead.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-	
-	<action-view name="action-lead-view-event-ticket" title="Tickets" model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid"/>
-		<view type="form" name="ticket-form"/>
 		<domain>self.lead.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>

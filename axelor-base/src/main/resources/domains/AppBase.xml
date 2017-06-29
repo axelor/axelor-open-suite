@@ -6,13 +6,13 @@
 
 	<entity name="AppBase" lang="java" cachable="true" extends="App" >
 
-		<datetime name="today" title="Today date" tz="true" help="true" />
-		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit" help="true"/>
-		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language" help="true"/>
+		<datetime name="today" title="Today date" tz="true"/>
+		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
+		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language"/>
 		<boolean name="mailAccountByUser" title="Manage mail account by user ?" default="false"/>
 		
 		<!-- Interfaces QAS et SVI -->
-		<string name="qasWsdlUrl" title="URL to QAS WSDL" help="true" />
+		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
@@ -20,11 +20,11 @@
 		<string name="googleMapApiKey" title="Google Map Api Key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" help="true"/>
+		<string name="currencyWsURL" title="Currency Ws URL"/>
 
-		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table" help="true"/>
+		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		
-		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
+		<boolean name="hasQasValidation" title="Use QAS Validation ?"/>
 		
 		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
 		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="10" default="2"/>

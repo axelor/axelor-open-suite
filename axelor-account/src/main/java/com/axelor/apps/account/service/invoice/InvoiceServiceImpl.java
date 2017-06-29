@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -52,12 +60,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -69,7 +71,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Inject
 	protected PartnerService partnerService;
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected ValidateFactory validateFactory;
 	protected VentilateFactory ventilateFactory;

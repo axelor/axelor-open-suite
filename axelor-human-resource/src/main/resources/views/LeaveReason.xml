@@ -17,6 +17,7 @@
 			<field name="allowInjection" showIf="manageAccumulation &amp;&amp; !$popup()"/>
 			<field name="instruction" colSpan="12" widget="html"/>
 			<field name="defaultDayNumberGain" />
+			<field name="selectedByMgtOnly"/>
 		</panel>
 		<panel>
 			<field name="payrollPreprationExport"  />

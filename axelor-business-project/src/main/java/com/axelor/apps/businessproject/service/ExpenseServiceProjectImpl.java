@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -40,13 +41,12 @@ import com.google.inject.Inject;
 public class ExpenseServiceProjectImpl extends ExpenseServiceImpl  {
 
 	@Inject
-	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
+	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
 									 AccountManagementServiceAccountImpl accountManagementService, AppAccountService appAccountService,
 									 AccountConfigHRService accountConfigService, AccountingSituationService accountingSituationService, AnalyticMoveLineService analyticMoveLineService,
 									 HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
 		
-		super(moveService, expenseRepository, moveLineService, accountManagementService, appAccountService, accountConfigService, accountingSituationService, analyticMoveLineService, hrConfigService, templateMessageService);
-	
+		super(moveService, expenseRepository, expenseLineRepository, moveLineService, accountManagementService, appAccountService, accountConfigService, accountingSituationService, analyticMoveLineService, hrConfigService, templateMessageService);
 	}
 
 	@Override

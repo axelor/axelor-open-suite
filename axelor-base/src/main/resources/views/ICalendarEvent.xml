@@ -4,6 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
+	  <field name="typeSelect" />
 	  <field name="subject" />
 	  <field name="startDateTime" />
 	  <field name="endDateTime" />
@@ -11,22 +12,22 @@
 	</grid>
 	
 	<form name="calendar-event-form" model="com.axelor.apps.base.db.ICalendarEvent" title="Event" >
-	  <field name="subject" />
-	  <field name="status" />
-	  <field name="allDay" />
-	  <field name="organizer" />
-	  <field name="startDateTime" />
-	  <field name="endDateTime" />
-	  <field name="location" />
-	  <field name="geo" />
-	  <notebook>
-	    <page title="Attendees" cols="1">
-	      <field name="attendees" />
-	    </page>
-	    <page title="Description" cols="1">
-	      <field name="description" />
-	    </page>
-	  </notebook>
+	  <panel>
+	  	  <field name="typeSelect" />
+	  	  <field name="user" />
+		  <field name="subject" />
+		  <field name="status" />
+		  <field name="allDay" />
+		  <field name="organizer" />
+		  <field name="startDateTime" />
+		  <field name="endDateTime" />
+		  <field name="location" />
+		  <field name="geo" />
+	  </panel>
+	  <panel-tabs>
+	   	<panel-related field="attendees" />
+	   	<panel-related field="description" />
+	  </panel-tabs>
 	</form>
 	
 	<calendar name="calendar-all" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"

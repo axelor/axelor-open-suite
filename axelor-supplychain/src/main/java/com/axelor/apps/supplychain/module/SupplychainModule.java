@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
@@ -42,6 +43,7 @@ import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChain;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
@@ -109,5 +111,6 @@ public class SupplychainModule extends AxelorModule {
         bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
         bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
         bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
+        bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
     }
 }

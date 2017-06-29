@@ -12,6 +12,7 @@
     	<panel name="main">
 	        <field name="name"/>
 	        <field name="value"/>
+	        <field name="type"/>
         </panel>
     </form>
     

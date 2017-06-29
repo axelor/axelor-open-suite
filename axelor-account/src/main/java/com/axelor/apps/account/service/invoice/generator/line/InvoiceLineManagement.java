@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.line;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -29,7 +30,7 @@ import com.axelor.exception.AxelorException;
 
 public abstract class InvoiceLineManagement {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineManagement.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	abstract public List<?> creates() throws AxelorException ;
 	

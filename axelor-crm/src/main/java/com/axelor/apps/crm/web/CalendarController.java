@@ -21,12 +21,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
@@ -53,17 +53,11 @@ import net.fortuna.ical4j.connector.ObjectNotFoundException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.ConstraintViolationException;
-import net.fortuna.ical4j.model.ValidationException;
 
 public class CalendarController {
 
 	@Inject
 	private CalendarService calendarService;
-	
-	public void exportCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException, ParseException {
-		Calendar cal = request.getContext().asType(Calendar.class);
-		calendarService.export(cal);
-	}
 	
 	public void importCalendarFile(ActionRequest request, ActionResponse response) throws IOException, ParserException
 	{
@@ -91,7 +85,7 @@ public class CalendarController {
 	
 	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException 
 	{
-		Calendar cal = request.getContext().asType(Calendar.class);
+		ICalendar cal = request.getContext().asType(ICalendar.class);
 		response.setView(ActionView
 					  		.define(I18n.get(IExceptionMessage.LEAD_5))
 					  		.model("com.axelor.apps.base.db.ImportConfiguration")

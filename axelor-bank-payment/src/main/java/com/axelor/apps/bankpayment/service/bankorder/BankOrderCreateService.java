@@ -19,8 +19,9 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +43,10 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
+
 public class BankOrderCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	protected BankOrderRepository bankOrderRepo;
     protected BankOrderService bankOrderService;
 	protected AccountConfigService accountConfigService;

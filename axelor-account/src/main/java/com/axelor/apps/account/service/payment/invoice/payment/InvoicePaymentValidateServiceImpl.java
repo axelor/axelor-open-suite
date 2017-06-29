@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -43,6 +44,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -105,6 +107,8 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 				
 		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment())  {
 			this.createMoveForInvoicePayment(invoicePayment);
+		} else {
+			Beans.get(AccountCustomerService.class).updateCustomerCreditLines(invoicePayment.getInvoice().getPartner());
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());

@@ -52,6 +52,7 @@ import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	protected AccountConfigService accountConfigService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
