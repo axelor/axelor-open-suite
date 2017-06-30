@@ -67,8 +67,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -798,4 +802,72 @@ public class CalendarService extends ICalendarService{
 		}
 		return calendarIdlist;
 	}
+
+	public ActionViewBuilder buildActionViewMyEvents(User user) {
+		return buildActionViewEvents(user, Sets.newHashSet(user), I18n.get("My Calendar"),
+				"event-calendar-color-by-calendar");
+	}
+
+	public ActionViewBuilder buildActionViewTeamEvents(User user) {
+		Team team = user.getActiveTeam();
+		Set<User> userSet;
+
+		if (team == null || team.getUserSet() == null || team.getUserSet().isEmpty()) {
+			userSet = Sets.newHashSet(user);
+		} else {
+			userSet = team.getUserSet();
+		}
+
+		return buildActionViewEvents(user, userSet, I18n.get("Team Calendar"), "event-calendar-color-by-user");
+	}
+
+	/**
+	 * Build an action view for an event calendar.
+	 * 
+	 * @param user
+	 * @param userSet
+	 * @param title
+	 * @param calendar
+	 * @return
+	 */
+	private ActionViewBuilder buildActionViewEvents(User user, Set<User> userSet, String title, String calendar) {
+		Set<Long> userIdSet = new HashSet<>();
+
+		for (User userIt : userSet) {
+			userIdSet.add(userIt.getId());
+		}
+
+		List<String> domainItemList = new ArrayList<>();
+		domainItemList.add("self.user.id IN (:userIdSet)");
+		domainItemList.add("self.calendarCrm.user.id IN (:userIdSet)");
+
+		ActionViewBuilder actionViewBuilder = ActionView.define(title).model(Event.class.getName());
+		actionViewBuilder.add("calendar", calendar);
+		actionViewBuilder.add("grid", "event-grid");
+		actionViewBuilder.add("form", "event-form");
+		actionViewBuilder.context("_typeSelect", 2);
+		actionViewBuilder.context("_internalUser", user.getId());
+		actionViewBuilder.context("userIdSet", userIdSet);
+
+		List<ICalendarUser> iCalendarUserList = Beans.get(ICalendarUserRepository.class).all()
+				.filter("self.user IN (:userSet)").bind("userSet", userSet).fetch();
+
+		if (!iCalendarUserList.isEmpty()) {
+			domainItemList.add("self.organizer IN (:iCalendarUserList)");
+			actionViewBuilder.context("iCalendarUserList", iCalendarUserList);
+
+			for (int i = 0; i < iCalendarUserList.size(); ++i) {
+				// Why is an id required here instead of an ICalendarUser?
+				String key = String.format("iCalendarUserId%d", i);
+				domainItemList.add(String.format(":%s MEMBER OF self.attendees", key));
+				actionViewBuilder.context(key, iCalendarUserList.get(i).getId());
+			}
+		}
+
+		String domain = Joiner.on(" OR ").join(domainItemList);
+		actionViewBuilder.domain(domain);
+
+		return actionViewBuilder;
+	}
+
 }
