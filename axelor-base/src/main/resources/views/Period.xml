@@ -37,8 +37,8 @@
 		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" x-bind="{{code|uppercase}}"/>
-			<field name="fromDate" colSpan="3" onChange="action-period-year-on-change-from-date-validate"/>
-			<field name="toDate" colSpan="3" onChange="action-period-year-on-change-to-date-validate"/>
+			<field name="fromDate" onChange="action-period-year-on-change-from-date-validate" colSpan="4"/>
+			<field name="toDate" onChange="action-period-year-on-change-to-date-validate" colSpan="4"/>
 			<field name="allowExpenseCreation" if-module="axelor-human-resource" colSpan="4"/>
 		</panel>
 		<panel>
