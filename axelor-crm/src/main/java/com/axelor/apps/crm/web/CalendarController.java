@@ -22,24 +22,20 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.text.ParseException;
-import java.util.List;
 
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 import net.fortuna.ical4j.connector.ObjectNotFoundException;
@@ -116,21 +112,10 @@ public class CalendarController {
 		response.setView(calendarService.buildActionViewTeamEvents(AuthUtils.getUser()).map());
 	}
 
-	public void showSharedEvents(ActionRequest request, ActionResponse response){
-		User user = AuthUtils.getUser();
-		List<Long> eventIdlist = calendarService.showSharedEvents(user);
-		response.setView(ActionView
-	            .define(I18n.get("Shared Calendar"))
-	            .model(Event.class.getName())
-				.add("calendar", "event-calendar-color-by-user")
-	            .add("grid", "event-grid")
-	            .add("form", "event-form")
-	            .context("_typeSelect", 2)
-	            .context("_internalUser", user.getId())
-	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
-	            .map());
+	public void showSharedEvents(ActionRequest request, ActionResponse response) {
+		response.setView(calendarService.buildActionViewSharedEvents(AuthUtils.getUser()).map());
 	}
-	
+
 	public void synchronizeCalendar(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException, ICalendarException {
 		Calendar cal = request.getContext().asType(Calendar.class);
 		cal = Beans.get(CalendarRepository.class).find(cal.getId());

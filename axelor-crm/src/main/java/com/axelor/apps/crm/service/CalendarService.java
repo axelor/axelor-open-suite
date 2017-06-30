@@ -104,13 +104,16 @@ public class CalendarService extends ICalendarService{
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	static final String X_WR_CALNAME = "X-WR-CALNAME";
-	
-	@Inject
+
 	protected CalendarRepository calendarRepo;
-	
-	
-	
-	
+	protected ICalendarUserRepository iCalendarUserRepo;
+
+	@Inject
+	public CalendarService(CalendarRepository calendarRepo, ICalendarUserRepository iCalendarUserRepo) {
+		this.calendarRepo = calendarRepo;
+		this.iCalendarUserRepo = iCalendarUserRepo;
+	}
+
 	public static class GenericPathResolver extends PathResolver {
 		 
          private String principalPath;
@@ -690,88 +693,7 @@ public class CalendarService extends ICalendarService{
 		}
 		return cal;
 	}
-	
-	public List<Long> showSharedEvents(User user){
-		Team team = user.getActiveTeam();
-		Set<User> followedUsers = user.getFollowersCalUserSet();
-		List<Long> eventIdlist = new ArrayList<Long>();
-		
-		for (User userIt : followedUsers) {
-			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
-				if((user.equals(calendarManagement.getUser())) || (team != null && team.equals(calendarManagement.getTeam()))){
-					if(calendarManagement.getAllCalendars()){
-						List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
-						
-						List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
-								userIt.getId()).fetch();
-						for (Event event : eventList) {
-							eventIdlist.add(event.getId());
-						}
-						List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
-						for (Calendar calendar : calList) {
-							for (Event event : calendar.getEventsCrm()) {
-								eventIdlist.add(event.getId());
-							}
-						}
-						for (ICalendarUser iCalendarUser : userList) {
-							eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1",
-									iCalendarUser.getId()).fetch();
-							for (Event event : eventList) {
-								eventIdlist.add(event.getId());
-							}
-						}
-					}
-					else{
-						if(calendarManagement.getErpCalendars()){
-							List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
-							
-							List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1 AND self.calendarCrm is NULL",
-									userIt.getId()).fetch();
-							for (Event event : eventList) {
-								eventIdlist.add(event.getId());
-							}
-							for (ICalendarUser iCalendarUser : userList) {
-								eventList = Beans.get(EventRepository.class).all().filter("(?1 MEMBER OF self.attendees OR self.organizer.id = ?1) AND self.calendarCrm is NULL",
-										iCalendarUser.getId()).fetch();
-								for (Event event : eventList) {
-									eventIdlist.add(event.getId());
-								}
-							}
-						}
-						if(calendarManagement.getIcalCalendars()){
-							for (Calendar calendar : calendarManagement.getCalendarSet()) {
-								for (Event event : calendar.getEventsCrm()) {
-									eventIdlist.add(event.getId());
-								}
-							}
-						}
-					}
-				}
-			}
-		}	
-		
-		List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
-		
-		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
-				user.getId()).fetch();
-		for (Event event : eventList) {
-			eventIdlist.add(event.getId());
-		}
-		List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
-		for (Calendar calendar : calList) {
-			for (Event event : calendar.getEventsCrm()) {
-				eventIdlist.add(event.getId());
-			}
-		}
-		for (ICalendarUser iCalendarUser : userList) {
-			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
-			for (Event event : eventList) {
-				eventIdlist.add(event.getId());
-			}
-		}
-		return eventIdlist;
-	}
-	
+
 	public List<Long> showSharedCalendars(User user){
 		Team team = user.getActiveTeam();
 		Set<User> followedUsers = user.getFollowersCalUserSet();
@@ -841,7 +763,8 @@ public class CalendarService extends ICalendarService{
 		domainItemList.add("self.user.id IN (:userIdSet)");
 		domainItemList.add("self.calendarCrm.user.id IN (:userIdSet)");
 
-		ActionViewBuilder actionViewBuilder = ActionView.define(title).model(Event.class.getName());
+		ActionViewBuilder actionViewBuilder = ActionView.define(title);
+		actionViewBuilder.model(Event.class.getName());
 		actionViewBuilder.add("calendar", calendar);
 		actionViewBuilder.add("grid", "event-grid");
 		actionViewBuilder.add("form", "event-form");
@@ -849,8 +772,8 @@ public class CalendarService extends ICalendarService{
 		actionViewBuilder.context("_internalUser", user.getId());
 		actionViewBuilder.context("userIdSet", userIdSet);
 
-		List<ICalendarUser> iCalendarUserList = Beans.get(ICalendarUserRepository.class).all()
-				.filter("self.user IN (:userSet)").bind("userSet", userSet).fetch();
+		List<ICalendarUser> iCalendarUserList = iCalendarUserRepo.all().filter("self.user IN (:userSet)")
+				.bind("userSet", userSet).fetch();
 
 		if (!iCalendarUserList.isEmpty()) {
 			domainItemList.add("self.organizer IN (:iCalendarUserList)");
@@ -858,6 +781,85 @@ public class CalendarService extends ICalendarService{
 
 			for (int i = 0; i < iCalendarUserList.size(); ++i) {
 				// Why is an id required here instead of an ICalendarUser?
+				String key = String.format("iCalendarUserId%d", i);
+				domainItemList.add(String.format(":%s MEMBER OF self.attendees", key));
+				actionViewBuilder.context(key, iCalendarUserList.get(i).getId());
+			}
+		}
+
+		String domain = Joiner.on(" OR ").join(domainItemList);
+		actionViewBuilder.domain(domain);
+
+		return actionViewBuilder;
+	}
+
+	public ActionViewBuilder buildActionViewSharedEvents(User user) {
+		Set<User> userSet = Sets.newHashSet(user);
+		Set<Long> userIdSet = new HashSet<>();
+		List<String> domainItemList = new ArrayList<>();
+		domainItemList.add("self.user.id IN (:userIdSet)");
+		domainItemList.add("self.calendarCrm.user.id IN (:userIdSet)");
+
+		ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Shared Calendar"));
+		actionViewBuilder.model(Event.class.getName());
+		actionViewBuilder.add("calendar", "event-calendar-color-by-user");
+		actionViewBuilder.add("grid", "event-grid");
+		actionViewBuilder.add("form", "event-form");
+		actionViewBuilder.context("_typeSelect", 2);
+		actionViewBuilder.context("_internalUser", user.getId());
+		actionViewBuilder.context("userIdSet", userIdSet);
+
+		List<ICalendarUser> iCalendarUserList = iCalendarUserRepo.all().filter("self.user = :user").bind("user", user)
+				.fetch();
+		int index = 0;
+
+		for (User userIt : user.getFollowersCalUserSet()) {
+			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
+				if (user.equals(calendarManagement.getUser())
+						|| user.getActiveTeam() != null && user.getActiveTeam().equals(calendarManagement.getTeam())) {
+
+					if (calendarManagement.getAllCalendars()) {
+						userSet.add(userIt);
+						iCalendarUserList.addAll(iCalendarUserRepo.all().filter("self.user = :user", userIt).fetch());
+					} else {
+						if (calendarManagement.getErpCalendars()) {
+							String userIdKey = String.format("userId%d", index);
+							domainItemList
+									.add(String.format("self.user.id = :%s AND self.calendarCrm IS NULL", userIdKey));
+							actionViewBuilder.context(userIdKey, userIt.getId());
+
+							List<ICalendarUser> iCalendarUserItList = iCalendarUserRepo.all()
+									.filter("self.user = :user").bind("user", userIt).fetch();
+
+							for (int i = 0; i < iCalendarUserItList.size(); ++i) {
+								String iCalendarUserIdKey = String.format("iCalendarUserId%dx%d", index, i);
+								domainItemList.add(String.format(
+										"(:%s MEMBER OF self.attendees OR self.organizer.id = :%s) "
+												+ "AND self.calendarCrm IS NULL",
+										iCalendarUserIdKey, iCalendarUserIdKey));
+								actionViewBuilder.context(iCalendarUserIdKey, iCalendarUserItList.get(i).getId());
+							}
+						}
+						if (calendarManagement.getIcalCalendars()) {
+							String iCalendarUserListKey = String.format("iCalendarUserList%d", index);
+							domainItemList.add(String.format("self.calendarCrm IN (:%s)", iCalendarUserListKey));
+							actionViewBuilder.context(iCalendarUserListKey, calendarManagement.getCalendarSet());
+						}
+					}
+				}
+				++index;
+			}
+		}
+
+		for (User userIt : userSet) {
+			userIdSet.add(userIt.getId());
+		}
+
+		if (!iCalendarUserList.isEmpty()) {
+			domainItemList.add("self.organizer IN (:iCalendarUserList)");
+			actionViewBuilder.context("iCalendarUserList", iCalendarUserList);
+
+			for (int i = 0; i < iCalendarUserList.size(); ++i) {
 				String key = String.format("iCalendarUserId%d", i);
 				domainItemList.add(String.format(":%s MEMBER OF self.attendees", key));
 				actionViewBuilder.context(key, iCalendarUserList.get(i).getId());
