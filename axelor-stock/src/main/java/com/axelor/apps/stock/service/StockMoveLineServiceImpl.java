@@ -400,6 +400,39 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
     }
 
 	@Override
+	public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+		List<String> errorList = new ArrayList<>();
+
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+			TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+
+			if (trackingNumber == null) {
+				continue;
+			}
+
+			Product product = trackingNumber.getProduct();
+
+			if (product == null || !product.getCheckExpirationDateAtStockMoveRealization()) {
+				continue;
+			}
+
+			if (product.getHasWarranty()
+					&& trackingNumber.getWarrantyExpirationDate().isBefore(appBaseService.getTodayDate())
+					|| product.getIsPerishable()
+							&& trackingNumber.getPerishableExpirationDate().isBefore(appBaseService.getTodayDate())) {
+				errorList.add(product.getName());
+			}
+		}
+
+		if (!errorList.isEmpty()) {
+			String errorStr = errorList.stream().collect(Collectors.joining(", "));
+			throw new AxelorException(
+					String.format(I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS), errorStr),
+					IException.CONFIGURATION_ERROR);
+		}
+	}
+
+	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
 
