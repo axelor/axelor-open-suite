@@ -126,7 +126,7 @@
 		title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
 	
 	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
-		model="com.axelor.apps.production.db.ConfiguratorCreator" >
+		model="com.axelor.apps.sale.db.ConfiguratorCreator" >
 		<view type="grid" name="configurator-creator-grid" />
 		<view type="form" name="configurator-creator-form" />
 	</action-view>
@@ -135,7 +135,7 @@
 		title="Configurators" action="manufacturing.conf.configurator.configurators"/>
 	
 	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
-		model="com.axelor.apps.production.db.Configurator" >
+		model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
 	</action-view>

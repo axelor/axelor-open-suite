@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.production.db.Configurator">
+    <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator">
     	<field name="configuratorCreator"/>
     </grid>
     
-    <form name="configurator-form" title="Configurator" model="com.axelor.apps.production.db.Configurator">
+    <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator">
     	<panel>
     		<field name="configuratorCreator" readonly="true"/>
     		<field name="attributes" colSpan="12"/>

@@ -3,11 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="meta" package="com.axelor.meta.db" />
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="MetaJsonField" table="META_JSON_FIELD" cachable="true">
-  	
-  	<boolean name="includedInCost" title="Included in cost price" />
-     	
+  <entity name="Configurator" lang="java">
+  
+	<many-to-one name="configuratorCreator" ref="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator type" required="true" />
+    <string name="attributes" title="Attributes" json="true" />	
+  
   </entity>
+  
 </domain-models>

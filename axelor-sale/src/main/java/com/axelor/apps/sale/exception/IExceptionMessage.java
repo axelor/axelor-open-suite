@@ -47,4 +47,10 @@ public interface IExceptionMessage {
 	static final public String SALE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/ "The currency is required and must be the same for all sale orders" /*)*/;
 	static final public String SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER = /*$$(*/ "The client Partner is required and must be the same for all sale orders" /*)*/;
 	static final public String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all sale orders" /*)*/;
+
+	/**
+	 * Configurator generator
+	 */
+
+	static final String CONFIGURATOR_GENERATED = /*$$(*/ "The configurator is generated. Please check the configurators menu." /*)*/;
 }

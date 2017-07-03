@@ -1,9 +1,9 @@
-package com.axelor.apps.production.web;
+package com.axelor.apps.sale.web;
 
-import com.axelor.apps.production.db.ConfiguratorCreator;
-import com.axelor.apps.production.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ConfiguratorCreatorService;
+import com.axelor.apps.sale.db.ConfiguratorCreator;
+import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

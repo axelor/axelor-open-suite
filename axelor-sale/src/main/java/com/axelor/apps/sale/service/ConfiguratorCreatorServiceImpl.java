@@ -1,8 +1,8 @@
-package com.axelor.apps.production.service;
+package com.axelor.apps.sale.service;
 
-import com.axelor.apps.production.db.Configurator;
-import com.axelor.apps.production.db.ConfiguratorCreator;
-import com.axelor.apps.production.db.repo.ConfiguratorRepository;
+import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.ConfiguratorCreator;
+import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -34,7 +34,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 				field.setShowIf(condition);
 			}
 		}
-		
+
 		Configurator configurator =  configuratorRepo.all().filter("self.configuratorCreator = ?1", creator).fetchOne();
 		
 		if (configurator == null) {

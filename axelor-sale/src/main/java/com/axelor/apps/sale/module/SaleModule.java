@@ -25,6 +25,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.ConfiguratorCreatorService;
+import com.axelor.apps.sale.service.ConfiguratorCreatorServiceImpl;
+import com.axelor.apps.sale.service.ConfiguratorService;
+import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
@@ -54,5 +58,7 @@ public class SaleModule extends AxelorModule {
         bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
         bind(SaleConfigService.class).to(SaleConfigServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
+        bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
+        bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);
     }
 }
