@@ -140,9 +140,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	/**
 	 * Compute the sale order total amounts
-	 *
-	 * @param invoice
-	 * @param vatLines
+	 * @param saleOrder
 	 * @throws AxelorException
 	 */
 	@Override

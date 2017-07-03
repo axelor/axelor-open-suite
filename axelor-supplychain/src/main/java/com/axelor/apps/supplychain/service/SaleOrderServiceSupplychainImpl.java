@@ -165,8 +165,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
 	@Override
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
-		updateCustomerCreditLines(saleOrder);
-		super.finalizeSaleOrder(saleOrder);
+		updateCustomerCreditLines(saleOrder); // No rollback
+		super.finalizeSaleOrder(saleOrder); // There's a rollback here
 	}
 
 }
