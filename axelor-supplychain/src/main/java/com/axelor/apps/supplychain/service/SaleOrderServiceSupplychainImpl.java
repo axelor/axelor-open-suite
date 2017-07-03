@@ -164,10 +164,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
-		updateCustomerCreditLines(saleOrder);
-		super.finalizeSaleOrder(saleOrder);
+		updateCustomerCreditLines(saleOrder); // No rollback
+		super.finalizeSaleOrder(saleOrder); // There's a rollback here
 	}
 
 }
