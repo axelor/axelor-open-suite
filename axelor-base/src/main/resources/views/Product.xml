@@ -147,6 +147,7 @@
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
 				        <field name="isPerishable"/>
 				        <field name="perishableNbrOfMonths" showIf="isPerishable"/>
+				        <field name="checkExpirationDateAtStockMoveRealization" showIf="hasWarranty || isPerishable"/>
 	      			</panel>
 	      			<panel colSpan="12">
 	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
