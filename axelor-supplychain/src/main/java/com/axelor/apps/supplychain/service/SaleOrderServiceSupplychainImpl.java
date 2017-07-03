@@ -166,7 +166,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	@Override
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		updateCustomerCreditLines(saleOrder);
-		super.finalizeSaleOrder(saleOrder);
+		_finalizeSaleOrder(saleOrder);
 	}
 
 }

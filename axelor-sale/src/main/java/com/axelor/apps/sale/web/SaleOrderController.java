@@ -135,7 +135,12 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		saleOrderService.finalizeSaleOrder(saleOrder);
+		try {
+			saleOrderService.finalizeSaleOrder(saleOrder);
+		} catch (AxelorException e) {
+			response.setFlash(e.getMessage());
+		}
+
 		response.setReload(true);
 	}
 
