@@ -164,6 +164,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 
 	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		updateCustomerCreditLines(saleOrder);
 		super.finalizeSaleOrder(saleOrder);
