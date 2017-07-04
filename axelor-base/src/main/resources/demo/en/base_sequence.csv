@@ -37,7 +37,7 @@ importId;code;name;nextNum;padding;prefixe;suffixe;toBeAdded;yearlyResetOk;compa
 135;move;Clearance Move Live;1;10;MVCLR_%YY_;;1;1;1
 136;move;Irrecovrable Move Line;1;10;MVIRREC_%YY_;;1;1;1
 137;moveLineExport;Accounting Export;1;10;ACCEXP_%YY_;;1;1;1
-138;moveLineReport;Accounting Report;1;10;ACCREPORT_%YY_;;1;1;1
+138;accountingReport;Accounting Report;1;10;ACCREPORT_%YY_;;1;1;1
 139;paymentSchedule;Installment N°;1;10;INSTAL_%YY_;;1;1;1
 140;paymentVoucher;N° for payments received in Cash;1;10;CSH_IN_ESP_%YY_;;1;1;1
 141;paymentVoucher;N° for payments received in Cheque;1;10;CSH_IN_CHQ_%YY_;;1;1;1
