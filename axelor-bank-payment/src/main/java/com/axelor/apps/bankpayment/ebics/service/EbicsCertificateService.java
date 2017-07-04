@@ -291,6 +291,13 @@ public class EbicsCertificateService {
 		return cert;
    }
    
+   public byte[] convertToDER(String pemString) throws IOException, CertificateEncodingException {
+		
+		X509Certificate cert = convertToCertificate(pemString);
+		
+		return cert.getEncoded();
+   }
+   
    @Transactional
    public void updateEditionDate(EbicsUser user) {
 	   
