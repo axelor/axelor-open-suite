@@ -75,7 +75,7 @@
     <property name="imageDPI">96</property>
     <property name="locale">fr_FR</property>
     <parameters>
-        <scalar-parameter name="MoveLineReportId" id="3544">
+        <scalar-parameter name="AccountingReportId" id="3544">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -208,7 +208,7 @@ row["from_ttl"];
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -219,7 +219,7 @@ row["from_ttl"];
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
@@ -365,8 +365,8 @@ row["from_ttl"];
 sum(FromMoveLine.diff_from) as from_ttl, sum(ToMoveLine.diff_to) as to_ttl, 
 sum(TaxMoveLine.diff_vat) as vat_ttl, Move.id as move_id, TaxLine.id as vat_line_id
 
-from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
+from public.account_accounting_report as AccountingReport 
+left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.base_period as Period on (Move.period = Period.id)
@@ -374,21 +374,21 @@ left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLi
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 left outer join 	(select MoveLine.id as line_id,(MoveLine.credit - MoveLine.debit) as diff_from, MoveLine.date_val 
 					from public.account_move_line as MoveLine ) as FromMoveLine
-					on ((MoveLineReport.date_from IS NULL OR FromMoveLine.date_val IS NULL OR (FromMoveLine.date_val < MoveLineReport.date_from)) 
+					on ((AccountingReport.date_from IS NULL OR FromMoveLine.date_val IS NULL OR (FromMoveLine.date_val < AccountingReport.date_from)) 
 						and MoveLine.id = FromMoveLine.line_id)
 left outer join 	(select MoveLine.id as line_id,(MoveLine.credit - MoveLine.debit) as diff_to, MoveLine.date_val 
 					from public.account_move_line as MoveLine ) as ToMoveLine
-					on ((MoveLineReport.date_to IS NULL OR ToMoveLine.date_val IS NULL OR (ToMoveLine.date_val <= MoveLineReport.date_to)) 
-						and ToMoveLine.date_val <= MoveLineReport.date_val and MoveLine.id = ToMoveLine.line_id)
+					on ((AccountingReport.date_to IS NULL OR ToMoveLine.date_val IS NULL OR (ToMoveLine.date_val <= AccountingReport.date_to)) 
+						and ToMoveLine.date_val <= AccountingReport.date_val and MoveLine.id = ToMoveLine.line_id)
 left outer join	(select sum(MoveLine.credit - MoveLine.debit) as diff_vat, MoveLine.tax_line as tax_line2  
 					from public.account_move_line as MoveLine  
-					left outer join public.account_move_line_report as MoveLineReport on (MoveLineReport.id = ?)
+					left outer join public.account_accounting_report as AccountingReport on (AccountingReport.id = ?)
 					left outer join public.account_account as TaxMoveLineAccount on (MoveLine.account = TaxMoveLineAccount.id)
-					where TaxMoveLineAccount.code like '4457%' and MoveLine.date_val <= MoveLineReport.date_to and MoveLine.date_val >= MoveLineReport.date_from 
-					and MoveLine.date_val <= MoveLineReport.date_val group by MoveLine.tax_line) as TaxMoveLine 
+					where TaxMoveLineAccount.code like '4457%' and MoveLine.date_val <= AccountingReport.date_to and MoveLine.date_val >= AccountingReport.date_from 
+					and MoveLine.date_val <= AccountingReport.date_val group by MoveLine.tax_line) as TaxMoveLine 
 					on ( TaxMoveLine.tax_line2 = TaxLine.id) 
 left outer join public.account_invoice as Invoice on (Invoice.id = Move.invoice) 										
-where MoveLineReport.year = period.year 
+where AccountingReport.year = period.year 
 and ((Account.code like '7%'  or Account.code like '6%' or Account.code like '4%') AND Account.code not like '41%' AND Account.code not like '4457%')
 group by Account.code, Account.name, TaxLine.value, Tax.name, TaxMoveLine, move_id, TaxLine.id
 order by Account.code desc]]></xml-property>
@@ -417,7 +417,7 @@ order by Account.code desc]]></xml-property>
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -454,7 +454,7 @@ order by Account.code desc]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -531,12 +531,12 @@ order by Account.code desc]]></xml-property>
                     <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name,MoveLineReport.date_from,MoveLineReport.date_to,
-AcYear.name as year_name, MoveLineReport.publication_date_time as "ReportDateEdition" 
-from public.account_move_line_report as MoveLineReport 
-inner join public.base_company as Company on (MoveLineReport.company = Company.id)
-left outer join public.base_year as AcYear on (MoveLineReport.year = AcYear.id)
-where MoveLineReport.id = ? 
+            <xml-property name="queryText"><![CDATA[select Company.name as company_name,AccountingReport.date_from,AccountingReport.date_to,
+AcYear.name as year_name, AccountingReport.publication_date_time as "ReportDateEdition" 
+from public.account_accounting_report as AccountingReport 
+inner join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
+where AccountingReport.id = ? 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -726,7 +726,7 @@ where MoveLineReport.id = ?
             <page-header>
                 <grid id="3117">
                     <property name="width">11.033333333333333in</property>
-                    <property name="dataSet">MoveLineReportDS</property>
+                    <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">company_name</property>
@@ -862,7 +862,7 @@ where MoveLineReport.id = ?
     </page-setup>
     <body>
         <grid id="3560">
-            <property name="dataSet">MoveLineReportDS</property>
+            <property name="dataSet">AccountingReportDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">company_name</property>
