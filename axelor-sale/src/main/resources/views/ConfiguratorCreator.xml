@@ -11,8 +11,12 @@
     	<panel>
     		<field name="name"/>
     		<panel-related field="attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
-    		<button name="generateConfigurator" title="Generate configurator" colSpan="3" onClick="save,action-configurator-creator-generate-configurator"/>
     	</panel>
+		<panel-related field="formulas" form-view="configurator-formula-form"
+					   grid-view="configurator-formula-grid"/>
+        <panel>
+			<button name="generateConfigurator" title="Generate configurator" colSpan="3" onClick="save,action-configurator-creator-generate-configurator"/>
+		</panel>
     </form>
     
     <action-method name="action-configurator-creator-generate-configurator">

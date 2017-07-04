@@ -18,17 +18,15 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.Configurator;
-import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.apps.sale.db.ConfiguratorFormula;
+import wslite.json.JSONException;
 
-public interface ConfiguratorCreatorService {
+public interface ConfiguratorService {
 
-	Configurator generateConfigurator(ConfiguratorCreator creator);
-
-	/**
-     * Add the {@link ConfiguratorFormula#productField} that need to be shown
-	 * in configurator in the {@link ConfiguratorCreator#indicators} many-to-one.
-	 * @param creator
-	 */
-	void updateIndicators(ConfiguratorCreator creator);
+    /**
+     * Update the value of indicators using {@link com.axelor.apps.sale.db.ConfiguratorCreator#formulas}
+     * and the current values in {@link Configurator#attributes}
+     * @param configurator
+     * @return the new values of indicators
+     */
+    String updateIndicators(Configurator configurator) throws JSONException;
 }

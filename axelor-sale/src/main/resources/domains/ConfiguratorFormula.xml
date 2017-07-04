@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+    <module name="sale" package="com.axelor.apps.sale.db"/>
+    <entity name="ConfiguratorFormula" lang="java">
+        <many-to-one name="productField" ref="com.axelor.meta.db.MetaField"/>
+        <string name="formula" title="Formula"/>
+        <boolean name="showOnConfigurator" title="Show on configurator"/>
+    </entity>
+</domain-models>

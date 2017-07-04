@@ -7,12 +7,19 @@
     	<field name="configuratorCreator"/>
     </grid>
     
-    <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator">
+    <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator" onLoad="action-configurator-update-indicators,save">
     	<panel>
-    		<field name="configuratorCreator" readonly="true"/>
+    		<field name="configuratorCreator"/>
     		<field name="attributes" colSpan="12"/>
     	</panel>
+        <panel readonly="true">
+			<field name="indicators" colSpan="12"/>
+		</panel>
     </form>
-    
+
+	<action-method name="action-configurator-update-indicators">
+		<call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
+	</action-method>
+
 
 </object-views>
