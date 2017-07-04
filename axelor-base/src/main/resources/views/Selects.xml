@@ -329,7 +329,7 @@
 		<option value="paymentVoucher">Payment voucher</option>
 		<option value="debit">Direct debit</option>
 		<option value="debitReject">Direct debit reject</option>
-		<option value="moveLineReport">Accounting reports</option>
+		<option value="accountingReport">Accounting reports</option>
 		<option value="reimbursement">Reimbursements</option>
 		<option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
 		<option value="accountClearance">Overpayment clearance</option>

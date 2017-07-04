@@ -65,7 +65,7 @@
 		<option value='4'>Canceled</option>
 	</selection>
 	
-	<selection name='move.line.report.type.select'>
+	<selection name='accounting.report.type.select'>
 		<option value="1">General ledger</option>
 		<option value="2">General balance</option>
 		<option value="3">Detailed customers balance</option>
@@ -79,7 +79,7 @@
 		<option value="2000">Analytic balance</option>
 	</selection>
 	
-	<selection name='move.line.report.type.select.export'>
+	<selection name='accounting.report.type.select.export'>
 		<option value="1000">Export payroll journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
@@ -231,7 +231,7 @@
 		<option value="2">Validated</option>
 	</selection>
 	
-	<selection name="iaccount.move.line.report.status.select">
+	<selection name="iaccount.accounting.report.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
 	</selection>

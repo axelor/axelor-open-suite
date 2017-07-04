@@ -41,7 +41,7 @@
     <boolean name="updateDueReminderCustAccountOk" title="Due balance remindable"/>
     
     <!--     MOVE LINE EXPORT -->
-    <integer name="moveLineExportTypeSelect" title="Export type" selection="move.line.report.type.select.export"/>
+    <integer name="moveLineExportTypeSelect" title="Export type" selection="accounting.report.type.select.export"/>
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>
     

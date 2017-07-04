@@ -67,7 +67,7 @@
 				<field name="accountingOk"/>
 				<field name="exportNumber" showIf="accountingOk"/>
 				<field name="exportDate" showIf="accountingOk"/>
-				<field name="moveLineReport" form-view="move-line-report-export-form" showIf="accountingOk" grid-view="move-line-report-grid"/>
+				<field name="accountingReport" form-view="accounting-report-export-form" showIf="accountingOk" grid-view="accounting-report-grid"/>
 			</panel>
 			
 			<panel name="others" title="Others">
