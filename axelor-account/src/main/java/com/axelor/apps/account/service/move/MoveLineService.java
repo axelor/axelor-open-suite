@@ -515,7 +515,7 @@ public class MoveLineService {
 	 */
 	public MoveLine getCreditCustomerMoveLine(Move move)  {
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				return moveLine;
 			}
@@ -546,7 +546,7 @@ public class MoveLineService {
 	 */
 	public MoveLine getDebitCustomerMoveLine(Move move)  {
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				return moveLine;
 			}

@@ -54,7 +54,7 @@ public class MoveCancelService {
 
 		for(MoveLine moveLine : move.getMoveLineList())  {
 			
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0)  {
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0)  {
 				throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_1), IException.CONFIGURATION_ERROR);
 			}
 			

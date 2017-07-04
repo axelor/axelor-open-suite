@@ -167,7 +167,7 @@ public interface IExceptionMessage {
 	 * Reconcile service
 	 */
 	static final String RECONCILE_1 = /*$$(*/ "%s : Reconciliation : You must fill concerned moves lines." /*)*/ ;
-	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Selected moves lines must concerned the same account." /*)*/ ;
+	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Move line accounts are not compatible." /*)*/ ;
 	static final String RECONCILE_3 = /*$$(*/ "\n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/ ;

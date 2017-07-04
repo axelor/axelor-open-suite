@@ -19,6 +19,8 @@ package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.AccountAccountRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -117,6 +119,8 @@ public class AccountModule extends AxelorModule {
         bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
         bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
+
+        bind(AccountRepository.class).to(AccountAccountRepository.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
