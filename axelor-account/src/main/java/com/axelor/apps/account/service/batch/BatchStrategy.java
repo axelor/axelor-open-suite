@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
@@ -203,9 +203,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 		incrementDone();
 	}
 
-	protected void updateMoveLineReport( MoveLineReport moveLineReport){
+	protected void updateAccountingReport( AccountingReport accountingReport){
 
-		moveLineReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
+		accountingReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
 
 		incrementDone();
 	}

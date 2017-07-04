@@ -20,7 +20,7 @@ package com.axelor.apps.account.report;
 public interface IReport {
 
 	
-	public static final String MOVE_LINE_REPORT_TYPE = "MoveLineReportType%s.rptdesign";
+	public static final String ACCOUNTING_REPORT_TYPE = "AccountingReportType%s.rptdesign";
 	public static final String PAYMENT_VOUCHER = "PaymentVoucher.rptdesign";
 	public static final String IRRECOVERABLE = "Irrecoverable.rptdesign";
 	public static final String INVOICE = "Invoice.rptdesign";
