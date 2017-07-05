@@ -186,11 +186,6 @@ public class ReconcileServiceImpl  implements ReconcileService {
 			if (!debitMoveLine.getAccount().getCompatibleAccountSet().contains(creditMoveLine.getAccount())) {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_2), AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 			}
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_2)+" " +
-					I18n.get(IExceptionMessage.RECONCILE_3),
-					AppAccountServiceImpl.EXCEPTION, debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
-					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.CONFIGURATION_ERROR);
 		}
 
 		// Check if the amount to reconcile is != zero
