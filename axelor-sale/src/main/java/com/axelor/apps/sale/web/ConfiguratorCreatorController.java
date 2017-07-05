@@ -38,6 +38,13 @@ public class ConfiguratorCreatorController {
 		this.configuratorCreatorService = configuratorCreatorService;
 	}
 
+	/**
+	 * Called from configurator creator form.
+	 * call {@link ConfiguratorCreatorService#updateIndicators(ConfiguratorCreator)}
+	 * then {@link ConfiguratorCreatorService#generateConfigurator(ConfiguratorCreator)}
+	 * @param request
+	 * @param response
+	 */
 	public void generateConfigurator(ActionRequest request, ActionResponse response) {
 		
 		ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);

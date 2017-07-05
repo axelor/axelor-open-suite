@@ -15,11 +15,18 @@
         <panel readonly="true">
 			<field name="indicators" colSpan="12"/>
 		</panel>
+		<panel>
+			<button name="generateProduct" title="Generate Product"
+					onClick="action-configurator-generate-product,save"/>
+		</panel>
     </form>
 
 	<action-method name="action-configurator-update-indicators">
 		<call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
 	</action-method>
 
+    <action-method name="action-configurator-generate-product">
+		<call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
+	</action-method>
 
 </object-views>

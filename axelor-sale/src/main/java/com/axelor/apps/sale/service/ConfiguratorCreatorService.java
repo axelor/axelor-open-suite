@@ -23,6 +23,11 @@ import com.axelor.apps.sale.db.ConfiguratorFormula;
 
 public interface ConfiguratorCreatorService {
 
+	/**
+	 * Generate a {@link Configurator} from a {@link ConfiguratorCreator}
+	 * @param creator
+	 * @return
+	 */
 	Configurator generateConfigurator(ConfiguratorCreator creator);
 
 	/**

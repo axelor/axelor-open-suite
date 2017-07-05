@@ -7,15 +7,14 @@ import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.meta.db.MetaJsonField;
-import com.google.common.base.Strings;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -29,46 +28,57 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 	}
 
 
-	@Override
-	@Transactional
-	public Configurator generateConfigurator(ConfiguratorCreator creator) {
-		
-		if (creator == null) {
-			return null;
-		}
-		
-		for (MetaJsonField field : creator.getAttributes()) {
-			String condition = "$record.configuratorCreator.id == " + creator.getId();
-			String showIf = field.getShowIf();
-			if (!Strings.isNullOrEmpty(showIf)) {
-				if (!showIf.contains(condition)) {
-					field.setShowIf(condition + " && (" + showIf + ")");
-				}
-			}
-			else {
-				field.setShowIf(condition);
-			}
-		}
+    @Override
+    @Transactional
+    public Configurator generateConfigurator(ConfiguratorCreator creator) {
 
-		Configurator configurator =  configuratorRepo.all().filter("self.configuratorCreator = ?1", creator).fetchOne();
-		
-		if (configurator == null) {
-			configurator = new Configurator();
-			configurator.setConfiguratorCreator(creator);
-			configuratorRepo.save(configurator);
-		}
-		
-		
-		return configurator;
-	}
+        if (creator == null) {
+            return null;
+        }
+        updateAttributesAttrs(creator.getAttributes());
+        for (MetaJsonField field : creator.getAttributes()) {
+            String condition = "$record.configuratorCreator.id == " + creator.getId();
+            String showIf = field.getShowIf();
+            if (!Strings.isNullOrEmpty(showIf)) {
+                if (!showIf.contains(condition)) {
+                    field.setShowIf(condition + " && (" + showIf + ")");
+                }
+            }
+            else {
+                field.setShowIf(condition);
+            }
+        }
+        Configurator configurator =  configuratorRepo.all().filter("self.configuratorCreator = ?1", creator).fetchOne();
+
+        if (configurator == null) {
+            configurator = new Configurator();
+            configurator.setConfiguratorCreator(creator);
+            configuratorRepo.save(configurator);
+        }
+
+
+        return configurator;
+    }
 
 	@Transactional(rollbackOn = {Exception.class})
 	public void updateIndicators(ConfiguratorCreator creator) {
 		List<ConfiguratorFormula> formulas = creator.getFormulas();
-		formulas = formulas.stream()
-				.filter(it -> it.getShowOnConfigurator())
-				.collect(Collectors.toList());
-		List<MetaJsonField> fields = creator.getIndicators();
+		List<MetaJsonField> indicators = creator.getIndicators();
+
+		//add idProduct
+		ConfiguratorFormula idProduct = new ConfiguratorFormula();
+		idProduct.setFormula("");
+		idProduct.setProductField(
+				Beans.get(MetaFieldRepository.class).all()
+						.filter("self.metaModel.name = 'Product' AND " +
+								"self.name = 'id'")
+						.fetchOne()
+		);
+		idProduct.setShowOnConfigurator(false);
+		if (!formulas.stream()
+				.anyMatch(it -> it.getProductField().equals(idProduct.getProductField()))) {
+			formulas.add(idProduct);
+		}
 
 		//add missing formulas
 		if (formulas != null) {
@@ -79,15 +89,17 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
 		//remove formulas
 		List<MetaJsonField> fieldsToRemove = new ArrayList<>();
-		for (MetaJsonField field : fields) {
-			if (field.getModel().equals(Product.class.getName())
-					&& isNotInFormulas(field, formulas)) {
-				fieldsToRemove.add(field);
+		for (MetaJsonField indicator : indicators) {
+			if (indicator.getModel().equals(Product.class.getName())
+					&& isNotInFormulas(indicator, formulas)) {
+				fieldsToRemove.add(indicator);
 			}
 		}
-		for (MetaJsonField fieldToRemove : fieldsToRemove ) {
-		    creator.removeIndicator(fieldToRemove);
+		for (MetaJsonField indicatorToRemove : fieldsToRemove ) {
+		    creator.removeIndicator(indicatorToRemove);
 		}
+
+		updateIndicatorsAttrs(indicators, formulas);
 
 		configuratorCreatorRepo.save(creator);
 	}
@@ -147,4 +159,27 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 		}
 	}
 
+	protected void updateIndicatorsAttrs(List<MetaJsonField> indicators,
+										 List<ConfiguratorFormula> formulas) {
+		for (MetaJsonField indicator : indicators) {
+			for (ConfiguratorFormula formula : formulas) {
+			    if (formula.getProductField().getName().equals(indicator.getName())
+						&& !formula.getShowOnConfigurator()) {
+			        indicator.setShowIf("false");
+				}
+			}
+		}
+	}
+
+	protected void updateAttributesAttrs(List<MetaJsonField> attributes) {
+	    for (MetaJsonField attribute : attributes) {
+	    	String onChange = attribute.getOnChange();
+	    	if (onChange == null
+					|| !onChange.contains("save,action-configurator-update-indicators")) {
+				attribute.setOnChange(
+						"save,action-configurator-update-indicators" + onChange
+				);
+			}
+		}
+	}
 }

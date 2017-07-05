@@ -20,10 +20,12 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.service.ConfiguratorService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
-import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class ConfiguratorController {
 
@@ -37,10 +39,39 @@ public class ConfiguratorController {
         this.configuratorService = configuratorService;
     }
 
-    public void updateIndicators(ActionRequest request, ActionResponse response) throws JSONException {
+    /**
+     * Called from configurator form view, set values
+     * for the indicators JSON field.
+     * call {@link ConfiguratorService#updateIndicators(Configurator, JsonContext, JsonContext)}
+     * @param request
+     * @param response
+     */
+    public void updateIndicators(ActionRequest request, ActionResponse response) {
         Configurator configurator = request.getContext().asType(Configurator.class);
+        JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+        JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
         configurator = configuratorRepository.find(configurator.getId());
-        String indicators = configuratorService.updateIndicators(configurator);
-        response.setValue("indicators", indicators);
+        jsonIndicators = configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
+        response.setValue("indicators", new JSONObject(jsonIndicators).toString());
+    }
+
+    /**
+     * Called from configurator form view,
+     * call {@link ConfiguratorService#generateProduct(Configurator, JsonContext, JsonContext)}
+     * @param request
+     * @param response
+     */
+    public void generateProduct(ActionRequest request, ActionResponse response) {
+        Configurator configurator = request.getContext().asType(Configurator.class);
+        JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+        JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
+        configurator = configuratorRepository.find(configurator.getId());
+        try {
+            jsonIndicators = configuratorService.generateProduct(configurator, jsonAttributes, jsonIndicators);
+            response.setValue("indicators", new JSONObject(jsonIndicators).toString());
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+            response.setError(e.getLocalizedMessage());
+        }
     }
 }

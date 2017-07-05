@@ -18,7 +18,10 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.rpc.JsonContext;
 import wslite.json.JSONException;
+
+import java.lang.reflect.InvocationTargetException;
 
 public interface ConfiguratorService {
 
@@ -26,7 +29,16 @@ public interface ConfiguratorService {
      * Update the value of indicators using {@link com.axelor.apps.sale.db.ConfiguratorCreator#formulas}
      * and the current values in {@link Configurator#attributes}
      * @param configurator
-     * @return the new values of indicators
+     * @param attributes
+     * @param indicators @return the new values of indicators
      */
-    String updateIndicators(Configurator configurator) throws JSONException;
+    JsonContext updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators);
+
+    /**
+     * Generate a product from the configurator
+     * @param configurator
+     * @param jsonAttributes
+     * @param jsonIndicators
+     */
+    JsonContext generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException;
 }
