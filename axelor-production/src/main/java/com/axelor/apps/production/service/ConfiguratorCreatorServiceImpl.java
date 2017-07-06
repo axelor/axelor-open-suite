@@ -22,10 +22,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 			return null;
 		}
 		
-		Configurator configurator =  configuratorRepo.all().filter("self.configuratorCreator = ?1", creator).fetchOne();
-		
 		for (MetaJsonField field : creator.getAttributes()) {
-			String condition = "configuratorCreator.id == " + creator.getId();
+			String condition = "$record.configuratorCreator.id == " + creator.getId();
 			String showIf = field.getShowIf();
 			if (!Strings.isNullOrEmpty(showIf)) {
 				if (!showIf.contains(condition)) {
@@ -36,6 +34,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 				field.setShowIf(condition);
 			}
 		}
+		
+		Configurator configurator =  configuratorRepo.all().filter("self.configuratorCreator = ?1", creator).fetchOne();
 		
 		if (configurator == null) {
 			configurator = new Configurator();
