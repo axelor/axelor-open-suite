@@ -20,7 +20,8 @@
 			<field name="isSystem" colSpan="2"/>
 			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<field name="target"/>
-			<field name="templateContext" colSpan="12" grid-view="template-context-grid" form-view="template-context-form"/>
+			<field name="templateContext" grid-view="template-context-grid" form-view="template-context-form"/>
+			<field name="languageSelect" grid-view="language-grid" form-view="language-form"/>
 		</panel>
 		<panel sidebar="true" name="attachedFiles" title="Attached files" colSpan="12">
 			    <field name="birtTemplate" colSpan="12" form-view="birt-template-form" grid-view="birt-template-grid"/>
