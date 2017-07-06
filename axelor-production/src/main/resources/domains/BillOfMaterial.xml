@@ -27,6 +27,8 @@
 	<string name="fullName" namecolumn="true" title="Label"/>
 	<integer name="versionNumber" title="Version number" default="1"/>
 	<many-to-one name="originalBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Original bill of material" />
+	<one-to-many name="bomChildTreeList" ref="TempBomTree" mappedBy="parentBom"/>
+	<one-to-many name="bomTreeList" ref="TempBomTree" mappedBy="bom"/>
      	
   </entity>
 </domain-models>

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.CostSheetService;
@@ -126,5 +127,20 @@ public class BillOfMaterialController {
 				prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
 			}
 		}
+	}
+	
+	public void openBomTree(ActionRequest request, ActionResponse response) {
+		
+		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+		billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
+		
+		TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
+		
+		response.setView(ActionView.define(I18n.get("Bill of material"))
+				.model(TempBomTree.class.getName())
+				.add("tree", "bill-of-material-tree")
+				.context("_tempBomTreeId", tempBomTree.getId())
+				.map());
+				
 	}
 }
