@@ -8,7 +8,6 @@
   <entity name="Event" lang="java" extends="com.axelor.apps.base.db.ICalendarEvent">
 
 <!-- Commun   -->
-	<many-to-one name="calendarCrm" ref="com.axelor.apps.crm.db.Calendar" title="Calendar"/>
 	<integer name="importId" />
   	
 	<datetime name="limitDateT" title="Limit Date"/>

@@ -19,6 +19,7 @@ package com.axelor.apps.marketing.web;
 
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
+import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.marketing.service.CampaignService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
@@ -39,18 +40,18 @@ public class CampaignController {
 		Campaign campaign = request.getContext().asType(Campaign.class);
 		campaign = campaignRepo.find(campaign.getId());
 		
-		if (campaign.getTargetModelSet().isEmpty()) {
-			response.setFlash(I18n.get("Please select target"));
+		if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
+			response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
 			return;
 		}
 		
 		MetaFile logFile = campaignService.sendEmail(campaign);
 		
 		if (logFile == null) {
-			response.setFlash(I18n.get("Emails sent successfully"));
+			response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
 		}
 		else {
-			response.setFlash(I18n.get("Error in sending emails. Please check the log file generated."));
+			response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
 		}
 		
 		response.setValue("emailLog", logFile);

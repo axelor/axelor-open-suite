@@ -19,7 +19,6 @@ package com.axelor.apps.crm.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
