@@ -3,6 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<grid name="bank-grid" title="Bank Identifier Codes" model="com.axelor.apps.base.db.Bank" edit-icon="true">
+		<toolbar>
+			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+		</toolbar>
 		<field name="code"/>
 		<field name="bankName"/>
 		<field name="businessPartyPrefix"/>

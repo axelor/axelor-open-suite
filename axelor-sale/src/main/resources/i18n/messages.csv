@@ -1,6 +1,5 @@
 "key","message","comment","context"
 "${clientPartner.saleOrderInformation}",,,
-"${message}",,,
 "%s : You must configure Sales module for company %s",,,
 "A cancel reason must be selected",,,
 "ATI",,,
@@ -321,6 +320,7 @@
 "Unit cost price in company currency",,,
 "Unit price",,,
 "Unit price discounted",,,
+"Update customer's accepted credit",,,
 "Validated",,,
 "Validity duration",,,
 "Validity duration per default",,,
@@ -332,7 +332,6 @@
 "Year 2 To Date",,,
 "Yearly",,,
 "You have to choose at least one sale order",,,
-"help:Product.salesUnit",,,
 "important",,,
 "info",,,
 "success",,,
