@@ -316,4 +316,12 @@ public class PurchaseOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
+
+	public void validate(ActionRequest request, ActionResponse response) throws Exception {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrderService.validatePurchaseOrder(purchaseOrder);
+		response.setReload(true);
+	}
+
 }
