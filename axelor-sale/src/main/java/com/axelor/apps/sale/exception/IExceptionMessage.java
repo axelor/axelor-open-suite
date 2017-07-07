@@ -53,4 +53,11 @@ public interface IExceptionMessage {
 	 */
 
 	static final String CONFIGURATOR_GENERATED = /*$$(*/ "The configurator is generated. Please check the configurators menu." /*)*/;
+
+	/**
+	 * Product Sale service
+	 */
+
+	static final String CONFIGURATOR_NOT_FOUND = /*$$(*/ "This product has no configurator." /*)*/;
+
 }

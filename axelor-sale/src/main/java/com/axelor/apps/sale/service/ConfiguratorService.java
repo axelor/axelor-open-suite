@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.rpc.JsonContext;
 import wslite.json.JSONException;
@@ -40,5 +41,12 @@ public interface ConfiguratorService {
      * @param jsonAttributes
      * @param jsonIndicators
      */
-    JsonContext generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException;
+    void generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException;
+
+    /**
+     * Return the right configurator for the given product
+     * @param product
+     * @return the configurator or null if not found.
+     */
+    Configurator getConfiguratorFromProduct(Product product);
 }

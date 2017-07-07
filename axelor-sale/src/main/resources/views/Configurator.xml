@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
     <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator">
-    	<field name="configuratorCreator"/>
+        <field name="configuratorCreator"/>
     </grid>
-    
-    <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator" onLoad="action-configurator-update-indicators,save">
-    	<panel>
-    		<field name="configuratorCreator"/>
-    		<field name="attributes" colSpan="12"/>
-    	</panel>
+
+    <form name="configurator-form" title="Configurator" readonlyIf="productId" model="com.axelor.apps.sale.db.Configurator" onLoad="action-configurator-update-indicators,save">
+        <panel>
+            <field name="productId" readonly="true" showTitle="false"
+                   showIf="productId" colSpan="12">
+                <viewer>
+                    <![CDATA[
+			 			<h3>
+			             <span class="label label-important" x-translate>Product generated</span>
+			           </h3>
+					]]>
+                </viewer>
+            </field>
+            <field name="configuratorCreator"/>
+            <field name="attributes" colSpan="12"/>
+        </panel>
         <panel readonly="true">
-			<field name="indicators" colSpan="12"/>
-		</panel>
-		<panel>
-			<button name="generateProduct" title="Generate Product"
-					onClick="action-configurator-generate-product,save"/>
-		</panel>
+            <field name="indicators" colSpan="12"/>
+        </panel>
+        <panel>
+            <button name="generateProduct" title="Generate Product"
+                    onClick="save,action-configurator-generate-product"/>
+        </panel>
     </form>
 
-	<action-method name="action-configurator-update-indicators">
-		<call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
-	</action-method>
+    <action-method name="action-configurator-update-indicators">
+        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
+    </action-method>
 
     <action-method name="action-configurator-generate-product">
-		<call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
-	</action-method>
+        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
+    </action-method>
 
 </object-views>

@@ -65,21 +65,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 		List<ConfiguratorFormula> formulas = creator.getFormulas();
 		List<MetaJsonField> indicators = creator.getIndicators();
 
-		//add idProduct
-		ConfiguratorFormula idProduct = new ConfiguratorFormula();
-		idProduct.setFormula("");
-		idProduct.setProductField(
-				Beans.get(MetaFieldRepository.class).all()
-						.filter("self.metaModel.name = 'Product' AND " +
-								"self.name = 'id'")
-						.fetchOne()
-		);
-		idProduct.setShowOnConfigurator(false);
-		if (!formulas.stream()
-				.anyMatch(it -> it.getProductField().equals(idProduct.getProductField()))) {
-			formulas.add(idProduct);
-		}
-
 		//add missing formulas
 		if (formulas != null) {
 			for (ConfiguratorFormula formula : formulas) {

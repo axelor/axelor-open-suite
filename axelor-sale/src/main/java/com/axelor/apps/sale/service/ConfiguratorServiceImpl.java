@@ -22,6 +22,8 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
+import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -33,6 +35,7 @@ import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import wslite.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,8 +46,11 @@ import java.util.Map;
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     @Override
-    public JsonContext updateIndicators(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) {
-        List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
+    public JsonContext updateIndicators(Configurator configurator,
+                                        JsonContext jsonAttributes,
+                                        JsonContext jsonIndicators) {
+        List<MetaJsonField> indicators =
+                configurator.getConfiguratorCreator().getIndicators();
         for (MetaJsonField indicator : indicators) {
             try {
                 Object calculatedValue = computeIndicatorValue(
@@ -59,8 +65,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     @Override
-    @Transactional(rollbackOn = {NoSuchMethodException.class, InvocationTargetException.class, IllegalAccessException.class, ClassNotFoundException.class})
-    public JsonContext generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,  ClassNotFoundException {
+    @Transactional(rollbackOn = {
+            NoSuchMethodException.class, InvocationTargetException.class,
+            IllegalAccessException.class, ClassNotFoundException.class
+    })
+    public void generateProduct(Configurator configurator,
+                                JsonContext jsonAttributes,
+                                JsonContext jsonIndicators)
+            throws NoSuchMethodException, InvocationTargetException,
+            IllegalAccessException,  ClassNotFoundException {
+
         Product product = new Product();
         product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
         for (Map.Entry indicator : jsonIndicators.entrySet()) {
@@ -68,10 +82,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             String fieldName = indicator.getKey().toString();
             //get class of the field
             MetaField metaField = Beans.get(MetaFieldRepository.class).all()
-                                    .filter("self.metaModel.name = 'Product' AND " +
-                                            "self.name = :_name")
-                                    .bind("_name", fieldName)
-                                    .fetchOne();
+                    .filter("self.metaModel.name = 'Product' AND "
+                            + "self.name = :_name")
+                    .bind("_name", fieldName)
+                    .fetchOne();
             Class fieldClass =
                     Class.forName(metaField.getPackageName() + "."
                             + metaField.getTypeName()
@@ -96,15 +110,23 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                 } else if (fieldValue.getClass().equals(String.class)) {
                     setter.invoke(product, new BigDecimal((String) fieldValue));
                 }
-            }
-            else {
+            } else {
                 setter.invoke(product, fieldValue);
             }
         }
         product = Beans.get(ProductRepository.class).save(product);
 
-        jsonIndicators.put("id", product.getId());
-        return jsonIndicators;
+        configurator.setProductId(product.getId());
+        Beans.get(ConfiguratorRepository.class).save(configurator);
+    }
+
+    public Configurator getConfiguratorFromProduct(Product product) {
+        Configurator configurator = Beans.get(ConfiguratorRepository.class)
+                .all()
+                .filter("self.productId = :_id")
+                .bind("_id", product.getId())
+                .fetchOne();
+        return configurator;
     }
 
     /**
@@ -116,11 +138,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      * @param jsonAttributes
      * @return
      */
-    protected Object computeIndicatorValue(Configurator configurator, MetaJsonField indicator, JsonContext jsonAttributes) {
+    protected Object computeIndicatorValue(Configurator configurator,
+                                           MetaJsonField indicator,
+                                           JsonContext jsonAttributes) {
         ConfiguratorCreator creator = configurator.getConfiguratorCreator();
         String groovyFormula = null;
         for (ConfiguratorFormula formula : creator.getFormulas()) {
-            if(formula.getProductField().getName().equals(indicator.getName())) {
+            if (formula.getProductField().getName().equals(indicator.getName())) {
                 groovyFormula = formula.getFormula();
                 break;
             }
