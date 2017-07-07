@@ -291,9 +291,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrderRepo.save(saleOrder);
 	}
 
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+	protected void _finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
 		if (generalService.getGeneral().getManageSaleOrderVersion()){
@@ -302,6 +301,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		if (saleOrder.getVersionNumber() == 1){
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
+	}
+
+	@Override
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		_finalizeSaleOrder(saleOrder);
 	}
 
 	@Override
