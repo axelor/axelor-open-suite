@@ -19,6 +19,8 @@
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
 	  <string name="fullName" namecolumn="true"></string>
+	  <boolean name="enableEditor" title="Enable editor" />
+	  <unique-constraint columns="timesheet,project,product,date,enableEditor"/>
   </entity>
   
 </domain-models>

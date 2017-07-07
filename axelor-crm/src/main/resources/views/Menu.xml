@@ -131,15 +131,6 @@
 		<view type="form" name="event-category-form"/>
 	</action-view>
 	
-	<menuitem name="crm-conf-calendar" parent="crm-conf"
-		title="Calendars" action="crm.conf.calendar" />
-
-	<action-view name="crm.conf.calendar" title="Calendars"
-		model="com.axelor.apps.crm.db.Calendar" >
-		<view type="grid" name="crm-calendar-grid"/>
-		<view type="form" name="crm-calendar-form"/>
-	</action-view>
-	
 	<menuitem name="crm-conf-target-configuration" parent="crm-conf"
 		title="Objectives configurations" action="crm.conf.target.configuration" />
 

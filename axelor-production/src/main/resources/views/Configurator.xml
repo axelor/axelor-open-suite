@@ -9,7 +9,7 @@
     
     <form name="configurator-form" title="Configurator" model="com.axelor.apps.production.db.Configurator">
     	<panel>
-    		<field name="configuratorCreator"/>
+    		<field name="configuratorCreator" readonly="true"/>
     		<field name="attributes" colSpan="12"/>
     	</panel>
     </form>
