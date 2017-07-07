@@ -25,7 +25,7 @@
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  onNew="action-account-invoice-line-onnew-group"
-		  onLoad="action-account-invoice-line-onload-group">
+		  onLoad="action-account-invoice-line-onnew-onload-group,action-invoice-line-attrs-readonly-form">
 		<panel name="panelTitle">
 			<field name="isTitleLine" onChange="action-invoice-line-method-empty-line"/>
 			<field name="productName" showIf="isTitleLine" title="Title" requiredIf="isTitleLine"/>
@@ -74,15 +74,15 @@
 			</panel>
 		</panel-tabs>
 	</form>
-    
-    <form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
-   	onNew="action-account-invoice-line-onnew-group"
-    onLoad="action-account-invoice-line-onload-group" width="large">
-    	<panel name="main" >
-	    	<field name="invoice.partner"/>
+
+	<form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
+		  onNew="action-account-invoice-line-onnew-group"
+		  onLoad="action-account-invoice-line-onnew-onload-group,action-invoice-line-attrs-readonly-menu-form">
+		<panel name="main">
+			<field name="invoice.partner"/>
 			<field name="invoice.invoiceId"/>
 		</panel>
-    	<panel-include view="invoice-line-form"/>
+		<panel-include view="invoice-line-form"/>
 	</form>
 	        
     <action-method name="action-invoice-line-method-empty-line">
@@ -111,37 +111,35 @@
 		<attribute name="readonly" for="budgetPanel" expr="eval: __parent__?.statusSelect &gt; 1"/>
 
 		<attribute name="readonly" for="accounting" expr="eval: __parent__?.statusSelect &gt; 2"/>
-
-		<!-- TODO : to test, when invoice lines menu entry will be available -->
-		<attribute name="readonly" for="panelTitle" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-		<attribute name="readonly" for="informations" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-		<attribute name="readonly" for="description" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-		<attribute name="readonly" for="projectPanel" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-		<attribute name="readonly" for="subscriptionPanel" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-		<attribute name="readonly" for="analyticDistribution" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-		<attribute name="readonly" for="budgetPanel" expr="eval: invoice.statusSelect &gt; 1" if="!__parent__"/>
-
-		<attribute name="readonly" for="accounting" expr="eval: invoice.statusSelect &gt; 2" if="!__parent__"/>
 	</action-attrs>
-    
+
+	<!-- TODO : to test, when invoice lines menu entry will be available -->
+	<action-attrs name="action-invoice-line-attrs-readonly-menu-form">
+		<attribute name="readonly" for="panelTitle" expr="eval: invoice.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="informations" expr="eval: invoice.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="description" expr="eval: invoice.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="projectPanel" expr="eval: invoice.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="subscriptionPanel" expr="eval: invoice.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="analyticDistribution" expr="eval: invoice.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="budgetPanel" expr="eval: invoice.statusSelect &gt; 1"/>
+
+		<attribute name="readonly" for="accounting" expr="eval: invoice.statusSelect &gt; 2"/>
+	</action-attrs>
+
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
-    	<action name="action-invoice-line-attrs-show-elements"/>
-    	<action name="action-invoice-line-attrs-scale-and-precision"/>
 	    <action name="action-invoice-line-record-new"/>
-	    <action name="action-invoice-attrs-hide-ati"/>
 	    <action name="action-invoice-line-record-project"/>
-	    <action name="action-invoice-line-attrs-show-priceDiscounted"/>
+	    <action name="action-account-invoice-line-onnew-onload-group"/>
     </action-group>
-    
-    <action-group name="action-account-invoice-line-onload-group">
-    	<action name="action-invoice-line-attrs-show-elements"/>
-    	<action name="action-invoice-line-attrs-scale-and-precision"/>
-	    <action name="action-invoice-attrs-hide-ati"/>
-	    <action name="action-invoice-line-attrs-show-priceDiscounted"/>
-	    <action name="action-invoice-line-attrs-readonly-form"/>
-    </action-group>
-    
+
+	<action-group name="action-account-invoice-line-onnew-onload-group">
+		<action name="action-invoice-line-attrs-show-elements"/>
+		<action name="action-invoice-line-attrs-scale-and-precision"/>
+		<action name="action-invoice-attrs-hide-ati"/>
+		<action name="action-invoice-line-attrs-show-priceDiscounted"/>
+	</action-group>
+
     <action-group name="action-group-account-invoice-line-product-onchange">
     	<action name="action-invoice-line-method-get-product-information"/>
     	<action name="action-invoice-line-method-compute"/>
