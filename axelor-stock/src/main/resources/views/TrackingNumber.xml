@@ -24,6 +24,17 @@
         </panel>
     </form>
 
+	<form name="tracking-number-stock-move-line-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
+		  onLoad="action-tracking-number-attrs-hide-fields" onNew="action-tracking-number-attrs-product-stock-move-line" >
+		<panel name="main">
+			<field name="trackingNumberSeq"/>
+			<field name="product" onChange="action-tracking-number-attrs-hide-fields" form-view="product-form" grid-view="product-grid"/>
+			<field name="warrantyExpirationDate"/>
+			<field name="perishableExpirationDate"/>
+			<field name="counter"/>
+		</panel>
+	</form>
+
 	<search name="tracking-number-search" title="Tracking number search" limit="50">
 		<search-fields>
 			<field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
@@ -63,6 +74,10 @@
 			</where>
 		</select>
 	</search>
+
+	<action-attrs name="action-tracking-number-attrs-product-stock-move-line">
+		<attribute for="product" name="value" expr="eval: __parent__.product" if="product == null"/>
+	</action-attrs>
     
     <action-attrs name="action-tracking-number-attrs-hide-fields">
     	<attribute name="hidden" for="warrantyExpirationDate" expr="eval: !product?.hasWarranty"/>
