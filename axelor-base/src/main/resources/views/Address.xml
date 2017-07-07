@@ -5,7 +5,7 @@
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<toolbar>
-		<button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+			<button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
 		</toolbar>
 		<field name="fullName" />
 		<button name="map" icon="fa-map-marker" onClick="action-base-address-method-view-map" />

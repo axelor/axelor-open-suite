@@ -1,6 +1,5 @@
 "key","message","comment","context"
 "${clientPartner.saleOrderInformation}",,,
-"${message}",,,
 "%s : You must configure Sales module for company %s","%s : Veuillez configurer le module vente pour la société %s",,
 "A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,
 "ATI",,,
@@ -321,6 +320,7 @@
 "Unit cost price in company currency","Coût unitaire dans devise société",,
 "Unit price","Prix unitaire",,
 "Unit price discounted","Prix unitaire remisé",,
+"Update customer's accepted credit",,,
 "Validated","Validé",,
 "Validity duration","Durée de validité",,
 "Validity duration per default","Durée de validité par défaut",,
@@ -332,7 +332,6 @@
 "Year 2 To Date","Année 2 à date",,
 "Yearly","Annuel",,
 "You have to choose at least one sale order",,,
-"help:Product.salesUnit",,,
 "important",,,
 "info",,,
 "success",,,
