@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.exception.db.IException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -208,6 +210,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
+		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+			if (invoiceLine.getAccount() == null) {
+				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_6), IException.MISSING_FIELD, invoiceLine.getProductName());
+			}
+		}
 
 		log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 		
