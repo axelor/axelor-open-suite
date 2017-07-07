@@ -8,7 +8,7 @@
     	<panel name="main" >
 	      	<field name="_xTemplate" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name"
 				   form-view="template-form" grid-view="template-grid"/>
-	      	<field name="languageSelect" title="Language select" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Language" target-name="name"
+	      	<field name="language" title="Language" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Language" target-name="name"
 				   form-view="language-form" grid-view="language-grid" onChange="action-language-attrs-template-domain"/>
 			<spacer/>
 	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
