@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -49,5 +50,8 @@ public interface BillOfMaterialService {
 	public String getLanguageForPrinting(BillOfMaterial billOfMaterial);
 	
 	public String getReportLink(BillOfMaterial billOfMaterial, String name, String language, String format) throws AxelorException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public TempBomTree generateTree(BillOfMaterial billOfMaterial);
 	
 }

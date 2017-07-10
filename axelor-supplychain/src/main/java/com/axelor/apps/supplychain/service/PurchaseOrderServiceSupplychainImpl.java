@@ -17,10 +17,26 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -49,14 +65,6 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -71,6 +79,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 	@Inject
 	protected AccountConfigService accountConfigService;
+	
+	@Inject
+	private AppAccountService appAccountService;
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -314,4 +325,20 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		}
 		purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		super.validatePurchaseOrder(purchaseOrder);
+
+		if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
+				&& !existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
+			createStocksMove(purchaseOrder);
+		}
+		
+		if (appAccountService.getAppBudget().getActive() && !appAccountService.getAppBudget().getManageMultiBudget()) {
+			generateBudgetDistribution(purchaseOrder);
+		}
+	}
+
 }
