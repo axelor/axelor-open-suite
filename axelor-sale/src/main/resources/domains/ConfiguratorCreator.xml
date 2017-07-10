@@ -12,5 +12,7 @@
         <one-to-many name="indicators" ref="com.axelor.meta.db.MetaJsonField" title="Indicators" orphanRemoval="true" />
         <one-to-many name="formulas" ref="com.axelor.apps.sale.db.ConfiguratorFormula"/>
 
+        <boolean name="isActive" title="Is Active" default="false"/>
+
     </entity>
 </domain-models>

@@ -22,7 +22,7 @@
 					]]>
                 </viewer>
             </field>
-            <field name="configuratorCreator"/>
+            <field name="configuratorCreator" domain="self.isActive = true"/>
             <field name="attributes" colSpan="12"/>
         </panel>
         <panel readonly="true">
