@@ -12,6 +12,7 @@
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
+		<field name="ventilated"/>
 	</grid>
 	
 	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
@@ -48,13 +49,24 @@
 	    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" readonlyIf="move != null" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)" readonlyIf="move == null"/>
 	    	<button name="cancelPaymentButton" title="Cancel payment"
 					showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3) &amp;&amp; !bankOrder"
 					onClick="action-expense-method-cancel-payment"/>
 	    </panel>
 		<panel>
 			<field name="expenseSeq"/>
+			<panel itemSpan="12" colSpan="6">
+				<field name="move" readonly="true" showTitle="false" showIf="move">
+					<viewer>
+						<![CDATA[
+			 			<h3>
+			             <span class="label label-important" x-translate>Ventilated</span>
+			           </h3>
+					]]>
+					</viewer>
+				</field>
+			</panel>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
@@ -87,6 +99,18 @@
 			</panel>
 			<panel-related field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 		</panel-tabs>
+		<panel showIf="statusSelect == 3 || statusSelect == 4">
+			<panel title="Account information" showIf="move">
+				<field name="moveDate" hidden="true" readonly="true" showIf="moveDate" colSpan="4"/>
+				<field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form" grid-view="move-grid"/>
+			</panel>
+			<panel colSpan="12" title="Payment information">
+				<field name="paymentStatusSelect" colSpan="4"/>
+				<field name="paymentMode" hidden="true" showIf="paymentMode" readonlyIf="$contains([1, 3], paymentStatusSelect)" colSpan="4"/>
+				<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
+				<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
+			</panel>
+		</panel>
 		<panel showIf="sentDate">
 			<field name="sentDate" hidden="true" colSpan="4" showIf="sentDate"/>
 			<field name="validatedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>

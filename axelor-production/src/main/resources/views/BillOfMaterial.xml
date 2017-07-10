@@ -28,11 +28,12 @@
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
-	  
 		<panel-tabs>
-			<panel-related field="billOfMaterialSet" title="Components" colSpan="12" domain="self.defineSubBillOfMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	    
-			<!--<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>-->
+			<panel title="Components" >
+				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/> 
+				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			</panel>
+			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	        
 			<panel name="cost" title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
@@ -42,10 +43,8 @@
 			<panel name="versionManagement" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
 				<field name="versionNumber" colSpan="3" />
 				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
-		
 			</panel>
 		</panel-tabs>
-	  
 	</form>
     
     
@@ -118,7 +117,7 @@
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
  	  	<view-param name="popup-save" value="false"/>
-    	<context name="_showRecord" expr="eval: id"/>
+    	<context name="_showRecord" expr="eval: bom.id"/>
     </action-view>
 
 	<action-group name="action-bill-of-material-group-product">
@@ -166,13 +165,17 @@
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="generateNewVersion"/>
     </action-method>
     
-     <action-method name="action-bill-of-material-method-validate-prod-process">
-    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess"/>
-    </action-method>
-    
     <action-method name="action-bill-of-material-method-print">
 		<call class="com.axelor.apps.production.web.BillOfMaterialController" method="print"/>
 	</action-method>
+
+    <action-method name="action-bill-of-material-method-validate-prod-process">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess" if="id != null"/>
+    </action-method>
+    
+    <action-method name="action-bill-of-material-method-open-bom-tree">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="openBomTree" />
+    </action-method>
     
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>

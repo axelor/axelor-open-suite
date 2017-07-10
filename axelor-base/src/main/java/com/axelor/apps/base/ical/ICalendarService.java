@@ -40,7 +40,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 
+import net.fortuna.ical4j.connector.FailedOperationException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -815,4 +817,82 @@ public class ICalendarService {
 		}
 		return event;
 	}
+	
+	public net.fortuna.ical4j.model.Calendar removeCalendar(CalDavCalendarCollection collection,String uid) throws FailedOperationException, ObjectStoreException {
+        net.fortuna.ical4j.model.Calendar calendar = collection.getCalendar(uid);
+
+        DeleteMethod deleteMethod = new DeleteMethod( collection.getPath() + uid + ".ics");
+        try {
+            collection.getStore().getClient().execute(deleteMethod);
+        } catch (IOException e) {
+            throw new ObjectStoreException(e);
+        }
+        if (!deleteMethod.succeeded()) {
+            throw new FailedOperationException(deleteMethod.getStatusLine().toString());
+        }
+
+        return calendar;
+    }
+	
+	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, ICalendar calendar) throws ICalendarException, MalformedURLException{
+		net.fortuna.ical4j.model.Calendar cal = null;
+		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+		Protocol protocol = getProtocol(calendar.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		try {
+			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+				List<CalDavCalendarCollection> colList = store.getCollections();
+				if(!colList.isEmpty()){
+					CalDavCalendarCollection collection = colList.get(0);
+					cal = collection.getCalendar(uid);
+				}
+			}
+			else{
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			}
+		} catch (Exception e) {
+			throw new ICalendarException(e);
+		}
+		finally {
+			store.disconnect();
+		}
+		return cal;
+	}
+	
+	public void removeEventFromIcal(ICalendarEvent event) throws MalformedURLException, ICalendarException{
+		if(event.getCalendar() != null && !Strings.isNullOrEmpty(event.getUid())){
+			ICalendar calendar  = event.getCalendar();
+			PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+			Protocol protocol = getProtocol(calendar.getIsSslConnection());
+			URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+			ICalendarStore store = new ICalendarStore(url, RESOLVER);
+			try {
+				if(store.connect(calendar.getLogin(), calendar.getPassword())){
+					List<CalDavCalendarCollection> colList = store.getCollections();
+					if(!colList.isEmpty()){
+						CalDavCalendarCollection collection = colList.get(0);
+						final Map<String, VEvent> remoteEvents = new HashMap<>();
+
+						for (VEvent item : ICalendarStore.getEvents(collection)) {
+							remoteEvents.put(item.getUid().getValue(), item);
+						}
+
+						VEvent target = remoteEvents.get(event.getUid());
+						removeCalendar(collection,target.getUid().getValue());
+					}
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+				}
+			} catch (Exception e) {
+				throw new ICalendarException(e);
+			}
+			finally {
+				store.disconnect();
+			}
+		}
+	}
+	
+	
 }
