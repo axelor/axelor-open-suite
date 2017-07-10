@@ -17,13 +17,16 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
@@ -71,6 +74,15 @@ public class ConfiguratorController {
         try {
             configuratorService.generateProduct(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
+            if (configurator.getProductId() != null) {
+                response.setView(ActionView
+                        .define(I18n.get("Product generated"))
+                        .model(Product.class.getName())
+                        .add("form", "product-form")
+                        .add("grid", "product-grid")
+                        .context("_showRecord", configurator.getProductId())
+                        .map());
+            }
         } catch (Exception e) {
             TraceBackService.trace(e);
             response.setError(e.getLocalizedMessage());
