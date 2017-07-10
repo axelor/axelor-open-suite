@@ -22,7 +22,10 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -124,6 +127,31 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                 .bind("_id", product.getId())
                 .fetchOne();
         return configurator;
+    }
+
+    @Transactional
+    @Override
+    public void addLineToSaleOrder(Configurator configurator,
+                                   SaleOrder saleOrder,
+                                   JsonContext jsonAttributes,
+                                   JsonContext jsonIndicators)
+            throws ClassNotFoundException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        //generate product
+        generateProduct(configurator, jsonAttributes, jsonIndicators);
+
+        //create and add sale order line
+        SaleOrderLine saleOrderLine = new SaleOrderLine();
+
+        Product product = Beans.get(ProductRepository.class)
+                .find(configurator.getProductId());
+        saleOrderLine.setProduct(product);
+        saleOrderLine.setProductName(product.getFullName());
+        saleOrderLine.setPrice(product.getSalePrice());
+        saleOrderLine.setUnit(product.getUnit());
+        saleOrder.addSaleOrderLineListItem(saleOrderLine);
+
+        Beans.get(SaleOrderRepository.class).save(saleOrder);
     }
 
     /**

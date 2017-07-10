@@ -18,9 +18,12 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
@@ -68,6 +71,31 @@ public class ConfiguratorController {
         try {
             configuratorService.generateProduct(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+            response.setError(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Called from configurator wizard form view,
+     * call {@link ConfiguratorService#addLineToSaleOrder(Configurator, SaleOrder, JsonContext, JsonContext)}
+     * @param request
+     * @param response
+     */
+    public void generateForSaleOrder(ActionRequest request,
+                                      ActionResponse response) {
+        Configurator configurator = request.getContext().asType(Configurator.class);
+        long saleOrderId = ((Integer) request.getContext().get("_saleOrderId")).longValue();
+
+        JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+        JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
+
+        configurator = configuratorRepository.find(configurator.getId());
+        SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
+        try {
+            configuratorService.addLineToSaleOrder(configurator, saleOrder,
+                    jsonAttributes, jsonIndicators);
         } catch (Exception e) {
             TraceBackService.trace(e);
             response.setError(e.getLocalizedMessage());
