@@ -166,6 +166,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 if (formula.getProductField().getName().equals(indicator.getName())) {
                     if (!formula.getShowOnConfigurator()) {
                         indicator.setShowIf("false");
+                    } else {
+                        indicator.setShowIf("true");
                     }
                     if (formula.getProductField().getTypeName().equals("BigDecimal")) {
                         indicator.setPrecision(20);
