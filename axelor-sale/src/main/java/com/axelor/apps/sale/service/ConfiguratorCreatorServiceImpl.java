@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
@@ -159,11 +160,17 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
      */
     protected void updateIndicatorsAttrs(List<MetaJsonField> indicators,
                                          List<ConfiguratorFormula> formulas) {
+        int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
         for (MetaJsonField indicator : indicators) {
             for (ConfiguratorFormula formula : formulas) {
-                if (formula.getProductField().getName().equals(indicator.getName())
-                        && !formula.getShowOnConfigurator()) {
-                    indicator.setShowIf("false");
+                if (formula.getProductField().getName().equals(indicator.getName())) {
+                    if (!formula.getShowOnConfigurator()) {
+                        indicator.setShowIf("false");
+                    }
+                    if (formula.getProductField().getTypeName().equals("BigDecimal")) {
+                        indicator.setPrecision(20);
+                        indicator.setScale(scale);
+                    }
                 }
             }
         }
