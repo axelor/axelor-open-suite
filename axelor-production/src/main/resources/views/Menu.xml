@@ -8,7 +8,7 @@
 		icon="fa-cogs"  icon-background="#84429f"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
-		title="Bills of materials" action="manufacturing.root.bill.of.material" />
+		title="Bills of materials" action="manufacturing.root.bill.of.material" order="1" />
 
 	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial" >
@@ -18,7 +18,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
-		title="Production processes" action="manufacturing.root.prod.process" />
+		title="Production processes" action="manufacturing.root.prod.process" order="5" />
 
 	<action-view name="manufacturing.root.prod.process" title="Production processes"
 		model="com.axelor.apps.production.db.ProdProcess" >
@@ -27,7 +27,7 @@
 	</action-view>
 		
 	<menuitem name="manufacturing-root-production-order" parent="manufacturing-root"
-		title="Productions orders" action="manufacturing.root.production.order" />
+		title="Productions orders" action="manufacturing.root.production.order" order="15" />
 
 	<action-view name="manufacturing.root.production.order" title="Productions orders"
 		model="com.axelor.apps.production.db.ProductionOrder" >
@@ -37,7 +37,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
-		title="Manufacturing orders" action="manufacturing.root.manuf.order" />
+		title="Manufacturing orders" action="manufacturing.root.manuf.order" order="20" />
 
 	<action-view name="manufacturing.root.manuf.order" title="Manufacturing orders"
 		model="com.axelor.apps.production.db.ManufOrder" >
@@ -48,7 +48,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
-		title="Operations orders" action="manufacturing.root.operation.order" />
+		title="Operations orders" action="manufacturing.root.operation.order" order="25" />
 
 	<action-view name="manufacturing.root.operation.order" title="Operation orders"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -59,7 +59,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
-		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" />
+		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" order="30" />
 
 	<action-view name="manufacturing.root.operation.order.planned.calendar" title="Planned operations"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -69,7 +69,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
-		title="Real operations" action="manufacturing.root.operation.order.real.calendar" />
+		title="Real operations" action="manufacturing.root.operation.order.real.calendar" order="35" />
 
 	<action-view name="manufacturing.root.operation.order.real.calendar" title="Real operations"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -79,7 +79,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
-		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" />
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" order="40" />
 
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		>
@@ -88,9 +88,9 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
-		title="Reportings"/>
+		title="Reportings" order="45" />
 		
-	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
+	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
 		title="Resources" action="manufacturing.conf.work.center" />
