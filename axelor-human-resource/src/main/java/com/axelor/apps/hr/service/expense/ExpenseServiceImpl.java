@@ -17,6 +17,20 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
@@ -35,6 +49,8 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -72,20 +88,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import org.joda.time.LocalDate;
-
-import javax.mail.MessagingException;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ExpenseServiceImpl implements ExpenseService {
 
@@ -408,24 +410,40 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void addPayment(Expense expense) throws AxelorException {
-		expense.setPaymentDate(new LocalDate());
-
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 		PaymentMode paymentMode = expense.getPaymentMode();
 
 		if (paymentMode == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE),
-					IException.MISSING_FIELD);
+			paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+
+			if (paymentMode == null) {
+				throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE),
+						IException.MISSING_FIELD);
+			}
+			expense.setPaymentMode(paymentMode);
 		}
+
+		expense.setPaymentDate(generalService.getTodayDate());
 
 		if (paymentMode.getGenerateBankOrder()) {
-			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+			BankOrder bankOrder = Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense, bankDetails);
+			expense.setBankOrder(bankOrder);
 		}
 
-		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
-		expenseRepository.save(expense);
+		if (paymentMode.getAutomaticTransmission()) {
+			expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+		} else {
+			expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+			expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+		}
+
+		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount())
+				.subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
+	}
+
+	public void addPayment(Expense expense) throws AxelorException {
+		addPayment(expense, expense.getCompany().getDefaultBankDetails());
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

@@ -264,6 +264,17 @@ public interface IExceptionMessage {
 	static final String BATCH_REMINDER_2 = /*$$(*/ "Partner(s) treated" /*)*/;
 
 	/**
+	 * Batch credit transfer
+	 */
+	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch: " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR = /*$$(*/ "%d reimbursement created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/ "%d reimbursements created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+	/**
 	 * Batch strategy
 	 */
 	static final String BATCH_STRATEGY_1 = /*$$(*/ "%s : You must configure a RIB for batch's configurator %s" /*)*/;
