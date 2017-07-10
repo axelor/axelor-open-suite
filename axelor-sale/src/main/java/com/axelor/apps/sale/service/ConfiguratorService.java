@@ -33,7 +33,7 @@ public interface ConfiguratorService {
      * @param attributes
      * @param indicators @return the new values of indicators
      */
-    JsonContext updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators);
+    void updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators);
 
     /**
      * Generate a product from the configurator

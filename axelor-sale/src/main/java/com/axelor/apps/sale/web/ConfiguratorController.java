@@ -19,14 +19,12 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
-import wslite.json.JSONObject;
 
 public class ConfiguratorController {
 
@@ -52,8 +50,8 @@ public class ConfiguratorController {
         JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
         configurator = configuratorRepository.find(configurator.getId());
-        jsonIndicators = configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
-        response.setValue("indicators", new JSONObject(jsonIndicators).toString());
+        configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
+        response.setValue("indicators", request.getContext().get("indicators"));
     }
 
     /**

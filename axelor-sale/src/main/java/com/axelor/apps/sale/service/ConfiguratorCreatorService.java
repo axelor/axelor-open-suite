@@ -17,23 +17,29 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 
 public interface ConfiguratorCreatorService {
 
-	/**
-	 * Generate a {@link Configurator} from a {@link ConfiguratorCreator}
-	 * @param creator
-	 * @return
-	 */
-	Configurator generateConfigurator(ConfiguratorCreator creator);
+    /**
+     * Call {@link #updateAttributes} and {@link #updateIndicators}
+     * then save the creator given in param
+     * @param creator
+     */
+    void updateAttrsAndIndicators(ConfiguratorCreator creator);
 
-	/**
+    /**
+     * Add default view attrs for configurator attributes
+     * @param creator
+     * @return
+     */
+    void updateAttributes(ConfiguratorCreator creator);
+
+    /**
      * Add the {@link ConfiguratorFormula#productField} that need to be shown
-	 * in configurator in the {@link ConfiguratorCreator#indicators} many-to-one.
-	 * @param creator
-	 */
-	void updateIndicators(ConfiguratorCreator creator);
+     * in configurator in the {@link ConfiguratorCreator#indicators} many-to-one.
+     * @param creator
+     */
+    void updateIndicators(ConfiguratorCreator creator);
 }

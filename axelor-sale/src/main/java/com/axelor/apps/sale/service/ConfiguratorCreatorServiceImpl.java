@@ -27,16 +27,24 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         this.configuratorCreatorRepo = configuratorCreatorRepo;
     }
 
-
     @Override
     @Transactional
-    public Configurator generateConfigurator(ConfiguratorCreator creator) {
+    public void updateAttrsAndIndicators(ConfiguratorCreator creator) {
+        updateAttributes(creator);
+        updateIndicators(creator);
+        configuratorCreatorRepo.save(creator);
+    }
+
+
+    @Override
+    public void updateAttributes(ConfiguratorCreator creator) {
 
         if (creator == null) {
-            return null;
+            return;
         }
-        updateAttributesAttrs(creator.getAttributes());
+
         for (MetaJsonField field : creator.getAttributes()) {
+            //update showIf
             String condition = "$record.configuratorCreator.id == " + creator.getId();
             String showIf = field.getShowIf();
             if (!Strings.isNullOrEmpty(showIf)) {
@@ -47,20 +55,22 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
             else {
                 field.setShowIf(condition);
             }
+
+            //update onChange
+
+            String onChange = field.getOnChange();
+            if (onChange == null
+                    || !onChange.contains("save,action-configurator-update-indicators,save")) {
+
+                String modifiedOnChange = "save,action-configurator-update-indicators,save";
+                if (!Strings.isNullOrEmpty(onChange)) {
+                    modifiedOnChange = modifiedOnChange + "," + onChange;
+                }
+                field.setOnChange(modifiedOnChange);
+            }
         }
-        Configurator configurator =  configuratorRepo.all().filter("self.configuratorCreator = ?1", creator).fetchOne();
-
-        if (configurator == null) {
-            configurator = new Configurator();
-            configurator.setConfiguratorCreator(creator);
-            configuratorRepo.save(configurator);
-        }
-
-
-        return configurator;
     }
 
-    @Transactional(rollbackOn = {Exception.class})
     public void updateIndicators(ConfiguratorCreator creator) {
         List<ConfiguratorFormula> formulas = creator.getFormulas();
         List<MetaJsonField> indicators = creator.getIndicators();
@@ -86,7 +96,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
         updateIndicatorsAttrs(indicators, formulas);
 
-        configuratorCreatorRepo.save(creator);
     }
 
     /**
@@ -143,6 +152,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
     }
 
+    /**
+     * Update the indicators views attrs using the formulas.
+     * @param indicators
+     * @param formulas
+     */
     protected void updateIndicatorsAttrs(List<MetaJsonField> indicators,
                                          List<ConfiguratorFormula> formulas) {
         for (MetaJsonField indicator : indicators) {
@@ -155,21 +169,4 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
     }
 
-    /**
-     * Update attributes on creating.
-     * @param attributes
-     */
-    protected void updateAttributesAttrs(List<MetaJsonField> attributes) {
-        for (MetaJsonField attribute : attributes) {
-            String onChange = attribute.getOnChange();
-            if (onChange == null
-                    || !onChange.contains("save,action-configurator-update-indicators")) {
-                String modifiedOnChange = "save,action-configurator-update-indicators";
-                if (!"".equals(onChange)) {
-                    modifiedOnChange = modifiedOnChange + "," + onChange;
-                }
-                attribute.setOnChange(modifiedOnChange);
-            }
-        }
-    }
 }

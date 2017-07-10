@@ -22,43 +22,35 @@ import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class ConfiguratorCreatorController {
 
-	private ConfiguratorCreatorRepository configuratorCreatorRepo;
-	private ConfiguratorCreatorService configuratorCreatorService;
+    private ConfiguratorCreatorRepository configuratorCreatorRepo;
+    private ConfiguratorCreatorService configuratorCreatorService;
 
-	@Inject
-	public ConfiguratorCreatorController(ConfiguratorCreatorRepository configuratorCreatorRepo,
-										 ConfiguratorCreatorService configuratorCreatorService) {
-		this.configuratorCreatorRepo = configuratorCreatorRepo;
-		this.configuratorCreatorService = configuratorCreatorService;
-	}
+    @Inject
+    public ConfiguratorCreatorController(ConfiguratorCreatorRepository configuratorCreatorRepo,
+                                         ConfiguratorCreatorService configuratorCreatorService) {
+        this.configuratorCreatorRepo = configuratorCreatorRepo;
+        this.configuratorCreatorService = configuratorCreatorService;
+    }
 
-	/**
-	 * Called from configurator creator form.
-	 * call {@link ConfiguratorCreatorService#updateIndicators(ConfiguratorCreator)}
-	 * then {@link ConfiguratorCreatorService#generateConfigurator(ConfiguratorCreator)}
-	 * @param request
-	 * @param response
-	 */
-	public void generateConfigurator(ActionRequest request, ActionResponse response) {
-		
-		ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-		
-		creator = configuratorCreatorRepo.find(creator.getId());
+    /**
+     * Called from configurator creator form.
+     * call {@link ConfiguratorCreatorService#updateAttrsAndIndicators(ConfiguratorCreator)}
+     * @param request
+     * @param response
+     */
+    public void updateCreator(ActionRequest request, ActionResponse response) {
 
-		configuratorCreatorService.updateIndicators(creator);
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
 
-		configuratorCreatorService.generateConfigurator(creator);
-		
-		response.setSignal("refresh-app", true);
-		
-		response.setFlash(I18n.get(IExceptionMessage.CONFIGURATOR_GENERATED));
-		
-		
-	}
+        creator = configuratorCreatorRepo.find(creator.getId());
+
+        configuratorCreatorService.updateAttrsAndIndicators(creator);
+    }
 }

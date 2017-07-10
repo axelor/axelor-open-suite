@@ -23,7 +23,6 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -35,7 +34,6 @@ import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import wslite.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -46,9 +44,9 @@ import java.util.Map;
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     @Override
-    public JsonContext updateIndicators(Configurator configurator,
-                                        JsonContext jsonAttributes,
-                                        JsonContext jsonIndicators) {
+    public void updateIndicators(Configurator configurator,
+                                 JsonContext jsonAttributes,
+                                 JsonContext jsonIndicators) {
         List<MetaJsonField> indicators =
                 configurator.getConfiguratorCreator().getIndicators();
         for (MetaJsonField indicator : indicators) {
@@ -61,7 +59,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                 continue;
             }
         }
-        return jsonIndicators;
     }
 
     @Override

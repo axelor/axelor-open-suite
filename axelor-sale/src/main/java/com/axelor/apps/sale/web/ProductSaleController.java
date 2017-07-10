@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorService;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,7 +44,7 @@ public class ProductSaleController {
         }
         else {
             response.setView(ActionView
-                    .define("Configurator")
+                    .define(I18n.get("Configurator"))
                     .model("com.axelor.apps.sale.db.Configurator")
                     .add("form", "configurator-form")
                     .context("_showRecord", configurator.getId())

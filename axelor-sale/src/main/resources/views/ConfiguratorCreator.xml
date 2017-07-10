@@ -51,13 +51,27 @@
 		<panel-related field="formulas" form-view="configurator-formula-form"
 					   grid-view="configurator-formula-grid"/>
         <panel>
-			<button name="generateConfigurator" title="Generate configurator" colSpan="3" onClick="save,action-configurator-creator-generate-configurator"/>
+			<button name="createConfigurator" title="Create configurator"
+					colSpan="3" onClick="action-configurator-creator-group-show-configurator"/>
 		</panel>
     </form>
+	
+	<action-group name="action-configurator-creator-group-show-configurator">
+        <action name="save"/>
+		<action name="action-configurator-creator-update-creator"/>
+		<action name="action-configurator-creator-view-show-configurator"/>
+	</action-group>
     
-    <action-method name="action-configurator-creator-generate-configurator">
-    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="generateConfigurator"/>
+    <action-method name="action-configurator-creator-update-creator">
+    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="updateCreator"/>
     </action-method>
-    
+
+	<action-view name="action-configurator-creator-view-show-configurator"
+				 model="com.axelor.apps.sale.db.Configurator"
+				 title="Show Configurator">
+        <view type="form" name="configurator-form"/>
+		<context name="_configuratorCreator" expr="eval: __self__"/>
+	</action-view>
 
 </object-views>
