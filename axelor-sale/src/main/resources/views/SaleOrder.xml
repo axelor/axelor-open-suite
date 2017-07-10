@@ -221,6 +221,7 @@
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
 	  	<field name="message" hidden="true" type="string"/>
+		<button name="addLineFromConfigurator" title="Add Line from Configurator" onClick="save,action-sale-order-view-generate-line"/>
 	  </panel>
 	  
 	  <panel sidebar="true" name="info" title="Info.">
@@ -808,6 +809,13 @@
 		<view type="form" name="sale-order-line-form"/>
 		<domain>self.saleOrder.id in (:_orderIds) </domain>
 		<context name="_orderIds" expr="eval:[0] + _ids" />
+	</action-view>
+
+	<action-view name="action-sale-order-view-generate-line"
+				 model="com.axelor.apps.base.db.Wizard"
+				 title="Generate configurator">
+        <view type="form" name="generate-configurator-wizard-form"/>
+        <context name="_saleOrderId" expr="eval: id"/>
 	</action-view>
 	
 	<action-validate name="action-sale-order-validate-information">

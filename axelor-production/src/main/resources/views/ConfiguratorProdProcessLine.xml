@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    <form name="configurator-prod-process-line-form" title="Configurator Phases"
+          model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+        <panel>
+            <field name="name"/>
+            <field name="priority"/>
+            <field name="workCenter"/>
+            <field name="outsourcing"/>
+            <field name="location"/>
+            <field name="description"/>
+        </panel>
+        <panel title="Capacity settings" colSpan="12">
+            <panel>
+                <field name="$defMinCapacityPerCycleFormula" title="Define with a script" colSpan="12" type="boolean"/>
+                <field name="minCapacityPerCycle" showIf="!$defMinCapacityPerCycleFormula" colSpan="6"/>
+                <field name="minCapacityPerCycleFormula" widget="CodeEditor"
+                       showIf="$defMinCapacityPerCycleFormula"
+                       x-code-syntax="groovy" height="100" colSpan="12"/>
+            </panel>
+            <panel>
+                <field name="$defMaxCapacityPerCycleFormula" title="Define with a script" colSpan="12" type="boolean"/>
+                <field name="maxCapacityPerCycle" showIf="!$defMaxCapacityPerCycleFormula" colSpan="6"/>
+                <field name="maxCapacityPerCycleFormula" widget="CodeEditor"
+                       showIf="$defMaxCapacityPerCycleFormula"
+                       x-code-syntax="groovy" height="100" colSpan="12"/>
+            </panel>
+            <panel>
+                <field name="$defDurationPerCycleFormula" title="Define with a script" colSpan="12" type="boolean"/>
+                <field name="durationPerCycle" colSpan="6" widget="duration"
+                       x-big="true" x-seconds="true" showIf="!$defDurationPerCycleFormula"/>
+                <field name="durationPerCycleFormula" widget="CodeEditor" showIf="$defDurationPerCycleFormula"
+                       x-code-syntax="groovy" height="100" colSpan="12"/>
+            </panel>
+        </panel>
+    </form>
+
+    <grid name="configurator-prod-process-line-grid" title="Configurator Phases"
+          model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+        <field name="name"/>
+        <field name="priority"/>
+        <field name="workCenter"/>
+        <field name="outsourcing"/>
+        <field name="location"/>
+        <field name="description"/>
+    </grid>
+</object-views>
