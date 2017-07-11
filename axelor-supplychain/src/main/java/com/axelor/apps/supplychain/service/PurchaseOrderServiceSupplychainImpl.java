@@ -81,7 +81,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	protected AccountConfigService accountConfigService;
 	protected AppAccountService appAccountService;
 	protected LocalDate today;
-
+  
 	@Inject
 	public PurchaseOrderServiceSupplychainImpl(UnitConversionService unitConversionService, StockMoveRepository stockMoveRepo,
 											   AppSupplychainService appSupplychainService, AccountConfigService accountConfigService,
