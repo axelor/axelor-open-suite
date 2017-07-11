@@ -40,7 +40,13 @@ public class ProjectController {
 	
 	
 	public void setStoredDuration(ActionRequest request, ActionResponse response){
-		response.setValue("duration", employeeService.getUserDuration(new BigDecimal(request.getContext().get("visibleDuration").toString()), AuthUtils.getUser(), true));
+		String duration = request.getContext().get("visibleDuration").toString();
+		if(duration.isEmpty()) {
+			response.setValue("duration", employeeService.getUserDuration(new BigDecimal(0.00), AuthUtils.getUser(), true));
+		} else {
+			response.setValue("duration", employeeService.getUserDuration(new BigDecimal(duration), AuthUtils.getUser(), true));
+		}
+			
 	}
 	
 	public void setStoredTimeSpent(ActionRequest request, ActionResponse response){
@@ -62,7 +68,7 @@ public class ProjectController {
 		Project project = request.getContext().asType(Project.class);
 		project = Beans.get(ProjectRepository.class).find(project.getId());
 		User user = AuthUtils.getUser();
-		
+
 		response.setValue("$visibleDuration", employeeService.getUserDuration(project.getDuration(), user, false));
 		response.setValue("$visibleTimeSpent", employeeService.getUserDuration(project.getTimeSpent(), user, false));
 		response.setValue("$visibleLeadDelay", employeeService.getUserDuration(project.getLeadDelay(), user, false));

@@ -19,12 +19,12 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<field name="name"/>
 		</panel>
 		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
-			<label title="The tags below can be used as a prefix or a suffix :" />
-			<label title="%YYYY  : Full Year (2017)" />
-			<label title="%YY  : Year (17)" />
-			<label title="%M  : Month (1, 2, 3, ...)" />
+			<label title="The tags below can be used as a prefix or a suffix" />
+			<label title="%YYYY : Full Year (2017)" />
+			<label title="%YY : Year (17)" />
+			<label title="%M : Month (1, 2, 3, ...)" />
 			<label title="%FM : Full Month (01, 02, 03, ...)" />
-			<label title="%D  : Day" />
+			<label title="%D : Day" />
 			<label title="%WY : Week number" />
 		</panel>
 		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
@@ -78,6 +78,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <action-validate name="action-sequence-validate">
     	<error message="Prefix or suffix must contain %YY or %YYYY since yearly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isYearValid(__this__)"/>
 		<error message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
+		<error message="Total sequence length must be less than 15 characters." if="!com.axelor.apps.base.service.administration.SequenceService.isSequenceLengthValid(__this__)"/>
     </action-validate>
 
 	<action-method name="action-method-sequence-document-concerned-onchange">
