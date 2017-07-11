@@ -21,6 +21,8 @@
     
 <!--     IMPORT DU PACKAGE 'BASE' -->
 
+	<input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language" search="self.importId = :importId"/>
+
 	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>

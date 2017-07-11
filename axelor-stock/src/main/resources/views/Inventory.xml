@@ -25,7 +25,7 @@
 			<field name="includeObsolete"/>
 			<button name="fillInventory" title="Fill inventory" showIf="location != null" onClick="action-group-stock-inventory-fillinventory-click"/>
 		</panel>
-		<panel-related field="inventoryLineList" readonlyIf="statusSelect >= 3 || location == null" colSpan="12"/>
+		<panel-related field="inventoryLineList" readonlyIf="statusSelect >= 5 || location == null" colSpan="12"/>
 		<panel sidebar="true" name="actions" title="Actions">
 			<button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" onClick="action-group-stock-inventory-plan-click"/>
 			<button name="start" title="Start" showIf="statusSelect == 2" onClick="action-group-stock-inventory-start-click"/>
