@@ -33,7 +33,7 @@ public class ProjectPlanningController {
 		
 		ActionViewBuilder builder = ActionView.define(I18n.get("Project Planning"))
 				.model(ProjectPlanning.class.getName());
-		String url = "studio/planning";
+		String url = "project/planning";
 		
 		if (!userIds.isEmpty()) {
 			url += "?userIds=" + userIds;
