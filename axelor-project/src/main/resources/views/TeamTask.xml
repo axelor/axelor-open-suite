@@ -37,8 +37,8 @@
 				<field name="createdOn" title="Created on" colSpan="6"/>
 			</panel>
 			<panel title=" " colSpan="12">
-				<field name="taskDate" colSpan="4" required="true"/>
-				<field name="taskDuration" colSpan="4" widget="duration" x-big="true"/>
+				<field name="taskDate" colSpan="4" required="true" title="Task date"/>
+				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true"/>
 				<field name="taskDeadline" colSpan="4"/>
 				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			</panel>

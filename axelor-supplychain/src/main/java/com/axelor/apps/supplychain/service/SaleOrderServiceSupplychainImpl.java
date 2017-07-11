@@ -211,7 +211,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		BigDecimal totalHT = saleOrder.getExTaxTotal();
 		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
 		for (Timetable timetable : timetableList) {
-			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount().multiply(timetable.getQty()));
 		}
 		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}

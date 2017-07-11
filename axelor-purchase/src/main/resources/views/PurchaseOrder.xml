@@ -272,14 +272,8 @@
     
     <action-group name="action-group-purchase-order-on-validate-actions">    	
     	<action name="action-purchase-order-validate-location"/>
-    	<action name="action-purchase-order-method-compute"/>
-    	<action name="action-purchase-order-create-stock-move" if="eval: __config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getSupplierStockMoveGenerationAuto()"/>
-    	<action name="action-purchase-order-record-validate"/>
-    	<action name="action-purchase-order-method-validate-supplier"/>
-    	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
-    	<action name="action-purchase-order-method-update-cost-price"/>
-    	<action name="action-purchase-order-method-generate-budget-distribution"/>
+    	<action name="action-purchase-order-method-validate"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-merge-action">
@@ -404,7 +398,11 @@
     <action-method name="action-purchase-order-method-show-purchase-order">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
-	
+
+	<action-method name="action-purchase-order-method-validate">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validate"/>
+	</action-method>
+
     <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="eval:supplierPartner != null &amp;&amp; supplierPartner.partnerTypeSelect == 2" />
     </action-attrs>

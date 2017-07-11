@@ -23,7 +23,13 @@ import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -75,6 +81,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	protected AccountConfigService accountConfigService;
 	protected AppAccountService appAccountService;
 	protected LocalDate today;
+
 
 	@Inject
 	public PurchaseOrderServiceSupplychainImpl(UnitConversionService unitConversionService, StockMoveRepository stockMoveRepo,
@@ -401,4 +408,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			}
 		}
 	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		super.validatePurchaseOrder(purchaseOrder);
+
+		if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
+				&& !existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
+			createStocksMove(purchaseOrder);
+		}
+		
+		if (appAccountService.getAppBudget().getActive() && !appAccountService.getAppBudget().getManageMultiBudget()) {
+			generateBudgetDistribution(purchaseOrder);
+		}
+	}
+
 }

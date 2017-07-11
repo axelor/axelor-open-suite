@@ -274,7 +274,7 @@
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
     	<field name="clientPartner" expr="eval: _clientPartner"/>
     	<field name="contactPartner" expr="eval: _contactPartner"/>
-    	<field name="lead" expr="eval: _eventLead"/>
+    	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">

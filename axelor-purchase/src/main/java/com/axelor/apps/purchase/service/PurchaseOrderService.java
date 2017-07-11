@@ -98,7 +98,7 @@ public interface PurchaseOrderService {
 	public void updateCostPrice(PurchaseOrder purchaseOrder);
 	
 	public void draftPurchaseOrder(PurchaseOrder purchaseOrder);
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder);
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 	public void finishPurchaseOrder(PurchaseOrder purchaseOrder);
 	public void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 	

@@ -171,6 +171,13 @@ public class SequenceService {
 
 	}
 
+	public static boolean isSequenceLengthValid(Sequence sequence) {
+		String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
+		String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
+
+		return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
+	}
+
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
 	 *

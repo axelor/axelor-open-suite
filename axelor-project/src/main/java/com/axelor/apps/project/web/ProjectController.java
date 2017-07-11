@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.project.web;
 
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
@@ -38,6 +41,14 @@ public class ProjectController {
 		User user = AuthUtils.getUser();
 		Project project = projectService.generateProject(null, partner.getName()+" project", user, user.getActiveCompany(), partner);
 		response.setValues(project);
+	}
+	
+	public void setDurationDays(ActionRequest request, ActionResponse response){
+		Project project = request.getContext().asType(Project.class);
+		long diffInDays = ChronoUnit.DAYS.between(project.getFromDate(),project.getToDate());
+		BigDecimal duration = new BigDecimal(diffInDays);
+		response.setValue("$visibleDuration", duration);
+		response.setValue("duration", duration);
 	}
 	
 }

@@ -172,19 +172,28 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException {
+	public void validate(Invoice invoice, boolean compute) throws AxelorException {
 
 		log.debug("Validation de la facture");
-		
+
+		if (compute) {
+			compute(invoice);
+		}
+
 		validateFactory.getValidator(invoice).process( );
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
-		invoiceRepo.save(invoice);
-		
 	}
-	
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Invoice invoice) throws AxelorException {
+		validate(invoice, false);
+	}
+
 	@Override
 	public void generateBudgetDistribution(Invoice invoice){
 		if(invoice.getInvoiceLineList() != null){

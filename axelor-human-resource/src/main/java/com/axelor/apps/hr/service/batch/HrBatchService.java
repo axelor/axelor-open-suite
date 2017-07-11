@@ -45,6 +45,9 @@ public class HrBatchService {
 			case HrBatchRepository.ACTION_PAYROLL_PREPARATION_EXPORT:
 				batch = payrollPreparationExport(hrBatch);
 				break;
+			case HrBatchRepository.ACTION_LEAVE_MANAGEMENT_RESET:
+				batch = leaveManagementReset(hrBatch);
+				break;
 			default:
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), hrBatch.getActionSelect(), hrBatch.getCode()), IException.INCONSISTENCY);
 			}
@@ -74,6 +77,10 @@ public class HrBatchService {
 		return Beans.get(BatchPayrollPreparationExport.class).run(hrBatch);
 	}
 
+	public Batch leaveManagementReset(HrBatch hrBatch){
+
+		return Beans.get(BatchLeaveManagementReset.class).run(hrBatch);
+	}
 
 }
 

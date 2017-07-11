@@ -183,7 +183,7 @@
 					</panel>
 				</panel>
 				<panel name="notes" title="Notes" colSpan="12">
-					<field name="description" colSpan="12" height="8" showTitle="false"/>
+					<field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
 				</panel>
 				<panel colSpan="12">
 					<panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
@@ -353,7 +353,7 @@
             </panel>
         </panel>
 		<panel name="notes" title="Notes" colSpan="12" sidebar="true">
-            <field name="description" showTitle="false" colSpan="12" height="6"/>
+            <field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
         </panel>
         <panel>
 			<field name="contactAttrs" colSpan="12" />
@@ -506,7 +506,7 @@
             </panel>
         </panel>
 		<panel name="notes" title="Notes" colSpan="12" sidebar="true">
-            <field name="description" showTitle="false" colSpan="12" height="6"/>
+            <field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
         </panel>
 	</form>
 		
