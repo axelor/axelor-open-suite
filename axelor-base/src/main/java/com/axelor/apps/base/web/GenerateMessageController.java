@@ -29,19 +29,6 @@ public class GenerateMessageController {
 
         String model = (String) context.get("_templateContextModel");
 
-//        Object templateObj = context.get("_xTemplate");
-//        Template template;
-//        if (templateObj == null) {
-//            template = null;
-//        } else if (templateObj instanceof Map) {
-//            Map<String, Object> templateMap = (Map<String, Object>) templateObj;
-//            template = templateRepo.find( Long.parseLong(templateMap.get("id").toString()) );
-//        } else if (templateObj instanceof Template) {
-//            template = (Template) templateObj;
-//        } else {
-//            throw new IllegalArgumentException("erreur...");
-//        }
-
         Object languageObj = context.get("language");
         Language language;
         if (languageObj == null) {
