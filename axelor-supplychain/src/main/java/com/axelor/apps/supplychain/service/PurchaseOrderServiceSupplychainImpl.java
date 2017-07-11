@@ -71,6 +71,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -336,14 +347,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
-
-		if (purchaseOrder.getVersionNumber() == 1) {
-			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
-		}
-
+	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
 		// budget control
 		if (appAccountService.isApp("budget") && appAccountService.getAppBudget().getCheckAvailableBudget()) {
 			List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
@@ -381,11 +385,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			}
 		}
 
-		purchaseOrderRepo.save(purchaseOrder);
-
-		if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()) {
-			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
-		}
+		super.requestPurchaseOrder(purchaseOrder);
 	}
 
 	public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
