@@ -812,6 +812,7 @@ public class ICalendarService {
 		event.setEndDateTime(toDateTime);
 		event.setTypeSelect(type);
 		event.setUser(user);
+		event.setCalendar(user.getiCalendar());
 		if(!Strings.isNullOrEmpty(description)){
 			event.setDescription(description);
 		}
