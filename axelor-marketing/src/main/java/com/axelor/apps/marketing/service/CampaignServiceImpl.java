@@ -32,6 +32,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.TargetList;
+import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
@@ -132,14 +133,14 @@ public class CampaignServiceImpl implements CampaignService {
 		}
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append(I18n.get("Error in sending an email to the following targets"));
+		builder.append(I18n.get(IExceptionMessage.EMAIL_ERROR1));
 		builder.append("\n");
 		if (!errorPartners.isEmpty()) {
-			builder.append("Partners:\n");
+			builder.append(I18n.get("Partners") + ":\n");
 			builder.append(errorPartners);
 		}
 		if (!errorLeads.isEmpty()) {
-			builder.append("Leads:\n");
+			builder.append(I18n.get("Leads") + ":\n");
 			builder.append(errorLeads);
 		}
 		

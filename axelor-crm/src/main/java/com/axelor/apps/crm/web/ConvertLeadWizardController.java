@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
@@ -48,7 +53,12 @@ public class ConvertLeadWizardController {
 
 	@Inject
 	private PartnerRepository partnerRepo;
-
+	
+	@Inject
+	private CompanyRepository companyRepo;
+	
+	@Inject
+	private AppBaseService appBaseService;
 
 	@SuppressWarnings("unchecked")
 	public void convertLead(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -111,6 +121,178 @@ public class ConvertLeadWizardController {
 
 		response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
 	}
+	
+	public void setConvertLeadIntoContact(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		AppBase appBase = appBaseService.getAppBase();
+		response.setAttr("isContact", "value", false);
+		response.setAttr("firstName", "value", lead.getFirstName());
+		response.setAttr("name", "value", lead.getName());
+		response.setAttr("titleSelect", "value", lead.getTitleSelect());
+		response.setAttr("emailAddress", "value", lead.getEmailAddress());
+		response.setAttr("fax", "value", lead.getFax());
+		response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+		response.setAttr("fixedPhone", "value", lead.getFixedPhone());
+		response.setAttr("webSite", "value", lead.getWebSite());
+		response.setAttr("source", "value", lead.getSource());
+		response.setAttr("department", "value", lead.getDepartment());
+		response.setAttr("user", "value", lead.getUser());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("jobTitle", "value", lead.getJobTitle());
+		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
+	}
+	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		AppBase appBase = appBaseService.getAppBase();
+		response.setAttr("isContact", "value", false);
+		response.setAttr("name", "value", lead.getEnterpriseName());
+		response.setAttr("industrySector", "value", lead.getIndustrySector());
+		response.setAttr("titleSelect", "value", lead.getTitleSelect());
+		response.setAttr("emailAddress", "value", lead.getEmailAddress());
+		response.setAttr("fax", "value", lead.getFax());
+		response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+		response.setAttr("fixedPhone", "value", lead.getFixedPhone());
+		response.setAttr("webSite", "value", lead.getWebSite());
+		response.setAttr("source", "value", lead.getSource());
+		response.setAttr("department", "value", lead.getDepartment());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("isCustomer", "value", true);
+		response.setAttr("partnerTypeSelect", "value", "1");
+		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
+	}
+	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		AppBase appBase = appBaseService.getAppBase();
+		Company company = companyRepo.all().fetchOne();
+		Long noOfCompany = companyRepo.all().count();
+		response.setAttr("lead", "value", lead);
+		response.setAttr("amount", "value", lead.getOpportunityAmount());
+		response.setAttr("description", "value", lead.getDescription());
+		response.setAttr("source", "value", lead.getSource());
+		response.setAttr("user", "value", lead.getUser());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("salesStageSelect", "value", "1");
+		response.setAttr("webSite", "value", lead.getWebSite());
+		response.setAttr("source", "value", lead.getSource());
+		response.setAttr("department", "value", lead.getDepartment());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("isCustomer", "value", true);
+		response.setAttr("partnerTypeSelect", "value", "1");
+		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
+		if(lead.getUser() != null) {
+			if(lead.getUser().getActiveCompany() != null) {
+				response.setAttr("company", "value", lead.getUser().getActiveCompany());
+				response.setAttr("currency", "value",lead.getUser().getActiveCompany().getCurrency());
+			} else if(noOfCompany == 1){
+				response.setAttr("company", "value", company);
+				response.setAttr("currency", "value",company);
+			}
+			
+		} else if(noOfCompany == 1) {
+			response.setAttr("company", "value", company);
+			response.setAttr("currency", "value",company);
+		}
+	}
+	
+	public void setConvertLeadWizardAddress(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		response.setAttr("primaryAddress", "value", lead.getPrimaryAddress());
+		response.setAttr("primaryCity", "value", lead.getPrimaryCity());
+		response.setAttr("primaryState", "value", lead.getPrimaryState());
+		response.setAttr("primaryPostalCode", "value", lead.getPrimaryPostalCode());
+		response.setAttr("primaryCountry", "value", lead.getPrimaryCountry());
+		response.setAttr("otherAddress", "value", lead.getOtherAddress());
+		response.setAttr("otherCity", "value", lead.getOtherCity());
+		response.setAttr("otherState", "value", lead.getOtherState());
+		response.setAttr("otherPostalCode", "value", lead.getOtherPostalCode());
+		response.setAttr("otherCountry", "value", lead.getOtherCountry());
+	}
+	
+	public void setConvertLeadCallEvent(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		response.setAttr("typeSelect", "value", "1");
+		response.setAttr("lead", "value", lead);
+		response.setAttr("description", "value", lead.getDescription());
+		response.setAttr("user", "value", lead.getUser());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("statusSelect", "value", "1");
+		response.setAttr("startDateTime", "value", LocalDateTime.now());
+		response.setAttr("duration", "value", 0);
+		response.setAttr("callTypeSelect", "value", "2");
+	}
+	
+	public void setConvertLeadMeetingEvent(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		response.setAttr("typeSelect", "value", "2");
+		response.setAttr("lead", "value", lead);
+		response.setAttr("description", "value", lead.getDescription());
+		response.setAttr("user", "value", lead.getUser());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("statusSelect", "value", "1");
+		response.setAttr("startDateTime", "value", LocalDateTime.now());
+		response.setAttr("duration", "value", 0);
+	}
 
+	public void setConvertLeadTaskEvent(ActionRequest request, ActionResponse response) { 
+		Context context = request.getContext();
+		Lead lead = new Lead();
+		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+		}
+		else {
+			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+		}
+		response.setAttr("typeSelect", "value", "3");
+		response.setAttr("lead", "value", lead);
+		response.setAttr("description", "value", lead.getDescription());
+		response.setAttr("user", "value", lead.getUser());
+		response.setAttr("team", "value", lead.getTeam());
+		response.setAttr("statusSelect", "value", "11");
+		response.setAttr("startDateTime", "value", LocalDateTime.now());
+		response.setAttr("progressSelect", "value", 0);
+		response.setAttr("duration", "value", 0);
+	}
 
 }

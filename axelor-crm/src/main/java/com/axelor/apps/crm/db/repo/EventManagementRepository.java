@@ -19,10 +19,11 @@ package com.axelor.apps.crm.db.repo;
 
 import java.util.List;
 
+import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
-import com.axelor.apps.crm.db.Calendar;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.service.CalendarService;
@@ -40,7 +41,7 @@ import com.google.inject.Inject;
 public class EventManagementRepository extends EventRepository {
 	
 	@Inject
-	protected CalendarService calendarService;
+	protected ICalendarService calendarService;
 
 	@Override
 	public Event copy(Event entity, boolean deep) {
@@ -101,24 +102,23 @@ public class EventManagementRepository extends EventRepository {
 		try{
 			User user = AuthUtils.getUser();
 			List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
-			if(calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendarCrm().getId())){
+			if(calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendar().getId())){
 				throw new AxelorException(I18n.get("You don't have the rights to delete this event"), IException.CONFIGURATION_ERROR);
 			}
 		
 			calendarService.removeEventFromIcal(entity);
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			TraceBackService.trace(e);
 		}
-		Calendar calendar = entity.getCalendarCrm();
+		
+		ICalendar calendar = entity.getCalendar();
 		super.remove(entity);
 		if(calendar != null){
 			try{
 				calendarService.sync(calendar);
 			}
 			catch(Exception e){
-				e.printStackTrace();
 				TraceBackService.trace(e);
 			}
 		}

@@ -115,6 +115,14 @@ public interface StockMoveLineService {
 	 */
 	public void checkConformitySelection(StockMove stockMove) throws AxelorException;
 
+	/**
+	 * Check for warranty dates and expiration dates.
+	 * 
+	 * @param stockMove
+	 * @throws AxelorException
+	 */
+	public void checkExpirationDates(StockMove stockMove) throws AxelorException;
+
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
 	/**

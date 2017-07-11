@@ -101,10 +101,5 @@ public interface IExceptionMessage {
 	 */
 	static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/ "The product cost cannot be changed because the product cost type is not manual" /*)*/;
 	
-	/**
-	 * Configurator generator
-	 */
-	
-	static final String CONFIGURATOR_GENERATED = /*$$(*/ "The configurator is generated. Please check the configurators menu." /*)*/;
 }
 
