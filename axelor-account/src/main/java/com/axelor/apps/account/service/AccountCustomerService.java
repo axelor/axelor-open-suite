@@ -97,7 +97,8 @@ public class AccountCustomerService {
 													"WHERE moveline.credit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
 												"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 												"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
-												"WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
+												"WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null)" +
+												"AND account.use_for_partner_balance = 'true'" +
 												"AND move.status_select = ?3 AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
 												.setParameter(2, company)
@@ -148,7 +149,7 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
-				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
+				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
 				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
 				.setParameter(1, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(2, partner)
@@ -201,7 +202,7 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
 				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_reminder_ok in ('false', null) " +
-				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
+				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
 				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
 				.setParameter(2, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)

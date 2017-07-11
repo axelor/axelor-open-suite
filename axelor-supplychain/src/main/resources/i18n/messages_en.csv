@@ -67,6 +67,7 @@
 "Element",,,
 "End date",,,
 "Entry of stock",,,
+"Error : you have exceeded the budget %s for this period",,,
 "Exclude from MRP",,,
 "Expected realisation date",,,
 "Expected/Future Quantity",,,

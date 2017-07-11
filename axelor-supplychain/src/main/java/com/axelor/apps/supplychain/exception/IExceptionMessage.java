@@ -36,6 +36,7 @@ public interface IExceptionMessage {
 	 * Purchase Order Service
 	 */
 	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s please configure a virtual supplier stock location for the company %s" /*)*/;
+	static final String PURCHASE_ORDER_2 = /*$$(*/ "Error : you have exceeded the budget %s for this period" /*)*/;
 
 	/**
 	 * Sale Order Invoice Service
