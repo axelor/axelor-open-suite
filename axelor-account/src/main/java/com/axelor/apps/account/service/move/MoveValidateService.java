@@ -71,7 +71,7 @@ public class MoveValidateService {
 				moveLine.setDate(date);
 			}
 						
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getDueDate() == null)  {
+			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDueDate() == null)  {
 				moveLine.setDueDate(date);
 			}
 			if (partner != null){

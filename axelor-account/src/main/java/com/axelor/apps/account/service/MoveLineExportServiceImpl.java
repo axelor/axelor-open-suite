@@ -345,7 +345,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 				if (moveList.size() > 0) {
 
-					BigDecimal sumDebit = this.getSumDebit("self.account.reconcileOk = true AND self.debit != 0.00 AND self.move in ?1 "+ moveLineQueryStr, moveList);
+					BigDecimal sumDebit = this.getSumDebit("self.account.useForPartnerBalance = true AND self.debit != 0.00 AND self.move in ?1 "+ moveLineQueryStr, moveList);
 
 					if(sumDebit.compareTo(BigDecimal.ZERO) == 1)  {
 
@@ -493,7 +493,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 				if (moveList.size() > 0) {
 
-					BigDecimal sumCredit = this.getSumCredit("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1 "+moveLineQueryStr, moveList);
+					BigDecimal sumCredit = this.getSumCredit("self.account.useForPartnerBalance = true AND self.credit != 0.00 AND self.move in ?1 "+moveLineQueryStr, moveList);
 
 					if(sumCredit.compareTo(BigDecimal.ZERO) == 1)  {
 
@@ -791,7 +791,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 					for(Move move : moveList)  {
 
-						List<MoveLine> moveLineList = moveLineRepo.all().filter("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
+						List<MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
 
 						if(moveLineList.size() > 0) {
 
@@ -996,7 +996,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			moveLineQueryStr += String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
 		}
 		if(typeSelect != 8 )  {
-			moveLineQueryStr += String.format(" AND self.account.reconcileOk = false ");
+			moveLineQueryStr += String.format(" AND self.account.useForPartnerBalance = false ");
 		}
 		moveLineQueryStr += String.format("AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.accountingReport = %s", accountingReport.getId());
 		moveLineQueryStr += String.format(" AND self.move.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);

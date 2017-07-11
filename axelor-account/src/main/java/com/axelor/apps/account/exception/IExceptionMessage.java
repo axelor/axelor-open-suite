@@ -167,7 +167,7 @@ public interface IExceptionMessage {
 	 * Reconcile service
 	 */
 	static final String RECONCILE_1 = /*$$(*/ "%s : Reconciliation : You must fill concerned moves lines." /*)*/ ;
-	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Selected moves lines must concerned the same account." /*)*/ ;
+	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Move line accounts are not compatible." /*)*/ ;
 	static final String RECONCILE_3 = /*$$(*/ "\n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/ ;
@@ -486,6 +486,7 @@ public interface IExceptionMessage {
 	static final String VENTILATE_STATE_3 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
 	static final String VENTILATE_STATE_4 = /*$$(*/ "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
 	static final String VENTILATE_STATE_5 = /*$$(*/ "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
+	static final String VENTILATE_STATE_6 = /*$$(*/ "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
 
 	static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/ "Invoice date can't be in the future." /*)*/;
 

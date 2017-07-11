@@ -203,7 +203,7 @@
 			<panel name="accClearance" title="Acc. Clearance">
 				<field name="profitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
-				<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
+				<field name="clearanceAccountSet" domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
 					<!-- TODO:Check weather this Editor works or not -->
 					<editor x-show-titles="false" x-layout="table">
 						<field name="code" colSpan="12"/>

@@ -306,7 +306,7 @@ public class MoveToolService {
 
 		if(originalInvoice != null && originalInvoice.getMove() != null)  {
 			for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+				if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
 						&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
 				}

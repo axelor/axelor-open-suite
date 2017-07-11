@@ -119,7 +119,7 @@ public class ReminderService {
 		BigDecimal balance = BigDecimal.ZERO;
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
-				if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
+				if(moveLine.getAccount()!=null && moveLine.getAccount().getUseForPartnerBalance())  {
 					balance = balance.subtract(moveLine.getAmountRemaining());
 				}
 			}
@@ -238,7 +238,7 @@ public class ReminderService {
 					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
-						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
+						if(moveLine.getAccount()!=null && moveLine.getAccount().getUseForPartnerBalance())  {
 							if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 								moveLineList.add(moveLine);
 							}
@@ -251,7 +251,7 @@ public class ReminderService {
 							&& (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
-						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
+						if(moveLine.getAccount()!=null && moveLine.getAccount().getUseForPartnerBalance())  {
 							if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 								moveLineList.add(moveLine);
 							}

@@ -86,7 +86,7 @@ public class PaymentVoucherLoadService {
 		List<MoveLine> moveLines = null;
 
 		String query = "self.partner = ?1 " +
-				"and self.account.reconcileOk = 't' " +
+				"and self.account.useForPartnerBalance = 't' " +
 				"and self.amountRemaining > 0 " +
 				"and self.move.statusSelect = ?3 " +
 				"and self.move.ignoreInReminderOk = 'f' " +

@@ -122,7 +122,7 @@
         <view type="grid" name="move-line-accounting-situation-grid"/>
     	<view type="form" name="move-line-form"/>
     	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
-    	AND self.account.reconcileOk = 'true' AND self.move.statusSelect = 3</domain>
+    	AND self.account.useForPartnerBalance = 'true' AND self.move.statusSelect = 3</domain>
     </action-view>
     
 	<action-record name="action-account-accounting-situation-default-set" model="com.axelor.apps.account.db.AccountingSituation">

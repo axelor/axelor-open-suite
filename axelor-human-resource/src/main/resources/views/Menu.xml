@@ -144,7 +144,7 @@
 		title="Leaves calendar" action="leave.request.root.leave.calender" />
 
 	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
-		model="com.axelor.apps.base.db.IcalendarEvent" >
+		model="com.axelor.apps.base.db.ICalendarEvent" >
 		<view type="calendar" name="calendar-all"/>
 		<view type="grid" name="calendar-event-grid"/>
 		<view type="form" name="calendar-event-form"/>

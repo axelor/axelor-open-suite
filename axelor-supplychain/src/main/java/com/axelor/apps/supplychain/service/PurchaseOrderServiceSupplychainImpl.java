@@ -17,16 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.time.LocalDate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -40,6 +33,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -56,6 +50,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -65,25 +60,50 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
-	@Inject
-	protected UnitConversionService unitConversionService;
-	
-	@Inject
-	protected StockMoveRepository stockMoveRepo;
-	
-	@Inject
-	protected AppSupplychainService appSupplychainService; 
-
-	@Inject
-	protected AccountConfigService accountConfigService;
-	
-	@Inject
-	private AppAccountService appAccountService;
-
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
+	protected UnitConversionService unitConversionService;
+	protected StockMoveRepository stockMoveRepo;
+	protected AppSupplychainService appSupplychainService;
+	protected AccountConfigService accountConfigService;
+	protected AppAccountService appAccountService;
+	protected LocalDate today;
+  
+	@Inject
+	public PurchaseOrderServiceSupplychainImpl(UnitConversionService unitConversionService, StockMoveRepository stockMoveRepo,
+											   AppSupplychainService appSupplychainService, AccountConfigService accountConfigService,
+											   AppAccountService appAccountService) {
+		this.unitConversionService = unitConversionService;
+		this.stockMoveRepo = stockMoveRepo;
+		this.appSupplychainService = appSupplychainService;
+		this.accountConfigService = accountConfigService;
+		this.appAccountService = appAccountService;
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
+	}
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
@@ -327,6 +347,67 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 	@Override
+	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
+		// budget control
+		if (appAccountService.isApp("budget") && appAccountService.getAppBudget().getCheckAvailableBudget()) {
+			List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+
+			Map<Budget, BigDecimal> amountPerBudget = new HashMap<Budget, BigDecimal>();
+			if (appAccountService.getAppBudget().getManageMultiBudget()) {
+				for (PurchaseOrderLine pol : purchaseOrderLines) {
+					for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
+						Budget budget = bd.getBudget();
+
+						if (!amountPerBudget.containsKey(budget)) {
+							amountPerBudget.put(budget, bd.getAmount());
+						} else {
+							BigDecimal oldAmount = amountPerBudget.get(budget);
+							amountPerBudget.put(budget, oldAmount.add(bd.getAmount()));
+						}
+
+						isBudgetExceeded(budget, amountPerBudget.get(budget));
+					}
+				}
+			} else {
+				for (PurchaseOrderLine pol : purchaseOrderLines) {
+					// getting Budget associated to POL
+					Budget budget = pol.getBudget();
+
+					if (!amountPerBudget.containsKey(budget)) {
+						amountPerBudget.put(budget, pol.getExTaxTotal());
+					} else {
+						BigDecimal oldAmount = amountPerBudget.get(budget);
+						amountPerBudget.put(budget, oldAmount.add(pol.getExTaxTotal()));
+					}
+
+					isBudgetExceeded(budget, amountPerBudget.get(budget));
+				}
+			}
+		}
+
+		super.requestPurchaseOrder(purchaseOrder);
+	}
+
+	public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
+		if (budget == null) { return; }
+
+		// getting BudgetLine of the period
+		BudgetLine bl = null;
+		for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+			if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), today)) {
+				bl = budgetLine;
+				break;
+			}
+		}
+
+		// checking budget excess
+		if (bl != null) {
+			if (amount.add(bl.getAmountCommitted()).compareTo(bl.getAmountExpected()) > 0) {
+				throw new AxelorException(I18n.get(IExceptionMessage.PURCHASE_ORDER_2), IException.INCONSISTENCY, budget.getCode());
+			}
+		}
+	}
+
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 		super.validatePurchaseOrder(purchaseOrder);

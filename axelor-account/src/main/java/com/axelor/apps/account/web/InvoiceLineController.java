@@ -20,13 +20,17 @@ package com.axelor.apps.account.web;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -38,9 +42,14 @@ import com.google.inject.Inject;
 
 public class InvoiceLineController {
 
-	@Inject
 	private InvoiceLineService invoiceLineService;
+	private AccountManagementServiceAccountImpl accountManagementService;
 
+	@Inject
+	public InvoiceLineController(InvoiceLineService invoiceLineService, AccountManagementServiceAccountImpl accountManagementService) {
+		this.invoiceLineService = invoiceLineService;
+		this.accountManagementService = accountManagementService;
+	}
 
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -144,6 +153,11 @@ public class InvoiceLineController {
 
 			response.setValue("productName", invoiceLine.getProduct().getName());
 			response.setValue("unit", invoiceLineService.getUnit(invoiceLine.getProduct(), isPurchase));
+
+			// getting correct account for the product
+			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
+			Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
+			response.setValue("account", account);
 
 			Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
 			

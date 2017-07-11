@@ -142,7 +142,7 @@ public class DoubtfulCustomerService {
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 		List<MoveLine> moveLineList = move.getMoveLineList();
 		for(MoveLine moveLine : moveLineList)  {
-			if(moveLine.getAccount().getReconcileOk()
+			if(moveLine.getAccount().getUseForPartnerBalance()
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAccount() != doubtfulCustomerAccount
 					&& moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
@@ -349,7 +349,7 @@ public class DoubtfulCustomerService {
 
 		log.debug("Date de créance prise en compte : {} ",date);
 
-		String request = "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND ml.company.id = "+ company.getId() +" AND ml.account.reconcileOk = 'true' " +
+		String request = "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND ml.company.id = "+ company.getId() +" AND ml.account.useForPartnerBalance = 'true' " +
 				"AND ml.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"+ date.toString() +
 				"' AND ml.account.id != "+doubtfulCustomerAccount.getId();
 
@@ -388,7 +388,7 @@ public class DoubtfulCustomerService {
 			//Créance de + 6 mois
 			case 0 :
 				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-				moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
+				moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.useForPartnerBalance = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;
@@ -396,7 +396,7 @@ public class DoubtfulCustomerService {
 			//Créance de + 3 mois
 			case 1 :
 				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-				moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
+				moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.useForPartnerBalance = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;
