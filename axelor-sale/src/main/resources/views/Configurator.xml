@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator">
+        <field name="configuratorCreator"/>
+    </grid>
+
+    <form name="configurator-form" title="Configurator" readonlyIf="productId"
+          model="com.axelor.apps.sale.db.Configurator"
+          onNew="action-configurator-record-on-new"
+          onLoad="action-configurator-update-indicators,save">
+        <panel>
+            <field name="productId" readonly="true" showTitle="false"
+                   showIf="productId" colSpan="12">
+                <viewer>
+                    <![CDATA[
+			 			<h3>
+			             <span class="label label-important" x-translate>Product generated</span>
+			           </h3>
+					]]>
+                </viewer>
+            </field>
+            <field name="configuratorCreator" domain="self.isActive = true"/>
+            <field name="attributes" colSpan="12"/>
+        </panel>
+        <panel readonly="true">
+            <field name="indicators" colSpan="12"/>
+        </panel>
+        <panel>
+            <button name="generateProduct" title="Generate Product"
+                    onClick="save,action-configurator-generate-product"/>
+        </panel>
+    </form>
+
+    <form name="configurator-wizard-form" title="Configurator" readonlyIf="productId"
+          model="com.axelor.apps.sale.db.Configurator"
+          onNew="action-configurator-record-on-new"
+          onLoad="action-configurator-update-indicators,save">
+        <panel>
+            <field name="productId" readonly="true" showTitle="false"
+                   showIf="productId" colSpan="12">
+                <viewer>
+                    <![CDATA[
+			 			<h3>
+			             <span class="label label-important" x-translate>Product generated</span>
+			           </h3>
+					]]>
+                </viewer>
+            </field>
+            <field name="configuratorCreator" domain="self.isActive = true"/>
+            <field name="attributes" colSpan="12"/>
+        </panel>
+        <panel readonly="true">
+            <field name="indicators" colSpan="12"/>
+        </panel>
+        <panel>
+            <button name="validate" title="Validate and generate the line"
+                    onClick="save,action-configurator-wizard-method-generate"/>
+        </panel>
+    </form>
+
+    <action-method name="action-configurator-update-indicators">
+        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
+    </action-method>
+
+    <action-method name="action-configurator-generate-product">
+        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
+    </action-method>
+
+    <action-record name="action-configurator-record-on-new"
+                   model="com.axelor.apps.sale.db.Configurator">
+        <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
+    </action-record>
+
+    <action-method name="action-configurator-wizard-method-generate">
+        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateForSaleOrder"/>
+    </action-method>
+
+</object-views>

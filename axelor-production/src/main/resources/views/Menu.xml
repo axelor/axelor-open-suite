@@ -126,7 +126,7 @@
 		title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
 	
 	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
-		model="com.axelor.apps.production.db.ConfiguratorCreator" >
+		model="com.axelor.apps.sale.db.ConfiguratorCreator" >
 		<view type="grid" name="configurator-creator-grid" />
 		<view type="form" name="configurator-creator-form" />
 	</action-view>
@@ -135,13 +135,39 @@
 		title="Configurators" action="manufacturing.conf.configurator.configurators"/>
 	
 	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
-		model="com.axelor.apps.production.db.Configurator" >
+		model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
 	</action-view>
-	
-		
-	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" 
+
+	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators"
+			  title="Configurator BOM" action="manufacturing.conf.configurator.bom"/>
+
+	<action-view name="manufacturing.conf.configurator.bom" title="Configurator BOM"
+				 model="com.axelor.apps.production.db.ConfiguratorBOM" >
+		<view type="grid" name="configurator-bom-grid" />
+		<view type="form" name="configurator-bom-form" />
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-prodprocess" parent="manufacturing-conf-configurators"
+			  title="Configurator production process" action="manufacturing.conf.configurator.prod.process"/>
+
+	<action-view name="manufacturing.conf.configurator.prod.process" title="Configurator production process"
+				 model="com.axelor.apps.production.db.ConfiguratorProdProcess" >
+		<view type="grid" name="configurator-prod-process-grid" />
+		<view type="form" name="configurator-prod-process-form" />
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-prod-process-line" parent="manufacturing-conf-configurators"
+			  title="Configurator Phase" action="manufacturing.conf.configurator.prod.process.line"/>
+
+	<action-view name="manufacturing.conf.configurator.prod.process.line" title="Configurator Phase"
+				 model="com.axelor.apps.production.db.ConfiguratorProdProcessLine" >
+	<view type="grid" name="configurator-prod-process-line-grid" />
+	<view type="form" name="configurator-prod-process-line-form" />
+	</action-view>
+
+	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report"
 		title="Manufacturing"  action="manufacturing.dashboard.view" />	
 
 	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
