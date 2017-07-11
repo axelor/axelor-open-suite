@@ -227,7 +227,6 @@ public class SaleOrderController{
 
 			if(invoice != null)  {
 				response.setCanClose(true);
-				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
 				response.setView(ActionView
 		            .define(I18n.get("Invoice generated"))
 		            .model(Invoice.class.getName())

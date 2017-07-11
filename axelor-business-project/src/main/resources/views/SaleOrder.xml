@@ -57,7 +57,7 @@
 	</action-method>
 
 	<action-group id="business-project-action-supplychain-sale-order-group-generate-invoice" name="action-supplychain-sale-order-group-generate-invoice">
-		<action name="action-supplychain-sale-order-method-generate-invoice" if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
+		<action name="action-supplychain-sale-order-view-invoicing-wizard" if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
     	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
 	</action-group>
 	

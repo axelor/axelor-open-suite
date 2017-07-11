@@ -17,18 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-
-import javax.persistence.Query;
-
-import java.time.LocalDate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -45,7 +33,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -59,6 +49,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
@@ -88,20 +90,18 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 								   BigDecimal amount, boolean isPercent,
 								   Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
 
-	    if (isPercent) {
-	    	amount = convertPercentToQty(amount, saleOrder.getTaxTotal());
-		}
 		switch (operationSelect) {
 			case SaleOrderRepository.INVOICE_ALL:
 				return generateInvoice(saleOrder);
 
 			case SaleOrderRepository.INVOICE_PART:
-                return generateOneLineInvoice(saleOrder, amount);
+                return generatePartialInvoice(saleOrder, amount, isPercent);
 
 			case SaleOrderRepository.INVOICE_LINES:
 			    return generateInvoiceFromLines(saleOrder, qtyToInvoiceMap, isPercent);
 
 			case SaleOrderRepository.INVOICE_ADVANCE_PAYMENT:
+				amount = computeAmountToInvoice(saleOrder, amount, isPercent);
 			    return generateAdvancePayment(saleOrder, amount);
 
 			default:
@@ -110,19 +110,92 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public BigDecimal convertPercentToQty(BigDecimal amount, BigDecimal total) {
-		amount = total.multiply(amount)
+	public BigDecimal computeAmountToInvoice(SaleOrder saleOrder,
+											 BigDecimal amount,
+											 boolean isPercent) throws AxelorException {
+		BigDecimal total = Beans.get(SaleOrderService.class)
+				.getTotalSaleOrderPrice(saleOrder);
+	    if (isPercent) {
+			amount = total.multiply(amount)
 				.divide(
 						new BigDecimal("100"),
 						4,
 						RoundingMode.HALF_EVEN
 				);
-	    return amount;
+		}
+		if (amount.compareTo(total) > 0) {
+	    	throw new AxelorException(
+	    			I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX),
+					IException.INCONSISTENCY
+			);
+		}
+
+		return amount;
 	}
 
 	@Override
-	public Invoice generateOneLineInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice) throws AxelorException {
-		return null;
+	public BigDecimal computeAmountToInvoicePercent(SaleOrder saleOrder,
+													BigDecimal amount,
+													boolean isPercent) throws AxelorException {
+		BigDecimal total = Beans.get(SaleOrderService.class)
+				.getTotalSaleOrderPrice(saleOrder);
+	    if (!isPercent) {
+			amount = amount.multiply(new BigDecimal("100"))
+				.divide(
+						total,
+						4,
+						RoundingMode.HALF_EVEN
+				);
+		}
+		if (amount.compareTo(new BigDecimal("100")) > 0) {
+	    	throw new AxelorException(
+	    			I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX),
+					IException.INCONSISTENCY
+			);
+		}
+
+		return amount;
+	}
+	@Override
+	public Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
+
+		List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
+		List<SaleOrderLine> createdSOLineList = new ArrayList<>();
+
+		BigDecimal percentToInvoice = computeAmountToInvoicePercent(
+				saleOrder, amountToInvoice, isPercent);
+
+		if (taxLineList != null) {
+			Product invoicingProduct = Beans.get(AppSupplychainService.class)
+					.getAppSupplychain().getInvoicingProduct();
+			if (invoicingProduct == null) {
+				throw new AxelorException(I18n.get(
+						IExceptionMessage.SO_INVOICE_MISSING_INVOICING_PRODUCT),
+						IException.CONFIGURATION_ERROR
+				);
+			}
+			for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
+				BigDecimal lineAmountToInvoice = percentToInvoice
+						.multiply(saleOrderLineTax.getExTaxBase())
+						.divide(new BigDecimal("100"),
+								4,
+								BigDecimal.ROUND_HALF_EVEN);
+
+				SaleOrderLine createdSOLine = new SaleOrderLine();
+				createdSOLine.setPrice(lineAmountToInvoice);
+				createdSOLine.setPriceDiscounted(lineAmountToInvoice);
+				createdSOLine.setQty(BigDecimal.ONE);
+
+				createdSOLine.setProduct(invoicingProduct);
+				createdSOLine.setProductName(invoicingProduct.getName());
+				createdSOLine.setUnit(invoicingProduct.getUnit());
+
+				createdSOLineList.add(createdSOLine);
+			}
+		}
+
+
+	    return generateInvoice(saleOrder, createdSOLineList);
 	}
 
 	@Override
@@ -147,7 +220,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			if (qtyToInvoiceMap.containsKey(SOrderId)) {
 				if (isPercent) {
 					BigDecimal percent = qtyToInvoiceMap.get(SOrderId);
-					BigDecimal realQty = convertPercentToQty(saleOrderLine.getQty(), percent);
+					BigDecimal realQty =
+							saleOrderLine.getQty().multiply(percent)
+							.divide(
+									new BigDecimal("100"),
+									4,
+									RoundingMode.HALF_EVEN
+							);
 					qtyToInvoiceMap.put(SOrderId, realQty);
 				}
 				if (qtyToInvoiceMap.get(SOrderId)
