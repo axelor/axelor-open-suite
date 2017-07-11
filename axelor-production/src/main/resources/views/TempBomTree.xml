@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+    
+	<tree name="bill-of-material-tree" title="Bills of material">
+	   	<column name="product" type="reference"/>
+	   	<column name="qty" type="decimal"/>
+	   	<column name="unit" type="reference"/>
+	   	<column name="prodProcess" type="reference"/>
+		<node model="com.axelor.apps.production.db.TempBomTree" domain="self.id = :_tempBomTreeId" onClick="action-bill-of-material-line-view">
+			<field name="product" as="product"/>
+			<field name="qty" as="qty"/>
+			<field name="unit" as="unit"/>
+			<field name="prodProcess" as="prodProcess"/>
+		</node>    	
+		<node model="com.axelor.apps.production.db.TempBomTree" parent="parent" draggable="true" onClick="action-bill-of-material-line-view">
+			<field name="product" as="product"/>
+			<field name="qty" as="qty"/>
+			<field name="unit" as="unit"/>
+			<field name="prodProcess" as="prodProcess"/>
+		</node>
+	</tree>
+	
+    
+</object-views>
+
+

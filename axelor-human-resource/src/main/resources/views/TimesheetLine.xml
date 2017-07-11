@@ -11,6 +11,7 @@
 		<field name="durationStored" hidden="true"/>
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" />
 		<field name="comments" />
 		<field name="project" hidden="true" />
 	</grid>
@@ -23,6 +24,7 @@
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" />
 		<field name="comments" />
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
@@ -37,6 +39,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" />
 		<field name="comments" />
 	</grid>
 
@@ -49,6 +52,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		<field name="comments" />
+		<field name="enableEditor" />
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 
@@ -64,6 +68,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<field name="enableEditor" />
 			<field name="comments" />
 		</panel>
 	</form>
@@ -79,6 +84,7 @@
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<field name="enableEditor" />
 			<field name="comments" />
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
@@ -97,6 +103,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="comments" />
+			<field name="enableEditor" />
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>

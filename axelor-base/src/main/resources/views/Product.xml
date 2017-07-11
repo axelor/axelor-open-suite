@@ -77,17 +77,20 @@
   		</panel>
   		<panel-tabs title="Product specific attributes">
     		<panel name="sale" title="Sale" showTitle="false">
-	      		<panel title="Sales" colSpan="6">
-			        <field name="sellable" colSpan="12"/>
+				<panel title="Sales" colSpan="6">
+					<field name="sellable" colSpan="12"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
-			        <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
-			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
-	        		<panel name="units" title="Units" colSpan="6">
-			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
-			          	<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
-			         	<field name="purchasesUnit" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
-	        		</panel>
-	      		</panel>
+					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
+					<panel name="units" title="Units" colSpan="6">
+						<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
+						<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
+						<field name="purchasesUnit" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
+					</panel>
+					<panel colSpan="12" title="Configurator" if-module="axelor-sale">
+						<button name="showConfigurator" title="Show Configurator" onClick="action-product-method-show-product-configurator"/>
+					</panel>
+				</panel>
 	      		<panel colSpan="6">
 			      	<panel name="productDates" title="Product dates" colSpan="12">
 			        	<field name="startDate" colSpan="12"/>
@@ -147,6 +150,7 @@
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
 				        <field name="isPerishable"/>
 				        <field name="perishableNbrOfMonths" showIf="isPerishable"/>
+				        <field name="checkExpirationDateAtStockMoveRealization" showIf="hasWarranty || isPerishable"/>
 	      			</panel>
 	      			<panel colSpan="12">
 	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
