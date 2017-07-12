@@ -58,12 +58,13 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
@@ -192,9 +193,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 		if (kilometricExpenseLineList != null) {
 			for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
-				exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
-				taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
-				inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
+				if (kilometricExpenseLine.getUntaxedAmount() != null) {
+					exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
+				}
+				if (kilometricExpenseLine.getTotalTax() != null) {
+					taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
+				}
+				if (kilometricExpenseLine.getTotalAmount() != null) { 
+					inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
+				}
 			}
 		}
 		expense.setExTaxTotal(exTaxTotal);
@@ -419,24 +426,41 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void addPayment(Expense expense) throws AxelorException {
-		expense.setPaymentDate(LocalDate.now());
-
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
+		
+		expense.setPaymentDate(appAccountService.getTodayDate());
+		
 		PaymentMode paymentMode = expense.getPaymentMode();
-
+		
 		if (paymentMode == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE),
-					IException.MISSING_FIELD);
+			paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+
+			if (paymentMode == null) {
+				throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE),
+						IException.MISSING_FIELD);
+			}
+			expense.setPaymentMode(paymentMode);
 		}
 
 		if (paymentMode.getGenerateBankOrder()) {
-			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+			BankOrder bankOrder = Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense, bankDetails);
+			expense.setBankOrder(bankOrder);
 		}
 
-		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
-		expenseRepository.save(expense);
+		if (paymentMode.getAutomaticTransmission()) {
+			expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+		} else {
+			expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+			expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+		}
+
+		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount())
+				.subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
+	}
+
+	public void addPayment(Expense expense) throws AxelorException {
+		addPayment(expense, expense.getCompany().getDefaultBankDetails());
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -671,16 +695,32 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
-		List<EmployeeVehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getEmployeeVehicleList();
-		LocalDate expenseDate = expenseLine.getExpenseDate();
+		
 		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
+		
+		Expense expense = expenseLine.getExpense();
+		
+		if (expense == null) {
+			return kilometricAllowParamList;
+		}
+		
+		if (expense.getId() != null) {
+			expense = expenseRepository.find(expense.getId());
+		}
+		
+		if (expense.getUser() != null && expense.getUser().getEmployee() == null) {
+			return kilometricAllowParamList;
+		}
+		
+		List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
+		LocalDate expenseDate = expenseLine.getExpenseDate();
 
 		for (EmployeeVehicle vehicle : vehicleList) {
 			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}
-
+		
 		return kilometricAllowParamList;
 	}
 }

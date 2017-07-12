@@ -56,6 +56,8 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
+	protected static final int FETCH_LIMIT = 10;
+
 	protected ReminderService reminderService;
 	protected DoubtfulCustomerService doubtfulCustomerService;
 	protected ReimbursementExportService reimbursementExportService;
@@ -93,6 +95,8 @@ public abstract class BatchStrategy extends AbstractBatch {
 	@Inject
 	protected ReimbursementService reimbursementService;
 
+	protected BatchStrategy() {
+	}
 
 	protected BatchStrategy(ReminderService reminderService) {
 		super();

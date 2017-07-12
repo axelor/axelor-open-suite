@@ -164,7 +164,12 @@
 		<option value="2">Supplier Payment</option>
 		<option value="3">Customer Reimbursement</option>
 	</selection>
-	
+
+	<selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
+		<option value="1">Customer refund</option>
+		<option value="2">Partner credit balance reimbursement</option>
+	</selection>
+
 	<selection name="ireimbursement.batch.type.select">
 		<option value="1">Reimbursement Export</option>
 		<option value="2">Rejected Reimbursements Import</option>

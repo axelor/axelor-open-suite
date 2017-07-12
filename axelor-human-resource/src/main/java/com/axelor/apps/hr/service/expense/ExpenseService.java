@@ -21,11 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
-import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,7 +34,6 @@ import com.google.inject.persist.Transactional;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 public interface ExpenseService  {
@@ -69,6 +68,7 @@ public interface ExpenseService  {
 	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;
 	public void addPayment(Expense expense) throws AxelorException;
 
 	/**
