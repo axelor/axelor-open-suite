@@ -71,4 +71,5 @@ public class ITranslation {
 	public static final String LUNCH_VOUCHER_TOTAL= /*$$(*/ "LunchVoucher.total"; /*)*/
 	public static final String LUNCH_VOUCHER_DISTRIBUTION_DATE= /*$$(*/ "LunchVoucher.distributionDate"; /*)*/
 
+	public static final String EDITOR_ADD_LINE = /*$$(*/ "Add a line"; /*)*/
 }

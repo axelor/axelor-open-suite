@@ -108,7 +108,7 @@
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" form-view="project-form" grid-view="project-grid"/>
 			</panel>
-			<panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getManageSupplier()" >
+			<panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 				<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
 				<panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>

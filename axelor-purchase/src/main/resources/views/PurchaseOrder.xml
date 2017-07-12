@@ -123,7 +123,7 @@
 			<panel name="notes" title="Notes">
 				<field name="notes" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 			</panel>
-			<panel name="POManagement" title="PO Management" if-module="axelor-supplier-management" colSpan="12" if="__config__.app.getApp('purchase').getManageSupplier()" >
+			<panel name="POManagement" title="PO Management" if-module="axelor-supplier-management" colSpan="12" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" />
 			</panel>
 			<panel name="timetable" title="Timetable" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
