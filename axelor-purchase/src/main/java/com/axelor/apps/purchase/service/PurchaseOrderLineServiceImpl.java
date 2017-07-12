@@ -294,7 +294,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	@Override
 	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner)  {
 
-		if(product.getSupplierCatalogList() != null)  {
+		if(product != null && product.getSupplierCatalogList() != null)  {
 
 			for(SupplierCatalog supplierCatalog : product.getSupplierCatalogList())  {
 
@@ -393,6 +393,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		}
 		return false;
 		
+	}
+
+	@Override
+	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+		SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
+		return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
 	}
 
 }

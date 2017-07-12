@@ -223,6 +223,7 @@
 "The company is required and must be the same for all purchase orders",,,
 "The currency is required and must be the same for all purchase orders",,,
 "The field 'Location' must be filled.",,,
+"The minimum order quantity of %s to the supplier is not respected.",,,
 "The supplier Partner is required and must be the same for all purchase orders",,,
 "Timetable",,,
 "Title",,,

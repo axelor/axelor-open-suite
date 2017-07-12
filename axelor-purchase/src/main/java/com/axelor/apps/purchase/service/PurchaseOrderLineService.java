@@ -69,5 +69,13 @@ public interface PurchaseOrderLineService{
 	
 	public boolean unitPriceShouldBeUpdate(PurchaseOrder purchaseOrder, Product product);
 
+	/**
+	 * Get minimum quantity from supplier catalog if available, else return one.
+	 * 
+	 * @param purchaseOrder
+	 * @param purchaseOrderLine
+	 * @return
+	 */
+	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
 }
