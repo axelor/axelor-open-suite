@@ -124,13 +124,13 @@ public interface IExceptionMessage {
 	static final String MOVE_LINE_EXPORT_4 = /*$$(*/ "%s : Error : You must configure a purchase interface sequence for the company %s" /*)*/ ;
 
 	/**
-	 * Move line report service and controller
+	 * Accounting report service and controller
 	 */
-	static final String MOVE_LINE_REPORT_1 = /*$$(*/ "%s : Error : You must configure an account reporting sequence for the company %s" /*)*/ ;
-	static final String MOVE_LINE_REPORT_2 = /*$$(*/ "%s : Error : You must configure an account export sequence for the company %s" /*)*/ ;
-	static final String MOVE_LINE_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/ ;
-	static final String MOVE_LINE_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/ ;
-	static final String MOVE_LINE_REPORT_6 = /*$$(*/ "Moves exported" /*)*/ ;
+	static final String ACCOUNTING_REPORT_1 = /*$$(*/ "%s : Error : You must configure an account reporting sequence for the company %s" /*)*/ ;
+	static final String ACCOUNTING_REPORT_2 = /*$$(*/ "%s : Error : You must configure an account export sequence for the company %s" /*)*/ ;
+	static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/ ;
+	static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/ ;
+	static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/ ;
 
 	/**
 	 * Move line service

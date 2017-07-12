@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.JournalType;
-import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -52,11 +52,11 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MoveLineReportServiceImpl implements MoveLineReportService  {
+public class AccountingReportServiceImpl implements AccountingReportService  {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected MoveLineReportRepository moveLineReportRepo;
+	protected AccountingReportRepository accountingReportRepo;
 
 	protected ZonedDateTime datetime;
 
@@ -69,8 +69,8 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 
 	@Inject
-	public MoveLineReportServiceImpl(AppAccountService appBaseService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
-		this.moveLineReportRepo = moveLineReportRepo;
+	public AccountingReportServiceImpl(AppAccountService appBaseService, AccountingReportRepository accountingReportRepo, AccountRepository accountRepo) {
+		this.accountingReportRepo = accountingReportRepo;
 		this.accountRepo = accountRepo;
 		datetime = appBaseService.getTodayDateTime();
 
@@ -78,9 +78,9 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 
 	@SuppressWarnings("unchecked")
-	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException  {
+	public String getMoveLineList(AccountingReport accountingReport) throws AxelorException  {
 
-		this.buildQuery(moveLineReport);
+		this.buildQuery(accountingReport);
 
 		int i = 1;
 		
@@ -117,60 +117,60 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	}
 	
 	
-	public String buildQuery(MoveLineReport moveLineReport) throws AxelorException  {
+	public String buildQuery(AccountingReport accountingReport) throws AxelorException  {
 		
-		if(moveLineReport.getCompany() != null)  {
-			this.addParams("self.move.company = ?%d", moveLineReport.getCompany());
+		if(accountingReport.getCompany() != null)  {
+			this.addParams("self.move.company = ?%d", accountingReport.getCompany());
 		}
 
-		if(moveLineReport.getCashRegister() != null)	{
-			this.addParams("self.move.cashRegister = ?%d", moveLineReport.getCashRegister());
+		if(accountingReport.getCashRegister() != null)	{
+			this.addParams("self.move.cashRegister = ?%d", accountingReport.getCashRegister());
 		}
 
-		if(moveLineReport.getDateFrom() != null)  {
-			this.addParams("self.date >= ?%d", moveLineReport.getDateFrom());
+		if(accountingReport.getDateFrom() != null)  {
+			this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
 		}
 
-		if(moveLineReport.getDateTo() != null)  {
-			this.addParams("self.date <= ?%d", moveLineReport.getDateTo());
+		if(accountingReport.getDateTo() != null)  {
+			this.addParams("self.date <= ?%d", accountingReport.getDateTo());
 		}
 
-		if(moveLineReport.getDate() != null)  {
-			this.addParams("self.date <= ?%d", moveLineReport.getDate());
+		if(accountingReport.getDate() != null)  {
+			this.addParams("self.date <= ?%d", accountingReport.getDate());
 		}
 
-		if(moveLineReport.getJournal() != null)	{
-			this.addParams("self.move.journal = ?%d", moveLineReport.getJournal());
+		if(accountingReport.getJournal() != null)	{
+			this.addParams("self.move.journal = ?%d", accountingReport.getJournal());
 		}
 
-		if(moveLineReport.getPeriod() != null)	{
-			this.addParams("self.move.period = ?%d", moveLineReport.getPeriod());
+		if(accountingReport.getPeriod() != null)	{
+			this.addParams("self.move.period = ?%d", accountingReport.getPeriod());
 		}
 
-		if(moveLineReport.getAccountSet() != null && !moveLineReport.getAccountSet().isEmpty())	{
+		if(accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty())	{
 			this.addParams("(self.account in (?%d) or self.account.parentAccount in (?%d) "
 					+ "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
 					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))", moveLineReport.getAccountSet());
+					+ "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))", accountingReport.getAccountSet());
 		}
 
-		if(moveLineReport.getPartnerSet() != null && !moveLineReport.getPartnerSet().isEmpty())	{
-			this.addParams("self.partner in (?%d)", moveLineReport.getPartnerSet());
+		if(accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty())	{
+			this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
 		}
 
-		if(moveLineReport.getYear() != null)  {
-			this.addParams("self.move.period.year = ?%d", moveLineReport.getYear());
+		if(accountingReport.getYear() != null)  {
+			this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
 		}
 
-		if(moveLineReport.getPaymentMode() != null)	{
-			this.addParams("self.move.paymentMode = ?%d", moveLineReport.getPaymentMode());
+		if(accountingReport.getPaymentMode() != null)	{
+			this.addParams("self.move.paymentMode = ?%d", accountingReport.getPaymentMode());
 		}
 
-		if(moveLineReport.getTypeSelect() == 5)	{
+		if(accountingReport.getTypeSelect() == 5)	{
 			this.addParams("self.amountPaid > 0 AND self.credit > 0");
 		}
 
-		if(moveLineReport.getTypeSelect() == 4)  {
+		if(accountingReport.getTypeSelect() == 4)  {
 			this.addParams("self.amountRemaining > 0 AND self.debit > 0");
 		}
 
@@ -178,16 +178,16 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		
 		// FOR EXPORT ONLY :
 		
-		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
-			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = ?%d))", moveLineReport);
+		if(accountingReport.getTypeSelect() > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
+			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport = ?%d))", accountingReport);
 		}
 
-		if(moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
+		if(accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			this.addParams("self.move.journal.notExportOk = false ");
 		}
 		
-		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
-			this.addParams("self.move.journal.type = ?%d", this.getJournalType(moveLineReport));
+		if(accountingReport.getTypeSelect() > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
+			this.addParams("self.move.journal.type = ?%d", this.getJournalType(accountingReport));
 		}
 
 		log.debug("Query : {}", this.query);
@@ -219,29 +219,29 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	}
 
 
-	public void setSequence(MoveLineReport moveLineReport, String sequence)  {
-		moveLineReport.setRef(sequence);
+	public void setSequence(AccountingReport accountingReport, String sequence)  {
+		accountingReport.setRef(sequence);
 	}
 
-	public String getSequence(MoveLineReport moveLineReport) throws AxelorException  {
-		if(moveLineReport.getTypeSelect() <= 0)  { 	return null;  }
+	public String getSequence(AccountingReport accountingReport) throws AxelorException  {
+		if(accountingReport.getTypeSelect() <= 0)  { 	return null;  }
 
 		SequenceService sequenceService = Beans.get(SequenceService.class);
-		if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() >= 10 )  {
+		if(accountingReport.getTypeSelect() <= 5 || accountingReport.getTypeSelect() >= 10 )  {
 
-			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany());
+			String seq = sequenceService.getSequenceNumber(IAdministration.ACCOUNTING_REPORT, accountingReport.getCompany());
 			if(seq == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_1),
-						AppBaseServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1),
+						AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			return seq;
 		}
 		else  {
-			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany());
+			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, accountingReport.getCompany());
 			if(seq == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_2),
-						AppBaseServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2),
+						AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			return seq;
@@ -249,27 +249,27 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	}
 
 
-	public JournalType getJournalType(MoveLineReport moveLineReport) throws AxelorException  {
-		Company company = moveLineReport.getCompany();
+	public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException  {
+		Company company = accountingReport.getCompany();
 
 		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		switch (moveLineReport.getTypeSelect()) {
-			case MoveLineReportRepository.EXPORT_SALES:
+		switch (accountingReport.getTypeSelect()) {
+			case AccountingReportRepository.EXPORT_SALES:
 
 				return accountConfigService.getSaleJournalType(accountConfig);
 
-			case MoveLineReportRepository.EXPORT_REFUNDS:
+			case AccountingReportRepository.EXPORT_REFUNDS:
 
 				return accountConfigService.getCreditNoteJournalType(accountConfig);
 
-			case MoveLineReportRepository.EXPORT_TREASURY:
+			case AccountingReportRepository.EXPORT_TREASURY:
 
 				return accountConfigService.getCashJournalType(accountConfig);
 
-			case MoveLineReportRepository.EXPORT_PURCHASES:
+			case AccountingReportRepository.EXPORT_PURCHASES:
 
 				return accountConfigService.getPurchaseJournalType(accountConfig);
 
@@ -280,27 +280,27 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		return null;
 	}
 
-	public Account getAccount(MoveLineReport moveLineReport)  {
-		if(moveLineReport.getTypeSelect() ==  13 && moveLineReport.getCompany() != null)  {
-			return accountRepo.all().filter("self.company = ?1 AND self.code LIKE '58%'", moveLineReport.getCompany()).fetchOne();
+	public Account getAccount(AccountingReport accountingReport)  {
+		if(accountingReport.getTypeSelect() ==  13 && accountingReport.getCompany() != null)  {
+			return accountRepo.all().filter("self.company = ?1 AND self.code LIKE '58%'", accountingReport.getCompany()).fetchOne();
 		}
 		return null;
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setStatus(MoveLineReport moveLineReport)  {
-		moveLineReport.setStatusSelect(MoveLineReportRepository.STATUS_VALIDATED);
-		moveLineReportRepo.save(moveLineReport);
+	public void setStatus(AccountingReport accountingReport)  {
+		accountingReport.setStatusSelect(AccountingReportRepository.STATUS_VALIDATED);
+		accountingReportRepo.save(accountingReport);
 	}
 
 	/**
-	 * @param moveLineReport
+	 * @param accountingReport
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setPublicationDateTime(MoveLineReport moveLineReport)  {
-		moveLineReport.setPublicationDateTime(this.datetime);
-		moveLineReportRepo.save(moveLineReport);
+	public void setPublicationDateTime(AccountingReport accountingReport)  {
+		accountingReport.setPublicationDateTime(this.datetime);
+		accountingReportRepo.save(accountingReport);
 	}
 
 
@@ -382,9 +382,9 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	}
 
 
-	public BigDecimal getCreditBalance(MoveLineReport moveLineReport, String queryFilter) {
+	public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter) {
 
-		if(moveLineReport.getTypeSelect() == 4) {
+		if(accountingReport.getTypeSelect() == 4) {
 			return this.getCreditBalanceType4();
 		}
 

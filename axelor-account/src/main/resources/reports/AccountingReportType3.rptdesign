@@ -25,7 +25,7 @@
     <property name="imageDPI">96</property>
     <property name="locale">fr_FR</property>
     <parameters>
-        <scalar-parameter name="MoveLineReportId" id="896">
+        <scalar-parameter name="AccountingReportId" id="896">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -247,7 +247,7 @@ row["amount_remaining"]/row["countmoveline"]
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -258,7 +258,7 @@ row["amount_remaining"]/row["countmoveline"]
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -472,22 +472,22 @@ row["amount_remaining"]/row["countmoveline"]
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineName", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq, 
-MoveLineReport.ref, MoveLine.credit, MoveLine.debit,
+AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name",  
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
-MoveLineReport.date_from, Reconcile.amount as amountReconciled, MoveLine.amount_remaining, MoveLine2.countMoveLine     
-from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
+AccountingReport.date_from, Reconcile.amount as amountReconciled, MoveLine.amount_remaining, MoveLine2.countMoveLine     
+from public.account_accounting_report as AccountingReport 
+left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
 left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
-left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.account_move_line_report = MoveLineReport.id)
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
-left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.account_accounting_situation as AccountingSituation on (AccountingSituation.partner = Partner.id AND AccountingSituation.company = Company.id)
 left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.accounting_situation = AccountingSituation.id) 
 left outer join public.base_year as YYear on (YYear.id = ReportedBalanceLine.year) 
@@ -496,22 +496,22 @@ left outer join public.account_move_line as MoveLineReconciled on (Reconcile.deb
 left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
 left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
 left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as mlid 
-				from public.account_move_line_report as MoveLineReport2 
-				left outer join public.account_move_line as MoveLine2 on (MoveLineReport2.id = ?)
+				from public.account_accounting_report as AccountingReport2 
+				left outer join public.account_move_line as MoveLine2 on (AccountingReport2.id = ?)
 				left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
 				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
 				
 				left outer join public.account_account as MoveLineAccount2 on (MoveLine2.account  = MoveLineAccount2.id )
 				left outer join public.base_partner as Partner2 on (MoveLine2.partner  = Partner2.id)
 
-				left outer join public.account_move_line_report_account_set as AccountSet2 on (AccountSet2.account_move_line_report = MoveLineReport2.id)
-				left outer join public.account_move_line_report_partner_set as PartnerSet2 on (PartnerSet2.account_move_line_report = MoveLineReport2.id)
+				left outer join public.account_accounting_report_account_set as AccountSet2 on (AccountSet2.account_accounting_report = AccountingReport2.id)
+				left outer join public.account_accounting_report_partner_set as PartnerSet2 on (PartnerSet2.account_accounting_report = AccountingReport2.id)
 				
 				where 
-				(MoveLineReport2.date_from IS NULL OR MoveLine2.date_val >= MoveLineReport2.date_from) AND 
-				(MoveLineReport2.date_to IS NULL OR MoveLine2.date_val <= MoveLineReport2.date_to) AND
-				MoveLine2.date_val <= MoveLineReport2.date_val and 
-				Move2.company = MoveLineReport2.company AND
+				(AccountingReport2.date_from IS NULL OR MoveLine2.date_val >= AccountingReport2.date_from) AND 
+				(AccountingReport2.date_to IS NULL OR MoveLine2.date_val <= AccountingReport2.date_to) AND
+				MoveLine2.date_val <= AccountingReport2.date_val and 
+				Move2.company = AccountingReport2.company AND
 				(AccountSet2.account_set IS NULL OR AccountSet2.account_set = MoveLineAccount2.id) AND
 				(PartnerSet2.partner_set IS NULL OR PartnerSet2.partner_set = Partner2.id) AND
 				MoveLineAccount2.reconcile_ok = true AND 
@@ -519,17 +519,17 @@ left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as m
 				
 				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
-(MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
-MoveLine.date_val <= MoveLineReport.date_val and 
-Move.company = MoveLineReport.company AND
+(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
+(AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
+MoveLine.date_val <= AccountingReport.date_val and 
+Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = MoveLineAccount.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
 MoveLineAccount.reconcile_ok = true 
 AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 ]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -585,7 +585,7 @@ AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -686,11 +686,11 @@ AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
                     <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, MoveLineReport.global_by_partner , 
-MoveLineReport.date_to, MoveLineReport.date_from, MoveLineReport.date_val as "ReportDate", MoveLineReport.publication_date_time as "ReportDateEdition" 
-from   public.account_move_line_report as MoveLineReport 
-inner join public.base_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
-left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
+            <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, AccountingReport.global_by_partner , 
+AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "ReportDate", AccountingReport.publication_date_time as "ReportDateEdition" 
+from   public.account_accounting_report as AccountingReport 
+inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
+left outer join public.base_period as Period on (AccountingReport.period = Period.id)
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -758,7 +758,7 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
             <page-header>
                 <grid id="3117">
                     <property name="width">11.033333333333333in</property>
-                    <property name="dataSet">MoveLineReportDS</property>
+                    <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">company_name</property>
@@ -907,7 +907,7 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
     <body>
         <grid id="490">
             <property name="width">10.96875in</property>
-            <property name="dataSet">MoveLineReportDS</property>
+            <property name="dataSet">AccountingReportDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">company_name</property>
@@ -1111,7 +1111,7 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
         <label id="487"/>
         <grid id="970">
             <property name="height">1.71875in</property>
-            <property name="dataSet">MoveLineReportDS</property>
+            <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility">
                 <structure>
                     <property name="format">all</property>
@@ -1590,7 +1590,7 @@ row["ReportedBalanceAmount"]
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">bottom</property>
                                     <text id="2687">
-                                        <property name="dataSet">MoveLineReportDS</property>
+                                        <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">company_name</property>
@@ -1664,7 +1664,7 @@ row["ReportedBalanceAmount"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <text id="1544">
-                                        <property name="dataSet">MoveLineReportDS</property>
+                                        <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">company_name</property>
@@ -2198,7 +2198,7 @@ row["ReportedBalanceAmount"]
         </grid>
         <grid id="1225">
             <property name="height">2.03125in</property>
-            <property name="dataSet">MoveLineReportDS</property>
+            <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility">
                 <structure>
                     <property name="format">all</property>
@@ -2811,7 +2811,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">bottom</property>
                                     <text id="2690">
-                                        <property name="dataSet">MoveLineReportDS</property>
+                                        <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">company_name</property>
@@ -2906,7 +2906,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <text id="1545">
-                                        <property name="dataSet">MoveLineReportDS</property>
+                                        <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">company_name</property>

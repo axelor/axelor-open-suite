@@ -36,7 +36,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="MoveLineReportId" id="896">
+        <scalar-parameter name="AccountingReportId" id="896">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -162,7 +162,7 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -264,17 +264,17 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PaymentVoucher.ref as "PaymentVoucherRef", PaymentVoucher.id as "PaymentVoucherId", 
-MoveLineReport.global_by_post as "GlobalByPost",  MoveLineReport.global as "Global", 
+AccountingReport.global_by_post as "GlobalByPost",  AccountingReport.global as "Global", 
 Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid",  
 CashRegister.name as "CashRegisterName"
 -- Récupération des informations de l'en-tête du reporting comptable passé en paramètre
-from public.account_move_line_report as MoveLineReport 
-left outer join public.account_payment_voucher as PaymentVoucher on (MoveLineReport.id = ?) 
+from public.account_accounting_report as AccountingReport 
+left outer join public.account_payment_voucher as PaymentVoucher on (AccountingReport.id = ?) 
 left outer join public.base_partner as Partner on (PaymentVoucher.partner  = Partner.id)
 
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
-left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
+left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
 
 -- Récupération des éléments des saisies paiements
 left outer join public.account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id) 
@@ -283,16 +283,16 @@ left outer join public.account_cash_register as CashRegister on (PaymentVoucher.
 where 
 
 -- Filtre sur les paramètres du reporting comptable
-(MoveLineReport.date_from IS NULL OR date(PaymentVoucher.payment_date) >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR date(PaymentVoucher.payment_date)  <= MoveLineReport.date_to) AND
-date(PaymentVoucher.payment_date) <= MoveLineReport.date_val and 
+(AccountingReport.date_from IS NULL OR date(PaymentVoucher.payment_date) >= AccountingReport.date_from) AND 
+(AccountingReport.date_to IS NULL OR date(PaymentVoucher.payment_date)  <= AccountingReport.date_to) AND
+date(PaymentVoucher.payment_date) <= AccountingReport.date_val and 
 PaymentVoucher.company = Company.id AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
-(MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = CashRegister.id) AND
+(AccountingReport.cash_register IS NULL OR AccountingReport.cash_register = CashRegister.id) AND
 PaymentMode.type_select = 7 AND PaymentVoucher.status_select = 2 AND PaymentVoucher.operation_type_select = 3
 ORDER BY PaymentVoucher.paid_amount]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -354,7 +354,7 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -478,14 +478,14 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                     <property name="nativeDataType">91</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", CashRegister.name as "CashRegisterName", MoveLineReport.date_val as "ReportDate", 
-MoveLineReport.global as "Global", MoveLineReport.global_by_post as "GlobalByPost", 
-MoveLineReport.publication_date_time as "ReportDateEdition", Period.name as "PeriodName", 
-MoveLineReport.date_to as "DateTo", MoveLineReport.date_from as "DateFrom"
-from public.account_move_line_report as MoveLineReport
-inner join public.base_company as Company  on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
-left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
-left outer join public.account_cash_register as CashRegister on (MoveLineReport.cash_register = CashRegister.id)]]></xml-property>
+            <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", CashRegister.name as "CashRegisterName", AccountingReport.date_val as "ReportDate", 
+AccountingReport.global as "Global", AccountingReport.global_by_post as "GlobalByPost", 
+AccountingReport.publication_date_time as "ReportDateEdition", Period.name as "PeriodName", 
+AccountingReport.date_to as "DateTo", AccountingReport.date_from as "DateFrom"
+from public.account_accounting_report as AccountingReport
+inner join public.base_company as Company  on (AccountingReport.id = ? and AccountingReport.company = Company.id)
+left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+left outer join public.account_cash_register as CashRegister on (AccountingReport.cash_register = CashRegister.id)]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -531,7 +531,7 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
             <page-header>
                 <grid id="3117">
                     <property name="width">7.625in</property>
-                    <property name="dataSet">MoveLineReportDS</property>
+                    <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">CompanyName</property>
@@ -690,7 +690,7 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
     <body>
         <grid id="490">
             <property name="width">7.688888888888889in</property>
-            <property name="dataSet">MoveLineReportDS</property>
+            <property name="dataSet">AccountingReportDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">CompanyName</property>

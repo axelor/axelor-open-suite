@@ -24,7 +24,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="MoveLineReportId" id="570">
+        <scalar-parameter name="AccountingReportId" id="570">
             <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -187,7 +187,7 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
@@ -292,9 +292,9 @@
             <xml-property name="queryText"><![CDATA[select Account.id as account_id, Account.code as account_code, Account.name as account_name, Account.parent_account as parent_account_id, 
 SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit - MoveLine.credit) as balance 
 
-from public.account_move_line_report as MoveLineReport 
+from public.account_accounting_report as AccountingReport 
 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?) 
+left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?) 
 left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
@@ -307,34 +307,34 @@ left outer join public.account_account as ParentAccount6 on (ParentAccount5.pare
 
 left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
-left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.account_move_line_report = MoveLineReport.id)
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
-left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
+left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 
 where 
-(MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
-MoveLine.date_val <= MoveLineReport.date_val AND 
-Move.company = MoveLineReport.company AND
+(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
+(AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
+MoveLine.date_val <= AccountingReport.date_val AND 
+Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
 or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
 or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
-(MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = Move.cash_register) AND 
-(MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
-(MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
-(MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode))  
+(AccountingReport.cash_register IS NULL OR AccountingReport.cash_register = Move.cash_register) AND 
+(AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND 
+(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND 
+(AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))  
 AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 
 group by Account.id 
 order by Account.code
 ]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -419,7 +419,7 @@ order by Account.code
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
+                    <property name="paramName">AccountingReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -592,19 +592,19 @@ order by Account.code
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name, MoveLineReport.date_from, MoveLineReport.date_to, MoveLineReport.date_val as report_date, 
-MoveLineReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, 
-Period.name as period_name, Journal.name as journal_name, MoveLineReport.global, MoveLineReport.global_by_date,
-MoveLineReport.global_by_post, CashRegister.name as cash_register_name,
+            <xml-property name="queryText"><![CDATA[select Company.name as company_name, AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date, 
+AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, 
+Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
+AccountingReport.global_by_post, CashRegister.name as cash_register_name,
 PaymentMode.name as payment_mode
-from public.account_move_line_report as MoveLineReport 
-inner join public.base_company as Company on (MoveLineReport.company = Company.id)
+from public.account_accounting_report as AccountingReport 
+inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join public.account_payment_mode as PaymentMode on (MoveLineReport.payment_mode = PaymentMode.id)
-left outer join public.account_journal as Journal on (MoveLineReport.journal = Journal.id)
-left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
-left outer join public.account_cash_register as CashRegister on (MoveLineReport.cash_register = CashRegister.id)
-where MoveLineReport.id = ? ]]></xml-property>
+left outer join public.account_payment_mode as PaymentMode on (AccountingReport.payment_mode = PaymentMode.id)
+left outer join public.account_journal as Journal on (AccountingReport.journal = Journal.id)
+left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+left outer join public.account_cash_register as CashRegister on (AccountingReport.cash_register = CashRegister.id)
+where AccountingReport.id = ? ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -778,7 +778,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <page-header>
                 <grid id="3117">
                     <property name="width">11.033333333333333in</property>
-                    <property name="dataSet">MoveLineReportDS</property>
+                    <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">company_name</property>
@@ -968,7 +968,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     <body>
         <grid id="491">
             <property name="width">11.1in</property>
-            <property name="dataSet">MoveLineReportDS</property>
+            <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility"/>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1083,7 +1083,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.title'</value>
+                                    <value type="javascript">'AccountingReportType2.title'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1132,7 +1132,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.company'</value>
+                                    <value type="javascript">'AccountingReportType2.company'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1175,7 +1175,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.endDate'</value>
+                                    <value type="javascript">'AccountingReportType2.endDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1217,7 +1217,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.period'</value>
+                                    <value type="javascript">'AccountingReportType2.period'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1267,7 +1267,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.journal'</value>
+                                    <value type="javascript">'AccountingReportType2.journal'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1310,7 +1310,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.from'</value>
+                                    <value type="javascript">'AccountingReportType2.from'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1352,7 +1352,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.to'</value>
+                                    <value type="javascript">'AccountingReportType2.to'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1404,7 +1404,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.paymentMode'</value>
+                                    <value type="javascript">'AccountingReportType2.paymentMode'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1458,7 +1458,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType2.cashRegister'</value>
+                                    <value type="javascript">'AccountingReportType2.cashRegister'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1683,7 +1683,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.account'</value>
+                                                    <value type="javascript">'AccountingReportType2.account'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1724,7 +1724,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.accountLabel'</value>
+                                                    <value type="javascript">'AccountingReportType2.accountLabel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1763,7 +1763,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.totalDebit'</value>
+                                                    <value type="javascript">'AccountingReportType2.totalDebit'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1804,7 +1804,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.totalCredit'</value>
+                                                    <value type="javascript">'AccountingReportType2.totalCredit'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1842,7 +1842,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.balance'</value>
+                                                    <value type="javascript">'AccountingReportType2.balance'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1882,7 +1882,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.debit'</value>
+                                                    <value type="javascript">'AccountingReportType2.debit'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1918,7 +1918,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.credit'</value>
+                                                    <value type="javascript">'AccountingReportType2.credit'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2081,7 +2081,7 @@ else  {  0.00 }</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MoveLineReportType2.generalBalance'</value>
+                                                    <value type="javascript">'AccountingReportType2.generalBalance'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

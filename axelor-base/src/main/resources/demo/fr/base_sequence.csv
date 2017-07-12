@@ -37,7 +37,7 @@
 135;"move";"Ecriture d'apurements";1;7;"EAPUR%YY";;1;1;1
 136;"move";"Ecriture passage en irrécouvrable";1;6;"EIRREC%YY";;1;1;1
 137;"moveLineExport";"Export comptable";1;6;"EXPCPT%YY";;1;1;1
-138;"moveLineReport";"Reporting comptable";1;6;"REPCPT%YY";;1;1;1
+138;"accountingReport";"Reporting comptable";1;6;"REPCPT%YY";;1;1;1
 139;"paymentSchedule";"N° écheancier";1;9;"ECH%YY";;1;1;1
 140;"paymentVoucher";"N° de paiement enc. espèces ";1;6;"ENCESP%YY";;1;1;1
 141;"paymentVoucher";"N° de paiement enc. chèques ";1;6;"ENCCHQ%YY";;1;1;1

@@ -67,7 +67,7 @@ public interface IAdministration {
 	static final String PAYMENT_VOUCHER = "paymentVoucher";
 	static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";
 	static final String DEBIT = "debit";
-	static final String MOVE_LINE_REPORT = "moveLineReport";
+	static final String ACCOUNTING_REPORT = "accountingReport";
 	static final String REIMBOURSEMENT = "reimbursement";
 	static final String ACCOUNT_CLEARANCE = "accountClearance";
 	static final String IRRECOVERABLE = "irrecoverable";

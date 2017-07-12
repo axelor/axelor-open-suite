@@ -30,12 +30,12 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.MoveLineReport;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.account.service.MoveLineReportService;
+import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
@@ -47,29 +47,29 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-public class MoveLineReportController {
+public class AccountingReportController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	MoveLineReportService moveLineReportService;
+	AccountingReportService accountingReportService;
 	
 	@Inject
-	MoveLineReportRepository  moveLineReportRepo;
+	AccountingReportRepository  accountingReportRepo;
 	/**
 	 * @param request
 	 * @param response
 	 */
 	public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
+		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
 		try  {
-			moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
+			accountingReport = accountingReportRepo.find(accountingReport.getId());
 			
-			String query = moveLineReportService.getMoveLineList(moveLineReport);
-			BigDecimal debitBalance = moveLineReportService.getDebitBalance();
-			BigDecimal creditBalance = moveLineReportService.getCreditBalance();
+			String query = accountingReportService.getMoveLineList(accountingReport);
+			BigDecimal debitBalance = accountingReportService.getDebitBalance();
+			BigDecimal creditBalance = accountingReportService.getCreditBalance();
 
 			response.setValue("totalDebit", debitBalance);
 			response.setValue("totalCredit", creditBalance);
@@ -77,7 +77,7 @@ public class MoveLineReportController {
 			
 			Map<String, Object> view = Maps.newHashMap();
 			
-			view.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_3));
+			view.put("title", I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
 			view.put("resource", MoveLine.class.getName());
 			view.put("domain", query); 
 			
@@ -93,11 +93,11 @@ public class MoveLineReportController {
 	 */
 	public void getJournalType(ActionRequest request, ActionResponse response) {
 
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
+		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 		
 		try  {
 
-			JournalType journalType = Beans.get(MoveLineReportService.class).getJournalType(moveLineReport);
+			JournalType journalType = Beans.get(AccountingReportService.class).getJournalType(accountingReport);
 			if(journalType != null)  {
 				String domainQuery = "self.type.id = "+journalType.getId();
 				response.setAttr("journal", "domain", domainQuery);
@@ -112,10 +112,10 @@ public class MoveLineReportController {
 	 */
 	public void getAccount(ActionRequest request, ActionResponse response) {
 
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
+		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
 		try  {
-			Account account = Beans.get(MoveLineReportService.class).getAccount(moveLineReport);
+			Account account = Beans.get(AccountingReportService.class).getAccount(accountingReport);
 			logger.debug("Compte : {}", account);
 			response.setValue("account", account);			
 		}
@@ -137,12 +137,12 @@ public class MoveLineReportController {
 	 */
 	public void replayExport(ActionRequest request, ActionResponse response) {
 
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = moveLineReportRepo.find(moveLineReport.getId());		
+		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+		accountingReport = accountingReportRepo.find(accountingReport.getId());		
 		MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 		
 		try {
-		    moveLineExportService.replayExportMoveLine(moveLineReport);
+		    moveLineExportService.replayExportMoveLine(accountingReport);
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}
@@ -153,40 +153,40 @@ public class MoveLineReportController {
 	 */
 	public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
+		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+		accountingReport = accountingReportRepo.find(accountingReport.getId());
 
 		try {	
-			if(moveLineReport.getExportTypeSelect() == null || moveLineReport.getExportTypeSelect().isEmpty() || moveLineReport.getTypeSelect() == 0) {
-				response.setFlash(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_4));
+			if(accountingReport.getExportTypeSelect() == null || accountingReport.getExportTypeSelect().isEmpty() || accountingReport.getTypeSelect() == 0) {
+				response.setFlash(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_4));
 				response.setReload(true);
 				return;
 			}
 
-			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
+			logger.debug("Type selected : {}" , accountingReport.getTypeSelect());
 
-			if((moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY 
-					&& moveLineReport.getTypeSelect() < MoveLineReportRepository.REPORT_ANALYTIC_BALANCE )) {
+			if((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY 
+					&& accountingReport.getTypeSelect() < AccountingReportRepository.REPORT_ANALYTIC_BALANCE )) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
-				moveLineExportService.exportMoveLine(moveLineReport);
+				moveLineExportService.exportMoveLine(accountingReport);
 				
 			}
 			else {
 
-				moveLineReportService.setPublicationDateTime(moveLineReport);
+				accountingReportService.setPublicationDateTime(accountingReport);
 				
 				User user = AuthUtils.getUser();
 				String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-				String name = I18n.get("Accounting reporting") + " " + moveLineReport.getRef();
+				String name = I18n.get("Accounting reporting") + " " + accountingReport.getRef();
 				
-				String fileLink = ReportFactory.createReport(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), name+"-${date}")
-						.addParam("MoveLineReportId", moveLineReport.getId())
+				String fileLink = ReportFactory.createReport(String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()), name+"-${date}")
+						.addParam("AccountingReportId", accountingReport.getId())
 						.addParam("Locale", language)
-						.addFormat(moveLineReport.getExportTypeSelect())
-						.toAttach(moveLineReport)
+						.addFormat(accountingReport.getExportTypeSelect())
+						.toAttach(accountingReport)
 						.generate()
 						.getFileLink();
 
@@ -196,7 +196,7 @@ public class MoveLineReportController {
 						.define(name)
 						.add("html", fileLink).map());
 				
-				moveLineReportService.setStatus(moveLineReport);
+				accountingReportService.setStatus(accountingReport);
 
 			}
 		}
@@ -206,11 +206,11 @@ public class MoveLineReportController {
 	
 	public void showMoveExported(ActionRequest request, ActionResponse response) {
 		
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
+		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_6));
+		mapView.put("title", I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
 		mapView.put("resource", Move.class.getName());
-		mapView.put("domain", "self.moveLineReport.id = "+moveLineReport.getId());
+		mapView.put("domain", "self.accountingReport.id = "+accountingReport.getId());
 		response.setView(mapView);		
 	}
 }

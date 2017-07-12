@@ -30,8 +30,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportManagementRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -82,9 +82,9 @@ public class AccountModule extends AxelorModule {
         
         bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
         
-        bind(MoveLineReportRepository.class).to(MoveLineReportManagementRepository.class);
+        bind(AccountingReportRepository.class).to(AccountingReportManagementRepository.class);
         
-        bind(MoveLineReportService.class).to(MoveLineReportServiceImpl.class);
+        bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
         
         bind(JournalRepository.class).to(JournalManagementRepository.class);
 

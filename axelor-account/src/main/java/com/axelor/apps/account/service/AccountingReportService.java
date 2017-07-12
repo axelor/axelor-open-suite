@@ -21,17 +21,17 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.JournalType;
-import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface MoveLineReportService {
+public interface AccountingReportService {
 
 
-	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException;
+	public String getMoveLineList(AccountingReport accountingReport) throws AxelorException;
 	
 	
-	public String buildQuery(MoveLineReport moveLineReport) throws AxelorException;
+	public String buildQuery(AccountingReport accountingReport) throws AxelorException;
 
 
 
@@ -41,23 +41,23 @@ public interface MoveLineReportService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setSequence(MoveLineReport moveLineReport, String sequence);
+	public void setSequence(AccountingReport accountingReport, String sequence);
 
-	public String getSequence(MoveLineReport moveLineReport) throws AxelorException;
+	public String getSequence(AccountingReport accountingReport) throws AxelorException;
 
-	public JournalType getJournalType(MoveLineReport moveLineReport) throws AxelorException;
+	public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException;
 
-	public Account getAccount(MoveLineReport moveLineReport);
+	public Account getAccount(AccountingReport accountingReport);
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setStatus(MoveLineReport moveLineReport);
+	public void setStatus(AccountingReport accountingReport);
 
 	/**
-	 * @param moveLineReport
+	 * @param accountingReport
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setPublicationDateTime(MoveLineReport moveLineReport);
+	public void setPublicationDateTime(AccountingReport accountingReport);
 
 	/**
 	 * @param queryFilter
@@ -76,7 +76,7 @@ public interface MoveLineReportService {
 	public BigDecimal getDebitBalanceType4();
 
 
-	public BigDecimal getCreditBalance(MoveLineReport moveLineReport, String queryFilter);
+	public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter);
 
 	public BigDecimal getCreditBalanceType4();
 }

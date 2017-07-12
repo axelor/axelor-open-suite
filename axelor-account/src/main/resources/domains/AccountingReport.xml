@@ -3,7 +3,7 @@
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
-  <entity name="MoveLineReport" lang="java">
+  <entity name="AccountingReport" lang="java">
     
     <string name="ref" title="Ref." namecolumn="true"/>
     <date name="dateFrom" title="From" />
@@ -27,7 +27,7 @@
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     
     <boolean name="detailed" title="Detailed" default="false"/>
-    <integer name="statusSelect" title="Status" selection="iaccount.move.line.report.status.select" readonly="true" default="1"/>
+    <integer name="statusSelect" title="Status" selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
     
     <decimal name="totalDebit" title="Total Debit" readonly="true"/>
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>

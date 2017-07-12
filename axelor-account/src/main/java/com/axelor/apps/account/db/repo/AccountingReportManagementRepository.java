@@ -19,26 +19,26 @@ package com.axelor.apps.account.db.repo;
 
 import javax.persistence.PersistenceException;
 
-import com.axelor.apps.account.db.MoveLineReport;
-import com.axelor.apps.account.service.MoveLineReportService;
+import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.service.AccountingReportService;
 import com.google.inject.Inject;
 
-public class MoveLineReportManagementRepository extends MoveLineReportRepository {
+public class AccountingReportManagementRepository extends AccountingReportRepository {
 
 	@Inject
-	protected MoveLineReportService moveLineReportService;
+	protected AccountingReportService accountingReportService;
 
 	@Override
-	public MoveLineReport save(MoveLineReport moveLineReport) {
+	public AccountingReport save(AccountingReport accountingReport) {
 		try {
 
-			if (moveLineReport.getRef() == null) {
+			if (accountingReport.getRef() == null) {
 
-				String seq = moveLineReportService.getSequence(moveLineReport);
-				moveLineReportService.setSequence(moveLineReport, seq);
+				String seq = accountingReportService.getSequence(accountingReport);
+				accountingReportService.setSequence(accountingReport, seq);
 			}
 			
-			return super.save(moveLineReport);
+			return super.save(accountingReport);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
