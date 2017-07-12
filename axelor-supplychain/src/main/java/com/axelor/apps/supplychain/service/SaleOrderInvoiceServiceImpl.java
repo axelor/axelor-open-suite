@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -101,8 +103,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			    return generateInvoiceFromLines(saleOrder, qtyToInvoiceMap, isPercent);
 
 			case SaleOrderRepository.INVOICE_ADVANCE_PAYMENT:
-				amount = computeAmountToInvoice(saleOrder, amount, isPercent);
-			    return generateAdvancePayment(saleOrder, amount);
+			    return generateAdvancePayment(saleOrder, amount, isPercent);
 
 			default:
 				return null;
@@ -158,22 +159,71 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 	@Override
 	public Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
-
 		List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
-		List<SaleOrderLine> createdSOLineList = new ArrayList<>();
 
 		BigDecimal percentToInvoice = computeAmountToInvoicePercent(
 				saleOrder, amountToInvoice, isPercent);
+		Product invoicingProduct = Beans.get(AppSupplychainService.class)
+				.getAppSupplychain().getInvoicingProduct();
+		if (invoicingProduct == null) {
+			throw new AxelorException(I18n.get(
+					IExceptionMessage.SO_INVOICE_MISSING_INVOICING_PRODUCT),
+					IException.CONFIGURATION_ERROR
+			);
+		}
+		List<SaleOrderLine> createdSOLineList = createSOlinesFromTax(
+				taxLineList, invoicingProduct, percentToInvoice);
 
+
+		return generateInvoice(saleOrder, createdSOLineList);
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateAdvancePayment(SaleOrder saleOrder,
+										  BigDecimal amountToInvoice,
+										  boolean isPercent) throws AxelorException {
+		List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
+
+		BigDecimal percentToInvoice = computeAmountToInvoicePercent(
+				saleOrder, amountToInvoice, isPercent);
+		Product invoicingProduct = Beans.get(AppSupplychainService.class)
+                .getAppSupplychain().getAdvancePaymentProduct();
+		if (invoicingProduct == null) {
+			throw new AxelorException(
+					I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT),
+					IException.CONFIGURATION_ERROR
+			);
+		}
+
+		List<SaleOrderLine> createdSOLineList = createSOlinesFromTax(
+				taxLineList, invoicingProduct, percentToInvoice);
+
+		Invoice invoice = generateInvoice(saleOrder, createdSOLineList);
+		invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+		Account advancePaymentAccount = accountConfigService
+					.getAccountConfig(saleOrder.getCompany())
+					.getAdvancePaymentAccount();
+		if (advancePaymentAccount == null) {
+			throw new AxelorException(
+					String.format(I18n.get(
+							IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT),
+							saleOrder.getCompany().getName()
+					), IException.CONFIGURATION_ERROR
+			);
+		}
+		invoice.setPartnerAccount(advancePaymentAccount);
+
+		return Beans.get(InvoiceRepository.class).save(invoice);
+	}
+
+	public List<SaleOrderLine> createSOlinesFromTax(List<SaleOrderLineTax> taxLineList,
+										Product invoicingProduct,
+										BigDecimal percentToInvoice) {
+
+		List<SaleOrderLine> createdSOLineList = new ArrayList<>();
 		if (taxLineList != null) {
-			Product invoicingProduct = Beans.get(AppSupplychainService.class)
-					.getAppSupplychain().getInvoicingProduct();
-			if (invoicingProduct == null) {
-				throw new AxelorException(I18n.get(
-						IExceptionMessage.SO_INVOICE_MISSING_INVOICING_PRODUCT),
-						IException.CONFIGURATION_ERROR
-				);
-			}
 			for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
 				BigDecimal lineAmountToInvoice = percentToInvoice
 						.multiply(saleOrderLineTax.getExTaxBase())
@@ -188,19 +238,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 				createdSOLine.setProduct(invoicingProduct);
 				createdSOLine.setProductName(invoicingProduct.getName());
-				createdSOLine.setUnit(invoicingProduct.getUnit());
+
+				createdSOLine.setTaxLine(saleOrderLineTax.getTaxLine());
 
 				createdSOLineList.add(createdSOLine);
 			}
 		}
-
-
-	    return generateInvoice(saleOrder, createdSOLineList);
-	}
-
-	@Override
-	public Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amount) throws AxelorException {
-		return null;
+		return createdSOLineList;
 	}
 
 	@Override
@@ -224,7 +268,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 							saleOrderLine.getQty().multiply(percent)
 							.divide(
 									new BigDecimal("100"),
-									4,
+									2,
 									RoundingMode.HALF_EVEN
 							);
 					qtyToInvoiceMap.put(SOrderId, realQty);

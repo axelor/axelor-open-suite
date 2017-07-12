@@ -139,11 +139,12 @@ public interface SaleOrderInvoiceService {
 	 * Allows to create an advance payment from a sale order.
 	 * Creates a one line invoice with the advance payment product.
 	 * @param saleOrder
-	 * @param amount
-	 * @return  the generated invoice
+	 * @param amountToInvoice
+	 * @param isPercent
+     * @return  the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amount) throws AxelorException;
+	public Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
 
 	/**
 	 * Allows to create an invoice from lines with given quantity in sale order.

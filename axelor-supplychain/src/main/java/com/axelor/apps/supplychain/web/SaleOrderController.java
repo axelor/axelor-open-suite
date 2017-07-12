@@ -199,7 +199,7 @@ public class SaleOrderController{
 			int operationSelect = Integer.parseInt((String) context.get("operationSelect"));
 			boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
 			BigDecimal qtyToInvoice = new BigDecimal(
-						(String) context.getOrDefault("qtyToInvoice", "0")
+						context.getOrDefault("qtyToInvoice", "0").toString()
 				);
 			Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
