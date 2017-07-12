@@ -186,9 +186,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 		if (kilometricExpenseLineList != null) {
 			for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
-				exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
-				taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
-				inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
+				if (kilometricExpenseLine.getUntaxedAmount() != null) {
+					exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
+				}
+				if (kilometricExpenseLine.getTotalTax() != null) {
+					taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
+				}
+				if (kilometricExpenseLine.getTotalAmount() != null) { 
+					inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
+				}
 			}
 		}
 		expense.setExTaxTotal(exTaxTotal);
@@ -617,16 +623,32 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
-		List<EmployeeVehicle> vehicleList = expenseLine.getExpense().getUser().getEmployee().getEmployeeVehicleList();
-		LocalDate expenseDate = expenseLine.getExpenseDate();
+		
 		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
+		
+		Expense expense = expenseLine.getExpense();
+		
+		if (expense == null) {
+			return kilometricAllowParamList;
+		}
+		
+		if (expense.getId() != null) {
+			expense = expenseRepository.find(expense.getId());
+		}
+		
+		if (expense.getUser() != null && expense.getUser().getEmployee() == null) {
+			return kilometricAllowParamList;
+		}
+		
+		List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
+		LocalDate expenseDate = expenseLine.getExpenseDate();
 
 		for (EmployeeVehicle vehicle : vehicleList) {
 			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}
-
+		
 		return kilometricAllowParamList;
 	}
 }

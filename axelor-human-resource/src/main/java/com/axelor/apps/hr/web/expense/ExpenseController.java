@@ -56,6 +56,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -505,7 +506,7 @@ public class ExpenseController {
 		
 		String userId = null;
 		String userName = null;
-		if (expenseLine.getExpense() != null){
+		if (expenseLine.getExpense() != null && expenseLine.getUser() != null){
 			userId = expenseLine.getExpense().getUser().getId().toString();
 			userName = expenseLine.getExpense().getUser().getFullName();
 		}else{
@@ -532,6 +533,11 @@ public class ExpenseController {
 
 	public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response) {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		
+		if (expenseLine.getExpense() == null) {
+			setExpense(request, expenseLine);
+		}
+		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
 		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
 
@@ -556,8 +562,24 @@ public class ExpenseController {
 		}
 	}
 
+	private void setExpense(ActionRequest request, ExpenseLine expenseLine) {
+		
+		Context parent = request.getContext().getParentContext();
+		
+		if (parent != null && parent.get("_model").equals(Expense.class.getName())) {
+			expenseLine.setExpense(parent.asType(Expense.class));
+		}
+		
+	}
+
 	public void domainOnSelectOnKAP(ActionRequest request, ActionResponse response) {
+		
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		
+		if (expenseLine.getExpense() == null) {
+			setExpense(request, expenseLine);
+		}
+		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
 		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
 	}
