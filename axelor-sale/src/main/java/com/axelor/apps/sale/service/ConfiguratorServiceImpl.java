@@ -52,11 +52,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                                  JsonContext jsonIndicators) {
         List<MetaJsonField> indicators =
                 configurator.getConfiguratorCreator().getIndicators();
+        if (configurator.getConfiguratorCreator() == null) {
+            return;
+        }
+        long creatorId = configurator.getConfiguratorCreator().getId();
         for (MetaJsonField indicator : indicators) {
             try {
                 Object calculatedValue = computeIndicatorValue(
                         configurator, indicator, jsonAttributes);
-                jsonIndicators.put(indicator.getName(), calculatedValue);
+                jsonIndicators.put(indicator.getName(),
+                        calculatedValue);
             } catch (MissingPropertyException e) {
                 //if a field is missing, the value needs to be set to null
                 continue;
@@ -80,6 +85,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         for (Map.Entry indicator : jsonIndicators.entrySet()) {
             //get name of the field
             String fieldName = indicator.getKey().toString();
+            fieldName = fieldName.substring(0,fieldName.indexOf("_"));
             //get class of the field
             MetaField metaField = Beans.get(MetaFieldRepository.class).all()
                     .filter("self.metaModel.name = 'Product' AND "
@@ -169,7 +175,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         ConfiguratorCreator creator = configurator.getConfiguratorCreator();
         String groovyFormula = null;
         for (ConfiguratorFormula formula : creator.getFormulas()) {
-            if (formula.getProductField().getName().equals(indicator.getName())) {
+            String fieldName = indicator.getName();
+             fieldName = fieldName.substring(0, fieldName.indexOf("_"));
+            if (formula.getProductField().getName().equals(fieldName)) {
                 groovyFormula = formula.getFormula();
                 break;
             }
