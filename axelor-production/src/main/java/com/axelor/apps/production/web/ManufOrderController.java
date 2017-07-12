@@ -243,5 +243,14 @@ public class ManufOrderController {
 				.add("html", fileLink).map());
 		
 	}
-  
+
+	public void updatePlannedDates(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+			manufOrderWorkflowService.updatePlannedDates(manufOrderRepo.find(manufOrder.getId()),
+					manufOrder.getPlannedStartDateT());
+			response.setReload(true);
+		}
+	}
+
 }

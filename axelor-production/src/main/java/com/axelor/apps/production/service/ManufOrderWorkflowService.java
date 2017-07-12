@@ -35,6 +35,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -213,4 +214,34 @@ public class ManufOrderWorkflowService {
 	public OperationOrder getLastOperationOrder(ManufOrder manufOrder) {
 		return operationOrderRepo.all().filter("self.manufOrder = ?", manufOrder).order("-plannedEndDateT").fetchOne();
 	}
+
+	/**
+	 * Update planned dates.
+	 * 
+	 * @param manufOrder
+	 * @param plannedStartDateT
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT) {
+		manufOrder.setPlannedStartDateT(plannedStartDateT);
+
+		if (manufOrder.getOperationOrderList() != null) {
+			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+				operationOrder.setPlannedStartDateT(null);
+				operationOrder.setPlannedEndDateT(null);
+				operationOrder.setPlannedDuration(null);
+			}
+
+			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+				operationOrder
+						.setPlannedStartDateT(operationOrderWorkflowService.getLastOperationOrder(operationOrder));
+				operationOrder.setPlannedEndDateT(operationOrderWorkflowService.computePlannedEndDateT(operationOrder));
+				operationOrder.setPlannedDuration(operationOrderWorkflowService.getDuration(
+						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+			}
+		}
+
+		manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+	}
+
 }
