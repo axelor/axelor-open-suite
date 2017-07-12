@@ -79,36 +79,6 @@
 			<panel-related title="Components" field="billOfMaterialSet" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
-    
-    <!--<action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">-->
-    	<!--<view type="tree" name="bill-of-material-tree"/>-->
-    	<!--<view type="form" name="bill-of-material-line-form"/>-->
-    	<!--<domain>sself.id IN :billOfMaterialSet</domain>-->
-     	<!--<context name="billOfMaterialSet" expr="eval: billOfMaterialSet"/>-->
-    <!--</action-view>-->
-    <!---->
-    <!--<tree name="bill-of-material-tree" title="Bills of material">-->
-    	<!---->
-    	<!--<column name="product" type="reference"/>-->
-    	<!--<column name="qty" type="decimal"/>-->
-    	<!--<column name="unit" type="reference"/>-->
-    	<!--<column name="prodProcess" type="reference"/>-->
-		<!---->
-		<!--<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.id IN :billOfMaterialSet" onClick="action-bill-of-material-line-view">-->
-			<!--<field name="product" as="product"/>-->
-			<!--<field name="qty" as="qty"/>-->
-			<!--<field name="unit" as="unit"/>-->
-			<!--<field name="prodProcess" as="prodProcess"/>-->
-		<!--</node>    	-->
-		<!---->
-		<!--<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">-->
-			<!--<field name="product" as="product"/>-->
-			<!--<field name="qty" as="qty"/>-->
-			<!--<field name="unit" as="unit"/>-->
-			<!--<field name="prodProcess" as="prodProcess"/>-->
-		<!--</node>-->
-    <!---->
-	<!--</tree>-->
 	
 	
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
