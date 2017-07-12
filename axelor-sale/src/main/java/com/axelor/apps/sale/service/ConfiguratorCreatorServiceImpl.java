@@ -108,7 +108,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
         List<MetaJsonField> fields = creator.getIndicators();
         for (MetaJsonField field : fields) {
-            if (field.getName().equals(formula.getProductField().getName())) {
+            if (field.getName().equals(formula.getProductField().getName()
+                    + "_" + creator.getId())) {
                 return;
             }
         }
@@ -120,7 +121,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                         "self.name = ?", formula.getProductField().getName())
                 .fetchOne().getTypeName();
         newField.setType(typeToJsonType(typeName));
-        newField.setName(formula.getProductField().getName());
+        newField.setName(formula.getProductField().getName()
+                + "_" + creator.getId());
+        newField.setTitle(formula.getProductField().getLabel());
         creator.addIndicator(newField);
     }
 
@@ -162,13 +165,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                                          List<ConfiguratorFormula> formulas) {
         int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
         for (MetaJsonField indicator : indicators) {
+            String fieldName = indicator.getName();
+            fieldName = fieldName.substring(0, fieldName.indexOf("_"));
             for (ConfiguratorFormula formula : formulas) {
-                if (formula.getProductField().getName().equals(indicator.getName())) {
-                    if (!formula.getShowOnConfigurator()) {
-                        indicator.setShowIf("false");
-                    } else {
-                        indicator.setShowIf("true");
-                    }
+                if (formula.getProductField().getName().equals(fieldName)) {
+                    indicator.setHidden(!formula.getShowOnConfigurator());
                     if (formula.getProductField().getTypeName().equals("BigDecimal")) {
                         indicator.setPrecision(20);
                         indicator.setScale(scale);
