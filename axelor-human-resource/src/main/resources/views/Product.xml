@@ -149,7 +149,7 @@
 				</panel>
 			</panel>
 			<panel name="productionInformations" title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production"  if="__config__.app.isApp('production')">
-				<field name="defaultBillOfMaterial" domain="self.product.id = :id AND self.parentBillOfMaterial IS NULL" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<panel colSpan="12">
 					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>

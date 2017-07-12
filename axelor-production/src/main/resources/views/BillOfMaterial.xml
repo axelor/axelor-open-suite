@@ -101,7 +101,7 @@
 			<!--<field name="prodProcess" as="prodProcess"/>-->
 		<!--</node>    	-->
 		<!---->
-		<!--<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">-->
+		<!--<node model="com.axelor.apps.production.db.BillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">-->
 			<!--<field name="product" as="product"/>-->
 			<!--<field name="qty" as="qty"/>-->
 			<!--<field name="unit" as="unit"/>-->
