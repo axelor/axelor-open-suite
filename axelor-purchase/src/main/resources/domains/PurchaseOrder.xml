@@ -49,7 +49,8 @@
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
 
 <!-- Notes -->
-	<string name="notes" large="true" multiline="true" title="Notes"/>
+	<string name="notes" large="true" multiline="true" title="Description To Display"/>
+	<string name="internalNote" large="true" multiline="true" title="Internal Note"/>
 	
 	<integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
 	

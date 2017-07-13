@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
@@ -37,6 +38,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
@@ -92,6 +95,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	protected AccountConfigService accountConfigService;
 	protected AppAccountService appAccountService;
 	protected LocalDate today;
+	
+	@Inject
+	private BudgetDistributionRepository budgetDistributionRepo;
   
 	@Inject
 	public PurchaseOrderServiceSupplychainImpl(UnitConversionService unitConversionService, StockMoveRepository stockMoveRepo,
@@ -340,13 +346,29 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		List<Timetable> timetableList = purchaseOrder.getTimetableList();
 		BigDecimal totalHT = purchaseOrder.getExTaxTotal();
 		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
-		for (Timetable timetable : timetableList) {
-			sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+		if (timetableList != null) {
+			for (Timetable timetable : timetableList) {
+				sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+			}
 		}
 		purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
+	
+		
+	@Transactional
+	public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder) {
+		
+		for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+			BudgetDistribution newBudgetDistribution = new BudgetDistribution();
+			newBudgetDistribution.setAmount(BigDecimal.ZERO);
+			newBudgetDistribution.setBudget(purchaseOrder.getBudget());
+			newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
+			budgetDistributionRepo.save(newBudgetDistribution);
+		}
+	}
 
 	@Override
+	@Transactional(rollbackOn = {Exception.class})
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
 		// budget control
 		if (appAccountService.isApp("budget") && appAccountService.getAppBudget().getCheckAvailableBudget()) {

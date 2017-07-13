@@ -12,7 +12,6 @@
         <panel name="main" >
         	<field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
-	        <field name="invoiceLabel" />
 	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-record-empty"/>
 			<field name="inOutSelect" colSpan="3"/>
 			<field name="generateBankOrder" if-module="axelor-bank-payment" showIf="typeSelect == 2 || typeSelect == 9" if="__config__.app.isApp('account')" />

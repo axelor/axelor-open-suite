@@ -314,4 +314,11 @@ public class PurchaseOrderController {
 		purchaseOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
 		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
 	}
+	
+	public void applyToallBudgetDistribution(ActionRequest request, ActionResponse response) {
+		
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrderServiceSupplychain.applyToallBudgetDistribution(purchaseOrder);
+	}
 }

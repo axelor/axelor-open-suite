@@ -18,7 +18,8 @@
 package com.axelor.apps.purchase.report;
 
 public interface ITranslation {
-
+	
+	public static final String PURCHASE_ORDER_PURCHASE_REFERENCE = /*$$(*/ "PurchaseOrder.reference"; /*)*/
 	public static final String PURCHASE_ORDER_PURCHASE_INFO = /*$$(*/ "PurchaseOrder.purchaseInfo"; /*)*/
 	public static final String PURCHASE_ORDER_DELIVERY_DATE = /*$$(*/ "PurchaseOrder.deliveryDate"; /*)*/
 	public static final String PURCHASE_ORDER_PAYMENT_CONDITION = /*$$(*/ "PurchaseOrder.paymentCondition"; /*)*/
