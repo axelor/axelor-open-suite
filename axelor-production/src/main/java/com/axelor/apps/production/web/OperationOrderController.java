@@ -108,12 +108,27 @@ public class OperationOrderController {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		
-		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 		operationOrderWorkflowService.computeDuration(operationOrder);
 		response.setReload(true);
 
 	}
-	
+
+	public void setPlannedDates(ActionRequest request, ActionResponse response) {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
+		LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+	}
+
+	public void setRealDates(ActionRequest request, ActionResponse response) {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
+		LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.setRealDates(operationOrder, realStartDateT, realEndDateT);
+	}
+
 	public void machineChange(ActionRequest request, ActionResponse response) throws AxelorException{
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		

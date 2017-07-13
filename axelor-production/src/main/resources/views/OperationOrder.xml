@@ -5,13 +5,13 @@
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
     eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machineWorkCenter.machine" mode="week"
-    onChange="action-operation-order-method-compute-duration">
+    onChange="action-operation-order-method-set-planned-dates">
     	<field name="name"/>
     </calendar>
     
     <calendar name="operation-order-real-calendar" model="com.axelor.apps.production.db.OperationOrder" 
     eventStart="realStartDateT" eventStop="realEndDateT" title="Real operations" colorBy="machineWorkCenter.machine" mode="week"
-    onChange="action-operation-order-method-compute-duration">
+    onChange="action-operation-order-method-set-real-dates">
     	<field name="name"/>
     </calendar>
     
@@ -190,7 +190,15 @@
     <action-method name="action-operation-order-method-compute-duration">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="computeDuration"/>
     </action-method>
-    
+
+    <action-method name="action-operation-order-method-set-planned-dates">
+    	<call class="com.axelor.apps.production.web.OperationOrderController" method="setPlannedDates"/>
+    </action-method>
+
+    <action-method name="action-operation-order-method-set-real-dates">
+    	<call class="com.axelor.apps.production.web.OperationOrderController" method="setRealDates"/>
+    </action-method>
+
     <action-method name="action-operation-order-method-plan">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="plan"/>
     </action-method>
