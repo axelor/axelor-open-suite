@@ -279,6 +279,7 @@
         <action name="action-product-attrs-scale-and-precision"/>
         <action name="action-product-attrs-scale-and-precision-production"/>
         <action name="action-product-attrs-title-sale-price"/>
+        <action name="action-product-attrs-title-unit"/>
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
     </action-group>
@@ -404,6 +405,12 @@
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
+
+    <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
+        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Unit')"/>
+        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.general.getManageSalesUnits()"/>
+        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.general.getManagePurchasesUnits()"/>
+    </action-attrs>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
 		<filter title="Current Products">

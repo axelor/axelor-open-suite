@@ -1141,6 +1141,7 @@
 "Status select",,,
 "Stock",,,
 "Stock Move configuration",,,
+"Stock Unit",,,
 "Stock config",,,
 "Stock config (${ name })",,,
 "Storable Products",,,

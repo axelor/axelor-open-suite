@@ -1141,6 +1141,7 @@
 "Status select","Statut",,
 "Stock","Stock",,
 "Stock Move configuration","Configuration mouvements de stock",,
+"Stock Unit","Unité de stock",,
 "Stock config","Config. Module Stock",,
 "Stock config (${ name })","Config. Module Stock (${ name })",,
 "Storable Products","Produits stockables",,
