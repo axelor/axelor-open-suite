@@ -4,55 +4,55 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product">
-        <field name="product" form-view="product-form" grid-view="product-grid" readonly="true"/>
-        <field name="currentQty" aggregate="sum" readonly="true"/>
-        <field name="futureQty" aggregate="sum" readonly="true"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
     </grid>
     
     <form name="location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
     	<panel name="main">
-	        <field name="product" form-view="product-form" grid-view="product-grid" readonly="true"/>
-	        <field name="currentQty" readonly="true"/>
-	        <field name="futureQty" readonly="true"/>
+	        <field name="product" form-view="product-form" grid-view="product-grid"/>
+	        <field name="currentQty"/>
+	        <field name="futureQty"/>
         </panel>
     </form>
     
     <grid name="location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
-        <field name="location" form-view="location-form" grid-view="location-grid" readonly="true"/>
-        <field name="currentQty" aggregate="sum" readonly="true"/>
-        <field name="futureQty" aggregate="sum" readonly="true"/>
-        <field name="lastFutureStockMoveDate" readonly="true"/>
+        <field name="location" form-view="location-form" grid-view="location-grid"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
+        <field name="lastFutureStockMoveDate"/>
     </grid>
     
     <form name="location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
 		<panel name="main">
-	        <field name="location" form-view="location-form" grid-view="location-grid" readonly="true"/>
-	        <field name="currentQty" readonly="true"/>
-	        <field name="futureQty" readonly="true"/>
-	        <field name="lastFutureStockMoveDate" readonly="true"/>
+	        <field name="location" form-view="location-form" grid-view="location-grid"/>
+	        <field name="currentQty"/>
+	        <field name="futureQty"/>
+	        <field name="lastFutureStockMoveDate"/>
         </panel>
     </form>
     
      <grid name="location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" groupBy="product">
-        <field name="location" form-view="location-form" grid-view="location-grid" readonly="true"/>
-        <field name="currentQty" aggregate="sum" readonly="true"/>
-        <field name="futureQty" aggregate="sum" readonly="true"/>
-        <field name="lastFutureStockMoveDate" readonly="true"/>
+        <field name="location" form-view="location-form" grid-view="location-grid"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
+        <field name="lastFutureStockMoveDate"/>
     </grid>
     
     <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product, trackingNumber">
-        <field name="product" form-view="product-form" grid-view="product-grid" readonly="true"/>
-        <field name="currentQty" aggregate="sum" readonly="true"/>
-        <field name="futureQty" aggregate="sum" readonly="true"/>
-        <field name="trackingNumber" readonly="true"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
+        <field name="trackingNumber"/>
     </grid>
     
     <form name="location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
 		<panel name="main">
-	        <field name="product" form-view="product-form" grid-view="product-grid" readonly="true"/>
-	        <field name="currentQty" readonly="true"/>
-	        <field name="futureQty" readonly="true"/>
-	        <field name="trackingNumber" readonly="true"/>
+	        <field name="product" form-view="product-form" grid-view="product-grid"/>
+	        <field name="currentQty"/>
+	        <field name="futureQty"/>
+	        <field name="trackingNumber"/>
         </panel>
     </form>
 </object-views>
