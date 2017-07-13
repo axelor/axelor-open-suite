@@ -279,6 +279,39 @@ public class OperationOrderWorkflowService {
 		return totalDuration;
 	}
 
+	/**
+	 * Set planned start and end dates.
+	 * 
+	 * @param operationOrder
+	 * @param plannedStartDateT
+	 * @param plannedEndDateT
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public OperationOrder setPlannedDates(OperationOrder operationOrder, LocalDateTime plannedStartDateT,
+			LocalDateTime plannedEndDateT) {
+
+		operationOrder.setPlannedStartDateT(plannedStartDateT);
+		operationOrder.setPlannedEndDateT(plannedEndDateT);
+		return computeDuration(operationOrder);
+	}
+
+	/**
+	 * Set real start and end dates.
+	 * 
+	 * @param operationOrder
+	 * @param realStartDateT
+	 * @param realEndDateT
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public OperationOrder setRealDates(OperationOrder operationOrder, LocalDateTime realStartDateT,
+			LocalDateTime realEndDateT) {
+
+		operationOrder.setRealStartDateT(realStartDateT);
+		operationOrder.setRealEndDateT(realEndDateT);
+		return computeDuration(operationOrder);
+	}
 
 	@Transactional
 	public OperationOrder computeDuration(OperationOrder operationOrder)  {
@@ -298,7 +331,7 @@ public class OperationOrderWorkflowService {
 			operationOrder.setRealDuration(duration);
 		}
 
-		return operationOrderRepo.save(operationOrder);
+		return operationOrder;
 	}
 
 	public long getDuration(Duration duration)  {
