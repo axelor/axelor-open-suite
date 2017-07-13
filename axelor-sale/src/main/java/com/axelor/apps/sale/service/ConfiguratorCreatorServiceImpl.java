@@ -73,7 +73,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
 
     public void updateIndicators(ConfiguratorCreator creator) {
-        List<ConfiguratorFormula> formulas = creator.getFormulas();
+        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         List<MetaJsonField> indicators = creator.getIndicators();
 
         //add missing formulas
@@ -108,7 +108,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
         List<MetaJsonField> fields = creator.getIndicators();
         for (MetaJsonField field : fields) {
-            if (field.getName().equals(formula.getProductField().getName()
+            if (field.getName().equals(formula.getProductMetaField().getName()
                     + "_" + creator.getId())) {
                 return;
             }
@@ -118,12 +118,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         newField.setModelField("indicators");
         String typeName = Beans.get(MetaFieldRepository.class).all()
                 .filter("self.metaModel.name = 'Product' AND " +
-                        "self.name = ?", formula.getProductField().getName())
+                        "self.name = ?", formula.getProductMetaField().getName())
                 .fetchOne().getTypeName();
         newField.setType(typeToJsonType(typeName));
-        newField.setName(formula.getProductField().getName()
+        newField.setName(formula.getProductMetaField().getName()
                 + "_" + creator.getId());
-        newField.setTitle(formula.getProductField().getLabel());
+        newField.setTitle(formula.getProductMetaField().getLabel());
         creator.addIndicator(newField);
     }
 
@@ -136,7 +136,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
      */
     protected boolean isNotInFormulas(MetaJsonField field, List<ConfiguratorFormula> formulas) {
         for (ConfiguratorFormula formula : formulas) {
-            if (formula.getProductField().getName().equals(field.getName())) {
+            if (formula.getProductMetaField().getName().equals(field.getName())) {
                 return false;
             }
         }
@@ -168,9 +168,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
             String fieldName = indicator.getName();
             fieldName = fieldName.substring(0, fieldName.indexOf("_"));
             for (ConfiguratorFormula formula : formulas) {
-                if (formula.getProductField().getName().equals(fieldName)) {
+                if (formula.getProductMetaField().getName().equals(fieldName)) {
                     indicator.setHidden(!formula.getShowOnConfigurator());
-                    if (formula.getProductField().getTypeName().equals("BigDecimal")) {
+                    if (formula.getProductMetaField().getTypeName().equals("BigDecimal")) {
                         indicator.setPrecision(20);
                         indicator.setScale(scale);
                     }

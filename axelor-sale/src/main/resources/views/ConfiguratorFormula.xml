@@ -5,14 +5,14 @@
 
     <grid name="configurator-formula-grid" title="Calculated fields on configurator"
           model="com.axelor.apps.sale.db.ConfiguratorFormula">
-        <field name="productField"/>
+        <field name="productMetaField"/>
         <field name="formula"/>
         <field name="showOnConfigurator"/>
     </grid>
 
     <form name="configurator-formula-form" title="Calculated fields on configurator" model="com.axelor.apps.sale.db.ConfiguratorFormula">
         <panel>
-            <field name="productField" domain="self.metaModel.name = 'Product' "/>
+            <field name="productMetaField" domain="self.metaModel.name = 'Product' "/>
             <field name="formula" widget="CodeEditor" x-code-syntax="groovy"/>
             <field name="showOnConfigurator"/>
         </panel>

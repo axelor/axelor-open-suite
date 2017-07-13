@@ -174,10 +174,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                                            JsonContext jsonAttributes) {
         ConfiguratorCreator creator = configurator.getConfiguratorCreator();
         String groovyFormula = null;
-        for (ConfiguratorFormula formula : creator.getFormulas()) {
+        for (ConfiguratorFormula formula : creator.getConfiguratorFormulaList()) {
             String fieldName = indicator.getName();
              fieldName = fieldName.substring(0, fieldName.indexOf("_"));
-            if (formula.getProductField().getName().equals(fieldName)) {
+            if (formula.getProductMetaField().getName().equals(fieldName)) {
                 groovyFormula = formula.getFormula();
                 break;
             }
