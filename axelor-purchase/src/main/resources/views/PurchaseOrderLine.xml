@@ -65,7 +65,7 @@
 			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				   domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			<field name="productName"/>
-			<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
+			<field name="qty" min="1" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
@@ -186,6 +186,7 @@
 		<action name="action-purchase-order-line-method-get-discount"/>
 		<action name="action-purchase-order-line-method-compute"/>
 		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<action name="action-purchase-order-line-method-check-qty"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-generate-supplierreq-click">
@@ -243,7 +244,11 @@
 	<action-method name="action-purchase-order-line-method-generate-suppliers-requests">
 		<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderLineController" method="generateSuppliersRequests"/>
 	</action-method>
-	
+
+	<action-method name="action-purchase-order-line-method-check-qty">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="checkQty"/>
+	</action-method>
+
 	<!-- ACTION ATTRS -->
 	
     <action-attrs name="action-purchase-order-line-attrs-discountamount-title">

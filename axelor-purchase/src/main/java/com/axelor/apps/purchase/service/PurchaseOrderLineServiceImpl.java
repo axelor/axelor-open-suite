@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
@@ -92,15 +93,26 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	@Override
 	public BigDecimal getUnitPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine) throws AxelorException  {
 
+		BigDecimal purchasePrice;
+		Currency purchaseCurrency;
 		Product product = purchaseOrderLine.getProduct();
-		
-		BigDecimal price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), purchaseOrder);
+		SupplierCatalog supplierCatalog = getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
-		return currencyService.getAmountCurrencyConvertedAtDate(
-			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
-			.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+		if (supplierCatalog != null) {
+			purchasePrice = supplierCatalog.getPrice();
+			purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
+		} else {
+			purchasePrice = product.getPurchasePrice();
+			purchaseCurrency = product.getPurchaseCurrency();
+		}
+
+		BigDecimal price = this.convertUnitPrice(product, taxLine, purchasePrice, purchaseOrder);
+
+		return currencyService
+				.getAmountCurrencyConvertedAtDate(purchaseCurrency, purchaseOrder.getCurrency(), price,
+						purchaseOrder.getOrderDate())
+				.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
-	
 
 	@Override
 	public BigDecimal getMinSalePrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
@@ -282,7 +294,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	@Override
 	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner)  {
 
-		if(product.getSupplierCatalogList() != null)  {
+		if(product != null && product.getSupplierCatalogList() != null)  {
 
 			for(SupplierCatalog supplierCatalog : product.getSupplierCatalogList())  {
 
@@ -381,6 +393,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		}
 		return false;
 		
+	}
+
+	@Override
+	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+		SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
+		return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
 	}
 
 }

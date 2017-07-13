@@ -27,6 +27,8 @@ package com.axelor.apps.purchase.exception;
 public interface IExceptionMessage {
 	
 	static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing"/*)*/ ;
+	static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/ "The minimum order quantity of %s to the supplier is not respected." /*)*/;
+
 	/**
 	 * Purchase order service impl
 	 */

@@ -24,9 +24,11 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -220,7 +222,7 @@ public class PurchaseOrderLineController {
 	
 	public PurchaseOrder getPurchaseOrder(Context context)  {
 		
-		Context parentContext = context.getParentContext();
+		Context parentContext = context.getParent();
 		
 		PurchaseOrder purchaseOrder = parentContext.asType(PurchaseOrder.class);
 		
@@ -245,4 +247,16 @@ public class PurchaseOrderLineController {
 			response.setValues(purchaseOrderLine);
 		}
 	}
+
+	public void checkQty(ActionRequest request, ActionResponse response) {
+		Context context = request.getContext();
+		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+		BigDecimal minQty = purchaseOrderLineService.getMinQty(purchaseOrder, purchaseOrderLine);
+
+		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
+			response.setFlash(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty));
+		}
+	}
+
 }
