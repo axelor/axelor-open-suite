@@ -93,7 +93,7 @@
 			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 6">
 				<panel name="plannedDates" title="Planned dates">        
-					<field name="plannedStartDateT" title="Start date"/>
+					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date"/>
 				</panel>
 				<panel name="realDates" title="Real dates">
@@ -251,7 +251,11 @@
     <action-method name="action-manuf-order-method-generate-waste-stock-move">
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="generateWasteStockMove"/>
     </action-method>
-    
+
+	<action-method name="action-manuf-order-method-update-planned-dates">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedDates"/>
+	</action-method>
+
    	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
   		<view type="grid" name="prod-product-grid"/>
 		<view type="form" name="prod-product-form"/>

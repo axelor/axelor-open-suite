@@ -243,5 +243,23 @@ public class ManufOrderController {
 				.add("html", fileLink).map());
 		
 	}
-  
+
+	public void updatePlannedDates(ActionRequest request, ActionResponse response) throws AxelorException {
+		ManufOrder manufOrderView = request.getContext().asType(ManufOrder.class);
+
+		if (manufOrderView.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+			ManufOrder manufOrder = manufOrderRepo.find(manufOrderView.getId());
+
+			if (manufOrderView.getPlannedStartDateT() != null) {
+				if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+					manufOrderWorkflowService.updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
+					response.setReload(true);
+				}
+			} else {
+				response.setValue("plannedStartDateT", manufOrder.getPlannedStartDateT());
+			}
+
+		}
+	}
+
 }

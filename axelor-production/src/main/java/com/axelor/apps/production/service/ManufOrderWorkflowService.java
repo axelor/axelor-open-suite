@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.production.service;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.base.db.Product;
@@ -34,9 +39,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class ManufOrderWorkflowService {
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
@@ -62,7 +64,7 @@ public class ManufOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getOperationOrderList() != null) {
-			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+			for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
 				operationOrderWorkflowService.plan(operationOrder);
 			}
 		}
@@ -213,4 +215,43 @@ public class ManufOrderWorkflowService {
 	public OperationOrder getLastOperationOrder(ManufOrder manufOrder) {
 		return operationOrderRepo.all().filter("self.manufOrder = ?", manufOrder).order("-plannedEndDateT").fetchOne();
 	}
+
+	/**
+	 * Update planned dates.
+	 * 
+	 * @param manufOrder
+	 * @param plannedStartDateT
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT) throws AxelorException {
+		manufOrder.setPlannedStartDateT(plannedStartDateT);
+
+		if (manufOrder.getOperationOrderList() != null) {
+			List<OperationOrder> operationOrderList = getSortedOperationOrderList(manufOrder);
+			operationOrderWorkflowService.resetPlannedDates(operationOrderList);
+
+			for (OperationOrder operationOrder : operationOrderList) {
+				operationOrderWorkflowService.replan(operationOrder);
+			}
+		}
+
+		manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+	}
+
+	/**
+	 * Get a list of operation orders sorted by priority and id from the specified manufacturing order.
+	 * 
+	 * @param manufOrder
+	 * @return
+	 */
+	private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
+		List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+		Comparator<OperationOrder> byPriority = Comparator.comparing(OperationOrder::getPriority,
+				Comparator.nullsFirst(Comparator.naturalOrder()));
+		Comparator<OperationOrder> byId = Comparator.comparing(OperationOrder::getId,
+				Comparator.nullsFirst(Comparator.naturalOrder()));
+
+		return operationOrderList.stream().sorted(byPriority.thenComparing(byId)).collect(Collectors.toList());
+	}
+
 }
