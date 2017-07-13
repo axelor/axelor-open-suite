@@ -244,12 +244,21 @@ public class ManufOrderController {
 		
 	}
 
-	public void updatePlannedDates(ActionRequest request, ActionResponse response) {
-		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-		if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
-			manufOrderWorkflowService.updatePlannedDates(manufOrderRepo.find(manufOrder.getId()),
-					manufOrder.getPlannedStartDateT());
-			response.setReload(true);
+	public void updatePlannedDates(ActionRequest request, ActionResponse response) throws AxelorException {
+		ManufOrder manufOrderView = request.getContext().asType(ManufOrder.class);
+
+		if (manufOrderView.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+			ManufOrder manufOrder = manufOrderRepo.find(manufOrderView.getId());
+
+			if (manufOrderView.getPlannedStartDateT() != null) {
+				if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+					manufOrderWorkflowService.updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
+					response.setReload(true);
+				}
+			} else {
+				response.setValue("plannedStartDateT", manufOrder.getPlannedStartDateT());
+			}
+
 		}
 	}
 

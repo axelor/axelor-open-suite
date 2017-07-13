@@ -63,6 +63,14 @@ public class OperationOrderWorkflowService {
 		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
+	/**
+	 * Plan an operation order.
+	 * For successive calls, must be called by order of operation order priority.
+	 * 
+	 * @param operationOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
 
@@ -82,6 +90,14 @@ public class OperationOrderWorkflowService {
 		return operationOrderRepo.save(operationOrder);
 	}
 	
+	/**
+	 * Replan an operation order.
+	 * For successive calls, must reset planned dates first, then call by order of operation order priority.
+	 * 
+	 * @param operationOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional
 	public OperationOrder replan(OperationOrder operationOrder) throws AxelorException  {
 
@@ -97,6 +113,22 @@ public class OperationOrderWorkflowService {
 		return operationOrderRepo.save(operationOrder);
 	}
 
+	/**
+	 * Reset the planned dates from the specified operation order list.
+	 * 
+	 * @param operationOrderList
+	 * @return
+	 */
+	@Transactional
+	public List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList) {
+		for (OperationOrder operationOrder : operationOrderList) {
+			operationOrder.setPlannedStartDateT(null);
+			operationOrder.setPlannedEndDateT(null);
+			operationOrder.setPlannedDuration(null);
+		}
+
+		return operationOrderList;
+	}
 
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 

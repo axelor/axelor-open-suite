@@ -94,7 +94,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	}
 	
 	
-	// Manufactoring order AND manufactoring order need
+	// Manufacturing order AND manufacturing order need
 	protected void createManufOrderMrpLines() throws AxelorException  {
 		
 		MrpLineType manufOrderMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER);
