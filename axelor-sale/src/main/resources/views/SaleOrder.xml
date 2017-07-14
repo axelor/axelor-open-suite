@@ -545,7 +545,7 @@
 	
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
-			<button name="seeSaleOrderQuoatationLines" title="See sale order quoatation lines" onClick="action-view-open-quotation-lines"/>
+			<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
 		</toolbar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>

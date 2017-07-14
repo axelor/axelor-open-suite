@@ -354,6 +354,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		_finalizeSaleOrder(saleOrder);
 	}

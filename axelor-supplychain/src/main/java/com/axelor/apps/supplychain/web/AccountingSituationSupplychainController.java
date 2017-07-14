@@ -18,7 +18,6 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,16 +27,13 @@ import com.google.inject.Inject;
 public class AccountingSituationSupplychainController {
 	
 	@Inject
-    private PartnerRepository partnerRepo;
-	
-	@Inject
     private AccountingSituationSupplychainServiceImpl accountingSituationService;
 
 
     public void computeUsedCredit(ActionRequest request, ActionResponse response) {
         AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
         accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);
-        response.setValues(accountingSituation);
+        response.setValue("usedCredit", accountingSituation.getUsedCredit());
     }
     
 }

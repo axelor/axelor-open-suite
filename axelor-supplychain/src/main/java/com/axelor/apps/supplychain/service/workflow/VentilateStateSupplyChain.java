@@ -34,7 +34,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.exception.AxelorException;
@@ -58,7 +58,7 @@ public class VentilateStateSupplyChain extends VentilateState {
 	protected PurchaseOrderRepository purchaseOrderRepository;
 	
 	@Inject
-	private AccountingSituationSupplychainServiceImpl accountingSituationSupplychainServiceImpl;
+	private AccountingSituationSupplychainService accountingSituationSupplychainService;
 
 	
 	@Override
@@ -86,10 +86,11 @@ public class VentilateStateSupplyChain extends VentilateState {
 		
 		if (invoiceSaleOrder != null)  {
 			
+			accountingSituationSupplychainService.updateUsedCredit(invoiceSaleOrder.getClientPartner());
 			log.debug("Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
 			invoiceSaleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), false));
 			
-			accountingSituationSupplychainServiceImpl.updateUsedCredit(invoiceSaleOrder.getClientPartner().getId());
+			
 		}  else  {
 			
 			//Get all different saleOrders from invoice
@@ -107,7 +108,7 @@ public class VentilateStateSupplyChain extends VentilateState {
 				log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
 				saleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), false));
 				saleOrderRepository.save(saleOrder);
-				accountingSituationSupplychainServiceImpl.updateUsedCredit(saleOrder.getClientPartner().getId());
+				accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
 			}
 		}
 		

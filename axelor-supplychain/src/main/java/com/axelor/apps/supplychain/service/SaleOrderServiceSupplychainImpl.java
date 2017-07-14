@@ -63,13 +63,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
 	protected AppSupplychain appSupplychain;
 	protected AccountConfigService accountConfigService;
-
+	protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService , AccountConfigService accountConfigService) {
+			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService , 
+			AccountConfigService accountConfigService, AccountingSituationSupplychainService accountingSituationSupplychainService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
 				partnerService, partnerRepo, saleOrderRepo, appSaleService, userService);
@@ -78,6 +79,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
 		this.appSupplychain = appSupplychainService.getAppSupplychain();
 		this.accountConfigService = accountConfigService;
+		this.accountingSituationSupplychainService = accountingSituationSupplychainService;
 		
 	}
 	
@@ -102,7 +104,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 		try {
-			Beans.get(AccountingSituationSupplychainServiceImpl.class).updateUsedCredit(saleOrder.getClientPartner().getId());
+			accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
 		} catch (AxelorException e) {
 			e.printStackTrace();
 		}
@@ -215,11 +217,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
-
+	
 	@Override
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 		super.finalizeSaleOrder(saleOrder);
-		Beans.get(AccountingSituationSupplychainServiceImpl.class).updateUsedCredit(saleOrder.getClientPartner().getId());
 	}
 
 }
