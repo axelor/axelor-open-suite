@@ -19,7 +19,7 @@
 		<view type="form" name="html-template-form"/>
 	</action-view>
 	
-	<menuitem title="Contracts" name="menu-contract-sale-all" action="menu.contract.all" order="39" if="__config__.app.isApp('contract')"  parent="sc-root-sale"/>
+	<menuitem title="Contracts" name="menu-contract-sale-all" action="menu.contract.sale.all" order="39" if="__config__.app.isApp('contract')"  parent="sc-root-sale"/>
 	
 	<action-view name="menu.contract.sale.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
@@ -27,9 +27,9 @@
 		<domain>self.typeSelect = 1</domain>
 	</action-view>
 	
-	<menuitem title="Contracts" name="menu-contract-purchase-all" action="menu.contract.all" order="285" parent="sc-root-purchase" if="__config__.app.isApp('contract')"/>
+	<menuitem title="Contracts" name="menu-contract-purchase-all" action="menu.contract.purchase.all" order="285" parent="sc-root-purchase" if="__config__.app.isApp('contract')"/>
 	
-	<action-view name="menu.contract.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+	<action-view name="menu.contract.purchase.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
 		<domain>self.typeSelect = 2</domain>
