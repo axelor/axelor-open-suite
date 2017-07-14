@@ -72,4 +72,6 @@ public interface SaleOrderLineService {
 	public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
 	
 	public SaleOrder getSaleOrder(Context context);
+	
+	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException;
 }

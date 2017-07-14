@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,6 +125,39 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this._computeSaleOrder(saleOrder);
 
 		return saleOrder;
+	}
+	
+	@Override
+	public void computeMarginSaleOrder(SaleOrder saleOrder) {
+
+		if (saleOrder.getSaleOrderLineList() == null) {
+			
+			saleOrder.setTotalCostPrice(BigDecimal.ZERO);
+			saleOrder.setTotalGrossMargin(BigDecimal.ZERO);
+			saleOrder.setMarginRate(BigDecimal.ZERO);
+		} else {
+			
+			BigDecimal totalCostPrice = BigDecimal.ZERO;
+			BigDecimal totalGrossMargin = BigDecimal.ZERO;
+			BigDecimal marginRate = BigDecimal.ZERO;
+
+			for (SaleOrderLine saleOrderLineList : saleOrder.getSaleOrderLineList()) {
+				
+				if (saleOrderLineList.getProduct() == null
+						|| saleOrderLineList.getSubTotalCostPrice().compareTo(BigDecimal.ZERO) == 0
+						|| saleOrderLineList.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+					continue;
+				} else {
+					
+					totalCostPrice = totalCostPrice.add(saleOrderLineList.getSubTotalCostPrice());
+					totalGrossMargin = totalGrossMargin.add(saleOrderLineList.getSubTotalGrossMargin());
+					marginRate = totalGrossMargin.divide(totalCostPrice, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+				}
+			}
+			saleOrder.setTotalCostPrice(totalCostPrice);
+			saleOrder.setTotalGrossMargin(totalGrossMargin);
+			saleOrder.setMarginRate(marginRate);
+		}
 	}
 
 

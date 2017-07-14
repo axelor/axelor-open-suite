@@ -38,6 +38,8 @@ public interface SaleOrderService {
 
 
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+	
+	public void computeMarginSaleOrder(SaleOrder saleOrder);
 
 
 	/**

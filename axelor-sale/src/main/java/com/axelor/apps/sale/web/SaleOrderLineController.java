@@ -71,6 +71,21 @@ public class SaleOrderLineController {
 		}
 	}
 	
+	public void computeSubMargin(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		Context context = request.getContext();
+
+		SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+		SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+		
+		saleOrderLine.setSaleOrder(saleOrder);
+		saleOrderLineService.computeSubMargin(saleOrderLine);
+
+		response.setValue("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
+		response.setValue("subTotalGrossMargin", saleOrderLine.getSubTotalGrossMargin());
+		response.setValue("subMarginRate", saleOrderLine.getSubMarginRate());
+	}
+
 	public BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 		
 		if(saleOrder == null || saleOrderLine.getProduct() == null || saleOrderLine.getPrice() == null || saleOrderLine.getQty() == null)  {  
@@ -300,6 +315,6 @@ public class SaleOrderLineController {
 			
 		}
 		
-	}
+	}	
 
 }

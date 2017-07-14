@@ -299,8 +299,8 @@
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
-	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
+	    <field name="clientPartner" expr="eval:_clientPartner?.id != null ? __repo__(Partner).find(_clientPartner.id) : _clientPartner"/>
+		<field name="contactPartner" expr="eval:_contactPartner?.id != null ? __repo__(Partner).find(_contactPartner.id) : _contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
 	</action-record>

@@ -243,4 +243,37 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		
 		return saleOrder;
 	}
+
+	@Override
+	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException {
+		
+		if (saleOrderLine.getProduct() == null
+				|| saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) == 0
+				|| saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+
+			saleOrderLine.setSubTotalCostPrice(BigDecimal.ZERO);
+			saleOrderLine.setSubTotalGrossMargin(BigDecimal.ZERO);
+			saleOrderLine.setSubMarginRate(BigDecimal.ZERO);
+		} else {
+			BigDecimal subTotalCostPrice = BigDecimal.ZERO;
+			BigDecimal subTotalGrossMargin = BigDecimal.ZERO;
+			BigDecimal subMarginRate = BigDecimal.ZERO;
+			BigDecimal totalWT = BigDecimal.ZERO;
+
+			totalWT = currencyService.getAmountCurrencyConvertedAtDate(saleOrderLine.getSaleOrder().getCurrency(),
+					saleOrderLine.getSaleOrder().getCompany().getCurrency(), saleOrderLine.getExTaxTotal(), null);
+			
+			logger.debug("Total WT in company currency: {}", totalWT);
+			subTotalCostPrice = saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+			logger.debug("Subtotal cost price: {}", subTotalCostPrice);
+			subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
+			logger.debug("Subtotal gross margin: {}", subTotalGrossMargin);
+			subMarginRate = subTotalGrossMargin.divide(subTotalCostPrice, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+			logger.debug("Subtotal gross margin rate: {}", subMarginRate);
+			
+			saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
+			saleOrderLine.setSubTotalGrossMargin(subTotalGrossMargin);
+			saleOrderLine.setSubMarginRate(subMarginRate);
+		}
+	}
 }

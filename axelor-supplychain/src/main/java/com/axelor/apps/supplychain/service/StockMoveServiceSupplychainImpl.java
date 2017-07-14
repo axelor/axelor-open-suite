@@ -83,7 +83,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
 				}
 			}
-
+			
+			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+				if (stockMoveLine.getSaleOrderLine() != null) {
+					stockMoveLine.getSaleOrderLine().setDeliveredQuantities(stockMoveLine.getRealQty());
+				}
+			}
+			
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
 		}else if (stockMove.getPurchaseOrder() != null){
 			//Update linked purchaseOrder receipt state depending on BackOrder's existence

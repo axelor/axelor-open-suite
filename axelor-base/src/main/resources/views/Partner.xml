@@ -201,7 +201,7 @@
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
 			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
-				<field name="saleOrderInformation" colSpan="12"/>
+				<field name="saleOrderInformation" title="Label to be displayed on sale orders" colSpan="12"/>
 			</panel>
 			<panel name="purchaseOrder" title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation" colSpan="12"/>
