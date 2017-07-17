@@ -32,7 +32,7 @@
 	
 	<calendar name="calendar-all" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
 	  eventStart="startDateTime" eventStop="endDateTime" colorBy="calendar">
-	  <field name="summary" />
+	  <field name="subject" />
 	</calendar>
 
 </object-views>

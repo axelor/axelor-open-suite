@@ -681,7 +681,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 		
 		List<Project> projects = projectRepo.all().filter("self.membersUserSet.id = ?1 and "
-				+ "self.imputable = true and self.excludeTimesheetEditor = false "
+				+ "self.imputable = true "
 				+ "and self.statusSelect != 3", user.getId()).fetch();
 		
 		for (Project project : projects) {
