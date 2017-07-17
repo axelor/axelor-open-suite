@@ -249,13 +249,28 @@ public class PurchaseOrderLineController {
 	}
 
 	public void checkQty(ActionRequest request, ActionResponse response) {
+		if (request.getAction().endsWith("onnew")) {
+			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+			return;
+		}
+
 		Context context = request.getContext();
 		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
 		BigDecimal minQty = purchaseOrderLineService.getMinQty(purchaseOrder, purchaseOrderLine);
 
 		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
-			response.setFlash(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty));
+			String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+
+			if (request.getAction().endsWith("onchange")) {
+				response.setFlash(msg);
+			}
+
+			response.setAttr("minQtyNotRespectedLabel", "title",
+					String.format("<span class='label label-warning'>%s</span>", msg));
+			response.setAttr("minQtyNotRespectedLabel", "hidden", false);
+		} else {
+			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
 		}
 	}
 
