@@ -73,7 +73,10 @@
 			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				   domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			<field name="productName"/>
-			<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
+			<panel>
+				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12"/>
+				<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+			</panel>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
@@ -168,6 +171,7 @@
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
+		<action name="action-purchase-order-line-method-check-qty"/>
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
@@ -176,6 +180,7 @@
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
+		<action name="action-purchase-order-line-method-check-qty"/>
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
