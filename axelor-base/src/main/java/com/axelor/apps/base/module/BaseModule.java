@@ -22,6 +22,8 @@ import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.ICalendarBaseRepository;
+import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
@@ -84,5 +86,6 @@ public class BaseModule extends AxelorModule {
         bind(AddressRepository.class).to(AddressBaseRepository.class);
         bind(YearRepository.class).to(YearBaseRepository.class);
         bind(UserRepository.class).to(UserBaseRepository.class);
+        bind(ICalendarRepository.class).to(ICalendarBaseRepository.class);
     }
 }

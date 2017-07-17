@@ -18,6 +18,8 @@
 package com.axelor.apps.message.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.message.db.repo.MailAccountMessageRepository;
+import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageManagementRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
@@ -39,5 +41,6 @@ public class MessageModule extends AxelorModule {
         bind(MessageRepository.class).to(MessageManagementRepository.class);
         bind(MailAccountService.class).to(MailAccountServiceImpl.class);
         bind(MailServiceImpl.class).to(MailServiceMessageImpl.class);
+        bind(MailAccountRepository.class).to(MailAccountMessageRepository.class);
     }
 }
