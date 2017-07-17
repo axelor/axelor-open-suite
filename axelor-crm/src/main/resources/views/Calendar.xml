@@ -22,9 +22,9 @@
 		</panel>
 		<panel name="connectionSettings" title="Connection settings">
 		  <field name="url"/>
-		  <field name="typeSelect"/>
-		  <field name="isSslConnection"/>
-		  <field name="port"/>
+		  <field name="typeSelect" />
+		  <field name="isSslConnection" onChange="action-calendar-record-set-port"/>
+		  <field name="port" />
 		  <field name="isValid" readonly="true"/>
 		</panel>
 		<panel name="credentials" title="Credentials">
@@ -33,5 +33,8 @@
 		</panel>
 	</form>
     
+    <action-record name="action-calendar-record-set-port" model="com.axelor.apps.crm.db.Calendar">
+    	<field name="port" expr="eval: isSslConnection ? 443 : 80"/>
+    </action-record>
    	 
 </object-views>
