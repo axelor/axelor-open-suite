@@ -73,7 +73,7 @@
 			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				   domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			<field name="productName"/>
-			<field name="qty" min="1" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
+			<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
