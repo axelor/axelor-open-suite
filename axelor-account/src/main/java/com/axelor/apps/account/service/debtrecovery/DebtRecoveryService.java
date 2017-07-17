@@ -34,11 +34,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
-import com.axelor.apps.account.db.Reminder;
+import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
-import com.axelor.apps.account.db.repo.ReminderRepository;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -56,32 +56,32 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ReminderService {
+public class DebtRecoveryService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected ReminderSessionService reminderSessionService;
-	protected ReminderActionService reminderActionService;
+	protected DebtRecoverySessionService debtRecoverySessionService;
+	protected DebtRecoveryActionService debtRecoveryActionService;
 	protected AccountCustomerService accountCustomerService;
 	protected MoveLineRepository moveLineRepo;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected AccountConfigService accountConfigService;
-	protected ReminderRepository reminderRepo;
+	protected DebtRecoveryRepository debtRecoveryRepo;
 
 	protected LocalDate today;
 
 	@Inject
-	public ReminderService(ReminderSessionService reminderSessionService, ReminderActionService reminderActionService, AccountCustomerService accountCustomerService,
-			MoveLineRepository moveLineRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, ReminderRepository reminderRepo,
+	public DebtRecoveryService(DebtRecoverySessionService debtRecoverySessionService, DebtRecoveryActionService debtRecoveryActionService, AccountCustomerService accountCustomerService,
+			MoveLineRepository moveLineRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, DebtRecoveryRepository debtRecoveryRepo,
 			AppAccountService appAccountService) {
 
-		this.reminderSessionService = reminderSessionService;
-		this.reminderActionService = reminderActionService;
+		this.debtRecoverySessionService = debtRecoverySessionService;
+		this.debtRecoveryActionService = debtRecoveryActionService;
 		this.accountCustomerService = accountCustomerService;
 		this.moveLineRepo = moveLineRepo;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.accountConfigService = accountConfigService;
-		this.reminderRepo = reminderRepo;
+		this.debtRecoveryRepo = debtRecoveryRepo;
 		this.today = appAccountService.getTodayDate();
 
 	}
@@ -91,26 +91,27 @@ public class ReminderService {
 
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-		accountConfigService.getReminderConfigLineList(accountConfig);
+		accountConfigService.getDebtRecoveryConfigLineList(accountConfig);
 
 	}
 
 
 	/**
 	 * Fonction permettant de calculer le solde exigible relançable d'un tiers
-	 * @param reminder
-	 * 			Une relance
+
+	 * @param moveLineList
+	 * @param partner
 	 * @return
 	 * 			Le solde exigible relançable
 	 */
-	public BigDecimal getBalanceDueReminder(List<MoveLine> moveLineList, Partner partner)  {
+	public BigDecimal getBalanceDueDebtRecovery(List<MoveLine> moveLineList, Partner partner)  {
 		BigDecimal balanceSubstract = this.getSubstractBalanceDue(partner);
-		BigDecimal balanceDueReminder = BigDecimal.ZERO;
+		BigDecimal balanceDueDebtRecovery = BigDecimal.ZERO;
 		for(MoveLine moveLine : moveLineList)  {
-			balanceDueReminder = balanceDueReminder.add(moveLine.getAmountRemaining());
+			balanceDueDebtRecovery = balanceDueDebtRecovery.add(moveLine.getAmountRemaining());
 		}
-		balanceDueReminder = balanceDueReminder.add(balanceSubstract);
-		return balanceDueReminder;
+		balanceDueDebtRecovery = balanceDueDebtRecovery.add(balanceSubstract);
+		return balanceDueDebtRecovery;
 	}
 
 
@@ -173,40 +174,40 @@ public class ReminderService {
 
 	/**
 	 * Fonction qui permet de récupérer la date de relance la plus récente
-	 * @param reminder
+	 * @param debtRecovery
 	 * 			Une relance
 	 * @return
 	 * 			La date de relance la plus récente
 	 */
-	public LocalDate getLastDateReminder(Reminder reminder)  {
-		return reminder.getReminderDate();
+	public LocalDate getLastDateDebtRecovery(DebtRecovery debtRecovery)  {
+		return debtRecovery.getDebtRecoveryDate();
 	}
 
 
 	/**
 	 * Fonction qui détermine la date de référence
-	 * @param reminder
+	 * @param debtRecovery
 	 * 			Une relance
 	 * @return
 	 * 			La date de référence
 	 */
-	public LocalDate getReferenceDate(Reminder reminder)  {
-		AccountingSituation accountingSituation = reminder.getAccountingSituation();
-		List<MoveLine> moveLineList = this.getMoveLineReminder(accountingSituation.getPartner(), accountingSituation.getCompany());
+	public LocalDate getReferenceDate(DebtRecovery debtRecovery)  {
+		AccountingSituation accountingSituation = debtRecovery.getAccountingSituation();
+		List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(accountingSituation.getPartner(), accountingSituation.getCompany());
 
 		// Date la plus ancienne des lignes d'écriture
 		LocalDate minMoveLineDate = getOldDateMoveLine(moveLineList);
 		log.debug("minMoveLineDate : {}",minMoveLineDate);
 
 		// 2: Date la plus récente des relances
-		LocalDate reminderLastDate = getLastDateReminder(reminder);
-		log.debug("reminderLastDate : {}",reminderLastDate);
+		LocalDate debtRecoveryLastDate = getLastDateDebtRecovery(debtRecovery);
+		log.debug("debtRecoveryLastDate : {}",debtRecoveryLastDate);
 
 		// Date de référence : Date la plus récente des deux ensembles (1 et 2)
-		LocalDate reminderRefDate = getLastDate(minMoveLineDate, reminderLastDate);
-		log.debug("reminderRefDate : {}",reminderRefDate);
+		LocalDate debtRecoveryRefDate = getLastDate(minMoveLineDate, debtRecoveryLastDate);
+		log.debug("debtRecoveryRefDate : {}",debtRecoveryRefDate);
 
-		return reminderRefDate;
+		return debtRecoveryRefDate;
 	}
 
 
@@ -221,7 +222,7 @@ public class ReminderService {
 	 * 			La liste de ligne d'écriture
 	 */
 	@SuppressWarnings("unchecked")
-	public List<MoveLine> getMoveLineReminder(Partner partner, Company company)  {
+	public List<MoveLine> getMoveLineDebtRecovery(Partner partner, Company company)  {
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 
 		List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company);
@@ -229,10 +230,10 @@ public class ReminderService {
 		int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
 		for(MoveLine moveLine : moveLineQuery)  {
-			if(moveLine.getMove()!=null && !moveLine.getMove().getIgnoreInReminderOk())  {
+			if(moveLine.getMove()!=null && !moveLine.getMove().getIgnoreInDebtRecoveryOk())  {
 				Move move = moveLine.getMove();
 				//facture exigibles non bloquée en relance et dont la date de facture + délai d'acheminement < date du jour
-				if(move.getInvoice()!=null && !move.getInvoice().getReminderBlockingOk()
+				if(move.getInvoice()!=null && !move.getInvoice().getDebtRecoveryBlockingOk()
 						&& !move.getInvoice().getSchedulePaymentOk()
 						&& ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime)).isBefore(today))  {
 					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
@@ -267,7 +268,7 @@ public class ReminderService {
 	public List<Invoice> getInvoiceList(List<MoveLine> moveLineList)  {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		for(MoveLine moveLine : moveLineList)  {
-			if(moveLine.getMove().getInvoice()!=null && !moveLine.getMove().getInvoice().getReminderBlockingOk() )  {
+			if(moveLine.getMove().getInvoice()!=null && !moveLine.getMove().getInvoice().getDebtRecoveryBlockingOk() )  {
 				invoiceList.add(moveLine.getMove().getInvoice());
 			}
 		}
@@ -339,33 +340,33 @@ public class ReminderService {
 	}
 
 
-	public Reminder getReminder(Partner partner, Company company) throws AxelorException  {
+	public DebtRecovery getDebtRecovery(Partner partner, Company company) throws AxelorException  {
 		
 		AccountingSituationRepository accSituationRepo = Beans.get(AccountingSituationRepository.class);
 		AccountingSituation accountingSituation = accSituationRepo.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		
 		if(accountingSituation != null)  {
-			if(accountingSituation.getReminder() != null)  {
-				return accountingSituation.getReminder();
+			if(accountingSituation.getDebtRecovery() != null)  {
+				return accountingSituation.getDebtRecovery();
 			}
 			else  {
-				return this.createReminder(accountingSituation);
+				return this.createDebtRecovery(accountingSituation);
 			}
 		}
 
 		else  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1),
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_1),
 					AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Reminder createReminder(AccountingSituation accountingSituation)  {
-		Reminder reminder = new Reminder();
-		reminder.setAccountingSituation(accountingSituation);
-		reminderRepo.save(reminder);
-		return reminder;
+	public DebtRecovery createDebtRecovery(AccountingSituation accountingSituation)  {
+		DebtRecovery debtRecovery = new DebtRecovery();
+		debtRecovery.setAccountingSituation(accountingSituation);
+		debtRecoveryRepo.save(debtRecovery);
+		return debtRecovery;
 	}
 
 
@@ -382,91 +383,91 @@ public class ReminderService {
 	 * @throws IOException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+	public boolean debtRecoveryGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 		boolean remindedOk = false;
 
-		Reminder reminder = this.getReminder(partner, company); // ou getReminder si existe
+		DebtRecovery debtRecovery = this.getDebtRecovery(partner, company); // ou getDebtRecovery si existe
 
 		BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company);
 
 		if (balanceDue.compareTo(BigDecimal.ZERO) > 0)  {
 
-			reminder.setBalanceDue(balanceDue);
+			debtRecovery.setBalanceDue(balanceDue);
 			log.debug("balanceDue : {} ",balanceDue);
 
-			BigDecimal balanceDueReminder = accountCustomerService.getBalanceDueReminder(partner, company);
+			BigDecimal balanceDueDebtRecovery = accountCustomerService.getBalanceDueDebtRecovery(partner, company);
 
-			if (balanceDueReminder.compareTo(BigDecimal.ZERO) > 0) {
-				log.debug("balanceDueReminder : {} ",balanceDueReminder);
+			if (balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
+				log.debug("balanceDueDebtRecovery : {} ",balanceDueDebtRecovery);
 
 				remindedOk = true;
 
-				List<MoveLine> moveLineList = this.getMoveLineReminder(partner, company);
+				List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company);
 
-				this.updateInvoiceReminder(reminder,  this.getInvoiceList(moveLineList));
-				this.updatePaymentScheduleLineReminder(reminder, this.getPaymentScheduleList(moveLineList, partner));
+				this.updateInvoiceDebtRecovery(debtRecovery,  this.getInvoiceList(moveLineList));
+				this.updatePaymentScheduleLineDebtRecovery(debtRecovery, this.getPaymentScheduleList(moveLineList, partner));
 
-				reminder.setBalanceDueReminder(balanceDueReminder);
+				debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
-				Integer levelReminder = 0;
-				if(reminder.getReminderMethodLine() != null)  {
-					levelReminder = reminder.getReminderMethodLine().getReminderLevel().getName();
+				Integer levelDebtRecovery = 0;
+				if(debtRecovery.getDebtRecoveryMethodLine() != null)  {
+					levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
 				}
 
-				LocalDate referenceDate = this.getReferenceDate(reminder);
+				LocalDate referenceDate = this.getReferenceDate(debtRecovery);
 
 				if(referenceDate != null)  {
 					log.debug("date de référence : {} ",referenceDate);
-					reminder.setReferenceDate(referenceDate);
+					debtRecovery.setReferenceDate(referenceDate);
 				}
 				else {
-					throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2),
+					throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_2),
 							AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
-				if(reminder.getReminderMethod() == null)  {
-					if(reminderSessionService.getReminderMethod(reminder)!=null)  {
-						reminder.setReminderMethod(reminderSessionService.getReminderMethod(reminder));
-						reminderSessionService.reminderSession(reminder);
+				if(debtRecovery.getDebtRecoveryMethod() == null)  {
+					if(debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery)!=null)  {
+						debtRecovery.setDebtRecoveryMethod(debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery));
+						debtRecoverySessionService.debtRecoverySession(debtRecovery);
 					}
 					else  {
-						throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
+						throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_3),
 								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
 				else {
-					reminderSessionService.reminderSession(reminder);
+					debtRecoverySessionService.debtRecoverySession(debtRecovery);
 				}
-				if(reminder.getWaitReminderMethodLine()==null)  {
+				if(debtRecovery.getWaitDebtRecoveryMethodLine()==null)  {
 					// Si le niveau de relance à évolué
-					if(reminder.getReminderMethodLine() != null && reminder.getReminderMethodLine().getReminderLevel() != null &&
-							reminder.getReminderMethodLine().getReminderLevel().getName() > levelReminder)  {
-						reminderActionService.runAction(reminder);
+					if(debtRecovery.getDebtRecoveryMethodLine() != null && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel() != null &&
+							debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName() > levelDebtRecovery)  {
+						debtRecoveryActionService.runAction(debtRecovery);
 					}
 				}
 				else  {
 					log.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
-						String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
+						String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_4),
 								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
 				}
 			}
 		}
 		else  {
-			reminderSessionService.reminderInitialisation(reminder);
+			debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
 		}
 		return remindedOk;
 	}
 
 
-	public void updateInvoiceReminder(Reminder reminder, List<Invoice> invoiceList)  {
-		reminder.setInvoiceReminderSet(new HashSet<Invoice>());
-		reminder.getInvoiceReminderSet().addAll(invoiceList);
+	public void updateInvoiceDebtRecovery(DebtRecovery debtRecovery, List<Invoice> invoiceList)  {
+		debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
+		debtRecovery.getInvoiceDebtRecoverySet().addAll(invoiceList);
 	}
 
-	public void updatePaymentScheduleLineReminder(Reminder reminder, List<PaymentScheduleLine> paymentSchedueLineList)  {
-		reminder.setPaymentScheduleLineReminderSet(new HashSet<PaymentScheduleLine>());
-		reminder.getPaymentScheduleLineReminderSet().addAll(paymentSchedueLineList);
+	public void updatePaymentScheduleLineDebtRecovery(DebtRecovery debtRecovery, List<PaymentScheduleLine> paymentSchedueLineList)  {
+		debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
+		debtRecovery.getPaymentScheduleLineDebtRecoverySet().addAll(paymentSchedueLineList);
 	}
 
 }

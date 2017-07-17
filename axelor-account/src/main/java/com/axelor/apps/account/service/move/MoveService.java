@@ -395,7 +395,7 @@ public class MoveService {
 								  today,
 								  move.getPaymentMode(),
 								  MoveRepository.TECHNICAL_ORIGIN_ENTRY,	
-								  move.getIgnoreInReminderOk(),
+								  move.getIgnoreInDebtRecoveryOk(),
 								  move.getIgnoreInAccountingOk());
 		
 		move.setInvoice(move.getInvoice());

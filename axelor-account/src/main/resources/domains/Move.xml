@@ -28,7 +28,7 @@
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
-    <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
+    <boolean name="ignoreInDebtRecoveryOk" title="Ignore in recover process" default="false"/>
     <date name="validationDate" title="Validation date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true" readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>

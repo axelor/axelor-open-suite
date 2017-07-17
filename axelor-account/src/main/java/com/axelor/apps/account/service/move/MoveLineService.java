@@ -205,7 +205,7 @@ public class MoveLineService {
 
 	/**
 	 * Créer une ligne d'écriture comptable
-	 *
+	 * 
 	 * @param move
 	 * @param partner
 	 * @param account
@@ -213,21 +213,11 @@ public class MoveLineService {
 	 * @param isDebit
 	 * 		<code>true = débit</code>,
 	 * 		<code>false = crédit</code>
-	 * @param isMinus
-	 * 		<code>true = moins</code>,
-	 * 		<code>false = plus</code>
-	 * @param dueDate
-	 * 		Date d'échécance
+	 * @param date
 	 * @param ref
-	 * @param ignoreInAccountingOk
-	 * 		<code>true = ignoré en compta</code>
-	 * @param ignoreInReminderOk
-	 * 		<code>true = ignoré en relance</code>
-	 * @param fromSchedulePaymentOk
-	 * 		<code>true = proviens d'un échéancier</code>
-	 *
+	 * @param origin
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
 

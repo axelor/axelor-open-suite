@@ -2,25 +2,25 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    <grid name="reminder-method-line-grid" title="Reminder method lines" model="com.axelor.apps.account.db.ReminderMethodLine">
-        <field name="reminderLevel"/>
-        <field name="reminderLevelLabel"/>
+    <grid name="debt-recovery-method-line-grid" title="Debt recovery method lines" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+        <field name="debtRecoveryLevel"/>
+        <field name="debtRecoveryLevelLabel"/>
         <field name="standardDeadline"/>
         <field name="minThreshold"/>
         <field name="messageTemplate"/>
         <field name="manualValidationOk"/>
     </grid>
 
-    <form   name="reminder-method-line-form" title="Reminder method line" model="com.axelor.apps.account.db.ReminderMethodLine" width="large">
-		<panel name="reminderLevel" title="Reminder level" colSpan="6">
-<!-- 			<field name="reminderLevel" widget="NestedEditor" canSelect="true" onChange="action-reminder-level-selected" edit-window="self" form-view="matrix-line-reminder-form" summary-view="true"> -->
-			<field name="reminderLevel" canSelect="true" onChange="action-reminder-level-selected">
+    <form   name="debt-recovery-method-line-form" title="Debt recovery method line" model="com.axelor.apps.account.db.DebtRecoveryMethodLine" width="large">
+		<panel name="debtRecoveryLevel" title="Debt recovery level" colSpan="6">
+<!-- 			<field name="debtRecoveryLevel" widget="NestedEditor" canSelect="true" onChange="action-debt-recovery-level-selected" edit-window="self" form-view="matrix-line-debt-recovery-form" summary-view="true"> -->
+			<field name="debtRecoveryLevel" canSelect="true" onChange="action-debt-recovery-level-selected">
 			 <!-- TODO: DONT KNOW WHHERE TO ADD THIS FORM ! -->
-			<!-- <form title="ReminderLevel">
+			<!-- <form title="DebtRecoveryLevel">
 			  <field name="label" readonly="true"/>
 			</form>-->
 			</field>
-       		<field name="reminderLevelLabel" readonly="true"/>
+       		<field name="debtRecoveryLevelLabel" readonly="true"/>
 		</panel>
 		<panel name="conditions" title="Conditions" colSpan="6">
 		  <field name="standardDeadline"/>
@@ -33,8 +33,8 @@
 </form>
 
     
-    <action-record name="action-reminder-level-selected" model="com.axelor.apps.account.db.ReminderMethodLine">
-        <field name="reminderLevelLabel" expr="eval: reminderLevel.label"/>
+    <action-record name="action-debt-recovery-level-selected" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+        <field name="debtRecoveryLevelLabel" expr="eval: debtRecoveryLevel.label"/>
     </action-record>
   
 </object-views>

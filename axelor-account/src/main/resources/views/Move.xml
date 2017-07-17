@@ -72,7 +72,7 @@
 			
 			<panel name="others" title="Others">
 				<field name="ignoreInAccountingOk"/>
-				<field name="ignoreInReminderOk"/>
+				<field name="ignoreInDebtRecoveryOk"/>
 				<field name="rejectOk"/>
 			</panel>
 		</panel-tabs>

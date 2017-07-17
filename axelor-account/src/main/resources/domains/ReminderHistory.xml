@@ -5,25 +5,25 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ReminderHistory" lang="java">
+  <entity name="DebtRecoveryHistory" lang="java">
   
-  	<many-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" title="Reminder"/>
-	<many-to-one name="reminderMethod" ref="com.axelor.apps.account.db.ReminderMethod" title="Reminder method"/>
-	<many-to-one name="reminderMethodLine" ref="com.axelor.apps.account.db.ReminderMethodLine" title="Reached reminder method line" />
-	<date name="reminderDate" title="Last reminder date"/>
+  	<many-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" title="Debt recovery"/>
+	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
+	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Reached debt recovery method line" />
+	<date name="debtRecoveryDate" title="Last debt recovery date"/>
 	<date name="referenceDate" title="Reference date"/>
 	<boolean name="setToIrrecoverableOK" title="Shift to irrecoverable"/>
 	<boolean name="unknownAddressOK" title="Address unknown"/>
 	<decimal name="balanceDue" title="Partner Balance due"/>
-	<decimal name="balanceDueReminder" title="Balance due remindable"/>
-	<many-to-one name="userReminder" ref="com.axelor.auth.db.User" title="User"/>
-	<many-to-one name="reminderMessage" ref="com.axelor.apps.message.db.Message" title="Reminder message"/>
+	<decimal name="balanceDueDebtRecovery" title="Balance due remindable"/>
+	<many-to-one name="userDebtRecovery" ref="com.axelor.auth.db.User" title="User"/>
+	<many-to-one name="debtRecoveryMessage" ref="com.axelor.apps.message.db.Message" title="Debt recovery message"/>
 	
-    <string name="name" namecolumn="true" search="referenceDate,reminder" title="Name">
+    <string name="name" namecolumn="true" search="referenceDate,debtRecovery" title="Name">
 	    <![CDATA[
 	    	String name = " - ";
 	    	if (referenceDate != null) name = referenceDate.toString();
-	    	if (reminder != null) name = reminder.getName() + " : " + name;
+	    	if (debtRecovery != null) name = debtRecovery.getName() + " : " + name;
 	    	return name;
 	    ]]>
     </string>

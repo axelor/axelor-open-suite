@@ -181,16 +181,16 @@
 			</panel>
 			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" showTitle="false">
 				<field name="debitBlockingOk"/>
-				<field name="reminderBlockingOk"/>
+				<field name="debtRecoveryBlockingOk"/>
 				<panel name="debitBlockingGroup" title="Direct debit blocking"  showIf="debitBlockingOk" colSpan="12">
 					<field name="debitBlockingByUser" form-view="user-form" grid-view="user-grid"/>
 					<field name="debitBlockingToDate" />
 					<field name="debitBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
-				<panel showIf="reminderBlockingOk" name="reminderBlocking" title="Reminder blocking" colSpan="12">
-					<field name="reminderBlockingByUser" form-view="user-form" grid-view="user-grid"/>
-					<field name="reminderBlockingToDate"/>
-					<field name="reminderBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
+				<panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlocking" title="Debt recovery blocking" colSpan="12">
+					<field name="debtRecoveryBlockingByUser" form-view="user-form" grid-view="user-grid"/>
+					<field name="debtRecoveryBlockingToDate"/>
+					<field name="debtRecoveryBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
 			</panel>
 

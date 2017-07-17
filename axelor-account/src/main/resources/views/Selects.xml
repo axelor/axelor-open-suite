@@ -107,7 +107,7 @@
 	</selection>
 	
 	<selection name='payer.quality.config.line.incident.type.select'>
-		<option value='0'>Reminder</option>
+		<option value='0'>Debt recovery</option>
 		<option value='1'>Reject</option>
 	</selection>
 	
@@ -151,7 +151,7 @@
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
 		<option value="12">Direct debit</option>
-		<option value="14">Reminder</option>
+		<option value="14">Debt recovery</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
@@ -185,8 +185,8 @@
 		<option value="2">Import direct debit rejects</option>
 	</selection>
 	
-	<selection name="ireminder.batch.type.select">
-		<option value="1">Classic reminder</option>
+	<selection name="idebt.recovery.batch.type.select">
+		<option value="1">Classic debt recovery</option>
 	</selection>
 	
 	<selection name="iinterbank.account.order.batch.type.select">

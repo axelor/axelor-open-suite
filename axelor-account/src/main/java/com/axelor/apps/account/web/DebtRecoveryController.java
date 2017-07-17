@@ -24,12 +24,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class ReminderController {
+public class DebtRecoveryController {
 
 	@Inject
 	private PartnerRepository partnerRepo;
 
-	public void ReminderGenerate(ActionRequest request, ActionResponse response) {
+	public void debtRecoveryGenerate(ActionRequest request, ActionResponse response) {
 
 		try {			
 			Partner partner = request.getContext().asType(Partner.class);

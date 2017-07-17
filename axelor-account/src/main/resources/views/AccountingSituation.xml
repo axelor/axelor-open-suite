@@ -10,7 +10,7 @@
 		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
 		<field name="balanceCustAccount"/>
 		<field name="balanceDueCustAccount"/>
-		<field name="balanceDueReminderCustAccount"/>
+		<field name="balanceDueDebtRecoveryCustAccount"/>
 		<field name="acceptedCredit"/>
 		<field name="usedCredit"/>
 	</grid>
@@ -29,10 +29,10 @@
 		<panel name="customerBalance" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
-			<field name="balanceDueReminderCustAccount"/>
+			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
-		<panel name="reminderProcess" title="Reminder process">
-			<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
+		<panel name="debtRecoveryProcess" title="Debt recovery process">
+			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
 		</panel>
 
 		<panel-related field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
@@ -54,7 +54,7 @@
        	<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
-        <field name="balanceDueReminderCustAccount"/>
+        <field name="balanceDueDebtRecoveryCustAccount"/>
 		<field name="acceptedCredit"/>
 		<field name="usedCredit"/>
     </grid>
@@ -75,10 +75,10 @@
 		<panel name="customerBalance" title="Customer balance"  itemSpan="4" >
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
-			<field name="balanceDueReminderCustAccount"/>
+			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
-	    <panel name="reminderProcess" title="Reminder process"  >
-	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
+	    <panel name="debtRecoveryProcess" title="Debt recovery process"  >
+	    	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
 	    </panel>
 
 		 <panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
