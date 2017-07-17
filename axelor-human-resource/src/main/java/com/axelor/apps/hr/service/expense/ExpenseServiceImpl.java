@@ -52,6 +52,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -100,7 +101,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	protected ExpenseRepository expenseRepository;
 	protected ExpenseLineRepository expenseLineRepository;
 	protected MoveLineService moveLineService;
-	protected AccountManagementServiceAccountImpl accountManagementService;
+	protected AccountManagementAccountService accountManagementService;
 	protected AppAccountService appAccountService;
 	protected AccountConfigHRService accountConfigService;
 	protected AccountingSituationService accountingSituationService;
@@ -110,7 +111,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
-			AccountManagementServiceAccountImpl accountManagementService, AppAccountService appAccountService,
+			AccountManagementAccountService accountManagementService, AppAccountService appAccountService,
 			AccountConfigHRService accountConfigService, AccountingSituationService accountingSituationService, AnalyticMoveLineService analyticMoveLineService,
 			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
 		

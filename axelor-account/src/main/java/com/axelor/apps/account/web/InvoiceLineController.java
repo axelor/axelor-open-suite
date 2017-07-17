@@ -25,12 +25,11 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -43,10 +42,10 @@ import com.google.inject.Inject;
 public class InvoiceLineController {
 
 	private InvoiceLineService invoiceLineService;
-	private AccountManagementServiceAccountImpl accountManagementService;
+	private AccountManagementAccountService accountManagementService;
 
 	@Inject
-	public InvoiceLineController(InvoiceLineService invoiceLineService, AccountManagementServiceAccountImpl accountManagementService) {
+	public InvoiceLineController(InvoiceLineService invoiceLineService, AccountManagementAccountService accountManagementService) {
 		this.invoiceLineService = invoiceLineService;
 		this.accountManagementService = accountManagementService;
 	}

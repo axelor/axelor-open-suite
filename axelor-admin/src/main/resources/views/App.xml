@@ -23,6 +23,7 @@
 				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3"  />
         		<spacer colSpan="7"/>
 				<field name="demoDataLoaded" readonly="true" colSpan="2"/>
+				<field name="languageSelect" colSpan="3" />
 				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" />
 			</panel>
 			<field name="description" colSpan="12" readonly="true"/>
@@ -36,6 +37,7 @@
 			<button name="selectAll" title="Select all" colSpan="4" onClick="action-app-bulk-install-select-all"/>
 			<field type="many-to-many" name="appsSet" target="com.axelor.apps.base.db.App" colSpan="12" title="Apps" canNew="false" domain="self.active = false or self.demoDataLoaded = false" height="200"/>			
 			<button name="install" title="Install" colSpan="4" onClick="action-app-method-bulk-install"/>
+			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4"/>
 			<field type="boolean" name="importDemoData" title="Import demo data ?" colSpan="4"/>
 		</panel>
 	</form>

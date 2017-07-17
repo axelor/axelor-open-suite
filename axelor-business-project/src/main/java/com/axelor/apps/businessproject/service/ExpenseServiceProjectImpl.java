@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -42,11 +42,11 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl  {
 
 	@Inject
 	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
-									 AccountManagementServiceAccountImpl accountManagementService, AppAccountService appAccountService,
+									 AccountManagementAccountService accountManagementAccountService, AppAccountService appAccountService,
 									 AccountConfigHRService accountConfigService, AccountingSituationService accountingSituationService, AnalyticMoveLineService analyticMoveLineService,
 									 HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
 		
-		super(moveService, expenseRepository, expenseLineRepository, moveLineService, accountManagementService, appAccountService, accountConfigService, accountingSituationService, analyticMoveLineService, hrConfigService, templateMessageService);
+		super(moveService, expenseRepository, expenseLineRepository, moveLineService, accountManagementAccountService, appAccountService, accountConfigService, accountingSituationService, analyticMoveLineService, hrConfigService, templateMessageService);
 	}
 
 	@Override

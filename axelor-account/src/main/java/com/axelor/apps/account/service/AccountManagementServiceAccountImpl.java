@@ -32,7 +32,7 @@ import com.axelor.i18n.I18n;
 
 import java.lang.invoke.MethodHandles;
 
-public class AccountManagementServiceAccountImpl extends AccountManagementServiceImpl {
+public class AccountManagementServiceAccountImpl extends AccountManagementServiceImpl implements AccountManagementAccountService {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -46,6 +46,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	 * @return
 	 * @throws AxelorException 
 	 */
+	@Override
 	public Account getProductAccount(Product product, Company company, boolean isPurchase) throws AxelorException{
 		
 		log.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
@@ -66,6 +67,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	 * @param isPurchase
 	 * @return
 	 */
+	@Override
 	public Account getProductAccount(AccountManagement accountManagement, boolean isPurchase){
 		
 		if(isPurchase)  { return accountManagement.getPurchaseAccount(); }

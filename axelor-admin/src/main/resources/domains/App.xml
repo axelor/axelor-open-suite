@@ -19,6 +19,7 @@
 		<boolean name="demoDataLoaded" title="Demo data loaded ?" />
 		<boolean name="active" title="Active" />
 		<integer name="sequence" title="Sequence" />
+		<string name="languageSelect" title="Language" selection="select.language" />
 
   	</entity>
 

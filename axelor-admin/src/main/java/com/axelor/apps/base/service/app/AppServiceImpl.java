@@ -93,9 +93,10 @@ public class AppServiceImpl implements AppService {
 
 		String modules = app.getModules();
 		String type = app.getTypeSelect();
-		String lang = AppSettings.get().get("application.locale");
-		log.debug("App type: {}, App lang: {}", type, lang);
-
+		String lang = getLanguage(app);
+		
+		log.debug("Demo data import: App type: {}, App lang: {}", type, lang);
+		
 		if (lang == null) {
 			return I18n.get("No application language set. Please set 'application.locale' property.");
 		}
@@ -128,6 +129,18 @@ public class AppServiceImpl implements AppService {
 		
 		return I18n.get("Demo data loaded successfully");
 	}
+
+	private String getLanguage(App app) {
+		
+		String lang = AppSettings.get().get("application.locale");
+		
+		
+		if (app.getLanguageSelect() != null) {
+			lang = app.getLanguageSelect();
+		}
+		
+		return lang;
+	}
 	
 	private void importParentData(App app) {
 		
@@ -149,11 +162,11 @@ public class AppServiceImpl implements AppService {
 
 	private void importDataInit(App app) {
 
-		log.debug("Data init...");
 		String modules = app.getModules();
 		String type = app.getTypeSelect();
-		String lang = AppSettings.get().get("application.locale");
-		log.debug("App type: {}, App lang: {}", type, lang);
+		String lang = getLanguage(app);
+		log.debug("Data init import: App type: {}, App lang: {}", type, lang);
+		
 		if (lang == null) {
 			return;
 		}
@@ -458,6 +471,18 @@ public class AppServiceImpl implements AppService {
 			}
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public App updateLanguage(App app, String language) {
+		
+		if (language != null) {
+			app.setLanguageSelect(language);
+			app = appRepo.save(app);
+		}
+		
+		return app;
 	}
 
 }

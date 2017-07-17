@@ -118,9 +118,12 @@ public class AppController {
 
 		Boolean importDemo = (Boolean) context.get("importDemoData");
 		
+		String language = (String) context.get("languageSelect");
+		
 		List<App> appList = new ArrayList<App>();
 		for (Map<String,Object> appData : apps) {
 			App app = appRepo.find(Long.parseLong(appData.get("id").toString()));
+			app = appService.updateLanguage(app, language);
 			appList.add(app);
 		}
 		

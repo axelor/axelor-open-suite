@@ -42,4 +42,6 @@ public interface AppService {
 	public List<App> sortApps(Collection<App> apps);
 
 	public void refreshApp() throws IOException, ClassNotFoundException;
+	
+	public App updateLanguage(App app, String language);
 }

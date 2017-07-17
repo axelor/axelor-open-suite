@@ -45,7 +45,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -68,7 +68,7 @@ public class MoveLineService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected AccountManagementServiceAccountImpl accountManagementService;
+	protected AccountManagementAccountService accountManagementService;
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
 	protected LocalDate today;
@@ -80,7 +80,7 @@ public class MoveLineService {
 
 	
 	@Inject
-	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
+	public MoveLineService(AccountManagementAccountService accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, AppAccountService appAccountService,
 			AnalyticMoveLineService analyticMoveLineService, 
 			CurrencyService currencyService, CompanyConfigService companyConfigService) {
