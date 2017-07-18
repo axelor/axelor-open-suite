@@ -41,7 +41,7 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -58,7 +58,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	protected static final int FETCH_LIMIT = 10;
 
-	protected ReminderService reminderService;
+	protected DebtRecoveryService debtRecoveryService;
 	protected DoubtfulCustomerService doubtfulCustomerService;
 	protected ReimbursementExportService reimbursementExportService;
 	protected ReimbursementImportService reimbursementImportService;
@@ -98,9 +98,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected BatchStrategy() {
 	}
 
-	protected BatchStrategy(ReminderService reminderService) {
+	protected BatchStrategy(DebtRecoveryService debtRecoveryService) {
 		super();
-		this.reminderService = reminderService;
+		this.debtRecoveryService = debtRecoveryService;
 	}
 
 	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {

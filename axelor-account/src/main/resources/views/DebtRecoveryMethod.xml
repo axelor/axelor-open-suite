@@ -2,16 +2,16 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    <grid name="reminder-method-grid" title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod">
+    <grid name="debt-recovery-method-grid" title="Debt recovery methods" model="com.axelor.apps.account.db.DebtRecoveryMethod">
     	<field name="name"/>
     	<field name="code"/>
     </grid>
-    <form name="reminder-method-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod" width="large">
+    <form name="debt-recovery-method-form" title="Debt recovery method" model="com.axelor.apps.account.db.DebtRecoveryMethod" width="large">
     	<panel name="main" >
     		<field name="name"/>
     		<field name="code"/>
        	</panel>
-       	<panel-related field="reminderMethodLineList" colSpan="12" form-view="reminder-method-line-form" grid-view="reminder-method-line-grid"/>
+       	<panel-related field="debtRecoveryMethodLineList" colSpan="12" form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid"/>
     </form>
 
 </object-views>

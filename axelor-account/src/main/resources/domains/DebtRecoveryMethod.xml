@@ -3,13 +3,13 @@
  
   <module name="account" package="com.axelor.apps.account.db"/>
  
-  <entity name="ReminderMethod" lang="java" cachable="true">
+  <entity name="DebtRecoveryMethod" lang="java" cachable="true">
   
     <integer name="importId"/>
     <string name="name" title="Method name" />
     <string name="code" title="Code" unique="true"/>
     
-  	<one-to-many name="reminderMethodLineList" ref="com.axelor.apps.account.db.ReminderMethodLine" mappedBy ="reminderMethod" title="Reminder method lines"/>
+  	<one-to-many name="debtRecoveryMethodLineList" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" mappedBy ="debtRecoveryMethod" title="Debt recovery method lines"/>
     
   </entity>
   

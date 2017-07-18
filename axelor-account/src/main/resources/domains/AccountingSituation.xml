@@ -18,11 +18,11 @@
 		<!-- PAGE Compte Client -->
 		<decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
 		<decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
-		<decimal name="balanceDueReminderCustAccount" title="Due balance remindable" readonly="true"/>
+		<decimal name="balanceDueDebtRecoveryCustAccount" title="Due balance recoverable" readonly="true"/>
 		<boolean name="custAccountMustBeUpdateOk" title="Partner situation must be updated"/>
 
-		<!--  PAGE Relance -->
-		<one-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" mappedBy="accountingSituation" title="Reminder"/>
+		<!--  PAGE Debt recovery -->
+		<one-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" mappedBy="accountingSituation" title="Debt recovery"/>
 
 		<many-to-one name="companyInBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for in payment mode"/>
 		<many-to-one name="companyOutBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for out payment mode"/>

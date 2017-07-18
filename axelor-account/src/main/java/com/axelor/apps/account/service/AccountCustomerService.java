@@ -148,7 +148,7 @@ public class AccountCustomerService {
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
-				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
+				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_debt_recovery_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
 				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
 				.setParameter(1, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
@@ -174,8 +174,8 @@ public class AccountCustomerService {
 	 *  si la date de facture = date d'échéance de facture, sinon pas de prise en compte du délai d'acheminement ***/
 	/** solde des échéances rejetées qui ne sont pas bloqués ******************************************************/
 
-	public BigDecimal getBalanceDueReminder(Partner partner, Company company)  {
-		log.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
+	public BigDecimal getBalanceDueDebtRecovery(Partner partner, Company company)  {
+		log.debug("Compute balance due debt recovery (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		int mailTransitTime = 0;
 
@@ -201,7 +201,7 @@ public class AccountCustomerService {
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
-				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_reminder_ok in ('false', null) " +
+				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_debt_recovery_ok in ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
 				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
@@ -216,7 +216,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 
-		log.debug("Balance due reminder : {}", balance);
+		log.debug("Balance due debt recovery : {}", balance);
 
 		return balance;
 	}
@@ -244,14 +244,14 @@ public class AccountCustomerService {
 	 * @param company
 	 * 				Une société
 	 */
-	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount) throws AxelorException {
+	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueDebtRecoveryCustAccount) throws AxelorException {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 			if(accountingSituation == null) {
 				accountingSituation = accountingSituationService.createAccountingSituation(partner, company);
 			}
 			if(accountingSituation != null)  {
-				this.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
+				this.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount, updateDueCustAccount, updateDueDebtRecoveryCustAccount);
 			}
 		}
 	}
@@ -287,7 +287,7 @@ public class AccountCustomerService {
 
 		accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
 		accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
-		accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
+		accountingSituation.setBalanceDueDebtRecoveryCustAccount(this.getBalanceDueDebtRecovery(partner, company));
 
 		accSituationRepo.save(accountingSituation);
 
@@ -296,12 +296,12 @@ public class AccountCustomerService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount) throws AxelorException {
+	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueDebtRecoveryCustAccount) throws AxelorException {
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
 
-		log.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
-				partner.getName(), company.getName(), updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
+		log.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due debt recovery : {})",
+				partner.getName(), company.getName(), updateCustAccount, updateDueCustAccount, updateDueDebtRecoveryCustAccount);
 
 		if(updateCustAccount)  {
 			accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
@@ -309,8 +309,8 @@ public class AccountCustomerService {
 		if(updateDueCustAccount)  {
 			accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		}
-		if(updateDueReminderCustAccount)  {
-			accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
+		if(updateDueDebtRecoveryCustAccount)  {
+			accountingSituation.setBalanceDueDebtRecoveryCustAccount(this.getBalanceDueDebtRecovery(partner, company));
 		}
 		accountingSituation.setCustAccountMustBeUpdateOk(false);
 		accSituationRepo.save(accountingSituation);

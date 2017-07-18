@@ -89,7 +89,7 @@ public class PaymentVoucherLoadService {
 				"and self.account.useForPartnerBalance = 't' " +
 				"and self.amountRemaining > 0 " +
 				"and self.move.statusSelect = ?3 " +
-				"and self.move.ignoreInReminderOk = 'f' " +
+				"and self.move.ignoreInDebtRecoveryOk = 'f' " +
 				"and self.move.company = ?2 ";
 
 		if(paymentVoucherToolService.isDebitToPay(paymentVoucher))  {

@@ -51,7 +51,7 @@ public class MoveManagementRepository extends MoveRepository {
 		copy.setValidationDate(null);
 		copy.setPeriod(period);
 		copy.setAccountingOk(false);
-		copy.setIgnoreInReminderOk(false);
+		copy.setIgnoreInDebtRecoveryOk(false);
 		copy.setPaymentVoucher(null);
 		copy.setRejectOk(false);
 

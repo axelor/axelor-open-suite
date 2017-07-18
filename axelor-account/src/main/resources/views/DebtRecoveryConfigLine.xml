@@ -3,15 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
-    <grid name="reminder-config-line-grid" title="Reminder method configuration lines" model="com.axelor.apps.account.db.ReminderConfigLine">
+    <grid name="debt-recovery-config-line-grid" title="Debt recovery method configuration lines" model="com.axelor.apps.account.db.DebtRecoveryConfigLine">
         <field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
-        <field name="reminderMethod" form-view="reminder-method-form" grid-view="reminder-method-grid"/>
+        <field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid"/>
     </grid>
     
-    <form name="reminder-config-line-form" title="Reminder method configuration line" model="com.axelor.apps.account.db.ReminderConfigLine"  >
+    <form name="debt-recovery-config-line-form" title="Debt recovery method configuration line" model="com.axelor.apps.account.db.DebtRecoveryConfigLine"  >
         <panel name="main" >
         	<field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
-        	<field name="reminderMethod" form-view="reminder-method-form" grid-view="reminder-method-grid"/>
+        	<field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid"/>
         </panel>
         
     </form>

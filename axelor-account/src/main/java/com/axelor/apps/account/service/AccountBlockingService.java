@@ -77,7 +77,7 @@ public class AccountBlockingService extends BlockingService {
 	 *
 	 * @return
 	 */
-	public boolean isReminderBlocking(Blocking blocking){
+	public boolean isDebtRecoveryBlocking(Blocking blocking){
 
 		if (blocking != null && blocking.getReimbursementBlockingOk()){
 
@@ -99,9 +99,9 @@ public class AccountBlockingService extends BlockingService {
 	 *
 	 * @return
 	 */
-	public boolean isReminderBlocking(Partner partner, Company company){
+	public boolean isDebtRecoveryBlocking(Partner partner, Company company){
 
-		return this.isReminderBlocking(
+		return this.isDebtRecoveryBlocking(
 				this.getBlocking(partner, company));
 	}
 

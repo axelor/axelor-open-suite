@@ -8,7 +8,7 @@
         <field name="invoicingBlockingOk"/>
         <field name="debitBlockingOk" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()" />
         <field name="reimbursementBlockingOk"/>
-        <field name="reminderBlockingOk" />
+        <field name="debtRecoveryBlockingOk" />
     </grid>
     
     <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" width="large">
@@ -17,7 +17,7 @@
 		    <field name="invoicingBlockingOk" colSpan="4" onChange="action-blocking-record-invoicing-blocking-realized-by"/>
 		    <field name="debitBlockingOk" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()" colSpan="4" onChange="action-blocking-record-debit-blocking-realized-by"/>
 		    <field name="reimbursementBlockingOk" colSpan="4" onChange="action-blocking-record-reimbursement-blocking-realized-by"/>
-		    <field name="reminderBlockingOk" colSpan="4" onChange="action-blocking-record-reminder-blocking-realized-by"/>
+		    <field name="debtRecoveryBlockingOk" colSpan="4" onChange="action-blocking-record-debt-recovery-blocking-realized-by"/>
 		</panel>
 		
 		<panel name="invoicingBlocking" title="Invoicing blocking" showIf="invoicingBlockingOk" colSpan="12">
@@ -38,10 +38,10 @@
 		  <field name="reimbursementBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
 		</panel>
 		
-		<panel name="reminderBlocking" title="Reminder blocking" showIf="reminderBlockingOk" colSpan="12">
-		  <field name="reminderBlockingToDate" colSpan="4"/>
-		  <field name="reminderBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-		  <field name="reminderBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
+		<panel name="debtRecoveryBlocking" title="Debt recovery blocking" showIf="debtRecoveryBlockingOk" colSpan="12">
+		  <field name="debtRecoveryBlockingToDate" colSpan="4"/>
+		  <field name="debtRecoveryBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+		  <field name="debtRecoveryBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
 		</panel>
 		
     </form>
@@ -58,8 +58,8 @@
     	<field name="reimbursementBlockingByUser" expr="eval: __user__"/>
     </action-record>
     
-    <action-record name="action-blocking-record-reminder-blocking-realized-by" model="com.axelor.apps.base.db.Blocking">
-    	<field name="reminderBlockingByUser" expr="eval: __user__"/>
+    <action-record name="action-blocking-record-debt-recovery-blocking-realized-by" model="com.axelor.apps.base.db.Blocking">
+    	<field name="debtRecoveryBlockingByUser" expr="eval: __user__"/>
     </action-record>
     
     <action-attrs name="action-base-attrs-domain-company">

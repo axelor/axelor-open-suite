@@ -180,37 +180,37 @@
 	<menuitem name="account-root-debt-recovery" parent="account-root"
 		title="Debt recovery" order="15" />
 
-	<menuitem name="debt-recovery-root-reminders"
-		parent="account-root-debt-recovery" title="Reminders history"
-		action="debt.recovery.root.reminders" />
+	<menuitem name="debt-recovery-root-history"
+		parent="account-root-debt-recovery" title="Debt recovery history"
+		action="debt.recovery.root.history" />
 
-	<action-view name="debt.recovery.root.reminders"
-		title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory" >
-		<view type="grid" name="reminder-history-line-grid" />
-		<view type="form" name="reminder-history-form" />
+	<action-view name="debt.recovery.root.history"
+		title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" >
+		<view type="grid" name="debt-recovery-history-line-grid" />
+		<view type="form" name="debt-recovery-history-form" />
 	</action-view>
 
 	<menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
 		title="Configuration"  />
 
-	<menuitem name="debt-recovery-root-conf-reminder-method"
-		parent="debt-recovery-root-conf" title="Reminder methods"
-		action="debt.recovery.root.conf.reminder.method" />
+	<menuitem name="debt-recovery-root-conf-debt-recovery-method"
+		parent="debt-recovery-root-conf" title="Debt recovery methods"
+		action="debt.recovery.root.conf.debt.recovery.method" />
 
-	<action-view name="debt.recovery.root.conf.reminder.method"
-		title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod" >
-		<view type="grid" name="reminder-method-grid"/>
-		<view type="form" name="reminder-method-form"/>
+	<action-view name="debt.recovery.root.conf.debt.recovery.method"
+		title="Debt recovery methods" model="com.axelor.apps.account.db.DebtRecoveryMethod" >
+		<view type="grid" name="debt-recovery-method-grid"/>
+		<view type="form" name="debt-recovery-method-form"/>
 	</action-view>
 
-	<menuitem name="debt-recovery-root-conf-reminder-level"
-		parent="debt-recovery-root-conf" title="Reminder levels"
-		action="debt.recovery.root.conf.reminder.level" />
+	<menuitem name="debt-recovery-root-conf-debt-recovery-level"
+		parent="debt-recovery-root-conf" title="Debt recovery levels"
+		action="debt.recovery.root.conf.debt.recovery.level" />
 
-	<action-view name="debt.recovery.root.conf.reminder.level"
-		title="Reminder levels" model="com.axelor.apps.account.db.ReminderLevel" >
-		<view type="grid" name="reminder-level-grid"/>
-		<view type="form" name="reminder-level-form"/>
+	<action-view name="debt.recovery.root.conf.debt.recovery.level"
+		title="Debt recovery levels" model="com.axelor.apps.account.db.DebtRecoveryLevel" >
+		<view type="grid" name="debt-recovery-level-grid"/>
+		<view type="form" name="debt-recovery-level-form"/>
 	</action-view>
 
 	
