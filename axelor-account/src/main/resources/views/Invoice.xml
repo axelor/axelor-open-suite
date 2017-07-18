@@ -290,7 +290,7 @@
 				</viewer>
 			</field>
 		</panel>
-		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true" >
+		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true" showIf="company.currency.symbol != currency.symbol">
 			<field name="company.currency.symbol" hidden="true"/>
 			<field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal" >
 				<viewer><![CDATA[
