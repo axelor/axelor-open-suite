@@ -110,7 +110,7 @@ public class MessageServiceImpl implements MessageService {
 		for ( MetaFile metaFile: metaFiles ){
 			try {
 				Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

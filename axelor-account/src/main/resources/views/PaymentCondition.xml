@@ -5,7 +5,7 @@
     
     <grid name="payment-condition-grid" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="typeSelect"/>
         <field name="paymentTime"/>
         <field name="isFree"/>
@@ -14,7 +14,7 @@
     <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition"  >
         <panel name="main" >
         	<field name="name"/>
-	        <field name="code" colSpan="3"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="isFree" colSpan="3"/>
 	        <field name="typeSelect"/>
 	        <field name="paymentTime" colSpan="3"/>

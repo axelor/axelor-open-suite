@@ -5,7 +5,7 @@
 	
 	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
 		<field name="name" />
-		<field name="code" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="active" />
 		<field name="demoDataLoaded" />
 	</grid>
@@ -16,7 +16,7 @@
 		<panel>
 			<field name="image" widget="Image" colSpan="2"/>
 			<panel colSpan="8">
-				<field name="code" colSpan="3" readonly="true" />
+				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" readonly="true" />
 				<field name="name" colSpan="8" readonly="true" />
 				<field name="dependsOn" colSpan="12" widget="multi-select" readonly="true" hideIf="dependsOnAll" />
 				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="2"/>
@@ -48,7 +48,7 @@
 			<button name="refreshApp" title="Refresh Apps" onClick="action-app-method-refresh-app"/>
 		</toolbar>
 		<field name="name" />
-		<field name="code" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="image" />
 		<field name="description"/>
 		<field name="typeSelect"/>

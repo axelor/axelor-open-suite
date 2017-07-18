@@ -5,14 +5,14 @@
     
     <grid name="cfonb-config-grid" title="Cfonb configurations" model="com.axelor.apps.account.db.CfonbConfig">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
     <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig" width="large" >
 	    
 	   <panel name="main" >
 	     <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	   </panel> 
       
         

@@ -5,13 +5,13 @@
 	
     <grid name="payment-mode-grid" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
     <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default" width="large">
         <panel name="main" >
         	<field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-record-empty"/>
 			<field name="inOutSelect" colSpan="3"/>
 			<field name="generateBankOrder" if-module="axelor-bank-payment" showIf="typeSelect == 2 || typeSelect == 9" if="__config__.app.isApp('account')" />

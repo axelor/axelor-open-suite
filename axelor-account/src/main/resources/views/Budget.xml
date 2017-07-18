@@ -5,7 +5,7 @@
     
     <grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="company"/>
@@ -18,7 +18,7 @@
     	onLoad="action-budget-method-update-lines, save">
        <panel name="main" >
 	       <field name="name" required="true"/>
-	       <field name="code" required="true"/>
+	       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true"/>
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
 	       <field name="company"/>

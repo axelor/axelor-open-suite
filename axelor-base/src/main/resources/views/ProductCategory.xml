@@ -5,7 +5,7 @@
     
     <grid name="product-category-grid" title="Product categories" model="com.axelor.apps.base.db.ProductCategory" orderBy="name">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
         <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
     </grid>
@@ -16,7 +16,7 @@
 		</toolbar>
 		<panel name="main" >
         	<field name="name"/>
-        	<field name="code" x-bind="{{code|uppercase}}"/>
+        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="productFamily"  form-view="product-family-form" grid-view="product-family-grid"/>
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
 		</panel>

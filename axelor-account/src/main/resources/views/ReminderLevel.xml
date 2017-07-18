@@ -5,14 +5,14 @@
     
     <grid name="reminder-level-grid" title="Reminder levels" model="com.axelor.apps.account.db.ReminderLevel">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="label"/>
     </grid>
     
     <form name="reminder-level-form" title="Reminder level" model="com.axelor.apps.account.db.ReminderLevel"  >
      	<panel name="main" >
      		<field name="name"/>
-    		<field name="code"/>
+    		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     		<field name="label"/>
      	</panel>
      	
