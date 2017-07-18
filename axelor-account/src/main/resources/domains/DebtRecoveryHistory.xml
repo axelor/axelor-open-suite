@@ -15,7 +15,7 @@
 	<boolean name="setToIrrecoverableOK" title="Shift to irrecoverable"/>
 	<boolean name="unknownAddressOK" title="Address unknown"/>
 	<decimal name="balanceDue" title="Partner Balance due"/>
-	<decimal name="balanceDueDebtRecovery" title="Balance due remindable"/>
+	<decimal name="balanceDueDebtRecovery" title="Balance due recoverable"/>
 	<many-to-one name="userDebtRecovery" ref="com.axelor.auth.db.User" title="User"/>
 	<many-to-one name="debtRecoveryMessage" ref="com.axelor.apps.message.db.Message" title="Debt recovery message"/>
 	
