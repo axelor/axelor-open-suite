@@ -5,16 +5,27 @@
 
     <grid name="configurator-formula-grid" title="Calculated fields on configurator"
           model="com.axelor.apps.sale.db.ConfiguratorFormula">
-        <field name="productMetaField"/>
+        <field name="productMetaField" showIf="productMetafield"/>
+        <field name="saleOrderLineMetaField" showIf="saleOrderLineMetaField"/>
         <field name="formula"/>
         <field name="showOnConfigurator"/>
     </grid>
 
-    <form name="configurator-formula-form" title="Calculated fields on configurator" model="com.axelor.apps.sale.db.ConfiguratorFormula">
+    <form name="configurator-formula-form" title="Calculated fields on configurator"
+          model="com.axelor.apps.sale.db.ConfiguratorFormula"
+          onNew="action-configurator-formula-attrs-hide-metafield"
+          onLoad="action-configurator-formula-attrs-hide-metafield">
         <panel>
             <field name="productMetaField" domain="self.metaModel.name = 'Product' "/>
+            <field name="saleOrderLineMetaField" domain="self.metaModel.name = 'SaleOrderLine' "/>
             <field name="formula" widget="CodeEditor" x-code-syntax="groovy"/>
             <field name="showOnConfigurator"/>
         </panel>
     </form>
+
+    <action-attrs name="action-configurator-formula-attrs-hide-metafield">
+        <attribute for="productMetaField" name="hidden"
+                   expr="!__parent__.generateProduct"/>
+        <attribute for="saleOrderLineMetaField" name="hidden" expr="__parent__.generateProduct"/>
+    </action-attrs>
 </object-views>
