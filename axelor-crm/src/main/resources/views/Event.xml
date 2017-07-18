@@ -106,11 +106,11 @@
 		</panel>
 
 		<panel sidebar="true" title="Attributes" name="meetingAttributes">
-			<field name="typeSelect" domain="self.value IN ('1','2','3','5')"/>
+			<field name="typeSelect" domain="self.value IN ('0','1','2','3')"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" />
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid" />
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
-			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 5" />
+			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0" />
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
  			<field name="limitDateT" showIf="typeSelect == 4"/>
 		</panel>
