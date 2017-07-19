@@ -12,11 +12,11 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>    
     
-	<!-- GROUP Reminder Blocking -->
-    <boolean name="reminderBlockingOk" title="Block Reminders ?"/>
-    <date name="reminderBlockingToDate" title="Block until"/>
-    <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="reminderBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
+	<!-- GROUP Debt recovery Blocking -->
+    <boolean name="debtRecoveryBlockingOk" title="Block debt recoveries ?"/>
+    <date name="debtRecoveryBlockingToDate" title="Block until"/>
+    <many-to-one name="debtRecoveryBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
 	<!-- GROUP Blocage Facturation -->
     <boolean name="invoicingBlockingOk" title="Block Invoicing ?"/>
     <date name="invoicingBlockingToDate" title="Block until"/>

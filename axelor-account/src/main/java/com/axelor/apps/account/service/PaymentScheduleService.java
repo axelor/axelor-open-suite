@@ -337,7 +337,7 @@ public class PaymentScheduleService {
 
 			for (MoveLine moveLineInvoice : moveLineInvoiceToPay){
 
-				moveLineInvoice.getMove().setIgnoreInReminderOk(true);
+				moveLineInvoice.getMove().setIgnoreInDebtRecoveryOk(true);
 				this.updateInvoice(moveLineInvoice.getMove().getInvoice(), paymentSchedule);
 
 			}

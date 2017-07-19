@@ -47,7 +47,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -76,7 +76,7 @@ public class PaymentScheduleImportService {
 	protected PaymentScheduleService paymentScheduleService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected PaymentModeService paymentModeService;
-	protected ReminderService reminderService;
+	protected DebtRecoveryService debtRecoveryService;
 	protected AccountConfigService accountConfigService;
 	protected DirectDebitManagementRepository directDebitManagementRepo;
 	protected InvoiceRepository invoiceRepo;
@@ -90,7 +90,7 @@ public class PaymentScheduleImportService {
 	@Inject
 	public PaymentScheduleImportService(AppAccountService appAccountService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
 			PaymentScheduleService paymentScheduleService, PaymentScheduleLineRepository paymentScheduleLineRepo, PaymentModeService paymentModeService,
-			ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
+			DebtRecoveryService debtRecoveryService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
 			InvoiceRepository invoiceRepo, PaymentService paymentService) {
 
 		this.moveLineService = moveLineService;
@@ -99,7 +99,7 @@ public class PaymentScheduleImportService {
 		this.paymentScheduleService = paymentScheduleService;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.paymentModeService = paymentModeService;
-		this.reminderService = reminderService;
+		this.debtRecoveryService = debtRecoveryService;
 		this.accountConfigService = accountConfigService;
 		this.directDebitManagementRepo = directDebitManagementRepo;
 		this.invoiceRepo = invoiceRepo;
@@ -622,7 +622,7 @@ public class PaymentScheduleImportService {
 		}
 
 		// Mise à jour de la date de la dernière relance sur le tiers
-		reminderService.getReminder(partner, company).setReminderDate(today);
+		debtRecoveryService.getDebtRecovery(partner, company).setDebtRecoveryDate(today);
 	}
 
 
@@ -648,7 +648,7 @@ public class PaymentScheduleImportService {
 			// Génération du message
 			this.createImportRejectMessage(invoice.getPartner(), company, accountConfig.getRejectPaymentScheduleTemplate(), invoice.getRejectMoveLine());
 			// Mise à jour de la date de la dernière relance sur le tiers
-			reminderService.getReminder(partner, company).setReminderDate(today);
+			debtRecoveryService.getDebtRecovery(partner, company).setDebtRecoveryDate(today);
 			// Changement du mode de paiement de la facture, du tiers
 			this.setPaymentMode(invoice);
 			// Alarme générée dans l'historique du client ?

@@ -108,11 +108,7 @@ public class MessageServiceImpl implements MessageService {
 		log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
 		
 		for ( MetaFile metaFile: metaFiles ){
-			try {
-				Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
 		}
 		
 	}

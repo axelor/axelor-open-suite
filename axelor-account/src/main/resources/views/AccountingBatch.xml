@@ -46,8 +46,8 @@
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.general.getManageMultiBanks()" />
 		</panel>
 
-		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >
-			<field name="reminderTypeSelect"/>
+		<panel name="debtRecoveryPage" title="Debt recovery configuration" hideIf="actionSelect != 14"  >
+			<field name="debtRecoveryTypeSelect"/>
 		</panel>
 		<panel name="interbankPaymentOrderPage" title="Payments by IPO and IPO Cheque configuration" hideIf="actionSelect != 15">
 			<field name="interbankPaymentOrderTypeSelect"/>
@@ -58,7 +58,7 @@
 			<!--<group title="Update"    >-->
 			  <field name="updateCustAccountOk"/>
 			  <field name="updateDueCustAccountOk"/>
-			  <field name="updateDueReminderCustAccountOk"/>
+			  <field name="updateDueDebtRecoveryCustAccountOk"/>
 			<!--</group>-->
 		</panel>
 		<panel name="moveLineExportPage" title="Move Lines Export Config" hideIf="actionSelect != 18">
@@ -76,7 +76,7 @@
 	<panel name="actions" sidebar="true" title="Actions">
 	    <button name="reimbursementBatch" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
 	    <button name="directDebitBatch" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
-	    <button name="reminderBatch" title="Reminder Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-reminder" colSpan="12"/>
+	    <button name="debtRecoveryBatch" title="Debt recovery Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-debt-recovery" colSpan="12"/>
 	    <button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" showIf="actionSelect == 15" onClick="save,action-accounting-batch-method-action-interbank-payment-order" colSpan="12"/>
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
 	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
@@ -107,8 +107,8 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionDirectDebit"/>
 	</action-method>
 	
-	<action-method name="action-accounting-batch-method-action-reminder">
-		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionReminder"/>
+	<action-method name="action-accounting-batch-method-action-debt-recovery">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionDebtRecovery"/>
 	</action-method>
 	
 	<action-method name="action-accounting-batch-method-action-interbank-payment-order">

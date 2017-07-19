@@ -45,11 +45,11 @@
         </bind>
     </input>
 	
-	<input file="account_reminderLevel.csv" separator=";" type="com.axelor.apps.account.db.ReminderLevel" search="self.name = :name"/>
+	<input file="account_debtRecoveryLevel.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryLevel" search="self.name = :name"/>
 	
-	<input file="account_reminderMethod.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethod" search="self.code = :code"/>
+	<input file="account_debtRecoveryMethod.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
 	
-	<input file="account_reminderMethodLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethodLine" />
+	<input file="account_debtRecoveryMethodLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethodLine" />
 	
 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId">
 		<bind search="self.importId = :company_id" to="company" update="true" />
@@ -67,7 +67,7 @@
 	
 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
 	
-	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
+	<input file="account_debtRecoveryConfigLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryConfigLine" />
 	
 	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
 	

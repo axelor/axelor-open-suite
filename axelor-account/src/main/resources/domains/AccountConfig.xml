@@ -63,7 +63,7 @@
    	<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
    	
 	<!-- DebtRecovery -->
-   	<one-to-many name="reminderConfigLineList" ref="com.axelor.apps.account.db.ReminderConfigLine" mappedBy="accountConfig"  title="Reminder configuration table"/>
+   	<one-to-many name="debtRecoveryConfigLineList" ref="com.axelor.apps.account.db.DebtRecoveryConfigLine" mappedBy="accountConfig"  title="Debt recovery configuration table"/>
    	<integer name="mailTransitTime" title="Mail transit time"/>
 
 	<!-- Reimbursement -->

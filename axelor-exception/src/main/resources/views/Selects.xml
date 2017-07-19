@@ -19,6 +19,7 @@
 	<selection name='trace.back.origin.select'>
 	  <option value='invoice'>Invoicing</option>
   	  <option value='reminder'>Reminder</option>
+  	  <option value='debtRecovery'>Debt recovery</option>
  	  <option value='doubtfulCustomer'>Doubtful customer</option>
    	  <option value='reimbursement'>Reimbursement</option>
    	  <option value='directDebit'>Direct debit</option>

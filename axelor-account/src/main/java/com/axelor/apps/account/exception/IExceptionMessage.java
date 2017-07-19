@@ -258,10 +258,10 @@ public interface IExceptionMessage {
 	static final String BATCH_REIMBURSEMENT_9 = /*$$(*/ "Reimbursement(s) rejected" /*)*/;
 
 	/**
-	 * Batch reminder
+	 * Batch debt recovery
 	 */
-	static final String BATCH_REMINDER_1 = /*$$(*/ "Reminder's reporting :\n" /*)*/;
-	static final String BATCH_REMINDER_2 = /*$$(*/ "Partner(s) treated" /*)*/;
+	static final String BATCH_DEBT_RECOVERY_1 = /*$$(*/ "Debt recovery's reporting :\n" /*)*/;
+	static final String BATCH_DEBT_RECOVERY_2 = /*$$(*/ "Partner(s) treated" /*)*/;
 
 	/**
 	 * Batch credit transfer
@@ -354,7 +354,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_34 = /*$$(*/ "%s : You must configure a reject import letter template for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_35 = /*$$(*/ "%s : You must configure a shifting reason (debt more than six months) for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_36 = /*$$(*/ "%s : You must configure a shifting reason (debt more than three months) for the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s : You must configure a reminder tab for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s : You must configure a debt recovery tab for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_38 = /*$$(*/ "%s : You must configure an advance payment account for the company %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -406,24 +406,24 @@ public interface IExceptionMessage {
 	static final String PAYER_QUALITY_1 = /*$$(*/ "%s : Error : You must configure a weight table in general configuration" /*)*/;
 
 	/**
-	 * Reminder action service
+	 * Debt recovery action service
 	 */
-	static final String REMINDER_ACTION_1 = /*$$(*/ "Reminder method missing." /*)*/;
-	static final String REMINDER_ACTION_2 = /*$$(*/ "Reminder line missing." /*)*/;
-	static final String REMINDER_ACTION_3 = /*$$(*/ "%s : Letter template missing for reminder matrix %s (Partner %s, Level %s)." /*)*/;
+	static final String DEBT_RECOVERY_ACTION_1 = /*$$(*/ "Debt recovery method missing." /*)*/;
+	static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
+	static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/ "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
 
 	/**
-	 * Reminder service
+	 * Debt recovery service
 	 */
-	static final String REMINDER_1 = /*$$(*/ "There's no accounting situation." /*)*/;
-	static final String REMINDER_2 = /*$$(*/ "Reference date undefined." /*)*/;
-	static final String REMINDER_3 = /*$$(*/ "Reminder method missing for the configuration." /*)*/;
-	static final String REMINDER_4 = /*$$(*/ "Reminder level waiting for approval." /*)*/;
+	static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
+	static final String DEBT_RECOVERY_2 = /*$$(*/ "Reference date undefined." /*)*/;
+	static final String DEBT_RECOVERY_3 = /*$$(*/ "Debt recovery method missing for the configuration." /*)*/;
+	static final String DEBT_RECOVERY_4 = /*$$(*/ "Debt recovery level waiting for approval." /*)*/;
 
 	/**
-	 * Reminder session service
+	 * Debt recovery session service
 	 */
-	static final String REMINDER_SESSION_1 = /*$$(*/ "Reminder method line missing." /*)*/;
+	static final String DEBT_RECOVERY_SESSION_1 = /*$$(*/ "Debt recovery method line missing." /*)*/;
 
 	/**
 	 * Invoice batch service
