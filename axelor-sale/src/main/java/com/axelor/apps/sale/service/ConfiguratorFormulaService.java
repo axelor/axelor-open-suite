@@ -17,29 +17,16 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.meta.db.MetaField;
 
-public interface ConfiguratorCreatorService {
+public interface ConfiguratorFormulaService {
 
-    /**
-     * Call {@link #updateAttributes} and {@link #updateIndicators}
-     * then save the creator given in param
-     * @param creator
-     */
-    void updateAttrsAndIndicators(ConfiguratorCreator creator);
+   /**
+    * Get the filled MetaField
+    * @param configuratorFormula
+    * @return
+    */
+   MetaField getMetaField(ConfiguratorFormula configuratorFormula);
 
-    /**
-     * Add default view attrs for configurator attributes
-     * @param creator
-     * @return
-     */
-    void updateAttributes(ConfiguratorCreator creator);
-
-    /**
-     * Add the {@link ConfiguratorFormula#productMetaField} that need to be shown
-     * in configurator in the {@link ConfiguratorCreator#indicators} many-to-one.
-     * @param creator
-     */
-    void updateIndicators(ConfiguratorCreator creator);
 }

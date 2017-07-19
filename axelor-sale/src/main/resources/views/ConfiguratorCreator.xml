@@ -16,6 +16,7 @@
 		<panel sidebar="true" title="Actions">
 			<button name="activate" title="Activate" readonlyIf="isActive"
 					onClick="action-configurator-creator-record-activate,save"/>
+			<field name="generateProduct" widget="boolean-switch"/>
 		</panel>
         <panel>
 			<field name="configuratorBOM" if-module="axelor-production" colSpan="12">
@@ -53,7 +54,7 @@
 				</editor>
 			</field>
 		</panel>
-		<panel-related field="formulas" form-view="configurator-formula-form"
+		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
 					   grid-view="configurator-formula-grid"/>
         <panel>
 			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"

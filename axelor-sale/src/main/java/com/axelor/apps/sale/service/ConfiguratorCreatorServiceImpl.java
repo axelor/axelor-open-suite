@@ -1,3 +1,21 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Product;
@@ -8,6 +26,7 @@ import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.google.common.base.Strings;
@@ -21,11 +40,15 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     private ConfiguratorRepository configuratorRepo;
     private ConfiguratorCreatorRepository configuratorCreatorRepo;
+    private ConfiguratorFormulaService configuratorFormulaService;
 
     @Inject
-    public ConfiguratorCreatorServiceImpl(ConfiguratorRepository configuratorRepo, ConfiguratorCreatorRepository configuratorCreatorRepo) {
+    public ConfiguratorCreatorServiceImpl(ConfiguratorRepository configuratorRepo,
+                                          ConfiguratorCreatorRepository configuratorCreatorRepo,
+                                          ConfiguratorFormulaService configuratorFormulaService) {
         this.configuratorRepo = configuratorRepo;
         this.configuratorCreatorRepo = configuratorCreatorRepo;
+        this.configuratorFormulaService = configuratorFormulaService;
     }
 
     @Override
@@ -73,7 +96,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
 
     public void updateIndicators(ConfiguratorCreator creator) {
-        List<ConfiguratorFormula> formulas = creator.getFormulas();
+        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         List<MetaJsonField> indicators = creator.getIndicators();
 
         //add missing formulas
@@ -95,7 +118,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
             creator.removeIndicator(indicatorToRemove);
         }
 
-        updateIndicatorsAttrs(indicators, formulas);
+        updateIndicatorsAttrs(creator);
 
     }
 
@@ -106,24 +129,31 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
      * @param creator
      */
     protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
+        MetaField formulaMetaField = configuratorFormulaService.getMetaField(formula);
         List<MetaJsonField> fields = creator.getIndicators();
         for (MetaJsonField field : fields) {
-            if (field.getName().equals(formula.getProductField().getName()
+            if (field.getName().equals(formulaMetaField.getName()
                     + "_" + creator.getId())) {
                 return;
             }
+        }
+        String metaModelName;
+        if (creator.getGenerateProduct()) {
+            metaModelName = "Product";
+        } else {
+            metaModelName = "SaleOrderLine";
         }
         MetaJsonField newField = new MetaJsonField();
         newField.setModel(Configurator.class.getName());
         newField.setModelField("indicators");
         String typeName = Beans.get(MetaFieldRepository.class).all()
-                .filter("self.metaModel.name = 'Product' AND " +
-                        "self.name = ?", formula.getProductField().getName())
+                .filter("self.metaModel.name = '" + metaModelName + "' AND " +
+                        "self.name = ?", formulaMetaField.getName())
                 .fetchOne().getTypeName();
         newField.setType(typeToJsonType(typeName));
-        newField.setName(formula.getProductField().getName()
+        newField.setName(formulaMetaField.getName()
                 + "_" + creator.getId());
-        newField.setTitle(formula.getProductField().getLabel());
+        newField.setTitle(formulaMetaField.getLabel());
         creator.addIndicator(newField);
     }
 
@@ -136,7 +166,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
      */
     protected boolean isNotInFormulas(MetaJsonField field, List<ConfiguratorFormula> formulas) {
         for (ConfiguratorFormula formula : formulas) {
-            if (formula.getProductField().getName().equals(field.getName())) {
+            MetaField formulaMetaField = configuratorFormulaService
+                    .getMetaField(formula);
+            if (formulaMetaField.getName().equals(field.getName())) {
                 return false;
             }
         }
@@ -158,24 +190,49 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     /**
      * Update the indicators views attrs using the formulas.
-     * @param indicators
-     * @param formulas
+     * @param creator
      */
-    protected void updateIndicatorsAttrs(List<MetaJsonField> indicators,
-                                         List<ConfiguratorFormula> formulas) {
-        int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+    protected void updateIndicatorsAttrs(ConfiguratorCreator creator) {
+        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
+        List<MetaJsonField> indicators = creator.getIndicators();
         for (MetaJsonField indicator : indicators) {
-            String fieldName = indicator.getName();
-            fieldName = fieldName.substring(0, fieldName.indexOf("_"));
             for (ConfiguratorFormula formula : formulas) {
-                if (formula.getProductField().getName().equals(fieldName)) {
-                    indicator.setHidden(!formula.getShowOnConfigurator());
-                    if (formula.getProductField().getTypeName().equals("BigDecimal")) {
-                        indicator.setPrecision(20);
-                        indicator.setScale(scale);
-                    }
-                }
+                updateIndicatorAttrs(creator, indicator, formula);
             }
+        }
+    }
+
+    /**
+     * Update one indicator attrs in the view, using the corresponding formula.
+     * Do nothing if indicator and formula do not represent the same field.
+     * @param indicator
+     * @param formula
+     */
+    protected void updateIndicatorAttrs(ConfiguratorCreator creator,
+                                        MetaJsonField indicator,
+                                        ConfiguratorFormula formula) {
+
+        int scale = Beans.get(AppBaseService.class)
+                .getNbDecimalDigitForUnitPrice();
+        String fieldName = indicator.getName();
+        fieldName = fieldName.substring(0, fieldName.indexOf("_"));
+
+        if (!configuratorFormulaService.getMetaField(formula).getName()
+                .equals(fieldName)) {
+            return;
+        }
+        if (formula.getShowOnConfigurator()) {
+            indicator.setHidden(false);
+            indicator.setShowIf("$record.configuratorCreator.id == "
+                    + creator.getId());
+        } else {
+            indicator.setHidden(true);
+            indicator.setShowIf("");
+        }
+        if (configuratorFormulaService.getMetaField(formula)
+                .getTypeName().equals("BigDecimal")) {
+            indicator.setPrecision(20);
+            indicator.setScale(scale);
         }
     }
 

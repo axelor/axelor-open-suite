@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -83,42 +84,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         Product product = new Product();
         product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
         for (Map.Entry indicator : jsonIndicators.entrySet()) {
-            //get name of the field
-            String fieldName = indicator.getKey().toString();
-            fieldName = fieldName.substring(0,fieldName.indexOf("_"));
-            //get class of the field
-            MetaField metaField = Beans.get(MetaFieldRepository.class).all()
-                    .filter("self.metaModel.name = 'Product' AND "
-                            + "self.name = :_name")
-                    .bind("_name", fieldName)
-                    .fetchOne();
-            Class fieldClass =
-                    Class.forName(metaField.getPackageName() + "."
-                            + metaField.getTypeName()
-                    );
-            //get value of the field
-            Object fieldValue = indicator.getValue();
-            if (fieldValue == null) {
-                continue;
-            }
-
-            //get method to call
-            Method setter = Product.class.getMethod(
-                    "set" + fieldName.substring(0, 1).toUpperCase()
-                            + fieldName.substring(1),
-                    fieldClass
-            );
-
-            //set the value, had to make a special case for bigdecimal
-            if (fieldClass.equals(BigDecimal.class)) {
-                if (fieldValue.getClass().equals(Integer.class)) {
-                    setter.invoke(product, new BigDecimal((Integer) fieldValue));
-                } else if (fieldValue.getClass().equals(String.class)) {
-                    setter.invoke(product, new BigDecimal((String) fieldValue));
-                }
-            } else {
-                setter.invoke(product, fieldValue);
-            }
+            invokeRightSetter(indicator, product);
         }
         product = Beans.get(ProductRepository.class).save(product);
 
@@ -143,18 +109,22 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                                    JsonContext jsonIndicators)
             throws ClassNotFoundException, NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
-        //generate product
-        generateProduct(configurator, jsonAttributes, jsonIndicators);
 
-        //create and add sale order line
         SaleOrderLine saleOrderLine = new SaleOrderLine();
+        if (configurator.getConfiguratorCreator().getGenerateProduct()) {
+            //generate sale order line from product
+            generateProduct(configurator, jsonAttributes, jsonIndicators);
 
-        Product product = Beans.get(ProductRepository.class)
-                .find(configurator.getProductId());
-        saleOrderLine.setProduct(product);
-        saleOrderLine.setProductName(product.getFullName());
-        saleOrderLine.setPrice(product.getSalePrice());
-        saleOrderLine.setUnit(product.getUnit());
+            Product product = Beans.get(ProductRepository.class)
+                    .find(configurator.getProductId());
+            saleOrderLine.setProduct(product);
+            saleOrderLine.setProductName(product.getFullName());
+            saleOrderLine.setPrice(product.getSalePrice());
+            saleOrderLine.setUnit(product.getUnit());
+        } else {
+            saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes,
+                    jsonIndicators);
+        }
         saleOrder.addSaleOrderLineListItem(saleOrderLine);
 
         Beans.get(SaleOrderRepository.class).save(saleOrder);
@@ -174,10 +144,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                                            JsonContext jsonAttributes) {
         ConfiguratorCreator creator = configurator.getConfiguratorCreator();
         String groovyFormula = null;
-        for (ConfiguratorFormula formula : creator.getFormulas()) {
+        for (ConfiguratorFormula formula : creator.getConfiguratorFormulaList()) {
             String fieldName = indicator.getName();
-             fieldName = fieldName.substring(0, fieldName.indexOf("_"));
-            if (formula.getProductField().getName().equals(fieldName)) {
+            fieldName = fieldName.substring(0, fieldName.indexOf("_"));
+            MetaField metaField = Beans.get(ConfiguratorFormulaService.class)
+                    .getMetaField(formula);
+            if (metaField.getName().equals(fieldName)) {
                 groovyFormula = formula.getFormula();
                 break;
             }
@@ -210,5 +182,78 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             }
         }
         return binding;
+    }
+
+    /**
+     * Create a sale order line from the configurator
+     * @param configurator
+     * @param jsonAttributes
+     * @param jsonIndicators
+     * @return
+     */
+    protected SaleOrderLine generateSaleOrderLine(Configurator configurator,
+                                                  JsonContext jsonAttributes,
+                                                  JsonContext jsonIndicators)
+            throws ClassNotFoundException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+
+        SaleOrderLine saleOrderLine = new SaleOrderLine();
+        for (Map.Entry indicator : jsonIndicators.entrySet()) {
+            invokeRightSetter(indicator, saleOrderLine);
+        }
+        return saleOrderLine;
+    }
+
+    /**
+     * Given an indicator with the name of the field and the value,
+     * call the right setter to change this value in the model object
+     * @param indicator
+     * @param model
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    protected void invokeRightSetter(Map.Entry indicator, Model model)
+            throws ClassNotFoundException, NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+
+            //get name of the field
+            String fieldName = indicator.getKey().toString();
+            fieldName = fieldName.substring(0, fieldName.indexOf("_"));
+            //get class of the field
+            MetaField metaField = Beans.get(MetaFieldRepository.class).all()
+                    .filter("self.metaModel.name = :_modelname AND "
+                            + "self.name = :_name")
+                    .bind("_modelname", model.getClass().getSimpleName())
+                    .bind("_name", fieldName)
+                    .fetchOne();
+            Class fieldClass =
+                    Class.forName(metaField.getPackageName() + "."
+                            + metaField.getTypeName()
+                    );
+            //get value of the field
+            Object fieldValue = indicator.getValue();
+            if (fieldValue == null) {
+                return;
+            }
+
+            //get method to call
+            Method setter = model.getClass().getMethod(
+                    "set" + fieldName.substring(0, 1).toUpperCase()
+                            + fieldName.substring(1),
+                    fieldClass
+            );
+
+            //set the value, had to make a special case for bigdecimal
+            if (fieldClass.equals(BigDecimal.class)) {
+                if (fieldValue.getClass().equals(Integer.class)) {
+                    setter.invoke(model, new BigDecimal((Integer) fieldValue));
+                } else if (fieldValue.getClass().equals(String.class)) {
+                    setter.invoke(model, new BigDecimal((String) fieldValue));
+                }
+            } else {
+                setter.invoke(model, fieldValue);
+            }
     }
 }

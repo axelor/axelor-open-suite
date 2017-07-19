@@ -13,8 +13,10 @@
         <panel>
             <panel title="Label">
                 <field name="$defNameAsFormula" title="Define with a script" colSpan="6" type="boolean"/>
-                <field name="name" colSpan="12"/>
-                <field name="nameFormula" colSpan="12"/>
+                <field name="name" colSpan="12" showIf="$defNameAsFormula"/>
+                <field name="nameFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="!$defNameAsFormula"/>
             </panel>
             <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
                    x-code-syntax="groovy"/>
