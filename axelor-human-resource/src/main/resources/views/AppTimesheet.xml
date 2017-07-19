@@ -11,7 +11,6 @@
 			<field name="editModeTSTimer" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="keepProject" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="defaultEndFormat" />
-			<field name="editorHideActivity" widget="boolean-switch" />
 		</panel>
 	</form>
 	

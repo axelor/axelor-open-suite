@@ -163,6 +163,10 @@
 		<field name="product" expr="eval:null" if="!project?.productSet?.contains(product)"/>
 	</action-record>
 	
+	<action-record name="action-timesheet-line-editor-record-get-default" model="com.axelor.apps.hr.db.TimesheetLine">
+		<field name="product" expr="call:com.axelor.apps.hr.service.use.UserHrService:getTimesheetProduct(user)"/>
+	</action-record>
+	
 	<action-validate name="action-timesheet-line-validate-date">
 		<error message="This date is invalid. It must be included in the timesheet's period." if="date != null &amp;&amp; (date &lt; _parent.fromDate || ( _parent.toDate != null &amp;&amp; date &gt; _parent.toDate))" action="action-timesheet-line-null-date"/>
 	</action-validate>

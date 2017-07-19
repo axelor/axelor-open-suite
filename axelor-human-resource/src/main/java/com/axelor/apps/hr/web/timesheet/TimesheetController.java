@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
@@ -76,7 +77,6 @@ public class TimesheetController {
 	private Provider<ProductRepository> productRepoProvider;
 	@Inject
 	private Provider<ProjectRepository> projectRepoProvider;
-	
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -370,6 +370,25 @@ public class TimesheetController {
 	}
 	
 	public void showTimesheetLineEditor(ActionRequest request, ActionResponse response) {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		boolean showActivity = true;
+		
+		User user = timesheet.getUser();
+		if (user != null) {
+			Company company = user.getActiveCompany();
+			if (company != null && company.getHrConfig() != null) {
+				showActivity = company.getHrConfig().getUseUniqueProductForTimesheet();
+			}
+		}
+		
+		response.setView(ActionView
+				.define(I18n.get("Timesheet Lines"))
+				.add("html", "hr/timesheet?timesheetId=" + timesheet.getId() + "&showActivity=" + showActivity).map());	
+   }
+	
+   public void getEditorActivity(ActionRequest request, ActionResponse response) {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
