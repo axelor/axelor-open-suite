@@ -4,27 +4,27 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="company-department-grid" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
         <field name="company"/>
     </grid>
     
     <form name="company-department-form" title="Company department" model="com.axelor.apps.base.db.CompanyDepartment">
     	<panel name="main">
-        	<field name="code" x-bind="{{code|uppercase}}"/>
+        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
         	<field name="name"/>
         	<field name="company"/>
         </panel>
     </form>
 
     <grid name="company-department-company-grid" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
     </grid>
 
     <form name="company-department-company-form" title="Company department" model="com.axelor.apps.base.db.CompanyDepartment">
     	<panel name="main">
-        	<field name="code" x-bind="{{code|uppercase}}"/>
+        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
         	<field name="name"/>
         </panel>
     </form>

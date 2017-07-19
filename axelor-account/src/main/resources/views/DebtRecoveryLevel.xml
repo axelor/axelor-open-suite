@@ -5,14 +5,14 @@
     
     <grid name="debt-recovery-level-grid" title="Debt recovery levels" model="com.axelor.apps.account.db.DebtRecoveryLevel">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="label"/>
     </grid>
     
     <form name="debt-recovery-level-form" title="Debt recovery level" model="com.axelor.apps.account.db.DebtRecoveryLevel"  >
      	<panel name="main" >
      		<field name="name"/>
-    		<field name="code"/>
+    		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     		<field name="label"/>
      	</panel>
      	

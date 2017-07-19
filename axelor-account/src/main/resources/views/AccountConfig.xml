@@ -99,7 +99,7 @@
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
 					<editor itemSpan="6">
 						<field name="name" colSpan="8"/>
-						<field name="code" colSpan="4"/>
+						<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="4"/>
 					</editor>
 				</field>
 				<panel name="cfonbExport" title="CFONB Export" hidden="true" showIf="!$readonly()" >
@@ -206,7 +206,7 @@
 				<field name="clearanceAccountSet" domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
 					<!-- TODO:Check weather this Editor works or not -->
 					<editor x-show-titles="false" x-layout="table">
-						<field name="code" colSpan="12"/>
+						<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="12"/>
 						<field name="name" colSpan="6"/>
 						<field name="accountType" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 						<field name="reconcileOk" colSpan="6"/>

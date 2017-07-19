@@ -5,7 +5,7 @@
     
     <grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -15,7 +15,7 @@
     onNew="action-year-record-new" onSave="action-year-check-date,action-civil-year-check-date">
     	<panel name="main" >
 	        <field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
 	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>

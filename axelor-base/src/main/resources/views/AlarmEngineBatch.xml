@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
-		<field name="code" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="metaModelSet" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		<field name="alarmEngineSet" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 	</grid>
@@ -14,7 +14,7 @@
 			<button name="run" title="Run" onClick="save,alarm-engine-batch-method-run" />
 		</toolbar>
 		<panel name="main" x-stack="true">
-			<field name="code" x-bind="{{code|uppercase}}" colSpan="4" />
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"  colSpan="4" />
 		</panel>
 		<panel-tabs>
 			<panel name="configuration" title="Configuration">

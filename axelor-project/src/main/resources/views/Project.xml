@@ -26,7 +26,7 @@
 		
 			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
 				<editor x-show-titles="false">
-					<field name="code" showTitle="false" css="label-bold bold large" colSpan="3"/>
+					<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" css="label-bold bold large" colSpan="3"/>
 					<field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
 				</editor>
 			</field>

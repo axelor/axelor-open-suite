@@ -5,7 +5,7 @@
 
     <grid name="product-family-grid" title="Products families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
     <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" width="large">
@@ -14,7 +14,7 @@
 		</toolbar>
 		<panel name="main" >
 	        <field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <panel-related field="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
 	        domain="self.typeSelect = 1" colSpan="12"/>
 	        <panel-dashlet action="action-dashlet-product-family-product-category" colSpan="12"/>
