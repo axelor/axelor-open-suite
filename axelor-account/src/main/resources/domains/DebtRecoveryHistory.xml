@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="DebtRecoveryHistory" lang="java">
+  
+  	<many-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" title="Debt recovery"/>
+	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
+	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Reached debt recovery method line" />
+	<date name="debtRecoveryDate" title="Last debt recovery date"/>
+	<date name="referenceDate" title="Reference date"/>
+	<boolean name="setToIrrecoverableOK" title="Shift to irrecoverable"/>
+	<boolean name="unknownAddressOK" title="Address unknown"/>
+	<decimal name="balanceDue" title="Partner Balance due"/>
+	<decimal name="balanceDueDebtRecovery" title="Balance due recoverable"/>
+	<many-to-one name="userDebtRecovery" ref="com.axelor.auth.db.User" title="User"/>
+	<many-to-one name="debtRecoveryMessage" ref="com.axelor.apps.message.db.Message" title="Debt recovery message"/>
+	
+    <string name="name" namecolumn="true" search="referenceDate,debtRecovery" title="Name">
+	    <![CDATA[
+	    	String name = " - ";
+	    	if (referenceDate != null) name = referenceDate.toString();
+	    	if (debtRecovery != null) name = debtRecovery.getName() + " : " + name;
+	    	return name;
+	    ]]>
+    </string>
+    
+  </entity>
+
+</domain-models>

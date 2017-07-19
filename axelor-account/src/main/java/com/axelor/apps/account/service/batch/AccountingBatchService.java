@@ -80,8 +80,8 @@ public class AccountingBatchService {
 				}
 				batch = null;
 				break;
-			case AccountingBatchRepository.ACTION_REMINDER:
-				batch = reminder(accountingBatch);
+			case AccountingBatchRepository.ACTION_DEBT_RECOVERY:
+				batch = debtRecovery(accountingBatch);
 				break;
 			case AccountingBatchRepository.ACTION_INTERBANK_PAYMENT_ORDER:
 				if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
@@ -113,9 +113,9 @@ public class AccountingBatchService {
 	}
 	
 	
-	public Batch reminder(AccountingBatch accountingBatch) {
+	public Batch debtRecovery(AccountingBatch accountingBatch) {
 		
-		return Beans.get(BatchReminder.class).run(accountingBatch);
+		return Beans.get(BatchDebtRecovery.class).run(accountingBatch);
 		
 	}
 

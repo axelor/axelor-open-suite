@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.ReminderConfigLine;
+import com.axelor.apps.account.db.DebtRecoveryConfigLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -474,14 +474,14 @@ public class AccountConfigService {
 
 	}
 
-	public List<ReminderConfigLine> getReminderConfigLineList(AccountConfig accountConfig) throws AxelorException  {
+	public List<DebtRecoveryConfigLine> getDebtRecoveryConfigLineList(AccountConfig accountConfig) throws AxelorException  {
 
-		if(accountConfig.getReminderConfigLineList() == null || accountConfig.getReminderConfigLineList().isEmpty())   {
+		if(accountConfig.getDebtRecoveryConfigLineList() == null || accountConfig.getDebtRecoveryConfigLineList().isEmpty())   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_37),
 					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		return accountConfig.getReminderConfigLineList();
+		return accountConfig.getDebtRecoveryConfigLineList();
 
 	}
 

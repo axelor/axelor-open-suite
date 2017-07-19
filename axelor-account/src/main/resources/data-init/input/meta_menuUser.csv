@@ -8,7 +8,7 @@ account-root;role.user
 account-root-move;role.user
 account-root-periodic-processing;role.user
 account-root-debt-recovery;role.user
-debt-recovery-root-reminders;role.user
+debt-recovery-root-history;role.user
 account-root-accounting;role.user
 account-root-budget-management;role.user
 account-root-budget-management-my-budgets;role.user

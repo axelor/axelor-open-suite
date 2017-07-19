@@ -24,12 +24,14 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -199,5 +201,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		return daysWorks.subtract(daysLeave);
 	}
+	
 
 }

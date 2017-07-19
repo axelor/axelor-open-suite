@@ -273,10 +273,10 @@
                     <text-property name="heading">balance_due_cust_account</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">balance_due_reminder_cust_account</property>
+                    <property name="columnName">balance_due_debt_recovery_cust_account</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">balance_due_reminder_cust_account</text-property>
-                    <text-property name="heading">balance_due_reminder_cust_account</text-property>
+                    <text-property name="displayName">balance_due_debt_recovery_cust_account</text-property>
+                    <text-property name="heading">balance_due_debt_recovery_cust_account</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -380,7 +380,7 @@
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">balance_due_reminder_cust_account</property>
+                        <property name="name">balance_due_debt_recovery_cust_account</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -508,8 +508,8 @@
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">balance_due_reminder_cust_account</property>
-                    <property name="nativeName">balance_due_reminder_cust_account</property>
+                    <property name="name">balance_due_debt_recovery_cust_account</property>
+                    <property name="nativeName">balance_due_debt_recovery_cust_account</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -518,7 +518,7 @@
 Partner.name as partner_name, Partner.partner_seq, InvoicingAddress.full_name as invoicing_full_name,
 Partner.fixed_phone, Partner.fax, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
 AuthUser.name as internal_user_name, Team.name as team_name,
-AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_reminder_cust_account
+AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_debt_recovery_cust_account
 from base_partner as Partner
 left join auth_user as AuthUser on (Partner.user_id = AuthUser.id)
 left join base_company as Company on (Company.id = AuthUser.active_company)
@@ -2030,9 +2030,9 @@ where Partner.id = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">balance_due_reminder_cust_account</property>
-                    <text-property name="displayName">balance_due_reminder_cust_account</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["balance_due_reminder_cust_account"]</expression>
+                    <property name="name">balance_due_debt_recovery_cust_account</property>
+                    <text-property name="displayName">balance_due_debt_recovery_cust_account</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["balance_due_debt_recovery_cust_account"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -5863,9 +5863,9 @@ row["first_name"]
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">balance_due_reminder_cust_account</property>
-                    <text-property name="displayName">balance_due_reminder_cust_account</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["balance_due_reminder_cust_account"]</expression>
+                    <property name="name">balance_due_debt_recovery_cust_account</property>
+                    <text-property name="displayName">balance_due_debt_recovery_cust_account</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["balance_due_debt_recovery_cust_account"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -6067,7 +6067,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.remindableBalance"</value>
+                                    <value type="javascript">"ClientSituation.recoverableBalance"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6102,7 +6102,7 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance_due_reminder_cust_account"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance_due_debt_recovery_cust_account"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>

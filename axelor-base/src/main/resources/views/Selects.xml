@@ -301,7 +301,7 @@
 		<option value='intoAccount'>To include in next invoice batch</option>
 	</selection>
 
-	<selection name='reminder.method.base.concerned.select'>
+	<selection name='debt.recovery.method.base.concerned.select'>
 		<option value='0'>Owner</option>
 		<option value='1'>Payer</option>
 	</selection>
