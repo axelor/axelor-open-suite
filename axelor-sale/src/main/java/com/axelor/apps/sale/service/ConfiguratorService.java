@@ -28,7 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 public interface ConfiguratorService {
 
     /**
-     * Update the value of indicators using {@link com.axelor.apps.sale.db.ConfiguratorCreator#formulas}
+     * Update the value of indicators using {@link com.axelor.apps.sale.db.ConfiguratorCreator#configuratorFormulaList}
      * and the current values in {@link Configurator#attributes}
      * @param configurator
      * @param attributes

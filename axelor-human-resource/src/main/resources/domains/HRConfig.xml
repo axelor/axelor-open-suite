@@ -65,6 +65,10 @@
   	
   	<string name="workingDaysVariableName" title="Name for working day variable" />
 	<string name="totalWorkingDaysVariableName" title="Name for total working day in a period variable"/>
+	
+	<!-- Unique product for the timesheet -->
+	<boolean name="useUniqueProductForTimesheet"  title="Use unique product for timesheet" />
+    <many-to-one name="uniqueTimesheetProduct" ref="com.axelor.apps.base.db.Product" title="Unique product for timesheet" />
   	 
   </entity>
   

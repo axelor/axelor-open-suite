@@ -10,7 +10,9 @@
         <string name="name" title="Name" required="true"/>
         <one-to-many name="attributes" ref="com.axelor.meta.db.MetaJsonField" title="Attributes" orphanRemoval="true" />
         <one-to-many name="indicators" ref="com.axelor.meta.db.MetaJsonField" title="Indicators" orphanRemoval="true" />
-        <one-to-many name="formulas" ref="com.axelor.apps.sale.db.ConfiguratorFormula"/>
+        <one-to-many name="configuratorFormulaList" mappedBy="creator"
+                     ref="com.axelor.apps.sale.db.ConfiguratorFormula"/>
+        <boolean name="generateProduct" title="Generate product?" default="true"/>
 
         <boolean name="isActive" title="Is Active" default="false"/>
 

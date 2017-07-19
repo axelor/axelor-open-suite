@@ -28,9 +28,10 @@
         <panel readonly="true">
             <field name="indicators" colSpan="12"/>
         </panel>
-        <panel>
+        <panel showIf="configuratorCreator.generateProduct" >
             <button name="generateProduct" title="Generate Product"
                     onClick="save,action-configurator-generate-product"/>
+            <field name="configuratorCreator.generateProduct" hidden="true"/>
         </panel>
     </form>
 

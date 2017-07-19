@@ -37,7 +37,7 @@ public interface ConfiguratorCreatorService {
     void updateAttributes(ConfiguratorCreator creator);
 
     /**
-     * Add the {@link ConfiguratorFormula#productField} that need to be shown
+     * Add the {@link ConfiguratorFormula#productMetaField} that need to be shown
      * in configurator in the {@link ConfiguratorCreator#indicators} many-to-one.
      * @param creator
      */
