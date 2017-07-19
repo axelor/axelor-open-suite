@@ -15,6 +15,9 @@
 		<boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
 		<boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
 		
+		<!-- Timesheet editor configuration -->
+		<boolean name="editorHideActivity" title="Hide activity on editor" />
+		
 	</entity>
 
 </domain-models>

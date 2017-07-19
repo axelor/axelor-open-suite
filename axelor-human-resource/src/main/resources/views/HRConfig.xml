@@ -17,6 +17,8 @@
 	  	</panel>
 	  	<panel-tabs>
 			<panel name="timesheet" title="Timesheet" if="__config__.app.isApp('timesheet')">
+				<field name="useUniqueProductForTimesheet" />
+				<field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet" showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid" />
 			    <panel name="timesheetTemplates" title="Timesheet Templates" colSpan="12">
 					<field name="timesheetMailNotification" colSpan="12"/>
 			    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>

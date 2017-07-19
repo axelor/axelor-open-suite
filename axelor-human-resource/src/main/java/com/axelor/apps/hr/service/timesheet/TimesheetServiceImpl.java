@@ -61,6 +61,7 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.project.ProjectService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
@@ -113,6 +114,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private UserHrService userHrService;
 
 	
 	@Override
@@ -675,8 +679,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		user = userRepo.find(user.getId());
 		
-		Employee employee = user.getEmployee();
-		if (employee == null || employee.getProduct() == null) {
+		Product product = userHrService.getTimesheetProduct(user);
+		
+		if (product == null) {
 			return lines;
 		}
 		
@@ -685,7 +690,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				+ "and self.statusSelect != 3", user.getId()).fetch();
 		
 		for (Project project : projects) {
-			TimesheetLine line = createTimesheetLine(project, employee.getProduct(), user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
+			TimesheetLine line = createTimesheetLine(project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
 			lines.add(Mapper.toMap(line));
 		}
 		
@@ -693,5 +698,4 @@ public class TimesheetServiceImpl implements TimesheetService{
 		return lines;
 		
 	}
-	
 }
