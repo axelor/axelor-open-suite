@@ -19,7 +19,7 @@
       <field name="cron" colSpan="12"/>
       <button-group colSpan="4">
         <button name="btnValidate" title="Validate" onClick="com.axelor.quartz.JobRunner:validate(cron)"/>
-        <button name="btnRestart" title="Restart jobs..." prompt="This may terminate any running jobs. Are you sure to continue?" onClick="com.axelor.quartz.JobRunner:restart()"/>
+        <button name="btnRestart" title="Restart jobs..." prompt="This may terminate any running jobs. Are you sure you want to continue?" onClick="com.axelor.quartz.JobRunner:restart()"/>
       </button-group>
     </panel>
     <panel-related field="params" editable="true">
