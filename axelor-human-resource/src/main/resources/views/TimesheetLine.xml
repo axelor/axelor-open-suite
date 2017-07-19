@@ -110,7 +110,7 @@
 
 	<action-group name="action-timesheet-line-group-project-onchange">
 		<action name="action-timesheet-line-record-to-invoice"/>
-		<action name="action-hr-timesheet-line-record-empty-product"/>
+<!-- 		<action name="action-hr-timesheet-line-record-empty-product"/> -->
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-line-attrs-domain-product">
@@ -140,7 +140,7 @@
 	
 	<action-record name="action-hr-default-timesheet-line-timesheet" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="user" expr="eval:__parent__.user" />
-	    <field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__.(User).find(__parent__.user.id))" if="__parent__.user != null"/>
+	    <field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__(User).find(__parent__.user.id))" if="__parent__.user != null"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
@@ -152,11 +152,11 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: project?.projInvTypeSelect == 2 || project?.project?.projInvTypeSelect == 2"/>
+		<field name="toInvoice" expr="eval: project?.projInvTypeSelect == 2 || project?.project?.projInvTypeSelect == 2"  if="__config__.app.isApp('business-project')"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice-parent" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.project?.project?.projInvTypeSelect == 2"/>
+		<field name="toInvoice" expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.project?.project?.projInvTypeSelect == 2"  if="__config__.app.isApp('business-project')"/>
 	</action-record>
 	
 	<action-record name="action-hr-timesheet-line-record-empty-product" model="com.axelor.apps.hr.db.TimesheetLine">
@@ -164,7 +164,7 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-editor-record-get-default" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="product" expr="call:com.axelor.apps.hr.service.use.UserHrService:getTimesheetProduct(user)"/>
+		<field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(user)"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">

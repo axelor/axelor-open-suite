@@ -379,7 +379,7 @@ public class TimesheetController {
 		if (user != null) {
 			Company company = user.getActiveCompany();
 			if (company != null && company.getHrConfig() != null) {
-				showActivity = company.getHrConfig().getUseUniqueProductForTimesheet();
+				showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
 			}
 		}
 		
@@ -387,14 +387,5 @@ public class TimesheetController {
 				.define(I18n.get("Timesheet Lines"))
 				.add("html", "hr/timesheet?timesheetId=" + timesheet.getId() + "&showActivity=" + showActivity).map());	
    }
-	
-   public void getEditorActivity(ActionRequest request, ActionResponse response) {
-		
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		
-		response.setView(ActionView
-				.define(I18n.get("Timesheet Lines"))
-				.add("html", "hr/timesheet?timesheetId=" + timesheet.getId()).map());	
-	}
 	
 }
