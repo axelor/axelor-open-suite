@@ -12,10 +12,7 @@
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
-	        <field name="payerQuality" hideIf="!isCustomer || isEmployee"/>
 	        <field name="invoicesCopySelect" hideIf="!isCustomer"/>
-	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" hideIf="!isCustomer" if="__config__.app.isApp('business-project')" />
-	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3" if="__config__.app.isApp('business-project')" />
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel colSpan="6" hideIf="isEmployee">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
@@ -44,14 +41,6 @@
 			    </editor>
 			</field>
 	    </panel>
-	    <panel name="salePriceList" title="Sale Price List" colSpan="12" hideIf="!isCustomer">
-	    	<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" form-view="sale-price-list-form" grid-view="price-list-grid"/>
-	    </panel>
-	    
-	    <panel name="purchasePriceList" title="Purchase Price List" colSpan="12" hideIf="!isSupplier">
-	    	<field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
-	    </panel>
-	    
 	</form>
 	
 	<form name="incl-customer-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >

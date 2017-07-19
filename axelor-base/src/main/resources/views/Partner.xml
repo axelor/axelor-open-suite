@@ -200,15 +200,21 @@
 	        	<panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
-				<field name="saleOrderInformation" title="Label to be displayed on sale orders" colSpan="12"/>
-			</panel>
-			<panel name="purchaseOrder" title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
-				<field name="purchaseOrderInformation" colSpan="12"/>
-			</panel>
-			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
-				<field name="password" widget="password"/>
-			</panel>
+			<panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
+				<field name="saleOrderInformation"/>
+                <field name="payerQuality" hideIf="isEmployee"/>
+                <field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" form-view="sale-price-list-form" grid-view="price-list-grid"/>
+                <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+                <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+                <panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
+                    <field name="password" widget="password"/>
+                </panel>
+            </panel>
+			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
+				<field name="purchaseOrderInformation"/>
+                <field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
+                <field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
+            </panel>
 			<panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
 				<field name="deliveryDelay" showIf="isSupplier"/>
 				<spacer/>
