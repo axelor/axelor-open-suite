@@ -1,4 +1,4 @@
-package com.axelor.apps;
+package com.axelor.apps.tool;
 
 public class Pair<A, B> {
 	private final A first;

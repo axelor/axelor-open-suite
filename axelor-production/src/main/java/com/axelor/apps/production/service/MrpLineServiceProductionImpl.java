@@ -20,7 +20,7 @@ package com.axelor.apps.production.service;
 import java.time.LocalDate;
 import java.util.Map;
 
-import com.axelor.apps.Pair;
+import com.axelor.apps.tool.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;

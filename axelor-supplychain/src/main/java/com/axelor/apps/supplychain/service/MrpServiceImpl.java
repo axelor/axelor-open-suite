@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.Pair;
+import com.axelor.apps.tool.Pair;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.hibernate.proxy.HibernateProxy;
 
-import com.axelor.apps.Pair;
+import com.axelor.apps.tool.Pair;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
