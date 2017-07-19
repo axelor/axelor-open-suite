@@ -109,18 +109,30 @@
                         <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
                     </editor>
                 </field>
+                <panel hideIf="isContact" colSpan="3">
+                    <field name="isProspect" hideIf="$readonly()" onChange="action-partner-attrs-unset-customer"/>
+                    <field name="isEmployee" showIf="!$readonly() &amp;&amp; !isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2" onChange="action-partner-account-attrs-hide-employee-account"/>
+                    <field name="isCustomer" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
+                    <field name="isSupplier" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
+                    <field name="$viewerPartnerType" showTitle="false" hideIf="!$readonly()" colSpan="12">
+                        <viewer>
+                            <![CDATA[
+                                <h4 style="text-align: right;">
+                                    <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+                                    <span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+                                    <span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+                                    <span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+                                </h4>
+                            ]]>
+                        </viewer>
+                    </field>
+                </panel>
                 <field name="isContact" hidden="true" colSpan="12" />
             </panel>
         </panel>
         <panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
         <panel-tabs>
             <panel name="information" title="Information">
-                <panel hideIf="isContact" colSpan="12">
-                    <field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
-                    <field name="isProspect" onChange="action-partner-attrs-unset-customer"/>
-                    <field name="isSupplier" hideIf="isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
-                    <field name="isEmployee" showIf="!isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2" onChange="action-partner-account-attrs-hide-employee-account"/>
-                </panel>
                 <panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
                     <field name="contactAddress">
                         <editor x-show-titles="false">
