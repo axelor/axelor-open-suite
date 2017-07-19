@@ -176,5 +176,9 @@
 		<option value="1">Day of month</option>
 		<option value="2">Day of week</option>
 	</selection>
-	
+
+	<selection name="meta.schedule.job.select" id="crm.meta.schedule.job.select">
+		<option value="com.axelor.apps.crm.job.EventReminderJob">com.axelor.apps.crm.job.EventReminderJob</option>
+	</selection>
+
 </object-views>
