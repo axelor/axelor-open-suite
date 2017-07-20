@@ -6,7 +6,6 @@
     <grid name="payment-voucher-grid" title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
         <field name="ref"/>
         <field name="operationTypeSelect"/>
-        <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
         <field name="paymentDate"/>
@@ -28,7 +27,6 @@
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-attrs-fill-bank-details"/>
-			 <field name="cashRegister" colSpan="4" grid-view="cash-register-grid" form-view="cash-register-form"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
@@ -95,7 +93,6 @@
     <action-group name="action-account-payment-voucher-onnew-group">
 	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
 	    <action name="action-record-payment-voucher-default-record"/>
-	    <action name="action-record-payment-voucher-cash-register-record"/>
 	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-payment-voucher-getDate"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
@@ -187,18 +184,13 @@
 	
 	<action-record name="action-record-payment-voucher-default-record" model="com.axelor.apps.account.db.PaymentVoucher">
 		<field name="user" expr="eval:__user__"/>
-       	<field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
 		<field name="currency"  expr="eval:__user__.activeCompany?.currency"/>
 		<field name="currency"  expr="eval:__repo__.of(Company).all().fetchOne()?.currency" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	</action-record>
-	
-	<action-record name="action-record-payment-voucher-cash-register-record" model="com.axelor.apps.account.db.PaymentVoucher">
-		<field name="cashRegister" expr="eval: user?.activeCashRegister"/>
-	</action-record>
-	
+
 	<action-record name="action-payment-voucher-getDate" model="com.axelor.apps.account.db.PaymentVoucher">
     	<field name="paymentDate" expr="eval: __config__.generalService.getTodayDate()"/>
    	</action-record>

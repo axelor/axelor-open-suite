@@ -57,7 +57,6 @@
 				<field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
 				<field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
-				<field name="cashRegister" domain="self.company =:company" canNew="false" form-view="cash-register-form" grid-view="cash-register-grid"/>
 			</panel>
 			
 			<panel name="accountingExport" title="Accounting export" hideIf="statusSelect == 1" hidden="true" readonly="true">
@@ -92,7 +91,6 @@
 	   
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
-        <field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
