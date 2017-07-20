@@ -38,7 +38,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
@@ -383,9 +382,13 @@ public class TimesheetController {
 			}
 		}
 		
+		String url = "hr/timesheet?timesheetId=" + timesheet.getId() + "&showActivity=" + showActivity;
+		
+		logger.debug("Timesheet editor url: {}", url);
+		
 		response.setView(ActionView
 				.define(I18n.get("Timesheet Lines"))
-				.add("html", "hr/timesheet?timesheetId=" + timesheet.getId() + "&showActivity=" + showActivity).map());	
+				.add("html", url).map());	
    }
 	
 }
