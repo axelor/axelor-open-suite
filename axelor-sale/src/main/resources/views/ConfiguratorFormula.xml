@@ -18,7 +18,7 @@
         <panel>
             <field name="productMetaField" domain="self.metaModel.name = 'Product' "/>
             <field name="saleOrderLineMetaField" domain="self.metaModel.name = 'SaleOrderLine' "/>
-            <field name="formula" widget="CodeEditor" x-code-syntax="groovy"/>
+            <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
             <field name="showOnConfigurator"/>
         </panel>
     </form>

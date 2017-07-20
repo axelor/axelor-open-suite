@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 import wslite.json.JSONException;
 
@@ -34,7 +35,7 @@ public interface ConfiguratorService {
      * @param attributes
      * @param indicators @return the new values of indicators
      */
-    void updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators);
+    void updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators) throws AxelorException;
 
     /**
      * Generate a product from the configurator

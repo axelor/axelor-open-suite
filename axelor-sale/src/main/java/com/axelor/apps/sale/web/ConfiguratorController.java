@@ -23,6 +23,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.ConfiguratorService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -56,8 +57,13 @@ public class ConfiguratorController {
         JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
         configurator = configuratorRepository.find(configurator.getId());
-        configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
-        response.setValue("indicators", request.getContext().get("indicators"));
+        try {
+            configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
+            response.setValue("indicators", request.getContext().get("indicators"));
+        } catch (AxelorException e) {
+            TraceBackService.trace(e);
+            response.setError(e.getLocalizedMessage());
+        }
     }
 
     /**
