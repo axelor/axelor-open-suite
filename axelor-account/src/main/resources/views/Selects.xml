@@ -100,12 +100,7 @@
 		<option value='3'>Template</option>
 		<option value='4'>Import</option>
 	</selection>
-	
-	<selection name='iaccount.cash.register.line.status.select'>
-		<option value='0'>Draft</option>
-		<option value='1'>Closed</option>
-	</selection>
-	
+
 	<selection name='payer.quality.config.line.incident.type.select'>
 		<option value='0'>Reminder</option>
 		<option value='1'>Reject</option>
