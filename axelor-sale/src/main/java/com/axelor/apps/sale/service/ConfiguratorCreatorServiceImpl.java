@@ -18,7 +18,6 @@
 
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -53,10 +52,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     @Override
     @Transactional
-    public void updateAttrsAndIndicators(ConfiguratorCreator creator) {
+    public void generateConfigurator(ConfiguratorCreator creator) {
         updateAttributes(creator);
         updateIndicators(creator);
-        configuratorCreatorRepo.save(creator);
+        Configurator configurator = new Configurator();
+        configurator.setConfiguratorCreator(creator);
+        configuratorRepo.save(configurator);
     }
 
 
@@ -109,8 +110,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         //remove formulas
         List<MetaJsonField> fieldsToRemove = new ArrayList<>();
         for (MetaJsonField indicator : indicators) {
-            if (indicator.getModel().equals(Product.class.getName())
-                    && isNotInFormulas(indicator, formulas)) {
+            if (isNotInFormulas(indicator, creator)) {
                 fieldsToRemove.add(indicator);
             }
         }
@@ -160,15 +160,17 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     /**
      *
      * @param field
-     * @param formulas
-     * @return false if field is represented in formula list
-     *         true if field is missing in the formula list
+     * @param creator
+     * @return false if field is represented in the creator formula list
+     *         true if field is missing in the creator formula list
      */
-    protected boolean isNotInFormulas(MetaJsonField field, List<ConfiguratorFormula> formulas) {
+    protected boolean isNotInFormulas(MetaJsonField field, ConfiguratorCreator creator) {
+        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         for (ConfiguratorFormula formula : formulas) {
             MetaField formulaMetaField = configuratorFormulaService
                     .getMetaField(formula);
-            if (formulaMetaField.getName().equals(field.getName())) {
+            if ((formulaMetaField.getName() + "_" + creator.getId())
+                    .equals(field.getName())) {
                 return false;
             }
         }

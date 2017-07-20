@@ -58,27 +58,19 @@
 					   grid-view="configurator-formula-grid"/>
         <panel>
 			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"
-					title="Create configurator" onClick="action-configurator-creator-group-show-configurator"/>
+					title="Create configurator" onClick="action-configurator-creator-group-create-configurator"/>
 		</panel>
     </form>
 	
-	<action-group name="action-configurator-creator-group-show-configurator">
+	<action-group name="action-configurator-creator-group-create-configurator">
         <action name="save"/>
-		<action name="action-configurator-creator-update-creator"/>
-		<action name="action-configurator-creator-view-show-configurator"/>
+		<action name="action-configurator-creator-create-configurator"/>
 	</action-group>
     
-    <action-method name="action-configurator-creator-update-creator">
+    <action-method name="action-configurator-creator-create-configurator">
     	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-			  method="updateCreator"/>
+			  method="createConfigurator"/>
     </action-method>
-
-	<action-view name="action-configurator-creator-view-show-configurator"
-				 model="com.axelor.apps.sale.db.Configurator"
-				 title="Show Configurator">
-        <view type="form" name="configurator-form"/>
-		<context name="_configuratorCreator" expr="eval: __self__"/>
-	</action-view>
 
 	<action-record name="action-configurator-creator-record-activate"
 				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
