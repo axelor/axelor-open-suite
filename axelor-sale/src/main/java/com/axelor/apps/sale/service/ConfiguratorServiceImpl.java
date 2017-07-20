@@ -286,14 +286,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                     fieldClass
             );
 
-            //set the value, had to make a special case for bigdecimal
+            //set the value, had to make a special case for BigDecimal
+            // and String
             if (fieldClass.equals(BigDecimal.class)) {
-                if (fieldValue.getClass().equals(Integer.class)) {
-                    setter.invoke(model, new BigDecimal((Integer) fieldValue));
-                } else if (fieldValue.getClass().equals(String.class)) {
-                    setter.invoke(model, new BigDecimal((String) fieldValue));
-                }
-            } else {
+                setter.invoke(model, new BigDecimal(fieldValue.toString()));
+            }
+            else if (fieldClass.equals(String.class)) {
+                setter.invoke(model, fieldValue.toString());
+            }
+            else {
                 setter.invoke(model, fieldValue);
             }
     }
