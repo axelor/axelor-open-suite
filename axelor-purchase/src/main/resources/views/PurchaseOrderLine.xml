@@ -98,6 +98,7 @@
 			<panel name="deliveryPanel" title="Delivery" hidden="true">
 				<field name="desiredDelivDate"/>
 				<field name="estimatedDelivDate"/>
+				<field name="supplierComment" colSpan="12"/>
 				<panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">

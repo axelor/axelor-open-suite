@@ -47,7 +47,8 @@
   	
 	<date name="estimatedDelivDate" title="Estim. delivery date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
-
+	  
+	<string name="supplierComment" title="Supplier Comment"/>
   	
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
