@@ -25,7 +25,7 @@
     
     <action-attrs name="action-inventory-line-attrs-tracking-number">
     	<attribute name="required" for="trackingNumber" expr="eval: product?.trackingNumberConfiguration?.isPurchaseTrackingManaged || product?.trackingNumberConfiguration?.isProductionTrackingManaged || product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
-		<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged || __parent__.statusSelect >= 5"/>
+		<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged || __parent__?.statusSelect >= 5"/>
     </action-attrs>
     
     <action-record name="action-inventory-line-on-change-product" model="com.axelor.apps.stock.db.InventoryLine">

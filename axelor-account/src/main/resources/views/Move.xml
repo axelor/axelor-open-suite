@@ -6,8 +6,8 @@
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
             <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
-            <button name="deleteMoves" title="delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
-        	<button name="moveLines" title="See Move Lines" action="account.root.move.move.line" />
+            <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
+        	<button name="moveLines" title="See Move Lines" onClick="account.root.move.move.line" />
         </toolbar>
         
         <hilite color="info" if="statusSelect == 1"/>
