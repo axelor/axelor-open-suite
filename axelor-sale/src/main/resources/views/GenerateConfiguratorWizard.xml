@@ -11,7 +11,7 @@
                    target-name="name" form-view="configurator-creator-form"
                    grid-view="configurator-creator-grid" domain="isActive = true"/>
             <spacer/>
-            <button name="generate" title="Generate" onClick="action-generate-configurator-creator-view-show-configurator"/>
+            <button name="generate" title="Generate" onClick="action-generate-configurator-creator-view-show-configurator,close"/>
         </panel>
     </form>
 

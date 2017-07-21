@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 
@@ -24,10 +25,11 @@ public interface ConfiguratorCreatorService {
 
     /**
      * Call {@link #updateAttributes} and {@link #updateIndicators}
-     * then save the creator given in param
+     * then create a new {@link Configurator}.
+     * Finally save the creator given in param.
      * @param creator
      */
-    void updateAttrsAndIndicators(ConfiguratorCreator creator);
+    void generateConfigurator(ConfiguratorCreator creator);
 
     /**
      * Add default view attrs for configurator attributes

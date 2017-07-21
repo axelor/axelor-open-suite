@@ -41,16 +41,18 @@ public class ConfiguratorCreatorController {
 
     /**
      * Called from configurator creator form.
-     * call {@link ConfiguratorCreatorService#updateAttrsAndIndicators(ConfiguratorCreator)}
+     * Call {@link ConfiguratorCreatorService#generateConfigurator}
      * @param request
      * @param response
      */
-    public void updateCreator(ActionRequest request, ActionResponse response) {
+    public void createConfigurator(ActionRequest request, ActionResponse response) {
 
         ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
 
         creator = configuratorCreatorRepo.find(creator.getId());
 
-        configuratorCreatorService.updateAttrsAndIndicators(creator);
+        configuratorCreatorService.generateConfigurator(creator);
+        response.setSignal("refresh-app", true);
+        response.setFlash(I18n.get(IExceptionMessage.CONFIGURATOR_GENERATED));
     }
 }

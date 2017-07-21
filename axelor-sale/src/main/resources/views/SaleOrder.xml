@@ -918,6 +918,10 @@
 				 model="com.axelor.apps.base.db.Wizard"
 				 title="Generate configurator">
         <view type="form" name="generate-configurator-wizard-form"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false"/>
         <context name="_saleOrderId" expr="eval: id"/>
 	</action-view>
 	

@@ -26,11 +26,18 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
@@ -44,13 +51,15 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     @Override
     public void updateIndicators(Configurator configurator,
                                  JsonContext jsonAttributes,
-                                 JsonContext jsonIndicators) {
+                                 JsonContext jsonIndicators) throws AxelorException {
         List<MetaJsonField> indicators =
                 configurator.getConfiguratorCreator().getIndicators();
         if (configurator.getConfiguratorCreator() == null) {
@@ -141,7 +150,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      */
     protected Object computeIndicatorValue(Configurator configurator,
                                            MetaJsonField indicator,
-                                           JsonContext jsonAttributes) {
+                                           JsonContext jsonAttributes) throws AxelorException {
         ConfiguratorCreator creator = configurator.getConfiguratorCreator();
         String groovyFormula = null;
         for (ConfiguratorFormula formula : creator.getConfiguratorFormulaList()) {
@@ -157,10 +166,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         if (groovyFormula == null || jsonAttributes == null) {
             return null;
         }
-
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer customizer = new ImportCustomizer();
         customizer.addStaticStars("java.lang.Math");
+        groovyFormula = addRepoToFormula(groovyFormula, customizer);
         conf.addCompilationCustomizers(customizer);
         Binding binding = createGroovyBinding(jsonAttributes);
         GroovyShell shell = new GroovyShell(binding, conf);
@@ -182,6 +191,38 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             }
         }
         return binding;
+    }
+
+    /**
+     * Replace __repo__ in the formula by the correct call to {@link JpaRepository}
+     * @param groovyFormula
+     * @param customizer
+     * @return
+     */
+    protected String addRepoToFormula(String groovyFormula,
+                                      ImportCustomizer customizer) throws AxelorException {
+        customizer.addImports("com.axelor.db.JpaRepository");
+        Pattern pattern = Pattern.compile("__repo__\\(([^)]*)\\)");
+        Matcher matcher = pattern.matcher(groovyFormula);
+        StringBuffer sb = new StringBuffer();
+        MetaModelRepository metaModelRepo = Beans.get(MetaModelRepository.class);
+        while (matcher.find()) {
+            //import the needed class
+            String className = matcher.group(1);
+            MetaModel metaModel = metaModelRepo.findByName(className);
+            if (metaModel == null) {
+                throw new AxelorException(String.format(I18n.get(
+                        IExceptionMessage.CONFIGURATOR_SCRIPT_CLASS_NOT_FOUND
+                        ), className
+
+                ), IException.CONFIGURATION_ERROR);
+            }
+            String fullClassName = metaModel.getFullName();
+            customizer.addImports(fullClassName);
+            matcher.appendReplacement(sb, "JpaRepository.of($1.class)");
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
     /**
@@ -245,14 +286,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                     fieldClass
             );
 
-            //set the value, had to make a special case for bigdecimal
+            //set the value, had to make a special case for BigDecimal
+            // and String
             if (fieldClass.equals(BigDecimal.class)) {
-                if (fieldValue.getClass().equals(Integer.class)) {
-                    setter.invoke(model, new BigDecimal((Integer) fieldValue));
-                } else if (fieldValue.getClass().equals(String.class)) {
-                    setter.invoke(model, new BigDecimal((String) fieldValue));
-                }
-            } else {
+                setter.invoke(model, new BigDecimal(fieldValue.toString()));
+            }
+            else if (fieldClass.equals(String.class)) {
+                setter.invoke(model, fieldValue.toString());
+            }
+            else {
                 setter.invoke(model, fieldValue);
             }
     }
