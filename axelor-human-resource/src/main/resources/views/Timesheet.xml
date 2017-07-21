@@ -83,7 +83,7 @@
 		</panel>
 		<panel>
 			<field name="showEditor" widget="boolean-switch"  colSpan="2" onChange="action-timesheet-attrs-refresh-editor"/>
-			<button name="fullScreenEditor" colSpan="3" title="Open fullscreen editor" showIf="showEditor" onClick="action-timesheet-line-method-show-timesheet-line-editor"/>
+			<button name="fullScreenEditor" colSpan="4" title="Open fullscreen editor" showIf="showEditor" onClick="action-timesheet-line-method-show-timesheet-line-editor"/>
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-line-method-show-timesheet-line-editor" showIf="showEditor" height="365"/>
 			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly()" x-can-copy="true"/>
 			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly()" x-can-copy="true" />
