@@ -19,9 +19,13 @@
 			<button name="start" icon="fa-play"/>
 			<button name="accept" icon="fa-check"/>
 			<button name="stop" icon="fa-power-off"/>
-			<button name="bookResource" title="Book resource" onClick="save,action-task-book-resource" />
 		</toolbar>
-		
+		<menubar>
+	        <menu title="Tools">   
+	            <item title="Schedule Event" action="save,action-task-book-resource"/>
+	        </menu>
+	    </menubar>
+	    
 		<panel name="main" colSpan="12">
 			<field name="sequence" title="Ticket N°" colSpan="3" readonly="true"/>
 			<field name="name" colSpan="9" placeholder="Subject" required="true"/>

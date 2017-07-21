@@ -368,7 +368,7 @@ public class TimesheetController {
 				.add("html", fileLink).map());	
 	}
 	
-	public void showTimesheetLineEditor(ActionRequest request, ActionResponse response) {
+	public void setShowActivity(ActionRequest request, ActionResponse response) {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
@@ -382,13 +382,19 @@ public class TimesheetController {
 			}
 		}
 		
-		String url = "hr/timesheet?timesheetId=" + timesheet.getId() + "&showActivity=" + showActivity;
+		response.setValue("$showActivity", showActivity);
+	}
+	
+	public void openTimesheetEditor(ActionRequest request, ActionResponse response) {
 		
-		logger.debug("Timesheet editor url: {}", url);
+		Context context = request.getContext();
+		
+		String url = "hr/timesheet?timesheetId=" + context.get("id") + "&showActivity=" + context.get("showActivity");
 		
 		response.setView(ActionView
-				.define(I18n.get("Timesheet Lines"))
-				.add("html", url).map());	
-   }
+				.define(I18n.get("Timesheet lines"))
+				.add("html", url).map());       
+
+	}
 	
 }

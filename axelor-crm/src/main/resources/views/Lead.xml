@@ -78,14 +78,14 @@
 		
 		<panel name="contactDetails" title="Contact details">
 			<panel colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-				<field name="mobilePhone" colSpan="4" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
-				<field name="isDoNotCall" colSpan="2"/>
-				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="4">
+				<field name="mobilePhone" colSpan="3" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
+				<field name="isDoNotCall" colSpan="3"/>
+				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="3">
 					<editor x-show-titles="false">
 						<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 					</editor>
 				</field>
-				<field name="isDoNotSendEmail" colSpan="2"/>
+				<field name="isDoNotSendEmail" colSpan="3"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
 				<field name="fax" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fax-phone-number"/>
 				<field name="webSite"/>
