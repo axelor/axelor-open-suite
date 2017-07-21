@@ -19,12 +19,15 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
+import org.codehaus.groovy.control.CompilationFailedException;
 import wslite.json.JSONException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 public interface ConfiguratorService {
 
@@ -36,6 +39,18 @@ public interface ConfiguratorService {
      * @param indicators @return the new values of indicators
      */
     void updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators) throws AxelorException;
+
+
+    /**
+     * Give the result of a formula, with the script variables defined
+     * in the values map.
+     * @param groovyFormula
+     * @param values
+     * @return
+     * @throws AxelorException
+     */
+    Object computeFormula(String groovyFormula, Map<String, Object> values)
+            throws AxelorException, CompilationFailedException;
 
     /**
      * Generate a product from the configurator

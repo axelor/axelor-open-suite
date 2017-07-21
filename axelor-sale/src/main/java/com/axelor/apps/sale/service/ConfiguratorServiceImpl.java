@@ -43,6 +43,7 @@ import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -166,28 +167,35 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         if (groovyFormula == null || jsonAttributes == null) {
             return null;
         }
-        CompilerConfiguration conf = new CompilerConfiguration();
-        ImportCustomizer customizer = new ImportCustomizer();
-        customizer.addStaticStars("java.lang.Math");
-        groovyFormula = addRepoToFormula(groovyFormula, customizer);
-        conf.addCompilationCustomizers(customizer);
-        Binding binding = createGroovyBinding(jsonAttributes);
-        GroovyShell shell = new GroovyShell(binding, conf);
-        return shell.evaluate(groovyFormula);
+        return computeFormula(groovyFormula, jsonAttributes);
     }
+
+   public Object computeFormula(String groovyFormula,
+                                Map<String, Object> values)
+           throws AxelorException, CompilationFailedException {
+
+       CompilerConfiguration conf = new CompilerConfiguration();
+       ImportCustomizer customizer = new ImportCustomizer();
+       customizer.addStaticStars("java.lang.Math");
+       groovyFormula = addRepoToFormula(groovyFormula, customizer);
+       conf.addCompilationCustomizers(customizer);
+       Binding binding = createGroovyBinding(values);
+       GroovyShell shell = new GroovyShell(binding, conf);
+       return shell.evaluate(groovyFormula);
+   }
 
     /**
      * Creates the binding for the formula using the attributes JSON
      * fields.
-     * @param jsonAttributes
+     * @param map
      * @return
      */
-    protected Binding createGroovyBinding(JsonContext jsonAttributes) {
+    protected Binding createGroovyBinding(Map<String, Object> map) {
         Binding binding = new Binding();
         //get attributes
-        for (Object key : jsonAttributes.keySet()) {
-            if (jsonAttributes.get(key) != null) {
-                binding.setProperty(key.toString(), jsonAttributes.get(key));
+        for (Object key : map.keySet()) {
+            if (map.get(key) != null) {
+                binding.setProperty(key.toString(), map.get(key));
             }
         }
         return binding;

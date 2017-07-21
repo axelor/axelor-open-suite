@@ -20,6 +20,10 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.exception.AxelorException;
+import org.codehaus.groovy.control.CompilationFailedException;
+
+import java.util.Map;
 
 public interface ConfiguratorCreatorService {
 
@@ -44,4 +48,21 @@ public interface ConfiguratorCreatorService {
      * @param creator
      */
     void updateIndicators(ConfiguratorCreator creator);
+
+    /**
+     * Test all the formulas included in the creator
+     * @param creator
+     * @param testingValues the values used to do the test
+     * @throws AxelorException
+     */
+    void testCreator(ConfiguratorCreator creator,
+                     Map<String, Object> testingValues) throws AxelorException, CompilationFailedException;
+
+    /**
+     * Get the testing values in {@link ConfiguratorCreator#attributes}
+     * @param creator
+     * @return
+     * @throws AxelorException
+     */
+    Map<String, Object> getTestingValues(ConfiguratorCreator creator) throws AxelorException;
 }
