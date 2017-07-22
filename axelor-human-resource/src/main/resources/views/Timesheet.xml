@@ -260,7 +260,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-refresh-editor">
-		<attribute name="refresh" for="timesheetLineEditor" expr="eval:true"/>
+		<attribute name="refresh" for="timesheetLineEditor" expr="eval:true" if="showEditor"/>
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
