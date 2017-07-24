@@ -7,6 +7,7 @@
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="productSupplierName"/>
         <field name="productSupplierCode"/>
+		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="updateDate"/>
         <field name="minQty"/>
         <field name="price" x-scale="2" />
@@ -17,6 +18,7 @@
 		<field name="product.name"/>
 		<field name="productSupplierName"/>
 		<field name="productSupplierCode"/>
+		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="updateDate"/>
 		<field name="minQty"/>
 		<field name="price" x-scale="2" />
@@ -26,6 +28,7 @@
 		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
     	<panel name="main" colSpan="12">
 			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
         	<field name="productSupplierName"/>
         	<field name="productSupplierCode"/>
@@ -42,6 +45,7 @@
 		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
 		<panel name="main" colSpan="12">
 			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update"/>
+			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
 			<field name="productSupplierName"/>
 			<field name="productSupplierCode"/>
