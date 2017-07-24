@@ -72,9 +72,6 @@
 <!-- 	</input> -->
 	
     <input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" >
-        <bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
         <bind to="statusSelectBudget" column="statusSelectBudget"/>

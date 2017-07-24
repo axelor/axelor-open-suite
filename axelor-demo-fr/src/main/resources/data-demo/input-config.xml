@@ -232,9 +232,6 @@
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
-      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
@@ -471,9 +468,6 @@
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" update="true" search="self.name = :name"/>
 	
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" call="com.axelor.csv.script.ClearMessage:clearAllMailMessages">
-      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
