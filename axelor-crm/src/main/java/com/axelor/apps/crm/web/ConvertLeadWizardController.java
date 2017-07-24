@@ -224,16 +224,16 @@ public class ConvertLeadWizardController {
 		else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
-		response.setAttr("primaryAddress", "value", lead.getPrimaryAddress());
-		response.setAttr("primaryCity", "value", lead.getPrimaryCity());
-		response.setAttr("primaryState", "value", lead.getPrimaryState());
-		response.setAttr("primaryPostalCode", "value", lead.getPrimaryPostalCode());
-		response.setAttr("primaryCountry", "value", lead.getPrimaryCountry());
-		response.setAttr("otherAddress", "value", lead.getOtherAddress());
-		response.setAttr("otherCity", "value", lead.getOtherCity());
-		response.setAttr("otherState", "value", lead.getOtherState());
-		response.setAttr("otherPostalCode", "value", lead.getOtherPostalCode());
-		response.setAttr("otherCountry", "value", lead.getOtherCountry());
+		response.setAttr("$primaryAddress", "value", lead.getPrimaryAddress());
+		response.setAttr("$primaryCity", "value", lead.getPrimaryCity());
+		response.setAttr("$primaryState", "value", lead.getPrimaryState());
+		response.setAttr("$primaryPostalCode", "value", lead.getPrimaryPostalCode());
+		response.setAttr("$primaryCountry", "value", lead.getPrimaryCountry());
+		response.setAttr("$otherAddress", "value", lead.getOtherAddress());
+		response.setAttr("$otherCity", "value", lead.getOtherCity());
+		response.setAttr("$otherState", "value", lead.getOtherState());
+		response.setAttr("$otherPostalCode", "value", lead.getOtherPostalCode());
+		response.setAttr("$otherCountry", "value", lead.getOtherCountry());
 	}
 	
 	public void setConvertLeadCallEvent(ActionRequest request, ActionResponse response) { 
