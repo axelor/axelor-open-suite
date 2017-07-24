@@ -22,10 +22,14 @@
         <button name="btnRestart" title="Restart jobs..." prompt="This may terminate any running jobs. Are you sure you want to continue?" onClick="com.axelor.quartz.JobRunner:restart()"/>
       </button-group>
     </panel>
-    <panel-related field="params" editable="true">
-      <field name="name"/>
-      <field name="value"/>
-    </panel-related>
+
+   	<panel title="Batch" showIf="job == 'com.axelor.apps.base.job.BatchJob'">
+    	<field name="batchServiceSelect" title="Service"/>
+    	<field name="batchCode" title="Code"/>
+   	</panel>
+
+    <panel-related field="params" grid-view="meta-schedule-param-grid" form-view="meta-schedule-param-form"/>
+
   </form>
 
 </object-views>

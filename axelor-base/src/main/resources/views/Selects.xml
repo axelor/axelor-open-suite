@@ -685,6 +685,7 @@
 	<selection name="meta.schedule.job.select">
 		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
 		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
+		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
 	</selection>
 
 </object-views>
