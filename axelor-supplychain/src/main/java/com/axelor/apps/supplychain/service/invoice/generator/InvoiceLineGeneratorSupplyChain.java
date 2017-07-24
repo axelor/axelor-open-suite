@@ -46,12 +46,6 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
 
-	@Inject
-	protected InvoiceLineService invoiceLineService;
-	
-	@Inject
-	protected UnitConversionService unitConversionService;
-	
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMoveLine stockMoveLine;
@@ -154,7 +148,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		
 		else if(stockMoveLine != null)  {
 			
-			this.price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+			this.price = Beans.get(InvoiceLineService.class).getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
 			this.price = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
 
 		}
