@@ -8,18 +8,18 @@
 		    <button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
 	  	</toolbar>
 	  	<panel name="main" >
-		    <field name="hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
-		    <field name="selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
-		    <field name="hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
-		    <field name="selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
-		   	<field name="hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
-	     	<field name="hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
-		    <field name="hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
-		    <field name="hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
+		    <field name="$hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
+		    <field name="$selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
+		    <field name="$hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
+		    <field name="$selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
+		   	<field name="$hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
+	     	<field name="$hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
+		    <field name="$hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
+		    <field name="$hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
 	 	</panel>
-	 	<panel-tabs showIf="hasConvertIntoContact || hasConvertIntoPartner || hasConvertIntoOpportunity || hasConvertIntoCall || hasConvertIntoMeeting || hasConvertIntoTask">
-			<panel name="convertIntoContact" title="Convert into Contact" showIf="hasConvertIntoContact">
-				<field name="contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+	 	<panel-tabs showIf="$hasConvertIntoContact || $hasConvertIntoPartner || $hasConvertIntoOpportunity || $hasConvertIntoCall || $hasConvertIntoMeeting || $hasConvertIntoTask">
+			<panel name="convertIntoContact" title="Convert into Contact" showIf="$hasConvertIntoContact">
+				<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-contact" >
 						<label title="Personal" colSpan="12"/>
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
@@ -36,12 +36,12 @@
 					</editor>
 				</field>
 						<label title="Address"/>
-						<field name="primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
-						<field name="primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
-						<field name="primaryState" placeholder="State" showTitle="false" type="string" colSpan="4"/>
-						<field name="primaryPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
-						<field colSpan="12" name="primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-				<field name="contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+						<field name="$primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
+						<field name="$primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
+						<field name="$primaryState" placeholder="State" showTitle="false" type="string" colSpan="4"/>
+						<field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
+						<field colSpan="12" name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+				<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-contact">
 						<label title="Notes"/>
 					  	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" />
@@ -56,8 +56,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="convertIntoPartner" title="Convert into Partner" showIf="hasConvertIntoPartner" onTabSelect="action-partner-attrs-change-name">
-				<field name="partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+			<panel name="convertIntoPartner" title="Convert into Partner" showIf="$hasConvertIntoPartner" onTabSelect="action-partner-attrs-change-name">
+				<field name="$partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">
 						<label title="Personal" colSpan="12"/>
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
@@ -83,19 +83,19 @@
 				</field>
 					    
 					    <label title="Invoicing Address" colSpan="12"/>
-					    <field name="primaryAddress" placeholder="Address" showTitle="false" type="string"/>
-					    <field name="primaryCity" placeholder="City" showTitle="false" type="string"/>
-					    <field name="primaryState" placeholder="State" showTitle="false" type="string"/>
-					    <field name="primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-					    <field name="primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+					    <field name="$primaryAddress" placeholder="Address" showTitle="false" type="string"/>
+					    <field name="$primaryCity" placeholder="City" showTitle="false" type="string"/>
+					    <field name="$primaryState" placeholder="State" showTitle="false" type="string"/>
+					    <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
+					    <field name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 					    <label title="Delivery Address" colSpan="12"/>
-				        <field name="otherAddress" placeholder="Address" showTitle="false" type="string"/>
-				        <field name="otherCity"  placeholder="City" showTitle="false" type="string"/>
-				        <field name="otherState" placeholder="State" showTitle="false" type="string"/>
-				        <field name="otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-				        <field name="otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+				        <field name="$otherAddress" placeholder="Address" showTitle="false" type="string"/>
+				        <field name="$otherCity"  placeholder="City" showTitle="false" type="string"/>
+				        <field name="$otherState" placeholder="State" showTitle="false" type="string"/>
+				        <field name="$otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
+				        <field name="$otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 	   			
-	   			<field name="partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+	   			<field name="$partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">		
 	   					<label title="Contact" colSpan="12"/>
 						<field name="fixedPhone"/>
@@ -117,8 +117,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="createIntoOpportunity" title="Create into Opportunity" showIf="hasConvertIntoOpportunity">
-				<field name="opportunity" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
+			<panel name="createIntoOpportunity" title="Create into Opportunity" showIf="$hasConvertIntoOpportunity">
+				<field name="$opportunity" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-opportunity-record-from-lead">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -154,8 +154,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="logCall" title="Log a call" showIf="hasConvertIntoCall">
-				<field name="callEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+			<panel name="logCall" title="Log a call" showIf="$hasConvertIntoCall">
+				<field name="$callEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="call-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-default-call-event">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -178,8 +178,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="scheduleMeeting" title="Schedule a meeting" showIf="hasConvertIntoMeeting">
-				<field name="meetingEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+			<panel name="scheduleMeeting" title="Schedule a meeting" showIf="$hasConvertIntoMeeting">
+				<field name="$meetingEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="meeting-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-default-meeting-event">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
@@ -201,8 +201,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="createTask" title="Create a task" showIf="hasConvertIntoTask">
-				<field name="taskEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
+			<panel name="createTask" title="Create a task" showIf="$hasConvertIntoTask">
+				<field name="$taskEvent" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="crm-task-lead-converted-form" target="com.axelor.apps.crm.db.Event" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-default-task-event">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>

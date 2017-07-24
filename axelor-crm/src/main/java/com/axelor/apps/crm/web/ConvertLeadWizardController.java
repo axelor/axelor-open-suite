@@ -124,11 +124,10 @@ public class ConvertLeadWizardController {
 	
 	public void setConvertLeadIntoContact(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
 		AppBase appBase = appBaseService.getAppBase();
@@ -150,11 +149,10 @@ public class ConvertLeadWizardController {
 	}
 	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
 		AppBase appBase = appBaseService.getAppBase();
@@ -176,11 +174,10 @@ public class ConvertLeadWizardController {
 	}
 	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
 		AppBase appBase = appBaseService.getAppBase();
@@ -217,32 +214,30 @@ public class ConvertLeadWizardController {
 	
 	public void setConvertLeadWizardAddress(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
-		response.setAttr("primaryAddress", "value", lead.getPrimaryAddress());
-		response.setAttr("primaryCity", "value", lead.getPrimaryCity());
-		response.setAttr("primaryState", "value", lead.getPrimaryState());
-		response.setAttr("primaryPostalCode", "value", lead.getPrimaryPostalCode());
-		response.setAttr("primaryCountry", "value", lead.getPrimaryCountry());
-		response.setAttr("otherAddress", "value", lead.getOtherAddress());
-		response.setAttr("otherCity", "value", lead.getOtherCity());
-		response.setAttr("otherState", "value", lead.getOtherState());
-		response.setAttr("otherPostalCode", "value", lead.getOtherPostalCode());
-		response.setAttr("otherCountry", "value", lead.getOtherCountry());
+		response.setAttr("$primaryAddress", "value", lead.getPrimaryAddress());
+		response.setAttr("$primaryCity", "value", lead.getPrimaryCity());
+		response.setAttr("$primaryState", "value", lead.getPrimaryState());
+		response.setAttr("$primaryPostalCode", "value", lead.getPrimaryPostalCode());
+		response.setAttr("$primaryCountry", "value", lead.getPrimaryCountry());
+		response.setAttr("$otherAddress", "value", lead.getOtherAddress());
+		response.setAttr("$otherCity", "value", lead.getOtherCity());
+		response.setAttr("$otherState", "value", lead.getOtherState());
+		response.setAttr("$otherPostalCode", "value", lead.getOtherPostalCode());
+		response.setAttr("$otherCountry", "value", lead.getOtherCountry());
 	}
 	
 	public void setConvertLeadCallEvent(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
 		response.setAttr("typeSelect", "value", "1");
@@ -258,11 +253,10 @@ public class ConvertLeadWizardController {
 	
 	public void setConvertLeadMeetingEvent(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
 		response.setAttr("typeSelect", "value", "2");
@@ -277,11 +271,10 @@ public class ConvertLeadWizardController {
 
 	public void setConvertLeadTaskEvent(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
-		Lead lead = new Lead();
-		if(context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+		Lead lead;
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
 			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		}
-		else {
+		} else {
 			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
 		}
 		response.setAttr("typeSelect", "value", "3");
