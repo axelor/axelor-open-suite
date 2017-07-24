@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.Pair;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,12 +53,18 @@ import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
-import com.axelor.apps.supplychain.db.*;
+import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.db.MrpFamily;
+import com.axelor.apps.supplychain.db.MrpForecast;
+import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.db.MrpLineOrigin;
+import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.tool.Pair;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -68,9 +76,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.time.LocalDate;
-import java.util.*;
 
 
 public class MrpServiceImpl implements MrpService  {

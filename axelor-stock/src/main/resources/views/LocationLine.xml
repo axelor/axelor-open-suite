@@ -17,6 +17,10 @@
 	        <field name="futureQty"/>
             <field name="avgPrice" x-scale="2"/>
         </panel>
+		<panel name="lastInventory" title="Last inventory">
+			<field name="lastInventoryRealQty" title="Real Qty"/>
+			<field name="lastInventoryDateT" title="Date"/>
+		</panel>
     </form>
     
     <grid name="location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
@@ -35,6 +39,10 @@
             <field name="avgPrice" x-scale="2"/>
 	        <field name="lastFutureStockMoveDate"/>
         </panel>
+		<panel name="lastInventory" title="Last inventory">
+			<field name="lastInventoryRealQty" title="Real Qty"/>
+			<field name="lastInventoryDateT" title="Date"/>
+		</panel>
     </form>
     
      <grid name="location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" groupBy="product">
@@ -60,5 +68,9 @@
             <field name="avgPrice" x-scale="2"/>
 	        <field name="trackingNumber"/>
         </panel>
+		<panel name="lastInventory" title="Last inventory">
+			<field name="lastInventoryRealQty" title="Real Qty"/>
+			<field name="lastInventoryDateT" title="Date"/>
+		</panel>
     </form>
 </object-views>
