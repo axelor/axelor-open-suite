@@ -128,10 +128,12 @@
 			</panel>
 			
 			<panel name="productionConfiguration" title="Production configuration" if-module="axelor-production">
-				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="Boolean-switch"/>
-				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="Boolean-switch"/>
-				<field name="manageBillOfMaterialVersion" colSpan="4" widget="Boolean-switch"/>
+				<panel name="saleOrder" title="Sale order">
+					<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" widget="Boolean-switch"/>
+					<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" widget="Boolean-switch"/>
+				</panel>
 				<panel name="billOfMaterial" title="Bill of material">
+					<field name="manageBillOfMaterialVersion" widget="Boolean-switch"/>
 				    <field name="manageResidualProductOnBom" widget="Boolean-switch"/>
 				</panel>
 				<panel name="manufacturingProcess" title="Manufacturing process">
