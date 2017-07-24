@@ -16,6 +16,8 @@
 		<panel sidebar="true" title="Actions">
 			<button name="activate" title="Activate" readonlyIf="isActive"
 					onClick="action-configurator-creator-record-activate,save"/>
+			<button name="test" title="Test this creator"
+					onClick="action-configurator-creator-method-test"/>
 			<field name="generateProduct" widget="boolean-switch"/>
 		</panel>
         <panel>
@@ -71,6 +73,11 @@
     	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
 			  method="createConfigurator"/>
     </action-method>
+
+	<action-method name="action-configurator-creator-method-test">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="testCreator"/>
+	</action-method>
 
 	<action-record name="action-configurator-creator-record-activate"
 				   model="com.axelor.apps.sale.db.ConfiguratorCreator">

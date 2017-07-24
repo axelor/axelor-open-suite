@@ -24,6 +24,10 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
+import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -31,9 +35,12 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -120,6 +127,43 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
         updateIndicatorsAttrs(creator);
 
+    }
+
+    @Override
+    public void testCreator(ConfiguratorCreator creator,
+                            Map<String, Object> testingValues)
+            throws AxelorException, CompilationFailedException {
+        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
+        if (formulas == null) {
+            //nothing to test
+            return;
+        }
+        ConfiguratorService configuratorService =
+                Beans.get(ConfiguratorService.class);
+        for (ConfiguratorFormula formula : formulas) {
+            configuratorService.computeFormula(formula.getFormula(), testingValues);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getTestingValues(ConfiguratorCreator creator) throws AxelorException {
+        Map<String, Object> attributesValues = new HashMap<>();
+        if (creator.getAttributes() == null) {
+            //no attribute, we return an empty map
+            return attributesValues;
+        }
+        for (MetaJsonField attribute : creator.getAttributes()) {
+            if (attribute.getDefaultValue() == null) {
+                throw new AxelorException(
+                        I18n.get(
+                                IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES
+                        ),
+                        IException.CONFIGURATION_ERROR
+                );
+            }
+            attributesValues.put(attribute.getName(), attribute.getDefaultValue());
+        }
+        return attributesValues;
     }
 
     /**

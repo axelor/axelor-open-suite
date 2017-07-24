@@ -21,11 +21,14 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorCreatorService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+
+import java.util.Map;
 
 public class ConfiguratorCreatorController {
 
@@ -54,5 +57,30 @@ public class ConfiguratorCreatorController {
         configuratorCreatorService.generateConfigurator(creator);
         response.setSignal("refresh-app", true);
         response.setFlash(I18n.get(IExceptionMessage.CONFIGURATOR_GENERATED));
+    }
+
+    public void testCreator(ActionRequest request, ActionResponse response) {
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+
+        creator = configuratorCreatorRepo.find(creator.getId());
+        try {
+            Map<String, Object> testingValues =
+                    configuratorCreatorService.getTestingValues(creator);
+            try {
+                configuratorCreatorService.testCreator(creator, testingValues);
+                response.setFlash(
+                        I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING)
+                );
+            } catch (Exception e) {
+                TraceBackService.trace(e);
+                String alert = I18n.get(
+                        IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR
+                );
+                alert += " " + e.getMessage();
+                response.setAlert(alert);
+            }
+        } catch (AxelorException e) {
+            response.setAlert(e.getMessage());
+        }
     }
 }
