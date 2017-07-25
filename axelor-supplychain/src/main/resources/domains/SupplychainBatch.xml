@@ -20,6 +20,7 @@
 	
 	   	// ACTION TYPE
 		public static final int ACTION_BILL_SUB = 1;
+		public static final int ACTION_INVOICE_OUTGOING_STOCK_MOVES = 2;
 		
 		public static final String CODE_BATCH_BILL_SUB = "S_B_SUB";
 	]]></extra-code>

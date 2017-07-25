@@ -24,6 +24,7 @@ import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class SupplychainBatchService {
@@ -57,6 +58,10 @@ public class SupplychainBatchService {
 
 	public Batch billSubscriptions(SupplychainBatch supplychainBatch){
 		return batchSubscription.run(supplychainBatch);
+	}
+
+	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
+		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
 	}
 
 }

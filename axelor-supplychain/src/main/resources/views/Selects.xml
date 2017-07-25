@@ -14,6 +14,11 @@
 	<selection name="supplychain.batch.action.select">
 		<option value="1">Bill Late Subscriptions</option>
 	</selection>
+
+	<selection name="supplychain.batch.invoice.stock.moves.action.select">
+		<option value="1">Bill Late Subscriptions</option>
+		<option value="2">Invoice outgoing stock moves</option>
+	</selection>
 	
 	<selection name="supplychain.mrp.status.select">
 	    <option value="0">Draft</option>
