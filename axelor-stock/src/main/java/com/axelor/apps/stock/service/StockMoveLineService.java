@@ -71,7 +71,7 @@ public interface StockMoveLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber);
 
 
 
@@ -131,5 +131,13 @@ public interface StockMoveLineService {
 	 * @param stockMoveLineList List of StockMoveLines on which to operate
 	 */
 	public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
+
+	/**
+	 * Get a merged stock move line.
+	 * 
+	 * @param stockMoveLineList
+	 * @return
+	 */
+	StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList);
 
 }
