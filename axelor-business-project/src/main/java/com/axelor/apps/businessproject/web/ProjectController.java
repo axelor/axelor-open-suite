@@ -105,7 +105,7 @@ public class ProjectController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
-		String name = I18n.get("Plannification and cost");
+		String name = I18n.get("Planification and costs");
 		
 		if (project.getCode() != null) {
 			name += " (" + project.getCode() + ")";

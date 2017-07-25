@@ -63,6 +63,12 @@
 		
 		<panel-related field="membersUserSet" form-view="user-form" grid-view="user-grid" colSpan="12" onSelect="action-task-attrs-project-members-user-set-configurations"/>
 		<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
+		<panel title="Dependencies">
+			<panel-related field="startToStartSet" colSpan="12" />
+			<panel-related field="finishToStartSet" colSpan="12" />
+			<panel-related field="startToFinishSet" colSpan="12" />
+			<panel-related field="finishToFinishSet" colSpan="12" />
+		</panel>
 		
 		<panel sidebar="true" name="attributes" title="Attributes">
 			<field name="status" colSpan="6" required="true"/>
@@ -70,14 +76,19 @@
 			<field name="priority" colSpan="6" required="true"/>
 			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
 			<field name="progressSelect" colSpan="12" widget="SelectProgress" />
+			<field name="plannedProgress" widget="progress"  />
 	    </panel>
+	    
+	    
 		<panel-mail>
 			<mail-messages/>
 		</panel-mail>
 	</form>
 	
 	<gantt name="task-gantt" title="Tasks" model="com.axelor.team.db.TeamTask" 
-		taskStart="taskDate" taskDuration="taskDuration" taskParent="parentTask" taskSequence="sequence">	
+		taskStart="taskDate" taskDuration="taskDuration" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">	
 		<field name="name"/>
 	</gantt> 
 	

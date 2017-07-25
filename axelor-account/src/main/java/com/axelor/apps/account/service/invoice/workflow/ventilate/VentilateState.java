@@ -120,10 +120,10 @@ public class VentilateState extends WorkflowInvoice {
 	}
 
 	protected void setDate( ) throws AxelorException{
-
+		
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(appAccountService.getTodayDate());
-		} else if (invoice.getInvoiceDate().compareTo(appAccountService.getTodayDate()) > 0) {
+		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
 			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
 					IException.CONFIGURATION_ERROR);
 		}

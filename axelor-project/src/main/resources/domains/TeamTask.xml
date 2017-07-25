@@ -22,6 +22,14 @@
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<decimal name="quantity" title="Quantity"/>
 		<decimal name="salePrice" title="Sale Price" />
+		
+		<!-- Gantt view fields -->
+		
+		<decimal name="plannedProgress" title="Planned progress" />
+		<many-to-many name="startToStartSet" title="Tasks to start before start" ref="TeamTask" />
+		<many-to-many name="finishToStartSet" title="Tasks to finish before start" ref="TeamTask" />
+		<many-to-many name="startToFinishSet" title="Tasks to start before finish" ref="TeamTask" />
+		<many-to-many name="finishToFinishSet" title="Tasks to finish before finish" ref="TeamTask" />
 	  
 	 <track>
 	 	<field name="name"/>

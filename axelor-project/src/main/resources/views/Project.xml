@@ -17,10 +17,10 @@
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project" width="large"
 	onLoad="action-project-on-load-group,save">
 		<toolbar>
-			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 			<button name="bookResource" title="Book resource" onClick="save,action-project-book-resource" />
-			<button name="printPlannifCost" title="Print planifications and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<button name="printPlannifCost" title="Planification and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 		<panel name="overview" title="Overview">
 		
@@ -117,7 +117,7 @@
 	<form name="folder-project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project"
 	onLoad="action-project-method-set-visible-duration,action-project-attrs-duration-title,action-project-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
 		<toolbar>
-			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 	    <panel name="main" >
 	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
