@@ -81,6 +81,7 @@
     	<option value="0">Create</option>
     	<option value="1">Update</option>
     	<option value="2">Script</option>
+    	<option value="3">View</option>
     </selection>
     
     <selection name="studio.action.builder.line.type.select">

@@ -205,7 +205,7 @@ public class WkfService {
 
 		String xml = XMLViews.toXml(actionGroup, true);
 
-		metaService.updateMetaAction(name, "action-group", xml);
+		metaService.updateMetaAction(name, "action-group", xml, null);
 
 		return actionGroup;
 	}

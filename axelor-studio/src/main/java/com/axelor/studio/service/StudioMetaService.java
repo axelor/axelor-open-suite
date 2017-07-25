@@ -17,7 +17,6 @@
  */
 package com.axelor.studio.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +30,6 @@ import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.studio.service.wkf.WkfTrackingService;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -69,14 +67,15 @@ public class StudioMetaService {
 	
 	@Transactional
 	public void updateMetaAction(String actionName, String actionType,
-			String xml) {
+			String xml, String model) {
 
 		MetaAction action = metaActionRepo.findByName(actionName);
 
 		if (action == null) {
 			action = new MetaAction(actionName);
-			action.setType(actionType);
 		}
+		action.setType(actionType);
+		action.setModel(model);
 		action.setXml(xml);
 		action = metaActionRepo.save(action);
 

@@ -17,14 +17,12 @@
  */
 package com.axelor.studio.service.builder;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +32,8 @@ import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
+import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderLineRepository;
-import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Joiner;
@@ -54,12 +52,6 @@ public class ActionBuilderService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
-	private ActionBuilderRepository actionBuilderRepo;
-
-	@Inject
-	private ViewBuilderService viewBuilderService;
-
-	@Inject
 	private ActionBuilderLineRepository builderLineRepo;
 	
 	@Inject
@@ -67,23 +59,29 @@ public class ActionBuilderService {
 	
 	@Transactional
 	public void build(ActionBuilder builder) {
-
-		if (builder.getTypeSelect() == 0 || builder.getTypeSelect() == 1) {
-			if(builder.getLines() == null || builder.getLines().isEmpty()) {
-				return;
-			}
+		
+		if (builder.getTypeSelect() < 2 &&  builder.getLines() != null && builder.getLines().isEmpty()) {
+			return;
+		}
+		
+		String xml = null;
+		if (builder.getTypeSelect() == 3) {
+			String[] val = buildActionView(builder);
+			xml = val[1];
+			metaService.updateMetaAction(builder.getName(), "action-view", xml, val[0]);
+		}
+		else {
+			xml = buildActionScript(builder);
+			metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
 		}
 
 		log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 		
 		
-		
-		String xml = getXml(builder);
-		metaService.updateMetaAction(builder.getName(), "action-script", xml);
 		MetaStore.clear();
 	}
 	
-	private String getXml(ActionBuilder builder) {
+	private String buildActionScript(ActionBuilder builder) {
 		
 		String name = builder.getName();
 		String code = null;
@@ -104,7 +102,7 @@ public class ActionBuilderService {
 		}
 		
 		String xml = "<action-script name=\"" + name + "\" " 
-				+ "id=\"" + name + "\" model=\"" 
+				+ "id=\"studio-" + name + "\" model=\"" 
 				+ MetaJsonRecord.class.getName() + "\">\n\t" 
 				+ "<script language=\"" + lang + "\" transactional=\"" + transactional + "\">\n\t<![CDATA[" 
 				+ code + "\n\t]]>\n\t</script>\n</action-script>";
@@ -121,13 +119,13 @@ public class ActionBuilderService {
 		stb.append(format("var ctx = $request.context;", level));
 		
 		if (builder.getTypeSelect() == 0) {
-			stb.append(format("var target = $json.create('" + builder.getTargetJsonModel().getName() + "');" , level));
+			stb.append(format("var target = $json.create('" + builder.getTargetJsonModel() + "');" , level));
 			stb.append(format("target = setVar0(null, ctx, {});", level));
 			stb.append(format("target = $json.save(target);", level));
 			stb.append(format("Beans.get(" + WkfTrackingService.class.getName() + ".class).track(target);", level));
 		}
 		else {
-			stb.append(format("var target = $json.create('" + builder.getMetaJsonModel().getName() + "');" , level));
+			stb.append(format("var target = $json.create('" + builder.getMetaJsonModel() + "');" , level));
 			stb.append(format("target = setVar0(null, ctx, {});", level));
 			stb.append(format("$response.setValues(target);", level));
 		}
@@ -583,4 +581,50 @@ public class ActionBuilderService {
 
 	}
 	
+	private String[] buildActionView(ActionBuilder builder) {
+		
+		if (builder.getActionBuilderViews() == null || builder.getActionBuilderViews().isEmpty()) {
+			return null;
+		}
+		
+		StringBuilder xml = new  StringBuilder();
+		
+		xml.append("<action-view name=\"" + builder.getName() + "\" ");
+		xml.append("title=\"" + builder.getTitle() + "\" ");
+		xml.append("id=\"studio-" + builder.getName() + "\" ");
+		
+		String model = MetaJsonRecord.class.getName();
+		if (!builder.getIsJson()) {
+			model = builder.getMetaModel();
+		}
+		xml.append("model=\"" + model + "\">");
+		
+		for (ActionBuilderView view : builder.getActionBuilderViews()) {
+			xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
+			xml.append("name=\"" + view.getViewName() + "\" />");
+		}
+		
+		if (builder.getViewParams() != null) {
+			for (ActionBuilderLine param : builder.getViewParams()) {
+				xml.append("\n" + INDENT + "<view-param name=\"" + param.getName()+ "\" ");
+				xml.append("value=\"" + StringEscapeUtils.escapeXml(param.getValue()) + "\" />");
+			}
+		}
+		
+		if (builder.getDomainCondition() != null) {
+			xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(builder.getDomainCondition()) + "</domain>");
+		}
+		
+		if (builder.getLines() != null) {
+			for (ActionBuilderLine context : builder.getLines()) {
+				xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
+				xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
+			}
+		}
+		
+		xml.append("\n" + "</action-view>");
+		
+		return new String[]{model,xml.toString()};
+	}
+
 }

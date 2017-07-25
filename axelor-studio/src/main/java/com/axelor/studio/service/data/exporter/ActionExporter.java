@@ -109,14 +109,14 @@ public class ActionExporter {
 		values[MODULE] = "";
 		values[NAME] = builder.getName();
 		if (builder.getMetaJsonModel() != null) {
-			values[OBJECT] = builder.getMetaJsonModel().getName();
+			values[OBJECT] = builder.getMetaJsonModel();
 		}
 		
 		values[TYPE] = typeMap.get(builder.getTypeSelect());
 //		setViews(builder, values);
 		
 		if (builder.getTargetJsonModel() != null) {
-			values[TARGET_OBJECT] = builder.getTargetJsonModel().getName();
+			values[TARGET_OBJECT] = builder.getTargetJsonModel();
 		}
 		
 		MetaField field = builder.getAssignValueTo();

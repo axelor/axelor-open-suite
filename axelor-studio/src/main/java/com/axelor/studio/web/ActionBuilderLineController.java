@@ -23,7 +23,6 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.ActionBuilderLine;
 import com.google.inject.Inject;
 
 public class ActionBuilderLineController {
