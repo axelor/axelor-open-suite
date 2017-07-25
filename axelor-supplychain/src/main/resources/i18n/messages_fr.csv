@@ -1,5 +1,9 @@
 "key","message","comment","context"
 "%","%",,
+"%d anomalies.","%d anomalies.",,
+"%d anomaly.","%d anomalie.",,
+"%d outgoing stock move processed successfully,","%d BL traité avec succès,",,
+"%d outgoing stock moves processed successfully,","%d BL traités avec succès,",,
 "%s please configure a virtual supplier stock location for the company %s","%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,
 "A contact partner must be selected","Un contact doit être sélectionné",,
 "A payment condition must be selected","Une condition de paiement doit être sélectionnée",,
@@ -153,6 +157,7 @@
 "Origin","Origine",,
 "Origins","Origines",,
 "Out of stock","Sortie de stock",,
+"Outgoing stock move invoicing report:","Rapport de facturation de BL :",,
 "PO line","Ligne de comm. Fourn.",,
 "Partner","Tiers",,
 "Payment condition","Condition de paiement",,

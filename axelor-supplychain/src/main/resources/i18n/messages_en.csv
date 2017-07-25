@@ -1,5 +1,9 @@
 "key","message","comment","context"
 "%",,,
+"%d anomalies.",,,
+"%d anomaly.",,,
+"%d outgoing stock move processed successfully,",,,
+"%d outgoing stock moves processed successfully,",,,
 "%s please configure a virtual supplier stock location for the company %s",,,
 "A contact partner must be selected",,,
 "A payment condition must be selected",,,
@@ -153,6 +157,7 @@
 "Origin",,,
 "Origins",,,
 "Out of stock",,,
+"Outgoing stock move invoicing report:",,,
 "PO line",,,
 "Partner",,,
 "Payment condition",,,
