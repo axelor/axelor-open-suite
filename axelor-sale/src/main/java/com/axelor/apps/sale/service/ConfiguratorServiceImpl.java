@@ -26,34 +26,20 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.db.JpaRepository;
-import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.JsonContext;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
-import org.codehaus.groovy.control.CompilationFailedException;
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
@@ -66,7 +52,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         if (configurator.getConfiguratorCreator() == null) {
             return;
         }
-        long creatorId = configurator.getConfiguratorCreator().getId();
         for (MetaJsonField indicator : indicators) {
             try {
                 Object calculatedValue = computeIndicatorValue(
@@ -81,21 +66,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     @Override
-    @Transactional(rollbackOn = {
-            NoSuchMethodException.class, InvocationTargetException.class,
-            IllegalAccessException.class, ClassNotFoundException.class
-    })
+    @Transactional(rollbackOn = {Exception.class, AxelorException.class})
     public void generateProduct(Configurator configurator,
                                 JsonContext jsonAttributes,
-                                JsonContext jsonIndicators)
-            throws NoSuchMethodException, InvocationTargetException,
-            IllegalAccessException,  ClassNotFoundException {
+                                JsonContext jsonIndicators) {
 
-        Product product = new Product();
+        cleanIndicators(jsonIndicators);
+        Product product = Mapper.toBean(Product.class, jsonIndicators);
         product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
-        for (Map.Entry indicator : jsonIndicators.entrySet()) {
-            invokeRightSetter(indicator, product);
-        }
         product = Beans.get(ProductRepository.class).save(product);
 
         configurator.setProductId(product.getId());
@@ -116,9 +94,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     public void addLineToSaleOrder(Configurator configurator,
                                    SaleOrder saleOrder,
                                    JsonContext jsonAttributes,
-                                   JsonContext jsonIndicators)
-            throws ClassNotFoundException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+                                   JsonContext jsonIndicators) {
 
         SaleOrderLine saleOrderLine = new SaleOrderLine();
         if (configurator.getConfiguratorCreator().getGenerateProduct()) {
@@ -171,67 +147,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
    public Object computeFormula(String groovyFormula,
-                                Map<String, Object> values)
-           throws AxelorException, CompilationFailedException {
+                                JsonContext values)
+           throws AxelorException {
 
-       CompilerConfiguration conf = new CompilerConfiguration();
-       ImportCustomizer customizer = new ImportCustomizer();
-       customizer.addStaticStars("java.lang.Math");
-       groovyFormula = addRepoToFormula(groovyFormula, customizer);
-       conf.addCompilationCustomizers(customizer);
-       Binding binding = createGroovyBinding(values);
-       GroovyShell shell = new GroovyShell(binding, conf);
-       return shell.evaluate(groovyFormula);
+       ScriptHelper scriptHelper = new GroovyScriptHelper(values);
+
+       return scriptHelper.eval(groovyFormula);
    }
-
-    /**
-     * Creates the binding for the formula using the attributes JSON
-     * fields.
-     * @param map
-     * @return
-     */
-    protected Binding createGroovyBinding(Map<String, Object> map) {
-        Binding binding = new Binding();
-        //get attributes
-        for (Object key : map.keySet()) {
-            if (map.get(key) != null) {
-                binding.setProperty(key.toString(), map.get(key));
-            }
-        }
-        return binding;
-    }
-
-    /**
-     * Replace __repo__ in the formula by the correct call to {@link JpaRepository}
-     * @param groovyFormula
-     * @param customizer
-     * @return
-     */
-    protected String addRepoToFormula(String groovyFormula,
-                                      ImportCustomizer customizer) throws AxelorException {
-        customizer.addImports("com.axelor.db.JpaRepository");
-        Pattern pattern = Pattern.compile("__repo__\\(([^)]*)\\)");
-        Matcher matcher = pattern.matcher(groovyFormula);
-        StringBuffer sb = new StringBuffer();
-        MetaModelRepository metaModelRepo = Beans.get(MetaModelRepository.class);
-        while (matcher.find()) {
-            //import the needed class
-            String className = matcher.group(1);
-            MetaModel metaModel = metaModelRepo.findByName(className);
-            if (metaModel == null) {
-                throw new AxelorException(String.format(I18n.get(
-                        IExceptionMessage.CONFIGURATOR_SCRIPT_CLASS_NOT_FOUND
-                        ), className
-
-                ), IException.CONFIGURATION_ERROR);
-            }
-            String fullClassName = metaModel.getFullName();
-            customizer.addImports(fullClassName);
-            matcher.appendReplacement(sb, "JpaRepository.of($1.class)");
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
 
     /**
      * Create a sale order line from the configurator
@@ -242,68 +164,25 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      */
     protected SaleOrderLine generateSaleOrderLine(Configurator configurator,
                                                   JsonContext jsonAttributes,
-                                                  JsonContext jsonIndicators)
-            throws ClassNotFoundException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
-
-        SaleOrderLine saleOrderLine = new SaleOrderLine();
-        for (Map.Entry indicator : jsonIndicators.entrySet()) {
-            invokeRightSetter(indicator, saleOrderLine);
-        }
-        return saleOrderLine;
+                                                  JsonContext jsonIndicators) {
+        cleanIndicators(jsonIndicators);
+        return Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     }
 
     /**
-     * Given an indicator with the name of the field and the value,
-     * call the right setter to change this value in the model object
-     * @param indicator
-     * @param model
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * Indicator keys have this pattern :
+     * {id}_{field name}
+     * Transform the keys to have only the {field name}.
+     * @param jsonIndicators
      */
-    protected void invokeRightSetter(Map.Entry indicator, Model model)
-            throws ClassNotFoundException, NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
-
-            //get name of the field
-            String fieldName = indicator.getKey().toString();
-            fieldName = fieldName.substring(0, fieldName.indexOf("_"));
-            //get class of the field
-            MetaField metaField = Beans.get(MetaFieldRepository.class).all()
-                    .filter("self.metaModel.name = :_modelname AND "
-                            + "self.name = :_name")
-                    .bind("_modelname", model.getClass().getSimpleName())
-                    .bind("_name", fieldName)
-                    .fetchOne();
-            Class fieldClass =
-                    Class.forName(metaField.getPackageName() + "."
-                            + metaField.getTypeName()
-                    );
-            //get value of the field
-            Object fieldValue = indicator.getValue();
-            if (fieldValue == null) {
-                return;
-            }
-
-            //get method to call
-            Method setter = model.getClass().getMethod(
-                    "set" + fieldName.substring(0, 1).toUpperCase()
-                            + fieldName.substring(1),
-                    fieldClass
-            );
-
-            //set the value, had to make a special case for BigDecimal
-            // and String
-            if (fieldClass.equals(BigDecimal.class)) {
-                setter.invoke(model, new BigDecimal(fieldValue.toString()));
-            }
-            else if (fieldClass.equals(String.class)) {
-                setter.invoke(model, fieldValue.toString());
-            }
-            else {
-                setter.invoke(model, fieldValue);
-            }
+    protected void cleanIndicators(JsonContext jsonIndicators) {
+        Map<String, Object> newKeyMap = new HashMap<>();
+        for (Map.Entry entry  : jsonIndicators.entrySet()) {
+            String oldKey = entry.getKey().toString();
+            newKeyMap.put(oldKey.substring(0, oldKey.indexOf("_")),
+                    entry.getValue());
+        }
+        jsonIndicators.clear();
+        jsonIndicators.putAll(newKeyMap);
     }
 }

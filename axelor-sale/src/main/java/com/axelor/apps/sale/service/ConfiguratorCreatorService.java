@@ -21,9 +21,7 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.exception.AxelorException;
-import org.codehaus.groovy.control.CompilationFailedException;
-
-import java.util.Map;
+import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorCreatorService {
 
@@ -56,7 +54,7 @@ public interface ConfiguratorCreatorService {
      * @throws AxelorException
      */
     void testCreator(ConfiguratorCreator creator,
-                     Map<String, Object> testingValues) throws AxelorException, CompilationFailedException;
+                     JsonContext testingValues) throws AxelorException;
 
     /**
      * Get the testing values in {@link ConfiguratorCreator#attributes}
@@ -64,5 +62,5 @@ public interface ConfiguratorCreatorService {
      * @return
      * @throws AxelorException
      */
-    Map<String, Object> getTestingValues(ConfiguratorCreator creator) throws AxelorException;
+    JsonContext getTestingValues(ConfiguratorCreator creator) throws AxelorException;
 }
