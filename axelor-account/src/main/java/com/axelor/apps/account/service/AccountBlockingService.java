@@ -18,10 +18,12 @@
 package com.axelor.apps.account.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
@@ -33,76 +35,44 @@ public class AccountBlockingService extends BlockingService {
 
 	@Inject
 	public AccountBlockingService() {
-
 		this.today = Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 	
-	
 	/**
-	 * Le tiers est t'il bloqué en prélèvement
+	 * Is a blocking in the future ?
 	 *
 	 * @return
 	 */
-	public boolean isDebitBlockingBlocking(Blocking blocking){
-
-		if (blocking != null && blocking.getDebitBlockingOk()){
-
-			if (blocking.getDebitBlockingToDate() != null && blocking.getDebitBlockingToDate().isBefore(today)){
-				return false;
-			}
-			else {
-				return true;
-			}
-
-		}
-
-		return false;
+	public boolean isBlockingInFuture(List<Blocking> blockings){
+        if (blockings != null) {
+            for (Blocking blocking : blockings) {
+                if (blocking.getBlockingToDate().isAfter(today)) {
+                    return true;
+                }
+            }
+        }
+        return false;
 	}
 
 
 	/**
-	 * Le tiers est t'il bloqué en prélèvement
+	 * Is the partner direct debit blocked ?
 	 *
 	 * @return
 	 */
 	public boolean isDebitBlockingBlocking(Partner partner, Company company){
-
-		return this.isDebitBlockingBlocking(
-				this.getBlocking(partner, company));
-	}
-	
-	/**
-	 * Le tiers est t'il bloqué en remboursement
-	 *
-	 * @return
-	 */
-	public boolean isDebtRecoveryBlocking(Blocking blocking){
-
-		if (blocking != null && blocking.getReimbursementBlockingOk()){
-
-			if (blocking.getReimbursementBlockingToDate() != null && blocking.getReimbursementBlockingToDate().isBefore(today)){
-				return false;
-			}
-			else {
-				return true;
-			}
-
-		}
-
-		return false;
+        return this.isBlockingInFuture(this.getBlockings(partner, company, BlockingRepository.DEBIT_BLOCKING));
 	}
 
 
 	/**
-	 * Le tiers est t'il bloqué en remboursement
+	 * Is the partner reimbursement blocked ?
 	 *
 	 * @return
 	 */
-	public boolean isDebtRecoveryBlocking(Partner partner, Company company){
-
-		return this.isDebtRecoveryBlocking(
-				this.getBlocking(partner, company));
+	public boolean isReimbursementBlocking(Partner partner, Company company){
+		return this.isBlockingInFuture(this.getBlockings(partner, company, BlockingRepository.REIMBURSEMENT_BLOCKING));
 	}
 
 }

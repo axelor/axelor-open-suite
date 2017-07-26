@@ -109,7 +109,10 @@
                         <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
                     </editor>
                 </field>
-                <panel hideIf="isContact" colSpan="3">
+                <panel colSpan="3" hideIf="!$readonly()">
+                    <button name="$balance" title="Balance" colSpan="12" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button"/>
+                </panel>
+                <panel hideIf="isContact" colOffset="9" colSpan="3">
                     <field name="isProspect" hideIf="$readonly()" onChange="action-partner-attrs-unset-customer"/>
                     <field name="isEmployee" showIf="!$readonly() &amp;&amp; !isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2" onChange="action-partner-account-attrs-hide-employee-account"/>
                     <field name="isCustomer" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
@@ -127,8 +130,14 @@
                         </viewer>
                     </field>
                 </panel>
-                <panel colOffset="9" colSpan="3" hideIf="!$readonly()">
-                    <button name="$balance" title="Balance" colSpan="12" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button"/>
+                <panel hideIf="!$readonly()" colOffset="9" colSpan="3">
+                    <field name="$activeBlockings" showTitle="false" colSpan="12">
+                        <viewer><![CDATA[
+                            <h4 style="text-align: right;">
+                                <span ng-repeat="item in record.blockingList" class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="(item.blockingToDate | date:'dd/MM/yyyy') > ('26/07/2017' | date:'dd/MM/yyyy')"><i class="fa fa-ban"></i> <span x-translate>{{ {'1':'Remin.','2':'Inv.','3':'Reimb.','4':'Debit'}[item.blockingSelect] }}</span><i class="fa fa-caret-right" style="margin: 0 4px;"></i>{{ item.blockingToDate | date:'dd/MM/yy' }}</span>
+                            </h4>
+                        ]]></viewer>
+                    </field>
                 </panel>
                 <field name="isContact" hidden="true" colSpan="12" />
             </panel>

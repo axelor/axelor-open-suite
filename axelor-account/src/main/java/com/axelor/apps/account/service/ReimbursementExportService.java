@@ -319,8 +319,7 @@ public class ReimbursementExportService {
 	 * @return
 	 */
 	public boolean canBeReimbursed(Partner partner, Company company){
-
-		return !accountBlockingService.isDebtRecoveryBlocking(partner, company);
+		return !accountBlockingService.isReimbursementBlocking(partner, company);
 	}
 
 
