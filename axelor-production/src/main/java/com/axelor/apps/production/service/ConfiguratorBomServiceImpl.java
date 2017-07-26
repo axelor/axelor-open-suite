@@ -24,10 +24,11 @@ import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
-import com.axelor.apps.sale.db.Configurator;
-import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
@@ -36,6 +37,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
+
+    private static final int MAX_LEVEL = 10;
 
     protected ConfiguratorBOMRepository configuratorBOMRepo;
 
@@ -46,8 +49,16 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
     @Override
     @Transactional(rollbackOn = {Exception.class, AxelorException.class})
-    public BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM, JsonContext attributes)
+    public BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
+                                                 JsonContext attributes, int level)
             throws AxelorException {
+        level++;
+        if (level > MAX_LEVEL) {
+            throw new AxelorException(I18n.get(
+                    IExceptionMessage.CONFIGURATOR_BOM_TOO_MAN),
+                    IException.CONFIGURATION_ERROR
+            );
+        }
         ConfiguratorService configuratorService =
                 Beans.get(ConfiguratorService.class);
         String name;
@@ -57,10 +68,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         ProdProcess prodProcess;
 
         if (configuratorBOM.getDefNameAsFormula()) {
-            name = configuratorService.computeFormula(
+            name = (String) configuratorService.computeFormula(
                     configuratorBOM.getNameFormula(),
                     attributes
-            ).toString();
+            );
         } else {
             name = configuratorBOM.getName();
         }
@@ -107,6 +118,16 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         billOfMaterial.setQty(qty);
         billOfMaterial.setUnit(unit);
         billOfMaterial.setProdProcess(prodProcess);
+
+        if (configuratorBOM.getConfiguratorBomList() != null) {
+            for (ConfiguratorBOM confBomChild : configuratorBOM
+                    .getConfiguratorBomList()) {
+                 BillOfMaterial childBom = generateBillOfMaterial(
+                         confBomChild, attributes, level);
+                 billOfMaterial.addBillOfMaterialSetItem(childBom);
+            }
+        }
+
         billOfMaterial = Beans.get(BillOfMaterialRepository.class)
                 .save(billOfMaterial);
         configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());

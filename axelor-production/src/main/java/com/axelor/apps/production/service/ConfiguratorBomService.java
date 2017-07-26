@@ -29,7 +29,9 @@ public interface ConfiguratorBomService {
      * and a JsonContext holding the custom values
      * @param configuratorBOM
      * @param attributes
+     * @param level
      */
     BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
-                                          JsonContext attributes) throws AxelorException;
+                                          JsonContext attributes, int level)
+            throws AxelorException;
 }

@@ -57,7 +57,7 @@ public class ConfiguratorController {
                 .find(configuratorBOM.getId());
         try {
             BillOfMaterial billOfMaterial = configuratorBomService
-                    .generateBillOfMaterial(configuratorBOM, jsonAttributes);
+                    .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0);
             if (billOfMaterial != null) {
                 response.setAlert(String.format(
                         I18n.get(IExceptionMessage.BILL_OF_MATERIAL_GENERATED),

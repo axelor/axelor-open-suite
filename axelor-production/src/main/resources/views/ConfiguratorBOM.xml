@@ -13,10 +13,10 @@
         <panel>
             <panel title="Label">
                 <field name="defNameAsFormula" colSpan="6"/>
-                <field name="name" colSpan="12" showIf="defNameAsFormula"/>
+                <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
                 <field name="nameFormula" colSpan="12" height="120"
                        widget="CodeEditor" x-code-syntax="groovy"
-                       showTitle="false" showIf="!defNameAsFormula"/>
+                       showTitle="false" showIf="defNameAsFormula"/>
             </panel>
             <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
                    x-code-syntax="groovy"/>
@@ -47,12 +47,6 @@
                 <field name="configuratorProdProcess" colSpan="12" showIf="defProdProcessAsConfigurator"/>
             </panel>
             <field name="configuratorBomList" colSpan="12"/>
-            <panel>
-                <button name="generateBom" title="Generate Bill of Material"
-                        onClick="action-configurator-bom-method-generate-bom"/>
-            </panel>
-            <button name="generateBom" title="Generate bom"
-                    onClick="action-configurator-method-generate-bom"/>
         </panel>
 
     </form>

@@ -105,5 +105,10 @@ public interface IExceptionMessage {
 	 * Configurator Controller
 	 */
 	String BILL_OF_MATERIAL_GENERATED =  /*$$(*/ "The bill of material %s has been generated" /*)*/;
+
+	/**
+	 * Configurator Bom Service
+	 */
+	String CONFIGURATOR_BOM_TOO_MAN = /*$$(*/ "Too many recursive calls to create the bill of material." /*)*/;
 }
 
