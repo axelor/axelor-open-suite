@@ -45,6 +45,9 @@ public class SupplychainBatchService {
 			case SupplychainBatchRepository.ACTION_BILL_SUB:
 				batch = billSubscriptions(supplychainBatch);
 				break;
+			case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
+				batch = invoiceOutgoingStockMoves(supplychainBatch);
+				break;
 			default:
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
