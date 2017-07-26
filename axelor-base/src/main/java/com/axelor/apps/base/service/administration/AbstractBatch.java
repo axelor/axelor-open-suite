@@ -41,6 +41,8 @@ import com.google.inject.persist.Transactional;
 
 public abstract class AbstractBatch {
 
+	protected static final int FETCH_LIMIT = 10;
+
 	@Inject
 	protected AppBaseService appBaseService;
 
