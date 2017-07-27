@@ -109,6 +109,6 @@ public interface IExceptionMessage {
 	/**
 	 * Configurator Bom Service
 	 */
-	String CONFIGURATOR_BOM_TOO_MAN = /*$$(*/ "Too many recursive calls to create the bill of material." /*)*/;
+	String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/ "Too many recursive calls to create the bill of material." /*)*/;
 }
 

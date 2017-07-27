@@ -29,7 +29,6 @@ import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -41,10 +40,19 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     private static final int MAX_LEVEL = 10;
 
     protected ConfiguratorBOMRepository configuratorBOMRepo;
+    protected ConfiguratorService configuratorService;
+    protected BillOfMaterialRepository billOfMaterialRepository;
+    protected ConfiguratorProdProcessService confProdProcessService;
 
     @Inject
-    ConfiguratorBomServiceImpl(ConfiguratorBOMRepository configuratorBOMRepo) {
+    ConfiguratorBomServiceImpl(ConfiguratorBOMRepository configuratorBOMRepo,
+                               ConfiguratorService configuratorService,
+                               BillOfMaterialRepository billOfMaterialRepository,
+                               ConfiguratorProdProcessService confProdProcessService) {
         this.configuratorBOMRepo = configuratorBOMRepo;
+        this.configuratorService = configuratorService;
+        this.billOfMaterialRepository = billOfMaterialRepository;
+        this.confProdProcessService = confProdProcessService;
     }
 
     @Override
@@ -55,12 +63,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         level++;
         if (level > MAX_LEVEL) {
             throw new AxelorException(I18n.get(
-                    IExceptionMessage.CONFIGURATOR_BOM_TOO_MAN),
+                    IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS),
                     IException.CONFIGURATION_ERROR
             );
         }
-        ConfiguratorService configuratorService =
-                Beans.get(ConfiguratorService.class);
         String name;
         Product product;
         BigDecimal qty;
@@ -105,8 +111,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
             prodProcess = (ProdProcess) configuratorService.computeFormula(
                     configuratorBOM.getProdProcessFormula(), attributes);
         } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
-            //TODO
-            prodProcess = null;
+            prodProcess = confProdProcessService
+                    .generateProdProcessService(
+                            configuratorBOM.getConfiguratorProdProcess(),
+                            attributes);
         }
         else {
             prodProcess = configuratorBOM.getProdProcess();
@@ -128,8 +136,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
             }
         }
 
-        billOfMaterial = Beans.get(BillOfMaterialRepository.class)
-                .save(billOfMaterial);
+        billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
         configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
         configuratorBOMRepo.save(configuratorBOM);
         return billOfMaterial;

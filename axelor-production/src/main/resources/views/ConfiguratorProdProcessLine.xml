@@ -14,24 +14,25 @@
         </panel>
         <panel title="Capacity settings" colSpan="12">
             <panel>
-                <field name="$defMinCapacityPerCycleFormula" title="Define with a script" colSpan="12" type="boolean"/>
-                <field name="minCapacityPerCycle" showIf="!$defMinCapacityPerCycleFormula" colSpan="6"/>
+                <field name="defMinCapacityFormula" colSpan="12"/>
+                <field name="minCapacityPerCycle" showIf="!defMinCapacityFormula" colSpan="6"/>
                 <field name="minCapacityPerCycleFormula" widget="CodeEditor"
-                       showIf="$defMinCapacityPerCycleFormula"
+                       showIf="defMinCapacityFormula"
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
             <panel>
-                <field name="$defMaxCapacityPerCycleFormula" title="Define with a script" colSpan="12" type="boolean"/>
-                <field name="maxCapacityPerCycle" showIf="!$defMaxCapacityPerCycleFormula" colSpan="6"/>
+                <field name="defMaxCapacityFormula" colSpan="12"/>
+                <field name="maxCapacityPerCycle" showIf="!defMaxCapacityFormula" colSpan="6"/>
                 <field name="maxCapacityPerCycleFormula" widget="CodeEditor"
-                       showIf="$defMaxCapacityPerCycleFormula"
+                       showIf="defMaxCapacityFormula"
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
             <panel>
-                <field name="$defDurationPerCycleFormula" title="Define with a script" colSpan="12" type="boolean"/>
+                <field name="defDurationFormula" colSpan="12"/>
                 <field name="durationPerCycle" colSpan="6" widget="duration"
-                       x-big="true" x-seconds="true" showIf="!$defDurationPerCycleFormula"/>
-                <field name="durationPerCycleFormula" widget="CodeEditor" showIf="$defDurationPerCycleFormula"
+                       x-big="true" x-seconds="true" showIf="!defDurationFormula"/>
+                <field name="durationPerCycleFormula" widget="CodeEditor"
+                       showIf="defDurationFormula"
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
         </panel>

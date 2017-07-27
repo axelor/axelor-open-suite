@@ -6,6 +6,7 @@
 
     <entity name="ConfiguratorProdProcess" lang="java">
         <string name="name" title="Label" required="true"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
         <one-to-many name="configuratorProdProcessLine" title="Phase"
                      mappedBy="configuratorProdProcess"
                      ref="com.axelor.apps.production.db.ConfiguratorProdProcessLine"/>
