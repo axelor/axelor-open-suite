@@ -32,10 +32,11 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.codehaus.groovy.control.CompilationFailedException;
+import wslite.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,8 +132,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     @Override
     public void testCreator(ConfiguratorCreator creator,
-                            Map<String, Object> testingValues)
-            throws AxelorException, CompilationFailedException {
+                            JsonContext testingValues)
+            throws AxelorException  {
         List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         if (formulas == null) {
             //nothing to test
@@ -146,24 +147,26 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
 
     @Override
-    public Map<String, Object> getTestingValues(ConfiguratorCreator creator) throws AxelorException {
+    public JsonContext getTestingValues(ConfiguratorCreator creator) throws AxelorException {
         Map<String, Object> attributesValues = new HashMap<>();
-        if (creator.getAttributes() == null) {
-            //no attribute, we return an empty map
-            return attributesValues;
-        }
-        for (MetaJsonField attribute : creator.getAttributes()) {
-            if (attribute.getDefaultValue() == null) {
-                throw new AxelorException(
-                        I18n.get(
-                                IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES
-                        ),
-                        IException.CONFIGURATION_ERROR
-                );
+        List<MetaJsonField> attributes = creator.getAttributes();
+        if (attributes != null) {
+            for (MetaJsonField attribute : attributes) {
+                if (attribute.getDefaultValue() == null) {
+                    throw new AxelorException(
+                            I18n.get(
+                                    IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES
+                            ),
+                            IException.CONFIGURATION_ERROR
+                    );
+                }
+                attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
-            attributesValues.put(attribute.getName(), attribute.getDefaultValue());
         }
-        return attributesValues;
+        JSONObject jsonValues = new JSONObject(attributesValues);
+        JsonContext jsonContextValues =
+                new JsonContext(Configurator.class.getName(), jsonValues.toString());
+        return jsonContextValues;
     }
 
     /**

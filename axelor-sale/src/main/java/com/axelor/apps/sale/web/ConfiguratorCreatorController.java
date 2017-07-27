@@ -26,9 +26,8 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
-
-import java.util.Map;
 
 public class ConfiguratorCreatorController {
 
@@ -64,7 +63,7 @@ public class ConfiguratorCreatorController {
 
         creator = configuratorCreatorRepo.find(creator.getId());
         try {
-            Map<String, Object> testingValues =
+            JsonContext testingValues =
                     configuratorCreatorService.getTestingValues(creator);
             try {
                 configuratorCreatorService.testCreator(creator, testingValues);

@@ -16,12 +16,15 @@
 
         <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
         <string name="minCapacityPerCycleFormula" title="Min. capacity / cycle"/>
+        <boolean name="defMinCapacityFormula" title="Define with a script"/>
 
         <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
         <string name="maxCapacityPerCycleFormula" title="Max. capacity / cycle"/>
+        <boolean name="defMaxCapacityFormula" title="Define with a script"/>
 
         <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
         <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm)"/>
+        <boolean name="defDurationFormula" title="Define with a script"/>
     </entity>
 
 </domain-models>

@@ -57,6 +57,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected StockMoveLine stockMoveLine;
 	protected Subscription subscription;
 
+	@Inject
 	public InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName,
 										   BigDecimal price, BigDecimal priceDiscounted, String description,
 										   BigDecimal qty, Unit unit, TaxLine taxLine,
