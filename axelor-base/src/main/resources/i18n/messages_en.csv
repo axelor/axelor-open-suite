@@ -141,6 +141,7 @@
 "<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />",,,
 "<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />",,,
 "<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />",,,
+"<span class='label label-warning'>Invalid IBAN</span>",,,
 "=",,,
 "A product of type service can't be procured from stock.",,,
 "A.T.I. by default",,,

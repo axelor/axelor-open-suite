@@ -35,9 +35,15 @@ public class BankDetailsController {
 	@Inject
 	private BankDetailsService bds;
 	
-	public void onChangeIban(ActionRequest request,ActionResponse response) {
+	public void validateIban(ActionRequest request,ActionResponse response) {
+		response.setAttr("invalidIbanText", "hidden", true);
+
+		if (request.getAction().endsWith("onnew")) {
+			return;
+		}
+	
 		BankDetails bankDetails = request.getContext().asType(BankDetails.class);
-		
+
 		if(bankDetails.getIban() != null && bankDetails.getBank().getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
 			try {
 				IbanUtil.validate(bankDetails.getIban());
@@ -48,8 +54,10 @@ public class BankDetailsController {
 				response.setValue("accountNbr", bankDetails.getAccountNbr());
 				response.setValue("bbanKey", bankDetails.getBbanKey());
 			} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
-				response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
-				response.setColor("iban", "#FF0000");
+				if (request.getAction().endsWith("onchange")) {
+					response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
+				}
+				response.setAttr("invalidIbanText", "hidden", false);
 			}
 		}
 	}
