@@ -17,7 +17,8 @@
 	    <toolbar>
 	        <button name="runCalculation" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1"/>
    	        <button name="generateAllProposals" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect == 2"/>
-			<button name="print" title="Print" onClick="save, action-method-mrp-print" showIf="statusSelect == 2"/>
+            <button name="printWeeks" title="Print (weekly breakdown)" icon="fa-print" onClick="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
+            <button name="printList" title="Print (list)" icon="fa-print" onClick="save,action-method-mrp-print-list" showIf="statusSelect == 2"/>
 	    </toolbar>
 	    <panel name="filters" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/>
@@ -45,8 +46,12 @@
 	    <call class="com.axelor.apps.supplychain.web.MrpController" method="generateAllProposals"/>
 	</action-method>
 
-	<action-method name="action-method-mrp-print">
-		<call class="com.axelor.apps.supplychain.web.MrpController" method="print"/>
+	<action-method name="action-method-mrp-print-weeks">
+		<call class="com.axelor.apps.supplychain.web.MrpController" method="printWeeks"/>
+	</action-method>
+
+	<action-method name="action-method-mrp-print-list">
+		<call class="com.axelor.apps.supplychain.web.MrpController" method="printList"/>
 	</action-method>
 	 
 	<action-view name="action-mrp-view-mrp-line" title="Results" model="com.axelor.apps.supplychain.db.MrpLine">
