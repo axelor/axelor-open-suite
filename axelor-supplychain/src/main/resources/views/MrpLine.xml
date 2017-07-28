@@ -7,11 +7,11 @@
         <hilite if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1" strong="true" color="info"/>
         <field name="product" hidden="true"/>
         <field name="mrpLineType" width="300"/>
-        <field name="qty" aggregate="sum"/>
+        <field name="qty"/>
         <field name="maturityDate" width="100"/>
         <field name="cumulativeQty" css="bold"/>
         <field name="product.unit"/>
-        <field name="minQty" aggregate="min"/>
+        <field name="minQty"/>
         <field name="location"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
