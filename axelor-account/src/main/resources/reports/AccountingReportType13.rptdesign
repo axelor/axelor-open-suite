@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -45,6 +45,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -147,13 +150,6 @@
                     <text-property name="heading">contact_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_first_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_first_name</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">contact_first_name</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">contract_id</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">contract_id</text-property>
@@ -208,11 +204,6 @@
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">contact_first_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
                         <property name="name">contract_id</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -265,22 +256,15 @@
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">contact_first_name</property>
-                    <property name="nativeName">contact_first_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
                     <property name="name">contract_id</property>
                     <property name="nativeName">contract_id</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MoveLine.name as "MoveLineName", MoveLine.description, MoveLine.debit, MoveLine.credit, MoveLine.date_val as "date", Partner.name as contact_name,
- Partner.first_name as contact_first_name, Partner.partner_seq as "contract_id"
-from public.account_accounting_report as AccountingReport 
+            <xml-property name="queryText"><![CDATA[select MoveLine.name as "MoveLineName", MoveLine.description, MoveLine.debit, MoveLine.credit, MoveLine.date_val as "date", MoveLine.partner_full_name as contact_name,
+ MoveLine.partner_seq as "contract_id"
+from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
@@ -298,10 +282,8 @@ where
 MoveLine.date_val <= AccountingReport.date_val and 
 Move.company = AccountingReport.company AND
 (Account.id = AccountConfig.cash_position_variation_account) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) 
-AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
-
-]]></xml-property>
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id)
+  AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <list-property name="columnHints">
@@ -835,12 +817,6 @@ left outer join public.base_period as Period on (AccountingReport.period = Perio
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">contact_first_name</property>
-                    <text-property name="displayName">contact_first_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["contact_first_name"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">contract_id</property>
                     <text-property name="displayName">contract_id</text-property>
                     <expression name="expression" type="javascript">dataSetRow["contract_id"]</expression>
@@ -1131,7 +1107,7 @@ row["credit"]
                                                     <property name="marginRight">2pt</property>
                                                     <property name="textAlign">center</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["contact_name"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["contact_first_name"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["contact_name"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="2957">
