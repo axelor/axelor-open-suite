@@ -19,6 +19,7 @@ package com.axelor.studio.db.repo;
 
 import javax.validation.ValidationException;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
@@ -45,7 +46,11 @@ public class ViewBuilderRepo extends ViewBuilderRepository {
 		
 		viewBuilder = super.save(viewBuilder);
 		
-		viewBuilderService.build(viewBuilder);
+		try {
+			viewBuilderService.build(viewBuilder);
+		} catch (AxelorException e) {
+			throw new ValidationException(e.getMessage());
+		}
 
 		return super.save(viewBuilder);
 	}

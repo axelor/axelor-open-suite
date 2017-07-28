@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
@@ -64,13 +65,14 @@ public class ViewBuilderService {
 	 *            Name of model.
 	 * @param viewBuilders
 	 *            List of ViewBuilders to process.
+	 * @throws AxelorException 
 	 * @throws JAXBException
 	 *             Xml processing exception
 	 * @throws IOException
 	 *             File handling exception
 	 */
 	@Transactional
-	public void build(ViewBuilder viewBuilder) {
+	public void build(ViewBuilder viewBuilder) throws AxelorException {
 
 		AbstractView view = null;
 		List<Action> actions = new ArrayList<Action>();

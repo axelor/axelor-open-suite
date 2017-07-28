@@ -62,7 +62,7 @@
         <option value="1">Simple Select</option>
     </selection>
     
-    <selection name="studio.chart.filter.logic.operator">
+    <selection name="studio.filter.logic.operator">
     	<option value="0">AND</option>
     	<option value="1">OR</option>
     </selection>

@@ -28,13 +28,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.service.FilterService;
+import com.axelor.studio.service.filter.FilterJpqlService;
 import com.google.inject.Inject;
 
 public class TargetListController {
 	
 	@Inject
-	private FilterService filterService;
+	private FilterJpqlService filterJpqlService;
 	
 	@Inject
 	private PartnerRepository partnerRepo;
@@ -46,7 +46,7 @@ public class TargetListController {
 		
 		TargetList targetList = request.getContext().asType(TargetList.class);
 		
-		String leadFilers = filterService.getJpqlFilters(targetList.getLeadFilterList());
+		String leadFilers = filterJpqlService.getJpqlFilters(targetList.getLeadFilterList());
 		if (leadFilers != null) {
 			List<Lead> leads = leadRepo.all().filter(leadFilers).fetch();
 			response.setView(ActionView.define(I18n.get("Leads"))
@@ -63,7 +63,7 @@ public class TargetListController {
 		
 		TargetList targetList = request.getContext().asType(TargetList.class);
 		
-		String partnerFilters = filterService.getJpqlFilters(targetList.getPartnerFilterList());
+		String partnerFilters = filterJpqlService.getJpqlFilters(targetList.getPartnerFilterList());
 		if (partnerFilters != null) {
 			List<Partner> partners = partnerRepo.all().filter(partnerFilters).fetch();
 			response.setView(ActionView.define(I18n.get("Partners"))

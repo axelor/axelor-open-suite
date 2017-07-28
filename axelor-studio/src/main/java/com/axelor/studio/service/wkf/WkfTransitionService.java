@@ -40,8 +40,8 @@ import com.axelor.meta.schema.actions.ActionValidate.Notify;
 import com.axelor.meta.schema.actions.ActionValidate.Validator;
 import com.axelor.studio.db.Filter;
 import com.axelor.studio.db.WkfTransition;
-import com.axelor.studio.service.FilterService;
 import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -65,7 +65,7 @@ class WkfTransitionService {
 	private MetaPermissionRepository metaPermissionRepo;
 
 	@Inject
-	private FilterService filterService;
+	private FilterGroovyService filterGroovyService;
 	
 	@Inject
 	private StudioMetaService metaService;
@@ -132,7 +132,7 @@ class WkfTransitionService {
 			}
 
 			log.debug("Conditions : {}", transition.getConditions());
-			String filters = filterService.getGroovyFilters(
+			String filters = filterGroovyService.getGroovyFilters(
 					transition.getConditions(), null);
 			log.debug("Filters : {}", filters);
 			if (filters != null) {
@@ -303,7 +303,7 @@ class WkfTransitionService {
 		ActionValidate actionValidate = new ActionValidate();
 		actionValidate.setName(name);
 		List<Validator> validators = new ArrayList<ActionValidate.Validator>();
-		String condition = filterService.getGroovyFilters(conditions, null);
+		String condition = filterGroovyService.getGroovyFilters(conditions, null);
 		switch (type) {
 		case "notify":
 			Notify notify = new Notify();

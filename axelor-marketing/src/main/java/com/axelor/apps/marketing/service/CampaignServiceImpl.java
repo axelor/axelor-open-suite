@@ -39,7 +39,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.service.FilterService;
+import com.axelor.studio.service.filter.FilterJpqlService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -52,7 +52,7 @@ public class CampaignServiceImpl implements CampaignService {
 	private MetaFiles metaFiles;
 	
 	@Inject
-	private FilterService filterService;
+	private FilterJpqlService filterJpqlService;
 	
 	@Inject
 	private PartnerRepository partnerRepo;
@@ -192,7 +192,7 @@ public class CampaignServiceImpl implements CampaignService {
 		Set<Lead> leadSet = new HashSet<>();
 		
 		for(TargetList target : campaign.getTargetModelSet()) {
-			String filter = filterService.getJpqlFilters(target.getPartnerFilterList());
+			String filter = filterJpqlService.getJpqlFilters(target.getPartnerFilterList());
 			if (filter != null) {
 				partnerSet.addAll(partnerRepo.all().filter(filter).fetch());
 			}
@@ -200,7 +200,7 @@ public class CampaignServiceImpl implements CampaignService {
 				partnerSet.add(partner);
 			}
 			
-			filter = filterService.getJpqlFilters(target.getLeadFilterList());
+			filter = filterJpqlService.getJpqlFilters(target.getLeadFilterList());
 			if (filter != null) {
 				leadSet.addAll(leadRepo.all().filter(filter).fetch());
 			}
