@@ -32,7 +32,14 @@
   		
   		<!-- -Json fields -->
 	    <string name="expenseLineAttrs" title="Fields" json="true" />
-  		
+
+		<extra-code>
+		<![CDATA[
+			// KILOMETRIC TYPE SELECT
+			public static final int KILOMETRIC_TYPE_ONE_WAY = 1;
+			public static final int KILOMETRIC_TYPE_ROUND_TRIP = 2;
+		]]>
+		</extra-code>
   </entity>
-  
+
 </domain-models>

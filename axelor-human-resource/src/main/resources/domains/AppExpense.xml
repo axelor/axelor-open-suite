@@ -4,7 +4,8 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppExpense" lang="java" cachable="true" extends="App" />
-		
+	<entity name="AppExpense" lang="java" cachable="true" extends="App">
+		<string name="googleMapsApiKey" title="Google Maps API key"/>
+	</entity>
 
 </domain-models>
