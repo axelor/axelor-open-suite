@@ -67,7 +67,10 @@ public class KilometricAllowanceServiceImpl implements KilometricAllowanceServic
 				}
 			}
 
-			throw new AxelorException(String.format(IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR, status),
+			String msg = json.has("error_message") ? String.format("%s / %s", status, json.getString("error_message"))
+					: status;
+
+			throw new AxelorException(String.format(IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR, msg),
 					IException.CONFIGURATION_ERROR);
 
 		} catch (URISyntaxException | IOException | JSONException e) {
