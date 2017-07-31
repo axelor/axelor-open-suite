@@ -343,7 +343,6 @@ left outer join public.account_move as Move on (MoveLine.move = Move.id )
 left outer join public.account_journal as Journal on (Move.journal = Journal.id)
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
-left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
@@ -357,7 +356,7 @@ MoveLine.date_val <= AccountingReport.date_val AND
 Move.company = AccountingReport.company  AND
 
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 
 (AccountingReport.cash_register IS NULL OR AccountingReport.cash_register = Move.cash_register) AND 
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND 
