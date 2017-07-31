@@ -21,6 +21,7 @@
      <boolean name="transactional" title="Transactional ?" />
      <integer name="scriptType" title="Script type" selection="studio.action.builder.script.type.select"/>
      <string name="scriptText" title="Script" large="true"/>
+     <string name="model" title="Model" />
      
      <!-- Action view fields -->
      <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder"/>

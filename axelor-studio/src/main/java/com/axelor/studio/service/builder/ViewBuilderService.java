@@ -119,7 +119,7 @@ public class ViewBuilderService {
 			
 			String xml = XMLViews.toXml(action, true);
 			
-			metaService.updateMetaAction(action.getName(), type, xml, null);
+			metaService.updateMetaAction(action.getName(), action.getName(), type, xml, null);
 		}
 	}
 

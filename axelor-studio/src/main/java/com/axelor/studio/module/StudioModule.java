@@ -20,6 +20,8 @@ package com.axelor.studio.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
+import com.axelor.studio.db.repo.MenuBuilderRepo;
+import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.StudioWkfRepository;
 import com.axelor.studio.db.repo.ViewBuilderRepo;
 import com.axelor.studio.db.repo.ViewBuilderRepository;
@@ -32,6 +34,7 @@ public class StudioModule extends AxelorModule {
 		bind(WkfRepository.class).to(StudioWkfRepository.class);
 		bind(ViewBuilderRepository.class).to(ViewBuilderRepo.class);
 		bind(ActionBuilderRepository.class).to(ActionBuilderRepo.class);
+		bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
 	}
 
 }

@@ -21,7 +21,6 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.ActionBuilderService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class ActionBuilderRepo extends ActionBuilderRepository {
 
@@ -41,7 +40,6 @@ public class ActionBuilderRepo extends ActionBuilderRepository {
 		return builder;
 	}
 
-	@Transactional
 	@Override
 	public void remove(ActionBuilder actionBuilder) {
 		

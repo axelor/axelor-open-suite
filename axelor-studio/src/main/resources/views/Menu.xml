@@ -47,6 +47,13 @@
     <view type="form" name="action-builder-form"/>
   </action-view>
   
+  <menuitem name="menu-menu-builder" title="Menu builders" parent="menu-studio-view" action="menu.menu.builder" order="23"/>
+  
+  <action-view name="menu.menu.builder" title="Menu builders" model="com.axelor.studio.db.MenuBuilder">
+    <view type="grid" name="menu-builder-grid"/>
+    <view type="form" name="menu-builder-form"/>
+  </action-view>
+  
   <!-- Workflow menus -->
   <menuitem name="menu-studio-wkf" title="Workflow" parent="menu-studio-root"  order="15"/>
   

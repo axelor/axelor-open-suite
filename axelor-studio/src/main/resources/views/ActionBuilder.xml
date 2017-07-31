@@ -5,7 +5,7 @@
   
   <grid name="action-builder-grid" title="Action builder" model="com.axelor.studio.db.ActionBuilder">
   	  <field name="name" />	
-      <field name="metaJsonModel" />
+      <field name="model" />
       <field name="typeSelect" />
   </grid>
   
@@ -49,6 +49,7 @@
 	      	<field name="transactional" />
 	      	<field name="scriptText" colSpan="12" />
 	      </panel>
+	      <field name="model" hidden="true" />
 	  </panel>
   </form>
   

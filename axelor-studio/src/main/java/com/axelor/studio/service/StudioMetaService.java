@@ -66,18 +66,21 @@ public class StudioMetaService {
 	}
 	
 	@Transactional
-	public void updateMetaAction(String actionName, String actionType,
+	public MetaAction updateMetaAction(String xmlId, String actionName, String actionType,
 			String xml, String model) {
 
-		MetaAction action = metaActionRepo.findByName(actionName);
+		MetaAction action = metaActionRepo.findByID(xmlId);
 
 		if (action == null) {
 			action = new MetaAction(actionName);
+			action.setXmlId(xmlId);
 		}
 		action.setType(actionType);
 		action.setModel(model);
 		action.setXml(xml);
-		action = metaActionRepo.save(action);
+		
+		
+		return metaActionRepo.save(action);
 
 	}
 	

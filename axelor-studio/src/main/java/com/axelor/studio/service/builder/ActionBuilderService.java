@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -58,27 +59,31 @@ public class ActionBuilderService {
 	private StudioMetaService metaService;
 	
 	@Transactional
-	public void build(ActionBuilder builder) {
+	public MetaAction build(ActionBuilder builder) {
 		
 		if (builder.getTypeSelect() < 2 &&  builder.getLines() != null && builder.getLines().isEmpty()) {
-			return;
+			return null;
 		}
 		
+		MetaAction metaAction = null;
 		String xml = null;
+		String xmlId = "studio-" + builder.getName();
 		if (builder.getTypeSelect() == 3) {
 			String[] val = buildActionView(builder);
 			xml = val[1];
-			metaService.updateMetaAction(builder.getName(), "action-view", xml, val[0]);
+			metaAction = metaService.updateMetaAction(xmlId, builder.getName(), "action-view", xml, val[0]);
 		}
 		else {
 			xml = buildActionScript(builder);
-			metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
+			metaAction = metaService.updateMetaAction(xmlId, builder.getName(), "action-script", xml, null);
 		}
 
 		log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 		
 		
 		MetaStore.clear();
+		
+		return metaAction;
 	}
 	
 	private String buildActionScript(ActionBuilder builder) {
@@ -611,8 +616,15 @@ public class ActionBuilderService {
 			}
 		}
 		
-		if (builder.getDomainCondition() != null) {
-			xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(builder.getDomainCondition()) + "</domain>");
+		String domain = builder.getDomainCondition();
+		
+		if (builder.getIsJson())  {
+			String jsonDomain = "self.jsonModel = '" + builder.getMetaJsonModel() + "'" ;
+			domain = domain == null ? jsonDomain : jsonDomain + " AND (" +  builder.getDomainCondition() + ")";
+		}
+		
+		if (domain != null) {
+			xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(domain) + "</domain>");
 		}
 		
 		if (builder.getLines() != null) {

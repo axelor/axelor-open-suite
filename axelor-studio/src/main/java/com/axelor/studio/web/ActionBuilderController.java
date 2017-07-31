@@ -41,23 +41,20 @@ public class ActionBuilderController {
 		inflector = Inflector.getInstance();
 		
 		ActionBuilder builder = request.getContext().asType(ActionBuilder.class);
+		String model = builder.getIsJson() ? builder.getMetaJsonModel() : builder.getMetaModel();
 		
-		if (builder.getTypeSelect() == 3) {
-			
-			String model = builder.getIsJson() ? builder.getMetaJsonModel() : builder.getMetaModel();
-			
-			if (model != null) {
-				if (!builder.getIsJson()) {
-					model = model.substring(model.lastIndexOf(".") + 1);
-					model = inflector.dasherize(model);
-				}
-				List<ActionBuilderView> views = new ArrayList<ActionBuilderView>();
-				addActionBuilderView(views, model, "grid", builder.getIsJson());
-				addActionBuilderView(views, model, "form", builder.getIsJson());
-				response.setValue("actionBuilderViews", views);
+		if (builder.getTypeSelect() == 3 && model != null) {
+			if (!builder.getIsJson()) {
+				model = model.substring(model.lastIndexOf(".") + 1);
+				model = inflector.dasherize(model);
 			}
+			List<ActionBuilderView> views = new ArrayList<ActionBuilderView>();
+			addActionBuilderView(views, model, "grid", builder.getIsJson());
+			addActionBuilderView(views, model, "form", builder.getIsJson());
+			response.setValue("actionBuilderViews", views);
 		}
 		
+		response.setValue("model", model);
 	}
 
 	private void addActionBuilderView(List<ActionBuilderView> views, String model, String type, boolean isJson) {

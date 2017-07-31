@@ -41,6 +41,18 @@
 	  </panel>
   </form>
   
+  <grid name="action-builder-line-simple-grid" title="Field" model="com.axelor.studio.db.ActionBuilderLine" editable="true" >
+      <field name="name" title="Name" />
+      <field name="value" />
+  </grid>
+  
+  <form name="action-builder-line-simple-form" title="Field" model="com.axelor.studio.db.ActionBuilderLine">
+  	  <panel>
+	      <field name="name" title="Name" />
+	      <field name="value" />
+      </panel>
+  </form>
+  
   <action-attrs name="action-action-builder-line-meta-json-field-domain">
   	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.metaJsonModel}'  and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;" if="_parent.typeSelect == 1"/>
   	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.targetJsonModel}'  and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;" if="_parent.typeSelect == 0"/>
