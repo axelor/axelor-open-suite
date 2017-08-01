@@ -85,7 +85,16 @@ public class AppraisalServiceImpl implements AppraisalService {
 			}
 		}
 		
-		appraisal.setStatusSelected(1);
+		appraisal.setStatusSelect(1);
+		
+		appraisalRepo.save(appraisal);
+	}
+	
+	@Transactional
+	@Override
+	public void realize(Appraisal appraisal) {
+		
+		appraisal.setStatusSelect(2);
 		
 		appraisalRepo.save(appraisal);
 	}
@@ -95,7 +104,16 @@ public class AppraisalServiceImpl implements AppraisalService {
 	@Override
 	public void cancel(Appraisal appraisal) {
 		
-		appraisal.setStatusSelected(3);
+		appraisal.setStatusSelect(3);
+		
+		appraisalRepo.save(appraisal);
+	}
+	
+	@Transactional
+	@Override
+	public void draft(Appraisal appraisal) {
+		
+		appraisal.setStatusSelect(0);
 		
 		appraisalRepo.save(appraisal);
 	}
