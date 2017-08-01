@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -46,6 +46,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -336,17 +339,16 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description as "Description", MoveLine.debit as "Debit", MoveLine.credit as "Credit", 
-MoveLine.date_val as "MoveLineDate", Partner.full_name as "PartnerFullName", Partner.id as "PartnerId", 
-Partner.partner_seq as "PartnerSeq", Account.code as "AccountCode", Account.name as "AccountName"  
-from public.account_accounting_report as AccountingReport 
+            <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description as "Description", MoveLine.debit as "Debit", MoveLine.credit as "Credit",
+MoveLine.date_val as "MoveLineDate", MoveLine.partner_full_name as "PartnerFullName", MoveLine.partner as "PartnerId",
+MoveLine.partner_seq as "PartnerSeq", MoveLine.account_code as "AccountCode", MoveLine.account_name as "AccountName"
+from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
-left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
@@ -356,34 +358,9 @@ where
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) 
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) 
 AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
-
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <list-property name="columnHints">

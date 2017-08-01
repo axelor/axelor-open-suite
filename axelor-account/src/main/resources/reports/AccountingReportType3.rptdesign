@@ -46,6 +46,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -150,13 +153,6 @@ row["amount_remaining"]/row["countmoveline"]
                     <text-property name="displayName">partner_name</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">partner_first_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">partner_first_name</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">partner_first_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_seq</property>
@@ -282,81 +278,76 @@ row["amount_remaining"]/row["countmoveline"]
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">partner_first_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
                         <property name="name">partner_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">4</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                         <property name="name">credit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">debit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">invoice_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">invoice_reconciled_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">ReportedBalanceAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">reported_balance_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">amountreconciled</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">amount_remaining</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">countmoveline</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">credit_to_use</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">excess_payment</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -370,108 +361,87 @@ row["amount_remaining"]/row["countmoveline"]
                     <property name="name">MoveLineName</property>
                     <property name="nativeName">MoveLineName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">partner_first_name</property>
-                    <property name="nativeName">partner_first_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">4</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">5</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">invoice_reconciled_name</property>
                     <property name="nativeName">invoice_reconciled_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">ReportedBalanceAmount</property>
                     <property name="nativeName">ReportedBalanceAmount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">reported_balance_date</property>
                     <property name="nativeName">reported_balance_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">amountreconciled</property>
                     <property name="nativeName">amountreconciled</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">amount_remaining</property>
                     <property name="nativeName">amount_remaining</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">countmoveline</property>
                     <property name="nativeName">countmoveline</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineName", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq, 
+            <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineName", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq,
 AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name",  
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
@@ -481,14 +451,13 @@ left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
-left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
 
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.account_accounting_situation as AccountingSituation on (AccountingSituation.partner = Partner.id AND AccountingSituation.company = Company.id)
+left outer join public.account_accounting_situation as AccountingSituation on (AccountingSituation.partner = MoveLine.partner AND AccountingSituation.company = Company.id)
 left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.accounting_situation = AccountingSituation.id) 
 left outer join public.base_year as YYear on (YYear.id = ReportedBalanceLine.year) 
 left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
@@ -524,7 +493,7 @@ where
 MoveLine.date_val <= AccountingReport.date_val and 
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = MoveLineAccount.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 MoveLineAccount.reconcile_ok = true 
 AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
 ]]></xml-property>
@@ -1517,12 +1486,6 @@ row["ReportedBalanceAmount"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">partner_first_name</property>
-                                <text-property name="displayName">partner_first_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">partner_seq</property>
                                 <text-property name="displayName">partner_seq</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
@@ -1530,10 +1493,7 @@ row["ReportedBalanceAmount"]
                             </structure>
                         </list-property>
                         <column id="1168">
-                            <property name="width">2.3in</property>
-                        </column>
-                        <column id="1542">
-                            <property name="width">2.3in</property>
+                            <property name="width">4.6in</property>
                         </column>
                         <column id="1170">
                             <property name="width">1.488888888888889in</property>
@@ -1553,7 +1513,7 @@ row["ReportedBalanceAmount"]
                         <header>
                             <row id="1144">
                                 <cell id="1145">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -1721,22 +1681,6 @@ row["ReportedBalanceAmount"]
                                         <text-property name="text">Nom</text-property>
                                     </label>
                                 </cell>
-                                <cell id="1536">
-                                    <property name="backgroundColor">#E6E6FA</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="2684">
-                                        <property name="textAlign">left</property>
-                                        <text-property name="text">Prénom</text-property>
-                                    </label>
-                                </cell>
                                 <cell id="1214">
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -1813,11 +1757,11 @@ row["ReportedBalanceAmount"]
                         </header>
                         <group id="1187">
                             <property name="groupName">PartnerGroup</property>
-                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
+                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_seq"]</expression>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
+                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_seq"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>
                                 </structure>
@@ -1840,21 +1784,6 @@ row["ReportedBalanceAmount"]
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF>]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="1537">
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <text id="2685">
-                                            <property name="fontSize">9.5pt</property>
-                                            <property name="marginRight">2pt</property>
-                                            <property name="textAlign">left</property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1191">
@@ -1969,7 +1898,7 @@ row["ReportedBalanceAmount"]
                                 <property name="backgroundColor">#EFEFEF</property>
                                 <property name="height">0.20833333333333334in</property>
                                 <cell id="1161">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">2</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -2731,12 +2660,6 @@ dataSetRow["invoice_reconciled_name"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">partner_first_name</property>
-                                <text-property name="displayName">partner_first_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">partner_seq</property>
                                 <text-property name="displayName">partner_seq</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
@@ -2744,10 +2667,7 @@ dataSetRow["invoice_reconciled_name"]
                             </structure>
                         </list-property>
                         <column id="1446">
-                            <property name="width">1.6666666666666667in</property>
-                        </column>
-                        <column id="1447">
-                            <property name="width">1.6770833333333333in</property>
+                            <property name="width">3.344in</property>
                         </column>
                         <column id="1555">
                             <property name="width">1.5208333333333333in</property>
@@ -2774,7 +2694,7 @@ dataSetRow["invoice_reconciled_name"]
                             <row id="1377">
                                 <property name="height">0.3in</property>
                                 <cell id="1378">
-                                    <property name="colSpan">3</property>
+                                    <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -2964,22 +2884,6 @@ dataSetRow["invoice_reconciled_name"]
                                         <text-property name="text">Nom</text-property>
                                     </label>
                                 </cell>
-                                <cell id="2691">
-                                    <property name="backgroundColor">#E6E6FA</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="2692">
-                                        <property name="textAlign">left</property>
-                                        <text-property name="text">Prénom</text-property>
-                                    </label>
-                                </cell>
                                 <cell id="1547">
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -3074,12 +2978,12 @@ dataSetRow["invoice_reconciled_name"]
                         </header>
                         <group id="1397">
                             <property name="groupName">PartnerGroup</property>
-                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
+                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_seq"]</expression>
                             <property name="repeatHeader">false</property>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
+                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_seq"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>
                                 </structure>
@@ -3102,21 +3006,6 @@ dataSetRow["invoice_reconciled_name"]
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF>]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="2693">
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <text id="2694">
-                                            <property name="fontSize">9.5pt</property>
-                                            <property name="marginRight">2pt</property>
-                                            <property name="textAlign">left</property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1548">
@@ -3247,7 +3136,7 @@ false
                             <footer>
                                 <row id="3287">
                                     <cell id="3288">
-                                        <property name="colSpan">2</property>
+                                        <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3357,7 +3246,7 @@ false
                                 </row>
                                 <row id="1413">
                                     <cell id="1414">
-                                        <property name="colSpan">2</property>
+                                        <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3457,7 +3346,7 @@ false
                             <header>
                                 <row id="1471">
                                     <cell id="1472">
-                                        <property name="colSpan">2</property>
+                                        <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3675,7 +3564,7 @@ true
                                 <property name="backgroundColor">#EFEFEF</property>
                                 <property name="height">0.22916666666666666in</property>
                                 <cell id="1423">
-                                    <property name="colSpan">3</property>
+                                    <property name="colSpan">2</property>
                                     <property name="rowSpan">2</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
