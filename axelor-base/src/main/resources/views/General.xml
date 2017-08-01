@@ -48,7 +48,6 @@
 				<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
-				<field name="defaultExemptionTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
 				<field name="manageAnalyticAccounting" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
 				<field name="manageCustomerCredit" if-module="axelor-account" widget="Boolean-switch"/>
