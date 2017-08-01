@@ -185,6 +185,8 @@ public class FilterSqlService {
 		
 		String condition = null;
 		
+		value = filterCommonService.getTagValue(value, true);
+		
 		switch (operator) {
 			case "=":
 				if (field[1].equals("STRING") && !isParam) {

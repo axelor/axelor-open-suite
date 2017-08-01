@@ -18,53 +18,57 @@
 package com.axelor.studio.db.repo;
 
 import javax.validation.ValidationException;
+import javax.xml.bind.JAXBException;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
-import com.axelor.studio.db.ViewBuilder;
-import com.axelor.studio.service.builder.ViewBuilderService;
+import com.axelor.studio.db.ChartBuilder;
+import com.axelor.studio.service.builder.ChartBuilderService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ViewBuilderRepo extends ViewBuilderRepository {
+public class ChartBuilderRepo extends ChartBuilderRepository {
 
 	@Inject
 	private MetaViewRepository metaViewRepo;
 	
 	@Inject
-	private ViewBuilderService viewBuilderService;
+	private ChartBuilderService chartBuilderService;
 
 	@Override
-	public ViewBuilder save(ViewBuilder viewBuilder) throws ValidationException {
+	public ChartBuilder save(ChartBuilder chartBuilder) throws ValidationException {
 
-		if (viewBuilder.getName().contains(" ")) {
+		if (chartBuilder.getName().contains(" ")) {
 			throw new ValidationException(
 					I18n.get("Name must not contains space"));
 		}
 		
-		viewBuilder = super.save(viewBuilder);
+		chartBuilder = super.save(chartBuilder);
 		
 		try {
-			viewBuilderService.build(viewBuilder);
-		} catch (AxelorException e) {
+			MetaView metaView = chartBuilderService.build(chartBuilder);
+			if (metaView != null) {
+				chartBuilder.setMetaViewGenerated(metaView);
+			}
+		} catch (AxelorException | JAXBException e) {
 			throw new ValidationException(e.getMessage());
 		}
 
-		return super.save(viewBuilder);
+		return super.save(chartBuilder);
 	}
 
 	@Override
 	@Transactional
-	public void remove(ViewBuilder viewBuilder) {
+	public void remove(ChartBuilder chartBuilder) {
 
-		MetaView metaView = viewBuilder.getMetaViewGenerated();
+		MetaView metaView = chartBuilder.getMetaViewGenerated();
 		if (metaView != null) {
 			metaViewRepo.remove(metaView);
 		}
 
-		super.remove(viewBuilder);
+		super.remove(chartBuilder);
 	}
 
 }

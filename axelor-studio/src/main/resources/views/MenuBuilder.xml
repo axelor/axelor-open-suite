@@ -26,11 +26,10 @@
 	      		<field name="title" title="Action title" requiredIf="_parent.showAction" colSpan="12" />
 	      		<field name="isJson" colSpan="2"/>
 				<field name="metaJsonModel"   widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
-						requiredIf="_parent.showAction &amp;&amp; isJson" 
 						hideIf="!isJson"
 						colSpan="5"
 						onChange="action-action-builder-method-set-views" />
-				<field name="metaModel" showIf="!isJson" requiredIf="_parent.showAction &amp;&amp; !isJson" 
+				<field name="metaModel" showIf="!isJson" 
 						widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
 						colSpan="5"
 						onChange="action-action-builder-method-set-views" />

@@ -15,12 +15,12 @@
 	      <field name="name" colSpan="9"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <field name="metaJsonModel"   widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
-	      		requiredIf="typeSelect &lt; 2 || typeSelect == 3 &amp;&amp; isJson" 
+	      		requiredIf="typeSelect &lt; 2" 
 	      		hideIf="typeSelect == 2 || (typeSelect == 3 &amp;&amp; !isJson)"
 	      		onChange="action-action-builder-method-set-views" />
 	      <field name="targetJsonModel"  showIf="typeSelect == 0" widget="ref-text" 
 	      		x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel"/>
-	      <field name="metaModel" showIf="typeSelect == 3 &amp;&amp; !isJson" requiredIf="typeSelect == 3 &amp;&amp; !isJson"
+	      <field name="metaModel" showIf="typeSelect == 3 &amp;&amp; !isJson"
 	      		widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
 	      		onChange="action-action-builder-method-set-views" />
       	  <field name="title" colSpan="12" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>

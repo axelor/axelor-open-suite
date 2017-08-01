@@ -24,20 +24,16 @@
   
   <menuitem name="menu-chart-builder" title="Chart builders" parent="menu-studio-view" action="menu.chart.builder" order="15"/>
   
-  <action-view name="menu.chart.builder" title="Chart builders" model="com.axelor.studio.db.ViewBuilder">
-    <view type="grid" name="view-builder-grid"/>
+  <action-view name="menu.chart.builder" title="Chart builders" model="com.axelor.studio.db.ChartBuilder">
+    <view type="grid" name="chart-builder-grid"/>
     <view type="form" name="chart-builder-form"/>
-    <domain>self.viewType = 'chart'</domain>
-    <context name="_viewType" expr="eval:'chart'" />
   </action-view>
   
   <menuitem name="menu-dashboard-builder" title="Dashboard builders" parent="menu-studio-view" action="menu.dashboard.builder" order="20"/>
   
-  <action-view name="menu.dashboard.builder" title="Dashboard builders" model="com.axelor.studio.db.ViewBuilder">
+  <action-view name="menu.dashboard.builder" title="Dashboard builders" model="com.axelor.studio.db.DashboardBuilder">
     <view type="grid" name="dashboard-builder-grid"/>
     <view type="form" name="dashboard-builder-form"/>
-    <domain>self.viewType = 'dashboard'</domain>
-    <context name="_viewType" expr="eval:'dashboard'" />
   </action-view>
   
   <menuitem name="menu-action-builder" title="Action builders" parent="menu-studio-view" action="menu.action.builder" order="23"/>

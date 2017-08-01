@@ -6,7 +6,7 @@
   <grid name="report-builder-grid" title="Report builders" model="com.axelor.studio.db.ReportBuilder">
       <field name="name" />
       <field name="metaModel" />
-      <field name="viewBuilder" />
+      <field name="metaView" />
   </grid>
   
   <form name="report-builder-form" title="Report builder" model="com.axelor.studio.db.ReportBuilder"
@@ -16,8 +16,7 @@
       	<spacer/>
         <field name="metaModel" onChange="action-studio-report-builder-meta-model-on-change"/>
         <field name="metaModule" domain="self.customised = true"/> 
-        <field name="viewBuilder" onSelect="action-studio-report-builder-view-builder-select"/>
-        <field name="buttonView" onSelect="action-studio-report-builder-view-builder-select" onChange="action-studio-report-builder-button-view-change"/>
+        <field name="metaView" onSelect="action-studio-report-builder-view-builder-select"/>
         <button name="generateTemplate" title="Generate template" colSpan="4" onClick="action-studio-report-builder-method-generate-template,save"/>
         <field name="printPageNo" colSpan="3" />
         <field name="editHtml" colSpan="3" />
@@ -56,14 +55,9 @@
       </panel>
   </form>
   
-  <action-attrs name="action-studio-report-builder-view-builder-select">
-    <attribute name="domain" for="viewBuilder" expr="eval:&quot;self.viewType = 'form' AND self.model = '${metaModel.fullName}'&quot;"/>
-    <attribute name="domain" for="buttonView" expr="eval:&quot;self.viewType = 'form' AND self.model = '${metaModel.fullName}'&quot;"/>
-  </action-attrs>
   
   <action-attrs name="action-studio-report-builder-meta-model-on-change">
-    <attribute name="value" for="viewBuilder" expr="eval:null" if="metaModel == null"/>
-    <attribute name="value" for="buttonView" expr="eval:null" if="metaModel == null"/>
+    <attribute name="value" for="metaView" expr="eval:null" if="metaModel == null"/>
   </action-attrs>
   
   <action-attrs name="action-report-builder-selector-domain">
@@ -81,10 +75,6 @@
   <action-method name="action-studio-report-builder-method-download">
   	<call class="com.axelor.studio.web.ReportBuilderController" method="download"/>
   </action-method>
-  
-  <action-record name="action-studio-report-builder-button-view-change" model="com.axelor.studio.db.ReportBuilder">
-    <field name="edited" expr="eval:true" if="buttonView != null"/>
-  </action-record>  
   
   <action-record name="action-studio-report-builder-set-edit-form"  model="com.axelor.studio.db.ReportBuilder">
   	<field name="html" expr="eval:html"/>

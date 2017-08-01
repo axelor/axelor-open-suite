@@ -5,21 +5,12 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="ViewBuilder" cachable="true">
-<!--     <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/> -->
-    <many-to-one name="customModel" title="Custom Model" ref="com.axelor.meta.db.MetaJsonModel"/>
+  <entity name="ChartBuilder" cachable="true">
     <string name="title" title="Title" required="true" />
     <string name="name" title="Name"  required="true"/>
     <string name="model" title="Model" />
-    <many-to-one name="metaView" title="Extends" ref="com.axelor.meta.db.MetaView" />
-    <many-to-one name="parent" title="Extends" ref="com.axelor.studio.db.ViewBuilder" />
-    
-    <many-to-one name="metaViewGenerated" title="View generated" ref="com.axelor.meta.db.MetaView" />
-    <string name="viewType" title="View type" />
-
-    <!-- Chart fields -->
     <boolean name="isJson" title="Json ?" />
-    <one-to-many name="filterList" title="Filters" ref="com.axelor.studio.db.Filter" mappedBy="viewBuilder" />
+    <one-to-many name="filterList" title="Filters" ref="com.axelor.studio.db.Filter" mappedBy="chartBuilder" />
     <many-to-one name="aggregateOn" title="Aggregate On" ref="com.axelor.meta.db.MetaField"/>
     <boolean name="isJsonAggregateOn" title="Json ?" />
     <many-to-one name="aggregateOnJson" title="Aggregate On" ref="com.axelor.meta.db.MetaJsonField"/>
@@ -35,10 +26,7 @@
     <boolean name="isJsonDisplayField" title="Json ?" />   
     <many-to-one name="displayFieldJson" title="Display" ref="com.axelor.meta.db.MetaJsonField" />
     <string name="chartType" selection="studio.chart.builder.chart.type"  default="bar"/>
-    
-    <!-- Dashboard fields -->
-    <one-to-many name="dashletBuilderList" ref="com.axelor.studio.db.DashletBuilder" mappedBy="dashboard" orderBy="sequence"/>
-    
+    <many-to-one name="metaViewGenerated" title="View generated" ref="com.axelor.meta.db.MetaView" />
   </entity>
     
     

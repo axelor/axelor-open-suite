@@ -6,7 +6,6 @@
   <grid name="wkf-grid" title="Workflows" model="com.axelor.studio.db.Wkf">
       <field name="name"/>
       <field name="metaModel"/>
-      <field name="viewBuilder"/>
       <field name="displayTypeSelect" />
   </grid>
     

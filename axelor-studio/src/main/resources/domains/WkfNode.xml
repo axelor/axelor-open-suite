@@ -21,7 +21,6 @@
       <integer name="sequence" title="Sequence" />
       <boolean name="startNode" title="Start node ? " />
       <boolean name="endNode" title="End node ?" />
-      <many-to-one name="viewBuilder" title="View builder" ref="ViewBuilder" />
       <many-to-many name="metaActionSet" ref="com.axelor.meta.db.MetaAction" title="Actions" orderBy="sequence"/>
   </entity>
     

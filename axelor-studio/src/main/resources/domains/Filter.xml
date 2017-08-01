@@ -12,7 +12,7 @@
     ]]>
     <integer name="importId" />
   	<string name="moduleName" title="Module" />
-    <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" />
+    <many-to-one name="chartBuilder" ref="com.axelor.studio.db.ChartBuilder" />
   	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField"/>
   	<many-to-one name="metaJsonField" title="Json Field" ref="com.axelor.meta.db.MetaJsonField"/>
   	<many-to-one name="wkfTransition" ref="com.axelor.studio.db.WkfTransition" />

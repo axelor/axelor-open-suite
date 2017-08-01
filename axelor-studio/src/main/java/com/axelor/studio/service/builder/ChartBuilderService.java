@@ -32,14 +32,14 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
-import com.axelor.meta.schema.actions.ActionRecord;
 import com.axelor.meta.schema.actions.ActionRecord.RecordField;
-import com.axelor.meta.schema.views.AbstractView;
+import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.Filter;
-import com.axelor.studio.db.ViewBuilder;
+import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterCommonService;
 import com.axelor.studio.service.filter.FilterSqlService;
 import com.google.common.base.Joiner;
@@ -64,8 +64,6 @@ public class ChartBuilderService {
 
 	private List<String> searchFields;
 
-	private ActionRecord onNewAction;
-
 	private List<RecordField> onNewFields;
 	
 	private List<String> joins;
@@ -79,6 +77,9 @@ public class ChartBuilderService {
 	@Inject
 	private FilterCommonService filterCommonService;
 	
+	@Inject
+	private StudioMetaService metaService;
+	
 	/**
 	 * Root Method to access the service it generate AbstractView from
 	 * ViewBuilder.
@@ -89,33 +90,32 @@ public class ChartBuilderService {
 	 * @throws JAXBException
 	 * @throws AxelorException 
 	 */
-	public AbstractView getView(ViewBuilder viewBuilder) throws JAXBException, AxelorException {
+	public MetaView build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
 		
 		searchFields = new ArrayList<String>();
 		onNewFields = new ArrayList<RecordField>();
 		joins = new ArrayList<String>();
-		onNewAction = null;
 
-		String[] queryString = prepareQuery(viewBuilder);
-		setOnNewAction(viewBuilder);
+		String[] queryString = prepareQuery(chartBuilder);
+//		setOnNewAction(chartBuilder);
 
-		String xml = createXml(viewBuilder, queryString);
+		String xml = createXml(chartBuilder, queryString);
 
 		log.debug("Chart xml: {}", xml);
 
 		ObjectViews chartView = XMLViews.fromXML(xml);
-
-		return chartView.getViews().get(0);
+		
+		return metaService.generateMetaView(chartView.getViews().get(0));
 	}
 
-	private String createXml(ViewBuilder viewBuilder, String[] queryString) {
+	private String createXml(ChartBuilder chartBuilder, String[] queryString) {
 		
-		String xml = "<chart name=\"" + viewBuilder.getName() + "\" title=\""
-				+ viewBuilder.getTitle() + "\" ";
+		String xml = "<chart name=\"" + chartBuilder.getName() + "\" title=\""
+				+ chartBuilder.getTitle() + "\" ";
 
-		if (onNewAction != null) {
-			xml += " onInit=\"" + onNewAction.getName() + "\" ";
-		}
+//		if (onNewAction != null) {
+//			xml += " onInit=\"" + onNewAction.getName() + "\" ";
+//		}
 		
 		xml += ">\n";
 		
@@ -123,13 +123,13 @@ public class ChartBuilderService {
 			xml += "\t" + getSearchFields() + "\n";
 		}
 		
-		String groupLabel = viewBuilder.getIsJsonGroupOn() 
-				? viewBuilder.getGroupOnJson().getTitle()
-				: viewBuilder.getGroupOn().getLabel();
+		String groupLabel = chartBuilder.getIsJsonGroupOn() 
+				? chartBuilder.getGroupOnJson().getTitle()
+				: chartBuilder.getGroupOn().getLabel();
 				
-		String displayLabel = viewBuilder.getIsJsonDisplayField() 
-				? viewBuilder.getDisplayFieldJson().getTitle() 
-				: viewBuilder.getDisplayField().getLabel();
+		String displayLabel = chartBuilder.getIsJsonDisplayField() 
+				? chartBuilder.getDisplayFieldJson().getTitle() 
+				: chartBuilder.getDisplayField().getLabel();
 				
 		xml += "\t<dataset type=\"sql\"><![CDATA[";
 		xml += Tab2 + queryString[0];
@@ -137,7 +137,7 @@ public class ChartBuilderService {
 		xml += Tab1 + "<category key=\"group_field\" type=\"text\" title=\""
 				+ groupLabel  + "\" />";
 		xml += Tab1 + "<series key=\"sum_field\" type=\""
-				+ viewBuilder.getChartType() + "\" title=\""
+				+ chartBuilder.getChartType() + "\" title=\""
 				+ displayLabel + "\" ";
 		if (queryString[1] != null) {
 			xml += "groupBy=\"agg_field\" ";
@@ -149,18 +149,6 @@ public class ChartBuilderService {
 	}
 	
 	/**
-	 * Method to get generated on onNew ActionRecord during view generation.
-	 * 
-	 * @return ActionRecord class of meta schema.
-	 */
-	public ActionRecord getOnNewAction() {
-
-		log.debug("On new chart: {}", onNewAction);
-
-		return onNewAction;
-	}
-
-	/**
 	 * Method create query from chart filters added in chart builder.
 	 * 
 	 * @param viewBuilder
@@ -169,23 +157,23 @@ public class ChartBuilderService {
 	 *         aggregate field name.
 	 * @throws AxelorException 
 	 */
-	private String[] prepareQuery(ViewBuilder viewBuilder) throws AxelorException {
+	private String[] prepareQuery(ChartBuilder chartBuilder) throws AxelorException {
 		
-		String query = createSumQuery(viewBuilder.getIsJsonDisplayField(),
-				viewBuilder.getDisplayField(), 
-				viewBuilder.getDisplayFieldJson());
+		String query = createSumQuery(chartBuilder.getIsJsonDisplayField(),
+				chartBuilder.getDisplayField(), 
+				chartBuilder.getDisplayFieldJson());
 		
-		String groupField = getGroup(viewBuilder.getIsJsonGroupOn(), 
-				viewBuilder.getGroupOn(), 
-				viewBuilder.getGroupOnJson(), 
-				viewBuilder.getGroupDateType(), 
-				viewBuilder.getGroupOnTarget());
+		String groupField = getGroup(chartBuilder.getIsJsonGroupOn(), 
+				chartBuilder.getGroupOn(), 
+				chartBuilder.getGroupOnJson(), 
+				chartBuilder.getGroupDateType(), 
+				chartBuilder.getGroupOnTarget());
 		
-		String aggField = getGroup(viewBuilder.getIsJsonAggregateOn(),
-				viewBuilder.getAggregateOn(),
-				viewBuilder.getAggregateOnJson(),
-				viewBuilder.getAggregateDateType(),
-				viewBuilder.getAggregateOnTarget());
+		String aggField = getGroup(chartBuilder.getIsJsonAggregateOn(),
+				chartBuilder.getAggregateOn(),
+				chartBuilder.getAggregateOnJson(),
+				chartBuilder.getAggregateDateType(),
+				chartBuilder.getAggregateOnTarget());
 
 		query += groupField + " AS group_field";
 
@@ -193,11 +181,11 @@ public class ChartBuilderService {
 			query += "," + Tab3 + aggField + " AS agg_field";
 		}
 		
-		String filters = createFilters(viewBuilder.getFilterList());
+		String filters = createFilters(chartBuilder.getFilterList());
 		
-		String model = viewBuilder.getModel();
+		String model = chartBuilder.getModel();
 		
-		if (viewBuilder.getIsJson()) {
+		if (chartBuilder.getIsJson()) {
 			if (filters != null) {
 				filters = "self.json_model = '" + model + "' AND (" + filters + ")";
 			}
@@ -375,16 +363,16 @@ public class ChartBuilderService {
 	 *            ViewBuilder use to get model name also used in onNew action
 	 *            name creation.
 	 */
-	private void setOnNewAction(ViewBuilder viewBuilder) {
-
-		if (!onNewFields.isEmpty()) {
-			onNewAction = new ActionRecord();
-			onNewAction.setName("action-" + viewBuilder.getName() + "-default");
-			onNewAction.setModel(viewBuilder.getModel());
-			onNewAction.setFields(onNewFields);
-		}
-
-	}
+//	private void setOnNewAction(ChartBuilder chartBuilder) {
+//
+//		if (!onNewFields.isEmpty()) {
+//			onNewAction = new ActionRecord();
+//			onNewAction.setName("action-" + chartBuilder.getName() + "-default");
+//			onNewAction.setModel(chartBuilder.getModel());
+//			onNewAction.setFields(onNewFields);
+//		}
+//
+//	}
 
 	private String createFilters(List<Filter> filterList) throws AxelorException {
 

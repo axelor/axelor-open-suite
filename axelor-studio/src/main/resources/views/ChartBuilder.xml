@@ -3,7 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
   
-  <form name="chart-builder-form" title="Chart builder" model="com.axelor.studio.db.ViewBuilder" width="large"
+  <grid name="chart-builder-grid" title="Chart builder" model="com.axelor.studio.db.ChartBuilder">
+  	<field name="name" />
+  	<field name="title" />
+  	<field name="model" />
+  	<field name="chartType" />
+  </grid>
+  
+  <form name="chart-builder-form" title="Chart builder" model="com.axelor.studio.db.ChartBuilder" width="large"
       onNew="action-view-builder-record-default" onLoad="action-chart-builder-on-load">
       <panel title="Overview">
         <field name="name"/>
@@ -11,8 +18,8 @@
         <field name="chartType" required="true"/>
         <field name="isJson" onChange="action-chart-builder-json-change" colSpan="2"/>
         <panel colSpan="4" itemSpan="12">
-        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson"/> 
-        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" showIf="!isJson"/>
+        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/> 
+        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" showIf="!isJson" requiredIf="!isJson"/> 
         </panel> 
         <panel colSpan="6" itemSpan="12" title="Aggregate" hideIf="model == null">
         	<field name="isJsonAggregateOn" colSpan="2" />
@@ -90,17 +97,21 @@
   	<attribute name="hidden" for="filterList.metaField"  expr="eval:isJson"/>
   </action-attrs>
   
-  <action-record name="action-chart-builder-aggregate-on-change" model="com.axelor.studio.db.ViewBuilder">
-  	<field name="aggregateOnTarget" expr="call:com.axelor.studio.web.ChartBuilderController:getTarget(aggregateOn)" if="!isJsonAggregateOn"/>
-  	<field name="aggregateOnTarget" expr="call:com.axelor.studio.web.ChartBuilderController:getTarget(aggregateOnJson)" if="isJsonAggregateOn"/>
+  <action-record name="action-chart-builder-aggregate-on-change" model="com.axelor.studio.db.ChartBuilder">
+  	<field name="aggregateOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(aggregateOn)" if="!isJsonAggregateOn &amp;&amp; aggregateOn != null"/>
+  	<field name="aggregateOnTarget" expr="eval:null" if="!isJsonAggregateOn &amp;&amp; aggregateOn == null"/>
+  	<field name="aggregateOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(aggregateOnJson)" if="isJsonAggregateOn &amp;&amp; aggregateOnJson != null"/>
+  	<field name="aggregateOnTarget" expr="eval:null" if="isJsonAggregateOn &amp;&amp; aggregateOnJson == null"/>
   </action-record>
   
-  <action-record name="action-chart-builder-group-on-change" model="com.axelor.studio.db.ViewBuilder">
-  	<field name="groupOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(groupOn)" if="!isJsonGroupOn"/>
-  	<field name="groupOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(groupOnJson)" if="isJsonGroupOn"/>
+  <action-record name="action-chart-builder-group-on-change" model="com.axelor.studio.db.ChartBuilder">
+  	<field name="groupOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(groupOn)" if="!isJsonGroupOn &amp;&amp; groupOn != null"/>
+  	<field name="groupOnTarget" expr="eval:null" if="!isJsonGroupOn &amp;&amp; groupOn == null"/>
+  	<field name="groupOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(groupOnJson)" if="isJsonGroupOn &amp;&amp; groupOnJson != null"/>
+  	<field name="groupOnTarget" expr="eval:null" if="isJsonGroupOn &amp;&amp; groupOnJson == null"/>
   </action-record>
   
-  <action-record name="action-view-builder-record-default" model="com.axelor.studio.db.ViewBuilder">
+  <action-record name="action-view-builder-record-default" model="com.axelor.studio.db.ChartBuilder">
   	<field name="viewType" expr="eval:_viewType"/>
   </action-record>
   

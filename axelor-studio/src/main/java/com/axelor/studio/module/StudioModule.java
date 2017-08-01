@@ -23,8 +23,10 @@ import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.StudioWkfRepository;
-import com.axelor.studio.db.repo.ViewBuilderRepo;
-import com.axelor.studio.db.repo.ViewBuilderRepository;
+import com.axelor.studio.db.repo.ChartBuilderRepo;
+import com.axelor.studio.db.repo.ChartBuilderRepository;
+import com.axelor.studio.db.repo.DashboardBuilderRepo;
+import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.WkfRepository;
 
 public class StudioModule extends AxelorModule {
@@ -32,9 +34,10 @@ public class StudioModule extends AxelorModule {
 	@Override
 	protected void configure() {
 		bind(WkfRepository.class).to(StudioWkfRepository.class);
-		bind(ViewBuilderRepository.class).to(ViewBuilderRepo.class);
+		bind(ChartBuilderRepository.class).to(ChartBuilderRepo.class);
 		bind(ActionBuilderRepository.class).to(ActionBuilderRepo.class);
 		bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
+		bind(DashboardBuilderRepository.class).to(DashboardBuilderRepo.class);
 	}
 
 }
