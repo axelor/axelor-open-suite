@@ -58,6 +58,9 @@
 		public static final int TYPE_OUTGOING = 2;
 		public static final int TYPE_INCOMING = 3;
 
+		// CONFORMITY SELECT
+		public static final int CONFORMITY_COMPLIANT = 2;
+		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
 	]]></extra-code>
     

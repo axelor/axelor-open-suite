@@ -58,6 +58,13 @@
 		<view type="form" name="project-planning-form" />
 	</action-view>
 	
+	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki"/>
+  
+	<action-view name="all.wiki" title="Project Wiki" model="com.axelor.apps.project.db.Wiki">
+		<view type="grid" name="wiki-grid"/>
+		<view type="form" name="wiki-form"/>
+	</action-view>
+
 	<menuitem name="project-resource" title="Resources" order="30" parent="menu-project-root" action="project.resource" if="__config__.app.getApp('project').getResourceManagement()" />
 	
 	<action-view name="project.resource" title="Resources" model="com.axelor.apps.project.db.Resource">

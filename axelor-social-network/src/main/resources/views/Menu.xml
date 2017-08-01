@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+	<menuitem name="menu-sn" order="-1000" title="Social Network" icon="fa-users" />
+
+	<menuitem name="menu-sn-all" parent="menu-sn"
+    	title="Social Network"
+    	action="hello.all"/>
+
+	<action-view name="hello.all" title="All HelloNetwork" model="com.axelor.network.db.HelloNetwork">
+    	<view type="grid" name="sn-grid"/>
+	    <view type="form" name="sn-form"/>
+	</action-view>
+
+</object-views>

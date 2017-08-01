@@ -223,6 +223,10 @@
   		<panel>
   			<field name="productAttrs" colSpan="12" />
   		</panel>
+  		
+  		<panel-mail>
+    		<mail-messages />
+    	</panel-mail>
 	</form>    
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" width="25%" css="rect-image" orderBy="code,name">

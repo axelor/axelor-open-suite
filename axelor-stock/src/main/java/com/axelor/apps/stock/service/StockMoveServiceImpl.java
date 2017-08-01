@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.PartnerProductQualityRate;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -51,6 +52,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.PartnerProductQualityRateRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -60,6 +62,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -83,6 +87,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
+	
+	@Inject
+	protected PartnerProductQualityRatingServiceImpl partnerProductQualityRatingService;
 
 	@Inject
 	public StockMoveServiceImpl() {
@@ -312,6 +319,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
+		
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		resetWeights(stockMove);
@@ -334,9 +342,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 			computeWeights(stockMove);
 			stockMoveRepo.save(stockMove);
 		}
+		
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+			partnerProductQualityRatingService.calculate(stockMove);
+		}
 
 		return newStockSeq;
 	}
+
 
 	/**
 	 * Check and raise an exception if the provided stock move is involved in an
