@@ -45,4 +45,8 @@
 		<option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
 	</selection>
 
+	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
+	</selection>
+
 </object-views>
