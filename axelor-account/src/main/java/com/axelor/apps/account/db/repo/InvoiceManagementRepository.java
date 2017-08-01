@@ -47,7 +47,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setDirectDebitManagement(null);
 		copy.setDoubtfulCustomerOk(false);
 		copy.setMove(null);
-		copy.setEndOfCycleOk(false);
 		copy.setInterbankCodeLine(null);
 		copy.setPaymentMove(null);
 		copy.clearRefundInvoiceList();

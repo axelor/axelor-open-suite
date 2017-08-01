@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.invoice.factory;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.invoice.workflow.ventilate.MajorEndCycleVentilateState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.inject.Beans;
 
@@ -26,21 +25,9 @@ public class VentilateFactory {
 
 	public VentilateState getVentilator(Invoice invoice){
 
-		VentilateState ventilateState = ventilatorByType(invoice.getEndOfCycleOk());
+		VentilateState ventilateState = Beans.get(VentilateState.class);
 		ventilateState.init(invoice);
 		return ventilateState;
-
-	}
-
-	protected VentilateState ventilatorByType(boolean endOfCycleOk){
-
-		if(endOfCycleOk)  {
-			return Beans.get(MajorEndCycleVentilateState.class);
-		}
-		else  {
-			return Beans.get(VentilateState.class);
-		}
-
 	}
 
 }
