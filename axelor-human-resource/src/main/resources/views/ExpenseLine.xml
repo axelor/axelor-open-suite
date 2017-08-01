@@ -76,7 +76,7 @@
 				<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
 		        <field name="expenseDate"/>
 				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-in-tax-total"/>
-		        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
+		        <field name="kilometricTypeSelect" required="true"/>
 		        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" required="true"/>
 		        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
 		        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>

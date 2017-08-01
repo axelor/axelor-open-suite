@@ -39,8 +39,7 @@ public class KilometricAllowanceController {
 	public void computeDistance(ActionRequest request, ActionResponse response) throws AxelorException {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 
-		if (Strings.isNullOrEmpty(expenseLine.getFromCity()) || Strings.isNullOrEmpty(expenseLine.getToCity())
-				|| expenseLine.getKilometricTypeSelect() == 0) {
+		if (Strings.isNullOrEmpty(expenseLine.getFromCity()) || Strings.isNullOrEmpty(expenseLine.getToCity())) {
 			return;
 		}
 

@@ -28,7 +28,6 @@ import java.net.URLConnection;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.AuthUtils;
@@ -52,13 +51,7 @@ public class KilometricAllowanceServiceImpl implements KilometricAllowanceServic
 
 	@Override
 	public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {
-		BigDecimal distance = computeDistance(expenseLine.getFromCity(), expenseLine.getToCity());
-
-		if (expenseLine.getKilometricTypeSelect().equals(ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)) {
-			distance = distance.multiply(new BigDecimal(2));
-		}
-
-		return distance;
+		return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity());
 	}
 
 	/**
