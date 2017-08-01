@@ -128,9 +128,16 @@
 	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refunds sequence"/>
 	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
 	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
-	
-	
-	
+
+	<!--Product-->
+
+	<many-to-one name="invoicingProduct"
+				 title="Product to partially invoice sale order"
+				 ref="com.axelor.apps.base.db.Product"/>
+	<many-to-one name="advancePaymentProduct"
+				 title="Advance payment product"
+				 ref="com.axelor.apps.base.db.Product"/>
+
 <!-- 	Invoice printing    -->
 	<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing ?"/>
   	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>

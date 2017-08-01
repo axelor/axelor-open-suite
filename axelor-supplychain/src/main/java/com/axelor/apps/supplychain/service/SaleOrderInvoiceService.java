@@ -30,8 +30,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -145,6 +147,18 @@ public interface SaleOrderInvoiceService {
 	 * @throws AxelorException
 	 */
 	public Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+
+	/**
+	 * Create sale order lines from tax line a percent to invoice, and a
+	 * product. Called by {@link #generatePartialInvoice} and {@link #generateAdvancePayment}
+	 * @param taxLineList
+	 * @param invoicingProduct
+	 * @param percentToInvoice
+	 * @return
+	 */
+	List<SaleOrderLine> createSOlinesFromTax(List<SaleOrderLineTax> taxLineList,
+													Product invoicingProduct,
+													BigDecimal percentToInvoice);
 
 	/**
 	 * Allows to create an invoice from lines with given quantity in sale order.

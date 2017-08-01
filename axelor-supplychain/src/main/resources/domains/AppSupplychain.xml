@@ -21,13 +21,6 @@
 		
 		<boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order" default="false"/>
 		<boolean name="allowTimetableInvoicing" title="Allow timetable invoicing" default="false"/>
-
-		<many-to-one name="invoicingProduct"
-					 title="Product to partially invoice sale order"
-					 ref="com.axelor.apps.base.db.Product"/>
-		<many-to-one name="advancePaymentProduct"
-					 title="Advance payment product"
-					 ref="com.axelor.apps.base.db.Product"/>
 	</entity>
 
 </domain-models>

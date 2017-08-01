@@ -163,8 +163,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		BigDecimal percentToInvoice = computeAmountToInvoicePercent(
 				saleOrder, amountToInvoice, isPercent);
-		Product invoicingProduct = Beans.get(AppSupplychainService.class)
-				.getAppSupplychain().getInvoicingProduct();
+		Product invoicingProduct = Beans.get(AccountConfigService.class)
+				.getAccountConfig(saleOrder.getCompany()).getInvoicingProduct();
 		if (invoicingProduct == null) {
 			throw new AxelorException(I18n.get(
 					IExceptionMessage.SO_INVOICE_MISSING_INVOICING_PRODUCT),
@@ -184,11 +184,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 										  BigDecimal amountToInvoice,
 										  boolean isPercent) throws AxelorException {
 		List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
 		BigDecimal percentToInvoice = computeAmountToInvoicePercent(
 				saleOrder, amountToInvoice, isPercent);
-		Product invoicingProduct = Beans.get(AppSupplychainService.class)
-                .getAppSupplychain().getAdvancePaymentProduct();
+		Product invoicingProduct =
+		accountConfigService.getAccountConfig(saleOrder.getCompany())
+				.getAdvancePaymentProduct();
 		if (invoicingProduct == null) {
 			throw new AxelorException(
 					I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT),
@@ -201,7 +203,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Invoice invoice = generateInvoice(saleOrder, createdSOLineList);
 		invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
-		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 		Account advancePaymentAccount = accountConfigService
 					.getAccountConfig(saleOrder.getCompany())
 					.getAdvancePaymentAccount();
@@ -218,6 +219,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return Beans.get(InvoiceRepository.class).save(invoice);
 	}
 
+	@Override
 	public List<SaleOrderLine> createSOlinesFromTax(List<SaleOrderLineTax> taxLineList,
 										Product invoicingProduct,
 										BigDecimal percentToInvoice) {
