@@ -16,18 +16,8 @@
         <field name="startNode" readonly="true" onChange="action-wkf-node-set-end-node-attrs"/>
         <field name="endNode" readonly="true" onChange="action-wkf-node-set-start-node-attrs"/>
         <field name="sequence"/>
-        <spacer/>
-        <field name="statusMenuEntry"/>
-        <field name="statusMenuLabel" showIf="statusMenuEntry" requiredIf="statusMenuEntry"/>     
-        <field name="myMenuEntry"/>
-        <spacer/>
-        <field name="metaField" showIf="myMenuEntry" requiredIf="myMenuEntry" onSelect="action-wkf-node-meta-field-domain" />
-        <field name="myMenuLabel" showIf="myMenuEntry" requiredIf="myMenuEntry"/>
-        <field name="parentMenu" showIf="statusMenuEntry || myMenuEntry" requiredIf="(statusMenuEntry || myMenuEntry) &amp;&amp; parentMenuBuilder == null" domain="self.action is null"/>
-        <field name="parentMenuBuilder" showIf="statusMenuEntry || myMenuEntry" requiredIf="(statusMenuEntry || myMenuEntry) &amp;&amp; parentMenu == null" domain="self.actionBuilder is null"/>
-        <field name="wkf" hidden="true"/>
       </panel>
-      <panel-related field="actionSelectorList" colSpan="12" />
+      <panel-related field="metaActionSet" colSpan="12" orderBy="sequence" canMove="true"/>
       <panel-related field="incomming" colSpan="12" readonly="true" />
       <panel-related field="outgoing" colSpan="12"  readonly="true" />
       <panel-related field="roleSet" colSpan="12" />
@@ -41,10 +31,6 @@
   	<attribute name="value" for="startNode" expr="eval:false"/>
   </action-attrs>
   
-  <action-attrs name="action-wkf-node-meta-field-domain">
-  	<attribute name="domain" for="metaField" expr="eval:&quot;self.relationship = 'ManyToOne' AND self.typeName = 'User' AND self.metaModel.id =  ${_parent.metaModel.id}&quot;" if="_parent?.metaModel != null"/>
-  	<attribute name="domain" for="metaField" expr="eval:&quot;self.relationship = 'ManyToOne' AND self.typeName = 'User' AND self.metaModel.id =  ${wkf?.metaModel.id}&quot;" if="_parent?.metaModel == null"/>
-  </action-attrs>
   
 </object-views>
 

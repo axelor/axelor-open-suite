@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -68,7 +69,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected StockMoveLineService stockMoveLineService;
@@ -304,6 +305,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		String newStockSeq = null;
+		stockMoveLineService.checkConformitySelection(stockMove);
+		stockMoveLineService.checkExpirationDates(stockMove);
 
 		stockMoveLineService.updateLocations(
 				stockMove.getFromLocation(),
@@ -524,16 +527,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(),newStockMove.getCompany()));
 
-		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
-			if(stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0)   {
+			if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 
-				if(!split)  {
+				if (split) {
 					newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
+					newStockMoveLine.setRealQty(newStockMoveLine.getQty());
 				}
-
-				newStockMoveLine.setRealQty(newStockMoveLine.getQty());
 
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
@@ -547,7 +549,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return stockMoveRepo.save(newStockMove);
 
 	}
-
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -707,11 +708,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generateReversion(StockMove stockMove) throws AxelorException  {
+	public StockMove generateReversion(StockMove stockMove) throws AxelorException  {
 
 		LOG.debug("Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ", new Object[] { stockMove.getStockMoveSeq() });
 
-		stockMoveRepo.save(this.copyAndSplitStockMoveReverse(stockMove, false));
+		return copyAndSplitStockMoveReverse(stockMove, false);
 
 	}
 	

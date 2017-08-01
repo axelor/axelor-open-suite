@@ -21,14 +21,14 @@
     <string name="exportNumber" title="Accounting Export N°"/>
     <date name="exportDate" title="Export Date"/>
     <boolean name="accountingOk" title="Exported ?" default="false"/>
-    <many-to-one name="moveLineReport" ref="com.axelor.apps.account.db.MoveLineReport" title="Accounting Export"/>
+    <many-to-one name="accountingReport" ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher"/>
    	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>
    	<string name="companyCurrencyCode" title="Company currency code"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
-    <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
+    <boolean name="ignoreInDebtRecoveryOk" title="Ignore in debt recovery process" default="false"/>
     <date name="validationDate" title="Validation date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true" readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>

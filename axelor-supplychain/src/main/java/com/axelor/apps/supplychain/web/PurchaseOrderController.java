@@ -102,15 +102,6 @@ public class PurchaseOrderController {
 		purchaseOrderServiceSupplychain.cancelReceipt(purchaseOrder);
 
 	}
-
-	public void updateTimetable(ActionRequest request, ActionResponse response){
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		if(purchaseOrder.getId() != null && purchaseOrder.getId() > 0){
-			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-		}
-		Beans.get(TimetableService.class).updateTimetable(purchaseOrder);
-		response.setValues(purchaseOrder);
-	}
 	
 	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
@@ -316,5 +307,18 @@ public class PurchaseOrderController {
 		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
 				.findDefaultBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
+		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+	}
+	
+	public void applyToallBudgetDistribution(ActionRequest request, ActionResponse response) {
+		
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrderServiceSupplychain.applyToallBudgetDistribution(purchaseOrder);
 	}
 }

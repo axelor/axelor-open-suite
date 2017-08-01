@@ -18,17 +18,15 @@
 package com.axelor.apps.hr.web.lunch.voucher;
 
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
+import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -42,6 +40,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class LunchVoucherMgtController {
 	
@@ -95,6 +98,7 @@ public class LunchVoucherMgtController {
 		
 		response.setValue("totalLunchVouchers", lunchVoucherMgt.getTotalLunchVouchers());
 		response.setValue("requestedLunchVouchers", lunchVoucherMgt.getRequestedLunchVouchers());
+		response.setValue("givenLunchVouchers", lunchVoucherMgt	.getGivenLunchVouchers());
 	}
 	
 	public void export(ActionRequest request, ActionResponse response) throws IOException {
@@ -116,7 +120,7 @@ public class LunchVoucherMgtController {
 	public void print(ActionRequest request, ActionResponse response) throws IOException {
 		LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
 		
-		String name =  lunchVoucherMgt.getCompany().getName() + " - " + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		String name =  lunchVoucherMgt.getCompany().getName() + " - " + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 		
 		try {
 			String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
@@ -130,6 +134,21 @@ public class LunchVoucherMgtController {
 					.add("html", fileLink).map());
 			
 		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+	public void updateStock(ActionRequest request, ActionResponse response) {
+		try {
+			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
+			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+			List<LunchVoucherMgtLine> oldLunchVoucherLines =
+					Beans.get(LunchVoucherMgtLineRepository.class).all()
+							.filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
+							.fetch();
+			lunchVoucherMgt = lunchVoucherMgtService.updateStock(lunchVoucherMgt,
+					oldLunchVoucherLines);
+			response.setValue("stockQuantityStatus", lunchVoucherMgt.getStockQuantityStatus());
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}

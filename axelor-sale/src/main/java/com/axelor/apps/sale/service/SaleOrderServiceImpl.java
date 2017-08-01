@@ -17,8 +17,9 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +27,8 @@ import javax.persistence.Query;
 
 import com.axelor.apps.sale.db.CancelReason;
 import com.google.common.base.Strings;
-import org.eclipse.birt.core.exception.BirtException;
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SaleOrderLineService saleOrderLineService;
 	protected SaleOrderLineTaxService saleOrderLineTaxService;
@@ -124,6 +125,39 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this._computeSaleOrder(saleOrder);
 
 		return saleOrder;
+	}
+	
+	@Override
+	public void computeMarginSaleOrder(SaleOrder saleOrder) {
+
+		if (saleOrder.getSaleOrderLineList() == null) {
+			
+			saleOrder.setTotalCostPrice(BigDecimal.ZERO);
+			saleOrder.setTotalGrossMargin(BigDecimal.ZERO);
+			saleOrder.setMarginRate(BigDecimal.ZERO);
+		} else {
+			
+			BigDecimal totalCostPrice = BigDecimal.ZERO;
+			BigDecimal totalGrossMargin = BigDecimal.ZERO;
+			BigDecimal marginRate = BigDecimal.ZERO;
+
+			for (SaleOrderLine saleOrderLineList : saleOrder.getSaleOrderLineList()) {
+				
+				if (saleOrderLineList.getProduct() == null
+						|| saleOrderLineList.getSubTotalCostPrice().compareTo(BigDecimal.ZERO) == 0
+						|| saleOrderLineList.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+					continue;
+				} else {
+					
+					totalCostPrice = totalCostPrice.add(saleOrderLineList.getSubTotalCostPrice());
+					totalGrossMargin = totalGrossMargin.add(saleOrderLineList.getSubTotalGrossMargin());
+					marginRate = totalGrossMargin.divide(totalCostPrice, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+				}
+			}
+			saleOrder.setTotalCostPrice(totalCostPrice);
+			saleOrder.setTotalGrossMargin(totalGrossMargin);
+			saleOrder.setMarginRate(marginRate);
+		}
 	}
 
 
@@ -307,9 +341,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrderRepo.save(saleOrder);
 	}
 
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
+	protected void _finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
 		if (appSaleService.getAppSale().getManageSaleOrderVersion()){
@@ -319,7 +352,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
 	}
-	
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		_finalizeSaleOrder(saleOrder);
+	}
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {

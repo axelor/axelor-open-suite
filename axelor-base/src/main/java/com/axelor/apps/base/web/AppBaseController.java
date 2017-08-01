@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,13 +39,13 @@ import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -58,7 +59,7 @@ import com.google.inject.Inject;
 
 public class AppBaseController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ExportDbObjectService eos;
@@ -318,4 +319,24 @@ public class AppBaseController {
 		 }
 	}
 
+	
+	public void showCustomersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		mapService.showMap("customer", I18n.get("Customers"), response);
+	
+	}
+		 	
+	public void showProspectsOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		mapService.showMap("prospect", I18n.get("Prospect"), response);
+ 	
+	}
+		 	
+ 	public void showSuppliersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+ 
+ 		mapService.showMap("supplier", I18n.get("Supplier"), response);
+ 	
+ 	}
+ 	
+		 	
 }

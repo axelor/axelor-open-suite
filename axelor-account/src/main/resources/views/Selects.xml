@@ -65,7 +65,7 @@
 		<option value='4'>Canceled</option>
 	</selection>
 	
-	<selection name='move.line.report.type.select'>
+	<selection name='accounting.report.type.select'>
 		<option value="1">General ledger</option>
 		<option value="2">General balance</option>
 		<option value="3">Detailed customers balance</option>
@@ -79,7 +79,7 @@
 		<option value="2000">Analytic balance</option>
 	</selection>
 	
-	<selection name='move.line.report.type.select.export'>
+	<selection name='accounting.report.type.select.export'>
 		<option value="1000">Export payroll journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
@@ -107,7 +107,7 @@
 	</selection>
 	
 	<selection name='payer.quality.config.line.incident.type.select'>
-		<option value='0'>Reminder</option>
+		<option value='0'>Debt recovery</option>
 		<option value='1'>Reject</option>
 	</selection>
 	
@@ -151,7 +151,7 @@
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
 		<option value="12">Direct debit</option>
-		<option value="14">Reminder</option>
+		<option value="14">Debt recovery</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
@@ -164,7 +164,12 @@
 		<option value="2">Supplier Payment</option>
 		<option value="3">Customer Reimbursement</option>
 	</selection>
-	
+
+	<selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
+		<option value="1">Customer refund</option>
+		<option value="2">Partner credit balance reimbursement</option>
+	</selection>
+
 	<selection name="ireimbursement.batch.type.select">
 		<option value="1">Reimbursement Export</option>
 		<option value="2">Rejected Reimbursements Import</option>
@@ -180,8 +185,8 @@
 		<option value="2">Import direct debit rejects</option>
 	</selection>
 	
-	<selection name="ireminder.batch.type.select">
-		<option value="1">Classic reminder</option>
+	<selection name="idebt.recovery.batch.type.select">
+		<option value="1">Classic debt recovery</option>
 	</selection>
 	
 	<selection name="iinterbank.account.order.batch.type.select">
@@ -231,7 +236,7 @@
 		<option value="2">Validated</option>
 	</selection>
 	
-	<selection name="iaccount.move.line.report.status.select">
+	<selection name="iaccount.accounting.report.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
 	</selection>

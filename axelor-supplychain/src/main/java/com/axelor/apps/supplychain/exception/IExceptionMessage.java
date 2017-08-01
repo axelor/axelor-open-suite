@@ -36,6 +36,7 @@ public interface IExceptionMessage {
 	 * Purchase Order Service
 	 */
 	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s please configure a virtual supplier stock location for the company %s" /*)*/;
+	static final String PURCHASE_ORDER_2 = /*$$(*/ "Error : you have exceeded the budget %s for this period" /*)*/;
 
 	/**
 	 * Sale Order Invoice Service
@@ -66,10 +67,18 @@ public interface IExceptionMessage {
 	/**
 	 * Batch Invoicing
 	 */
-	static final String BATCH_INVOICING_1 = /*$$(*/ "Compte rendu de génération de facture d'abonnement :\n" /*)*/;
+	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report : " /*)*/;
 	static final String BATCH_INVOICING_2 = /*$$(*/ "Order(s) processed" /*)*/;
 
-	
+	/**
+	 * Batch Outgoing stock move invoicing
+	 */
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report: " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully, " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully, " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
 	/**
 	 * Mrp Line Service
 	 */

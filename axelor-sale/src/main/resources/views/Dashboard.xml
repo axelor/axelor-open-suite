@@ -141,15 +141,6 @@
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
- 		
-	
-	
-	<!-- This dashlet is used in product-form (base) -->
-	<action-view name="dashlet.product.sales.turnover.per.month" title="Product sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product">
-	  <view type="chart" name="chart.product.sale.turnover.per.month"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
-	</action-view>
 	
 	<action-view name="dashlet.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month" model="com.axelor.apps.base.db.Product">
 	  <view type="chart" name="chart.product.sale.turnover.last.12.month"/>

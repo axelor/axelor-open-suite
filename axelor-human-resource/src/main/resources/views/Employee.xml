@@ -7,26 +7,27 @@
 		 <field name="hourlyRate" />
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
-		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
+		 <field name="archived" hidden="true" />
 	</grid>
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
 		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
-		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
 	</grid>
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
 		<toolbar>
-			<button name="annualReport" title="Show annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
 					<field name="titleSelect" css="bold" colSpan="2"/>
-					<field name="name" title="Name" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
-					<field name="firstName" x-bind="{{code|uppercase}}" css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+					<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+					<field name="firstName"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
 		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
@@ -37,18 +38,17 @@
         </panel>
         <panel-tabs>
         	<panel name="information" title="Information">
-	        	<panel name="phonePro" title="Professionnal Phones" colSpan="12">
-	        		<field name="fixedProPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
-	        		<field name="mobileProPhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
-					<field name="phoneAtCustomer" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+	        	<panel name="phonePro" title="Work phones" colSpan="12">
+	        		<field name="fixedProPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" colSpan="4"/>
+	        		<field name="mobileProPhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" colSpan="4"/>
+					<field name="phoneAtCustomer" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" colSpan="4"/>
 	        	</panel>
       			<panel name="personalInfo" title="Personal Info." colSpan="12">
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
         			<field name="socialSecurityNumber" colSpan="4"/>
-        			<field name="kilometricAllowParam" colSpan="4"/>
       			</panel>
-	        	<panel name="emergencyContact" title="Emergency Contact" colSpan="12">
+	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
 	        		<field name="emergencyNumber" colSpan="4" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
 	        	</panel>
@@ -56,49 +56,89 @@
         			<field name="dateOfHire" colSpan="4"/>
         			<field name="seniorityDate" colSpan="4"/>
         			<field name="profitSharingBeneficiary" colSpan="4"/>
-        			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id"/>
-        			<field name="mainEmploymentContract.executiveStatusSelect" showIf="mainEmploymentContract != null" colSpan="4"/>
+         			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id">
+						<editor x-viewer="true">
+							<field name="payCompany"/>
+							<field name="executiveStatusSelect"/>
+						</editor>
+					</field>
         			<field name="bonusCoef" colSpan="4" />
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
-        			<field name="hourlyRate" colSpan="4"/>
-        			<field if="__config__.app.getApp('base').getManageMultiBanks()" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-        			<field name="timeLoggingPreferenceSelect" colSpan="4"/>
-        			<field name="weeklyWorkHours" colSpan="4"/>
-        			<field name="dailyWorkHours" colSpan="4"/>
-        			<field name="$dailySalaryCost" title="Daily cost" colSpan="4" x-bind="{{hourlyRate*dailyWorkHours}}"/>
-        			<field name="product" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+        			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid"/>
-        			<field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
+        			<field name="mainEmploymentContract.companyDepartment" colSpan="4" form-view="company-department-form" grid-view="company-department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
-        			<field name="planning" colSpan="4" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+        			<field name="planning" colSpan="4" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
         			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
-        			<field name="negativeValueLeave" colSpan="4"/>
         			<field name="hrManager" colSpan="4"/>
-        			<field name="exportCode" />
+        			<field name="exportCode" colSpan="4"/>
       			</panel>
 	       	</panel>
-	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
-	       	<panel name="lunchVoucher" title="Lunch Vouchers">
+            <panel title="Employment contracts">
+				<field name="hourlyRate" colSpan="4"/>
+				<field name="weeklyWorkHours" colSpan="4"/>
+				<field name="dailyWorkHours" colSpan="4"/>
+				<field name="$dailySalaryCost" readonly="true"
+					   x-bind="{{hourlyRate*dailyWorkHours}}" title="Daily cost"/>
+				<field name="employmentContractList" colSpan="12"
+				   grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
+			</panel>
+			<panel name="timesheets" title="Timesheets"
+				   if="__config__.app.isApp('timesheet')">
+				<field name="timeLoggingPreferenceSelect" colSpan="4"/>
+				<field name="product" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+				<field name="timesheetReminder" colSpan="4"/>
+				<panel-dashlet action="action-employee-view-user-timesheets"
+							   colSpan="12"/>
+			</panel>
+	       	<panel name="lunchVoucher" title="Lunch Vouchers"
+				   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
 	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
 	       		<button name="addLunchVoucherAdvance" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
-	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
+	       		<panel-dashlet title="Lunch Vouchers" colSpan="12"
+							   action="action-employee-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
-	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
-	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
-	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
+	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
+	       	<panel name="kilometricLog" title="Kilometric log" if="__config__.app.isApp('expense')">
+				<field name="kilometricAllowParam" colSpan="12" />
+		       	<panel-related field="kilometricLogList" title="Kilometric log"
+							   grid-view="kilometric-log-grid"
+							   form-view="kilometric-log-form" readonly="true" colSpan="12"
+							   if="__config__.app.isApp('timesheet')"/>
+				<panel name="vehicles" title="Vehicles" colSpan="12">
+					<field name="employeeVehicleList" colSpan="12" showTitle="false">
+						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
+							<field name="plateNo"/>
+							<field name="vehicleModel"/>
+							<field name="vehicleMake"/>
+							<field name="kilometricAllowParam" widget="SuggestBox"/>
+							<field name="startDate"/>
+							<field name="endDate"/>
+						</editor>
+					</field>
+				</panel>
+	       	</panel>
+	       	<panel-dashlet action="employee.dashlet.employee.bonus"
+						   title="Bonuses"
+						   colSpan="12" readonly="true"
+						   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"/>
 	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
-       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
+            <panel title="Leave List" if="__config__.app.isApp('leave')">
+				<field name="leaveLineList" grid-view="leave-line-grid"
+				form-view="leave-line-form" colSpan="12"/>
+				<field name="negativeValueLeave" colSpan="4"/>
+			</panel>
         </panel-tabs>
 	</form>
 	
 	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
 		<panel>
 			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
-			<button name="showAnnualReport" title="Show annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
 	
@@ -109,28 +149,23 @@
 		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
 	</action-record>
 	
-	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
-	    <field name="contactPartner" expr="eval:partner" />
-	    <field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
-	    <field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
-	    <field name="negativeValueLeave" expr="eval:__config__.app.getApp('leave').getAllowNegativeLeaveEmployees()" if="__config__.app.isApp('leave')"/>
-	    <field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
-	</action-record>
-	
-	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
+	<action-view name="action-employee-user-show-employee" title="Employee"
+				 model="com.axelor.apps.hr.db.Employee">
 	    <view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	    <context name="_showRecord" expr="eval:employee?.id"/>
 	</action-view>
 	
-	<action-view name="action-hr-view-show-lunch-voucher" title="Lunch Vouchers" model="com.axelor.apps.hr.db.LunchVoucherMgtLine">
+	<action-view name="action-employee-view-show-lunch-voucher"
+				 title="Lunch Vouchers" model="com.axelor.apps.hr.db.LunchVoucherMgtLine">
 		<view type="grid" name="lunch-voucher-mgt-line-employee-grid"/>
 		<view type="form" name="lunch-voucher-mgt-line-form"/>
 		<domain>self.employee.id = :employeeId</domain>
 		<context name="employeeId" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="hr.dashlet.employee.bonus" title="Bonuses" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
+	<action-view name="employee.dashlet.employee.bonus" title="Bonuses"
+				 model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
 		<view type="grid" name="employee-bonus-mgt-line-employee-grid"/>
 		<view type="form" name="employee-bonus-mgt-line-employee-form"/>
 		<domain>self.employee.id = :employeeId</domain>
@@ -144,6 +179,14 @@
   		<view-param name="show-confirm" value="false" />
  	  	<view-param name="popup-save" value="false"/>
  	  	<view-param name="width" value="800"/>
+	</action-view>
+
+	<action-view name="action-employee-view-user-timesheets" title="Timesheets"
+				 model="com.axelor.apps.hr.db.Timesheet">
+		<view type="grid" name="my-timesheets-grid"/>
+		<view type="form" name="timesheet-form"/>
+        <domain>self.user = :_user</domain>
+		<context name="_user" expr="eval:__user__"/>
 	</action-view>
 	
 	<action-method name="action-employee-method-show-annual-report">

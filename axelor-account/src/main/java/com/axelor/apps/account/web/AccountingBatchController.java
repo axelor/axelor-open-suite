@@ -23,8 +23,14 @@ import java.util.Map;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.account.service.batch.BatchCreditTransferCustomerRefund;
+import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
+import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
+import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -43,14 +49,14 @@ public class AccountingBatchController {
 	 * @param request
 	 * @param response
 	 */
-	public void actionReminder(ActionRequest request, ActionResponse response){
+	public void actionDebtRecovery(ActionRequest request, ActionResponse response){
 
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
 		Batch batch = null;
 
-		if(accountingBatch.getReminderTypeSelect() == AccountingBatchRepository.ACTION_REMINDER)  {
-			batch = accountingBatchService.reminder(accountingBatchRepo.find(accountingBatch.getId()));
+		if(accountingBatch.getDebtRecoveryTypeSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
+			batch = accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
 		}
 		if(batch != null)
 			response.setFlash(batch.getComments());
@@ -191,6 +197,39 @@ public class AccountingBatchController {
 
 	}
 
+	public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Class<? extends BatchStrategy> batchStrategyClass;
+
+		switch (accountingBatch.getCreditTransferTypeSelect()) {
+		case AccountingBatchRepository.CREDIT_TRANSFER_EXPENSE_PAYMENT:
+			batchStrategyClass = BatchCreditTransferExpensePayment.class;
+			break;
+		case AccountingBatchRepository.CREDIT_TRANSFER_SUPPLIER_PAYMENT:
+			batchStrategyClass = BatchCreditTransferSupplierPayment.class;
+			break;
+		case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
+			switch (accountingBatch.getCustomerReimbursementTypeSelect()) {
+			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND:
+				batchStrategyClass = BatchCreditTransferCustomerRefund.class;
+				break;
+			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:
+				batchStrategyClass = BatchCreditTransferPartnerReimbursement.class;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown customer reimbursement type");
+			}
+			break;
+		default:
+			throw new IllegalArgumentException(
+					String.format("Unknown credit transfer type: %d", accountingBatch.getCreditTransferTypeSelect()));
+		}
+
+		Batch batch = Beans.get(batchStrategyClass).run(accountingBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
 
 	// WS
 

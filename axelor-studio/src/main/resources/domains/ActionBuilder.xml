@@ -6,35 +6,30 @@
   <module name="studio" package="com.axelor.studio.db" />
   
   <entity name="ActionBuilder" cachable="true">
-     <![CDATA[
-    	ActionBuilder represents the custom action. An object of this class is used to create actions supported by adk.
-    	It is used by other classes to link an event to the action. Actions are differentiated by types. 
-    	Supported output action types are 'action-record','action-view' and 'action-validate'. 
-     ]]>
      <string name="name" title="Name" required="true"/>
-     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object" />
+     <string name="metaJsonModel"  title="Object" />
      <integer name="typeSelect" title="Type" selection="studio.action.builder.type.select" />
-     <many-to-one name="targetModel" ref="com.axelor.meta.db.MetaModel" title="Target object" />
-     <many-to-one name="loopOnField" ref="com.axelor.meta.db.MetaField" title="Loop on ?" />
+     <string name="targetJsonModel"  title="Target object" />
      <one-to-many name="lines" ref="ActionBuilderLine" title="Fields" mappedBy="actionBuilder"/>
-     <boolean name="edited" title="Edited" />
-     <boolean name="recorded" title="Recorded" />
-     <many-to-many name="viewBuilderSet" ref="com.axelor.studio.db.ViewBuilder" title="View builders" />
-     <many-to-many name="metaViewSet" ref="com.axelor.meta.db.MetaView" title="Views" />
-     <string name="viewOrder" title="View order" selection="view.type.selection" default="grid, form" />
-     <boolean name="popup" title="Popup" />
-     <many-to-one name="targetField" title="Target field" ref="com.axelor.meta.db.MetaField" />
+     <many-to-one name="assignValueTo" title="Assign value to" ref="com.axelor.meta.db.MetaField" />
      <string name="firstGroupBy" title="First group by"/>
      <string name="secondGroupBy" title="Second group by"/>
-     <one-to-many name="filters" ref="Filter" title="Filters" mappedBy="actionBuilder" />
-     <string name="domainCondition" title="Domain condition" large="true"/>
-     <string name="context" title="Context" large="true"/>
      <string name="title" title="Title" />
-     <boolean name="menuAction" title="Menu action" />
      <many-to-many name="reportBuilderSet" title="Report builders" ref="ReportBuilder" />
      <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
-     <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true"/>
-     <unique-constraint columns="metaModule,metaModel,name" name="actionModelConstraint"/>
+     <one-to-many name="filters" ref="Filter" title="Filters"/>
+     <boolean name="transactional" title="Transactional ?" />
+     <integer name="scriptType" title="Script type" selection="studio.action.builder.script.type.select"/>
+     <string name="scriptText" title="Script" large="true"/>
+     <string name="model" title="Model" />
+     
+     <!-- Action view fields -->
+     <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder"/>
+     <boolean name="isJson" title="Json ?" />
+     <string name="metaModel" title="Object" />
+     <string name="domainCondition" title="Domain" />
+     <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine" orphanRemoval="true" />
+     
   </entity>
   
 </domain-models>

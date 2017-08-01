@@ -12,7 +12,7 @@
 	  	
 	  	<many-to-one name="parentTask" ref="com.axelor.team.db.TeamTask" title="Parent task"/>
 	 	<many-to-one name="category" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
-    	<integer name="progressSelect" title="Progress" selection="project.task.progress.select" help="true"/>
+    	<integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
     	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     	<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" mappedBy="parentTask"/>
 	  
@@ -22,6 +22,14 @@
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<decimal name="quantity" title="Quantity"/>
 		<decimal name="salePrice" title="Sale Price" />
+		
+		<!-- Gantt view fields -->
+		
+		<decimal name="plannedProgress" title="Planned progress" />
+		<many-to-many name="startToStartSet" title="Tasks to start before start" ref="TeamTask" />
+		<many-to-many name="finishToStartSet" title="Tasks to finish before start" ref="TeamTask" />
+		<many-to-many name="startToFinishSet" title="Tasks to start before finish" ref="TeamTask" />
+		<many-to-many name="finishToFinishSet" title="Tasks to finish before finish" ref="TeamTask" />
 	  
 	 <track>
 	 	<field name="name"/>

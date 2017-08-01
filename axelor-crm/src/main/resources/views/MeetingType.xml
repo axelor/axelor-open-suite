@@ -10,7 +10,7 @@
     <form name="meeting-type-form" title="Meeting type" model="com.axelor.apps.crm.db.MeetingType"  >
         <panel name="main" >
         	<field name="name"/>
-        	<field name="code"/>
+        	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         </panel>
        
     </form>

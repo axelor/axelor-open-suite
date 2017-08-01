@@ -189,14 +189,14 @@
 	</selection>
 
 	<selection name='partner.assignor.type.select'>
-		<option value='syndicate'>Syndicat</option>
-		<option value='authority'>Collectivité</option>
+		<option value='syndicate'>Syndicate</option>
+		<option value='authority'>Authority</option>
 	</selection>
 
 	<selection name="partner.industry.sectory.select">
 		<option value="1">Agriculture</option>
 		<option value="2">Banking &amp; Insurance</option>
-		<option value="3">Biotechnologies</option>
+		<option value="3">Biotechnology</option>
 		<option value="4">Chemistry</option>
 		<option value="5">Communication</option>
 		<option value="6">Real Estate</option>
@@ -301,7 +301,7 @@
 		<option value='intoAccount'>To include in next invoice batch</option>
 	</selection>
 
-	<selection name='reminder.method.base.concerned.select'>
+	<selection name='debt.recovery.method.base.concerned.select'>
 		<option value='0'>Owner</option>
 		<option value='1'>Payer</option>
 	</selection>
@@ -329,7 +329,7 @@
 		<option value="paymentVoucher">Payment voucher</option>
 		<option value="debit">Direct debit</option>
 		<option value="debitReject">Direct debit reject</option>
-		<option value="moveLineReport">Accounting reports</option>
+		<option value="accountingReport">Accounting reports</option>
 		<option value="reimbursement">Reimbursements</option>
 		<option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
 		<option value="accountClearance">Overpayment clearance</option>
@@ -343,7 +343,6 @@
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
 		<option value="saleOrder">Sales order</option>
 		<option value="purchaseOrder">Purchase order</option>
-		<option value="ticket">Ticket</option>
 		<option value="intStockMove">Internal stock move</option>
 		<option value="outStockMove">Delivery stock move</option>
 		<option value="inStockMove">Receipt stock move</option>
@@ -679,5 +678,41 @@
 		<option value="1">In</option>
 		<option value="2">Out</option>
 	</selection>			
+  
+	<selection name="printing.setting.logo.position">
+		<option value="0">None</option>
+		<option value="1">Left</option>
+		<option value="2">Center</option>
+		<option value="3">Right</option>
+	</selection>	
 	
+	<selection name="icrm.calendar.type.select">
+		<option value="1">ICAL_SERVER</option>
+		<option value="2">CALENDAR_SERVER</option>
+		<option value="3">GCAL</option>
+		<option value="4">ZIMBRA</option>
+		<option value="5">KMS</option>
+		<option value="6">CGP</option>
+		<option value="7">CHANDLER</option>
+	</selection>
+	
+	<selection name="icalendar.event.type.select">
+		<option value="0">Event</option>
+		<option value="1">Call</option>
+		<option value="2">Meeting</option>
+		<option value="3">Task</option>
+		<option value="4">Leave</option>
+	</selection>
+	
+	<selection name="base.birt.template.parameter.type.select">
+		<option value="string">String</option>
+		<option value="float">Float</option>
+		<option value="decimal">Decimal</option>
+		<option value="dateTime">DateTime</option>
+		<option value="boolean">Boolean</option>
+		<option value="integer">Integer</option>
+		<option value="date">Date</option>
+		<option value="time">Time</option>
+	</selection>
+
 </object-views>

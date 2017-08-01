@@ -63,17 +63,21 @@ public class MrpController {
 	}
 
 	/**
-	 * print the corresponding MRP birt report and show it to the user.
+	 * Prints the weekly breakdown MRP birt report and shows it to the user.
+     *
 	 * @param request
 	 * @param response
 	 */
-	public void print(ActionRequest request, ActionResponse response) {
+	public void printWeeks(ActionRequest request, ActionResponse response) {
 		Mrp mrp = request.getContext().asType(Mrp.class);
 		String name = I18n.get("MRP") + "-" + mrp.getId();
+		System.out.println("date : " + mrpService.findMrpEndDate(mrp).toString());
+
 		try {
-			String fileLink = ReportFactory.createReport(IReport.MRP, name)
+			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
 					.addParam("mrpId", mrp.getId())
 					.addParam("Locale", AuthUtils.getUser().getLanguage())
+					.addParam("endDate", mrpService.findMrpEndDate(mrp).toString())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();
@@ -86,5 +90,32 @@ public class MrpController {
 			TraceBackService.trace(response, e);
 		}
 	}
+
+    /**
+     * Prints the list MRP birt report and shows it to the user.
+     *
+     * @param request
+     * @param response
+     */
+    public void printList(ActionRequest request, ActionResponse response) {
+        Mrp mrp = request.getContext().asType(Mrp.class);
+        String name = I18n.get("MRP") + "-" + mrp.getId();
+
+        try {
+            String fileLink = ReportFactory.createReport(IReport.MRP_LIST, name)
+                    .addParam("mrpId", mrp.getId())
+                    .addParam("Locale", AuthUtils.getUser().getLanguage())
+                    .addFormat(ReportSettings.FORMAT_PDF)
+                    .generate()
+                    .getFileLink();
+
+            response.setView(ActionView
+                    .define(name)
+                    .add("html", fileLink).map());
+
+        } catch (AxelorException e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 	
 }

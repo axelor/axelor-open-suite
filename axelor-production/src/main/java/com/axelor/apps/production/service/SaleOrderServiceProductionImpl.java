@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
@@ -47,11 +48,12 @@ public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainI
 	public SaleOrderServiceProductionImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService,
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
-			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppSupplychainService appSupplychainService, AccountConfigService accountConfigService) {
+			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppSupplychainService appSupplychainService, AccountConfigService accountConfigService,
+			AccountingSituationSupplychainService accountingSituationSupplychainService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, appSaleService,
-				userService, saleOrderStockService, saleOrderPurchaseService, appSupplychainService, accountConfigService);
-		
+				userService, saleOrderStockService, saleOrderPurchaseService, appSupplychainService, accountConfigService, accountingSituationSupplychainService);
+
 		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
 		
 	}

@@ -25,9 +25,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -37,8 +39,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
+
+import net.fortuna.ical4j.connector.FailedOperationException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
+import net.fortuna.ical4j.connector.dav.PathResolver;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
@@ -55,6 +62,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -65,6 +73,7 @@ import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
@@ -82,7 +91,15 @@ import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -103,7 +120,41 @@ public class ICalendarService {
 	
 	@Inject
 	protected ICalendarUserRepository iCalendarUserRepository;
+	
+	
+	public static class GenericPathResolver extends PathResolver {
+		 
+        private String principalPath;
+        private String userPath;
+        
+        public String principalPath() {
+            return principalPath;
+        }
+        
+        public void setPrincipalPath(String principalPath) {
+            this.principalPath = principalPath;
+        }
+        
+        @Override
+        public String getPrincipalPath(String username) {
+          return principalPath + "/" + username + "/";
+        }
 
+        public String userPath() {
+            return userPath;
+        }
+        
+        public void setUserPath(String userPath) {
+            this.userPath = userPath;
+        }
+        
+        @Override
+        public String getUserPath(String username) {
+            return userPath + "/" + username;
+        }
+    }
+	
+	
 	/**
 	 * Generate next {@link Uid} to be used with calendar event.
 	 *
@@ -130,6 +181,36 @@ public class ICalendarService {
 		cal.getProperties().add(CalScale.GREGORIAN);
 		return cal;
 	}
+	
+	public boolean testConnect(ICalendar cal) throws MalformedURLException, ObjectStoreException
+	{
+		boolean connected = false;
+		PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
+		Protocol protocol = getProtocol(cal.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), cal.getUrl(), cal.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		
+		try 
+		{
+			connected = store.connect(cal.getLogin(), cal.getPassword());
+		}
+		finally {
+			store.disconnect();
+		}
+		return connected;
+	}
+	
+	public Protocol getProtocol(boolean isSslConnection)  {
+		
+		if(isSslConnection)  {
+			return Protocol.getProtocol("https");
+		}
+		else  {
+			return Protocol.getProtocol("http");
+		}
+		
+	}
+	
 
 	/**
 	 * Load the calendar events from the given source.
@@ -238,6 +319,7 @@ public class ICalendarService {
 			}
 			event.setEndDateTime(LocalDateTime.ofInstant(dtEnd.getDate().toInstant(), zoneId));
 		}
+
 		event.setAllDay(!(dtStart.getDate() instanceof DateTime));
 
 		event.setSubject(getValue(vEvent, Property.SUMMARY));
@@ -245,15 +327,33 @@ public class ICalendarService {
 		event.setLocation(getValue(vEvent, Property.LOCATION));
 		event.setGeo(getValue(vEvent, Property.GEO));
 		event.setUrl(getValue(vEvent, Property.URL));
-
-		ICalendarUser organizer = findOrCreateUser(vEvent.getOrganizer());
+		event.setSubjectTeam(event.getSubject());
+		if(Clazz.PRIVATE.getValue().equals(getValue(vEvent, Property.CLASS))){
+			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PRIVATE);
+		}
+		else{
+			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PUBLIC);
+		}
+		if(Transp.TRANSPARENT.getValue().equals(getValue(vEvent, Property.TRANSP))){
+			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_AVAILABLE);
+		}
+		else{
+			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_BUSY);
+		}
+		if(event.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE){
+			event.setSubjectTeam(I18n.get("Available"));
+			if(event.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY){
+				event.setSubjectTeam(I18n.get("Busy"));
+			}
+		}
+		ICalendarUser organizer = findOrCreateUser(vEvent.getOrganizer(), event);
 		if (organizer != null) {
 			event.setOrganizer(organizer);
 			iCalendarUserRepository.save(organizer);
 		}
 
 		for (Object item : vEvent.getProperties(Property.ATTENDEE)) {
-			ICalendarUser attendee = findOrCreateUser((Property) item);
+			ICalendarUser attendee = findOrCreateUser((Property) item, event);
 			if (attendee != null) {
 				event.addAttendee(attendee);
 				iCalendarUserRepository.save(attendee);
@@ -262,8 +362,44 @@ public class ICalendarService {
 
 		return event;
 	}
+	
+	public ICalendarUser findOrCreateUser(User user) {
+		String email = null;
+		if (user.getPartner() != null && user.getPartner().getEmailAddress() != null
+				&& !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
+			email = user.getPartner().getEmailAddress().getAddress();
+		}
+		else if (!Strings.isNullOrEmpty(user.getEmail())) {
+			email = user.getEmail();
+		}
+		else {
+			return null;
+		}
 
-	protected ICalendarUser findOrCreateUser(Property source) {
+		ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
+		ICalendarUser icalUser = null;
+		icalUser = repo.all().filter("self.email = ?1 AND self.user.id = ?2", email, user.getId()).fetchOne();
+		if (icalUser == null) {
+			icalUser = repo.all().filter("self.user.id = ?1", user.getId()).fetchOne();
+		}
+		if (icalUser == null) {
+			icalUser = repo.all().filter("self.email = ?1", email).fetchOne();
+		}
+		if (icalUser == null) {
+			icalUser = new ICalendarUser();
+			icalUser.setEmail(email);
+			icalUser.setName(user.getFullName());
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
+			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+				icalUser.setUser(emailAddress.getPartner().getUser());
+			}
+		}
+
+		return icalUser;
+	}
+
+	
+	protected ICalendarUser findOrCreateUser(Property source, ICalendarEvent event) {
 		URI addr = null;
 		if (source instanceof Organizer) {
 			addr = ((Organizer) source).getCalAddress();
@@ -277,13 +413,36 @@ public class ICalendarService {
 
 		String email = mailto(addr.toString(), true);
 		ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
-		ICalendarUser user = repo.findByEmail(email);
+		ICalendarUser user = null;
+		if (source instanceof Organizer) {
+			user = repo.all().filter("self.email = ?1", email).fetchOne();
+		}
+		else{
+			user = repo.all().filter("self.email = ?1 AND self.event.id = ?2", email, event.getId()).fetchOne();
+		}
 		if (user == null) {
 			user = new ICalendarUser();
 			user.setEmail(email);
+			user.setName(email);
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
+			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+				user.setUser(emailAddress.getPartner().getUser());
+			}
 		}
 		if (source.getParameter(Parameter.CN) != null) {
 			user.setName(source.getParameter(Parameter.CN).getValue());
+		}
+		if(source.getParameter(Parameter.PARTSTAT) != null){
+			String role = source.getParameter(Parameter.PARTSTAT).getValue();
+			if(role.equals("TENTATIVE")){
+				user.setStatusSelect(ICalendarUserRepository.STATUS_MAYBE);
+			}
+			else if(role.equals("ACCEPTED")){
+				user.setStatusSelect(ICalendarUserRepository.STATUS_YES);
+			}
+			else if(role.equals("DECLINED")){
+				user.setStatusSelect(ICalendarUserRepository.STATUS_NO);
+			}
 		}
 
 		return user;
@@ -478,19 +637,45 @@ public class ICalendarService {
 		}
 	}
 	
+	@Transactional
+	public void sync(ICalendar calendar)
+			throws ICalendarException, MalformedURLException {
+		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+		Protocol protocol = getProtocol(calendar.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		try {
+			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), calendar.getPassword())){
+				List<CalDavCalendarCollection> colList = store.getCollections();
+				if(!colList.isEmpty()){
+					calendar = doSync(calendar, colList.get(0));
+					Beans.get(ICalendarRepository.class).save(calendar);
+				}
+			}
+			else{
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			}
+		} catch (Exception e) {
+			throw new ICalendarException(e);
+		}
+		finally {
+			store.disconnect();
+		}
+	}
+	
 
 	protected ICalendar doSync(ICalendar calendar, CalDavCalendarCollection collection)
 			throws IOException, URISyntaxException, ParseException, ObjectStoreException, ConstraintViolationException {
 
 		final String[] names = {
-			Property.UID,
-			Property.URL,
-			Property.SUMMARY,
-			Property.DESCRIPTION,
-			Property.DTSTART,
-			Property.DTEND,
-			Property.ORGANIZER,
-			Property.ATTENDEE
+				Property.UID,
+				Property.URL,
+				Property.SUMMARY,
+				Property.DESCRIPTION,
+				Property.DTSTART,
+				Property.DTEND,
+				Property.ORGANIZER,
+				Property.ATTENDEE
 		};
 
 		final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
@@ -590,4 +775,125 @@ public class ICalendarService {
 
 		return calendar;
 	}
+	
+	
+	public PathResolver getPathResolver(int typeSelect)  {
+		switch (typeSelect) {
+		case ICalendarRepository.ICAL_SERVER :
+			return PathResolver.ICAL_SERVER;
+
+		case ICalendarRepository.CALENDAR_SERVER :
+			return PathResolver.CALENDAR_SERVER;
+
+		case ICalendarRepository.GCAL :
+			return PathResolver.GCAL;
+
+		case ICalendarRepository.ZIMBRA :
+			return PathResolver.ZIMBRA;
+
+		case ICalendarRepository.KMS :
+			return PathResolver.KMS;
+
+		case ICalendarRepository.CGP :
+			return PathResolver.CGP;
+					
+		case ICalendarRepository.CHANDLER :
+			return PathResolver.CHANDLER;
+			
+		default:
+			return null;
+		}
+	}
+	
+	public ICalendarEvent createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user, String description, int type, String subject){
+		ICalendarEvent event = new ICalendarEvent();
+		event.setSubject(subject);
+		event.setStartDateTime(fromDateTime);
+		event.setEndDateTime(toDateTime);
+		event.setTypeSelect(type);
+		event.setUser(user);
+		event.setCalendar(user.getiCalendar());
+		if(!Strings.isNullOrEmpty(description)){
+			event.setDescription(description);
+		}
+		return event;
+	}
+	
+	public net.fortuna.ical4j.model.Calendar removeCalendar(CalDavCalendarCollection collection,String uid) throws FailedOperationException, ObjectStoreException {
+        net.fortuna.ical4j.model.Calendar calendar = collection.getCalendar(uid);
+
+        DeleteMethod deleteMethod = new DeleteMethod( collection.getPath() + uid + ".ics");
+        try {
+            collection.getStore().getClient().execute(deleteMethod);
+        } catch (IOException e) {
+            throw new ObjectStoreException(e);
+        }
+        if (!deleteMethod.succeeded()) {
+            throw new FailedOperationException(deleteMethod.getStatusLine().toString());
+        }
+
+        return calendar;
+    }
+	
+	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, ICalendar calendar) throws ICalendarException, MalformedURLException{
+		net.fortuna.ical4j.model.Calendar cal = null;
+		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+		Protocol protocol = getProtocol(calendar.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		try {
+			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+				List<CalDavCalendarCollection> colList = store.getCollections();
+				if(!colList.isEmpty()){
+					CalDavCalendarCollection collection = colList.get(0);
+					cal = collection.getCalendar(uid);
+				}
+			}
+			else{
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			}
+		} catch (Exception e) {
+			throw new ICalendarException(e);
+		}
+		finally {
+			store.disconnect();
+		}
+		return cal;
+	}
+	
+	public void removeEventFromIcal(ICalendarEvent event) throws MalformedURLException, ICalendarException{
+		if(event.getCalendar() != null && !Strings.isNullOrEmpty(event.getUid())){
+			ICalendar calendar  = event.getCalendar();
+			PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+			Protocol protocol = getProtocol(calendar.getIsSslConnection());
+			URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+			ICalendarStore store = new ICalendarStore(url, RESOLVER);
+			try {
+				if(store.connect(calendar.getLogin(), calendar.getPassword())){
+					List<CalDavCalendarCollection> colList = store.getCollections();
+					if(!colList.isEmpty()){
+						CalDavCalendarCollection collection = colList.get(0);
+						final Map<String, VEvent> remoteEvents = new HashMap<>();
+
+						for (VEvent item : ICalendarStore.getEvents(collection)) {
+							remoteEvents.put(item.getUid().getValue(), item);
+						}
+
+						VEvent target = remoteEvents.get(event.getUid());
+						removeCalendar(collection,target.getUid().getValue());
+					}
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+				}
+			} catch (Exception e) {
+				throw new ICalendarException(e);
+			}
+			finally {
+				store.disconnect();
+			}
+		}
+	}
+	
+	
 }

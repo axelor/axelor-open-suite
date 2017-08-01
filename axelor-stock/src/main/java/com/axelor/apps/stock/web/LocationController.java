@@ -18,47 +18,33 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.birt.core.exception.BirtException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.apps.base.db.repo.ProductFamilyRepository;
-import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class LocationController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
-	@Inject
-	private InventoryService inventoryService;
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private LocationRepository locationRepo;
@@ -76,48 +62,6 @@ public class LocationController {
 				response.setValue("isDefaultLocation", false);
 			}
 		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void createInventory(ActionRequest request, ActionResponse response) throws Exception {
-		Context context = request.getContext();
-		LocalDate date = LocalDate.parse((CharSequence) context.get("inventoryDate"), DateTimeFormatter.ISO_DATE);
-		String description = (String) context.get("description");
-		
-		boolean excludeOutOfStock = (Boolean) context.get("excludeOutOfStock");
-		boolean includeObsolete = (Boolean) context.get("includeObsolete");
-		
-		// Récupération de l'entrepot
-		Map<String, Object> locationContext = (Map<String, Object>) context.get("location");
-		
-		Location location = null;
-		
-		if(locationContext != null)  {
-			location = locationRepo.find(((Integer)locationContext.get("id")).longValue());
-		}
-		
-		// Récupération de la famille de produit
-		Map<String, Object> productFamilyContext = (Map<String, Object>) context.get("productFamily");
-		
-		ProductFamily productFamily = null;
-		
-		if (productFamilyContext != null) {
-			productFamily = Beans.get(ProductFamilyRepository.class).find(((Integer)productFamilyContext.get("id")).longValue());
-		}
-		
-		// Récupération de la catégorie de produit
-		Map<String, Object> productCategoryContext = (Map<String, Object>) context.get("productCategory");
-		
-		ProductCategory productCategory = null;
-		
-		if (productCategoryContext != null) {
-			productCategory = Beans.get(ProductCategoryRepository.class).find(((Integer)productCategoryContext.get("id")).longValue());
-		}
-		
-		
-		Inventory inventory = inventoryService.createInventoryFromWizard(date, description, location, excludeOutOfStock,
-										includeObsolete, productFamily, productCategory);
-		response.setValue("inventoryId", inventory.getId());
 	}
 	
 	/**

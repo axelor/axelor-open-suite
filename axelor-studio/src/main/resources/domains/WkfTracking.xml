@@ -12,7 +12,7 @@
 	  ]]>
       <many-to-one name="wkf" ref="Wkf" required="true"/>
       <string name="recordModel" title="Record model" required="true"/>
-      <integer name="recordId" required="true" title="Record Id"/>
+      <long name="recordId" required="true" title="Record Id"/>
       <string name="recordName" title="Record name"/>
       <one-to-many name="wkfTrackingLines" title="Tracking lines" ref="WkfTrackingLine" mappedBy="wkfTracking"/>
       <one-to-many name="totalLines" title="Tracking total" ref="WkfTrackingTotal" mappedBy="wkfTracking" />

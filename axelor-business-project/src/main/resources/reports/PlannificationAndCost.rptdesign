@@ -1260,12 +1260,42 @@ order by ts.month_val]]></xml-property>
                 <cell id="4794">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <label id="4801">
-                        <property name="fontSize">16pt</property>
+                    <text id="5188">
+                        <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
-                        <text-property name="text">Planifications and costs</text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Planification and costs'</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="paramName">param_2</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">params["Locale"].value</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
             <row id="4797">

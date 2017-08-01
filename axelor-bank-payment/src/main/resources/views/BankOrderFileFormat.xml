@@ -28,7 +28,7 @@
 			<field name="isMultiDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 			<field name="isMultiCurrency" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 			<field name="displayAdditionnalInformations" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'"/>
-			<panel title="Default Additionnal informations" colSpan="12" canCollapse="true" hidden="true" showIf="displayAdditionnalInformations">
+			<panel title="Default Additional informations" colSpan="12" canCollapse="true" hidden="true" showIf="displayAdditionnalInformations">
 				<field name="displayBankOrderEconomicReason" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="bankOrderEconomicReason" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="displayReceiverCountry" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>

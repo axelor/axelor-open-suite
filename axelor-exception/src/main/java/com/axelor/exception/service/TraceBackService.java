@@ -19,6 +19,7 @@ package com.axelor.exception.service;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 
 import java.time.ZonedDateTime;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ import com.axelor.rpc.ActionResponse;
  */
 public class TraceBackService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TraceBackService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	
 	/**

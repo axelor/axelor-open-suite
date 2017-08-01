@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,19 +27,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
-import com.axelor.meta.schema.actions.ActionRecord;
 import com.axelor.meta.schema.actions.ActionRecord.RecordField;
-import com.axelor.meta.schema.views.AbstractView;
+import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.Filter;
-import com.axelor.studio.db.ViewBuilder;
-import com.axelor.studio.service.FilterService;
-import com.axelor.studio.service.ViewLoaderService;
+import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.filter.FilterCommonService;
+import com.axelor.studio.service.filter.FilterSqlService;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+
 
 /**
  * This class generate charts using ViewBuilder and chart related fields. Chart
@@ -50,7 +56,7 @@ import com.google.inject.Inject;
 
 public class ChartBuilderService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private static final String Tab1 = "\n \t";
 	private static final String Tab2 = "\n \t\t";
@@ -58,19 +64,22 @@ public class ChartBuilderService {
 
 	private List<String> searchFields;
 
-	private ActionRecord onNewAction;
-
 	private List<RecordField> onNewFields;
-
-	@Inject
-	private ViewLoaderService viewLoaderService;
-
-	@Inject
-	private FilterService filterService;
+	
+	private List<String> joins;
 
 	@Inject
 	private MetaModelRepository metaModelRepo;
-
+	
+	@Inject
+	private FilterSqlService filterSqlService;
+	
+	@Inject
+	private FilterCommonService filterCommonService;
+	
+	@Inject
+	private StudioMetaService metaService;
+	
 	/**
 	 * Root Method to access the service it generate AbstractView from
 	 * ViewBuilder.
@@ -79,62 +88,66 @@ public class ChartBuilderService {
 	 *            ViewBuilder object of type chart.
 	 * @return AbstractView from meta schema.
 	 * @throws JAXBException
+	 * @throws AxelorException 
 	 */
-	public AbstractView getView(ViewBuilder viewBuilder) throws JAXBException {
-
+	public MetaView build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
+		
 		searchFields = new ArrayList<String>();
 		onNewFields = new ArrayList<RecordField>();
-		onNewAction = null;
+		joins = new ArrayList<String>();
 
-		String[] queryString = prepareQuery(viewBuilder);
-		setOnNewAction(viewBuilder);
+		String[] queryString = prepareQuery(chartBuilder);
+//		setOnNewAction(chartBuilder);
 
-		String xml = "<chart name=\"" + viewBuilder.getName() + "\" title=\""
-				+ viewBuilder.getTitle() + "\" ";
-
-		if (onNewAction != null) {
-			xml += " onInit=\"" + onNewAction.getName() + "\" ";
-		}
-		xml += ">\n";
-		if (!searchFields.isEmpty()) {
-			xml += "\t" + getSearchFields() + "\n";
-		}
-		
-		String groupLabel = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getGroupOnJson().getTitle() : viewBuilder.getGroupOn().getLabel();
-		String displayLabel = viewBuilder.getIsJsonDisplayField() ? viewBuilder.getDisplayFieldJson().getTitle() : viewBuilder.getDisplayField().getLabel();
-		xml += "\t<dataset type=\"jpql\">";
-		xml += Tab2 + queryString[0];
-		xml += Tab2 + "</dataset>";
-		xml += Tab1 + "<category key=\"groupField\" type=\"text\" title=\""
-				+ groupLabel  + "\" />";
-		xml += Tab1 + "<series key=\"fieldSum\" type=\""
-				+ viewBuilder.getChartType() + "\" title=\""
-				+ displayLabel + "\" ";
-		if (queryString[1] != null) {
-			xml += "groupBy=\"aggField\" ";
-		}
-		xml += "/>\n";
-		xml += "</chart>";
+		String xml = createXml(chartBuilder, queryString);
 
 		log.debug("Chart xml: {}", xml);
 
 		ObjectViews chartView = XMLViews.fromXML(xml);
-
-		return chartView.getViews().get(0);
+		
+		return metaService.generateMetaView(chartView.getViews().get(0));
 	}
 
-	/**
-	 * Method to get generated on onNew ActionRecord during view generation.
-	 * 
-	 * @return ActionRecord class of meta schema.
-	 */
-	public ActionRecord getOnNewAction() {
+	private String createXml(ChartBuilder chartBuilder, String[] queryString) {
+		
+		String xml = "<chart name=\"" + chartBuilder.getName() + "\" title=\""
+				+ chartBuilder.getTitle() + "\" ";
 
-		log.debug("On new chart: {}", onNewAction);
-
-		return onNewAction;
+//		if (onNewAction != null) {
+//			xml += " onInit=\"" + onNewAction.getName() + "\" ";
+//		}
+		
+		xml += ">\n";
+		
+		if (!searchFields.isEmpty()) {
+			xml += "\t" + getSearchFields() + "\n";
+		}
+		
+		String groupLabel = chartBuilder.getIsJsonGroupOn() 
+				? chartBuilder.getGroupOnJson().getTitle()
+				: chartBuilder.getGroupOn().getLabel();
+				
+		String displayLabel = chartBuilder.getIsJsonDisplayField() 
+				? chartBuilder.getDisplayFieldJson().getTitle() 
+				: chartBuilder.getDisplayField().getLabel();
+				
+		xml += "\t<dataset type=\"sql\"><![CDATA[";
+		xml += Tab2 + queryString[0];
+		xml += Tab2 + " ]]></dataset>";
+		xml += Tab1 + "<category key=\"group_field\" type=\"text\" title=\""
+				+ groupLabel  + "\" />";
+		xml += Tab1 + "<series key=\"sum_field\" type=\""
+				+ chartBuilder.getChartType() + "\" title=\""
+				+ displayLabel + "\" ";
+		if (queryString[1] != null) {
+			xml += "groupBy=\"agg_field\" ";
+		}
+		xml += "/>\n";
+		xml += "</chart>";
+		
+		return xml;
 	}
-
+	
 	/**
 	 * Method create query from chart filters added in chart builder.
 	 * 
@@ -142,118 +155,144 @@ public class ChartBuilderService {
 	 *            ViewBuilder of type chart
 	 * @return StringArray with first element as query string and second as
 	 *         aggregate field name.
+	 * @throws AxelorException 
 	 */
-	private String[] prepareQuery(ViewBuilder viewBuilder) {
+	private String[] prepareQuery(ChartBuilder chartBuilder) throws AxelorException {
 		
-		String query = null;
-		String jsonFunction = null;
-		MetaJsonField jsonField = null;
+		String query = createSumQuery(chartBuilder.getIsJsonDisplayField(),
+				chartBuilder.getDisplayField(), 
+				chartBuilder.getDisplayFieldJson());
 		
-		if (viewBuilder.getIsJsonDisplayField()) {
-			jsonField = viewBuilder.getDisplayFieldJson();
-			jsonFunction = filterService.getJsonJpql(jsonField);
-			query = "SELECT" + Tab3 + "SUM(" + jsonFunction + "(self."
-				+ viewBuilder.getDisplayFieldJson().getModelField() + ",'" + viewBuilder.getDisplayFieldJson().getName() + "')) AS fieldSum,"
-				+ Tab3;
-		}else {
-			query = "SELECT" + Tab3 + "SUM(self."
-					+ viewBuilder.getDisplayField().getName() + ") AS fieldSum,"
-					+ Tab3;
-		}
+		String groupField = getGroup(chartBuilder.getIsJsonGroupOn(), 
+				chartBuilder.getGroupOn(), 
+				chartBuilder.getGroupOnJson(), 
+				chartBuilder.getGroupDateType(), 
+				chartBuilder.getGroupOnTarget());
 		
-		Object targetOn = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getGroupOnJson()  : viewBuilder.getGroupOn();
-		String groupField = getGroupFieldName(targetOn,
-				viewBuilder.getGroupDateType(), viewBuilder.getGroupOnTarget());
-		
-		targetOn = viewBuilder.getIsJsonGroupOn() ? viewBuilder.getAggregateOnJson() : viewBuilder.getAggregateOn();
-		String aggField = getGroupFieldName(targetOn,
-				viewBuilder.getAggregateDateType(),
-				viewBuilder.getAggregateOnTarget());
+		String aggField = getGroup(chartBuilder.getIsJsonAggregateOn(),
+				chartBuilder.getAggregateOn(),
+				chartBuilder.getAggregateOnJson(),
+				chartBuilder.getAggregateDateType(),
+				chartBuilder.getAggregateOnTarget());
 
-		query += groupField + " AS groupField";
+		query += groupField + " AS group_field";
 
 		if (aggField != null) {
-			query += "," + Tab3 + aggField + " AS aggField";
+			query += "," + Tab3 + aggField + " AS agg_field";
 		}
-
-		query += Tab2 + "FROM " + Tab3 + viewBuilder.getMetaModel().getName()
-				+ " self";
-
-		String filters = createFilters(viewBuilder.getFilterList());
-
+		
+		String filters = createFilters(chartBuilder.getFilterList());
+		
+		String model = chartBuilder.getModel();
+		
+		if (chartBuilder.getIsJson()) {
+			if (filters != null) {
+				filters = "self.json_model = '" + model + "' AND (" + filters + ")";
+			}
+			else {
+				filters = "self.json_model = '" + model + "'" ;
+			}
+			model = MetaJsonRecord.class.getName();
+		}
+		
+		query += Tab2 + "FROM " + Tab3 +  getTable(model) + " self";
+		
+		if (!joins.isEmpty()) {
+			query += Tab3 + Joiner.on(Tab3).join(joins);
+		}
+		
 		if (filters != null) {
 			query += Tab2 + "WHERE " + Tab3 + filters;
 		}
 
-		query += Tab2 + "GROUP BY " + Tab3 + groupField;
+		query += Tab2 + "group by " + Tab3 + "group_field";
 
-		if (aggField != null) {
-			query += "," + aggField;
+		if (aggField != null && aggField != null) {
+			query += ",agg_field";
+			return new String[] { query, aggField };
 		}
 
-		return new String[] { query, aggField };
+		return new String[] { query, null };
 	}
+	
 
-	/**
-	 * Method to get correct format of group field use to add in query
-	 * 
-	 * @param metaField
-	 *            Group field name selected in chart builder.
-	 * @param dateType
-	 *            Type of date (month,year,day) selected for group field.
-	 * @return Group field string.
-	 */
-	private String getGroupFieldName(Object groupOn, String dateType,
-			String target) {
-
-		if (groupOn == null) {
+	private String createSumQuery(boolean isJson, MetaField metaField, 
+			MetaJsonField jsonField) {
+		
+		if (isJson) {
+			String sqlType = filterSqlService.getSqlType(jsonField.getType());
+			return "SELECT" + Tab3 
+					+ "SUM(cast(self." + jsonField.getModelField() 
+					+ "->>'" + jsonField.getName() 
+					+ "' as " + sqlType + ")) AS sum_field," 
+					+ Tab3;
+		}
+		
+		return  "SELECT" + Tab3 + "SUM(self."
+					+ filterSqlService.getColumn(metaField)
+					+ ") AS sum_field,"
+					+ Tab3;
+	}
+	
+	private String getGroup(boolean isJson, MetaField metaField, 
+			MetaJsonField jsonField, String dateType, 
+			String target) throws AxelorException {
+		
+		if (!isJson && metaField == null || isJson && jsonField == null) {
 			return null;
 		}
 		
-		boolean isJson = groupOn instanceof MetaJsonField;
-		
-		String name = null;
 		String typeName = null;
+		String group = null;
+		Object object = null;
+		StringBuilder parent = new StringBuilder("self");
 		if (isJson) {
-			MetaJsonField jsonField = (MetaJsonField) groupOn; 
-			name = jsonField.getName();
+			group = jsonField.getName();
+			typeName = filterSqlService.getSqlType(jsonField.getType());
 			if (target != null) {
-				name = target;
+				object = filterSqlService.parseJsonField(jsonField, target, joins, parent);
 			}
-			name = filterService.getJsonJpql(jsonField) + "(self." + jsonField.getModelField() + ",'" + name + "')";
-			typeName = jsonField.getType();
 		}
 		else {
-			MetaField metaField = (MetaField) groupOn;
-			name = "self." + metaField.getName();
+			group = filterSqlService.getColumn(metaField);
+			typeName = filterSqlService.getSqlType(metaField.getTypeName());
 			if (target != null) {
-				name = "self." + target;
+				object = filterSqlService.parseMetaField(metaField, target, joins, parent);
 			}
-			typeName = metaField.getTypeName();
-			
 		}
 		
-		if (dateType != null
-				&& "Date,DateTime,LocalDate,ZonedDateTime,LocalDateTime,date,datetime".contains(typeName)) {
-			String dtype = "datetime";
-			if ("Date,date,LocalDate".contains(typeName)) {
-				dtype = "date";
-			}
-			switch (dateType) {
-			case "year":
-				return "YEAR(cast(" + name + " as " + dtype +")";
-			case "month":
-				return "concat(str(YEAR(cast(" + name + " as " + dtype + "))), '-',str(MONTH(cast(" + name + " as " + dtype +"))))";
-			default:
-				return name;
-			}
+		if (object != null) {
+			String[] sqlField = filterSqlService.getSqlField(object, parent.toString());
+			typeName = sqlField[1];
+			group = sqlField[0];
+		}
+		
+		if (dateType != null) {
+			group = getDateTypeGroup(dateType, typeName, group);
 
 		} 
 		
-		return name;
-
+		return group;
 	}
 
+	private String getDateTypeGroup(String dateType, String typeName, String group) {
+		
+		String dtype = "timestamp";
+		if ("Date,date,LocalDate,LocalDateTime,ZonedDateTime".contains(typeName)) {
+			dtype = "date";
+		}
+		switch (dateType) {
+		case "year":
+			group = "to_char(cast(" + group + " as " + dtype +"), 'yyyy')";
+			break;
+		case "month":
+			group =  "to_char(cast(" + group + " as " + dtype +"), 'yyyy-mm')";
+			break;
+		}
+		
+		return group;
+	}
+	
 	/**
 	 * Method generate xml for search-fields.
 	 * 
@@ -295,7 +334,7 @@ public class ChartBuilderService {
 		RecordField field = new RecordField();
 		field.setName(fieldName);
 
-		defaultValue = filterService.getTagValue(defaultValue, false);
+		defaultValue = filterCommonService.getTagValue(defaultValue, false);
 
 		if (modelField != null) {
 			if (typeName.equals("STRING")) {
@@ -324,39 +363,42 @@ public class ChartBuilderService {
 	 *            ViewBuilder use to get model name also used in onNew action
 	 *            name creation.
 	 */
-	private void setOnNewAction(ViewBuilder viewBuilder) {
+//	private void setOnNewAction(ChartBuilder chartBuilder) {
+//
+//		if (!onNewFields.isEmpty()) {
+//			onNewAction = new ActionRecord();
+//			onNewAction.setName("action-" + chartBuilder.getName() + "-default");
+//			onNewAction.setModel(chartBuilder.getModel());
+//			onNewAction.setFields(onNewFields);
+//		}
+//
+//	}
 
-		if (!onNewFields.isEmpty()) {
-			onNewAction = new ActionRecord();
-			onNewAction.setName("action-" + viewBuilder.getName() + "-default");
-			onNewAction.setModel(viewBuilder.getModel());
-			onNewAction.setFields(onNewFields);
-		}
-
-	}
-
-	private String createFilters(List<Filter> filterList) {
+	private String createFilters(List<Filter> filterList) throws AxelorException {
 
 		String filters = null;
 
+		if (filterList == null) {
+			return filters;
+		}
+		
 		for (Filter filter : filterList) {
 
 			MetaField field = filter.getMetaField();
 			MetaJsonField json = filter.getMetaJsonField();
 
-			String relationship = filter.getIsJson() ? json.getTargetModel() : field.getRelationship();
 			String condition = "";
-
-			if (relationship != null) {
-				condition = filterService.getRelationalCondition(filter, null);
+			
+			if (filter.getIsJson() 
+					&& (json.getTargetModel() != null || json.getTargetJsonModel() != null)
+					|| !filter.getIsJson() && field.getRelationship() != null) {
+				condition = filterSqlService.getRelationalSql(filter, joins);
 			} else {
-				condition = filterService.getSimpleCondition(filter, null);
+				condition = filterSqlService.getSimpleSql(filter);
 			}
-
+			
 			if (filter.getIsParameter()) {
-				Object searchField = filter.getIsJson() ? json : field;
-				addSearchField(searchField, filter.getTargetField(),
-						filter.getDefaultValue());
+				addSearchField(filter);
 			}
 
 			if (filters == null) {
@@ -366,50 +408,130 @@ public class ChartBuilderService {
 				filters = filters + opt + condition;
 			}
 		}
-
+		
 		return filters;
 
 	}
 
-	private void addSearchField(Object field, String targetField,
-			String defaultVal) {
-
-		field = filterService.getTargetField(field, targetField)
-				.get(1);
-		boolean json = field instanceof MetaJsonField;
-		MetaJsonField jsonField = null;
-		MetaField metaField = null;
-		if (json) {
-			jsonField = (MetaJsonField) field;
+	private void addSearchField(Filter filter) throws AxelorException {
+		
+		String fieldStr = "param" + filter.getId();
+		
+		Object object = null;
+		StringBuilder parent = new StringBuilder("self");
+		if (filter.getIsJson()) {
+			object = filterSqlService.parseJsonField(filter.getMetaJsonField(), 
+					filter.getTargetField(), null, parent);
 		}
 		else {
-			metaField = (MetaField) field;
+			object = filterSqlService.parseMetaField(filter.getMetaField(), 
+					filter.getTargetField(), null, parent);
 		}
-		String relationship = json ?  jsonField.getTargetModel() : metaField.getRelationship();
-		String fieldName = json ? jsonField.getName() : metaField.getName();
-		String fieldLabel = json ? jsonField.getTitle() : metaField.getLabel();
-		String typeName = json ? jsonField.getType() : metaField.getTypeName();
-		String fieldStr = "<field name=\"" + fieldName + "\" title=\""
-				+ fieldLabel;
-		String[] modelField = null;
-
-		if (relationship == null) {
-			String fieldType = json ? Inflector.getInstance().camelize(typeName) : viewLoaderService.getFieldType(metaField);
-			fieldStr += "\" type=\"" + fieldType;
-			String select = json ? jsonField.getSelection() : metaField.getMetaSelect() != null ? metaField.getMetaSelect().getName() : null;
-			if (select != null) {
-				fieldStr = fieldStr + "\" selection=\"" + select;
-			}
-		} else {
-			String targetRef = metaModelRepo.findByName(typeName).getFullName();
-			fieldStr += "\" type=\"reference\" target=\"" + targetRef;
-			modelField = new String[] { typeName, "self." + fieldName };
+		
+		if (object instanceof MetaField) {
+			fieldStr = getMetaSearchField(fieldStr, (MetaField) object);
 		}
-
+		else {
+			fieldStr = getJsonSearchField(fieldStr, (MetaJsonField) object);
+		}
+		
 		searchFields.add(fieldStr + "\" x-required=\"true\" />");
 
-		setDefaultValue(fieldName, typeName, defaultVal, modelField);
+	}
+	
+	private String getMetaSearchField(String fieldStr, MetaField field) {
+		
+		fieldStr = "<field name=\"" + fieldStr + "\" title=\"" + field.getLabel();
 
+		if (field.getRelationship() ==  null) {
+			String fieldType = filterCommonService.getFieldType(field);
+			fieldStr += "\" type=\"" + fieldType;
+		}
+		else {
+			String[] targetRef = filterSqlService.getDefaultTarget(field.getName(),field.getTypeName());
+			String[] nameField = targetRef[0].split("\\.");
+			fieldStr += "\" widget=\"ref-text\" type=\""
+					+ filterCommonService.getFieldType(targetRef[1])
+					+ "\" x-target-name=\"" + nameField[1] + "\" x-target=\""
+					+ metaModelRepo.findByName(field.getTypeName()).getFullName();
+		}
+		
+		return fieldStr;
+	}
+	
+	private String getJsonSearchField(String fieldStr, MetaJsonField field) {
+		
+		fieldStr = "<field name=\"" + fieldStr + "\" title=\"" + field.getTitle();
+		
+		
+		if (field.getTargetJsonModel() != null) {
+			String[] targetRef = filterSqlService
+					.getDefaultTargetJson(field.getName(), field.getTargetJsonModel());
+			String[] nameField = targetRef[0].split("\\.");
+			fieldStr += "\" widget=\"ref-text\" type=\""
+					+ filterCommonService.getFieldType(targetRef[1])
+					+ "\" x-target-name=\"" + nameField[1] + "\" x-target=\""
+					+ MetaJsonRecord.class.getName() 
+					+ "\" x-domain=\"self.jsonModel = '" 
+					+ field.getTargetJsonModel().getName() + "'" ;
+		}
+		else if (field.getTargetModel() == null) {
+			String[] targetRef = filterSqlService
+					.getDefaultTarget(field.getName(), field.getTargetModel());
+			String[] nameField = targetRef[0].split("\\.");
+			fieldStr += "\" widget=\"ref-text\" type=\""
+					+ filterCommonService.getFieldType(targetRef[1])
+					+ "\" x-target-name=\"" + nameField[1] + "\" x-target=\""
+					+ field.getTargetModel();
+		}
+		else {
+			String fieldType = Inflector.getInstance().camelize(field.getType(), true);
+			fieldStr += "\" type=\"" + fieldType;
+		}
+			
+		return fieldStr;
 	}
 
+	private String getTable(String model) {
+		
+		String[] models = model.split("\\.");
+		MetaModel metaModel = metaModelRepo.findByName(models[models.length - 1]);
+		
+		if (metaModel != null) {
+			return metaModel.getTableName();
+		}
+		
+		return null;
+	}
+	
+	
+	public String getDefaultTarget(MetaField metaField) {
+		
+		if (metaField.getRelationship() == null) {
+			return metaField.getName();
+		}
+		
+		return filterSqlService.getDefaultTarget(metaField.getName(),
+				metaField.getTypeName())[0];
+	}
+	
+	public String getDefaultTarget(MetaJsonField metaJsonField) {
+		
+		if (!"many-to-one,one-to-one,json-many-to-one".contains(metaJsonField.getType())) {
+			return metaJsonField.getName();
+		}
+		
+		if (metaJsonField.getTargetJsonModel() != null) {
+			return filterSqlService.getDefaultTargetJson(metaJsonField.getName(),
+					metaJsonField.getTargetJsonModel())[0];
+		}
+		
+		if (metaJsonField.getTargetModel() == null) {
+			return metaJsonField.getName();
+		}
+		
+		return filterSqlService.getDefaultTarget(metaJsonField.getName(),
+				metaJsonField.getTargetModel())[0];
+	}
+	
 }

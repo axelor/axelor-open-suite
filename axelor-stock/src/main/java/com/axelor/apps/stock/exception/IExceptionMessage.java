@@ -94,5 +94,11 @@ public interface IExceptionMessage {
 	static final String LOCATION_1 = /*$$(*/ "There's already an existing storage, you must deactivate it first" /*)*/;
 	static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
 
+	/**
+	 * Stock Move Line Service
+	 */
+	static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
+			/*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
+	static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
 
 }

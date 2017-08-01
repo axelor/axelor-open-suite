@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import com.google.inject.Inject;
 
 public class BatchReimbursementExport extends BatchStrategy {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected boolean stop = false;
 	
@@ -164,7 +165,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				if(reimbursementExportService.canBeReimbursed(partner, companyRepo.find(company.getId())))  {
 				
-					List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+					List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 							"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStatusSelect = ?4 ",
 							MoveRepository.STATUS_VALIDATED, partnerRepository.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
@@ -183,13 +184,13 @@ public class BatchReimbursementExport extends BatchStrategy {
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+"%s", partnerRepository.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Partner")+"%s", partnerRepository.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+"%s", partnerRepository.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Partner")+"%s", partnerRepository.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				

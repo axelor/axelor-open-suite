@@ -8,7 +8,7 @@
 		<field name="firstName" />
 		<field name="emailAddress" />
 		<field name="fixedPhone" />
-		<field name="mobilePhoned" />
+		<field name="mobilePhone" />
 		<field name="jobPosition" />
 		<field name="status" />
 	</grid>
@@ -63,6 +63,10 @@
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
 		</panel-tabs>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
     <action-view name="action-job-application-schedule-event" title="Schedule Event" model="com.axelor.apps.crm.db.Event">
@@ -91,7 +95,7 @@
     </action-validate>
     
     <action-method name="action-talent-method-set-social-network-url">
-    	<call class="com.axelor.apps.talent.web.TalentController" method="setSocialNetworkUrl"/>
+    	<call class="com.axelor.apps.talent.web.JobApplicationController" method="setSocialNetworkUrl"/>
     </action-method>
     
 </object-views>

@@ -5,7 +5,7 @@
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name"/>
-    	<field name="code"/>
+    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="location" grid-view="location-grid" form-view="location-form"/>
         <field name="product"/>
         <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
@@ -13,9 +13,12 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
     	onSave="action-prod-process-method-validate-prod-process" width="large">
+    	<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
+		</toolbar>
 		<panel name="main">
 	    	<field name="name"/>
-	    	<field name="code"/>
+	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
 	        <field name="product" grid-view="product-grid" form-view="product-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
@@ -27,7 +30,7 @@
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
-    		if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
+			   if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
     
     <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
@@ -42,4 +45,7 @@
     	<call class="com.axelor.apps.production.web.ProdProcessController" method="changeProdProcessListOutsourcing"/>
     </action-method>
     
+    <action-method name="action-production-process-print">
+		<call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
+	</action-method>
 </object-views>

@@ -9,12 +9,12 @@
 		<many-to-one name="category" ref="com.axelor.apps.talent.db.TrainingCategory" title="Category" />
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
 		<many-to-many name="tagSkillSet" ref="com.axelor.apps.talent.db.TagSkill" title="Tag" />
-		<many-to-many name="requiredTrainingSet" ref="com.axelor.apps.talent.db.Training" title="Required training" help="true"/>
+		<many-to-many name="requiredTrainingSet" ref="com.axelor.apps.talent.db.Training" title="Required training"/>
 		<string name="description" title="Description" large="true" />
 		<string name="program" title="Program" large="true" />
 		<string name="objectives" title="Objectives" large="true" />
-		<decimal name="duration" title="Number of hours" help="true" />
-		<boolean name="mandatoryTraining" title="Mandatory training ?" help="true" />
+		<decimal name="duration" title="Number of hours" />
+		<boolean name="mandatoryTraining" title="Mandatory training ?"/>
 		<decimal name="rating" title="Rating" />
 	</entity>
 

@@ -17,11 +17,11 @@
     
     <!-- LUNCH VOUCHERS MANAGEMENT -->
     
-    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers" help="Alert threshold"/>
+    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers"/>
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
+	<integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select"/>
 
-    <!--<string name="lunchVoucherExportPath" title="Lunch Voucher Export Path"/>-->
     <string name="exportCodeForLunchVoucherManagement" title="Export code for lunch voucher management" />
     
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
@@ -64,6 +64,11 @@
   	<string name="ageVariableName" title="Name for age variable" />
   	
   	<string name="workingDaysVariableName" title="Name for working day variable" />
+	<string name="totalWorkingDaysVariableName" title="Name for total working day in a period variable"/>
+	
+	<!-- Unique product for the timesheet -->
+	<boolean name="useUniqueProductForTimesheet"  title="Use unique product for timesheet" />
+    <many-to-one name="uniqueTimesheetProduct" ref="com.axelor.apps.base.db.Product" title="Unique product for timesheet" />
   	 
   </entity>
   

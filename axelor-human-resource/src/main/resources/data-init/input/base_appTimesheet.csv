@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-Timesheet Management;TM;Timesheet Management;timesheet;app-timesheet.png;axelor-human-resource;account,project,crm,employee;7
+"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn";"sequence"
+"Timesheet Management";"TM";"Timesheet Management";"timesheet";"app-timesheet.png";"axelor-human-resource";"account,project,employee";7

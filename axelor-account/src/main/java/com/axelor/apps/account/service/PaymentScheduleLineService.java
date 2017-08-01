@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 
 public class PaymentScheduleLineService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	
 	/**

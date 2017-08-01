@@ -15,36 +15,6 @@
 		<option value="6">Dead</option>
 	</selection>
 	
-	<selection name="crm.event.type.select">
-		<option value="1">Call</option>
-		<option value="2">Meeting</option>
-		<option value="3">Task</option>
-		<option value="4">Leave</option>
-		<option value="5">Event</option>
-	</selection>
-	
-	<selection name="crm.event.ticket.priority.select">
-		<option value="1">Low</option>
-		<option value="2">Normal</option>
-		<option value="3">High</option>
-		<option value="4">Urgent</option>
-		<option value="5">Immediate</option>
-	</selection>
-	
-	<selection name="crm.event.ticket.progress.select">
-		<option value="0">0 %</option>
-		<option value="10">10 %</option>
-		<option value="20">20 %</option>
-		<option value="30">30 %</option>
-		<option value="40">40 %</option>
-		<option value="50">50 %</option>
-		<option value="60">60 %</option>
-		<option value="70">70 %</option>
-		<option value="80">80 %</option>
-		<option value="90">90 %</option>
-		<option value="100">100 %</option>
-	</selection>
-	
 	<selection name="crm.event.related.to.select">
 		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
 		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
@@ -56,16 +26,6 @@
 		<option value="15">15</option>
 		<option value="30">30</option>
 		<option value="45">45</option>
-	</selection>
-	
-	<selection name="crm.calendar.type.select">
-		<option value="1">ICAL_SERVER</option>
-		<option value="2">CALENDAR_SERVER</option>
-		<option value="3">GCAL</option>
-		<option value="4">ZIMBRA</option>
-		<option value="5">KMS</option>
-		<option value="6">CGP</option>
-		<option value="7">CHANDLER</option>
 	</selection>
 	
 	<selection name="crm.opportunity.type.select">
@@ -99,12 +59,7 @@
 		<option value="14">Finished</option>
 		<option value="15">Reported</option>
 		
-		<!-- For tickets only -->
-		<option value="21">New</option>
-		<option value="22">In progress</option>
-		<option value="23">Resolved</option>
-		<option value="24">Feedback</option>
-		<option value="25">Closed</option>
+		
 	</selection>
 	
 	<selection name="crm.event.primary.status.select">

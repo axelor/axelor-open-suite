@@ -23,13 +23,18 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LocationServiceImpl implements LocationService{
 	
@@ -90,7 +95,7 @@ public class LocationServiceImpl implements LocationService{
 	}
 
 	@Override
-	public void computeAvgPriceForProduct(Product product, LocationLine unsavedLocationLine) {
+	public void computeAvgPriceForProduct(Product product) {
 		Long productId = product.getId();
 		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self "
 				+ "WHERE self.product.id = " + productId + " AND self.location.typeSelect != "
@@ -103,15 +108,8 @@ public class LocationServiceImpl implements LocationService{
 			return;
 		}
 		for (List<Object> result : results) {
-			BigDecimal avgPrice;
-			BigDecimal qty;
-			if (result.get(0).equals(unsavedLocationLine.getId())) {
-				avgPrice = unsavedLocationLine.getAvgPrice();
-				qty = unsavedLocationLine.getCurrentQty();
-			} else {
-				avgPrice = (BigDecimal) result.get(1);
-				qty = (BigDecimal) result.get(2);
-			}
+			BigDecimal avgPrice = (BigDecimal) result.get(1);
+			BigDecimal qty = (BigDecimal) result.get(2);
 			productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
 			qtyTot = qtyTot.add(qty);
 		}
@@ -129,4 +127,25 @@ public class LocationServiceImpl implements LocationService{
 		productRepo.save(product);
 	}
 
+	public List<Long> getBadLocationLineId() {
+
+		List<LocationLine> locationLineList = Beans.get(LocationLineRepository.class)
+				.all().filter("self.location.typeSelect = 1 OR self.location.typeSelect = 2").fetch();
+
+		List<Long> idList = new ArrayList<>();
+
+		for (LocationLine locationLine : locationLineList) {
+			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
+					.filter("self.location = ?1 AND self.product = ?2", locationLine.getLocation(), locationLine.getProduct()).fetchOne();
+			if (locationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+				idList.add(locationLine.getId());
+			}
+		}
+
+		if (idList.isEmpty()) {
+			idList.add(0L);
+		}
+
+		return idList;
+	}
 }

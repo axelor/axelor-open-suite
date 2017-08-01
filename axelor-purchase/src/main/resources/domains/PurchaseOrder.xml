@@ -30,7 +30,7 @@
   	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list"/>
   	<integer name="statusSelect" title="Status" selection="purchase.purchase.order.status.select" readonly="true"/>
   	<string name="externalReference" title="Supplier ref."/>
-    <string name="internalReference" title="Internal Ref." help="true"/>
+    <string name="internalReference" title="Internal Ref."/>
     <integer name="receiptState" title="Receipt State" selection="purchase.order.receipt.state" readonly="true" default="1"/>
   	
   	
@@ -44,11 +44,13 @@
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+	<decimal name="amountToBeSpreadOverTheTimetable" title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true"/>
     
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
 
 <!-- Notes -->
-	<string name="notes" large="true" multiline="true" title="Notes"/>
+	<string name="notes" large="true" multiline="true" title="Description To Display"/>
+	<string name="internalNote" large="true" multiline="true" title="Internal Note"/>
 	
 	<integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
 	

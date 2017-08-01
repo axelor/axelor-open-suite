@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class MoveTemplateController {
-	private static final Logger LOG = LoggerFactory.getLogger(MoveTemplateController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	MoveTemplateService mts;

@@ -7,7 +7,7 @@
   
   <entity name="Message" lang="java">
   
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="true" />
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   
   </entity>
   

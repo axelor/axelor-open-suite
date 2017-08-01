@@ -76,21 +76,7 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
-	
-	<menuitem name="crm-root-ticket" parent="crm-root"
-		title="Tickets" action="crm.root.ticket" if="__config__.app.isApp('crm') &amp;&amp; __config__.app.getApp('crm').getTicketMgt()"/>
-
-	<action-view name="crm.root.ticket" title="Tickets"
-		model="com.axelor.apps.crm.db.Ticket" >
-		<view type="grid" name="ticket-grid"/>
-		<view type="form" name="ticket-form"/>
-		<view-param name="search-filters" value="ticket-filters"/>
-		<context name="_prioritySelect" expr="2"/>
-		<context name="_internalUserId" expr="eval: __user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-	</action-view>
-	
-		
+			
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
 		title="My Calendar" action="crm.root.meeting.my.calendar" />
 	
@@ -145,24 +131,6 @@
 		<view type="form" name="event-category-form"/>
 	</action-view>
 	
-	<menuitem name="crm-conf-calendar" parent="crm-conf"
-		title="Calendars" action="crm.conf.calendar" />
-
-	<action-view name="crm.conf.calendar" title="Calendars"
-		model="com.axelor.apps.crm.db.Calendar" >
-		<view type="grid" name="crm-calendar-grid"/>
-		<view type="form" name="crm-calendar-form"/>
-	</action-view>
-	
-	<menuitem name="crm-conf-calendar-configuration" parent="crm-conf"
-		title="Calendar Configurations" action="crm.conf.calendar.configuration" />
-
-	<action-view name="crm.conf.calendar.configuration" title="Calendar Configurations"
-		model="com.axelor.apps.crm.db.CalendarConfiguration" >
-		<view type="grid" name="calendar-configuration-grid"/>
-		<view type="form" name="calendar-configuration-form"/>
-	</action-view>
-	
 	<menuitem name="crm-conf-target-configuration" parent="crm-conf"
 		title="Objectives configurations" action="crm.conf.target.configuration" />
 
@@ -189,16 +157,7 @@
 		<view type="grid" name="lost-reason-grid"/>
 		<view type="form" name="lost-reason-form"/>
 	</action-view>
-	
-	<menuitem name="crm-conf-ticket-category" parent="crm-conf" if="__config__.app.isApp('crm') &amp;&amp; __config__.app.getApp('crm').getTicketMgt()"
-		title="Ticket category" action="crm.conf.ticket.category" />
-
-	<action-view name="crm.conf.ticket.category" title="Ticket category"
-		model="com.axelor.apps.crm.db.TicketCategory" >
-		<view type="grid" name="ticket-category-grid"/>
-		<view type="form" name="ticket-category-form"/>
-	</action-view>
-	
+		
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" />
 
@@ -358,23 +317,6 @@
 	<action-view name="crm.calls.dashboard.view" title="Calls Db">
 		<view type="dashboard" name="crm.calls.dashboard" />
 	</action-view>	
-	
-	<menuitem name="menu-tickets-dashboard" parent="crm-root-report"
-		title="Tickets" order="-60"  if="__config__.app.isApp('crm') &amp;&amp; __config__.app.getApp('crm').getTicketMgt()" />
 		
-	<menuitem name="menu-tickets-dashboard-1" parent="menu-tickets-dashboard"
-		title="Tickets Db 1"  action="crm.tickets.dashboard.1.view"/>	
-
-	<action-view name="crm.tickets.dashboard.1.view" title="Tickets Db 1">
-		<view type="dashboard" name="crm.tickets.dashboard.1" />
-	</action-view>
-	
-	<menuitem name="menu-tickets-dashboard-2" parent="menu-tickets-dashboard"
-		title="Tickets Db 2"  action="crm.tickets.dashboard.2.view"/>	
-
-	<action-view name="crm.tickets.dashboard.2.view" title="Tickets Db 2">
-		<view type="dashboard" name="crm.tickets.dashboard.2" />
-	</action-view>
-	
 	
 </object-views>

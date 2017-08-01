@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,7 +37,7 @@ import com.google.inject.Inject;
 
 public class MoveExcessPaymentService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineRepository moveLineRepository;
 	protected MoveToolService moveToolService;
@@ -65,7 +66,7 @@ public class MoveExcessPaymentService {
 
 		 List<MoveLine> creditMoveLines =  moveLineRepository.all()
 		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
+		 " AND self.account.useForPartnerBalance = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
 		 company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
 

@@ -42,9 +42,10 @@
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<field name="teamSet" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
-        	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm"  if="__config__.app.isApp('crm')" >
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        	<panel name="calendarsConfiguration" title="Calendars Configuration">
+        		<panel-related field="followersCalUserSet" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
+        		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
         	<panel name="personalCredential" if-module="axelor-social-network" title="SN Personal Credential" > 
 		    	<field name="snPersonalCredential" form-view="sn-personal-credential-form" grid-view="sn-personal-credential-grid" canNew="true"/>
@@ -65,7 +66,13 @@
 				<field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length &gt;= 4 &amp;&amp; confirm == newPassword)"/>
 				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 			</panel>
+			<field name="email"/>
+			<field name="theme"/>
+			<field name="noHelp"/>
+			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>
+			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+			<panel-related field="calendarManagementList" colSpan="12"/>
 		</panel>
 	</form>
     
@@ -93,18 +100,9 @@
         <notify message="Please select active company"  if="__repo__(Company).all().fetch().size != 1"/>
     </action-validate>
     
-    <action-validate name="action-user-validate-check-contact">
-		<alert message="No contact selected/created, do you want to create a new one?" if="partner == null"/>
-	</action-validate>
-    
-    <action-group name="check-action-user-group-partner" >
-    	<action name="action-user-validate-check-contact"/>
-    	<action name="action-user-record-form-partner-contact" if="partner == null"/>
-    </action-group>
-    
     <action-group name="action-user-group-employee">
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
-		<action name="action-hr-user-show-employee" if="partner != null"/>
+		<action name="action-employee-user-show-employee" if="partner != null"/>
     </action-group>
     
 	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">

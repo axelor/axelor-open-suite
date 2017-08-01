@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.ebics.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -69,7 +70,7 @@ import com.axelor.i18n.I18n;
  */
 public class HttpRequestSender {
  
-  private final Logger log = LoggerFactory.getLogger(HttpRequestSender.class);
+  private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
   /**
    * Constructs a new <code>HttpRequestSender</code> with a

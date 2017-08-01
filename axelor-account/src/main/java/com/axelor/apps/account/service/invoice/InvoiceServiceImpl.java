@@ -17,6 +17,16 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.exception.db.IException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -52,12 +62,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -69,7 +73,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Inject
 	protected PartnerService partnerService;
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected ValidateFactory validateFactory;
 	protected VentilateFactory ventilateFactory;
@@ -168,19 +172,28 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException {
+	public void validate(Invoice invoice, boolean compute) throws AxelorException {
 
 		log.debug("Validation de la facture");
-		
+
+		if (compute) {
+			compute(invoice);
+		}
+
 		validateFactory.getValidator(invoice).process( );
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
-		invoiceRepo.save(invoice);
-		
 	}
-	
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Invoice invoice) throws AxelorException {
+		validate(invoice, false);
+	}
+
 	@Override
 	public void generateBudgetDistribution(Invoice invoice){
 		if(invoice.getInvoiceLineList() != null){
@@ -206,6 +219,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
+		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+			if (invoiceLine.getAccount() == null) {
+				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_6), IException.MISSING_FIELD, invoiceLine.getProductName());
+			}
+		}
 
 		log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 		

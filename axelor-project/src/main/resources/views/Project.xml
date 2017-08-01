@@ -17,16 +17,16 @@
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project" width="large"
 	onLoad="action-project-on-load-group,save">
 		<toolbar>
-			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 			<button name="bookResource" title="Book resource" onClick="save,action-project-book-resource" />
-			<button name="printPlannifCost" title="Print planifications and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<button name="printPlannifCost" title="Planification and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 		<panel name="overview" title="Overview">
 		
 			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
 				<editor x-show-titles="false">
-					<field name="code" showTitle="false" css="label-bold bold large" colSpan="3"/>
+					<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" css="label-bold bold large" colSpan="3"/>
 					<field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
 				</editor>
 			</field>
@@ -43,12 +43,12 @@
 			<field name="saleOrder" showIf="isBusinessProject"  domain="self.clientPartner = :clientPartner" form-view="sale-order-form" grid-view="sale-order-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 			<spacer/>
 			<field name="fromDate" />
-			<field name="toDate" />
+			<field name="toDate" onChange="action-project-method-set-duration"/>
 			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-method-set-stored-duration,action-attrs-project-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-record-set-stored-time-spent"/>
+			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-method-set-stored-time-spent"/>
 			<field name="dueDate" showIf="isProject"/>
 			<field name="progress" widget="Progress" onChange="action-attrs-project-compute-leadDelay" showIf="isProject"/>
-			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" showIf="isProject" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
+			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" showIf="isProject" type="decimal" onChange="action-project-method-set-stored-lead-delay, action-method-project-compute-progress"/>
 			<field name="imputable" widget="boolean-switch" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			<field name="projInvTypeSelect" showIf="isBusinessProject"  if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="invoiced" showIf="isBusinessProject &amp;&amp; (projInvTypeSelect == 2 || projInvTypeSelect == 3)" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -56,11 +56,11 @@
 			<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 		</panel>
 		<panel title="Members">
-			<field name="membersUserSet" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false"/>
+			<field name="membersUserSet" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
 		</panel>
 		<panel-tabs>
 		
-			<panel name="projectPhase" title="Project Phase" showIf="projectTypeSelect == 1">
+			<panel name="projectPhase" title="Project Phase" showIf="projectTypeSelect == 2">
 				<field name="project" colSpan="12"/>
 			</panel>
 			<panel title="Task Tree" showIf="isProject">
@@ -83,9 +83,10 @@
 			<panel name="otherElementsToInvoice" showIf="isBusinessProject" title="Other elements to invoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" >
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
 			</panel>
-			<panel name="logTimes" title="Log Times">
+			<panel name="logTimes" title="Log Times"  if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" >
 <!-- 				<field name="unitOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/> -->
-				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" />
+				<field name="excludeTimesheetEditor"/>
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form"/>
 			</panel>
 			<panel name="description" title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -93,7 +94,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="configurations" title="Configurations">
-				<field name="productList" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
+				<field name="productSet" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
 				<field name="projectFolder" onChange="action-project-attrs-filter-project-parent"/>
 				<field name="projectTypeSelect" onChange="action-project-attrs-filter-project-parent"/>
@@ -108,13 +109,17 @@
 		<panel>
 			<field name="projectAttrs" colSpan="12" />
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	
 	<form name="folder-project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project"
 	onLoad="action-project-method-set-visible-duration,action-project-attrs-duration-title,action-project-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
 		<toolbar>
-			<button name="printProject" title="See Reporting Folder" onClick="save,action-project-method-print-project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 	    <panel name="main" >
 	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
@@ -127,7 +132,7 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-method-set-stored-duration,action-attrs-project-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-record-set-stored-time-spent"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-method-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" onChange="action-attrs-project-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-record-set-stored-lead-delay, action-method-project-compute-progress"/>
@@ -162,7 +167,7 @@
 				<field name="company" hidden="true" />
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel>
@@ -341,8 +346,9 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
-	<action-view name="action-project-view-select-team" model="com.axelor.apps.project.db.Project" title="Team">
-	  <view name="project-team-form" type="form"/>
+	<action-view name="action-project-view-select-team" model="com.axelor.team.db.Team" title="Team">
+	  <view name="team-grid" type="grid"/>
+	  <view name="team-form" type="form"/>
 	  <view-param name="popup" value="reload"/>
 	  <view-param name="show-toolbar" value="false"/>
 	  <view-param name="show-confirm" value="true"/>
@@ -390,24 +396,20 @@
 		<field name="exTaxTotal" expr="eval: product?.salePrice"/>
 	</action-record>
 	
-	<action-record name="action-record-project-compute-progress" model="com.axelor.apps.project.db.Project">
-	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectService:computeProgress(__this__)"/>
-	</action-record>
-	
 	<action-method name="action-project-method-set-stored-duration" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredDuration"/>
 	</action-method>
 	
-	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
+	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredTimeSpent"/>
 	</action-method>
 	
-	<action-method name="action-project-method-set-stored-lead-delay" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
-		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredLeadDelay"/>
-	</action-method>	
-	
 	<action-method name="action-project-method-set-visible-duration" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
 	    <call class="com.axelor.apps.hr.web.project.ProjectController" method="setProjectVisibleDuration"/>
+	</action-method>
+	
+	<action-method name="action-project-method-set-stored-lead-delay" model="com.axelor.apps.project.db.Project">
+		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredLeadDelay"/>
 	</action-method>
 	
 	<action-method name="action-project-method-set-visible-duration-log-times" if-module="axelor-human-resource">
@@ -427,8 +429,12 @@
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-project-compute-leadDelay" model="com.axelor.apps.project.db.Project">
-	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))"/>
+	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))" if="visibleDuration != ''"/>
 	</action-attrs>
+	
+	<action-method name="action-project-method-set-duration">
+		<call class="com.axelor.apps.project.web.ProjectController" method="setDurationDays"/>
+	</action-method>
 	
 	
 </object-views>

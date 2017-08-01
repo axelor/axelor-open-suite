@@ -9,8 +9,10 @@
     </grid>
     
     <form name="shipping-coef-form" title="Shipping Coef. Table" model="com.axelor.apps.base.db.ShippingCoef">
-        <field name="company"/>
-        <field name="shippingCoef"/>
+        <panel>
+            <field name="company"/>
+            <field name="shippingCoef"/>
+        </panel>
     </form>
 
 </object-views>

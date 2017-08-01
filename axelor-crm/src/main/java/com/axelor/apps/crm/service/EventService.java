@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.ical.ICalendarException;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.Event;
@@ -67,14 +68,13 @@ import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailAddress;
 import com.axelor.mail.db.repo.MailAddressRepository;
 import com.axelor.mail.db.repo.MailFollowerRepository;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ValidationException;
-import net.fortuna.ical4j.model.property.Method;
 
 public class EventService {
 	
@@ -93,6 +93,9 @@ public class EventService {
 	
 	@Inject
 	protected MailFollowerRepository mailFollowerRepo;
+	
+	@Inject
+	private ICalendarService icalService;
 	
 	static final String REQUEST = "REQUEST";
 
@@ -370,10 +373,8 @@ public class EventService {
 				message.addToEmailAddressSetItem(emailAddress);	
 			}
 			if(event.getUid() != null){
-				CalendarService calendarService = Beans.get(CalendarService.class);
-				Calendar cal = calendarService.getCalendar(event.getUid(), event.getCalendarCrm());
-				cal.getProperties().add(Method.REQUEST);
-				File file = calendarService.export(cal);
+				File file = MetaFiles.createTempFile("Calendar", ".ics").toFile();
+				icalService.export(event.getCalendar(), file);
 				Path filePath = file.toPath();
 				MetaFile metaFile = new MetaFile();
 				metaFile.setFileName( file.getName() );

@@ -18,7 +18,7 @@
 package com.axelor.apps.production.exceptions;
 
 /**
- * Interface of Exceptions. Enum all exception of axelor-organisation.
+ * Interface of Exceptions.
  *
  * @author dubaux
  *
@@ -100,5 +100,15 @@ public interface IExceptionMessage {
 	 * Bill of material service
 	 */
 	static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/ "The product cost cannot be changed because the product cost type is not manual" /*)*/;
+
+	/**
+	 * Configurator Controller
+	 */
+	String BILL_OF_MATERIAL_GENERATED =  /*$$(*/ "The bill of material %s has been generated" /*)*/;
+
+	/**
+	 * Configurator Bom Service
+	 */
+	String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/ "Too many recursive calls to create the bill of material." /*)*/;
 }
 

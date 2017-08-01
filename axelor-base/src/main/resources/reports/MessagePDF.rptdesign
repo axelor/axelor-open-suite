@@ -618,7 +618,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <cell id="4638">
                             <image id="4639">
                                 <property name="height">100px</property>
-                                <property name="width">384px</property>
                                 <property name="source">file</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                             </image>

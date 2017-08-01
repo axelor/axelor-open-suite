@@ -93,9 +93,10 @@ public class AppServiceImpl implements AppService {
 
 		String modules = app.getModules();
 		String type = app.getTypeSelect();
-		String lang = AppSettings.get().get("application.locale");
-		log.debug("App type: {}, App lang: {}", type, lang);
-
+		String lang = getLanguage(app);
+		
+		log.debug("Demo data import: App type: {}, App lang: {}", type, lang);
+		
 		if (lang == null) {
 			return I18n.get("No application language set. Please set 'application.locale' property.");
 		}
@@ -128,6 +129,18 @@ public class AppServiceImpl implements AppService {
 		
 		return I18n.get("Demo data loaded successfully");
 	}
+
+	private String getLanguage(App app) {
+		
+		String lang = AppSettings.get().get("application.locale");
+		
+		
+		if (app.getLanguageSelect() != null) {
+			lang = app.getLanguageSelect();
+		}
+		
+		return lang;
+	}
 	
 	private void importParentData(App app) {
 		
@@ -149,11 +162,11 @@ public class AppServiceImpl implements AppService {
 
 	private void importDataInit(App app) {
 
-		log.debug("Data init...");
 		String modules = app.getModules();
 		String type = app.getTypeSelect();
-		String lang = AppSettings.get().get("application.locale");
-		log.debug("App type: {}, App lang: {}", type, lang);
+		String lang = getLanguage(app);
+		log.debug("Data init import: App type: {}, App lang: {}", type, lang);
+		
 		if (lang == null) {
 			return;
 		}
@@ -262,7 +275,7 @@ public class AppServiceImpl implements AppService {
 		if (type == null) {
 			return null;
 		}
-		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).fetchOne();
+		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).cacheable().fetchOne();
 	}
 
 	@Override
@@ -402,10 +415,16 @@ public class AppServiceImpl implements AppService {
 		csvConfig.setInputs(new ArrayList<CSVInput>());
 		
 		List<MetaModel> metaModels = metaModelRepo.all()
-				.filter("self.name != 'App' and self.packageName =  ?1", App.class.getPackage().getName())
+				.filter("self.name != 'App' and self.name like 'App%' and self.packageName =  ?1", App.class.getPackage().getName())
 				.fetch();
 		
+		log.debug("Total app models: {}", metaModels.size());
 		for (MetaModel metaModel : metaModels) {
+			Class<?> klass = Class.forName(metaModel.getFullName());
+			if (!App.class.isAssignableFrom(klass)){
+				log.debug("Not a App class : {}", metaModel.getName());
+				continue;
+			}
 			Object obj = null;
 			Query query = JPA.em().createQuery("SELECT id FROM " + metaModel.getName());
 			try {
@@ -416,7 +435,6 @@ public class AppServiceImpl implements AppService {
 				continue;
 			}
 			log.debug("App without app record: {}", metaModel.getName());
-			Class<?> klass = Class.forName(metaModel.getFullName());
 			String csvName  = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
 			String pngName  = inflector.dasherize(klass.getSimpleName()) + ".png";
 			CSVInput input = new CSVInput();
@@ -453,6 +471,18 @@ public class AppServiceImpl implements AppService {
 			}
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public App updateLanguage(App app, String language) {
+		
+		if (language != null) {
+			app.setLanguageSelect(language);
+			app = appRepo.save(app);
+		}
+		
+		return app;
 	}
 
 }

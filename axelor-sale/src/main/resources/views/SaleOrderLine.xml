@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
-	    <field name="productName"/>
-	    <field name="qty" aggregate="sum"/>
-	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="price" x-scale="2"/>
-	    <field name="exTaxTotal" aggregate="sum"/>
-	    <field name="inTaxTotal" aggregate="sum"/>
+	   	<field name="saleOrder.saleOrderSeq"/>
+	  	<field name="saleOrder.clientPartner"/>
+	 	<field name="productName"/>
+	  	<field name="qty" aggregate="sum"/>
+	  	<field name="price" x-scale="2"/>
+	  	<field name="saleOrder.salemanUser"/>
 	</grid>
 	
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -38,7 +38,7 @@
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
-		    <field name="typeSelect"  onChange="action-sale-order-line-method-empty-line"/>
+		    <field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" />
 			<field name="productName" showIf="typeSelect == 1" title="Title"/>
 		</panel>
 		<panel hideIf="typeSelect == 1">
@@ -53,6 +53,12 @@
 		   	<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
 		   	<field name="toInvoice"  hideIf="typeSelect == 2" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
 			<field name="invoiced" showIf="toInvoice"/>
+		</panel>
+		<panel name="margin" title="Margin" hideIf="typeSelect != 0">
+			<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
+			<field name="subTotalGrossMargin"/>
+			<field name="subMarginRate"/>
+			<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 		</panel>
 		<panel name="discount" title="Discount" hideIf="typeSelect != 0">
 		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
@@ -77,6 +83,7 @@
 		   	</panel>
 		   	<panel name="deliveryPanel" title="Delivery"  hideIf="typeSelect == 2">
 		   		<field name="estimatedDelivDate"/>
+		   		<field name="deliveredQuantities"/>
 		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		   	</panel>
 		   	<panel name="invoicingFollowUp" title="Invoicing follow-up"  hideIf="typeSelect == 2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
@@ -157,12 +164,12 @@
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-type-select"/>
+    	<action name="action-sale-order-line-attrs-set-company-currency" />
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
-    	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
@@ -170,12 +177,14 @@
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-title-subscription"/>
     	<action name="action-sale-order-line-attrs-type-select"/>
+    	<action name="action-sale-order-line-attrs-set-company-currency" />
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
     	<action name="action-sale-order-line-method-get-product-information" />
     	<action name="action-sale-order-line-method-create-pack-lines"  if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()"/>
     	<action name="action-sale-order-line-method-compute" />
+    	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information"/>
     	<action name="action-sale-order-line-attrs-title-subscription"/>
@@ -189,6 +198,7 @@
     <action-group name="action-group-sale-saleorderline-qty-onchange">
     	<action name="action-sale-order-line-method-get-discount"/>
     	<action name="action-sale-order-line-method-compute"/>
+    	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
@@ -219,8 +229,6 @@
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="isOrdered" expr="true"/>
-<!--     	<field name="saleOrder" expr="eval:_parent?._parent?._model == 'com.axelor.apps.sale.db.SaleOrder' ? _parent?._parent : null" /> -->
     </action-record>
     
 <!--     TODO : should be splited per module -->
@@ -237,6 +245,10 @@
    	<!-- ACTION METHOD -->
 	<action-method name="action-sale-order-line-method-compute">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-line-method-compute-subMargin">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computeSubMargin"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-line-method-convert-tax">
@@ -264,7 +276,7 @@
     </action-attrs>
     
 	<action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.isRawMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL&quot;"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = false AND self.personalized = false &quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-discountamount-title">
@@ -306,13 +318,19 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-type-select">
-		<attribute name="selection-in" for="typeSelect" expr="eval:'0,1'" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
-		<attribute name="selection-in" for="typeSelect" expr="eval:'0,1,2'" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()"/>
+		<attribute name="selection-in" for="typeSelect" expr="eval:'[0,1]'" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+		<attribute name="selection-in" for="typeSelect" expr="eval:'[0,1,2]'" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-compute-total-pack">
 		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null"/>
 	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-attrs-set-company-currency">
+		<attribute name="value" for="$companyCurrency" expr="eval:_parent?.company?.currency" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrder'" />
+    	<attribute name="value" for="$companyCurrency" expr="eval:saleOrder?.company?.currency" if="saleOrder != null" />
+	</action-attrs>
+	
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
   		<view type="grid" name="stock-move-line-all-grid"/>

@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.data.exporter;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ import com.axelor.meta.schema.views.PanelStack;
 import com.axelor.meta.schema.views.PanelTabs;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.meta.schema.views.Spacer;
-import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.google.common.base.Joiner;
@@ -61,7 +61,7 @@ import com.google.inject.Inject;
 
 public class FormExporter {
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private boolean newForm = false;
 	
@@ -74,6 +74,9 @@ public class FormExporter {
 	
 	@Inject
 	private DashboardExporter dashboardExporter;
+	
+	@Inject
+	private CommonService common;
 	
 	private ExporterService exporterService;
 	
@@ -713,7 +716,7 @@ public class FormExporter {
 			String parentViewFR = view + "(" + values[CommonService.TITLE]  + ")"; 
 			String form = panelRelated.getFormView();
 			if (form == null) {
-				form = ViewLoaderService.getDefaultViewName(target, "form");
+				form = common.inflector.dasherize(model) + "-form";
 			}
 			if (!exporterService.isViewProcessed(form) && !form.equals(view)) {
 				o2mViews.add(new String[]{target, form, panelRelated.getGridView(), parentView, parentViewFR});

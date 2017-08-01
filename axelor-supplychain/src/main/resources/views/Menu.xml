@@ -35,6 +35,13 @@
 		model="com.axelor.apps.supplychain.db.SupplychainBatch" >
 		<view type="grid" name="supplychain-batch-grid"/>
 		<view type="form" name="supplychain-batch-form"/>
+		<domain>self.actionSelect IN (:actionSelectList)</domain>
+		<context name="actionSelectList"
+			expr="eval: [__repo__(SupplychainBatch).ACTION_BILL_SUB]"
+			if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
+		<context name="actionSelectList"
+			expr="eval: [__repo__(SupplychainBatch).ACTION_BILL_SUB, __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES]"
+			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
 	
 	<menuitem name="subscription-root"  if="__config__.app.isApp('subscription')" parent="sc-root-sale"

@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
@@ -33,6 +34,8 @@ public interface LocationService {
 	
 	public BigDecimal getFutureQty(Long productId, Long locationId);
 
-	public void computeAvgPriceForProduct(Product product, LocationLine unsavedLocationLine);
+	public void computeAvgPriceForProduct(Product product);
+
+	public List<Long> getBadLocationLineId();
 	
 }

@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -47,6 +46,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.Pair;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -74,19 +74,6 @@ public class InventoryService {
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Inventory createInventoryFromWizard(LocalDate date, String description, Location location, boolean excludeOutOfStock,
-			boolean includeObsolete, ProductFamily productFamily, ProductCategory productCategory) throws Exception {
-
-		Inventory inventory = inventoryRepo.save(this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory));
-
-		this.fillInventoryLineList(inventory);
-
-		return inventory;
-	}
-
 
 
 	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete,

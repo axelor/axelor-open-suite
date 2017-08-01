@@ -17,21 +17,24 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaView;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Dashboard;
 import com.axelor.meta.schema.views.Dashlet;
-import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.DashletBuilder;
-import com.axelor.studio.db.ViewBuilder;
+import com.axelor.studio.db.repo.DashletBuilderRepository;
+import com.axelor.studio.service.StudioMetaService;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 /**
  * This service class used to generate dashboard from ViewBuilder of type
@@ -42,10 +45,14 @@ import com.axelor.studio.db.ViewBuilder;
  */
 public class DashboardBuilderService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private List<ActionView> actions;
+	@Inject
+	private StudioMetaService metaService;
 
+	@Inject
+	private DashletBuilderRepository dashletBuilderRepo;
+	
 	/**
 	 * Method to generate Dashboard (meta schema) from View Builder.
 	 * 
@@ -53,7 +60,7 @@ public class DashboardBuilderService {
 	 *            ViewBuilder of type dashboard.
 	 * @return Dashboard.
 	 */
-	public Dashboard getView(ViewBuilder dashboardBuilder) {
+	public MetaView build(DashboardBuilder dashboardBuilder) {
 
 		log.debug("Processing dashboard: {}", dashboardBuilder.getName());
 
@@ -62,32 +69,28 @@ public class DashboardBuilderService {
 		dashboard.setTitle(dashboardBuilder.getTitle());
 		dashboard.setName(dashboardBuilder.getName());
 		List<AbstractWidget> dashlets = new ArrayList<AbstractWidget>();
-		actions = new ArrayList<ActionView>();
-
+		
+		dashboardBuilder.clearGeneratedActions();
 		for (DashletBuilder dashletBuilder : dashboardBuilder
 				.getDashletBuilderList()) {
 			
 			Dashlet dashlet = new Dashlet();
 			String name = null;
 			String model = null;
-			ViewBuilder viewBuilder = dashletBuilder.getViewBuilder();
 			MetaView metaView = dashletBuilder.getMetaView();
-			ActionBuilder action = dashletBuilder.getActionBuilder();
+			MetaAction action = dashletBuilder.getAction();
 			
 			String actionName = null;
-			if (viewBuilder != null) {
-				name = viewBuilder.getName();
-				model = viewBuilder.getMetaModel().getFullName();
-				actionName = getAction(boardName, name, model,
-						dashletBuilder);
-			} else if (metaView != null) {
+			if (metaView != null) {
 				name = metaView.getName();
 				model = metaView.getModel();
-				actionName = getAction(boardName, name, model,
+				MetaAction metaAction = getAction(boardName, name, model,
 						dashletBuilder);
+				actionName = metaAction.getName();
+				dashboardBuilder.addGeneratedAction(metaAction);
 			}
 			else if (action != null) {
-				model = action.getMetaModel().getFullName();
+				model = action.getModel();
 				actionName = action.getName();
 			}
 			
@@ -104,24 +107,14 @@ public class DashboardBuilderService {
 			dashlet.setColSpan(colSpan);
 			dashlets.add(dashlet);
 		}
-
+		
+		if (dashlets.isEmpty()) {
+			return null;
+		}
+		
 		dashboard.setItems(dashlets);
-
-		return dashboard;
-	}
-
-	/**
-	 * Metod to get actions-views for charts.
-	 * 
-	 * @return List of action-views.
-	 */
-	public List<ActionView> getActions() {
-
-		List<ActionView> actionViews = actions;
-
-		actions = null;
-
-		return actionViews;
+		
+		return metaService.generateMetaView(dashboard);
 	}
 
 	/**
@@ -129,25 +122,35 @@ public class DashboardBuilderService {
 	 * 
 	 * @param dashboard
 	 *            Dashboard in which chart to be used.
+	 * @param actions 
 	 * @param chart
 	 *            Chart to open from action-view.
 	 * @return Name of action-view.
 	 */
-	private String getAction(String dashboard, String name, String model,
+	private MetaAction getAction(String dashboard, String name, String model,
 			DashletBuilder dashletBuilder) {
 
-		ActionViewBuilder builder = ActionView.define(dashletBuilder.getName());
 		String actionName = "action-"
 				+ (dashboard + "-" + name).replace(".", "-");
-		log.debug("Action name: {}", actionName);
-		builder.name(actionName);
-		builder.model(model);
-		builder.add(dashletBuilder.getViewType(), name);
-		if (dashletBuilder.getPaginationLimit() > 0) {
-			builder.param("limit", dashletBuilder.getPaginationLimit().toString());
+		
+		String xmlId = "studio-" + actionName;
+		StringBuilder xml = new StringBuilder();
+		xml.append("<action-view name=\"" + actionName + "\" ");
+		xml.append("id=\"" + xmlId + "\" ");
+		xml.append("title=\"" + dashletBuilder.getName() + "\" ");
+		if (model != null) {
+			xml.append("model=\"" + model + "\"");
 		}
-		actions.add(builder.get());
-
-		return actionName;
+		xml.append(">");
+		xml.append("\n\t<view type=\"" + dashletBuilder.getViewType() + "\" ");
+		xml.append("name=\"" +  name + "\" />");
+		if (dashletBuilder.getPaginationLimit() > 0) {
+			xml.append("\n\t<view-param name=\"limit\" value=\"" + dashletBuilder.getPaginationLimit().toString() + "\"/>");
+		}
+		xml.append("\n</action-view>");
+		
+		return metaService.updateMetaAction(xmlId,
+				actionName, "action-view", xml.toString(), model);
 	}
+	
 }

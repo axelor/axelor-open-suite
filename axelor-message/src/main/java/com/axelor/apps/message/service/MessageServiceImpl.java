@@ -18,6 +18,7 @@
 package com.axelor.apps.message.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Set;
 
@@ -35,10 +36,7 @@ import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
-import com.axelor.dms.db.DMSFile;
-import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -60,7 +58,7 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceImpl implements MessageService {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private ZonedDateTime todayTime;
 	
@@ -101,7 +99,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ){
+	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ) {
 		
 		Preconditions.checkNotNull( message.getId() );
 		
@@ -110,16 +108,7 @@ public class MessageServiceImpl implements MessageService {
 		log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
 		
 		for ( MetaFile metaFile: metaFiles ){
-			//TODO : When RM#4887 is done, use MetaFiles.attach(metaFile, message)
-			final DMSFile dmsFile = new DMSFile();
-			final DMSFileRepository repository = Beans.get(DMSFileRepository.class);
-
-			dmsFile.setFileName(metaFile.getFileName());
-			dmsFile.setMetaFile(metaFile);
-			dmsFile.setRelatedId(message.getId());
-			dmsFile.setRelatedModel(EntityHelper.getEntityClass(message).getName());
-
-			repository.save(dmsFile);
+			Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
 		}
 		
 	}
@@ -155,8 +144,7 @@ public class MessageServiceImpl implements MessageService {
 		message.setRelatedTo1SelectId(relatedTo1SelectId);
 		message.setRelatedTo2Select(relatedTo2Select);
 		message.setRelatedTo2SelectId(relatedTo2SelectId);
-		message.setSentDateT(sentDate);
-		
+
 		return message;
 	}	
 	

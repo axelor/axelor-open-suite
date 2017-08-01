@@ -47,11 +47,11 @@ public class MoveManagementRepository extends MoveRepository {
 		copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
 		copy.setExportNumber(null);
 		copy.setExportDate(null);
-		copy.setMoveLineReport(null);
+		copy.setAccountingReport(null);
 		copy.setValidationDate(null);
 		copy.setPeriod(period);
 		copy.setAccountingOk(false);
-		copy.setIgnoreInReminderOk(false);
+		copy.setIgnoreInDebtRecoveryOk(false);
 		copy.setPaymentVoucher(null);
 		copy.setRejectOk(false);
 

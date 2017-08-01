@@ -6,61 +6,34 @@
   <menuitem name="menu-studio-root" title="BPM" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
   
   <!-- Model menus -->
-  <menuitem name="menu-studio-model" title="Model" parent="menu-studio-root" order="5"/>
   
-  <menuitem name="menu-meta-model-studio" title="Models" parent="menu-studio-model" action="menu.meta.model.studio" order="5"/>
+  <menuitem name="menu-custom-model-editor" title="Custom model editor" parent="menu-studio-root" action="action.custom.model.editor" order="5"/>
   
-  <action-view name="menu.meta.model.studio" title="Models" model="com.axelor.meta.db.MetaModel">
-    <view type="grid" name="meta-model-studio-grid"/>
-    <view type="form" name="meta-model-studio-form"/>
-    <context name="__check_version" expr="eval:'silent'" />
+  <action-view name="action.custom.model.editor" title="Custom model editor">
+    <view type="html" name="studio/custom-model"/>
   </action-view>
   
-  <menuitem name="menu-studio-meta-select" title="Selections" parent="menu-studio-model" action="menu.studio.meta.select" order="6"/>
+  <menuitem name="menu-json-creator" title="Custom fields" parent="menu-studio-root" action="action.json.creator" order="10"/>
   
-  <action-view name="menu.studio.meta.select" title="Selections" model="com.axelor.meta.db.MetaSelect">
-    <view type="grid" name="meta-select-grid"/>
-    <view type="form" name="meta-select-form"/>
+  <action-view name="action.json.creator" title="Custom fields" model="com.axelor.studio.db.JsonCreator">
+    <view type="grid" name="json-creator-grid"/>
+    <view type="form" name="json-creator-form"/>
   </action-view>
   
-  <!-- View menus -->
   <menuitem name="menu-studio-view" title="View" parent="menu-studio-root" order="10"/>
-  
-  <menuitem name="menu-form-builder" title="Form builders" parent="menu-studio-view" action="menu.form.builder" order="5"/>
-  
-  <action-view name="menu.form.builder" title="Form builders" model="com.axelor.studio.db.ViewBuilder">
-    <view type="grid" name="view-builder-grid"/>
-    <view type="form" name="view-builder-form"/>
-    <domain>self.viewType = 'form'</domain>
-    <context name="_viewType" expr="eval:'form'" />
-    <context name="__check_version" expr="eval:'silent'" />
-  </action-view>
-  
-  <menuitem name="menu-grid-builder" title="Grid builders" parent="menu-studio-view" action="menu.grid.builder" order="10"/>
-  
-  <action-view name="menu.grid.builder" title="Grid builders" model="com.axelor.studio.db.ViewBuilder">
-    <view type="grid" name="view-builder-grid"/>
-    <view type="form" name="view-builder-form"/>
-    <domain>self.viewType = 'grid'</domain>
-    <context name="_viewType" expr="eval:'grid'" />
-  </action-view>
   
   <menuitem name="menu-chart-builder" title="Chart builders" parent="menu-studio-view" action="menu.chart.builder" order="15"/>
   
-  <action-view name="menu.chart.builder" title="Chart builders" model="com.axelor.studio.db.ViewBuilder">
-    <view type="grid" name="view-builder-grid"/>
+  <action-view name="menu.chart.builder" title="Chart builders" model="com.axelor.studio.db.ChartBuilder">
+    <view type="grid" name="chart-builder-grid"/>
     <view type="form" name="chart-builder-form"/>
-    <domain>self.viewType = 'chart'</domain>
-    <context name="_viewType" expr="eval:'chart'" />
   </action-view>
   
   <menuitem name="menu-dashboard-builder" title="Dashboard builders" parent="menu-studio-view" action="menu.dashboard.builder" order="20"/>
   
-  <action-view name="menu.dashboard.builder" title="Dashboard builders" model="com.axelor.studio.db.ViewBuilder">
+  <action-view name="menu.dashboard.builder" title="Dashboard builders" model="com.axelor.studio.db.DashboardBuilder">
     <view type="grid" name="dashboard-builder-grid"/>
     <view type="form" name="dashboard-builder-form"/>
-    <domain>self.viewType = 'dashboard'</domain>
-    <context name="_viewType" expr="eval:'dashboard'" />
   </action-view>
   
   <menuitem name="menu-action-builder" title="Action builders" parent="menu-studio-view" action="menu.action.builder" order="23"/>
@@ -70,13 +43,12 @@
     <view type="form" name="action-builder-form"/>
   </action-view>
   
-  <menuitem name="menu-menu-builder" title="Menu builders" parent="menu-studio-view" action="menu.menu.builder" order="25"/>
+  <menuitem name="menu-menu-builder" title="Menu builders" parent="menu-studio-view" action="menu.menu.builder" order="23"/>
   
   <action-view name="menu.menu.builder" title="Menu builders" model="com.axelor.studio.db.MenuBuilder">
     <view type="grid" name="menu-builder-grid"/>
     <view type="form" name="menu-builder-form"/>
   </action-view>
-  
   
   <!-- Workflow menus -->
   <menuitem name="menu-studio-wkf" title="Workflow" parent="menu-studio-root"  order="15"/>
@@ -112,11 +84,11 @@
   </action-view>
   
   <!-- Import/Export menus -->
-  <menuitem name="menu-studio-import-export" title="Import/Export" parent="menu-studio-root" order="30"/>
+  <menuitem name="menu-studio-import-export" title="Export" parent="menu-studio-root" order="30"/>
   
-  <menuitem name="menu-import-export" title="Module import/export" parent="menu-studio-import-export" action="menu.import.export" order="5"/>
+  <menuitem name="menu-import-export" title="Module export" parent="menu-studio-import-export" action="menu.import.export" order="5"/>
   
-  <action-view name="menu.import.export" title="Module import/export" model="com.axelor.studio.db.DataManager">
+  <action-view name="menu.import.export" title="Module export" model="com.axelor.studio.db.DataManager">
     <view type="grid" name="data-manager-grid"/>
     <view type="form" name="data-manager-form"/>
   </action-view>
@@ -130,13 +102,6 @@
   
   <!-- Configuration menus -->
   <menuitem name="menu-studio-configuration" title="Configuration" parent="menu-studio-root" order="50"/>
-  
-  <menuitem name="menu-studio-module" title="Modules" action="action.studio.module" parent="menu-studio-configuration" order="5"/>
-
-  <action-view name="action.studio.module" title="Modules" model="com.axelor.meta.db.MetaModule">
-      <view type="grid"/>
-      <view type="form"/>
-  </action-view>
   
   <menuitem name="menu-filter-operator" title="Operators" action="action.filter.operator" parent="menu-studio-configuration" order="10"/>
 
@@ -158,27 +123,5 @@
   	  <view type="grid" name="studio-template-grid"/>
       <view type="form" name="studio-template-form"/>
   </action-view>
-  
-  <!-- Apply updates -->
-  <menuitem name="menu-apply-updates" title="Apply updates" parent="menu-studio-root" action="action.apply.updates" order="60"/>
-  
-  <action-view name="action.apply.updates" title="Apply updates" model="com.axelor.studio.db.ModuleRecorder">
-    <view type="form" name="module-recorder-form"/>
-    <context name="_showRecord" expr="eval:__repo__(ModuleRecorder).all().fetchOne()?.getId()" />
-  </action-view>
-  
-  <menuitem name="menu-custom-model-editor" title="Custom model editor" parent="menu-studio-root" action="action.custom.model.editor" order="65"/>
-  
-  <action-view name="action.custom.model.editor" title="Custom model editor">
-    <view type="html" name="studio/custom-model"/>
-  </action-view>
-  
-  <menuitem name="menu-json-creator" title="Custom fields" parent="menu-studio-root" action="action.json.creator" order="70"/>
-  
-  <action-view name="action.json.creator" title="Custom fields" model="com.axelor.studio.db.JsonCreator">
-    <view type="grid" name="json-creator-grid"/>
-    <view type="form" name="json-creator-form"/>
-  </action-view>
-  
   
 </object-views>

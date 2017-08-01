@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ import com.axelor.i18n.I18n;
 
 public class BatchTarget extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchTarget.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private TargetConfigurationRepository targetConfigurationRepo;

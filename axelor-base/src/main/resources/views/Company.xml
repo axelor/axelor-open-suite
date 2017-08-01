@@ -5,7 +5,7 @@
     
     <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="address" form-view="address-form" grid-view="address-grid"/>
     </grid>
 
@@ -17,7 +17,7 @@
 			</panel>
 			<panel colSpan="8">
 		    	<field name="name"/>
-			    <field name="code" x-bind="{{code|uppercase}}"/>
+			    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			    <field name="parent" form-view="company-form" grid-view="company-grid"/>
 			    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 		    </panel>
@@ -39,8 +39,9 @@
     	</panel>
 	  
 	  	<panel-tabs hideIf="$popup()">
-	    	<panel name="notes" title="Notes">
-	      		<field name="notes" showTitle="false" colSpan="12"/>
+	    	<panel name="informations" title="Informations">
+	      		<field name="notes" colSpan="12"/>
+	    		<field name="companyDepartmentList" grid-view="company-department-company-grid" form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL" colSpan="12"/>
 	    	</panel>
 	    	<panel name="configurations" title="Configurations">
 	  			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
@@ -86,12 +87,6 @@
     <action-view name="action-company-view-production-config" title="Production config (${ name })" model="com.axelor.apps.production.db.ProductionConfig">
     	<view type="form" name="production-config-form"/>
     	<context name="_showRecord" expr="eval: __self__.productionConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-organisation-config" title="Organisation config (${ name })" model="com.axelor.apps.organisation.db.OrganisationConfig">
-    	<view type="form" name="organisation-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.organisationConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
     

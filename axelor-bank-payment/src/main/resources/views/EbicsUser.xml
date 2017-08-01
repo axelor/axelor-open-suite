@@ -25,11 +25,11 @@
 			<field name="statusSelect" colSpan="12"/>
 			<field name="name" />
 			<field name="password" requiredIf="ebicsTypeSelect == 0"/>
-			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
+			<field name="userId" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="associatedUser"/>
-			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
+			<field name="ebicsPartner" readonlyIf="statusSelect &gt; 2"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner.ebicsBank"/>
 		</panel>
@@ -44,7 +44,7 @@
 			<panel title="Certificates">
 				<panel title="DN" colSpan="12" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
 					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
-					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" showTitle="false" />
+					<field name="dn" readonly="true" showTitle="false" />
 				</panel>
 				<panel title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
 					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false" canNew="true"/>
@@ -61,8 +61,8 @@
 		
 		<panel sidebar="true">
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
-			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
-			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
+			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" hidden="true" showIf="statusSelect == 1"/>
+			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" hidden="true" showIf="statusSelect == 2"/>
 			<button name="printCertificates" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-method-print-certificates" showIf="statusSelect >= 3"/>
 			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3" prompt="Are you sure you want get the server certificates ?"/>
 			<button name="sendSPR" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3" prompt="Are you sure you want suspend the user ? The whole initialisation process will have to be done again."/>

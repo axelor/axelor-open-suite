@@ -1,14 +1,16 @@
+# 4.0.1 (2017-06-19)
+
 # 4.0.0 (2017-01-30)
 ## Improvements
 - Default partner type
-- Remove sublines of SOlines : SubLine will be replaced per a title line to group some lines. 
-- Rename saleOrder status and field : 
+- Remove sublines of SOlines : SubLine will be replaced per a title line to group some lines.
+- Rename saleOrder status and field :
 On saleOrder object :
 the "confirm" status must be rename to "finalize".
 the "validate" status must be rename to "orderConfirm"
 the "validationDate" field must be rename to "confirmationDate"
 the "validatedByUser" field must be rename to "confirmedByUser"
-- Add sale order version management : 
+- Add sale order version management :
 Versions will allow users to modify an order already finalyse :
 when switching to finalyse status, save the order's PDF as an attachment. If it is the first version, only use order sequence for the name of the PDF. For later version we have to suffix order's PDF name by "-V" + numversion
 Add new button called "New version" displayed in finalize status. This button will go back to draft status, and increment the version number.
@@ -19,7 +21,7 @@ Management of stockMove generation button display :
 This button must be displayed only on "orderConfirm" status
 By clicking on the button, a new StockMove will be created with all saleOrder's line and with "Planned" status. If a stockMove was already generated, an information message must appeared specifying that an other stock move can't be generated.
 - A new pointed field must be added into stockmove to know his invoicing state. A stockmove is linked to only one invoice, so we can based on invoice status to know if a stockmove is invoiced or not.
-- New status of delivery in sale order : 
+- New status of delivery in sale order :
 Add new column status named "delivery state" containing 3 values :
 not delivered
 partially delivered
@@ -87,14 +89,14 @@ Now, if you put a discount of -10%, this is not a discount, it is an addition.
 - BUSINESS FOLDER : Create a new saleOrder
 - PRICELIST : 3 new ways to manage priceLists
 in admin general, there is now a select "Compute Methode for Discounts" with 3 values:
-* Compute Discount Separately : this is the default value, we don't put the discount in the unit price, we have an other field "price discounted" which will display the unit price discounted. 
-* Include Discount in unit price only for replace type : we replace the unit price with the unit price discounted and we don't show that there is a discount. Only if in the priceList we have the type "Replace" 
+* Compute Discount Separately : this is the default value, we don't put the discount in the unit price, we have an other field "price discounted" which will display the unit price discounted.
+* Include Discount in unit price only for replace type : we replace the unit price with the unit price discounted and we don't show that there is a discount. Only if in the priceList we have the type "Replace"
 * Include Discount in unit price : we replace the unit price with the unit price discounted and we don't show that there is a discount for all the types of discount.
 - SALEORDER : Invoice
 If no lines are selected, the button "Generate invoice" should generate an invoice for all lines.
 If some lines are selected, the button "Generate invoice" should generate an invoice for the selected lines only.
 - GENERAL : Added some parameters to enabled/disabled some features
-- SEQUENCE : 
+- SEQUENCE :
 Added four M2O to sequences object in account config :
 - sequence for customer refund
 - sequence for customer invoice
@@ -121,7 +123,7 @@ By the way, we can use the same sequence for invoice and refund.
 - PRODUCT : Indicator for real quantity and futur quantity
 - PRODUCT : Indicator for number of variant
 - UNIT PRICE CONFIGURATION : Allowed the possibility to have an unit price on 10 decimal digits.
-- PRODUCT : unit conversion : 
+- PRODUCT : unit conversion :
 Management of 3 units for a product
 - stock unit
 - sale unit
@@ -165,7 +167,7 @@ The conversion is done with conversion unit lines or with a formule on Product f
 
 # 3.0.3 (2017-02-28)
 ## Bug Fixes
-	
+
 - Fixed issue on the method to get the next period
 - Changed display of CFONB field, by using nested, on AccontConfig
 - Restore client view wizard action
@@ -186,7 +188,7 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - Improve Business, Project and Task views
 - Fixed some issue on Target management
 - Fixed some issue on Expense
-- Manufacturing dashboard 
+- Manufacturing dashboard
 - Reset value on AccountEquiv
 - Fixed some index name
 - Fixed issue with sequence called twice on SaleOrder

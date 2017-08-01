@@ -52,6 +52,7 @@ public interface ITranslation {
 	public static final String SALES_ORDER_DELIVERY_CONDITION = /*$$(*/ "SaleOrder.deliveryCondition"; /*)*/
 	public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/ "SaleOrder.productDescription"; /*)*/
 	public static final String SALES_ORDER_PRODUCT_CODE = /*$$(*/ "SaleOrder.productCode"; /*)*/
+	public static final String SALES_ORDER_PRODUCT_NAME = /*$$(*/ "SaleOrder.productName"; /*)*/
 	public static final String SALES_ORDER_DISCOUNT_AMOUNT = /*$$(*/ "SaleOrder.discountAmount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/ "SaleOrder.totalExclTaxWithoutDiscount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_DISCOUNT = /*$$(*/ "SaleOrder.totalDiscount"; /*)*/

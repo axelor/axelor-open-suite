@@ -23,7 +23,6 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.ActionBuilderLine;
 import com.google.inject.Inject;
 
 public class ActionBuilderLineController {
@@ -33,27 +32,27 @@ public class ActionBuilderLineController {
 
 	public void validateTarget(ActionRequest request, ActionResponse response) {
 
-		ActionBuilderLine line = request.getContext().asType(
-				ActionBuilderLine.class);
-
-		String targetField = line.getTargetField();
-		MetaField metaField = line.getMetaField();
-
-		if (targetField != null && metaField != null) {
-
-			String[] target = targetField.split("\\.");
-			if (!target[0].equals(metaField.getName())) {
-				response.setError("Target initials not match with selected field.");
-			} else {
-				String invalidField = validate(target, metaField);
-				if (invalidField != null) {
-					response.setError("Invalide target field '" + invalidField
-							+ "'");
-					response.setValue("targetField", null);
-				}
-			}
-
-		}
+//		ActionBuilderLine line = request.getContext().asType(
+//				ActionBuilderLine.class);
+//
+//		String targetField = line.getTargetField();
+//		MetaField metaField = line.getMetaField();
+//
+//		if (targetField != null && metaField != null) {
+//
+//			String[] target = targetField.split("\\.");
+//			if (!target[0].equals(metaField.getName())) {
+//				response.setError("Target initials not match with selected field.");
+//			} else {
+//				String invalidField = validate(target, metaField);
+//				if (invalidField != null) {
+//					response.setError("Invalide target field '" + invalidField
+//							+ "'");
+//					response.setValue("targetField", null);
+//				}
+//			}
+//
+//		}
 
 	}
 

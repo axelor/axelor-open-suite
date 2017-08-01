@@ -22,6 +22,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Calendar;
 
+import javax.xml.XMLConstants;
+
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest.Body;
@@ -128,8 +130,16 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");
-    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+//    setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");  //TODO TO CHECK
+    
+	  
+	  setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");
+	  setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+
+//	  
+//    addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
+//
+//    setSaveSuggestedPrefixes("http://www.ebics.org/H003", XMLConstants.DEFAULT_NS_PREFIX);
 
     return super.toByteArray();
   }

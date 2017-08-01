@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private InvoiceService invoiceService;
@@ -65,7 +66,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(purchaseOrder);
-		invoiceRepo.save(invoice);
+		invoice = invoiceRepo.save(invoice);
 		invoiceService.setDraftSequence(invoice);
 		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
 

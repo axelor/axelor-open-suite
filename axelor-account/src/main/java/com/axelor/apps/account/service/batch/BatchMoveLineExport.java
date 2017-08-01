@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
@@ -26,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.MoveLineReport;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -40,7 +41,7 @@ import com.axelor.i18n.I18n;
 
 public class BatchMoveLineExport extends BatchStrategy {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected boolean stop = false;
 
@@ -50,14 +51,14 @@ public class BatchMoveLineExport extends BatchStrategy {
 	protected BigDecimal credit = BigDecimal.ZERO;
 	protected BigDecimal balance = BigDecimal.ZERO;
 
-	protected MoveLineReportRepository moveLineReportRepository;
+	protected AccountingReportRepository accountingReportRepository;
 
 	@Inject
-	public BatchMoveLineExport(MoveLineExportService moveLineExportService, MoveLineReportRepository moveLineReportRepository) {
+	public BatchMoveLineExport(MoveLineExportService moveLineExportService, AccountingReportRepository accountingReportRepository) {
 
 		super(moveLineExportService);
 		
-		this.moveLineReportRepository = moveLineReportRepository;
+		this.accountingReportRepository = accountingReportRepository;
 	}
 
 
@@ -92,20 +93,20 @@ public class BatchMoveLineExport extends BatchStrategy {
 				LocalDate endDate = batch.getAccountingBatch().getEndDate();
 				int exportTypeSelect = batch.getAccountingBatch().getMoveLineExportTypeSelect();
 
-				MoveLineReport moveLineReport = moveLineExportService.createMoveLineReport(company, exportTypeSelect, startDate, endDate);
-				moveLineExportService.exportMoveLine(moveLineReport);
+				AccountingReport accountingReport = moveLineExportService.createAccountingReport(company, exportTypeSelect, startDate, endDate);
+				moveLineExportService.exportMoveLine(accountingReport);
 
 				JPA.clear();
 
-				moveLineReport = moveLineReportRepository.find(moveLineReport.getId());
+				accountingReport = accountingReportRepository.find(accountingReport.getId());
 
-				moveLineDone = moveLineRepo.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
-				moveDone = moveRepo.all().filter("self.moveLineReport = ?1", moveLineReport).count();
-				debit = moveLineReport.getTotalDebit();
-				credit = moveLineReport.getTotalCredit();
-				balance = moveLineReport.getBalance();
+				moveLineDone = moveLineRepo.all().filter("self.move.accountingReport = ?1", accountingReport).count();
+				moveDone = moveRepo.all().filter("self.accountingReport = ?1", accountingReport).count();
+				debit = accountingReport.getTotalDebit();
+				credit = accountingReport.getTotalCredit();
+				balance = accountingReport.getBalance();
 
-				updateMoveLineReport(moveLineReport);
+				updateAccountingReport(accountingReport);
 
 			} catch (AxelorException e) {
 

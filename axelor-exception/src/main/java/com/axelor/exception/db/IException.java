@@ -45,6 +45,7 @@ public interface IException {
 	 */
 	public static final String INVOICE_ORIGIN = "invoice";
 	public static final String REMINDER = "reminder";
+	public static final String DEBT_RECOVERY = "debtRecovery";
 	public static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
 	public static final String REIMBURSEMENT = "reimbursement";
 	public static final String DIRECT_DEBIT = "directDebit";

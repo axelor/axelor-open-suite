@@ -59,19 +59,20 @@
 	</action-view>
 	
 	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki"/>
+  
 	<action-view name="all.wiki" title="Project Wiki" model="com.axelor.apps.project.db.Wiki">
 		<view type="grid" name="wiki-grid"/>
 		<view type="form" name="wiki-form"/>
 	</action-view>
-	
-	<menuitem name="project-resource" title="Resources" order="30" parent="menu-project-root" action="project.resource" />
+
+	<menuitem name="project-resource" title="Resources" order="30" parent="menu-project-root" action="project.resource" if="__config__.app.getApp('project').getResourceManagement()" />
 	
 	<action-view name="project.resource" title="Resources" model="com.axelor.apps.project.db.Resource">
 		<view type="grid" name="resource-grid" />
 		<view type="form" name="resource-form" />
 	</action-view>
 	
-	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" />
+	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
 	
 	<action-view name="project.resource.booking" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="grid" name="resource-booking-grid" />
@@ -88,7 +89,7 @@
 		<view type="form" name="category-form"/>
 	</action-view>
 	
-	<menuitem name="project-resource-category" parent="project-configurations" title="Resource categories" action="project.resource.category"/>
+	<menuitem name="project-resource-category" parent="project-configurations" title="Resource categories" action="project.resource.category" if="__config__.app.getApp('project').getResourceManagement()" />
 	
 	<action-view name="project.resource.category" title="Resource categories" model="com.axelor.apps.project.db.ResourceCategory">
 		<view type="grid" name="resource-category-grid"/>

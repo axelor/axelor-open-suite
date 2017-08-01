@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PurchaseOrderService purchaseOrderService;
@@ -315,4 +316,12 @@ public class PurchaseOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
+
+	public void validate(ActionRequest request, ActionResponse response) throws Exception {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrderService.validatePurchaseOrder(purchaseOrder);
+		response.setReload(true);
+	}
+
 }

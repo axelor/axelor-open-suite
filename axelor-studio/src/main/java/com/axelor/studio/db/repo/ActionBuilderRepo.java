@@ -17,36 +17,36 @@
  */
 package com.axelor.studio.db.repo;
 
-import com.axelor.meta.db.MetaAction;
-import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.builder.ActionBuilderService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class ActionBuilderRepo extends ActionBuilderRepository {
 
 	@Inject
-	private MetaActionRepository metaActionRepo;
+	private StudioMetaService metaService;
+	
+	@Inject
+	private ActionBuilderService builderService;
+	
+	@Override
+	public ActionBuilder save(ActionBuilder builder) {
+		
+		builder = super.save(builder);
+		
+		builderService.build(builder);
+		
+		return builder;
+	}
 
-	@Transactional
 	@Override
 	public void remove(ActionBuilder actionBuilder) {
-
+		
+		metaService.removeMetaActions(actionBuilder.getName());
+		
 		super.remove(actionBuilder);
-
-		MetaAction metaAction = metaActionRepo.findByName(actionBuilder
-				.getName());
-		if (metaAction != null) {
-			metaAction.setRemoveAction(true);
-			metaActionRepo.save(metaAction);
-		}
-
-		metaAction = metaActionRepo.findByName(actionBuilder.getName()
-				+ "-assign");
-		if (metaAction != null) {
-			metaAction.setRemoveAction(true);
-			metaActionRepo.save(metaAction);
-		}
+		
 	}
 
 }

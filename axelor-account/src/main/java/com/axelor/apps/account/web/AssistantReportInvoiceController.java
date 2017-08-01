@@ -34,9 +34,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 
+import java.lang.invoke.MethodHandles;
+
 public class AssistantReportInvoiceController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private final static DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	

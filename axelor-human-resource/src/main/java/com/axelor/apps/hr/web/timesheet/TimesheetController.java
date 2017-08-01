@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -60,11 +61,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
@@ -77,7 +77,6 @@ public class TimesheetController {
 	@Inject
 	private Provider<ProjectRepository> projectRepoProvider;
 	
-	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
@@ -85,6 +84,7 @@ public class TimesheetController {
 		response.setReload(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		Context context = request.getContext();
@@ -338,7 +338,7 @@ public class TimesheetController {
 	}
 	
 	/* Count Tags displayed on the menu items */
-	public String timesheetValidateTag()  {
+	public String timesheetValidateMenuTag()  {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
 	
@@ -368,12 +368,33 @@ public class TimesheetController {
 				.add("html", fileLink).map());	
 	}
 	
-	public void showTimesheetLineEditor(ActionRequest request, ActionResponse response) {
+	public void setShowActivity(ActionRequest request, ActionResponse response) {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
+		boolean showActivity = true;
+		
+		User user = timesheet.getUser();
+		if (user != null) {
+			Company company = user.getActiveCompany();
+			if (company != null && company.getHrConfig() != null) {
+				showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+			}
+		}
+		
+		response.setValue("$showActivity", showActivity);
+	}
+	
+	public void openTimesheetEditor(ActionRequest request, ActionResponse response) {
+		
+		Context context = request.getContext();
+		
+		String url = "hr/timesheet?timesheetId=" + context.get("id") + "&showActivity=" + context.get("showActivity");
+		
 		response.setView(ActionView
 				.define(I18n.get("Timesheet lines"))
-				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
+				.add("html", url).map());       
+
 	}
+	
 }

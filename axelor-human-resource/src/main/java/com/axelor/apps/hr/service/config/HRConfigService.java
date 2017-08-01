@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.config;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -26,7 +27,6 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Strings;
 
 public class HRConfigService {
 	
@@ -36,9 +36,21 @@ public class HRConfigService {
 		if(hrConfig == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG), company.getName()),IException.CONFIGURATION_ERROR);
 		}
+
 		return hrConfig;
 	}
-	
+
+	public Sequence getExpenseSequence(HRConfig hrConfig) throws AxelorException {
+		Sequence sequence = hrConfig.getExpenseSequence();
+
+		if (sequence == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE),
+					hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return sequence;
+	}
+
 	public LeaveReason getLeaveReason(HRConfig hrConfig) throws AxelorException{
 		LeaveReason leaveReason = hrConfig.getToJustifyLeaveReason();
 		
@@ -46,14 +58,6 @@ public class HRConfigService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LEAVE_REASON), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		return leaveReason;
-	}
-	
-	public String getLunchVoucherExportPath(HRConfig hrConfig) throws AxelorException{
-		String lunchVoucherExportPath = hrConfig.getExportCodeForLunchVoucherManagement();
-		if(Strings.isNullOrEmpty(lunchVoucherExportPath)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		return lunchVoucherExportPath;
 	}
 	
 	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{

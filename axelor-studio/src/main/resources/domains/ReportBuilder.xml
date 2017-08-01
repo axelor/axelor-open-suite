@@ -13,8 +13,7 @@
     ]]>
     <string name="name" title="Name" required="true" unique="true" />
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
-    <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" title="View Builder"/>
-    <many-to-one name="buttonView" ref="com.axelor.studio.db.ViewBuilder" title="Add button to" help="true" />
+    <many-to-one name="metaView" ref="com.axelor.meta.db.MetaView" title="View"/>
     <string name="header" title="Header" large="true" />
     <string name="footer" title="Footer" large="true" />
     <string name="language" title="Language"  selection="select.language"/>
@@ -23,7 +22,6 @@
     <boolean name="printPageNo" title="Print page number ?" />
     <boolean name="editHtml" title="Edit HTML?" />
     <string name="fileName" title="File name" />
-    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
   </entity>
     
  </domain-models>

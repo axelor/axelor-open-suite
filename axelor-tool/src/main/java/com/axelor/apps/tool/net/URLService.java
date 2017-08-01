@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -38,7 +39,7 @@ public final class URLService {
 
 	final static int size = 1024;
 
-	private static final Logger LOG = LoggerFactory.getLogger(URLService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	/**
 	 * Test la validité d'une url.

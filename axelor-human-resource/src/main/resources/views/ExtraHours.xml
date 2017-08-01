@@ -30,7 +30,7 @@
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validButton" onClick="action-extra-hours-group-validate" title="Valid"/>
+	    	<button name="validateButton" onClick="action-extra-hours-group-validate" title="Validate"/>
 	    	<button name="refuseButton" onClick="action-extra-hours-group-refuse" title="Refuse"/>
 			<button name="cancelButton" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
@@ -49,6 +49,10 @@
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	<form name="popup-extra-hours-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.ExtraHours">
@@ -57,7 +61,7 @@
 	
 	<form name="popup-extra-hours-form" title="Select the extra hours you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-extra-hours-attrs-domain-extra-hours-select">
 		<field name="$extraHoursSelect" title="Select extra hours" type="many-to-one" target="com.axelor.apps.hr.db.ExtraHours" widget="SuggestBox" />
-		<button name="editExtraHoursSelected" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected"/>
+		<button name="editExtraHoursSelected" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
 	</form>
 	
 	<action-group name="action-group-extra-hours-onnew">
@@ -97,7 +101,7 @@
 	</action-record>
 	
 	<action-attrs name="action-extra-hours-attrs-buttons">
-		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 	</action-attrs>

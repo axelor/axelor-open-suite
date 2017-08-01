@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.math.BigDecimal;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import com.axelor.apps.base.db.ShippingCoef;
@@ -45,7 +46,7 @@ import com.google.inject.Inject;
 
 public class ProductController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private AppBaseService appBaseService;

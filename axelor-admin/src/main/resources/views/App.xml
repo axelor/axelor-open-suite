@@ -5,7 +5,7 @@
 	
 	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
 		<field name="name" />
-		<field name="code" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="active" />
 		<field name="demoDataLoaded" />
 	</grid>
@@ -16,13 +16,14 @@
 		<panel>
 			<field name="image" widget="Image" colSpan="2"/>
 			<panel colSpan="8">
-				<field name="code" colSpan="3" readonly="true" />
+				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" readonly="true" />
 				<field name="name" colSpan="8" readonly="true" />
 				<field name="dependsOn" colSpan="12" widget="multi-select" readonly="true" hideIf="dependsOnAll" />
 				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="2"/>
-				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3"  />
-        		<spacer colSpan="7"/>
-				<field name="demoDataLoaded" readonly="true" colSpan="2"/>
+				<field name="languageSelect" colSpan="3" />
+				<field name="demoDataLoaded" readonly="true" colSpan="4"/>
+				<spacer colSpan="12"/>
+				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3" />
 				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" />
 			</panel>
 			<field name="description" colSpan="12" readonly="true"/>
@@ -36,6 +37,7 @@
 			<button name="selectAll" title="Select all" colSpan="4" onClick="action-app-bulk-install-select-all"/>
 			<field type="many-to-many" name="appsSet" target="com.axelor.apps.base.db.App" colSpan="12" title="Apps" canNew="false" domain="self.active = false or self.demoDataLoaded = false" height="200"/>			
 			<button name="install" title="Install" colSpan="4" onClick="action-app-method-bulk-install"/>
+			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4"/>
 			<field type="boolean" name="importDemoData" title="Import demo data ?" colSpan="4"/>
 		</panel>
 	</form>
@@ -46,7 +48,7 @@
 			<button name="refreshApp" title="Refresh Apps" onClick="action-app-method-refresh-app"/>
 		</toolbar>
 		<field name="name" />
-		<field name="code" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="image" />
 		<field name="description"/>
 		<field name="typeSelect"/>

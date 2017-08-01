@@ -24,6 +24,7 @@ import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class SupplychainBatchService {
@@ -44,6 +45,9 @@ public class SupplychainBatchService {
 			case SupplychainBatchRepository.ACTION_BILL_SUB:
 				batch = billSubscriptions(supplychainBatch);
 				break;
+			case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
+				batch = invoiceOutgoingStockMoves(supplychainBatch);
+				break;
 			default:
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
@@ -57,6 +61,10 @@ public class SupplychainBatchService {
 
 	public Batch billSubscriptions(SupplychainBatch supplychainBatch){
 		return batchSubscription.run(supplychainBatch);
+	}
+
+	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
+		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
 	}
 
 }

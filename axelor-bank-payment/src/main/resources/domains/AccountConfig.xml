@@ -11,7 +11,7 @@
   	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
   	<boolean name="generateMoveOnBankOrderValidation" title="Generate move when validating a bank order"/>
    	<many-to-one name="internalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for internal order (unique company)"/>
-    <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (mulitple company)"/>
+    <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (multiple company)"/>
 
 	<many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA credit transfers"/>
 	<many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA direct debits"/>
@@ -20,7 +20,7 @@
 	
 	<many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International treasury transfers"/>
 	<many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="National treasury transfer"/>  
-  	<many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types" help="Used for the bank orders not generated on ABS and directly sent"/>  
+  	<many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types"/>  
   
   </entity>
   

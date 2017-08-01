@@ -27,7 +27,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -73,7 +73,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 			List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
 
 			if(accountingSituationList == null) {
-				accountingSituationList = new ArrayList<AccountingSituation>();
+				accountingSituationList = new ArrayList<>();
 			}
 
 			for(Company company : companySet) {
@@ -86,15 +86,15 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 					if(inPaymentMode != null) {
 						List<BankDetails> authorizedInBankDetails = Beans.get(PaymentModeService.class)
 								.getCompatibleBankDetailsList(inPaymentMode, company);
-						if(authorizedInBankDetails.equals(defaultBankDetails)) {
-							accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
+						if(authorizedInBankDetails.contains(defaultBankDetails)) {
+							accountingSituation.setCompanyInBankDetails(defaultBankDetails);
 						}
 					}
 					if(outPaymentMode != null) {
 						List<BankDetails> authorizedOutBankDetails = Beans.get(PaymentModeService.class)
 								.getCompatibleBankDetailsList(outPaymentMode, company);
-						if(authorizedOutBankDetails.equals(defaultBankDetails)) {
-							accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
+						if(authorizedOutBankDetails.contains(defaultBankDetails)) {
+							accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
 						}
 					}
 					accountingSituationList.add(accountingSituation);
@@ -128,6 +128,10 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		accountingSituation.setPartner(partner);
 		accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
 		accountingSituationList.add(accountingSituation);
+		
+		partner.addCompanySetItem(company);
+		partner.addAccountingSituationListItem(accountingSituation);
+
 		return accountingSituation;
 	}
 
@@ -165,7 +169,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 				authorizedBankDetails = Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(
 						accountingSituation.getPartner().getOutPaymentMode(), accountingSituation.getCompany());
 			}
-			String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(authorizedBankDetails);
+			String idList = StringTool.getIdFromCollection(authorizedBankDetails);
 			if (idList.equals("")) {
 				return domain;
 			}

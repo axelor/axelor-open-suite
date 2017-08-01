@@ -41,18 +41,25 @@
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+	<decimal name="amountToBeSpreadOverTheTimetable" title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true"/>
     
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
   	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
     
     <integer name="statusSelect" title="Status" selection="sale.order.status.select" readonly="true"/>
+    
+<!-- 	Margins -->
+	<decimal name="totalCostPrice" title="Total cost price"/>
+	<decimal name="totalGrossMargin" title="Total gross margin"/>
+	<decimal name="marginRate" title="Margin rate"/>
   	
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->
-	<string name="description" title="Description" large="true"/>
+	<string name="description" title="Description to display" large="true"/>
+	<string name="internalNote" title="Internal note" large="true"/>
 
 <!-- 	Onglet Commande Client -->
     <date name="orderDate" title="Order Date"/>
@@ -73,7 +80,6 @@
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.sale.db.CancelReason"/>
 	<string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
-    
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
     
     <boolean name="hideDiscount" title="Hide Discount on prints?"/>

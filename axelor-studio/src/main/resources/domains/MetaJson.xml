@@ -5,12 +5,9 @@
 
   <module name="meta" package="com.axelor.meta.db" />
 
-  <entity name="MetaJsonRecord" table="META_JSON_RECORD">
-    <integer name="status"  title="Status"/>
-  </entity>
-  
   <entity name="MetaJsonField" table="META_JSON_FIELD">
     <many-to-one name="jsonCreator" ref="com.axelor.studio.db.JsonCreator" />
+    <boolean name="isWkf" />
   </entity>
 
 </domain-models>

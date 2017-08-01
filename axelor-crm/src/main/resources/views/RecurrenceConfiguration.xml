@@ -29,7 +29,7 @@
     		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
     	</panel>
     	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
-    		<button name="modifToAll" title="Apply modifications for all" help="All events will be deleted and new events will be created" onClick="save, action-recurrence-assistant-method-change-all"/>
+    		<button name="modifToAll" title="Apply modifications for all" onClick="save, action-recurrence-assistant-method-change-all"/>
     		<button name="deleteThis" title="Delete only this event" onClick="action-recurrence-assistant-method-delete-this"/>
     		<button name="deleteNext" title="Delete this and next events" onClick="action-recurrence-assistant-method-delete-next"/>
     		<button name="deleteAll" title="Delete all events" onClick="action-recurrence-assistant-method-delete-all"/>

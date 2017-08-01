@@ -17,21 +17,22 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.MetaStore;
-import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.schema.views.Selection.Option;
-import com.axelor.studio.db.ViewBuilder;
-import com.axelor.studio.db.ViewItem;
+import com.axelor.rpc.Context;
+import com.axelor.rpc.Resource;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfTracking;
 import com.axelor.studio.db.WkfTrackingLine;
@@ -54,11 +55,11 @@ import com.google.inject.persist.Transactional;
  */
 public class WkfTrackingService {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected static final String ACTION_TRACK = "action-method-wkf-track";
+	public static final String ACTION_TRACK = "action-method-wkf-track";
 
-	protected static final String ACTION_OPEN_TRACK = "action-wkf-open-wkf-tracking";
+	public static final String ACTION_OPEN_TRACK = "action-wkf-open-wkf-tracking";
 
 	@Inject
 	private WkfRepository wkfRepo;
@@ -75,9 +76,6 @@ public class WkfTrackingService {
 	@Inject
 	private WkfTrackingTimeRepository trackingTimeRepo;
 
-	@Inject
-	private WkfService wkfService;
-
 	private BigDecimal durationHrs;
 
 	private String oldStatus;
@@ -92,39 +90,46 @@ public class WkfTrackingService {
 	 *            Record id of model to track.
 	 * @param status
 	 *            Current wkfStatus of record.
+	 * @throws ClassNotFoundException 
 	 */
-	public void track(String model, Object object) {
+	public void track(Object object) throws ClassNotFoundException {
 			
-		log.debug("Model: {}, Object: {}", model, object);
-		if (model != null && object != null) {
-
-			Map<String, Object> obj = Mapper.toMap(object);
-			if (obj.get("id") == null) {
+		if (object != null) {
+			
+			Context ctx = new Context(Resource.toMap(object), object.getClass());
+			log.debug("Ctx keys: {}, id: {}", ctx.keySet(), ctx.get("id"));
+			
+			if (ctx.get("id") == null) {
 				return;
 			}
 			
-			WkfTracking wkfTracking = getWorkflowTracking(model,
-					Integer.parseInt(obj.get("id").toString()));
+			WkfTracking wkfTracking = getWorkflowTracking(ctx, object.getClass().getName());
 
 			if (wkfTracking == null) {
 				return;
 			}
 			
-			MetaField wkfField =  wkfTracking.getWkf().getWkfField();
-			MetaSelect metaSelect = wkfField.getMetaSelect();
+			MetaJsonField wkfField =  wkfTracking.getWkf().getStatusField();
 			
-			if (metaSelect == null) {
-				return;
+			Object status = null;
+			
+			if (object instanceof MetaJsonRecord){
+				status = ctx.get(wkfField.getName());
+				log.debug("Status field: {} value: {}", wkfField.getName(), status);
 			}
+			else {
+				status = ((Map<String,Object>)ctx.get("$" + wkfTracking.getWkf().getJsonField())).get(wkfField.getName());
+			}	
 			
-			Object status = obj.get(wkfField.getName());
+			log.debug("Status value: {}", status);
 			
 			if (status == null) {
 				return;
 			}
 			
-			Option item = MetaStore.getSelectionItem(metaSelect.getName(), status.toString());
+			Option item = MetaStore.getSelectionItem(wkfField.getSelection(), status.toString());
 			
+			log.debug("Fetching option {} from selection {}", status.toString(), wkfField.getSelection());
 			if (item == null) {
 				return;
 			}
@@ -150,29 +155,51 @@ public class WkfTrackingService {
 	 * @return WkfTracking instance created/found.s
 	 */
 	@Transactional
-	public WkfTracking getWorkflowTracking(String model, Integer modelId) {
-
-		Wkf wkf = wkfRepo.all().filter("self.metaModel.fullName = ?1", model)
-				.fetchOne();
-
-		if (wkf == null) {
+	public WkfTracking getWorkflowTracking(Context ctx, String model) {
+		
+		String jsonModel = (String) ctx.get("jsonModel");
+		
+		if (jsonModel != null) {
+			model = jsonModel;
+		}
+		
+		List<Wkf> wkfs = wkfRepo.all()
+				.filter("self.metaModel = ?1 or self.jsonModel = ?1", model)
+				.fetch();
+		
+		if (wkfs.isEmpty()) {
 			log.debug("Workflow not found for model: {}", model);
 			return null;
 		}
-
+		
+		Wkf wkf = null;
+		
+		if (wkfs.size() > 1){
+			for (Wkf w : wkfs) {
+				if (ctx.containsKey(w.getJsonField())) {
+					wkf = w;
+					break;
+				}
+			}
+			if (wkf == null) {
+				return null;
+			}
+		}
+		else {
+			wkf = wkfs.get(0);
+		}
+		
 		WkfTracking wkfTracking = wkfTrackingRepo
 				.all()
 				.filter("self.wkf = ?1 and self.recordModel = ?2 and self.recordId = ?3",
-						wkf, model, modelId).fetchOne();
+						wkf, model, ctx.get("id")).fetchOne();
 
 		if (wkfTracking == null) {
 			wkfTracking = new WkfTracking();
 			wkfTracking.setWkf(wkf);
 			wkfTracking.setRecordModel(model);
-			wkfTracking.setRecordId(modelId);
+			wkfTracking.setRecordId((Long) ctx.get("id"));
 
-			// try {
-			// Mapper mapper = Mapper.of(Class.forName(model));
 			// Property property = mapper.getProperty("namecolumn");
 			// if(property != null){
 			// String nameColumn = property.getName();
@@ -305,26 +332,6 @@ public class WkfTrackingService {
 			trackingTime.setStatus(status);
 			trackingTimeRepo.save(trackingTime);
 		}
-	}
-
-	/**
-	 * Add tracking action and button in ViewBuilder.
-	 * 
-	 * @param viewBuilder
-	 *            ViewBuilder to update.
-	 */
-	@Transactional
-	public void addTracking(ViewBuilder viewBuilder) {
-
-		ViewItem viewButton = wkfService.getViewButton(viewBuilder,
-				"openWkfTracking");
-		viewButton.setTitle("Track workflow");
-		viewButton.setWkfButton(true);
-		viewButton.setOnClick(ACTION_OPEN_TRACK);
-
-		String onSave = viewBuilder.getOnSave();
-		onSave = wkfService.getUpdatedActions(onSave, ACTION_TRACK, true);
-		viewBuilder.setOnSave(onSave);
 	}
 
 }

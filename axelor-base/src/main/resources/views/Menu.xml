@@ -3,12 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<menuitem id="abs-menu-mail" name="menu-mail" order="-110"
+	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
 	
-	<menuitem id="abs-menu-dms" name="menu-dms" order="-109"
-    title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
-	
+	<menuitem id="abs-menu-dms" name="menu-dms" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getDocument()" hidden="false" order="-109"
+    title="Documents" icon="fa-archive" icon-background="#3f6bb9" />
+    
+    <menuitem id="abs-menu-team" name="menu-team" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getTeamManagement()" hidden="false"  order="-110"
+    title="Teamwork" icon="fa-user" icon-background="blue"/>
+    
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />
 	
@@ -285,20 +288,32 @@
 	<menuitem name="referential-report-partner-prospects" parent="referential-report-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
 		
-	<action-view name="action-show-customers-on-map-page" title="Customers">  		
+<!-- 	<action-view name="action-show-customers-on-map-page" title="Customers">  		
  		<view type="html" name="map/gmap-objs.html?object=customer" /> 
-	</action-view>
+	</action-view> -->
 	
-	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
+	<action-method name="action-show-customers-on-map-page">
+	  <call method="showCustomersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>	
+	
+<!-- 	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
  		<view type="html" name="map/gmap-objs.html?object=prospect" /> 
-	</action-view>
+	</action-view> -->
+	
+	<action-method name="action-show-prospects-on-map-page">
+	  <call method="showProspectsOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>
 	
 	<menuitem name="referential-report-partner-suppliers" parent="referential-report-maps" 
 		title="Suppliers" action="action-show-suppliers-on-map-page"/>	
 	
-	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
+<!-- 	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
  		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
-	</action-view>
+	</action-view> -->
+	
+	<action-method name="action-show-suppliers-on-map-page">
+	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>
 	
 	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"/>
 
@@ -382,8 +397,20 @@
 		<view type="grid" name="company-grid"/>
 		<view type="form" name="company-form"/>
 	</action-view>
-	
-	<menuitem name="alarm-root" title="Alarmes" order="30"
+
+	<menuitem name="admin-root-user-configuration" parent="admin-root-user"
+		title="Configuration" />
+
+	<menuitem name="company-department-all" parent="admin-root-user-configuration"
+    	title="Departments"
+    	action="company.department.all"/>
+
+	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
+    	<view type="grid" name="company-department-grid"/>
+	    <view type="form" name="company-department-form"/>
+	</action-view>
+
+	<menuitem name="alarm-root" title="Alarms" order="30"
 		  parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
@@ -496,5 +523,36 @@
 		<view type="grid" name="indicator-generator-grid" />
 		<view type="form" name="indicator-generator-form"/>
 	</action-view>
+
+	<menuitem name="admin-root-calendars" parent="admin-root"
+			  title="Calendars" order="50"/>
+
+	<menuitem name="admin-root-calendars-icalendars" title="iCalendars"
+			  parent="admin-root-calendars" action="admin.root.calendars.icalendars"/>
+
+	<action-view name="admin.root.calendars.icalendars" title="ICalendars"
+				 model="com.axelor.apps.base.db.ICalendar">
+		<view type="grid" name="calendar-grid"/>
+		<view type="form" name="calendar-form"/>
+	</action-view>
+
+	<menuitem name="admin-root-calendars-ievents" title="iEvents"
+			  parent="admin-root-calendars" action="admin.root.calendars.ievents"/>
+
+	<action-view name="admin.root.calendars.ievents" title="IEvents"
+				 model="com.axelor.apps.base.db.ICalendarEvent">
+		<view type="grid" name="calendar-event-grid"/>
+		<view type="form" name="calendar-event-form"/>
+	</action-view>
+	
+	<menuitem name="admin-root-calendars-config" parent="admin-root-calendars"
+		title="Calendar Configurations" action="admin.root.calendars.config" />
+
+	<action-view name="admin.root.calendars.config" title="Calendar Configurations"
+		model="com.axelor.apps.base.db.CalendarConfiguration" >
+		<view type="grid" name="calendar-configuration-grid"/>
+		<view type="form" name="calendar-configuration-form"/>
+	</action-view>
+	
 	
 </object-views>

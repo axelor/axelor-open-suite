@@ -18,6 +18,7 @@
 package com.axelor.csv.script;
 
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -34,13 +35,13 @@ import com.google.inject.Inject;
 
 public class ImportProduct {
 	
-	private final Logger LOG = LoggerFactory.getLogger(getClass());
+	private final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	ProductService productService;
+	private ProductService productService;
 	
 	@Inject
-	ProductRepository productRepo;
+	private ProductRepository productRepo;
 	
 	@Inject
 	MetaFiles metaFiles;
@@ -64,6 +65,7 @@ public class ImportProduct {
 				else {
 					LOG.debug("No image file found: {}", image.getAbsolutePath());
 				}
+				
 			} catch (Exception e) {
 				LOG.error("Error when importing product picture : {}", e);
 			}

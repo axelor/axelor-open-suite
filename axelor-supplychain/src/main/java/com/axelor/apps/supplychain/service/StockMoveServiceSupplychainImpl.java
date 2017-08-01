@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -42,7 +43,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceSupplychainImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private AppSupplychainService appSupplyChainService;
@@ -82,7 +83,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
 				}
 			}
-
+			
+			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+				if (stockMoveLine.getSaleOrderLine() != null) {
+					stockMoveLine.getSaleOrderLine().setDeliveredQuantities(stockMoveLine.getRealQty());
+				}
+			}
+			
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
 		}else if (stockMove.getPurchaseOrder() != null){
 			//Update linked purchaseOrder receipt state depending on BackOrder's existence

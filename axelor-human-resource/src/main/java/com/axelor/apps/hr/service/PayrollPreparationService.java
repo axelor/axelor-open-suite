@@ -35,23 +35,8 @@ import java.time.format.DateTimeFormatter;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
-import com.axelor.apps.hr.db.EmploymentContract;
-import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.ExtraHoursLine;
-import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.LunchVoucherMgtLine;
-import com.axelor.apps.hr.db.PayrollLeave;
-import com.axelor.apps.hr.db.PayrollPreparation;
-import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
-import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
-import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
+import com.axelor.apps.hr.db.*;
+import com.axelor.apps.hr.db.repo.*;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -214,7 +199,18 @@ public class PayrollPreparationService {
 	
 	public BigDecimal computeEmployeeBonusAmount(PayrollPreparation payrollPreparation){
 		BigDecimal employeeBonusAmount = BigDecimal.ZERO;
-		List<EmployeeBonusMgtLine> employeeBonusList = Beans.get(EmployeeBonusMgtLineRepository.class).all().filter("self.employee = ?1 AND self.employeeBonusMgt.statusSelect = 2 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.employeeBonusMgt.payPeriod = ?2", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
+		List<EmployeeBonusMgtLine> employeeBonusList =
+				Beans.get(EmployeeBonusMgtLineRepository.class).all()
+						.filter("self.employee = ?1" +
+								" AND self.employeeBonusMgt.statusSelect = ?4" +
+								" AND (self.payrollPreparation = null" +
+									" OR self.payrollPreparation.id = ?2)" +
+								" AND self.employeeBonusMgt.payPeriod = ?3",
+								payrollPreparation.getEmployee(),
+								payrollPreparation.getId(),
+								payrollPreparation.getPeriod(),
+								EmployeeBonusMgtRepository.STATUS_CALCULATED)
+						.fetch();
 		for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
 			payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);
 			employeeBonusAmount = employeeBonusAmount.add( employeeBonusMgtLine.getAmount() );

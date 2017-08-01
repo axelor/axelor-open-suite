@@ -6,27 +6,32 @@
     
     <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" onNew="action-generate-message-group-on-new">
     	<panel name="main" >
-	      	<field name="_xTemplate" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name" form-view="template-form" grid-view="template-grid"/>
-	      	<spacer/>
+	      	<field name="_xTemplate" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name"
+				   form-view="template-form" grid-view="template-grid" onSelect="action-method-template-domain"/>
+	      	<field name="language" title="Language" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Language" target-name="name"
+				   form-view="language-form" grid-view="language-grid" onChange="action-on-change-language-template"/>
+			<spacer/>
 	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
       	</panel>
 	</form>
-	
+
 	<action-group name="action-generate-message-group-on-new">
 		<action name="action-generate-message-record-on-new"/>
-		<action name="action-generate-message-attrs-template-domain"/>
+		<action name="action-method-template-domain"/>
 	</action-group>
-    
-    <action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
-   		<field name="_xTemplate" expr="eval:__repo__.of(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne()"/>
-   	</action-record>
-    
-    <action-method name="action-generate-message-method-generate-message">
+
+	<action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
+		<field name="_xTemplate" expr="eval:__repo__(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne()"/>
+		<field name="language" expr="eval:__repo__(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne().getLanguage()"
+			   if="__repo__(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne() != null"/>
+	</action-record>
+
+	<action-method name="action-generate-message-method-generate-message">
     	<call class="com.axelor.apps.message.web.GenerateMessageController" method="generateMessage"/>
     </action-method>
-    
-    <action-attrs name="action-generate-message-attrs-template-domain">
-    	<attribute name="domain" for="_xTemplate" expr="eval: &quot;self.metaModel.fullName = '${_templateContextModel}' and self.isSystem != true&quot;"/>
-    </action-attrs>
-    
+
+	<action-attrs name="action-on-change-language-template">
+		<attribute for="_xTemplate" name="value" expr="eval: null"/>
+	</action-attrs>
+
 </object-views>

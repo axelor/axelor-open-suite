@@ -3,8 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
+	<menuitem title="Contracts" name="menu-contract-root"  order="-104" if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
 	
-	<menuitem title="Contracts" name="menu-contract-sale-all" action="menu.contract.all" order="-104" if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
+	<menuitem title="Contracts" name="menu-contract-all" action="menu.contract.all"  parent="menu-contract-root" order="5"/>
+	
+	<action-view name="menu.contract.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+	</action-view>
+	
+	<menuitem title="Contract Templates" name="menu-contract-templates-all" action="menu.contract.templates.all" parent="menu-contract-root" order="10"/>
+	
+	<action-view name="menu.contract.templates.all" title="Contract Templates" model="com.axelor.apps.contract.db.HtmlTemplate">
+		<view type="grid" name="html-template-grid"/>
+		<view type="form" name="html-template-form"/>
+	</action-view>
+	
+	<menuitem title="Contracts" name="menu-contract-sale-all" action="menu.contract.sale.all" order="39" if="__config__.app.isApp('contract')"  parent="sc-root-sale"/>
 	
 	<action-view name="menu.contract.sale.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
@@ -12,19 +27,12 @@
 		<domain>self.typeSelect = 1</domain>
 	</action-view>
 	
-	<menuitem title="Contracts" name="menu-contract-purchase-all" action="menu.contract.all" order="285" parent="sc-root-purchase" if="__config__.app.isApp('contract')"/>
+	<menuitem title="Contracts" name="menu-contract-purchase-all" action="menu.contract.purchase.all" order="285" parent="sc-root-purchase" if="__config__.app.isApp('contract')"/>
 	
-	<action-view name="menu.contract.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+	<action-view name="menu.contract.purchase.all" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
 		<domain>self.typeSelect = 2</domain>
-	</action-view>
-	
-	<menuitem title="Contract Templates" name="menu-contract-templates-all" action="menu.contract.templates.all" parent="sc-root-purchase-conf" if="__config__.app.isApp('contract')"/>
-	
-	<action-view name="menu.contract.templates.all" title="Contract Templates" model="com.axelor.apps.contract.db.HtmlTemplate">
-		<view type="grid" name="html-template-grid"/>
-		<view type="form" name="html-template-form"/>
 	</action-view>
 	
 	

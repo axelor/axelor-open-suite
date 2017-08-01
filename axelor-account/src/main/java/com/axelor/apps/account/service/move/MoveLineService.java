@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -65,9 +66,9 @@ import com.google.inject.persist.Transactional;
 
 public class MoveLineService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected AccountManagementServiceAccountImpl accountManagementService;
+	protected AccountManagementAccountService accountManagementService;
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
 	protected LocalDate today;
@@ -79,7 +80,7 @@ public class MoveLineService {
 
 	
 	@Inject
-	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
+	public MoveLineService(AccountManagementAccountService accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, AppAccountService appAccountService,
 			AnalyticMoveLineService analyticMoveLineService, 
 			CurrencyService currencyService, CompanyConfigService companyConfigService) {
@@ -204,7 +205,7 @@ public class MoveLineService {
 
 	/**
 	 * Créer une ligne d'écriture comptable
-	 *
+	 * 
 	 * @param move
 	 * @param partner
 	 * @param account
@@ -212,21 +213,11 @@ public class MoveLineService {
 	 * @param isDebit
 	 * 		<code>true = débit</code>,
 	 * 		<code>false = crédit</code>
-	 * @param isMinus
-	 * 		<code>true = moins</code>,
-	 * 		<code>false = plus</code>
-	 * @param dueDate
-	 * 		Date d'échécance
+	 * @param date
 	 * @param ref
-	 * @param ignoreInAccountingOk
-	 * 		<code>true = ignoré en compta</code>
-	 * @param ignoreInReminderOk
-	 * 		<code>true = ignoré en relance</code>
-	 * @param fromSchedulePaymentOk
-	 * 		<code>true = proviens d'un échéancier</code>
-	 *
+	 * @param origin
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
 
@@ -514,7 +505,7 @@ public class MoveLineService {
 	 */
 	public MoveLine getCreditCustomerMoveLine(Move move)  {
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				return moveLine;
 			}
@@ -545,7 +536,7 @@ public class MoveLineService {
 	 */
 	public MoveLine getDebitCustomerMoveLine(Move move)  {
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				return moveLine;
 			}

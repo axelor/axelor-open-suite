@@ -17,6 +17,8 @@
   	
   	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="purchaseOrder"/>
 	<date name="expectedRealisationDate" title="Expected realisation date"/>
+	
+	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
   </entity>
 
 </domain-models>

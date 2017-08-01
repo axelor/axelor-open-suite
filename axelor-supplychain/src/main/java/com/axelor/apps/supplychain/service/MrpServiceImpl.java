@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
@@ -63,6 +64,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.tool.Pair;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -78,7 +80,7 @@ import com.google.inject.persist.Transactional;
 
 public class MrpServiceImpl implements MrpService  {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected MrpRepository mrpRepository;
 	protected LocationRepository locationRepository;
@@ -272,7 +274,7 @@ public class MrpServiceImpl implements MrpService  {
 				
 				BigDecimal reorderQty = minQty.subtract(cumulativeQty);
 				
-				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE);
+				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 				
 				if(stockRules != null)  {   reorderQty = reorderQty.max(stockRules.getReOrderQty());  }
 				
@@ -741,7 +743,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected List<Location> getAllLocationAndSubLocation(Location location)  {
 	
-		List<Location> subLocationList =  locationRepository.all().filter("self.parent = ?1", location).fetch();
+		List<Location> subLocationList =  locationRepository.all().filter("self.parentLocation = ?1", location).fetch();
 	
 		for(Location subLocation : subLocationList)  {
 			
@@ -770,6 +772,16 @@ public class MrpServiceImpl implements MrpService  {
 		
 		
 		
+	}
+
+	@Override
+	public LocalDate findMrpEndDate(Mrp mrp) {
+	    if (mrp.getEndDate() != null) {
+	    	return mrp.getEndDate();
+		}
+		return mrp.getMrpLineList().stream().max(
+				Comparator.comparing(MrpLine::getMaturityDate)).get()
+				.getMaturityDate();
 	}
 
 	

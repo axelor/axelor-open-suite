@@ -63,7 +63,7 @@ public class JobApplicationController {
 	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 		
 		JobApplication application = request.getContext().asType(JobApplication.class);
-		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(application.getFirstName(), application.getLastName(), null);
+		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(application.getFirstName(), application.getLastName(), 2);
 		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
 	}
 }

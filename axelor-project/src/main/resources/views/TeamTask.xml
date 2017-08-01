@@ -15,13 +15,17 @@
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onNew="action-task-defaults">
 		<toolbar>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" />
-			<button name="start" help="Start" icon="fa-play"/>
-			<button name="accept" help="Validate" icon="fa-check"/>
-			<button name="stop" help="Finish" icon="fa-power-off"/>
-			<button name="bookResource" title="Book resource" onClick="save,action-task-book-resource" />
+			<button name="grabEvent" icon="fa-suitcase" />
+			<button name="start" icon="fa-play"/>
+			<button name="accept" icon="fa-check"/>
+			<button name="stop" icon="fa-power-off"/>
 		</toolbar>
-		
+		<menubar>
+	        <menu title="Tools">   
+	            <item title="Schedule Event" action="save,action-task-book-resource"/>
+	        </menu>
+	    </menubar>
+	    
 		<panel name="main" colSpan="12">
 			<field name="sequence" title="Ticket N°" colSpan="3" readonly="true"/>
 			<field name="name" colSpan="9" placeholder="Subject" required="true"/>
@@ -38,8 +42,8 @@
 				<field name="createdOn" title="Created on" colSpan="6"/>
 			</panel>
 			<panel title=" " colSpan="12">
-				<field name="taskDate" colSpan="4" required="true"/>
-				<field name="taskDuration" colSpan="4" widget="duration" x-big="true"/>
+				<field name="taskDate" colSpan="4" required="true" title="Task date"/>
+				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true"/>
 				<field name="taskDeadline" colSpan="4"/>
 				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			</panel>
@@ -60,6 +64,12 @@
 		
 		<panel-related field="membersUserSet" form-view="user-form" grid-view="user-grid" colSpan="12" onSelect="action-task-attrs-project-members-user-set-configurations"/>
 		<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
+		<panel title="Dependencies">
+			<panel-related field="startToStartSet" colSpan="12" />
+			<panel-related field="finishToStartSet" colSpan="12" />
+			<panel-related field="startToFinishSet" colSpan="12" />
+			<panel-related field="finishToFinishSet" colSpan="12" />
+		</panel>
 		
 		<panel sidebar="true" name="attributes" title="Attributes">
 			<field name="status" colSpan="6" required="true"/>
@@ -67,14 +77,19 @@
 			<field name="priority" colSpan="6" required="true"/>
 			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
 			<field name="progressSelect" colSpan="12" widget="SelectProgress" />
+			<field name="plannedProgress" widget="progress"  />
 	    </panel>
+	    
+	    
 		<panel-mail>
 			<mail-messages/>
 		</panel-mail>
 	</form>
 	
 	<gantt name="task-gantt" title="Tasks" model="com.axelor.team.db.TeamTask" 
-		taskStart="taskDate" taskDuration="taskDuration" taskParent="parentTask" taskSequence="sequence">	
+		taskStart="taskDate" taskDuration="taskDuration" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">	
 		<field name="name"/>
 	</gantt> 
 	

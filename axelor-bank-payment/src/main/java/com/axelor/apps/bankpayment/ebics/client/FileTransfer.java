@@ -17,14 +17,18 @@
  */
 package com.axelor.apps.bankpayment.ebics.client;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+
+import org.jdom.JDOMException;
 
 import com.axelor.apps.bankpayment.db.EbicsTransferState;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.ByteArrayContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Joiner;
+import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.apps.bankpayment.ebics.xml.DInitializationRequestElement;
 import com.axelor.apps.bankpayment.ebics.xml.DInitializationResponseElement;
 import com.axelor.apps.bankpayment.ebics.xml.DTransferRequestElement;
@@ -96,12 +100,26 @@ public class FileTransfer {
     EbicsTransferState		state;
 
     sender = new HttpRequestSender(session);
+    
     initializer = new UInitializationRequestElement(session,
 	                                            orderType,
 	                                            content, signature);
+   
     initializer.build();
-    initializer.validate();
+
+	initializer.validate();
+	ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    try {
+		initializer.save(bout);
+	} catch (JDOMException e) {
+		// TODO Bloc catch généré automatiquement
+		e.printStackTrace();
+	}
+	System.out.println("Requete ----------------------------------------------------------------------------");
+	System.out.println(bout.toString());
+	
     httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()));
+    
     EbicsUtils.checkHttpCode(httpCode);
     response = new InitializationResponseElement(sender.getResponseBody(),
 	                                         orderType,

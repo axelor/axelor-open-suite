@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -53,7 +54,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReconcileServiceImpl  implements ReconcileService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveToolService moveToolService;
 	protected AccountCustomerService accountCustomerService;
@@ -178,12 +179,13 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		}
 
 		// Check if move lines accounts are the same (debit and credit)
-		if (!creditMoveLine.getAccount().equals(debitMoveLine.getAccount())){
+		if (!creditMoveLine.getAccount().equals(debitMoveLine.getAccount())) {
 			log.debug("Compte ligne de credit : {} , Compte ligne de debit : {}", creditMoveLine.getAccount(), debitMoveLine.getAccount());
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_2)+" " +
-					I18n.get(IExceptionMessage.RECONCILE_3),
-					AppAccountServiceImpl.EXCEPTION, debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
-					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.CONFIGURATION_ERROR);
+
+			// Check if move lines accounts are compatible
+			if (!debitMoveLine.getAccount().getCompatibleAccountSet().contains(creditMoveLine.getAccount())) {
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_2), AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			}
 		}
 
 		// Check if the amount to reconcile is != zero

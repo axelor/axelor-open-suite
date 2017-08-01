@@ -19,7 +19,7 @@
 	<many-to-one name="detailsLocation" ref="com.axelor.apps.stock.db.Location" title="Location Details"/>
 	
 	<decimal name="lastInventoryRealQty"/>
-	<datetime name="lastInventoryDateT" tz="true"/>
+	<datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>
 	
   </entity>
 </domain-models>

@@ -9,6 +9,7 @@
 	
 	<action-view name="campaign.all" model="com.axelor.apps.marketing.db.Campaign"
 		title="Campaigns">
+		<view name="campaign-kanban" type="kanban"/>
 		<view name="campaign-grid" type="grid" />
 		<view name="campaign-form" type="form" />
 	</action-view>	
@@ -29,6 +30,16 @@
 		title="Campaign types">
 		<view name="campaign-type-grid" type="grid" />
 		<view name="campaign-type-form" type="form" />
-	</action-view>	
+	</action-view>
+	
+	<menuitem name="marketing-conf-template" parent="marketing-conf" title="Template" action="marketing.conf.template"/>
+	
+	<action-view name="marketing.conf.template" model="com.axelor.apps.message.db.Template"	title="Template">
+		<view name="template-grid" type="grid" />
+		<view name="template-form" type="form" />
+		<domain>self.mediaTypeSelect IN (4)</domain>
+		<context name="_mediaType" expr="eval:4"/>
+	</action-view>
+		
 
 </object-views>

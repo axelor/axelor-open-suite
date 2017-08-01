@@ -26,7 +26,7 @@
 	<boolean name="isMultiCurrency" title="Multi currencies"/>
 	
   	
-  	<boolean name="displayAdditionnalInformations" title="Display additionnal informations ?"/>
+  	<boolean name="displayAdditionnalInformations" title="Display additional informations ?"/>
 	
   	<boolean name="displayBankOrderEconomicReason" title="Display economic reason ?"/>
 	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Default economic reason" index="idx_bankpayment_bank_order_file_format_economic_reason"/>

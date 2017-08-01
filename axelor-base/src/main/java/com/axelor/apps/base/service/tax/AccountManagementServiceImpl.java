@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.tax;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import java.time.LocalDate;
@@ -37,7 +38,7 @@ import com.axelor.i18n.I18n;
 
 public class AccountManagementServiceImpl implements  AccountManagementService{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AccountManagementServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 
 	/**

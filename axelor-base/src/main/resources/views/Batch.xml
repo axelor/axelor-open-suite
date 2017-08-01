@@ -32,7 +32,7 @@
 		    <button name="showPartner" title="Partners" hidden="true" colSpan="2" onClick="save,action-batch-show-partner"/>
 		    <button name="showAccountingSituation" title="Accounting situations" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-situation"/>
 		    <button name="showPaymentVoucher" title="Payment vouchers" hidden="true" colSpan="2" onClick="save,action-batch-show-payment-voucher"/>
-		    <button name="showMoveLineReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-move-line-report"/>
+		    <button name="showAccountingReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-report"/>
 		</panel>
     </form>
     
@@ -47,7 +47,7 @@
     	<attribute name="hidden" for="showPartner" expr="eval: !(_parent?.actionSelect in [14])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	<attribute name="hidden" for="showAccountingSituation" expr="eval: !(_parent?.actionSelect in [17])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	
-    	<attribute name="hidden" for="showMoveLineReport" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showAccountingReport" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     </action-attrs>
 
 	<action-view name="action-batch-show-trace-back" title="Anomalies"
@@ -107,10 +107,10 @@
 		<context name="batch" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-batch-show-move-line-report" title="Move exports"
-		model="com.axelor.apps.account.db.MoveLineReport">
-		<view type="grid" name="move-line-report-export-grid"/>
-		<view type="form" name="move-line-report-export-form"/>
+	<action-view name="action-batch-show-accounting-report" title="Move exports"
+		model="com.axelor.apps.account.db.AccountingReport">
+		<view type="grid" name="accounting-report-export-grid"/>
+		<view type="form" name="accounting-report-export-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: id"/>
 	</action-view>

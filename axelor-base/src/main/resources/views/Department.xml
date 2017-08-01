@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department" orderBy="code">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="region" grid-view="region-grid" form-view="region-form"/>
         <field name="name"/>
     </grid>
     
-    <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" width="large">
+    <form name="department-form" title="Department" model="com.axelor.apps.base.db.Department" width="large">
     	<panel name="main" >
-	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="name"/>
 	        <field name="region" grid-view="region-grid" form-view="region-form"/>
         </panel>

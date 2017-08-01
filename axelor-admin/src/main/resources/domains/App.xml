@@ -5,7 +5,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-  	<entity name="App" lang="java" strategy="JOINED">
+  	<entity name="App" lang="java" strategy="JOINED" cachable="true">
 		
 		<string name="typeSelect" title="Type" selection="app.type.select"  required="true" unique="true"/>
 	    <integer name="importId"/>
@@ -19,6 +19,7 @@
 		<boolean name="demoDataLoaded" title="Demo data loaded ?" />
 		<boolean name="active" title="Active" />
 		<integer name="sequence" title="Sequence" />
+		<string name="languageSelect" title="Language" selection="select.language" />
 
   	</entity>
 

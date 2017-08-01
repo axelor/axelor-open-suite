@@ -19,19 +19,22 @@ package com.axelor.studio.web;
 
 import java.util.List;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.axelor.common.Inflector;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Filter;
-import com.axelor.studio.service.FilterService;
+import com.axelor.studio.service.filter.FilterSqlService;
 import com.google.inject.Inject;
 
 public class FilterController {
 
 	@Inject
-	private FilterService filterService;
+	private FilterSqlService filterSqlService;
 
 	public void updateTargetField(ActionRequest request, ActionResponse response) {
 
@@ -60,7 +63,7 @@ public class FilterController {
 	}
 
 	public void updateTargetDetails(ActionRequest request,
-			ActionResponse response) {
+			ActionResponse response) throws AxelorException {
 
 		Filter filter = request.getContext().asType(Filter.class);
 
@@ -72,25 +75,26 @@ public class FilterController {
 		
 		Boolean isJson = filter.getIsJson();
 		
-		List<Object> target = null;
+		StringBuilder parent = new StringBuilder("self");
+		Object target = null;
 		if (!isJson && metaField != null
 				&& metaField.getRelationship() != null) {
-			target = filterService.getTargetField(metaField,
-					targetField);
+			target = filterSqlService.parseMetaField(metaField, targetField, null, parent);
 		} else if(isJson && metaJson != null
 				&& metaJson.getTargetJsonModel() != null) {
-			target = filterService.getTargetField(metaJson,
-					targetField);
+			target = filterSqlService.parseJsonField(metaJson, targetField, null, parent);
 		} 
 		
 		if (target != null) {
-			if (target.get(1) instanceof MetaField) {
-				updateTarget(response, (MetaField)target.get(0));
+			if (target instanceof MetaField) {
+				updateTarget(response, (MetaField)target);
+				response.setValue("targetField", target);
 			}
-			else if (target.get(1) instanceof MetaJsonField) {
-				updateTarget(response, (MetaJsonField)target.get(0));
+			else if (target instanceof MetaJsonField) {
+				updateTarget(response, (MetaJsonField)target);
+				response.setValue("targetField", target);
 			}
-			response.setValue("targetField", target.get(0));
+			response.setValue("targetField", target);
 		}
 		else {
 			response.setValue("targetType", null);

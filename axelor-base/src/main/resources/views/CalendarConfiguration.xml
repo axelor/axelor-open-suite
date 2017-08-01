@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="calendar-configuration-grid" title="Calendar configurations" model="com.axelor.apps.base.db.CalendarConfiguration">
+		<field name="name" />
+		<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" />
+		<field name="calendarUser" form-view="user-form" grid-view="user-grid"/>
+		<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
+	</grid>
+
+	<form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.base.db.CalendarConfiguration">
+		<panel name="main" >
+			<field name="name" />
+			<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" />
+			<field name="calendarUser" form-view="user-form" grid-view="user-grid"/>
+			<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
+		</panel>
+		<panel sidebar="true" name="action" title="Actions">
+			<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action" />
+			<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action" />
+		</panel>
+		<panel-related field="calendarSet" form-view="calendar-form" grid-view="calendar-grid"/>
+	</form>
+
+	<action-method name="action-calendar-configuration-method-create-Action">
+		<call class="com.axelor.apps.base.web.CalendarConfigurationController" method="createAction" />
+	</action-method>
+
+	<action-method name="action-calendar-configuration-method-delete-Action">
+		<call class="com.axelor.apps.base.web.CalendarConfigurationController" method="deleteAction" />
+	</action-method>
+
+</object-views>

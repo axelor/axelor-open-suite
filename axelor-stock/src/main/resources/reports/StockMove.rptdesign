@@ -158,7 +158,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -268,6 +270,36 @@ else row["last_modified_by"]</expression>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">addressl6</text-property>
                     <text-property name="heading">addressl6</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fromaddressl2</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fromaddressl2</text-property>
+                    <text-property name="heading">fromaddressl2</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fromaddressl3</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fromaddressl3</text-property>
+                    <text-property name="heading">fromaddressl3</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fromaddressl4</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fromaddressl4</text-property>
+                    <text-property name="heading">fromaddressl4</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fromaddressl5</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fromaddressl5</text-property>
+                    <text-property name="heading">fromaddressl5</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fromaddressl6</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fromaddressl6</text-property>
+                    <text-property name="heading">fromaddressl6</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">countryName</property>
@@ -404,46 +436,71 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">17</property>
-                        <property name="name">countryName</property>
+                        <property name="name">fromaddressl2</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">pdf_header</property>
+                        <property name="name">fromaddressl3</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
-                        <property name="name">last_modified_by</property>
+                        <property name="name">fromaddressl4</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">createdBy</property>
+                        <property name="name">fromaddressl5</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">num_of_packages</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">fromaddressl6</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">22</property>
-                        <property name="name">tracking_number</property>
+                        <property name="name">countryName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">23</property>
+                        <property name="name">pdf_header</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">last_modified_by</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">createdBy</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">num_of_packages</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">tracking_number</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
                         <property name="name">num_of_palettes</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">29</property>
                         <property name="name">gross_weight</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">30</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -566,55 +623,90 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">17</property>
+                    <property name="name">fromaddressl2</property>
+                    <property name="nativeName">fromaddressl2</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">fromaddressl3</property>
+                    <property name="nativeName">fromaddressl3</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">fromaddressl4</property>
+                    <property name="nativeName">fromaddressl4</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">fromaddressl5</property>
+                    <property name="nativeName">fromaddressl5</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">fromaddressl6</property>
+                    <property name="nativeName">fromaddressl6</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
                     <property name="name">countryName</property>
                     <property name="nativeName">countryName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">23</property>
                     <property name="name">pdf_header</property>
                     <property name="nativeName">pdf_header</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">24</property>
                     <property name="name">last_modified_by</property>
                     <property name="nativeName">last_modified_by</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">25</property>
                     <property name="name">createdBy</property>
                     <property name="nativeName">createdBy</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">26</property>
                     <property name="name">num_of_packages</property>
                     <property name="nativeName">num_of_packages</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">27</property>
                     <property name="name">tracking_number</property>
                     <property name="nativeName">tracking_number</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">28</property>
                     <property name="name">num_of_palettes</property>
                     <property name="nativeName">num_of_palettes</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">29</property>
                     <property name="name">gross_weight</property>
                     <property name="nativeName">gross_weight</property>
                     <property name="dataType">decimal</property>
@@ -625,7 +717,8 @@ else row["last_modified_by"]</expression>
 StockMove.stock_move_seq, SaleOrder.sale_order_seq, PurchaseOrder.purchase_order_seq,
 Partner.title_select, Partner.name, Partner.first_name, Partner.partner_type_select,
 DeliveryAddress.addressl2, DeliveryAddress.addressl3, DeliveryAddress.addressl4, DeliveryAddress.addressl5, 
-DeliveryAddress.addressl6, Country.name as "countryName", PrintingSetting.pdf_header, 
+DeliveryAddress.addressl6,FromAddress.addressl2 as fromAddressl2, FromAddress.addressl3 as fromAddressl3, FromAddress.addressl4 as fromAddressl4, FromAddress.addressl5 as fromAddressl5, 
+FromAddress.addressl6 as fromAddressl6, Country.name as "countryName", PrintingSetting.pdf_header, 
 AuthUser.full_name as last_modified_by,
 AuthUserCreate.full_name as "createdBy",
 StockMove.num_of_packages,
@@ -637,6 +730,7 @@ left outer join base_company as Company on (StockMove.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as Partner on (StockMove.partner = Partner.id)
 left outer join base_address as DeliveryAddress on (StockMove.to_address = DeliveryAddress.id)
+left outer join base_address as FromAddress on (StockMove.from_address = FromAddress.id)
 left outer join base_country as Country on (DeliveryAddress.addressl7country = Country.id)
 left join auth_user as AuthUser on (StockMove.updated_by = AuthUser.id)
 left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.id)
@@ -1063,7 +1157,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 StockMoveLine.qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq, StockMoveLine.description, 
-(SaleOrderLine.is_title_line  or PurchaseOrderLine.is_title_line) as "isTitleLine", 
+( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine", 
 (COALESCE(SaleOrderLine.sequence, 0) +  COALESCE(PurchaseOrderLine.sequence,0)) as "lineSequence"
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
@@ -1278,6 +1372,36 @@ where StockMove.id in (@INJECTID)]]></xml-property>
                     <property name="name">user_name</property>
                     <text-property name="displayName">user_name</text-property>
                     <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fromaddressl2</property>
+                    <text-property name="displayName">fromaddressl2</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fromaddressl2"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fromaddressl3</property>
+                    <text-property name="displayName">fromaddressl3</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fromaddressl3"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fromaddressl4</property>
+                    <text-property name="displayName">fromaddressl4</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fromaddressl4"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fromaddressl5</property>
+                    <text-property name="displayName">fromaddressl5</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fromaddressl5"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fromaddressl6</property>
+                    <text-property name="displayName">fromaddressl6</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fromaddressl6"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -1814,31 +1938,66 @@ row["first_name"]
                                         <property name="fontSize">9pt</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["addressl2"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["type_select"] == 2) { 
+	row["addressl2"]
+	}
+	else if(row["type_select"] == 3) {
+	row["fromaddressl2"]
+	}	
+</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="3680">
                                         <property name="fontSize">9pt</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["addressl3"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["type_select"] == 2) { 
+	row["addressl3"]
+	}
+	else if(row["type_select"] == 3) {
+	row["fromaddressl3"]
+	}	
+</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="3681">
                                         <property name="fontSize">9pt</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["addressl4"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["type_select"] == 2) { 
+	row["addressl4"]
+	}
+	else if(row["type_select"] == 3) {
+	row["fromaddressl4"]
+	}	
+</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="3682">
                                         <property name="fontSize">9pt</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["addressl5"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["type_select"] == 2) { 
+	row["addressl5"]
+	}
+	else if(row["type_select"] == 3) {
+	row["fromaddressl5"]
+	}	
+</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="3683">
                                         <property name="fontSize">9pt</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["addressl6"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["type_select"] == 2) { 
+	row["addressl6"]
+	}
+	else if(row["type_select"] == 3) {
+	row["fromaddressl6"]
+	}	
+</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="3684">
                                         <property name="fontSize">9pt</property>

@@ -9,14 +9,26 @@
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
 		<many-to-one name="appraisalType" ref="AppraisalType" title="Type of appraisal" required="true"/>
 		<date name="toDate" title="Deadline" />
-		<many-to-one name="reviewer" ref="com.axelor.apps.hr.db.Employee" title="Reviewer" />
+		<many-to-one name="reviewerEmployee" ref="com.axelor.apps.hr.db.Employee" title="Reviewer" />
 		<string name="attributes" title="Attributes" json="true" />
 		<string name="description" title="Description" large="true" />
-		<integer name="statusSelected" title="Status" selection="appraisal.status.selected"/>
+		<integer name="statusSelect" title="Status" selection="appraisal.status.selected" readonly="true"/>
 		<boolean name="isTemplate" title="Is template" />
 		
 		<track>
-			<message if="statusSelected == 1" on="UPDATE">Appraisal sent</message>
+			<field name="employee"/>
+			<field name="company"/>
+			<field name="appraisalType"/>
+			<field name="toDate"/>
+			<field name="reviewerEmployee"/>
+			<field name="attributes"/>
+			<field name="description"/>
+			<field name="statusSelect" on="UPDATE"/>
+			<field name="isTemplate"/>
+			<message if="statusSelect == 1" on="UPDATE">Appraisal sent</message>
+			<message if="statusSelect == 2" on="UPDATE">Appraisal realized</message>
+			<message if="statusSelect == 3" on="UPDATE">Appraisal cancelled</message>
+			<message if="statusSelect == 0" on="UPDATE">Appraisal draft</message>
 		</track>
 		
 	</entity>

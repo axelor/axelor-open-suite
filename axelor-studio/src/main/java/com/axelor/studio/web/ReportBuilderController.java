@@ -29,7 +29,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ReportBuilder;
-import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.repo.ReportBuilderRepository;
 import com.axelor.studio.service.ReportPrinterService;
 import com.axelor.studio.service.builder.ReportBuilderService;
@@ -55,23 +54,17 @@ public class ReportBuilderController {
 		ReportBuilder reportBuilder = request.getContext().asType(
 				ReportBuilder.class);
 
-		ViewBuilder viewBuilder = reportBuilder.getViewBuilder();
+		MetaView metaView = reportBuilder.getMetaView();
+		if (metaView != null) {
+			metaView = metaViewRepo.find(metaView.getId());
 
-		if (viewBuilder != null) {
-			MetaView metaView = viewBuilder.getMetaViewGenerated();
-			if (metaView != null) {
-				metaView = metaViewRepo.find(metaView.getId());
+			String template = builderService.generateTemplate(metaView);
 
-				String template = builderService.generateTemplate(metaView);
-
-				response.setValue("htmlTemplate", template);
-			} else {
-				response.setFlash("No meta view found. Please run 'Apply update' to generate view");
-			}
-
+			response.setValue("htmlTemplate", template);
 		} else {
-			response.setFlash("No view found");
+			response.setFlash("No meta view found. Please run 'Apply update' to generate view");
 		}
+
 	}
 
 	public void download(ActionRequest request, ActionResponse response)

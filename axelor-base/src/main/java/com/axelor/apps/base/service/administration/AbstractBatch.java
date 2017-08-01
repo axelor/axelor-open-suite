@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 
 import java.time.ZonedDateTime;
@@ -40,10 +41,12 @@ import com.google.inject.persist.Transactional;
 
 public abstract class AbstractBatch {
 
+	protected static final int FETCH_LIMIT = 10;
+
 	@Inject
 	protected AppBaseService appBaseService;
 
-	static final Logger LOG = LoggerFactory.getLogger(AbstractBatch.class);
+	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected Batch batch;
 	protected Model model;

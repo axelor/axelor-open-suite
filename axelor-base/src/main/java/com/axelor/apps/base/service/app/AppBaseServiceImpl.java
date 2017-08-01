@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import javax.inject.Singleton;
-import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
 import java.time.ZonedDateTime;
@@ -36,7 +35,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -49,23 +47,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 	private static AppBaseServiceImpl INSTANCE;
 
-	private Long administrationId;
-	
 	@Inject
 	private AppBaseRepository appBaseRepo;
 	
-	@Inject
-	public AppBaseServiceImpl() {
-		Query q = JPA.em().createQuery("FROM AppBase");
-		AppBase appBase = (AppBase)q.setMaxResults(1).getSingleResult();
-		if(appBase != null)  {
-			administrationId = appBase.getId();
-		}
-		else  {
-			throw new RuntimeException("Veuillez configurer l'administration générale.");
-		}
-
-	}
 
 	public static AppBaseServiceImpl get() {
 
@@ -83,7 +67,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 	 */
 	@Override
 	public AppBase getAppBase() {
-		return appBaseRepo.find(administrationId);
+		return appBaseRepo.all().fetchOne();
 	}
 
 // Date du jour
@@ -108,10 +92,10 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 			if (user != null && user.getToday() != null){
 				todayDateTime = user.getToday();
 			}
-			else if (getAppBase() != null && getAppBase().getToday() != null){
-				todayDateTime = getAppBase().getToday();
-				if (user != null && user.getToday() != null) {
-					return user.getToday();
+			else { 
+				AppBase appBase = getAppBase();
+				if (appBase != null && appBase.getToday() != null){
+					return appBase.getToday();
 				}
 			}
 		}
@@ -140,9 +124,11 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 	@Override
 	public Unit getUnit(){
-
-		if (getAppBase() != null){
-			return getAppBase().getDefaultProjectUnit();
+		
+		AppBase appBase = getAppBase();
+		
+		if (appBase != null){
+			return appBase.getDefaultProjectUnit();
 		}
 
 		return null;
@@ -151,9 +137,11 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 	@Override
 	public int getNbDecimalDigitForUnitPrice(){
-
-		if (getAppBase() != null){
-			return getAppBase().getNbDecimalDigitForUnitPrice();
+		
+		AppBase appBase = getAppBase();
+		
+		if (appBase != null){
+			return appBase.getNbDecimalDigitForUnitPrice();
 		}
 
 		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
@@ -169,7 +157,8 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 	 */
 	@Override
 	public List<CurrencyConversionLine> getCurrencyConfigurationLineList(){
-		if (getAppBase() != null) { return getAppBase().getCurrencyConversionLineList(); }
+		AppBase appBase = getAppBase();
+		if (appBase != null) { return appBase.getCurrencyConversionLineList(); }
 		else { return null; }
 	}
 
@@ -210,7 +199,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 		if(duration == null) { return null; }
 
-		AppBase appBase = this.getAppBase();
+		AppBase appBase = getAppBase();
 
 		if(appBase != null){
 			String timePref = appBase.getTimeLoggingPreferenceSelect();

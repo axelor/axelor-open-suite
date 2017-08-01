@@ -61,12 +61,15 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.project.ProjectService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -105,6 +108,15 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected TemplateMessageService  templateMessageService;
+	
+	@Inject
+	private ProjectRepository projectRepo;
+	
+	@Inject
+	private UserRepository userRepo;
+	
+	@Inject
+	private UserHrService userHrService;
 
 	
 	@Override
@@ -128,7 +140,15 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setSentDate(appHumanResourceService.getTodayDate());
 		
 		if(timesheet.getToDate() == null)  {
-			timesheet.setToDate(timesheet.getSentDate());
+			List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+			LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
+			for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
+				if (timesheetLine.getDate().compareTo(timesheetLineLastDate) > 0) {
+					timesheetLineLastDate = timesheetLine.getDate();
+				}
+			}
+
+			timesheet.setToDate(timesheetLineLastDate);
 		}
 		
 		timesheetRepository.save(timesheet);
@@ -265,7 +285,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
-				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
+				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek().getValue()))){
 					dayPlanningCurr = dayPlanning;
 					break;
 				}
@@ -647,8 +667,35 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		}
 	}
-
-
+	
+	@Override
+	public List<Map<String,Object>> createDefaultLines(Timesheet timesheet) {
+		
+		List<Map<String,Object>> lines =  new ArrayList<Map<String,Object>>();
+		User user = timesheet.getUser();
+		if (user == null || timesheet.getFromDate() == null) {
+			return lines;
+		}
+		
+		user = userRepo.find(user.getId());
+		
+		Product product = userHrService.getTimesheetProduct(user);
+		
+		if (product == null) {
+			return lines;
+		}
+		
+		List<Project> projects = projectRepo.all().filter("self.membersUserSet.id = ?1 and "
+				+ "self.imputable = true "
+				+ "and self.statusSelect != 3", user.getId()).fetch();
+		
+		for (Project project : projects) {
+			TimesheetLine line = createTimesheetLine(project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
+			lines.add(Mapper.toMap(line));
+		}
+		
+		
+		return lines;
+		
+	}
 }
-
-

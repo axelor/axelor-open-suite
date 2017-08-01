@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.workflow;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.exception.AxelorException;
@@ -41,7 +43,7 @@ import com.google.inject.Inject;
 
 public class VentilateStateSupplyChain extends VentilateState {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private SaleOrderInvoiceService saleOrderInvoiceService;
@@ -54,6 +56,9 @@ public class VentilateStateSupplyChain extends VentilateState {
 	
 	@Inject 
 	protected PurchaseOrderRepository purchaseOrderRepository;
+	
+	@Inject
+	private AccountingSituationSupplychainService accountingSituationSupplychainService;
 
 	
 	@Override
@@ -81,9 +86,11 @@ public class VentilateStateSupplyChain extends VentilateState {
 		
 		if (invoiceSaleOrder != null)  {
 			
+			accountingSituationSupplychainService.updateUsedCredit(invoiceSaleOrder.getClientPartner());
 			log.debug("Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
 			invoiceSaleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), false));
-
+			
+			
 		}  else  {
 			
 			//Get all different saleOrders from invoice
@@ -101,8 +108,10 @@ public class VentilateStateSupplyChain extends VentilateState {
 				log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
 				saleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), false));
 				saleOrderRepository.save(saleOrder);
+				accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
 			}
 		}
+		
 		
 	}
 	
@@ -143,7 +152,7 @@ public class VentilateStateSupplyChain extends VentilateState {
 			
 			log.debug("Update the invoiced amount of the purchase order : {}", invoicePurchaseOrder.getPurchaseOrderSeq());
 			invoicePurchaseOrder.setAmountInvoiced(purchaseOrderInvoiceService.getInvoicedAmount(invoicePurchaseOrder, invoice.getId(), false));
-
+			
 		}  else  {
 			
 			//Get all different purchaseOrders from invoice

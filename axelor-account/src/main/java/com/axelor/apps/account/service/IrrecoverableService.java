@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ import com.google.inject.persist.Transactional;
 
 public class IrrecoverableService{
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SequenceService sequenceService;
 	protected MoveService moveService;

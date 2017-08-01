@@ -18,12 +18,14 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.base.db.*;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -33,10 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -76,7 +74,7 @@ public class PartnerController {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
@@ -273,11 +271,6 @@ public class PartnerController {
 		response.setValue("$emailsList",emailsList);
 	}
 	
-	public void partnerAddressListChange(ActionRequest request, ActionResponse response) {
-		LOG.debug("Called..............");
-		
-	}
-	
 	public void checkIbanValidity(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		List<BankDetails> bankDetailsList = request.getContext().asType(Partner.class).getBankDetailsList();
@@ -320,5 +313,18 @@ public class PartnerController {
 		}
 		partner = partnerRepo.find(partner.getId());
 		partnerService.convertToIndividualPartner(partner);
+	}
+
+	public void checkOtherPartnerName(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+
+		if (partner.getName() != null && partner.getFirstName() != null) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = true and self.name = ?1 and self.firstName = ?2", partner.getName(), partner.getFirstName())
+					.fetchOne();
+			if (existingPartner != null) {
+				response.setAlert("There is already a contact with these first name and last name");
+			}
+		}
 	}
 }

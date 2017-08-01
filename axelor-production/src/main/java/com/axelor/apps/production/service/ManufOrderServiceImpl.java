@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -41,7 +42,6 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
@@ -62,7 +62,7 @@ import com.google.inject.persist.Transactional;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected SequenceService sequenceService;
@@ -110,9 +110,9 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
-		if(billOfMaterial.getBillOfMaterialList() != null)  {
+		if(billOfMaterial.getBillOfMaterialSet() != null)  {
 
-			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
+			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet())  {
 
 				if(!billOfMaterialLine.getHasNoManageStock())  {
 
@@ -388,6 +388,18 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		manufOrder.setWasteStockMove(wasteStockMove);
 		return wasteStockMove;
+	}
+
+	@Transactional
+	public ManufOrder updateQty(ManufOrder manufOrder) {
+		manufOrder.clearToConsumeProdProductList();
+		manufOrder.clearToProduceProdProductList();
+		this.createToConsumeProdProductList(manufOrder);
+		this.createToProduceProdProductList(manufOrder);
+
+		manufOrderRepo.save(manufOrder);
+
+		return manufOrder;
 	}
 
 }

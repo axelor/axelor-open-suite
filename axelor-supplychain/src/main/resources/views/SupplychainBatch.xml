@@ -3,9 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="supplychain-batch-grid" title="Mail batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
-    	<field name="actionSelect" />
-    	<field name="code" />
+    <grid name="supplychain-batch-grid" title="Supplychain batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    	<field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
+		<field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+    	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
@@ -13,8 +14,9 @@
  
 	<form  onNew="action-supplychain-batch-record-on-new" name="supplychain-batch-form" title="Supplychain Batch" model="com.axelor.apps.supplychain.db.SupplychainBatch">
 		<panel name="main" >
-			<field name="actionSelect"/>
-			<field name="code"/>
+			<field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+			<field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="archived" title="Archived ?"/>
 		</panel>
@@ -28,6 +30,7 @@
 		</panel-tabs>
 		<panel sidebar="true" name="actions" title="Actions">
 		    <button name="billSubBatch" title="Bill Late Subscriptions Batch" showIf="actionSelect == 1"  onClick="save,action-supplychain-batch-method-bill-sub" colSpan="12"/>
+		    <button name="invoiceOutgoingStockMoveBatch" title="Invoice outgoing stock moves" showIf="actionSelect == 2"  onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 		</panel>
 	</form>
 
@@ -45,6 +48,9 @@
 	<action-method name="action-supplychain-batch-method-bill-sub">
 		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="billSubscriptions"/>
 	</action-method>
-	
+
+	<action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
+		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="invoiceOutgoingStockMoves"/>
+	</action-method>
 	
 </object-views>

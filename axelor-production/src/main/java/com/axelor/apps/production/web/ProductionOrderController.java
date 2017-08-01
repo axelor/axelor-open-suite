@@ -61,7 +61,7 @@ public class ProductionOrderController {
 	@Inject
 	private AppBaseService appBaseService;
 	
-	
+	@SuppressWarnings("unchecked")
 	public void addManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Context context = request.getContext();

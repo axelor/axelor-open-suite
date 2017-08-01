@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -43,7 +44,7 @@ import com.google.inject.persist.Transactional;
 
 public class LocationLineServiceImpl implements LocationLineService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(LocationLineServiceImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected LocationLineRepository locationLineRepo;
@@ -114,7 +115,7 @@ public class LocationLineServiceImpl implements LocationLineService {
 
 	void checkStockMax(Product product, BigDecimal qty, LocationLine locationLine, int type, BigDecimal baseQty) throws AxelorException {
 		Location location = locationLine.getLocation();
-		StockRules stockRules = stockRulesService.getStockRules(product, location, type);
+		StockRules stockRules = stockRulesService.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if (stockRules == null || !stockRules.getUseMaxQty()) {
 			return;

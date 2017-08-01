@@ -100,12 +100,8 @@ public class OrderAttribute {
 	    		|| orderType.equals(OrderType.HTD)
 	    		|| orderType.equals(OrderType.HPD)
 	    		|| orderType.equals(OrderType.PTK)) {
-	    	if(ebicsTypeSelect == EbicsUserRepository.EBICS_TYPE_T)  {
-	    		return TRANSMITTED_DATA_TYPE_D;
-	    	}
-	    	else if(ebicsTypeSelect == EbicsUserRepository.EBICS_TYPE_TS)  {
-		    	return TRANSMITTED_DATA_TYPE_O;
-	    	}
+	    	return TRANSMITTED_DATA_TYPE_D;
+	    	// "O" if the bank use financial institution’s bank-technical ES
 	    } else if (orderType.equals(OrderType.SPR)) {
 	        return TRANSMITTED_DATA_TYPE_U;
 	    }

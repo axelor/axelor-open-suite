@@ -18,13 +18,12 @@
 package com.axelor.apps.businessproject.service;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -43,7 +42,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		int count = 0;
-		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
+		DateTimeFormatter ddmmFormat = DateTimeFormatter.ofPattern("dd/MM");
 		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
 		//Check if a consolidation by product and user must be done
 		boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
@@ -94,11 +93,10 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
 			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
 			Project project = (Project) timesheetInformations[5];
-
 			if (consolidate){
-				strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
+				strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
 			}else{
-				strDate = ddmmFormat.format(startDate);
+				strDate = startDate.format(ddmmFormat);
 			}
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));

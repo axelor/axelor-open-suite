@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 
 import java.time.LocalDate;
@@ -42,7 +43,7 @@ import com.google.inject.Inject;
 
 public class MoveCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PeriodService periodService;
 	protected MoveRepository moveRepository;
@@ -110,13 +111,13 @@ public class MoveCreateService {
 	 * @param date
 	 * @param paymentMode
 	 * @param technicalOriginSelect
-	 * @param ignoreInReminderOk
+	 * @param ignoreInDebtRecoveryOk
 	 * @param ignoreInAccountingOk
 	 * @return
 	 * @throws AxelorException
 	 */
 	public Move createMove(Journal journal, Company company, Currency currency, Partner partner, LocalDate date, PaymentMode paymentMode, 
-			int technicalOriginSelect, boolean ignoreInReminderOk, boolean ignoreInAccountingOk) throws AxelorException  {
+			int technicalOriginSelect, boolean ignoreInDebtRecoveryOk, boolean ignoreInAccountingOk) throws AxelorException  {
 		log.debug("Creating a new generic accounting move (journal : {}, company : {}", new Object[]{journal.getName(), company.getName()});
 
 		Move move = new Move();
@@ -124,7 +125,7 @@ public class MoveCreateService {
 		move.setJournal(journal);
 		move.setCompany(company);
 
-		move.setIgnoreInReminderOk(ignoreInReminderOk);
+		move.setIgnoreInDebtRecoveryOk(ignoreInDebtRecoveryOk);
 		move.setIgnoreInAccountingOk(ignoreInAccountingOk);
 
 		Period period = periodService.rightPeriod(date, company);

@@ -26,7 +26,7 @@ package com.axelor.apps.account.exception;
 public interface IExceptionMessage {
 
 
-	static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "Il manque une ligne de taxe"/*)*/ ;
+	static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing"/*)*/ ;
 	/**
 	 * Bank statement service
 	 */
@@ -64,7 +64,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CLEARANCE_2 = /*$$(*/ "%s : You must configure a financial account for then company %s" /*)*/ ;
 	static final String ACCOUNT_CLEARANCE_3 = /*$$(*/ "%s : You must configure a tax standard rate for the company %s" /*)*/ ;
 	static final String ACCOUNT_CLEARANCE_4 = /*$$(*/ "%s : You must configure account clearance for the company %s" /*)*/ ;
-	static final String ACCOUNT_CLEARANCE_5 = /*$$(*/ "%s : Veuillez configurer une séquence Apurement des trop-perçus pour la société %s" /*)*/ ;
+	static final String ACCOUNT_CLEARANCE_5 = /*$$(*/ "%s : You must configure a clearance sequence of the overpayments for the company %s" /*)*/ ;
 	static final String ACCOUNT_CLEARANCE_6 = /*$$(*/ "%s : You must configure an overpayment account clearance journal for the company %s" /*)*/ ;
 	static final String ACCOUNT_CLEARANCE_7 = /*$$(*/ "Move lines generated" /*)*/ ;
 
@@ -102,9 +102,9 @@ public interface IExceptionMessage {
 	/**
 	 * Irrecoverable service and controller
 	 */
-	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable ligne %s" /*)*/ ;
+	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable line %s" /*)*/ ;
 	static final String IRRECOVERABLE_2 = /*$$(*/ "%s : Error generated on invoice creation shift to irrecoverable %s" /*)*/ ;
-	static final String IRRECOVERABLE_3 = /*$$(*/ "%s : La facture %s ne possède pas de pièce comptable dont le restant à payer est positif" /*)*/ ;
+	static final String IRRECOVERABLE_3 = /*$$(*/ "%s : The invoice %s has no accounting document whose the remainder to be paid is positive" /*)*/ ;
 	static final String IRRECOVERABLE_4 = /*$$(*/ "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/ ;
 	static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/ ;
 	static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/ ;
@@ -124,13 +124,13 @@ public interface IExceptionMessage {
 	static final String MOVE_LINE_EXPORT_4 = /*$$(*/ "%s : Error : You must configure a purchase interface sequence for the company %s" /*)*/ ;
 
 	/**
-	 * Move line report service and controller
+	 * Accounting report service and controller
 	 */
-	static final String MOVE_LINE_REPORT_1 = /*$$(*/ "%s : Error : You must configure an account reporting sequence for the company %s" /*)*/ ;
-	static final String MOVE_LINE_REPORT_2 = /*$$(*/ "%s : Error : You must configure an account export sequence for the company %s" /*)*/ ;
-	static final String MOVE_LINE_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/ ;
-	static final String MOVE_LINE_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/ ;
-	static final String MOVE_LINE_REPORT_6 = /*$$(*/ "Moves exported" /*)*/ ;
+	static final String ACCOUNTING_REPORT_1 = /*$$(*/ "%s : Error : You must configure an account reporting sequence for the company %s" /*)*/ ;
+	static final String ACCOUNTING_REPORT_2 = /*$$(*/ "%s : Error : You must configure an account export sequence for the company %s" /*)*/ ;
+	static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/ ;
+	static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/ ;
+	static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/ ;
 
 	/**
 	 * Move line service
@@ -160,14 +160,14 @@ public interface IExceptionMessage {
 	static final String PAYMENT_SCHEDULE_2 = /*$$(*/ "%s : You must configure a RIB for the partner %s" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_3 = /*$$(*/ "%s : Error : You must configure a direct debit date for the %s batch configuration" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_4 = /*$$(*/ "%s : You must configure a direct debit reject sequence\n for the company %s for the journal %s" /*)*/ ;
-	static final String PAYMENT_SCHEDULE_5 = /*$$(*/ "Veuillez configurer une séquence Echéancier pour la société %s" /*)*/ ;
+	static final String PAYMENT_SCHEDULE_5 = /*$$(*/ "You must configure a timetable sequence for the company %s" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_6 = /*$$(*/ "%s : Error : You must, at first, create timetable lines for the timetable %s" /*)*/ ;
 
 	/**
 	 * Reconcile service
 	 */
 	static final String RECONCILE_1 = /*$$(*/ "%s : Reconciliation : You must fill concerned moves lines." /*)*/ ;
-	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Selected moves lines must concerned the same account." /*)*/ ;
+	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Move line accounts are not compatible." /*)*/ ;
 	static final String RECONCILE_3 = /*$$(*/ "\n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/ ;
@@ -250,7 +250,7 @@ public interface IExceptionMessage {
 	static final String BATCH_REIMBURSEMENT_1 = /*$$(*/ "Bug(Anomaly) generated during SEPA export - Batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :\n" /*)*/;
 	static final String BATCH_REIMBURSEMENT_3 = /*$$(*/ "Reimbursement(s) created" /*)*/;
-	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimboursement's export :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimbursement's export :\n" /*)*/;
 	static final String BATCH_REIMBURSEMENT_5 = /*$$(*/ "Reimbursement(s) treated" /*)*/;
 	static final String BATCH_REIMBURSEMENT_6 = /*$$(*/ "Reimbursement's import's batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_7 = /*$$(*/ "Reimbursement reject %s" /*)*/;
@@ -258,10 +258,21 @@ public interface IExceptionMessage {
 	static final String BATCH_REIMBURSEMENT_9 = /*$$(*/ "Reimbursement(s) rejected" /*)*/;
 
 	/**
-	 * Batch reminder
+	 * Batch debt recovery
 	 */
-	static final String BATCH_REMINDER_1 = /*$$(*/ "Reminder's reporting :\n" /*)*/;
-	static final String BATCH_REMINDER_2 = /*$$(*/ "Partner(s) treated" /*)*/;
+	static final String BATCH_DEBT_RECOVERY_1 = /*$$(*/ "Debt recovery's reporting :\n" /*)*/;
+	static final String BATCH_DEBT_RECOVERY_2 = /*$$(*/ "Partner(s) treated" /*)*/;
+
+	/**
+	 * Batch credit transfer
+	 */
+	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch: " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR = /*$$(*/ "%d reimbursement created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/ "%d reimbursements created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
 	/**
 	 * Batch strategy
@@ -291,9 +302,9 @@ public interface IExceptionMessage {
 	/**
 	 * Cfonb tool service
 	 */
-	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "L'enregistrement ne fait pas %s caractères" /*)*/;
-	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Lla zone %s est vide" /*)*/;
-	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "La zone %s (%s) doit être de type numérique" /*)*/;
+	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "The record is not %s characters" /*)*/;
+	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Zone %s is empty" /*)*/;
+	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "Zone %s (%s) must be of the numeric type" /*)*/;
 	static final String CFONB_TOOL_1 = /*$$(*/ "%s : Anomaly detected (value isn't numeric : %s) for sender" /*)*/;
 	static final String CFONB_TOOL_2 = /*$$(*/ "%s : Anomaly detected (value isn't numeric : %s) for the receiver" /*)*/;
 	static final String CFONB_TOOL_3 = /*$$(*/ "%s : Anomaly detected (value isn't numeric : %s) for the total" /*)*/;
@@ -305,15 +316,15 @@ public interface IExceptionMessage {
 	/**
 	 * Account config service
 	 */
-	static final String ACCOUNT_CONFIG_39 = /*$$(*/ "%s : Veuillez configurer un nom de fichier pour l'export des FEC pour la société %s" /*)*/;
-	static final String ACCOUNT_CONFIG_40 = /*$$(*/ "%s : Veuillez configurer un compte salarié pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_39 = /*$$(*/ "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_40 = /*$$(*/ "%s : You must configure an employee account for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_1 = /*$$(*/ "%s : You must configure account's informations for the company %s"/*)*/;
 	static final String ACCOUNT_CONFIG_2 = /*$$(*/ "%s : You must configure a CFONB format reimbursement's export's folder for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_3 = /*$$(*/ "%s : You must configure a CFONB format direct debit's export's folder for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_4 = /*$$(*/ "%s : You must configure a TIP and cheque TIP payment's import path for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_5 = /*$$(*/ "%s : You must configure a TIP and cheque TIP temporary import path for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_6 = /*$$(*/ "%s : You must configure a TIP and cheque TIP payment rejects path for the import file for the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_7 = /*$$(*/ "%s : You must configure a TIP and chaque TIP temporary path for the payment reject's file for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_7 = /*$$(*/ "%s : You must configure a TIP and cheque TIP temporary path for the payment reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_8 = /*$$(*/ "%s : You must configure a path for the reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_9 = /*$$(*/ "%s : You must configure a path for the temporary reject's file for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_10 = /*$$(*/ "%s : You must configure a path for the reimbursements rejects import's file for the company %s" /*)*/;
@@ -343,7 +354,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_34 = /*$$(*/ "%s : You must configure a reject import letter template for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_35 = /*$$(*/ "%s : You must configure a shifting reason (debt more than six months) for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_36 = /*$$(*/ "%s : You must configure a shifting reason (debt more than three months) for the company %s" /*)*/;
-	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s : You must configure a reminder tab for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s : You must configure a debt recovery tab for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_38 = /*$$(*/ "%s : You must configure an advance payment account for the company %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -383,7 +394,7 @@ public interface IExceptionMessage {
 	static final String PAYBOX_CONFIG_7 = /*$$(*/ "%s : You must add a returned URL from Paybox once payment is refused for the Paybox's configuration %s" /*)*/;
 	static final String PAYBOX_CONFIG_8 = /*$$(*/ "%s : You must add a returned URL from Paybox once payment is canceled for the Paybox's configuration %s" /*)*/;
 	static final String PAYBOX_CONFIG_9 = /*$$(*/ "%s : You must add an intern id for Paybox's configuration %s" /*)*/;
-	static final String PAYBOX_CONFIG_10 = /*$$(*/ "%s : Veuillez selectionner un Type d'algorithme de hachage utilisé lors du calcul de l'empreinte pour la configuration Paybox %s" /*)*/;
+	static final String PAYBOX_CONFIG_10 = /*$$(*/ "%s : You must select an algorithm hashing type used when calculating the footprint for the configuration of Paybox %s" /*)*/;
 	static final String PAYBOX_CONFIG_11 = /*$$(*/ "%s : You must add a calculated signature with secret key for the Paybox's configuration %s" /*)*/;
 	static final String PAYBOX_CONFIG_12 = /*$$(*/ "%s : You must add an environment URL for the Paybox's configuration %s" /*)*/;
 	static final String PAYBOX_CONFIG_13 = /*$$(*/ "%s : You must add a Paybox public key's path for the Paybox's configuration %s" /*)*/;
@@ -395,24 +406,24 @@ public interface IExceptionMessage {
 	static final String PAYER_QUALITY_1 = /*$$(*/ "%s : Error : You must configure a weight table in general configuration" /*)*/;
 
 	/**
-	 * Reminder action service
+	 * Debt recovery action service
 	 */
-	static final String REMINDER_ACTION_1 = /*$$(*/ "Reminder method missing." /*)*/;
-	static final String REMINDER_ACTION_2 = /*$$(*/ "Reminder line missing." /*)*/;
-	static final String REMINDER_ACTION_3 = /*$$(*/ "%s : Letter template missing for reminder matrix %s (Partner %s, Level %s)." /*)*/;
+	static final String DEBT_RECOVERY_ACTION_1 = /*$$(*/ "Debt recovery method missing." /*)*/;
+	static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
+	static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/ "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
 
 	/**
-	 * Reminder service
+	 * Debt recovery service
 	 */
-	static final String REMINDER_1 = /*$$(*/ "There's no accounting situation." /*)*/;
-	static final String REMINDER_2 = /*$$(*/ "Reference date undefined." /*)*/;
-	static final String REMINDER_3 = /*$$(*/ "Reminder method missing for the configuration." /*)*/;
-	static final String REMINDER_4 = /*$$(*/ "Reminder level waiting for approval." /*)*/;
+	static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
+	static final String DEBT_RECOVERY_2 = /*$$(*/ "Reference date undefined." /*)*/;
+	static final String DEBT_RECOVERY_3 = /*$$(*/ "Debt recovery method missing for the configuration." /*)*/;
+	static final String DEBT_RECOVERY_4 = /*$$(*/ "Debt recovery level waiting for approval." /*)*/;
 
 	/**
-	 * Reminder session service
+	 * Debt recovery session service
 	 */
-	static final String REMINDER_SESSION_1 = /*$$(*/ "Reminder method line missing." /*)*/;
+	static final String DEBT_RECOVERY_SESSION_1 = /*$$(*/ "Debt recovery method line missing." /*)*/;
 
 	/**
 	 * Invoice batch service
@@ -485,6 +496,10 @@ public interface IExceptionMessage {
 	static final String VENTILATE_STATE_2 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
 	static final String VENTILATE_STATE_3 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
 	static final String VENTILATE_STATE_4 = /*$$(*/ "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
+	static final String VENTILATE_STATE_5 = /*$$(*/ "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
+	static final String VENTILATE_STATE_6 = /*$$(*/ "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
+
+	static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/ "Invoice date can't be in the future." /*)*/;
 
 	/**
 	 * Paybox service and controller

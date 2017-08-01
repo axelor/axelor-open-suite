@@ -27,7 +27,7 @@
 
 	<grid model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
 		title="Customs code nomenclature" name="customs-code-nomenclature-grid">
-		<field name="code" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="wording" />
 		<field name="supplementaryUnit" />
 		<field name="parentCustomsCode" />
@@ -36,7 +36,7 @@
 	<form model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
 		title="Customs code nomenclature" name="customs-code-nomenclature-form">
 		<panel readonly="true">
-			<field name="code" />
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="wording" />
 			<field name="supplementaryUnit" />
 			<field name="parentCustomsCode" />

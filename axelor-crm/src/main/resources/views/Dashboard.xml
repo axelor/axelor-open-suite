@@ -7,7 +7,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10)</domain>
+		<domain>self.salesStageSelect in (5, 6)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -16,9 +16,10 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<domain>self.salesStageSelect not in (5, 6)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
+	
 	<action-view name="dashlet.unassigned.opportunities" title="Unassigned Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
@@ -32,7 +33,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
+		<domain>self.salesStageSelect in (5,6)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
@@ -42,7 +43,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
+		<domain>self.salesStageSelect not in (5,6)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
@@ -54,7 +55,7 @@
 		title="Opportunities Won By Partner" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid-group" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect = 9</domain>
+		<domain>self.salesStageSelect = 5 AND self.partner is not null</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -87,7 +88,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10)</domain>
+		<domain>self.salesStageSelect in (5, 6)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -95,7 +96,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10) and self.user =:__user__</domain>
+		<domain>self.salesStageSelect in (5, 6) and self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="user" expr="eval:__user__"/>
 	</action-view>
@@ -104,7 +105,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10) and self.team =:active_team</domain>
+		<domain>self.salesStageSelect in (5, 6) and self.team =:active_team</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
@@ -128,7 +129,7 @@
 		name="dashlet.my.closed.opportunities">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect in (9, 10) AND self.user =:__user__</domain>
+		<domain>self.salesStageSelect in (5, 6) AND self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -136,7 +137,7 @@
 		name="dashlet.my.open.opportunities">
 		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect NOT in (9, 10) AND self.user =:__user__</domain>
+		<domain>self.salesStageSelect NOT in (5, 6) AND self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -309,33 +310,6 @@
 		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350"/>
 	</dashboard>
 	
-	<!-- Event Tickets Dashboard -->
-	
-	<dashboard title="Tickets Dashboard" name="crm.tickets.dashboard.1"  >
-		<dashlet action="dashlet.open.tickets.by.priority" height="350" />
-		<dashlet action="dashlet.open.ticket.priority.distribution" height="350" />
-		<dashlet action="dashlet.open.tickets.by.status" height="350" />
-		<dashlet action="dashlet.user.by.open.cases" height="350" />
-		<dashlet action="dashlet.customers.by.open.cases" height="350" />
-		<dashlet action="dashlet.due.open.ticket.gauge" height="350" />
-		<dashlet action="dashlet.my.urgent.tickets" height="350" />
-		<dashlet action="dashlet.my.active.tickets" height="350" />
-		<dashlet action="dashlet.urgent.tickets" height="350" />
-		<dashlet action="dashlet.my.new.tickets" height="350" />
-	</dashboard>
-	
-	<dashboard title="Tickets Dashboard" name="crm.tickets.dashboard.2"  >
-		<dashlet action="dashlet.new.tickets" height="350" />
-		<dashlet action="dashlet.new.urgent.tickets" height="350" />
-		<dashlet action="dashlet.my.new.urgent.tickets" height="350" />
-		<dashlet action="dashlet.my.today.support.activities" height="350" />
-		<dashlet action="dashlet.my.late.tickets" height="350" />
-		<dashlet action="dashlet.late.tickets" height="350" />
-		<dashlet action="dashlet.created.tickets.by.month.by.priority" height="350" />
-		<dashlet action="dashlet.created.tickets.by.month.by.status" height="350" />
-		<dashlet action="dashlet.open.tickets.by.month.by.agent" height="350" />
-	</dashboard>
-
 	<!-- Event Dashboard 1 -->
 
 	<dashboard title="Event Dashboard 1" name="crm.event.dashboard.one"  >
@@ -369,125 +343,11 @@
 		<view type="chart" name="chart.daily.team.calls.summary.by.user.bar" />
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
-	
-	<action-view name="dashlet.open.tickets.by.priority" title="Open tickets by priority">
-		<view type="chart" name="chart.open.tickets.by.priority.bar" />
-	</action-view>
-
-
-	<action-view name="dashlet.open.tickets.by.status" title="Open tickets by status">
-		<view type="chart" name="chart.open.tickets.by.status.bar" />
-	</action-view>
 
 	<action-view title="Open Cases by Agents" name="dashlet.user.by.open.cases">
 	  <view type="chart" name="chart.user.by.open.cases.bar"/>
 	</action-view>
-
-	<action-view title="New Cases by Customer" name="dashlet.customers.by.open.cases">
-	  <view type="chart" name="chart.customer.by.open.cases.bar"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	</action-view>
-
-	<action-view name="dashlet.open.ticket.priority.distribution"
-		title="Open tickets distribution by Priority">
-		<view type="chart" name="chart.open.ticket.priority.distribution.bar" />
-	</action-view>
-
-	<action-view name="dashlet.due.open.ticket.gauge" title="Due Open Tickets">
-		<view type="chart" name="chart.due.open.ticket.gauge.bar" />
-	</action-view>
 	
-	<action-view name="dashlet.created.tickets.by.month.by.priority" title="Total created tickets by month by priority">
-		<view type="chart" name="chart.created.tickets.by.month.by.priority.bar" />
-	</action-view>
-
-	<action-view name="dashlet.created.tickets.by.month.by.status" title="Total created tickets by month by status" >
-	  <view type="chart" name="chart.created.tickets.by.month.by.status"/>
-	</action-view>
-	
-	<action-view name="dashlet.open.tickets.by.month.by.agent" title="Total open tickets by month by user" >
-	  <view type="chart" name="chart.open.tickets.by.month.by.agent"/>
-	</action-view>
-
-
-
-
-	<action-view name="dashlet.my.urgent.tickets" title="My Urgent Tickets"
-		model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect != 25 AND self.prioritySelect in (4,5) AND self.user =:__user__</domain>
-	</action-view>
-
-	<action-view name="dashlet.my.active.tickets" title="My Active Tickets"
-		model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect != 25 AND self.user =:__user__</domain>
-	</action-view>
-	<action-view name="dashlet.my.new.tickets" title="My New Tickets"
-		model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect = 21 AND self.user = :__user__</domain>
-	</action-view>
-	<action-view name="dashlet.urgent.tickets" title="Urgent Tickets"
-		model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect != 25 AND self.prioritySelect in (4,5)</domain>
-	</action-view>
-
-	<action-view name="dashlet.new.urgent.tickets" title="New Urgent Tickets"
-		model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect = 21 AND self.prioritySelect in (4,5)</domain>
-	</action-view>
-	<action-view name="dashlet.new.tickets" title="New Tickets"
-		model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect = 21</domain>
-	</action-view>
-
-	<action-view title="My New Urgent Tickets" model="com.axelor.apps.crm.db.Ticket"
-		name="dashlet.my.new.urgent.tickets">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect = 21 AND self.prioritySelect IN (4,5) AND self.user =:__user__</domain>
-	</action-view>
-
-	<action-view title="My Today Support Activities" model="com.axelor.apps.crm.db.Event"
-		name="dashlet.my.today.support.activities">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-  		<domain>self.user = :__user__ AND DATE(self.updatedOn) = DATE(:todayDate)</domain>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
-	</action-view>
-
-
-	<action-view title="My Late Tickets" model="com.axelor.apps.crm.db.Event"
-		name="dashlet.my.late.tickets">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect != 25 AND self.user =:__user__ AND self.endDateTime &lt; date(now())</domain>
-	</action-view>
-
-	<action-view title="Late Tickets" model="com.axelor.apps.crm.db.Event"
-		name="dashlet.late.tickets">
-		<view type="grid" name="ticket-grid" />
-		<view type="form" name="ticket-form" />
-		<domain>self.statusSelect != 25 AND self.endDateTime &lt; date(now())</domain>
-	</action-view>
-	<action-view name="dashlet.human.resources.dashboard.upcoming.holidays"
-		title="All Upcoming Holidays" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
-		<view type="form" name="event-form" />
-		<domain>self.endDateTime &gt;= :_today and self.typeSelect = 4</domain>
-		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
-	</action-view>
-
 	<!-- Target User Graph Dashboard -->
 	<dashboard title="Target User Dashboard" name="crm.target.user.dashboard"  >
 		<dashlet action="dashlet.user.call.target.gauge" height="350" />

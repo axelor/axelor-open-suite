@@ -18,7 +18,7 @@
 package com.axelor.apps.base.exceptions;
 
 /**
- * Interface of Exceptions. Enum all exception of axelor-organisation.
+ * Interface of Exceptions.
  * 
  * @author dubaux
  * 
@@ -27,7 +27,7 @@ public interface IExceptionMessage {
 
 	static final public String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 	
-	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correclty configured (%s)" /*)*/;
+	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 	
 	
 	/**
@@ -88,7 +88,7 @@ public interface IExceptionMessage {
 	 * Indicator generator service 
 	 */
 	static final public String INDICATOR_GENERATOR_1 = /*$$(*/ "Error : a request has to be set for the indicatior generator %s" /*)*/;
-	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Error : incorrrect request for the indicatior generator %s" /*)*/;
+	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Error : incorrect request for the indicatior generator %s" /*)*/;
 	static final public String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
 	
 	
@@ -125,7 +125,8 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
 	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
 	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
-	
+	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ " - Not null : " /*)*/;
+
 	/**
 	 * Template message service base impl
 	 */
@@ -202,4 +203,12 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
+	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
+	
+	
 }

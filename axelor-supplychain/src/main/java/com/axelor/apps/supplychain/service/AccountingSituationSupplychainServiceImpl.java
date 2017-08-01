@@ -24,10 +24,12 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -35,11 +37,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
 
-public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl {
+public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl implements AccountingSituationSupplychainService {
 
 	private SaleConfigService saleConfigService;
 
@@ -49,49 +50,53 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 		super(accountConfigService, accountingSituationRepo);
 		this.saleConfigService = saleConfigService;
 	}
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateAcceptedCredit(Partner partner) throws AxelorException {
-		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
-		for (AccountingSituation accountingSituation : accountingSituationList) {
-			accountingSituation.setAcceptedCredit(saleConfigService.getSaleConfig(accountingSituation.getCompany()).getAcceptedCredit());
-			accountingSituationRepo.save(accountingSituation);
+	
+	@Override
+	public AccountingSituation createAccountingSituation(Company company) throws AxelorException {
+		
+		AccountingSituation accountingSituation = super.createAccountingSituation(company);
+		SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());
+		if (config != null) {
+			accountingSituation.setAcceptedCredit(config.getAcceptedCredit());
 		}
+		
+		return accountingSituation;
 	}
-
+	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateUsedCredit(Partner partner) throws AxelorException {
-		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
+		List<AccountingSituation> accountingSituationList = accountingSituationRepo.all().filter("self.partner = ?1", partner).fetch();
 		for (AccountingSituation accountingSituation : accountingSituationList) {
 			accountingSituationRepo.save(this.computeUsedCredit(accountingSituation));
 		}
 	}
-
-	public Map<String, Object> updateCustomerCreditFromSaleOrder(Partner partner, SaleOrder saleOrder) throws AxelorException {
-		Map<String, Object> map = new HashMap<String, Object>();
-
+	
+	@Transactional
+	public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+		
+		Partner partner = saleOrder.getClientPartner();
 		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
 		for (AccountingSituation accountingSituation : accountingSituationList) {
 			if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
 				// Update UsedCredit
 				accountingSituation = this.computeUsedCredit(accountingSituation);
-				accountingSituation.setUsedCredit(accountingSituation.getUsedCredit().add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced())));
-				// Update AcceptedCredit
-				accountingSituation.setAcceptedCredit(saleConfigService.getSaleConfig(accountingSituation.getCompany()).getAcceptedCredit());
-
+				if (saleOrder.getStatusSelect() == 1) {
+					accountingSituation.setUsedCredit(accountingSituation.getUsedCredit().add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced())));
+				}
 				boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
-				map.put("bloqued", usedCreditExceeded);
 				if (usedCreditExceeded) {
-					if (Strings.isNullOrEmpty(accountingSituation.getCompany().getOrderBloquedMessage())) {
-						map.put("message", I18n.get("Client bloqued"));
-					} else {
-						map.put("message", accountingSituation.getCompany().getOrderBloquedMessage());
+					saleOrder.setBloqued(true);	// No rollback
+					if (!saleOrder.getManualUnblock()) {
+						String message = accountingSituation.getCompany().getOrderBloquedMessage();
+						if (Strings.isNullOrEmpty(message)) {
+							message = I18n.get("Client bloqued");
+						}
+						throw new AxelorException(message, IException.CONFIGURATION_ERROR);
 					}
 				}
 			}
 		}
 
-		return map;
 	}
 
 	public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation) {
@@ -103,12 +108,13 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 		for (SaleOrder saleOrder : saleOrderList) {
 			sum = sum.add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced()));
 		}
-		accountingSituation.setUsedCredit(accountingSituation.getBalanceCustAccount().add(sum));
+		sum = accountingSituation.getBalanceCustAccount().add(sum);
+		accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_EVEN));
 
 		return accountingSituation;
 	}
 
-	public boolean isUsedCreditExceeded(AccountingSituation accountingSituation) {
+	private boolean isUsedCreditExceeded(AccountingSituation accountingSituation) {
 		return accountingSituation.getUsedCredit().compareTo(accountingSituation.getAcceptedCredit()) > 0;
 	}
 

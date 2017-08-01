@@ -20,8 +20,10 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -45,6 +47,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -58,17 +61,22 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
-	@Inject
 	private SaleOrderInvoiceService saleOrderInvoiceService;
-
-	@Inject
 	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+	private StockMoveLineService stockMoveLineService;
+	private InvoiceRepository invoiceRepository;
+	private StockMoveRepository stockMoveRepo;
 
 	@Inject
-	private InvoiceRepository invoiceRepository;
-	
-	@Inject
-	private StockMoveRepository stockMoveRepo;
+	public StockMoveInvoiceServiceImpl(SaleOrderInvoiceService saleOrderInvoiceService,
+			PurchaseOrderInvoiceService purchaseOrderInvoiceService, StockMoveLineService stockMoveLineService,
+			InvoiceRepository invoiceRepository, StockMoveRepository stockMoveRepo) {
+		this.saleOrderInvoiceService = saleOrderInvoiceService;
+		this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
+		this.stockMoveLineService = stockMoveLineService;
+		this.invoiceRepository = invoiceRepository;
+		this.stockMoveRepo = stockMoveRepo;
+	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -584,7 +592,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
-		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+		for (StockMoveLine stockMoveLine : getConsolidatedStockMoveLineList(stockMoveLineList)) {
 			List<InvoiceLine> invoiceLineListCreated = this.createInvoiceLine(invoice, stockMoveLine);
 			if(invoiceLineListCreated != null)
 				invoiceLineList.addAll(invoiceLineListCreated);
@@ -642,4 +650,27 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		return invoiceLineGenerator.creates();
 	}
+
+	/**
+	 * Get a list of stock move lines consolidated by product.
+	 * 
+	 * @param stockMoveLineList
+	 * @return
+	 */
+	private List<StockMoveLine> getConsolidatedStockMoveLineList(List<StockMoveLine> stockMoveLineList) {
+		Map<Product, List<StockMoveLine>> stockMoveLineMap = new LinkedHashMap<>();
+
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			List<StockMoveLine> list = stockMoveLineMap.get(stockMoveLine.getProduct());
+			if (list == null) {
+				list = new ArrayList<>();
+				stockMoveLineMap.put(stockMoveLine.getProduct(), list);
+			}
+			list.add(stockMoveLine);
+		}
+
+		return stockMoveLineMap.values().stream().map(stockMoveLineService::getMergedStockMoveLine)
+				.collect(Collectors.toList());
+	}
+
 }

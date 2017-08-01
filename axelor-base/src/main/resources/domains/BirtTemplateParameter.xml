@@ -3,14 +3,28 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+	<module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BirtTemplateParameter" lang="java">
-  	<string name="importId"/>
-  	<string name="name" title="Name" required="true"/>
-	<string name="value" title="Value"/>
-	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    
-  </entity>
+	<entity name="BirtTemplateParameter" lang="java">
+		<string name="importId"/>
+		<string name="name" title="Name" required="true"/>
+		<string name="value" title="Value"/>
+		<string name="type" title="Type" selection="base.birt.template.parameter.type.select" default="string"/>
+		<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate"/>
+
+		<extra-code><![CDATA[
+
+		public static final String PARAM_TYPE_STRING = "string";
+		public static final String PARAM_TYPE_FLOAT = "float";
+		public static final String PARAM_TYPE_DECIMAL = "decimal";
+		public static final String PARAM_TYPE_DATETIME = "dateTime";
+		public static final String PARAM_TYPE_BOOLEAN = "boolean";
+		public static final String PARAM_TYPE_INTEGER = "integer";
+		public static final String PARAM_TYPE_DATE = "date";
+		public static final String PARAM_TYPE_TIME = "time";
+
+		]]></extra-code>
+
+	</entity>
 
 </domain-models>

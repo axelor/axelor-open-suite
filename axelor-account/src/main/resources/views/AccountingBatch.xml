@@ -5,7 +5,7 @@
 
     <grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
     	<field name="actionSelect" />
-    	<field name="code" />
+    	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
@@ -14,7 +14,7 @@
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
 	<panel name="main" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
-		<field name="code"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived ?"/>
@@ -37,13 +37,17 @@
 			</panel>
 		</panel>
 		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
-			<field name="creditTransfertTypeSelect"/>
+			<field name="creditTransferTypeSelect"/>
+			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="creditTransfertTypeSelect == 1" form-view="period-form" grid-view="period-gird"/>
+			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid"/>
+			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />
+			<field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)" />
+			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.general.getManageMultiBanks()" />
 		</panel>
-		
-		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >
-			<field name="reminderTypeSelect"/>
+
+		<panel name="debtRecoveryPage" title="Debt recovery configuration" hideIf="actionSelect != 14"  >
+			<field name="debtRecoveryTypeSelect"/>
 		</panel>
 		<panel name="interbankPaymentOrderPage" title="Payments by IPO and IPO Cheque configuration" hideIf="actionSelect != 15">
 			<field name="interbankPaymentOrderTypeSelect"/>
@@ -54,7 +58,7 @@
 			<!--<group title="Update"    >-->
 			  <field name="updateCustAccountOk"/>
 			  <field name="updateDueCustAccountOk"/>
-			  <field name="updateDueReminderCustAccountOk"/>
+			  <field name="updateDueDebtRecoveryCustAccountOk"/>
 			<!--</group>-->
 		</panel>
 		<panel name="moveLineExportPage" title="Move Lines Export Config" hideIf="actionSelect != 18">
@@ -72,12 +76,12 @@
 	<panel name="actions" sidebar="true" title="Actions">
 	    <button name="reimbursementBatch" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
 	    <button name="directDebitBatch" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
-	    <button name="reminderBatch" title="Reminder Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-reminder" colSpan="12"/>
+	    <button name="debtRecoveryBatch" title="Debt recovery Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-debt-recovery" colSpan="12"/>
 	    <button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" showIf="actionSelect == 15" onClick="save,action-accounting-batch-method-action-interbank-payment-order" colSpan="12"/>
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
 	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
-	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save" colSpan="12"/>
+	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 	</panel>
 </form>
 
@@ -91,7 +95,7 @@
 	</action-record>
     
     <action-record name="action-accounting-batch-record-default-currency" model="com.axelor.apps.account.db.AccountingBatch">
-    	<field name="currency" expr="eval:__repo__(Currency).findByCode(&quot;EUR&quot;)" if="actionSelect == 11 || actionSelect == 12 || actionSelect == 15 "/>
+    	<field name="currency" expr="eval: company?.currency" if="[11, 12, 15, 19].indexOf(actionSelect) >= 0"/>
     </action-record>
     
     <!-- ACTION METHOD -->
@@ -103,8 +107,8 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionDirectDebit"/>
 	</action-method>
 	
-	<action-method name="action-accounting-batch-method-action-reminder">
-		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionReminder"/>
+	<action-method name="action-accounting-batch-method-action-debt-recovery">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionDebtRecovery"/>
 	</action-method>
 	
 	<action-method name="action-accounting-batch-method-action-interbank-payment-order">
@@ -123,19 +127,16 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionMoveLineExport"/>
 	</action-method>
 	
+	<action-method name="action-accounting-batch-method-action-credit-transfer">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCreditTransfer"/>
+	</action-method>
+
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-accounting-batch-attrs-bank-details-domain">
         <attribute name="domain" expr="eval: &quot;self.id IN (${company?.bankDetailsSet?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;" for="bankDetails"
         	if="!company.bankDetailsSet.isEmpty()"/>
        	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;" for="bankDetails"
-        	if="company.bankDetailsSet.isEmpty()"/>
-    </action-attrs>
-    
-    <action-attrs name="action-accounting-batch-attrs-company-bank-details-domain">
-        <attribute name="domain" expr="eval: &quot;self.id IN (${company.bankDetailsSet.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;" for="companyBankDetails"
-        	if="!company.bankDetailsSet.isEmpty()"/>
-       	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active=true&quot;" for="companyBankDetails"
         	if="company.bankDetailsSet.isEmpty()"/>
     </action-attrs>
 	

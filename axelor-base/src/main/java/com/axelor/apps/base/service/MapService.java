@@ -21,10 +21,8 @@ import groovy.util.XmlSlurper;
 import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.Node;
 
-import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,10 +38,13 @@ import wslite.rest.RESTClient;
 import wslite.rest.Response;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.rpc.ActionResponse;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
@@ -53,7 +54,7 @@ public class MapService {
 	@Inject
 	protected AppBaseService appBaseService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public JSONObject geocodeGoogle(String qString) {
 		if(qString == null){
@@ -138,7 +139,8 @@ public class MapService {
 					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
 					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
 					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-					result.put("url","map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
+					result.put("url","map/gmaps.html?key=" + appBaseService.getAppBase().getGoogleMapApiKey() 
+							+  "&x="+latitude+"&y="+longitude+"&z=18");
 					result.put("latitude", latitude);
 					result.put("longitude",longitude);
 					return result;
@@ -247,7 +249,8 @@ public class MapService {
 			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
 			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){
 				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){
-					result.put("url","map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
+					result.put("url","map/directions.html?key=" + appBaseService.getAppBase().getGoogleMapApiKey() 
+							+ "&dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
 					result.put("aLat", aLat);
 					result.put("dLat", dLat);
 					return result;
@@ -258,24 +261,6 @@ public class MapService {
 		}
 
 		return null;
-	}
-
-	public boolean isInternetAvailable() {
-		return testInternet("google.com") || testInternet("facebook.com") || testInternet("yahoo.com");
-	}
-
-	private boolean testInternet(String site) {
-	    Socket socket = new Socket();
-	    InetSocketAddress address = new InetSocketAddress(site, 80);
-	    try {
-	    	socket.connect(address, 3000);
-	        return true;
-	    } catch (IOException e) {
-	        return false;
-	    } finally {
-	        try {socket.close();}
-	        catch (IOException e) {}
-	    }
 	}
 
 	public String makeAddressString(Address address, ObjectNode objectNode) {
@@ -341,6 +326,18 @@ public class MapService {
 		}
 		
 		return false;
+	}
+	
+	public void showMap(String name, String title, ActionResponse response) {
+ 		
+ 		AppBase appBase = appBaseService.getAppBase();
+		String googleMapApiKey = appBase.getGoogleMapApiKey();
+		
+		String mapUrl = new String("map/gmap-objs.html?key="+ googleMapApiKey  +"&object=" + name);
+		response.setView(ActionView.define(title)
+				.add("html", mapUrl)
+				.map());
+		
 	}
 	
 }

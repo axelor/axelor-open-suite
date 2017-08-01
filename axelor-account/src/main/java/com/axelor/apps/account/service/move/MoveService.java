@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +41,17 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MoveService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineService moveLineService;
 	protected MoveCreateService moveCreateService;
@@ -391,7 +395,7 @@ public class MoveService {
 								  today,
 								  move.getPaymentMode(),
 								  MoveRepository.TECHNICAL_ORIGIN_ENTRY,	
-								  move.getIgnoreInReminderOk(),
+								  move.getIgnoreInDebtRecoveryOk(),
 								  move.getIgnoreInAccountingOk());
 		
 		move.setInvoice(move.getInvoice());
@@ -417,5 +421,24 @@ public class MoveService {
 		return moveRepository.save(newMove);
 	}
 
+	public String getLanguageToPrinting(Move move)  {
+		
+		User user = AuthUtils.getUser();
+		
+		String language = "en";
+		
+		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
+			return user.getLanguage();
+		}
+		
+		if(move == null)  {  return language;  }
+		Company company = move.getCompany();
+		
+		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
+			language = company.getPrintingSettings().getLanguageSelect();
+		}
+		
+		return language;
+	}
 		
 }
