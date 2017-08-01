@@ -162,5 +162,9 @@
 		<option value="2">Single</option>
 		<option value="3">Cohabitee</option>
 	</selection>
-	
+
+	<selection name="meta.schedule.batch.service.select" id="hr.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.hr.service.batch.HrBatchService">com.axelor.apps.hr.service.batch.HrBatchService</option>
+	</selection>
+
 </object-views>

@@ -281,4 +281,8 @@
 		<option value="3">Real (accounting)</option>
 	</selection>
 
+	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
+	</selection>
+
 </object-views>
