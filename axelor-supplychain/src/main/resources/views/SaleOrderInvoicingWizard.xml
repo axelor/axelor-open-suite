@@ -31,6 +31,7 @@
 		<field name="price" x-scale="2"/>
 		<field name="exTaxTotal" aggregate="sum"/>
 		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="amountInvoiced"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
 			   readonlyIf="invoiceAll" min="0"/>
         <field name="invoiceAll" title="Invoice all ?" type="boolean"

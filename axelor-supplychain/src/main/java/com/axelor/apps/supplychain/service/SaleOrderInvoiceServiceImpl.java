@@ -72,42 +72,56 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	protected AppSupplychainService appSupplychainService;
 
-	@Inject
-	private SaleOrderRepository saleOrderRepo;
+	protected SaleOrderRepository saleOrderRepo;
+
+	protected InvoiceRepository invoiceRepo;
 	
-	@Inject
-	private InvoiceService invoiceService;
+	protected InvoiceService invoiceService;
 
 	@Inject
-	public SaleOrderInvoiceServiceImpl(AppSupplychainService appSupplychainService) {
+	public SaleOrderInvoiceServiceImpl(AppSupplychainService appSupplychainService,
+									   SaleOrderRepository saleOrderRepo,
+									   InvoiceRepository invoiceRepo,
+									   InvoiceService invoiceService) {
 
 		this.appSupplychainService = appSupplychainService;
 		this.today = this.appSupplychainService.getTodayDate();
 
+		this.saleOrderRepo = saleOrderRepo;
+		this.invoiceRepo = invoiceRepo;
+		this.invoiceService = invoiceService;
 	}
 
 
 	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(SaleOrder saleOrder, int operationSelect,
 								   BigDecimal amount, boolean isPercent,
 								   Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
 
+	    Invoice invoice;
 		switch (operationSelect) {
 			case SaleOrderRepository.INVOICE_ALL:
-				return generateInvoice(saleOrder);
+				invoice = generateInvoice(saleOrder);
+				break;
 
 			case SaleOrderRepository.INVOICE_PART:
-                return generatePartialInvoice(saleOrder, amount, isPercent);
+                invoice = generatePartialInvoice(saleOrder, amount, isPercent);
+                break;
 
 			case SaleOrderRepository.INVOICE_LINES:
-			    return generateInvoiceFromLines(saleOrder, qtyToInvoiceMap, isPercent);
+			    invoice = generateInvoiceFromLines(saleOrder, qtyToInvoiceMap, isPercent);
+			    break;
 
 			case SaleOrderRepository.INVOICE_ADVANCE_PAYMENT:
-			    return generateAdvancePayment(saleOrder, amount, isPercent);
+			    invoice = generateAdvancePayment(saleOrder, amount, isPercent);
+			    break;
 
 			default:
 				return null;
 		}
+		invoice.setSaleOrder(saleOrder);
+		return invoiceRepo.save(invoice);
 	}
 
 	@Override
@@ -174,8 +188,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		List<SaleOrderLine> createdSOLineList = createSOlinesFromTax(
 				taxLineList, invoicingProduct, percentToInvoice);
 
-
-		return generateInvoice(saleOrder, createdSOLineList);
+		Invoice invoice = generateInvoice(saleOrder, createdSOLineList);
+		BigDecimal absoluteAmount = computeAmountToInvoice(saleOrder,
+				amountToInvoice, isPercent);
+		return determineSubType(saleOrder, invoice, absoluteAmount);
 	}
 
 	@Override
@@ -216,7 +232,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		}
 		invoice.setPartnerAccount(advancePaymentAccount);
 
-		return Beans.get(InvoiceRepository.class).save(invoice);
+		return invoiceRepo.save(invoice);
 	}
 
 	@Override
@@ -284,7 +300,30 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				}
 			}
 		}
-		return this.generateInvoice(saleOrder, saleOrder.getSaleOrderLineList(), qtyToInvoiceMap);
+		Invoice invoice = this.generateInvoice(
+				saleOrder, saleOrder.getSaleOrderLineList(), qtyToInvoiceMap);
+		return determineSubType(
+				saleOrder, invoice,
+				qtyToInvoiceMap
+						.values()
+						.stream()
+						.reduce(BigDecimal.ZERO, (a,b) -> a.add(b))
+		);
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice determineSubType(SaleOrder saleOrder, Invoice invoice,
+							 BigDecimal amountToInvoice) {
+	    if (saleOrder.getAmountInvoiced().add(amountToInvoice)
+				.equals(saleOrder.getExTaxTotal())) {
+	    	invoice.setOperationSubTypeSelect(
+	    			InvoiceRepository.OPERATION_SUB_TYPE_BALANCE);
+		} else {
+			invoice.setOperationSubTypeSelect(
+					InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT);
+		}
+		return invoiceRepo.save(invoice);
 	}
 
 	@Override
@@ -293,7 +332,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Invoice invoice = this.createInvoice(saleOrder);
 
-		Beans.get(InvoiceRepository.class).save(invoice);
+		invoiceRepo.save(invoice);
 
 		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
 
@@ -306,7 +345,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected);
 
-		Beans.get(InvoiceRepository.class).save(invoice);
+		invoiceRepo.save(invoice);
 
 		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
 
@@ -321,7 +360,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			throws AxelorException {
 
 	    Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
-		Beans.get(InvoiceRepository.class).save(invoice);
+		invoiceRepo.save(invoice);
 
 		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
 
@@ -621,7 +660,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		invoice.setIsSubscription(true);
 
-		Beans.get(InvoiceRepository.class).save(invoice);
+		invoiceRepo.save(invoice);
 
 		return invoice;
 	}
@@ -712,7 +751,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			else{
 				invoiceMerged.setSaleOrder(null);
 			}
-			Beans.get(InvoiceRepository.class).save(invoiceMerged);
+			invoiceRepo.save(invoiceMerged);
 			invoiceService.deleteOldInvoices(invoiceList);
 			return invoiceMerged;
 		}

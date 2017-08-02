@@ -24,6 +24,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -31,6 +33,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -40,12 +43,16 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl{
 	
-	@Inject
 	private AppBusinessProjectService appBusinessProjectService;
 	
 	@Inject
-	public SaleOrderInvoiceProjectServiceImpl(AppSupplychainService appSupplychainService) {
-		super(appSupplychainService);
+	public SaleOrderInvoiceProjectServiceImpl(AppSupplychainService appSupplychainService,
+											  SaleOrderRepository saleOrderRepo,
+											  InvoiceRepository invoiceRepo,
+											  InvoiceService invoiceService,
+											  AppBusinessProjectService appBusinessProjectService) {
+		super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService);
+		this.appBusinessProjectService = appBusinessProjectService;
 	}
 
     @Override

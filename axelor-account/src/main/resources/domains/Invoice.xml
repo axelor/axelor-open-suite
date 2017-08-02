@@ -111,6 +111,8 @@
     <string name="supplierInvoiceNb" title="Supplier invoice number"/>
     
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
+
+    <many-to-many name="advancePaymentInvoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
     
   	<unique-constraint columns="invoiceId,company"/>
 

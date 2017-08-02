@@ -50,7 +50,7 @@ public interface SaleOrderInvoiceService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
+	Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
 
 
 	/**
@@ -63,7 +63,7 @@ public interface SaleOrderInvoiceService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected) throws AxelorException;
+	Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected) throws AxelorException;
 
 	/**
 	 * Generate an invoice from a sale order.
@@ -76,7 +76,7 @@ public interface SaleOrderInvoiceService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateInvoice(SaleOrder saleOrder,
+	Invoice generateInvoice(SaleOrder saleOrder,
 								   List<SaleOrderLine> saleOrderLinesSelected,
 								   Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException;
 
@@ -90,11 +90,11 @@ public interface SaleOrderInvoiceService {
 	 * @return the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice generateInvoice(SaleOrder saleOrder, int operationSelect,
+	Invoice generateInvoice(SaleOrder saleOrder, int operationSelect,
 								   BigDecimal amount, boolean isPercent,
 								   Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException;
 
-	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
+	SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
 
 	/**
 	 * Create invoice from a sale order.
@@ -102,7 +102,7 @@ public interface SaleOrderInvoiceService {
 	 * @return the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice createInvoice(SaleOrder saleOrder) throws AxelorException;
+	Invoice createInvoice(SaleOrder saleOrder) throws AxelorException;
 
 	/**
 	 * Create invoice from a sale order.
@@ -110,7 +110,7 @@ public interface SaleOrderInvoiceService {
 	 * @return the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException;
+	Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException;
 
 	/**
 	 * Create an invoice.
@@ -121,7 +121,7 @@ public interface SaleOrderInvoiceService {
 	 * @return the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice createInvoice(SaleOrder saleOrder,
+	Invoice createInvoice(SaleOrder saleOrder,
 								 List<SaleOrderLine> saleOrderLineList,
 								 Map<Long, BigDecimal> qtyToInvoiceMap)
 			throws AxelorException;
@@ -135,7 +135,17 @@ public interface SaleOrderInvoiceService {
      * @return  the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+	Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+
+	/**
+	 * set the subtype of the invoice, default or balance invoice
+	 * @param saleOrder
+	 * @param invoice
+	 * @param amountToInvoice
+	 * @return
+	 */
+	Invoice determineSubType(SaleOrder saleOrder, Invoice invoice,
+							 BigDecimal amountToInvoice);
 
 	/**
 	 * Allows to create an advance payment from a sale order.
@@ -146,7 +156,7 @@ public interface SaleOrderInvoiceService {
      * @return  the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+	Invoice generateAdvancePayment(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
 
 	/**
 	 * Create sale order lines from tax line a percent to invoice, and a
@@ -171,9 +181,9 @@ public interface SaleOrderInvoiceService {
 	 * @return  the generated invoice
 	 * @throws AxelorException
 	 */
-	public Invoice generateInvoiceFromLines(SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap, boolean isPercent) throws AxelorException;
+	Invoice generateInvoiceFromLines(SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap, boolean isPercent) throws AxelorException;
 
-	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException;
+	InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException;
 
 	/**
      * Creates an invoice line.
@@ -184,7 +194,7 @@ public interface SaleOrderInvoiceService {
 	 * @return  the generated invoice line
 	 * @throws AxelorException
 	 */
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice,
+	List<InvoiceLine> createInvoiceLine(Invoice invoice,
 											   SaleOrderLine saleOrderLine,
 											   BigDecimal qtyToInvoice) throws AxelorException;
 
@@ -201,7 +211,7 @@ public interface SaleOrderInvoiceService {
 	 * @return  the generated invoice lines
 	 * @throws AxelorException
 	 */
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException;
+	List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException;
 
 	/**
 	 * Use the different parameters to have the absolute price
@@ -213,7 +223,7 @@ public interface SaleOrderInvoiceService {
      * @throws AxelorException  if the amount to invoice is larger than the
 	 * total amount
 	 */
-	public BigDecimal computeAmountToInvoice(SaleOrder saleOrder,
+	BigDecimal computeAmountToInvoice(SaleOrder saleOrder,
 											 BigDecimal amount,
 											 boolean isPercent) throws AxelorException;
 
@@ -229,30 +239,30 @@ public interface SaleOrderInvoiceService {
      * @throws AxelorException  if the amount to invoice is larger than the
 	 * total amount
 	 */
-	public BigDecimal computeAmountToInvoicePercent(SaleOrder saleOrder,
+	BigDecimal computeAmountToInvoicePercent(SaleOrder saleOrder,
 													BigDecimal amount,
 													boolean isPercent) throws AxelorException;
 
-	public BigDecimal getInvoicedAmount(SaleOrder saleOrder);
+	BigDecimal getInvoicedAmount(SaleOrder saleOrder);
 
-	public BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
+	BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubscriptionInvoice(List<Subscription> subscriptionList, SaleOrder saleOrder) throws AxelorException;
+	Invoice generateSubscriptionInvoice(List<Subscription> subscriptionList, SaleOrder saleOrder) throws AxelorException;
 
-	public void fillInLines(Invoice invoice);
-
-	@Transactional
-	public Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
+	void fillInLines(Invoice invoice);
 
 	@Transactional
-	public Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException;
+	Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
 
 	@Transactional
-	public Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException;
+	Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException;
+
+	@Transactional
+	Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException;
 	
 	@Transactional
-	public Invoice mergeInvoice(List<Invoice> invoiceList, Company cmpany, Currency currency,
+	Invoice mergeInvoice(List<Invoice> invoiceList, Company cmpany, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,
 			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder) throws AxelorException;
 }

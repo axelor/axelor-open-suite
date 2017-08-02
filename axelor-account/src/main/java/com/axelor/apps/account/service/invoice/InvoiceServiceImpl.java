@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.exception.db.IException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -37,6 +27,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -56,12 +47,22 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -476,6 +477,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		if (address.getAddressL7Country() != null) { addressString = addressString.append("\n").append(address.getAddressL7Country().getName()); }
 
 		return addressString.toString();
+	}
+
+	@Override
+	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) {
+		String domain = "self.operationSubTypeSelect = "
+				+ InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE;
+		if (invoice.getCurrency() == null
+				&& invoice.getPartner() == null) {
+			return domain;
+		} else if (invoice.getCurrency() == null) {
+			domain += "AND self.partner.id = " + invoice.getPartner().getId();
+		} else if (invoice.getPartner() == null) {
+			domain += "AND self.currency.id = " + invoice.getCurrency().getId();
+		} else {
+			domain += "AND self.currency.id = " + invoice.getCurrency().getId()
+					+ " AND self.partner.id = " + invoice.getPartner().getId();
+		}
+		return domain;
+	}
+
+	@Override
+	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) {
+	    String filter = createAdvancePaymentInvoiceSetDomain(invoice);
+	    return new HashSet<>(invoiceRepo.all().filter(filter).fetch());
 	}
 }
 

@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -34,6 +31,10 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -179,4 +180,18 @@ public interface InvoiceService {
 	public Invoice getInvoice(MoveLine moveLine);
 
 	public String computeAddressStr(Address address);
+
+	/**
+	 * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
+	 * @param invoice
+	 * @return
+	 */
+	String createAdvancePaymentInvoiceSetDomain(Invoice invoice);
+
+	/**
+	 * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
+	 * @param invoice
+	 * @return
+	 */
+	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice);
 }
