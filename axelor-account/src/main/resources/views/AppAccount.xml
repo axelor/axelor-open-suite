@@ -8,6 +8,7 @@
 			<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
 			<field name="manageAnalyticAccounting"  widget="boolean-switch"/>
 			<field name="analyticDistributionTypeSelect"  showIf="manageAnalyticAccounting"/>
+			<field name="manageCustomerCredit" widget="boolean-switch"/>
 			<field name="manageDirectDebitPayment" widget="Boolean-switch"/>
 			<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12">
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>

@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -28,6 +29,7 @@ import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -43,7 +45,10 @@ import java.util.List;
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl implements AccountingSituationSupplychainService {
 
 	private SaleConfigService saleConfigService;
-
+	
+	@Inject
+	private AppAccountService appAccountService;
+	
 	@Inject
 	public AccountingSituationSupplychainServiceImpl(AccountConfigService accountConfigService, AccountingSituationRepository accountingSituationRepo,
 													 SaleConfigService saleConfigService) {
@@ -55,9 +60,12 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 	public AccountingSituation createAccountingSituation(Company company) throws AxelorException {
 		
 		AccountingSituation accountingSituation = super.createAccountingSituation(company);
-		SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());
-		if (config != null) {
-			accountingSituation.setAcceptedCredit(config.getAcceptedCredit());
+		
+		if (appAccountService.getAppAccount().getManageCustomerCredit()) {
+			SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());
+			if (config != null) {
+				accountingSituation.setAcceptedCredit(config.getAcceptedCredit());
+			}
 		}
 		
 		return accountingSituation;
@@ -65,14 +73,20 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateUsedCredit(Partner partner) throws AxelorException {
-		List<AccountingSituation> accountingSituationList = accountingSituationRepo.all().filter("self.partner = ?1", partner).fetch();
-		for (AccountingSituation accountingSituation : accountingSituationList) {
-			accountingSituationRepo.save(this.computeUsedCredit(accountingSituation));
+		if (appAccountService.getAppAccount().getManageCustomerCredit()) {
+			List<AccountingSituation> accountingSituationList = accountingSituationRepo.all().filter("self.partner = ?1", partner).fetch();
+			for (AccountingSituation accountingSituation : accountingSituationList) {
+				accountingSituationRepo.save(this.computeUsedCredit(accountingSituation));
+			}
 		}
 	}
 	
 	@Transactional
 	public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+		
+		if (!appAccountService.getAppAccount().getManageCustomerCredit()) {
+			return;
+		}
 		
 		Partner partner = saleOrder.getClientPartner();
 		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
@@ -118,12 +132,12 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 		return accountingSituation.getUsedCredit().compareTo(accountingSituation.getAcceptedCredit()) > 0;
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException {
-		AccountingSituation accountingSituation = accountingSituationRepo.all().filter("self.company = ?1 AND self.partner = ?2", company, partner).fetchOne();
-		accountingSituation = this.computeUsedCredit(accountingSituation);
-		accountingSituationRepo.save(accountingSituation);
-
-		return this.isUsedCreditExceeded(accountingSituation);
-	}
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException {
+//		AccountingSituation accountingSituation = accountingSituationRepo.all().filter("self.company = ?1 AND self.partner = ?2", company, partner).fetchOne();
+//		accountingSituation = this.computeUsedCredit(accountingSituation);
+//		accountingSituationRepo.save(accountingSituation);
+//
+//		return this.isUsedCreditExceeded(accountingSituation);
+//	}
 }

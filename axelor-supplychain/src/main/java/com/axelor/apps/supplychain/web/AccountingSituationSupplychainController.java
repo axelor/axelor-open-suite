@@ -28,8 +28,7 @@ public class AccountingSituationSupplychainController {
 	
 	@Inject
     private AccountingSituationSupplychainServiceImpl accountingSituationService;
-
-
+	
     public void computeUsedCredit(ActionRequest request, ActionResponse response) {
         AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
         accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);

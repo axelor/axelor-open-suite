@@ -19,7 +19,7 @@
 		  onLoad="action-accounting-situation-group-form-onload"
 		  onNew="action-account-accounting-situation-default-set" width="large">
 		<panel name="main">
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
 			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
@@ -115,7 +115,7 @@
 	</action-method>
 
 	<action-method name="action-supplychain-method-compute-used-credit">
-		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit"/>
+		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
 	</action-method>
 	
 	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
