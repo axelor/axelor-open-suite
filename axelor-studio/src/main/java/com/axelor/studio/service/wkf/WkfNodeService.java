@@ -203,6 +203,9 @@ class WkfNodeService {
 					value = "'" + value + "'";
 				}
 				String condition = statusField.getName() + " == " + value;
+				if (!wkfService.workflow.getIsJson()) {
+					condition = "$" + wkfService.workflow.getJsonField() + "." + condition;
+				}
 				nodeActions.add(new String[]{name,condition});
 				this.wkfService.updateActionGroup(name, actions);
 			}

@@ -373,10 +373,7 @@ ui.formInput('BpmnEditor', {
 				return (e.incoming || []).length > 0 && start.length == 1 && invalidElements.length == 0;
 			});
 			
-			
-			model.$setValidity('valid', valid);
-			
-			return valid ? value : undefined;
+			return valid ? value : null;
 		});
 
 		model.$render = function () {

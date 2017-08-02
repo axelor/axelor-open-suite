@@ -18,7 +18,7 @@
 		<many-to-one name="talentSource" ref="com.axelor.apps.talent.db.TalentSource" title="Source" />
 		<string name="referredBy" title="Referred by" />
 		<integer name="appreciation" title="Appreciation" selection="training.register.rating.select" />
-		<many-to-one name="jobPosition" ref="JobPosition"  title="Applied job" />
+		<many-to-one name="jobPosition" ref="JobPosition"  title="Applied job" required="true" />
 		<many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="Responsible" />
 		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee hired" />
 		<string name="expectedSalary" title="Expected salary" />
