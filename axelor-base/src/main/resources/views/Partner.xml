@@ -504,6 +504,7 @@
 	<action-group name="action-group-partner-onload">
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
+        <action name="action-partner-attrs-show-specific-tax-note"/>
     	<action name="action-partner-method-set-social-network-url"/>
     </action-group>
 	

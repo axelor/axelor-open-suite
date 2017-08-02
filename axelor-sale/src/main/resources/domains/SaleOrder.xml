@@ -84,7 +84,10 @@
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
-	
+
+      <!-- Impression -->
+      <string name="specificNotes" title="Specific notes" large="true"/>
+
  	<unique-constraint columns="saleOrderSeq,company"/>
 
  	//TODO move into supplychain ?

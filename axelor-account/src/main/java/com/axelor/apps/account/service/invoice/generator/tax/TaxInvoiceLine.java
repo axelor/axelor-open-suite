@@ -22,9 +22,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.axelor.apps.account.db.TaxEquiv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +64,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 		List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<InvoiceLineTax>();
 		Map<TaxLine, InvoiceLineTax> map = new HashMap<TaxLine, InvoiceLineTax>();
+        Set<String> specificNotes = new HashSet<String>();
 
 		if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
@@ -99,6 +103,13 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 					}
 				}
+
+				if (!invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
+                    TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
+                    if (taxEquiv != null) {
+                        specificNotes.add(taxEquiv.getSpecificNoteInvoice());
+                    }
+                }
 			}
 		}
 
@@ -121,6 +132,18 @@ public class TaxInvoiceLine extends TaxGenerator {
 			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {invoiceLineTax.getTaxTotal(), invoiceLineTax.getInTaxTotal()});
 
 		}
+
+        if (!invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
+            StringBuilder notes = new StringBuilder();
+            for (String specificNote : specificNotes) {
+                notes.append(specificNote);
+                notes.append("\n");
+            }
+            notes.setLength(notes.length() - 1); // removes last 'new line'
+            invoice.setSpecificNotes(notes.toString());
+        } else {
+		    invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
+        }
 
 		return invoiceLineTaxList;
 	}

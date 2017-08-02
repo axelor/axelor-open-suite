@@ -12,6 +12,7 @@
         <panel name="main">
         	<field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
         	<field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
+            <field name="specificNoteInvoice" colSpan="12"/>
         </panel>
     </form>
 

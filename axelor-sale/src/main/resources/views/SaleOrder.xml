@@ -162,7 +162,10 @@
 		</panel>
 		
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"/>
-		
+
+          <panel name="printing" title="Printing">
+              <field name="specificNotes" colSpan="12" readonly="true"/>
+          </panel>
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true">

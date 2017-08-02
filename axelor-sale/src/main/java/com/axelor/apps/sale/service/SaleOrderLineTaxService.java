@@ -21,9 +21,12 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.axelor.apps.account.db.TaxEquiv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +67,7 @@ public class SaleOrderLineTaxService {
 		
 		List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<SaleOrderLineTax>();
 		Map<TaxLine, SaleOrderLineTax> map = new HashMap<TaxLine, SaleOrderLineTax>();
+        Set<String> specificNotes = new HashSet<String>();
 		
 		if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
@@ -96,6 +100,13 @@ public class SaleOrderLineTaxService {
 						
 					}
 				}
+
+                if (!saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote()) {
+                    TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
+                    if (taxEquiv != null) {
+                        specificNotes.add(taxEquiv.getSpecificNoteInvoice());
+                    }
+                }
 			}
 		}
 			
@@ -115,9 +126,18 @@ public class SaleOrderLineTaxService {
 			
 		}
 
+        if (!saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote()) {
+            StringBuilder notes = new StringBuilder();
+            for (String specificNote : specificNotes) {
+                notes.append(specificNote);
+                notes.append("\n");
+            }
+            notes.setLength(notes.length() - 1); // removes last 'new line'
+            saleOrder.setSpecificNotes(notes.toString());
+        } else {
+            saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());
+        }
+
 		return saleOrderLineTaxList;
 	}
-
-	
-	
 }
