@@ -288,14 +288,16 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	 * @throws AxelorException
 	 */
 	public Reconcile reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean canBeZeroBalanceOk, boolean updateInvoicePayments) throws AxelorException  {
+        if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
+            BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
+            Reconcile reconcile = this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
 
-		BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
-		Reconcile reconcile = this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
-		
-		this.confirmReconcile(reconcile, updateInvoicePayments);
-		
-		return reconcile;
-		
+            this.confirmReconcile(reconcile, updateInvoicePayments);
+
+            return reconcile;
+        }
+
+        return null;
 	}
 
 
