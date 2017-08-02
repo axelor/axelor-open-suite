@@ -78,8 +78,14 @@
 				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-in-tax-total"/>
 		        <field name="kilometricTypeSelect" required="true"/>
 		        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" required="true"/>
-		        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
-		        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
+		        <panel colSpan="12" if="!__config__.app.getApp('expense').getComputeDistanceWithWebService()">
+			        <field name="fromCity" required="true"/>
+			        <field name="toCity" required="true"/>
+		        </panel>
+		        <panel colSpan="12" if="__config__.app.getApp('expense').getComputeDistanceWithWebService()">
+			        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
+			        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
+		        </panel>
 		    	<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonly="true"/>
 	    		<field name="comments" colSpan="12"/>
 				<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
