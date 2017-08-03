@@ -18,7 +18,7 @@
 	<menuitem name="admin-root-general" parent="admin-root" order="10"
 		title="General data"  />
 
-	<menuitem name="admin-root-general-unit" parent="admin-root-general"
+	<menuitem name="admin-root-general-unit" parent="admin-root-general" order="-10"
 		title="Units" action="admin.root.general.unit" />
 
 	<action-view name="admin.root.general.unit" title="Units"
@@ -36,7 +36,7 @@
 		<view type="form" name="currency-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-general-unit-conversion"
+	<menuitem name="admin-root-general-unit-conversion" order="-5"
 		parent="admin-root-general" title="Unit conversions"
 		action="admin.root.general.unit.conversion" />
 

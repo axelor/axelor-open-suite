@@ -26,7 +26,7 @@
 		</panel>
 		<panel itemSpan="12" sidebar="true">
 			<button name="plan" title="Accept/plan" showIf="statusSelect == 0" onClick="save,action-training-register-method-plan"/>
-			<button name="complete" title="Complete" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
+			<button name="complete" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
 			<button name="cancel" title="Cancel" onClick="save,action-training-register-method-cancel"/>
 			<field name="ratingSelect" widget="SelectProgress"/>
 		</panel>

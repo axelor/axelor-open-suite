@@ -22,9 +22,9 @@
 	    </menubar>
 		<panel name="main">
 			<field name="statusSelect" colSpan="4"/>
-			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="2" showIf="statusSelect &lt; 3"/>
-			<field name="employee" showIf="statusSelect == 3" />
-			<field name="hiringStage" />
+			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="2" showIf="statusSelect == 0" />
+			<field name="employee" showIf="statusSelect == 1" />
+			<field name="hiringStage" x-order="sequence"/>
 			<panel title="Job info" colSpan="12">
 				<field name="jobPosition" />
 				<field name="jobPosition.companyDepartment" />

@@ -1,7 +1,7 @@
 "key","message","comment","context"
 "Address","Adresse email",,
 "Address Block","Bloc d'adresse",,
-"All messages",,,
+"All messages","Tous les messages",,
 "Bcc","Cci",,
 "Cc","Cc",,
 "Chat","Messagerie interne",,
@@ -81,7 +81,7 @@
 "System ?","Système ?",,
 "Target receptor","Destinataire cible",,
 "Template","Modèle",,
-"Template Rules",,,
+"Template Rules","Règles des modèles",,
 "Templates","Modèles",,
 "Test connection","Tester connexion",,
 "There is already a default account","Il existe déjà une compte email par défaut.",,

@@ -1,8 +1,8 @@
-name
-Reçu
-Entretiens
-Offre
-Embauché
-Candidature rejetée
-Offre rejetée
-Annulé
+"name","sequence"
+"Reçu",1
+"Entretiens",2
+"Offre",3
+"Embauché",4
+"Candidature rejetée",5
+"Offre rejetée",6
+"Annulé",7
