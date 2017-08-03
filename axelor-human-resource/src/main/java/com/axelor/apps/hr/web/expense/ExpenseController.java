@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.hr.web.expense;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.hr.service.HRMenuValidateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -46,6 +45,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
@@ -68,9 +68,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
-
-import java.lang.invoke.MethodHandles;
 
 public class ExpenseController {
 
@@ -91,7 +88,7 @@ public class ExpenseController {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		Expense expense = expenseLine.getExpense();
 		if(expense == null){
-			expense = request.getContext().getParentContext().asType(Expense.class);
+			expense = request.getContext().getParent().asType(Expense.class);
 			expenseLine.setExpense(expense);
 		}
 		if(expenseLine.getAnalyticDistributionTemplate() != null){
@@ -107,7 +104,7 @@ public class ExpenseController {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		Expense expense = expenseLine.getExpense();
 		if(expense == null){
-			expense = request.getContext().getParentContext().asType(Expense.class);
+			expense = request.getContext().getParent().asType(Expense.class);
 			expenseLine.setExpense(expense);
 		}
 		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
@@ -431,7 +428,7 @@ public class ExpenseController {
 	public void fillKilometricExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try  {
-			Expense expense = request.getContext().getParentContext().asType(Expense.class);
+			Expense expense = request.getContext().getParent().asType(Expense.class);
 			Product expenseProduct = expenseServiceProvider.get().getKilometricExpenseProduct(expense);
 			logger.debug("Get Kilometric expense product : {}", expenseProduct);
 			response.setValue("expenseProduct",expenseProduct);
@@ -475,8 +472,8 @@ public class ExpenseController {
 			userId = expenseLine.getExpense().getUser().getId().toString();
 			userName = expenseLine.getExpense().getUser().getFullName();
 		}else{
-			userId = request.getContext().getParentContext().asType(Expense.class).getUser().getId().toString() ;
-			userName = request.getContext().getParentContext().asType(Expense.class).getUser().getFullName() ;
+			userId = request.getContext().getParent().asType(Expense.class).getUser().getId().toString() ;
+			userName = request.getContext().getParent().asType(Expense.class).getUser().getFullName() ;
 		}
 		Employee employee = Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
 		
@@ -529,7 +526,7 @@ public class ExpenseController {
 
 	private void setExpense(ActionRequest request, ExpenseLine expenseLine) {
 		
-		Context parent = request.getContext().getParentContext();
+		Context parent = request.getContext().getParent();
 		
 		if (parent != null && parent.get("_model").equals(Expense.class.getName())) {
 			expenseLine.setExpense(parent.asType(Expense.class));
