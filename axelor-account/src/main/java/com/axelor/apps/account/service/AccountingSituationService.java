@@ -20,12 +20,10 @@ package com.axelor.apps.account.service;
 import java.util.List;
 import java.util.Set;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -39,13 +37,10 @@ import com.google.inject.persist.Transactional;
 
 public class AccountingSituationService	{
 
-	protected AccountConfigService accountConfigService;
 	protected AccountingSituationRepository accountingSituationRepo;
 
 	@Inject
-	public AccountingSituationService(AccountConfigService accountConfigService, AccountingSituationRepository situationRepository)  {
-		
-		this.accountConfigService = accountConfigService;
+	public AccountingSituationService(AccountingSituationRepository situationRepository)  {
 		this.accountingSituationRepo = situationRepository;
 	}
 
@@ -81,13 +76,7 @@ public class AccountingSituationService	{
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
 		AccountingSituation accountingSituation = new AccountingSituation();
-
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		accountingSituation.setCompany(company);
-		accountingSituation.setCustomerAccount(accountConfigService.getCustomerAccount(accountConfig));
-		accountingSituation.setSupplierAccount(accountConfigService.getSupplierAccount(accountConfig));
-		accountingSituation.setEmployeeAccount(accountConfigService.getEmployeeAccount(accountConfig));
-
 		partner.addCompanySetItem(company);
 
 		PaymentMode inPaymentMode = partner.getInPaymentMode();
