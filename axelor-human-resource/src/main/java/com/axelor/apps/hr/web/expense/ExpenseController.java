@@ -565,6 +565,7 @@ public class ExpenseController {
 		}
 
 		BigDecimal distance = Beans.get(KilometricService.class).computeDistance(expenseLine);
+		expenseLine.setDistance(distance);
 		response.setValue("distance", distance);
 
 		// Compute kilometric distance.
