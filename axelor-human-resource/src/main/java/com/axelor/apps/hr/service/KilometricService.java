@@ -35,6 +35,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -97,14 +98,16 @@ public class KilometricService {
 	
 	
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
-		
-		BigDecimal multiplier = expenseLine.getKilometricTypeSelect() == 1 ? BigDecimal.ONE : new BigDecimal("2.00");
+
+		BigDecimal multiplier = expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ONE_WAY
+				? BigDecimal.ONE
+				: new BigDecimal(2);
 		BigDecimal distance =  expenseLine.getDistance().multiply(multiplier) ;
 		
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
 		if (log == null){
-			previousDistance= new BigDecimal("0.00");
+			previousDistance= BigDecimal.ZERO;
 		}else {
 			previousDistance= log.getDistanceTravelled();
 		}
