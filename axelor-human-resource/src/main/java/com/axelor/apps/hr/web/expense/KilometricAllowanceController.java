@@ -19,32 +19,76 @@ package com.axelor.apps.hr.web.expense;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.KilometricAllowanceService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class KilometricAllowanceController {
 
-	private KilometricAllowanceService kilometricAllowanceService;
+	private final AppHumanResourceService appHumanResourceService;
 
 	@Inject
-	public KilometricAllowanceController(KilometricAllowanceService kilometricAllowanceService) {
-		this.kilometricAllowanceService = kilometricAllowanceService;
+	public KilometricAllowanceController(AppHumanResourceService appHumanResourceService,
+			KilometricAllowanceService kilometricAllowanceService) {
+		this.appHumanResourceService = appHumanResourceService;
 	}
 
-	public void computeDistance(ActionRequest request, ActionResponse response) throws AxelorException {
-		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+	public void computeDistanceAndKilometricExpense(ActionRequest request, ActionResponse response)
+			throws AxelorException {
+
+		// Compute distance.
+
+		if (!appHumanResourceService.getAppExpense().getComputeDistanceWithWebService()) {
+			return;
+		}
+
+		Context context = request.getContext();
+		ExpenseLine expenseLine = context.asType(ExpenseLine.class);
 
 		if (Strings.isNullOrEmpty(expenseLine.getFromCity()) || Strings.isNullOrEmpty(expenseLine.getToCity())) {
 			return;
 		}
 
-		BigDecimal distance = kilometricAllowanceService.computeDistance(expenseLine);
+		BigDecimal distance = Beans.get(KilometricAllowanceService.class).computeDistance(expenseLine);
 		response.setValue("distance", distance);
+
+		// Compute kilometric distance.
+
+		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getExpenseDate() == null
+				|| expenseLine.getKilometricTypeSelect() == 0) {
+			return;
+		}
+
+		Expense expense = expenseLine.getExpense();
+
+		if (expense == null) {
+			expense = context.getParent().asType(Expense.class);
+		}
+
+		Employee employee = expense.getUser().getEmployee();
+
+		if (employee == null) {
+			throw new AxelorException(
+					String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+
+		BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+		response.setValue("totalAmount", amount);
+		response.setValue("untaxedAmount", amount);
 	}
 
 }
