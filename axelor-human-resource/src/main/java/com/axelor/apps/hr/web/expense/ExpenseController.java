@@ -568,7 +568,7 @@ public class ExpenseController {
 		expenseLine.setDistance(distance);
 		response.setValue("distance", distance);
 
-		// Compute kilometric distance.
+		// Compute kilometric expense.
 
 		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getExpenseDate() == null
 				|| expenseLine.getKilometricTypeSelect() == 0) {
