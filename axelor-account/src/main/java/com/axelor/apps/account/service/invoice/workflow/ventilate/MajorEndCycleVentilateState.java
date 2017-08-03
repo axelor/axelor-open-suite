@@ -20,8 +20,13 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 import javax.inject.Inject;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.ReimbursementExportService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 
 public class MajorEndCycleVentilateState extends VentilateState {
@@ -31,6 +36,20 @@ public class MajorEndCycleVentilateState extends VentilateState {
 
 	@Inject
 	private ReimbursementExportService reimbursementExportService;
+
+
+	public MajorEndCycleVentilateState(SequenceService sequenceService,
+									   MoveService moveService,
+									   AccountConfigService accountConfigService,
+									   AppAccountService appAccountService,
+									   InvoiceRepository invoiceRepo,
+									   WorkflowVentilationService workflowService,
+									   PaymentScheduleService paymentScheduleService,
+									   ReimbursementExportService reimbursementExportService) {
+		super(sequenceService, moveService, accountConfigService, appAccountService, invoiceRepo, workflowService);
+		this.paymentScheduleService = paymentScheduleService;
+		this.reimbursementExportService = reimbursementExportService;
+	}
 
 	@Override
 	protected void setMove( ) throws AxelorException {
