@@ -118,11 +118,8 @@ public class KilometricService {
 	
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 
-		BigDecimal multiplier = expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ONE_WAY
-				? BigDecimal.ONE
-				: new BigDecimal(2);
-		BigDecimal distance =  expenseLine.getDistance().multiply(multiplier) ;
-		
+		BigDecimal distance =  getMultipliedDistance(expenseLine);
+
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
 		if (log == null){
@@ -169,11 +166,24 @@ public class KilometricService {
 	public void updateKilometricLog(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
-		log.setDistanceTravelled( log.getDistanceTravelled().add( expenseLine.getDistance().multiply( BigDecimal.valueOf(expenseLine.getKilometricTypeSelect()) )  ) );
+		log.setDistanceTravelled(log.getDistanceTravelled().add(getMultipliedDistance(expenseLine)));
 		log.addExpenseLineListItem(expenseLine);
 		kilometricLogRepo.save(log);
 	}
-	
+
+	/**
+	 * Get multiplied distance according to kilometric type.
+	 * 
+	 * @param expenseLine
+	 * @return
+	 */
+	private BigDecimal getMultipliedDistance(ExpenseLine expenseLine) {
+		if (expenseLine.getKilometricTypeSelect().equals(ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)) {
+			return expenseLine.getDistance().multiply(new BigDecimal(2));
+		}
+		return expenseLine.getDistance();
+	}
+
 	public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {
 		return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity());
 	}
