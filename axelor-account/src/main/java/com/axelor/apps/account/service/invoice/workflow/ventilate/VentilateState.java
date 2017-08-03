@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.*;
@@ -49,20 +50,32 @@ public class VentilateState extends WorkflowInvoice {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
 	private SequenceService sequenceService;
 
-	@Inject
 	private MoveService moveService;
 
-	@Inject
 	private AccountConfigService accountConfigService;
 
-	@Inject
 	protected AppAccountService appAccountService;
 	
-	@Inject
 	private InvoiceRepository invoiceRepo;
+
+	private WorkflowVentilationService workflowService;
+
+	@Inject
+	public VentilateState(SequenceService sequenceService,
+						  MoveService moveService,
+						  AccountConfigService accountConfigService,
+						  AppAccountService appAccountService,
+						  InvoiceRepository invoiceRepo,
+						  WorkflowVentilationService workflowService) {
+		this.sequenceService = sequenceService;
+		this.moveService = moveService;
+		this.accountConfigService = accountConfigService;
+		this.appAccountService = appAccountService;
+		this.invoiceRepo = invoiceRepo;
+		this.workflowService = workflowService;
+	}
 
 	@Override
 	public void init(Invoice invoice){
@@ -88,6 +101,8 @@ public class VentilateState extends WorkflowInvoice {
 		updatePaymentSchedule( );
 		setMove( );
 		setStatus( );
+
+		workflowService.afterVentilation(invoice);
 	}
 
 	protected void updatePaymentSchedule( ){
