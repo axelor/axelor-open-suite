@@ -128,7 +128,7 @@ public class CurrencyConversionService {
 	}
 
 
-	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDateTime rateDate){
+	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDate rateDate){
 
 		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
 
