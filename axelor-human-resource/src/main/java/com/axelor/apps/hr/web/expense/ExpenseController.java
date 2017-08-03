@@ -564,7 +564,8 @@ public class ExpenseController {
 			return;
 		}
 
-		BigDecimal distance = Beans.get(KilometricService.class).computeDistance(expenseLine);
+		KilometricService kilometricService = Beans.get(KilometricService.class);
+		BigDecimal distance = kilometricService.computeDistance(expenseLine);
 		expenseLine.setDistance(distance);
 		response.setValue("distance", distance);
 
@@ -589,7 +590,7 @@ public class ExpenseController {
 					IException.CONFIGURATION_ERROR);
 		}
 
-		BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+		BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
 		response.setValue("totalAmount", amount);
 		response.setValue("untaxedAmount", amount);
 	}
