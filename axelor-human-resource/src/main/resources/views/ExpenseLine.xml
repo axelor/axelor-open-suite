@@ -123,7 +123,7 @@
     </action-method>
 
 	<action-method name="action-kilometric-allowance-method-compute-distance">
-		<call class="com.axelor.apps.hr.web.expense.KilometricAllowanceController" method="computeDistanceAndKilometricExpense"/>
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeDistanceAndKilometricExpense"/>
 	</action-method>
 
 	<action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
