@@ -18,6 +18,8 @@
 package com.axelor.apps.base.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
@@ -38,17 +40,18 @@ public class BlockingService {
 	}
 
 
-	public Blocking getBlocking(Partner partner, Company company)  {
+	public List<Blocking> getBlockings(Partner partner, Company company, int blockingType)  {
+        if (partner != null && company != null && partner.getBlockingList() != null) {
+            List<Blocking> blockings = new ArrayList<Blocking>();
+            for (Blocking blocking : partner.getBlockingList()) {
+                if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect() == blockingType) {
+                    blockings.add(blocking);
+                }
+            }
 
-		if(partner != null && company != null && partner.getBlockingList() != null)  {
-			for(Blocking blocking : partner.getBlockingList())  {
-				if(blocking.getCompany().equals(company))  {
-					return blocking;
-				}
-			}
-		}
+            return blockings;
+        }
 
-		return null;
-
+        return null;
 	}
 }

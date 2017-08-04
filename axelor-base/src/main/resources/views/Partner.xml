@@ -76,146 +76,178 @@
     onLoad="action-group-partner-onload, action-partner-attrs-move-lines-total" width="large">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
-    
-    <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
-    onNew="action-group-base-partner-onnew"
-    onLoad="action-group-partner-onload"
-    onSave="action-partner-iban-check-on-save" width="large">
-	    <toolbar>
-	        <button name="sendByEmail" title="Send an email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
-	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"  if="__config__.app.isApp('account')"/>
-	    </toolbar>
-	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
-	    <panel name="main" >
-	    	<panel colSpan="3">
-	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-	        	<panel colSpan="8" showIf="fullName != null">
-				    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
-				</panel>
-	      	</panel>
-	      	<panel colSpan="9">
-	      	<field name="fullName" colSpan="9" showTitle="false">
-	      		<hilite strong="true" if="true" color="primary"/>        
-		        <editor x-show-titles="false">
-		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url, action-partner-record-employee" colSpan="4"/>
-		            <spacer colSpan="8"/>
-		            <field name="name" showTitle="false" css="highlight" placeholder="Name"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-		            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2"  css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
-		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
-		        </editor>
-		    </field>
-			<field name="isContact" hidden="true" colSpan="12" />
-		</panel>
-  		</panel>
-  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
-  		<panel-tabs>
-  			<panel name="information" title="Information">
-				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
-					<field name="isProspect" onChange="action-partner-attrs-unset-customer"/>
-					<field name="isSupplier" hideIf="isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
-					<field name="isEmployee" showIf="!isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2" onChange="action-partner-account-attrs-hide-employee-account"/>
-				</panel>
-				<panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
-					<field name="contactAddress">
-						<editor x-show-titles="false">
-							<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
-							<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-							<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
-							<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-							<field name="city" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
-							<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-							<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
-				        </editor>
-					</field>
-				</panel>
-				<panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
-					<field name="partnerAddressList" colSpan="12">
-				        <editor layout="table" x-show-titles="false" >
-				        	<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
-            				<field name="address.addressL4" hidden="true" colSpan="12"/>
-							<field name="address" colSpan="3" canNew="true"/>
-							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()" />
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
-				        </editor>
-					</field>
-				</panel>
-				<panel name="generalContactDetails" title="General contact details" colSpan="12">
-					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
-					<field name="fax" colSpan="3" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-record-normalize-fax-phone-number"/>
-					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
-					<field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
-						<editor x-show-titles="false">
-							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
-						</editor>
-					</field>
-					<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
-				</panel>
-				<panel name="partnerDetails" title="Partner Details" hideIf="isEmployee" colSpan="12" >
-					<panel colSpan="6">
-						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
-						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
-						<field name="source" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
-						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-					</panel>
-					<panel  colSpan="6">
-						<field name="saleTurnover" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-						<field name="nbrEmployees" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-						<field name="registrationCode" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-						<field name="taxNbr" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-						<field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
-						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
-					</panel>
-		      	</panel>
-		      	<panel name="settings" title="Settings" colSpan="12">
-					<field name="partnerSeq" colSpan="6"/>
-					<field name="languageSelect" colSpan="6"/>
-					<panel title="Assigned to" colSpan="12">
-						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee"/>
-						<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
-						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
-					</panel>
-				</panel>
-				<panel name="notes" title="Notes" colSpan="12">
-					<field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
-				</panel>
-				<panel colSpan="12">
-					<panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
-				</panel>
-	    	</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
-		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
-				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
-		    </panel>
-			<panel-related if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
-			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
-			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee" if="__config__.app.isApp('crm')">
-	        	<panel-include view="incl-activities-partner-form" from="axelor-crm" />
-	        	<panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
-			</panel>
-			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
-				<field name="saleOrderInformation" title="Label to be displayed on sale orders" colSpan="12"/>
-			</panel>
-			<panel name="purchaseOrder" title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
-				<field name="purchaseOrderInformation" colSpan="12"/>
-			</panel>
-			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
-				<field name="password" widget="password"/>
-			</panel>
-			<panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
-				<field name="deliveryDelay" showIf="isSupplier"/>
-				<spacer/>
-				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
-				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-			</panel>
+
+    <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"
+          onNew="action-group-base-partner-onnew"
+          onLoad="action-group-partner-onload"
+          onSave="action-partner-iban-check-on-save" width="large">
+        <toolbar>
+            <button name="sendByEmail" title="Send an email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
+            <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+            <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null" if-module="axelor-account"  if="__config__.app.isApp('account')"/>
+        </toolbar>
+        <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
+        <panel name="main" >
+            <panel colSpan="3">
+                <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+                <panel colSpan="8" showIf="fullName != null">
+                    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+                    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+                    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+                    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+                    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+                </panel>
+            </panel>
+            <panel colSpan="9">
+                <field name="fullName" colSpan="9" showTitle="false">
+                    <hilite strong="true" if="true" color="primary"/>
+                    <editor x-show-titles="false">
+                        <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url, action-partner-record-employee" colSpan="4"/>
+                        <spacer colSpan="8"/>
+                        <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+                        <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
+                        <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
+                    </editor>
+                </field>
+                <panel colSpan="3" hideIf="!$readonly()">
+                    <button name="$balance" title="Balance" colSpan="12" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button"/>
+                </panel>
+                <panel hideIf="isContact" colOffset="9" colSpan="3">
+                    <field name="isProspect" hideIf="$readonly()" onChange="action-partner-attrs-unset-customer"/>
+                    <field name="isEmployee" showIf="!$readonly() &amp;&amp; !isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2" onChange="action-partner-account-attrs-hide-employee-account"/>
+                    <field name="isCustomer" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
+                    <field name="isSupplier" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
+                    <field name="$viewerPartnerType" showTitle="false" hideIf="!$readonly()" colSpan="12">
+                        <viewer>
+                            <![CDATA[
+                                <h4 style="text-align: right;">
+                                    <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+                                    <span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+                                    <span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+                                    <span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+                                </h4>
+                            ]]>
+                        </viewer>
+                    </field>
+                </panel>
+                <!-- Waiting for '$moment()' helper to work on AngularJS expressions.
+                <panel hideIf="!$readonly()" colOffset="9" colSpan="3">
+                    <field name="$activeBlockings" showTitle="false" colSpan="12">
+                        <viewer><![CDATA[
+                            <h4 style="text-align: right;">
+                                <span ng-repeat="item in record.blockingList" class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="(item.blockingToDate | date:'dd/MM/yyyy') > ('26/07/2017' | date:'dd/MM/yyyy')"><i class="fa fa-ban"></i> <span x-translate>{{ {'1':'Remin.','2':'Inv.','3':'Reimb.','4':'Debit'}[item.blockingSelect] }}</span><i class="fa fa-caret-right" style="margin: 0 4px;"></i>{{ item.blockingToDate | date:'dd/MM/yy' }}</span>
+                            </h4>
+                        ]]></viewer>
+                    </field>
+                </panel>
+                -->
+                <field name="isContact" hidden="true" colSpan="12" />
+            </panel>
+        </panel>
+        <panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+        <panel-tabs>
+            <panel name="information" title="Information">
+                <panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
+                    <field name="contactAddress">
+                        <editor x-show-titles="false">
+                            <field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
+                            <field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
+                            <field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
+                            <field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
+                            <field name="city" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
+                            <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
+                            <field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
+                        </editor>
+                    </field>
+                </panel>
+                <panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
+                    <field name="partnerAddressList" colSpan="12">
+                        <editor layout="table" x-show-titles="false" >
+                            <label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
+                            <field name="address.addressL4" hidden="true" colSpan="12"/>
+                            <field name="address" colSpan="3" canNew="true"/>
+                            <field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
+                            <field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()" />
+                            <field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
+                        </editor>
+                    </field>
+                </panel>
+                <panel name="generalContactDetails" title="General contact details" colSpan="12">
+                    <field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
+                    <field name="fax" colSpan="3" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-record-normalize-fax-phone-number"/>
+                    <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
+                    <field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
+                        <editor x-show-titles="false">
+                            <field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+                        </editor>
+                    </field>
+                    <field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
+                </panel>
+                <panel name="partnerDetails" title="Partner Details" hideIf="isEmployee" colSpan="12" >
+                    <panel colSpan="6">
+                        <field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
+                        <field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
+                        <field name="source" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
+                        <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
+                    </panel>
+                    <panel  colSpan="6">
+                        <field name="saleTurnover" colSpan="6" hideIf="partnerTypeSelect== 2"/>
+                        <field name="nbrEmployees" colSpan="6" hideIf="partnerTypeSelect== 2"/>
+                        <field name="registrationCode" colSpan="6" hideIf="partnerTypeSelect== 2"/>
+                        <field name="taxNbr" colSpan="6" hideIf="partnerTypeSelect== 2"/>
+                        <field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
+                        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
+                    </panel>
+                </panel>
+                <panel name="settings" title="Settings" colSpan="12">
+                    <field name="partnerSeq" colSpan="6"/>
+                    <field name="languageSelect" colSpan="6"/>
+                    <panel title="Assigned to" colSpan="12">
+                        <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee"/>
+                        <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
+                        <field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
+                    </panel>
+                </panel>
+                <panel name="notes" title="Notes" colSpan="12">
+                    <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
+                </panel>
+                <panel colSpan="12">
+                    <panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
+                </panel>
+            </panel>
+            <panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
+                <panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
+                <panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
+            </panel>
+            <panel-related if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+            <panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
+            <panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+                <panel-include view="incl-activities-partner-form" from="axelor-crm" />
+                <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+                <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
+            </panel>
+            <panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
+                <field name="saleOrderInformation"/>
+                <field name="payerQuality" hideIf="isEmployee"/>
+                <field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" form-view="sale-price-list-form" grid-view="price-list-grid"/>
+                <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+                <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+                <panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
+                    <field name="password" widget="password"/>
+                </panel>
+            </panel>
+            <panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
+                <field name="purchaseOrderInformation"/>
+                <field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
+                <field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
+            </panel>
+            <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
+                <field name="deliveryDelay" showIf="isSupplier"/>
+                <spacer/>
+                <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
+                <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
+                <field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+            </panel>
 			<panel name="quality" title="Supplier quality rating" if-module="axelor-stock" showIf="isSupplier" readonly="true">
 				<field name="supplierQualityRating" colSpan="3"/>
 				<field name="supplierArrivalProductNumber" colSpan="3"/>
@@ -228,15 +260,15 @@
 				<field name="snProfileList" colSpan="12"/>
 			</panel>
 			<panel-related field="supplierCatalogList" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
-		</panel-tabs>
-		<panel>
-			<field name="partnerAttrs" colSpan="12" />
-		</panel>
-		<panel-mail>
-		  <mail-messages limit="4" />
-		  <mail-followers />
-	  </panel-mail>
-	</form>
+        </panel-tabs>
+        <panel>
+            <field name="partnerAttrs" colSpan="12" />
+        </panel>
+        <panel-mail>
+            <mail-messages limit="4" />
+            <mail-followers />
+        </panel-mail>
+    </form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
         <field name="fullName"/>
@@ -527,6 +559,8 @@
 		<action name="action-partner-account-attrs-hide-supplier-account"/>
 		<action name="action-partner-account-attrs-hide-customer-account"/>
 		<action name="action-partner-account-attrs-hide-employee-account"/>
+        <action name="action-partner-record-set-balance"/>
+        <action name="action-partner-attrs-name-balance"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
@@ -583,6 +617,16 @@
     <action-attrs name="action-partner-attrs-unset-customer">
     	<attribute name="value" for="isCustomer" expr="eval:false" if="isProspect"/>
     </action-attrs>
+
+    <action-attrs name="action-partner-attrs-name-balance">
+        <attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
+        <attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
+        <attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$balance == 0"/>
+    </action-attrs>
+
+    <action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
+        <field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount }"/>
+    </action-record>
     
     <action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
     	<field name="contactPartnerSet" expr="eval: null"/>
@@ -703,6 +747,13 @@
 		<domain>self.contactPartnerSet.id = :_contactId</domain>
 		<context name="_contactId" expr="eval: id"/>
 	</action-view>
+
+    <action-view name="action-partner-view-show-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
+        <view type="grid" name="move-line-grid"/>
+        <view type="form" name="move-line-form"/>
+        <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
+        <context name="partnerId" expr="eval: id"/>
+    </action-view>
 
 	<action-method name="action-convert-into-individual-partner">
 		<call class="com.axelor.apps.base.web.PartnerController" method="convertToIndividualPartner"/>

@@ -58,7 +58,7 @@
   	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List" index="false"/>
    
     <!-- PAGE Blocage -->
-	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner"/>
+	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
 	
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
    
