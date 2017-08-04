@@ -44,7 +44,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.PartnerProductQualityRate;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -52,7 +51,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.PartnerProductQualityRateRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -62,8 +60,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -750,6 +746,47 @@ public class StockMoveServiceImpl implements StockMoveService {
 		Double qty = inQty-outQty;
 		
 		return qty;
+	}
+
+
+	@Override
+	public List<StockMoveLine> changeConformityStockMove(StockMove stockMove) {
+		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+
+		if (stockMoveLineList != null) {
+			for (StockMoveLine stockMoveLine : stockMoveLineList) {
+				stockMoveLine.setConformitySelect(stockMove.getConformitySelect());
+			}
+		}
+
+		return stockMoveLineList;
+	}
+
+
+	@Override
+	public Integer changeConformityStockMoveLine(StockMove stockMove) {
+		Integer stockMoveConformitySelect;
+		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+
+		if (stockMoveLineList != null) {
+			stockMoveConformitySelect = StockMoveRepository.CONFORMITY_COMPLIANT;
+
+			for (StockMoveLine stockMoveLine : stockMoveLineList) {
+				Integer conformitySelect = stockMoveLine.getConformitySelect();
+
+				if (!conformitySelect.equals(StockMoveRepository.CONFORMITY_COMPLIANT)) {
+					stockMoveConformitySelect = conformitySelect;
+					if (conformitySelect.equals(StockMoveRepository.CONFORMITY_NON_COMPLIANT)) {
+						break;
+					}
+				}
+			}
+		} else {
+			stockMoveConformitySelect = StockMoveRepository.CONFORMITY_UNDEFINED;
+		}
+
+		stockMove.setConformitySelect(stockMoveConformitySelect);
+		return stockMoveConformitySelect;
 	}
 
 }
