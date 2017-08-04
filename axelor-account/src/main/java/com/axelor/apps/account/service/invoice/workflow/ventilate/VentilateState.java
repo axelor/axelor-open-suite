@@ -60,7 +60,7 @@ public class VentilateState extends WorkflowInvoice {
 	
 	private InvoiceRepository invoiceRepo;
 
-	private WorkflowVentilationService workflowService;
+	protected WorkflowVentilationService workflowService;
 
 	@Inject
 	public VentilateState(SequenceService sequenceService,

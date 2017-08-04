@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import java.math.BigDecimal;
-import java.util.*;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -34,7 +31,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
@@ -42,8 +38,11 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
+import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.*;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -60,6 +59,12 @@ import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SaleOrderController{
 	
@@ -196,10 +201,10 @@ public class SaleOrderController{
 		Context context = request.getContext();
 		try {
 			SaleOrder saleOrder = context.asType(SaleOrder.class);
-			int operationSelect = Integer.parseInt((String) context.get("operationSelect"));
+			int operationSelect = Integer.parseInt(context.get("operationSelect").toString());
 			boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
-			BigDecimal qtyToInvoice = new BigDecimal(
-						context.getOrDefault("qtyToInvoice", "0").toString()
+			BigDecimal amountToInvoice = new BigDecimal(
+						context.getOrDefault("amountToInvoice", "0").toString()
 				);
 			Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
@@ -207,9 +212,9 @@ public class SaleOrderController{
 			saleOrderLineListContext = (List<Map<String,Object>>)
 					request.getRawContext().get("saleOrderLineList");
 			for (Map<String, Object> map : saleOrderLineListContext ) {
-				if (map.get("qtyToInvoice") != null) {
+				if (map.get("amountToInvoice") != null) {
 					BigDecimal qtyToInvoiceItem = new BigDecimal(
-							map.get("qtyToInvoice").toString()
+							map.get("amountToInvoice").toString()
 					);
 					if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
 						Long SOlineId = new Long((Integer) map.get("id"));
@@ -221,7 +226,7 @@ public class SaleOrderController{
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
 
 			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
-							saleOrder, operationSelect, qtyToInvoice, isPercent,
+							saleOrder, operationSelect, amountToInvoice, isPercent,
 							qtyToInvoiceMap
 					);
 

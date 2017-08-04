@@ -187,6 +187,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
+		//if the invoice is an advance payment invoice, we also "ventilate" it
+		//without creating the move
+		if (invoice.getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+		    ventilate(invoice);
+		}
+
 	}
 
 	@Override
