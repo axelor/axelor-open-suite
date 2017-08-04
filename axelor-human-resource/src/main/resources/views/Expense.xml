@@ -86,8 +86,8 @@
 					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-kap" />
 					<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true"/>
 			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
-			        <field name="fromCity" required="true" />
-			        <field name="toCity" required="true"/>
+			        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" />
+			        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" />
 			        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" />
 				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="2" readonly="true"/>
 			   	    <field name="project" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-grid"/>

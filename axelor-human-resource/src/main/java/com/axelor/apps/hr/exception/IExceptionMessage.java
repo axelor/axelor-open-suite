@@ -110,4 +110,9 @@ public interface IExceptionMessage {
 	 */
 	static final String NEW_PROJECT_LINE = /*$$(*/ "New project line" /*)*/;
 
+	/**
+	 * Kilometric allowance
+	 */
+	String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
+
 }
