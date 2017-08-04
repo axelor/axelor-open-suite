@@ -23,7 +23,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.db.Filter;
 import com.google.inject.Inject;
 
@@ -82,27 +82,20 @@ public class FilterGroovyService {
 	 * @return Groovy expression string.
 	 */
 	private String createGroovyFilter(Filter filter, String parentField) {
-
-		MetaField metaField = filter.getMetaField();
-		String field = metaField.getName();
-		String targetField = filter.getTargetField();
-		if (parentField != null) {
-			field = parentField + "." + field;
-			if (targetField != null) {
-				targetField = parentField + "." + targetField;
-			}
-		}
-
-		String value = processValue(filter, metaField.getTypeName());
+		
+		MetaJsonField metaJsonField = filter.getMetaJsonField();
+		String field = parentField != null ? parentField + "." + metaJsonField.getName() : metaJsonField.getName();
+		String targetField = parentField != null ? parentField + "." + filter.getTargetField() : filter.getTargetField();
+		String value = processValue(filter);
 		String operator = filter.getOperator();
-		String relationship = metaField.getRelationship();
 
-		if (relationship != null && targetField != null) {
+		if (targetField != null) {
 			targetField = targetField.replace(".", "?.");
-			if (relationship.equals("ManyToOne")) {
+			if (metaJsonField.getType().equals("many-to-one")
+					|| metaJsonField.getType().equals("json-many-to-one")) {
 				field = targetField;
-			} else if (relationship.equals("ManyToMany")
-					&& !operator.contains("mpty")) {
+			} else if (metaJsonField.getType().equals("many-to-many")
+					&& !operator.contains("empty")) {
 				targetField = targetField.replace(field + "?.", "it?.");
 				String condition = getConditionExpr(operator, targetField,
 						value);
@@ -115,16 +108,11 @@ public class FilterGroovyService {
 	}
 
 	
-	private String processValue(Filter filter, String typeName) {
+	private String processValue(Filter filter) {
 
 		String value = filter.getValue();
 		if (value == null) {
 			return value;
-		}
-
-		String targetType = filter.getTargetType();
-		if (targetType != null) {
-			typeName = targetType;
 		}
 
 		value = value.replace("$$", "_parent.");
@@ -145,9 +133,9 @@ public class FilterGroovyService {
 				return field + ".empty";
 			case "notEmpty":
 				return "!" + field + ".empty";
-			case "TRUE":
+			case "isTrue":
 				return field;
-			case "FALSE":
+			case "isFalse":
 				return "!" + field;
 			default:
 				return field + " " + operator + " " + value;

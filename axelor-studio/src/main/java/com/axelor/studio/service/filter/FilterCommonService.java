@@ -17,17 +17,11 @@
  */
 package com.axelor.studio.service.filter;
 
-import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.meta.db.MetaField;
 
 public class FilterCommonService {
-	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	/**
 	 * It will return value of tag used by filter 'value'.
@@ -141,5 +135,50 @@ public class FilterCommonService {
 				return "string";
 		}
 		
+	}
+	
+	public String getCondition(String conditionField, String operator, String value) {
+		
+		value = getTagValue(value, true);
+
+		String[] values = new String[] { "" };
+		if (value != null) {
+			values = value.split(",");
+		}
+		
+		switch (operator) {
+			case "like":
+				return getLikeCondition(conditionField, value, true);
+			case "notLike":
+				return getLikeCondition(conditionField, value, false);
+			case "in":
+				return conditionField + " IN" + " (" + value + ") ";
+			case "notIn":
+				return conditionField + " NOT IN" + " (" + value + ") ";
+			case "isNull":
+				return conditionField + " IS NULL ";
+			case "notNull":
+				return conditionField + " IS NOT NULL ";
+			case "between":
+				if (values.length > 1) {
+					return conditionField + " BETWEEN  " + values[0] + " AND "
+							+ values[1];
+				}
+				return conditionField + " BETWEEN  " + values[0] + " AND "
+						+ values[0];
+			case "notBetween":
+				if (values.length > 1) {
+					return conditionField + " NOT BETWEEN  " + values[0] + " AND "
+							+ values[1];
+				}
+				return conditionField + " NOT BETWEEN  " + values[0] + " AND "
+						+ values[0];
+			case "isTrue":
+				return conditionField + " IS TRUE ";
+			case "isFalse":
+				return conditionField + " IS FALSE ";
+			default:
+				return conditionField + " " + operator + " " + value;
+		}
 	}
 }

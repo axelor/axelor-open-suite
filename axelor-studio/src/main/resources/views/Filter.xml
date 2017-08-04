@@ -7,7 +7,7 @@
       <field name="isJson" />
       <field name="metaJsonField" readonlyIf="!isJson"  requiredIf="isJson" widget="SuggestBox" onSelect="action-chart-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
       <field name="metaField" readonlyIf="isJson" requiredIf="!isJson" widget="SuggestBox" onChange="action-filter-method-update-target-field" onSelect="action-chart-filter-meta-field-domain"/>
-      <field name="targetField" readonlyIf="!isJson &amp;&amp; metaField.relationship == null || isJson &amp;&amp; metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="!isJson &amp;&amp; metaField.relationship != null || isJson &amp;&amp; metaJsonField.targetModel != null"  />
+      <field name="targetField" onChange="action-filter-method-update-target-type" readonlyIf="!isJson &amp;&amp; metaField.relationship == null || isJson &amp;&amp; metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="!isJson &amp;&amp; metaField.relationship != null || isJson &amp;&amp; metaJsonField.targetModel != null"  />
       <field name="operator"/>
       <field name="value" readonlyIf="isParameter"/>
       <field name="isParameter" />
@@ -25,8 +25,8 @@
   	<call class="com.axelor.studio.web.FilterController" method="updateTargetField" />
   </action-method>
   
-  <action-method name="action-filter-method-update-target-details">
-  	<call class="com.axelor.studio.web.FilterController" method="updateTargetDetails" />
+  <action-method name="action-filter-method-update-target-type">
+  	<call class="com.axelor.studio.web.FilterController" method="updateTargetType" />
   </action-method>
   
   <action-attrs name="action-chart-filter-meta-json-field-domain">

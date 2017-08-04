@@ -117,13 +117,11 @@ public class WkfService {
 	
 	private void setWkfId() {
 		
-		String model = null;
+		String model = workflow.getModel();
 		if (workflow.getIsJson()) {
-			model = workflow.getJsonModel();
 			wkfId = inflector.dasherize(model) + "-wkf";
 		}
 		else {
-			model = workflow.getMetaModel();
 			model = model.substring(model.lastIndexOf(".") + 1);
 			wkfId = inflector.dasherize(model) + inflector.dasherize(workflow.getJsonField()) + "-wkf";
 		}
@@ -214,34 +212,38 @@ public class WkfService {
 		
 		MetaJsonField field  = null;
 		if (workflow.getIsJson()) {
-			field = jsonFieldRepo.all().filter("self.isWkf = true and self.jsonModel.name = ?1 and self.name = ?2 and self.type = ?3", 
-					workflow.getJsonModel(), name, type).fetchOne();
+			field = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.jsonModel.name = ?1 "
+					+ "and self.name = ?2 and self.type = ?3", 
+					workflow.getModel(), name, type).fetchOne();
 			if (field == null) {
 				field = new MetaJsonField();
 				field.setModel(MetaJsonRecord.class.getName());
 				field.setModelField("attrs");
-				field.setType(type);
-				field.setName(name);
-				field.setIsWkf(true);
-				field.setJsonModel(jsonModelRepo.findByName(workflow.getJsonModel()));
-				field = saveJsonField(field);
+				field.setJsonModel(jsonModelRepo.findByName(workflow.getModel()));
 			}
 		}
 		else {
-			field = jsonFieldRepo.all().filter("self.isWkf = true and self.model = ?1 and self.modelField = ?2 and self.name = ?3 and self.type = ?4",
-					workflow.getMetaModel(), workflow.getJsonField(), name, type).fetchOne();
+			field = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.model = ?1 "
+					+ "and self.modelField = ?2 "
+					+ "and self.name = ?3 and self.type = ?4",
+					workflow.getModel(), workflow.getJsonField(), name, type).fetchOne();
 			
-			log.debug("Searching json field with model: {}, field: {}, name: {}, type: {}", workflow.getJsonModel(), workflow.getJsonField(), name, type );
+			log.debug("Searching json field with model: {}, field: {}"
+					+ ", name: {}, type: {}",
+					workflow.getModel(), workflow.getJsonField(), name, type );
 			if (field == null) {
 				field = new MetaJsonField();
-				field.setModel(workflow.getMetaModel());
+				field.setModel(workflow.getModel());
 				field.setModelField(workflow.getJsonField());
-				field.setType(type);
-				field.setIsWkf(true);
 				field.setName(name);
-				field = saveJsonField(field);
 			}
 		}
+		
+		field.setType(type);
+		field.setName(name);
+		field.setIsWkf(true);
 		
 		return saveJsonField(field);
 	}
@@ -304,10 +306,13 @@ public class WkfService {
 		List<MetaJsonField> fields = new ArrayList<MetaJsonField>();
 		
 		if (wkf.getIsJson()) {
-			fields = jsonFieldRepo.all().filter("self.isWkf = true and self.jsonModel.name = ?1", wkf.getJsonModel()).fetch();
+			fields = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.jsonModel.name = ?1", wkf.getModel()).fetch();
 		}
 		else {
-			fields = jsonFieldRepo.all().filter("self.isWkf = true and self.model = ?1 and self.modelField = ?2", wkf.getMetaModel(), wkf.getJsonField()).fetch();
+			fields = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.model = ?1 and self.modelField = ?2", 
+					wkf.getModel(), wkf.getJsonField()).fetch();
 		}
 		return fields;
 	
@@ -328,13 +333,19 @@ public class WkfService {
 		List<MetaJsonField>  fields = null;
 		if (workflow.getIsJson()) {
 			fields = jsonFieldRepo.all()
-					.filter("self.type = 'button' and self.jsonModel.name = ?1 and self.isWkf = true and self.name not in (?2)",
-					workflow.getJsonModel(), skipList).fetch();
+					.filter("self.type = 'button' "
+							+ "and self.jsonModel.name = ?1 "
+							+ "and self.isWkf = true "
+							+ "and self.name not in (?2)",
+					workflow.getModel(), skipList).fetch();
 		}
 		else {
 			fields = jsonFieldRepo.all()
-					.filter("self.type = 'button' and self.model = ?1 and self.modelField = ?2 and self.name not in (?3)",
-					workflow.getMetaModel(), workflow.getJsonField(), skipList).fetch();
+					.filter("self.type = 'button' "
+							+ "and self.model = ?1 "
+							+ "and self.modelField = ?2 "
+							+ "and self.name not in (?3)",
+					workflow.getModel(), workflow.getJsonField(), skipList).fetch();
 		}
 		
 		log.debug("Total Buttons to remove: {}", fields.size());
@@ -383,9 +394,10 @@ public class WkfService {
 	private void setTrackOnSave(Wkf wkf, boolean remove) {
 		
 		if (wkf.getIsJson()) {
-			MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getJsonModel());
+			MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getModel());
 			if (jsonModel != null) {
-				String onSave = metaService.updateAction(jsonModel.getOnSave(), "save," + WkfTrackingService.ACTION_TRACK, remove);
+				String onSave = metaService.updateAction(jsonModel.getOnSave(),
+						"save," + WkfTrackingService.ACTION_TRACK, remove);
 				jsonModel.setOnSave(onSave);
 				jsonModelRepo.save(jsonModel);
 			}

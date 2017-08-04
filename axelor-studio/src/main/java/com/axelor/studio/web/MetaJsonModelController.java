@@ -19,7 +19,7 @@ public class MetaJsonModelController {
 		
 		MetaJsonModel jsonModel = request.getContext().asType(MetaJsonModel.class);
 		
-		Wkf wkf = wkfRepo.all().filter("self.jsonModel = ?1", jsonModel.getName()).fetchOne();
+		Wkf wkf = wkfRepo.all().filter("self.model = ?1", jsonModel.getName()).fetchOne();
 		
 		ActionViewBuilder builder = ActionView.define("Workflow")
 			.add("form","wkf-form")

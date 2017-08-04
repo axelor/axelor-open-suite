@@ -181,8 +181,8 @@ public class ChartBuilderService {
 			query += "," + Tab3 + aggField + " AS agg_field";
 		}
 		
-		String filters = createFilters(chartBuilder.getFilterList());
-		
+		String filters = filterSqlService.getSqlFilters(chartBuilder.getFilterList(), joins, true);
+		addSearchField(chartBuilder.getFilterList());
 		String model = chartBuilder.getModel();
 		
 		if (chartBuilder.getIsJson()) {
@@ -219,19 +219,18 @@ public class ChartBuilderService {
 	private String createSumQuery(boolean isJson, MetaField metaField, 
 			MetaJsonField jsonField) {
 		
+		String sumField = null;
 		if (isJson) {
 			String sqlType = filterSqlService.getSqlType(jsonField.getType());
-			return "SELECT" + Tab3 
-					+ "SUM(cast(self." + jsonField.getModelField() 
+			sumField = "cast(self." + jsonField.getModelField() 
 					+ "->>'" + jsonField.getName() 
-					+ "' as " + sqlType + ")) AS sum_field," 
-					+ Tab3;
+					+ "' as " + sqlType + ")";
+		}
+		else {
+			sumField = "self."+ filterSqlService.getColumn(metaField);
 		}
 		
-		return  "SELECT" + Tab3 + "SUM(self."
-					+ filterSqlService.getColumn(metaField)
-					+ ") AS sum_field,"
-					+ Tab3;
+		return  "SELECT" + Tab3 + "SUM(" + sumField + ") AS sum_field,"	+ Tab3;
 	}
 	
 	private String getGroup(boolean isJson, MetaField metaField, 
@@ -257,7 +256,7 @@ public class ChartBuilderService {
 			group = filterSqlService.getColumn(metaField);
 			typeName = filterSqlService.getSqlType(metaField.getTypeName());
 			if (target != null) {
-				object = filterSqlService.parseMetaField(metaField, target, joins, parent);
+				object = filterSqlService.parseMetaField(metaField, target, joins, parent, true);
 			}
 		}
 		
@@ -374,68 +373,35 @@ public class ChartBuilderService {
 //
 //	}
 
-	private String createFilters(List<Filter> filterList) throws AxelorException {
 
-		String filters = null;
-
-		if (filterList == null) {
-			return filters;
-		}
+	private void addSearchField(List<Filter> filters) throws AxelorException {
 		
-		for (Filter filter : filterList) {
-
-			MetaField field = filter.getMetaField();
-			MetaJsonField json = filter.getMetaJsonField();
-
-			String condition = "";
+		for (Filter filter : filters) {
+			if (!filter.getIsParameter()) {
+				continue;
+			}
+			String fieldStr = "param" + filter.getId();
 			
-			if (filter.getIsJson() 
-					&& (json.getTargetModel() != null || json.getTargetJsonModel() != null)
-					|| !filter.getIsJson() && field.getRelationship() != null) {
-				condition = filterSqlService.getRelationalSql(filter, joins);
-			} else {
-				condition = filterSqlService.getSimpleSql(filter);
+			Object object = null;
+			StringBuilder parent = new StringBuilder("self");
+			if (filter.getIsJson()) {
+				object = filterSqlService.parseJsonField(filter.getMetaJsonField(), 
+						filter.getTargetField(), null, parent);
+			}
+			else {
+				object = filterSqlService.parseMetaField(filter.getMetaField(), 
+						filter.getTargetField(), null, parent, true);
 			}
 			
-			if (filter.getIsParameter()) {
-				addSearchField(filter);
+			if (object instanceof MetaField) {
+				fieldStr = getMetaSearchField(fieldStr, (MetaField) object);
 			}
-
-			if (filters == null) {
-				filters = condition;
-			} else {
-				String opt = filter.getLogicOp() == 0 ? " AND " : " OR ";
-				filters = filters + opt + condition;
+			else {
+				fieldStr = getJsonSearchField(fieldStr, (MetaJsonField) object);
 			}
+			
+			searchFields.add(fieldStr + "\" x-required=\"true\" />");
 		}
-		
-		return filters;
-
-	}
-
-	private void addSearchField(Filter filter) throws AxelorException {
-		
-		String fieldStr = "param" + filter.getId();
-		
-		Object object = null;
-		StringBuilder parent = new StringBuilder("self");
-		if (filter.getIsJson()) {
-			object = filterSqlService.parseJsonField(filter.getMetaJsonField(), 
-					filter.getTargetField(), null, parent);
-		}
-		else {
-			object = filterSqlService.parseMetaField(filter.getMetaField(), 
-					filter.getTargetField(), null, parent);
-		}
-		
-		if (object instanceof MetaField) {
-			fieldStr = getMetaSearchField(fieldStr, (MetaField) object);
-		}
-		else {
-			fieldStr = getJsonSearchField(fieldStr, (MetaJsonField) object);
-		}
-		
-		searchFields.add(fieldStr + "\" x-required=\"true\" />");
 
 	}
 	
@@ -475,7 +441,7 @@ public class ChartBuilderService {
 					+ "\" x-domain=\"self.jsonModel = '" 
 					+ field.getTargetJsonModel().getName() + "'" ;
 		}
-		else if (field.getTargetModel() == null) {
+		else if (field.getTargetModel() != null) {
 			String[] targetRef = filterSqlService
 					.getDefaultTarget(field.getName(), field.getTargetModel());
 			String[] nameField = targetRef[0].split("\\.");

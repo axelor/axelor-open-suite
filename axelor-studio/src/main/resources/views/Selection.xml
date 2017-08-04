@@ -41,12 +41,14 @@
     </selection>
     
     <selection name="studio.filter.operator">
-        <option value="=">equals</option>
+        <option value="=">equal</option>
         <option value="!=">not equal</option>
         <option value="&gt;=">greater or equal</option>
         <option value="&lt;=">less or equal</option>
         <option value="&gt;">greater than</option>
         <option value="&lt;">less than</option>
+        <option value="in">in</option>
+        <option value="notIn">not in</option>
         <option value="like">contains</option>
         <option value="notLike">doesn't contains</option>
         <option value="isNull">is null</option>

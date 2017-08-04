@@ -164,7 +164,7 @@ public class WkfTrackingService {
 		}
 		
 		List<Wkf> wkfs = wkfRepo.all()
-				.filter("self.metaModel = ?1 or self.jsonModel = ?1", model)
+				.filter("self.model = ?1", model)
 				.fetch();
 		
 		if (wkfs.isEmpty()) {

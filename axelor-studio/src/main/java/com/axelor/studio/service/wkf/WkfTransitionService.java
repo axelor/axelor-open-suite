@@ -130,14 +130,13 @@ class WkfTransitionService {
 						buttonSeq);
 				continue;
 			}
-
-			log.debug("Conditions : {}", transition.getConditions());
-			String filters = filterGroovyService.getGroovyFilters(
-					transition.getConditions(), null);
-			log.debug("Filters : {}", filters);
+			
+			String filters = getFilters(transition.getConditions());
 			if (filters != null) {
 				condition += " && (" + filters + ")";
 			}
+			
+			log.debug("Conditions : {}", transition.getConditions());
 
 			ActionAttrs.Attribute attrs = new ActionAttrs.Attribute();
 			attrs.setName("value");
@@ -149,6 +148,16 @@ class WkfTransitionService {
 		}
 
 		return fields;
+	}
+
+	private String getFilters(List<Filter> filterList) {
+		
+		String jsonField = wkfService.workflow.getIsJson() ? null : "$" + wkfService.workflow.getJsonField();
+		String filters = filterGroovyService.getGroovyFilters(
+				filterList, jsonField);
+		log.debug("Filters : {}", filters);
+		
+		return filters;
 	}
 
 	private String getTyped(Integer value, MetaJsonField status) {
@@ -303,7 +312,7 @@ class WkfTransitionService {
 		ActionValidate actionValidate = new ActionValidate();
 		actionValidate.setName(name);
 		List<Validator> validators = new ArrayList<ActionValidate.Validator>();
-		String condition = filterGroovyService.getGroovyFilters(conditions, null);
+		String condition = getFilters(conditions);
 		switch (type) {
 		case "notify":
 			Notify notify = new Notify();
@@ -352,7 +361,7 @@ class WkfTransitionService {
 		MetaPermission permission = metaPermissionRepo.findByName(name);
 		if (permission == null) {
 			permission = new MetaPermission(name);
-			permission.setObject(wkfService.workflow.getIsJson() ?wkfService.workflow.getJsonModel() : wkfService.workflow.getMetaModel());
+			permission.setObject(wkfService.workflow.getModel());
 			MetaPermissionRule rule = new MetaPermissionRule();
 			rule.setCanRead(false);
 			rule.setField(buttonName);

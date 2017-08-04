@@ -25,12 +25,14 @@ import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
@@ -54,80 +56,6 @@ public class FilterSqlService {
 	@Inject
 	private MetaJsonFieldRepository metaJsonFieldRepo;
 	
-	public String getSimpleSql(Filter filter) {
-
-		String conditionField = null;
-		String typeName =  null;
-		
-		if (filter.getIsJson()) {
-			MetaJsonField json = filter.getMetaJsonField();
-			conditionField = "cast(self." + getColumn(json.getModel(), json.getModelField()) 
-							 + "->>'" + json.getName() 
-							 + "' as " + getSqlType(json.getType()) + ")";
-			typeName = json.getType().toUpperCase();
-		}
-		else {
-			MetaField field = filter.getMetaField();
-			conditionField = "self." + getColumn(field);
-			typeName = field.getTypeName().toUpperCase();
-		}
-		
-		
-		String value = filter.getValue();
-		String[] values = new String[] { "" };
-		if (value != null) {
-			values = value.split(",");
-		}
-
-		String operator = filter.getOperator();
-
-		value = filterCommonService.getTagValue(value, true);
-
-		if (filter.getIsParameter() != null && filter.getIsParameter()) {
-			value = ":param" + filter.getId();
-			if (typeName.equals("STRING")) {
-				value = "CONCAT('%',LOWER(" + value + "),'%')";
-			}
-		}
-
-		switch (operator) {
-			case "=":
-				if (typeName.equals("STRING")) {
-					return filterCommonService.getLikeCondition(conditionField, value, true);
-				}
-				return conditionField + " IN" + " (" + value + ") ";
-			case "!=":
-				if (typeName.equals("STRING")) {
-					return filterCommonService.getLikeCondition(conditionField, value, false);
-				}
-				return conditionField + " NOT IN" + " (" + value + ") ";
-			case "isNull":
-				return conditionField + " IS NULL ";
-			case "notNull":
-				return conditionField + " IS NOT NULL ";
-			case "between":
-				if (values.length > 1) {
-					return conditionField + " BETWEEN  " + values[0] + " AND "
-							+ values[1];
-				}
-				return conditionField + " BETWEEN  " + values[0] + " AND "
-						+ values[0];
-			case "notBetween":
-				if (values.length > 1) {
-					return conditionField + " NOT BETWEEN  " + values[0] + " AND "
-							+ values[1];
-				}
-				return conditionField + " NOT BETWEEN  " + values[0] + " AND "
-						+ values[0];
-			case "TRUE":
-				return conditionField + " IS TRUE ";
-			case "FALSE":
-				return conditionField + " IS FALSE ";
-			default:
-				return conditionField + " " + operator + " " + value;
-		}
-
-	}
 	
 	public String getColumn(String model, String field) {
 		
@@ -157,68 +85,35 @@ public class FilterSqlService {
 		return type;
 	}
 	
-	public String getRelationalSql(Filter filter, List<String> joins) throws AxelorException {
+	public String getSqlFilters(List<Filter> filterList, List<String> joins, boolean checkMeta) throws AxelorException {
 		
-		Object target = null;
-		StringBuilder parent = new StringBuilder("self");
-		if (filter.getIsJson()) {
-			target = parseJsonField(filter.getMetaJsonField(), filter.getTargetField(), joins, parent);
-		}
-		else {
-			target = parseMetaField(filter.getMetaField(), filter.getTargetField(), joins, parent);
-		}
-		
-		String[] field = getSqlField(target, parent.toString());
-		String value = filter.getValue();
-		String operator = filter.getOperator();
-		
-		Boolean isParam = filter.getIsParameter();
-		if (isParam) {
-			value = ":param" + filter.getId();
-		}
-		
-		return getCondition(field, value, operator, isParam);
+		String filters = null;
 
-	}
+		if (filterList == null) {
+			return filters;
+		}
+		
+		for (Filter filter : filterList) {
 
-	private String getCondition(String[] field, String value, String operator, Boolean isParam) {
-		
-		String condition = null;
-		
-		value = filterCommonService.getTagValue(value, true);
-		
-		switch (operator) {
-			case "=":
-				if (field[1].equals("STRING") && !isParam) {
-					condition = filterCommonService.getLikeCondition(field[0], value, true);
-					break;
-				}
-				condition = field[0] + " IN (" + value + ") ";
-				break;
-			case "!=":
-				if (field[1].equals("STRING") && !isParam) {
-					condition = filterCommonService.getLikeCondition(field[0], value, false);
-					break;
-				}
-				condition = field[0] + " NOT IN (" + value + ") ";
-				break;
-			case "isNull":
-				condition =  field[0] + " IS NULL ";
-				break;
-			case "notNull":
-				condition = field[0] + " IS NOT NULL ";
-				break;
-			default:
-				break;
+			StringBuilder parent = new StringBuilder("self");
+			Object target = getTargetField(parent, filter, joins, checkMeta);
+			String field = getSqlField(target, parent.toString())[0];
+			String value = getParam(filter.getIsParameter(), filter.getValue(), filter.getId());
+			String condition = filterCommonService.getCondition(field, filter.getOperator(), value);
+			
+			if (filters == null) {
+				filters = condition;
+			} else {
+				String opt = filter.getLogicOp() == 0 ? " AND " : " OR ";
+				filters = filters + opt + condition;
+			}
 		}
 		
-		if (condition == null) {
-			condition = field[0] + " " + operator + " (" + value + ") ";
-		}
-		
-		return condition;
+		return filters;
+
 	}
 	
+
 	public String[] getSqlField(Object target, String source) {
 		
 		String field = null;
@@ -239,6 +134,15 @@ public class FilterSqlService {
 		}
 		
 		return new String[]{field, type};
+	}
+	
+	private String getParam(boolean isParam, String value, Long filterId)  {
+		
+		if (isParam) {
+			value = ":param" + filterId;
+		}
+		
+		return value;
 	}
 
 	public String[] getDefaultTarget(String fieldName, String modelName) {
@@ -282,10 +186,46 @@ public class FilterSqlService {
 		return new String[]{fieldName + "." +  targetModel.getNameField(), "string"};
 	}
 	
-	public Object parseMetaField(MetaField field, String target, List<String> joins, 
-			StringBuilder parent) throws AxelorException {
+	
+	public Object getTargetField(StringBuilder parent, Filter filter, 
+			List<String> joins, boolean checkJson) throws AxelorException {
 		
-		if (!target.contains(".")) {
+		Object target = null;
+		
+		if (!filter.getIsJson()){
+			target = parseMetaField(filter.getMetaField(), filter.getTargetField(), 
+					joins, parent, checkJson);
+		} else if (checkJson){
+			target = parseJsonField(filter.getMetaJsonField(), filter.getTargetField(),
+					joins, parent);
+		}
+		
+		return target;
+	}
+	
+	public String getTargetType(Object target) {
+		
+		String targetType = null;
+		if (target instanceof MetaField) {
+			MetaField metaField = (MetaField)target;
+			String relationship = metaField.getRelationship();
+			if (relationship != null) {
+				targetType = relationship;
+			} else {
+				targetType = metaField.getTypeName();
+			}
+		}
+		else if (target instanceof MetaJsonField) {
+			Inflector.getInstance().camelize(((MetaJsonField)target).getType());
+		}
+		
+		return targetType;
+	}
+
+	public Object parseMetaField(MetaField field, String target, List<String> joins, 
+			StringBuilder parent, boolean checkJson) throws AxelorException {
+		
+		if (target == null || !target.contains(".")) {
 			if (field.getRelationship() != null && joins != null) {
 				target = getDefaultTarget(field.getName(), field.getTypeName())[0];
 			}
@@ -304,17 +244,18 @@ public class FilterSqlService {
 		MetaField subMeta = findMetaField(targetName, model.getFullName());
 		if (subMeta != null) {
 			if (joins != null) { addJoin(field, joins, parent); }
-			return parseMetaField(subMeta, target, joins, parent);
+			return parseMetaField(subMeta, target, joins, parent, checkJson);
 		}
-		else {
+		else if (checkJson)  {
 			MetaJsonField subJson = findJsonField(targetName, model.getName());
 			if (subJson != null) {
 				if (joins != null) { addJoin(field, joins, parent); }
 				return parseJsonField(subJson, target, joins, parent);
 			}
-			throw new AxelorException("No sub field found field: %s model: %s ", 
-					1, targetName, model.getFullName());
 		}
+		
+		throw new AxelorException("No sub field found field: %s model: %s ", 
+				1, targetName, model.getFullName());
 		
 	}
 	
@@ -323,7 +264,7 @@ public class FilterSqlService {
 		
 		log.debug("Parse json target: {}", target);
 		
-		if (!target.contains(".")) {
+		if (target == null || !target.contains(".")) {
 			if (field.getTargetJsonModel() != null && joins != null) {
 				target = getDefaultTargetJson(field.getName(), field.getTargetJsonModel())[0];
 			}
@@ -357,7 +298,7 @@ public class FilterSqlService {
 			MetaField subMeta = findMetaField(targetName, field.getTargetModel());
 			if (subMeta != null) {
 				if (joins != null) { addJoin(field, joins, parent); }
-				return parseMetaField(subMeta, target, joins, parent);
+				return parseMetaField(subMeta, target, joins, parent, true);
 			}
 			throw new AxelorException("No sub field found model: %s field %s ", 1,
 					field.getTargetModel(), targetName);
@@ -394,20 +335,21 @@ public class FilterSqlService {
 	
 	private void addJoin(MetaJsonField field, List<String> joins , StringBuilder parent) {
 		
+		String targetModel = null;
 		if (field.getTargetModel() != null) {
-			MetaModel metaModel = metaModelRepo.all()
-					.filter("self.fullName = ?1", field.getTargetModel()).fetchOne();
-			joins.add("left join " + metaModel.getTableName() + " " 
-					+ "obj" + joins.size() + " on (obj" + joins.size() + ".id = " 
-					+ "cast(" + parent  + "." + field.getModelField() 
-					+ "->'" + field.getName() +  "'->>'id' as integer))");
+			targetModel = field.getTargetModel();
 		}
 		else if (field.getTargetJsonModel() != null) {
-			joins.add("left join meta_json_record " 
-					+ "obj" + joins.size() + " on (" +  "obj" + joins.size() + ".id = " 
-					+ "cast(" + parent + "." + field.getModelField() 
-					+  "->'" + field.getName() +"'->>'id' as integer))");
+			targetModel = MetaJsonRecord.class.getName();
 		}
+		
+		MetaModel metaModel = metaModelRepo.all()
+				.filter("self.fullName = ?1", targetModel).fetchOne();
+		
+		joins.add("left join " + metaModel.getTableName() + " " 
+				+ "obj" + joins.size() + " on (obj" + joins.size() + ".id = " 
+				+ "cast(" + parent  + "." + field.getModelField() 
+				+ "->'" + field.getName() +  "'->>'id' as integer))");
 		
 		parent.replace(0, parent.length(), "obj" + (joins.size() - 1));
 	}

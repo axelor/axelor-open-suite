@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.marketing.web;
 
-import java.util.List;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Lead;
@@ -36,25 +34,17 @@ public class TargetListController {
 	@Inject
 	private FilterJpqlService filterJpqlService;
 	
-	@Inject
-	private PartnerRepository partnerRepo;
-	
-	@Inject
-	private LeadRepository leadRepo;
-	
 	public void openFilteredLeads(ActionRequest request, ActionResponse response) {
 		
 		TargetList targetList = request.getContext().asType(TargetList.class);
 		
 		String leadFilers = filterJpqlService.getJpqlFilters(targetList.getLeadFilterList());
 		if (leadFilers != null) {
-			List<Lead> leads = leadRepo.all().filter(leadFilers).fetch();
 			response.setView(ActionView.define(I18n.get("Leads"))
 					.model(Lead.class.getName())
 					.add("grid", "lead-grid")
 					.add("form", "lead-form")
-					.domain("self in (:_leads)")
-					.context("_leads", leads)
+					.domain(leadFilers)
 					.map());
 		}
 	}
@@ -65,13 +55,11 @@ public class TargetListController {
 		
 		String partnerFilters = filterJpqlService.getJpqlFilters(targetList.getPartnerFilterList());
 		if (partnerFilters != null) {
-			List<Partner> partners = partnerRepo.all().filter(partnerFilters).fetch();
 			response.setView(ActionView.define(I18n.get("Partners"))
 					.model(Partner.class.getName())
 					.add("grid", "partner-grid")
 					.add("form", "partner-form")
-					.domain("self in (:_partners)")
-					.context("_partners", partners)
+					.domain(partnerFilters)
 					.map());
 		}
 		
