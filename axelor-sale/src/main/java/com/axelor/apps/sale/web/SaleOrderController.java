@@ -104,10 +104,31 @@ public class SaleOrderController {
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_PDF); 
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_PDF);
 
 		logger.debug("Printing "+name);
 	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
+	}
+
+	/**
+	 * Method that prints a proforma invoice as a PDF
+     *
+	 */
+	public void printProformaInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+
+		String name = saleOrderService.getFileName(saleOrder);
+
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, true, ReportSettings.FORMAT_PDF);
+
+		logger.debug("Printing "+name);
+
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());
@@ -121,7 +142,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_XLS); 
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_XLS);
 
 		logger.debug("Printing "+name);
 
@@ -140,7 +161,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_DOC);
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_DOC);
 		
 
 		logger.debug("Printing "+name);

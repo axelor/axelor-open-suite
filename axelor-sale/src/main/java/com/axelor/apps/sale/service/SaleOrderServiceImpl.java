@@ -506,14 +506,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 	
 	@Override
-	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException{
-
-		return ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
-		.addParam("Locale", language)
-		.addParam("SaleOrderId", saleOrder.getId())
-		.addFormat(format)
-		.generate()
-		.getFileLink();
+	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException{
+        return ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+                .addParam("Locale", language)
+                .addParam("SaleOrderId", saleOrder.getId())
+                .addParam("ProformaInvoice", proforma)
+                .addFormat(format)
+                .generate()
+                .getFileLink();
 	}
 	
 	private void _addPackLines(SaleOrder saleOrder) {
