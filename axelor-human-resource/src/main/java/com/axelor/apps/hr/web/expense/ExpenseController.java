@@ -500,7 +500,8 @@ public class ExpenseController {
 		
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		
-		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getDistance() == null || expenseLine.getExpenseDate() == null || expenseLine.getKilometricTypeSelect() == null || expenseLine.getKilometricTypeSelect() == 0 || expenseLine.getDistance() == null ){ 
+		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0
+				|| expenseLine.getExpenseDate() == null || expenseLine.getKilometricTypeSelect() == 0) {
 			return;
 		}
 		
