@@ -19,8 +19,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
 import java.time.LocalDate;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -108,7 +108,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment())  {
 			this.createMoveForInvoicePayment(invoicePayment);
 		} else {
-			Beans.get(AccountCustomerService.class).updateCustomerCreditLines(invoicePayment.getInvoice().getPartner());
+			Beans.get(AccountingSituationService.class).updateCustomerCredit(invoicePayment.getInvoice().getPartner());
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());

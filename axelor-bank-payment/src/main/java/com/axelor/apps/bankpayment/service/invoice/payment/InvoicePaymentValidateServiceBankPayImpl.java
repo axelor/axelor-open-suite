@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -103,7 +103,7 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment() && !paymentMode.getGenerateBankOrder())  {
 			this.createMoveForInvoicePayment(invoicePayment);
 		} else {
-			Beans.get(AccountCustomerService.class).updateCustomerCreditLines(invoicePayment.getInvoice().getPartner());
+			Beans.get(AccountingSituationService.class).updateCustomerCredit(invoicePayment.getInvoice().getPartner());
 		}
 		if(paymentMode.getGenerateBankOrder())  {
 			this.createBankOrder(invoicePayment);

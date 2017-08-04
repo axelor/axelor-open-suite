@@ -21,10 +21,8 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -40,7 +38,7 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void updateCustomerAccount(AccountingSituation accountingSituation) throws AxelorException {
 		super.updateCustomerAccount(accountingSituation);
-		updateCustomerCreditLines(accountingSituation.getPartner());
+		accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
 				updateDueCustAccount, updateDueDebtRecoveryCustAccount);
 
 		if (updateCustAccount) {
-			updateCustomerCreditLines(accountingSituation.getPartner());
+			accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
 		}
 
 		return accountingSituation;
