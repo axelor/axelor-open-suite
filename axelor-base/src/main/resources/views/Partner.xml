@@ -130,6 +130,7 @@
                         </viewer>
                     </field>
                 </panel>
+                <!-- Waiting for '$moment()' helper to work on AngularJS expressions.
                 <panel hideIf="!$readonly()" colOffset="9" colSpan="3">
                     <field name="$activeBlockings" showTitle="false" colSpan="12">
                         <viewer><![CDATA[
@@ -139,6 +140,7 @@
                         ]]></viewer>
                     </field>
                 </panel>
+                -->
                 <field name="isContact" hidden="true" colSpan="12" />
             </panel>
         </panel>
