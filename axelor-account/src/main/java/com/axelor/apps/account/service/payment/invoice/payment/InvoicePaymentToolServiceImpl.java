@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
@@ -126,6 +125,7 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	/**
 	 * @inheritDoc
 	 */
+	@Override
 	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment){
 		PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		if(company == null || paymentMode == null) { return new ArrayList<BankDetails>(); }
@@ -133,4 +133,17 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return Beans.get(PaymentModeService.class).
 				getCompatibleBankDetailsList(paymentMode, company);
     }
+
+    @Override
+    public List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment) {
+		List<InvoicePayment> advancePaymentList =  advancePayment.getInvoicePaymentList();
+		if (advancePaymentList == null || advancePaymentList.isEmpty()) {
+			return advancePaymentList;
+		}
+
+		for (InvoicePayment invoicePayment : advancePaymentList) {
+		    invoice.addInvoicePaymentListItem(invoicePayment);
+		}
+		return advancePaymentList;
+	}
 }

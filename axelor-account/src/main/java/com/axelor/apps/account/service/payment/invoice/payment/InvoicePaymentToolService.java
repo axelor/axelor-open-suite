@@ -40,4 +40,6 @@ public interface InvoicePaymentToolService  {
 	 * @return list of bankdetails in the payment mode for the given company.
 	 */
 	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment);
+
+	List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
 }

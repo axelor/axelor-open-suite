@@ -215,8 +215,7 @@
 				</panel>
 			</panel>
 
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="statusSelect == 3 || statusSelect == 4"/>
-
+			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="(statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2) ||statusSelect == 3 || statusSelect == 4"/>
 			<panel title="Advance payments" showIf="operationSubTypeSelect != 2">
 				<field name="advancePaymentInvoiceSet" widget="TagSelect"
 					   form-view="invoice-form" grid-view="invoice-grid"/>
