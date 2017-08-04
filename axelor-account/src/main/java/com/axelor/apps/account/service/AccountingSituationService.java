@@ -36,5 +36,6 @@ public interface AccountingSituationService	{
 	AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException;
 	String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails);
 	BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner);
+	void updateCustomerCredit(Partner partner) throws AxelorException;
 
 }

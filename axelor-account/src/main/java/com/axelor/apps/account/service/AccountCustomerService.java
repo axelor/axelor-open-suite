@@ -390,8 +390,4 @@ public class AccountCustomerService {
 
 	}
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void updateCustomerCreditLines(Partner partner) throws AxelorException {
-	}
-
 }

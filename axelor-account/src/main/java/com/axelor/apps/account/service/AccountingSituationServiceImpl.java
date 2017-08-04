@@ -206,4 +206,10 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 			return null;
 		}
 	}
+
+	@Override
+	public void updateCustomerCredit(Partner partner) throws AxelorException {
+		// Nothing to do if the supplychain module is not loaded.
+	}
+
 }
