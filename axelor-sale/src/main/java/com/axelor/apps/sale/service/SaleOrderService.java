@@ -111,7 +111,7 @@ public interface SaleOrderService {
 
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 	
-	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException;
+	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException;
 }
 
 

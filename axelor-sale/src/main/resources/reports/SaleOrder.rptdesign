@@ -132,6 +132,20 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="ProformaInvoice" id="4308">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -2307,7 +2321,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">row["status_select"] &lt; 3  ?  'SaleOrder.quote'  :  'SaleOrder.order'</value>
+                                    <value type="javascript">params["ProformaInvoice"].value ? 'SaleOrder.proforma' : (row["status_select"] &lt; 3  ?  'SaleOrder.quote'  :  'SaleOrder.order')</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>

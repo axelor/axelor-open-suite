@@ -21,6 +21,7 @@ public interface ITranslation {
 
 	public static final String SALES_ORDER_QUOTE = /*$$(*/ "SaleOrder.quote"; /*)*/
 	public static final String SALES_ORDER_ORDER = /*$$(*/ "SaleOrder.order"; /*)*/
+	public static final String SALES_ORDER_PROFORMA = /*$$(*/ "SaleOrder.proforma"; /*)*/
 	public static final String SALES_ORDER_NO = /*$$(*/ "SaleOrder.no"; /*)*/
 	public static final String SALES_ORDER_DATE = /*$$(*/ "SaleOrder.date"; /*)*/
 	public static final String SALES_ORDER_PAYMENT_CONDITION = /*$$(*/ "SaleOrder.paymentCondition"; /*)*/

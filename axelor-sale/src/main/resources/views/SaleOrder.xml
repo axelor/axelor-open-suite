@@ -123,6 +123,7 @@
 		
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
+	    <button name="print" title="Print proforma invoice" icon="fa-print" onClick="save,action-sale-order-method-print-proforma-invoice"/>
 	    <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	    <button name="excelExport" title="Excel Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-excel"/>
 	    <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sale-order-method-export-sale-order-word"/>
@@ -708,6 +709,10 @@
     
     <action-method name="action-sale-order-method-show-sale-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="showSaleOrder"/>
+	</action-method>
+
+    <action-method name="action-sale-order-method-print-proforma-invoice">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="printProformaInvoice"/>
 	</action-method>
 	
 	<action-method name="action-sale-order-method-export-sale-order-excel">
