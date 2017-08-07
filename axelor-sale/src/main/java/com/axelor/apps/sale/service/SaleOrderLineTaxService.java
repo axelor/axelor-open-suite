@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.apps.account.db.TaxEquiv;
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,13 +128,7 @@ public class SaleOrderLineTaxService {
 		}
 
         if (!saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote()) {
-            StringBuilder notes = new StringBuilder();
-            for (String specificNote : specificNotes) {
-                notes.append(specificNote);
-                notes.append("\n");
-            }
-            notes.setLength(notes.length() - 1); // removes last 'new line'
-            saleOrder.setSpecificNotes(notes.toString());
+            saleOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
         } else {
             saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());
         }
