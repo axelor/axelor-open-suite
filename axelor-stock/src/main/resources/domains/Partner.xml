@@ -9,11 +9,10 @@
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" index="false"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
     <many-to-one name="freightCarrier" ref="com.axelor.apps.stock.db.FreightCarrier" index="false"/>
-    <integer name="supplierQualityRating" title="Supplier quality rating"/>
-    <integer name="supplierArrivalProductNumber" title="Supplier arrival product number"/>
-    <one-to-many name="partnerProductQualityRateList" ref="com.axelor.apps.stock.db.PartnerProductQualityRate" mappedBy="partner" title="Partner product quality rate"/>
-
+    <decimal name="supplierQualityRating" title="Supplier quality rating"/>
+    <decimal name="supplierQualityRatingSelect" title="Supplier quality rating" selection="rating.icon.select"/>
+    <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty"/>
+    <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
   </entity>
-  
+
 </domain-models>
-    

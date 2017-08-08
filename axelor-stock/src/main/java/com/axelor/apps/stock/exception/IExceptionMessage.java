@@ -101,4 +101,9 @@ public interface IExceptionMessage {
 			/*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
 	static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
 
+	/**
+	 * Partner Product Quality Rating Service
+	 */
+	String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
+
 }

@@ -563,7 +563,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
-		stockMoveRepo.save(stockMove);
+
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+			partnerProductQualityRatingService.undoCalculation(stockMove);
+		}
 	}
 
 	@Override
@@ -782,7 +785,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				}
 			}
 		} else {
-			stockMoveConformitySelect = StockMoveRepository.CONFORMITY_UNDEFINED;
+			stockMoveConformitySelect = StockMoveRepository.CONFORMITY_NONE;
 		}
 
 		stockMove.setConformitySelect(stockMoveConformitySelect);

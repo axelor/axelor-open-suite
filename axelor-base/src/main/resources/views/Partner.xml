@@ -73,7 +73,7 @@
     
     <form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload, action-partner-attrs-move-lines-total" width="large">
+    onLoad="action-group-partner-onload" width="large">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
 
@@ -249,10 +249,10 @@
                 <field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
             </panel>
 			<panel name="quality" title="Supplier quality rating" if-module="axelor-stock" showIf="isSupplier" readonly="true">
-				<field name="supplierQualityRating" colSpan="3"/>
-				<field name="supplierArrivalProductNumber" colSpan="3"/>
+				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
+				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer/>
-				<field name="partnerProductQualityRateList" colSpan="12"/>
+				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
 			</panel>
 			<panel name="socialNetwork" title="Social network" if-module="axelor-social-network">
 				<button name="search" onClick="action-partner-view-search-profile" title="Search Profile" />
@@ -600,12 +600,7 @@
 		<attribute name="required" for="name" expr="true"/>
 		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
 	</action-attrs>
-	
-	<action-attrs name="action-partner-attrs-move-lines-total">
-		<attribute name="value" for="supplierArrivalProductNumber" expr="eval: __repo__(StockMoveLine).all().filter('self.stockMove.typeSelect = 3 AND self.stockMove.partner.fullName = ?1', fullName).fetch().sum{it.realQty}"/>
-		<attribute name="value" for="supplierQualityRating" expr="eval: __repo__(PartnerProductQualityRate).all().filter('self.partner.fullName = ?1', fullName).fetch().sum{it.qualityRate}"/>
-	</action-attrs>
-	
+
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
     </action-attrs>

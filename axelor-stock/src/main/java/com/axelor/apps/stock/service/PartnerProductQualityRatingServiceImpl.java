@@ -1,152 +1,237 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.stock.db.PartnerProductQualityRate;
+import com.axelor.apps.stock.db.PartnerProductQualityRating;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.PartnerProductQualityRateRepository;
+import com.axelor.apps.stock.db.repo.PartnerProductQualityRatingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.web.StockMoveLineController;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PartnerProductQualityRatingServiceImpl implements PartnerProductQualityRatingService {
-	
-	
+
+	public static final BigDecimal MAX_QUALITY_RATING = new BigDecimal(5);
+
+	private PartnerProductQualityRatingRepository partnerProductQualityRatingRepo;
+
 	@Inject
-	private PartnerRepository partnerRepository;
-	
-	@Inject
-	private PartnerProductQualityRateRepository partnerProductQualityRateRepo;
-	
-	@Inject
-	private StockMoveLineRepository stockMoveLineRepo;
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void calculate(StockMove stockMove){
-		
+	public PartnerProductQualityRatingServiceImpl(
+			PartnerProductQualityRatingRepository partnerProductQualityRatingRepo) {
+		this.partnerProductQualityRatingRepo = partnerProductQualityRatingRepo;
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void calculate(StockMove stockMove) throws AxelorException {
+
 		Partner partner = stockMove.getPartner();
-		BigDecimal qualityRate;
-		Product product = null;
-		Integer conformity;
+
+		if (partner == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER),
+					IException.MISSING_FIELD);
+		}
+
 		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
-				
-		for(StockMoveLine line : stockMoveLines) {
-			
-			// search
-			product = searchProduct(line, product, partner);
-			
-			// create
-			if(product == null ) {
-				product = line.getProduct();
-				createProductMoveLine(partner, product);
-			}
-			
-			// update
-			qualityRate = BigDecimal.ZERO;
-			conformity = line.getConformitySelect();
-			updateProductMoveLine(partner, product, qualityRate, conformity, line);
-			
-		}
-		
-		partnerRepository.save(partner);
-	}
-	
-	
-	public Product searchProduct(StockMoveLine line, Product product, Partner partner) {
-		
-		product = line.getProduct();
-		PartnerProductQualityRate partnerProductQualityRate = partnerProductQualityRateRepo.findProductByName(product, partner);
-		
-		
-		if(partnerProductQualityRate == null) {
-			return null;
-		}
-		
-		return product;		
-	}
-	
-	
-	public PartnerProductQualityRate createProductMoveLine(Partner partner, Product product) {
-		
-		PartnerProductQualityRate productMoveLine = new PartnerProductQualityRate();
-		
-		productMoveLine.setPartner(partner);
-		productMoveLine.setProduct(product);
-		
-		return partnerProductQualityRateRepo.save(productMoveLine);
-		
-	}
-	
-	
-	public PartnerProductQualityRate updateProductMoveLine(Partner partner, Product product, BigDecimal qualityRate, Integer conformity, StockMoveLine line) {
-		
-		List <PartnerProductQualityRate> partnerProductMoveLines = partner.getPartnerProductQualityRateList();
-	
-		for(PartnerProductQualityRate partnerProductLine : partnerProductMoveLines) {
-			
-			if(product == partnerProductLine.getProduct()) {
-				
-				qualityRate = partnerProductLine.getQualityRate();
-				BigDecimal productTotal = BigDecimal.ZERO;
-				
-				BigDecimal partnerProductQualityRate = partnerProductLine.getQualityRate();				
-				//BigDecimal lineQty = partnerProductLinesTotal(line, partnerProductLine);
-				BigDecimal supplierProductRate = supplierProductRate(partnerProductLine);
-				
-				if(conformity == StockMoveRepository.CONFORMITY_COMPLIANT) {
-					partnerProductQualityRate = partnerProductQualityRate.add(line.getRealQty());
-				}
-				
-				List<StockMoveLine> partnerProductMoveLineTotal = stockMoveLineRepo.all().filter("self.stockMove.typeSelect = 3 AND self.stockMove.partner.fullName = ?1 AND self.product = ?2", partner.getFullName(), product).fetch();
-				
-				for(StockMoveLine test : partnerProductMoveLineTotal) {
-					System.out.println("!! " + productTotal + " !!");
 
-					productTotal = productTotal.add(test.getRealQty());
-
-					System.out.println("++ " + productTotal + " ++");
-				}
-						
-				partnerProductLine.setQualityRate(partnerProductQualityRate);
-				partnerProductLine.setSupplierRate(supplierProductRate);
-				
-				partnerProductLine.setPartnerProductMoveLineTotal(productTotal);
-
-				return partnerProductQualityRateRepo.save(partnerProductLine);
+		if (stockMoveLines != null) {
+			for (StockMoveLine stockMoveLine : stockMoveLines) {
+				Product product = stockMoveLine.getProduct();
+				PartnerProductQualityRating partnerProductQualityRating = searchPartnerProductQualityRating(partner,
+						product).orElseGet(() -> createPartnerProductQualityRating(partner, product));
+				updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine);
 			}
 		}
-		
-		return null;
-		
-	}
-	
-	
-	public BigDecimal supplierProductRate(PartnerProductQualityRate partnerProductLine) {
-		
-		BigDecimal productQualityRate = partnerProductLine.getQualityRate();
-		BigDecimal productMoveLineRate = partnerProductLine.getPartnerProductMoveLineTotal();
-		BigDecimal supplierProductRate = null;
-		
-		if(productMoveLineRate == BigDecimal.ZERO){
-			productMoveLineRate = BigDecimal.ONE;
-		} 
 
-		supplierProductRate = productQualityRate.multiply(new BigDecimal(5)).divide(productMoveLineRate, 2, RoundingMode.HALF_UP);
-		
-		
-		System.out.println("== " + supplierProductRate + " ==");
-		return supplierProductRate;
+		updateSupplier(partner);
 	}
-	
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void undoCalculation(StockMove stockMove) throws AxelorException {
+		Partner partner = stockMove.getPartner();
+
+		if (partner == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER),
+					IException.MISSING_FIELD);
+		}
+
+		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
+
+		if (stockMoveLines != null) {
+			for (StockMoveLine stockMoveLine : stockMoveLines) {
+				Product product = stockMoveLine.getProduct();
+				Optional<PartnerProductQualityRating> optional = searchPartnerProductQualityRating(partner, product);
+
+				if (optional.isPresent()) {
+					PartnerProductQualityRating partnerProductQualityRating = optional.get();
+					updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine, true);
+				}
+
+			}
+		}
+
+		updateSupplier(partner);
+	}
+
+	/**
+	 * Search for partner product quality rating.
+	 * 
+	 * @param partner
+	 * @param product
+	 * @return
+	 */
+	private Optional<PartnerProductQualityRating> searchPartnerProductQualityRating(Partner partner, Product product) {
+		List<PartnerProductQualityRating> partnerProductQualityRatingList = partner
+				.getPartnerProductQualityRatingList();
+
+		if (partnerProductQualityRatingList == null) {
+			return Optional.empty();
+		}
+
+		return partnerProductQualityRatingList.stream()
+				.filter(PartnerProductQualityRating -> PartnerProductQualityRating.getProduct().equals(product))
+				.findFirst();
+	}
+
+	/**
+	 * Create partner product quality rating.
+	 * 
+	 * @param partner
+	 * @param product
+	 * @return
+	 */
+	@Transactional
+	protected PartnerProductQualityRating createPartnerProductQualityRating(Partner partner, Product product) {
+		PartnerProductQualityRating partnerProductQualityRating = new PartnerProductQualityRating(product);
+		partner.addPartnerProductQualityRatingListItem(partnerProductQualityRating);
+		partnerProductQualityRatingRepo.persist(partnerProductQualityRating);
+
+		return partnerProductQualityRating;
+	}
+
+	/**
+	 * Update partner product quality rating.
+	 * 
+	 * @param partnerProductQualityRating
+	 * @param stockMoveLine
+	 */
+	private void updatePartnerProductQualityRating(PartnerProductQualityRating partnerProductQualityRating,
+			StockMoveLine stockMoveLine) {
+		updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine, false);
+	}
+
+	/**
+	 * Update partner product quality rating.
+	 * 
+	 * @param partnerProductQualityRating
+	 * @param stockMoveLine
+	 * @param undo
+	 */
+	private void updatePartnerProductQualityRating(PartnerProductQualityRating partnerProductQualityRating,
+			StockMoveLine stockMoveLine, boolean undo) {
+
+		BigDecimal qty = !undo ? stockMoveLine.getRealQty() : stockMoveLine.getRealQty().negate();
+		BigDecimal compliantArrivalProductQty = partnerProductQualityRating.getCompliantArrivalProductQty();
+
+		if (stockMoveLine.getConformitySelect() == StockMoveLineRepository.CONFORMITY_COMPLIANT) {
+			compliantArrivalProductQty = compliantArrivalProductQty.add(qty);
+			partnerProductQualityRating.setCompliantArrivalProductQty(compliantArrivalProductQty);
+		}
+
+		BigDecimal arrivalProductQty = partnerProductQualityRating.getArrivalProductQty().add(qty);
+		partnerProductQualityRating.setArrivalProductQty(arrivalProductQty);
+
+		if (arrivalProductQty.signum() > 0) {
+			BigDecimal qualityRating = computeQualityRating(compliantArrivalProductQty, arrivalProductQty);
+			partnerProductQualityRating.setQualityRating(qualityRating);
+			partnerProductQualityRating.setQualityRatingSelect(computeQualityRatingSelect(qualityRating));
+		} else {
+			partnerProductQualityRating.getPartner()
+					.removePartnerProductQualityRatingListItem(partnerProductQualityRating);
+		}
+	}
+
+	/**
+	 * Update supplier's quality rating and arrival product quantity.
+	 * 
+	 * @param partner
+	 */
+	private void updateSupplier(Partner partner) {
+		BigDecimal supplierQualityRating = BigDecimal.ZERO;
+		BigDecimal supplierArrivalProductQty = BigDecimal.ZERO;
+		List<PartnerProductQualityRating> partnerProductQualityRatingList = partner
+				.getPartnerProductQualityRatingList();
+
+		if (partnerProductQualityRatingList != null) {
+			for (PartnerProductQualityRating partnerProductQualityRating : partnerProductQualityRatingList) {
+				BigDecimal qualityRating = partnerProductQualityRating.getQualityRating();
+				BigDecimal arrivalProductQty = partnerProductQualityRating.getArrivalProductQty();
+				supplierQualityRating = supplierQualityRating.add(qualityRating.multiply(arrivalProductQty));
+				supplierArrivalProductQty = supplierArrivalProductQty.add(arrivalProductQty);
+			}
+
+			if (supplierArrivalProductQty.signum() > 0) {
+				supplierQualityRating = supplierQualityRating.divide(supplierArrivalProductQty, 2,
+						RoundingMode.HALF_UP);
+			} else {
+				supplierQualityRating = BigDecimal.ZERO;
+			}
+		}
+
+		partner.setSupplierQualityRating(supplierQualityRating);
+		partner.setSupplierQualityRatingSelect(computeQualityRatingSelect(supplierQualityRating));
+		partner.setSupplierArrivalProductQty(supplierArrivalProductQty);
+	}
+
+	/**
+	 * Compute quality rating.
+	 * 
+	 * @param compliantArrivalProductQty
+	 * @param arrivalProductQty
+	 * @return
+	 */
+	private BigDecimal computeQualityRating(BigDecimal compliantArrivalProductQty, BigDecimal arrivalProductQty) {
+		return compliantArrivalProductQty.multiply(MAX_QUALITY_RATING).divide(arrivalProductQty, 2,
+				RoundingMode.HALF_UP);
+	}
+
+	/**
+	 * Compute quality rating selection value (rounding to the nearest half).
+	 * 
+	 * @param qualityRating
+	 * @return
+	 */
+	private BigDecimal computeQualityRatingSelect(BigDecimal qualityRating) {
+		final BigDecimal two = new BigDecimal(2);
+		return qualityRating.multiply(two).setScale(0, RoundingMode.HALF_UP).divide(two, 2, RoundingMode.HALF_UP);
+	}
 
 }
