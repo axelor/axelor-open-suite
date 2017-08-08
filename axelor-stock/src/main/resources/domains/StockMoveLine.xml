@@ -41,7 +41,7 @@
     <string name="customsCode"/>
 
     <extra-code><![CDATA[
-        //CONFORMITY SELECT
+        // CONFORMITY SELECT
         public static final int CONFORMITY_NONE = 1;
         public static final int CONFORMITY_COMPLIANT = 2;
         public static final int CONFORMITY_NON_COMPLIANT = 3;

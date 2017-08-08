@@ -112,5 +112,23 @@ public interface StockMoveService {
 	public BigDecimal compute(StockMove stockMove);
 	
 	public List<Map<String,Object>> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate);
-	
+
+	/**
+	 * Change conformity on each stock move line according to the stock move
+	 * conformity.
+	 * 
+	 * @param stockMove
+	 * @return
+	 */
+	List<StockMoveLine> changeConformityStockMove(StockMove stockMove);
+
+	/**
+	 * Change stock move conformity according to the conformity on each stock move
+	 * line.
+	 * 
+	 * @param stockMove
+	 * @return
+	 */
+	Integer changeConformityStockMoveLine(StockMove stockMove);
+
 }

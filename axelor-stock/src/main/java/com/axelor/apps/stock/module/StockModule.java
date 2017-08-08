@@ -31,6 +31,8 @@ import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
 import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.stock.service.LocationServiceImpl;
+import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
+import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -52,6 +54,7 @@ public class StockModule extends AxelorModule {
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
         bind(LocationService.class).to(LocationServiceImpl.class);
         bind(ProductBaseRepository.class).to(ProductStockRepository.class);
+        bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }
 }
