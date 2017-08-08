@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="partner-product-quality-rating-grid" title="Partner product quality rating grid" model="com.axelor.apps.stock.db.PartnerProductQualityRating">
+    <grid name="partner-product-quality-rating-grid" title="Partner product quality ratings" model="com.axelor.apps.stock.db.PartnerProductQualityRating">
     	<field name="product"/>
     	<field name="qualityRatingSelect" widget="ImageSelect" x-labels="false"/>
     	<field name="arrivalProductQty"/>
     </grid>
     
-    <form name="partner-product-quality-rating-form" model="com.axelor.apps.stock.db.PartnerProductQualityRating" title="Partner product quality rating form">
+    <form name="partner-product-quality-rating-form" title="Partner product quality rating" model="com.axelor.apps.stock.db.PartnerProductQualityRating">
     	<panel>
     		<field name="product" colSpan="6"/>
     		<field name="qualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
