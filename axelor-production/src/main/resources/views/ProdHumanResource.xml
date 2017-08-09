@@ -5,7 +5,7 @@
     
     <grid name="prod-human-resource-grid" title="Prod. Human resources" editable="true" model="com.axelor.apps.production.db.ProdHumanResource"
         onNew="action-prod-human-resource-record-default">
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" form-view="product-form" grid-view="product-grid" domain="self.productTypeSelect = 'service' "/>
         <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
         <field name="duration" widget="duration" x-big="true" x-seconds="true" aggregate="sum"/>
 	  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>

@@ -18,10 +18,17 @@
 	onLoad="action-project-on-load-group,save">
 		<toolbar>
 			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
-			<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
-			<button name="bookResource" title="Book resource" onClick="save,action-project-book-resource" />
-			<button name="printPlannifCost" title="Planification and costs" onClick="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
+		<menubar>
+		 <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Gantt" action="action-project-open-gantt" />
+	            <item title="Book resource" action="save,action-project-book-resource" />
+	     </menu>
+	     <menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Planification and costs" action="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" />
+	        </menu>
+		</menubar>
+		
 		<panel name="overview" title="Overview">
 		
 			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">

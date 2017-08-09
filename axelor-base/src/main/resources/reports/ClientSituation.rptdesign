@@ -525,7 +525,7 @@ left join base_company as Company on (Company.id = AuthUser.active_company)
 left join base_partner_address as PartnerAddress on (PartnerAddress.partner = Partner.id and PartnerAddress.is_invoicing_addr is true and PartnerAddress.is_default_addr is true)
 left join base_address as InvoicingAddress on (InvoicingAddress.id = PartnerAddress.address)
 left join message_email_address as EmailAddress on (Partner.email_address = EmailAddress.id)
-left join base_team as Team on (Partner.team = Team.id)
+left join team_team as Team on (Partner.team = Team.id)
 left join account_accounting_situation as AccountingSituation on (AccountingSituation.partner = Partner.id and AccountingSituation.company = Company.id)
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where Partner.id = ?

@@ -722,7 +722,8 @@ FROM production_bill_of_material AS BOM
 LEFT JOIN base_product as Product ON (Product.id = BOM.product)
 LEFT JOIN base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
-WHERE BOM.parent_bill_of_material = ? order by Product.name]]></xml-property>
+LEFT JOIN production_bill_of_material_bill_of_material_set AS BOMSET ON (BOMSET.bill_of_material_set = BOM.id)
+WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>

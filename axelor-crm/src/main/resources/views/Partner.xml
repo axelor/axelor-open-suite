@@ -18,13 +18,15 @@
 	    <panel-dashlet colSpan="12" title="Events" showIf="id != null" action="dashlet.customer.crm.activities" height="350"/>
 	</form>
 	
-    <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
+    <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form" >
         <menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	        <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Schedule Event" action="save,action-partner-view-schedule-event" readonlyIf="id == null"/>
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
 	            <item title="Generate Project" action="action-partner-view-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" />
+	            <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
 	        </menu>
+	        
 	    </menubar>
     </form>
 	
