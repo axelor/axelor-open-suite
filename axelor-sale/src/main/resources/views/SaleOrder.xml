@@ -448,9 +448,9 @@
 	  </panel>
 	  <panel-tabs readonly="true">
 	    <panel name="customerInformation" title="Customer information" showTitle="false">
-	      <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+	      <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" canView="false"/>
 	      <field name="mainInvoicingAddress"/>
-	      <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	      <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" canView="false"/>
 	      <field name="deliveryAddress"/>
 	      <panel colSpan="8">
 	        <field name="confirmationDate"/>
@@ -461,7 +461,7 @@
 	        <field name="endOfValidityDate">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
-	        <field name="salemanUser" colSpan="10" form-view="user-form" grid-view="user-grid"/>
+	        <field name="salemanUser" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>      
 	      <panel readonly="true"  css="order-subtotal" colSpan="4">     

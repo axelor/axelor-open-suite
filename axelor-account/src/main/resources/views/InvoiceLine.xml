@@ -75,6 +75,33 @@
 		</panel-tabs>
 	</form>
 
+	<form name="invoice-line-client-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
+		  onNew="action-account-invoice-line-onnew-group"
+		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form">
+		<panel name="panelTitle">
+			<field name="isTitleLine" onChange="action-invoice-line-method-empty-line"/>
+			<field name="productName" showIf="isTitleLine" title="Title" requiredIf="isTitleLine"/>
+		</panel>
+		<panel-tabs hideIf="isTitleLine">
+			<panel name="informations" title="Informations">
+				<field name="product" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid" canView="false"/>
+				<field name="productName" requiredIf="!isTitleLine"/>
+				<field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
+				<field name="price" required="true"  onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+				<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="priceDiscounted" hidden="true"/>
+				<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="exTaxTotal" readonly="true"/>
+				<field name="inTaxTotal" readonly="true"/>
+				<field name="invoice" hidden="true" />
+				<panel name="discount" title="Discount" colSpan="12">
+					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
+					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+				</panel>
+			</panel>
+		</panel-tabs>
+	</form>
+
 	<form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  onNew="action-account-invoice-line-onnew-group"
 		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-menu-form">
