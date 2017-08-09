@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
 	<grid id="project-team-task-form" name="team-task-grid"  title="Tasks" model="com.axelor.team.db.TeamTask">
@@ -27,8 +28,11 @@
 	    </menubar>
 	    
 		<panel name="main" colSpan="12">
-			<field name="sequence" title="Ticket N°" colSpan="3" readonly="true"/>
-			<field name="name" colSpan="9" placeholder="Subject" required="true"/>
+            <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+                <editor>
+                    <field name="name" placeholder="Subject" required="true" showTitle="false" css="label-bold bold large" colSpan="12"/>
+                </editor>
+            </field>
 			<field name="parentTask" colSpan="6" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
 			<field name="project" colSpan="6" onChange="action-task-record-project-configurations" required="true"/>
 		</panel>
@@ -45,24 +49,12 @@
 				<field name="taskDate" colSpan="4" required="true" title="Task date"/>
 				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true"/>
 				<field name="taskDeadline" colSpan="4"/>
-				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 			</panel>
-			<panel title=" " colSpan="12">
+			<panel title="Description" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
-		</panel>
-		
-		<panel>
-			<panel name="products" title="Products" colSpan="12">
-				<field name="product" form-view="product-form" grid-view="product-grid" colSpan="6"/>
-				<field name="salePrice" colSpan="6"/>
-				<field name="quantity" colSpan="6"/>
-				<field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
-			</panel>
-		</panel>
-	
-		
-		<panel-related field="membersUserSet" form-view="user-form" grid-view="user-grid" colSpan="12" onSelect="action-task-attrs-project-members-user-set-configurations"/>
+        </panel>
+
 		<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 		<panel title="Dependencies">
 			<panel-related field="startToStartSet" colSpan="12" />
@@ -70,17 +62,30 @@
 			<panel-related field="startToFinishSet" colSpan="12" />
 			<panel-related field="finishToFinishSet" colSpan="12" />
 		</panel>
-		
+
+        <panel name="followers" title="Followers" sidebar="true">
+            <field name="membersUserSet" widget="TagSelect" colSpan="12" showTitle="false" onSelect="action-task-attrs-project-members-user-set-configurations" form-view="user-form" grid-view="user-grid"/>
+        </panel>
+
+        <panel name="financialData" title="Financial Data" colSpan="12" sidebar="true" collapseIf="true">
+            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6"/>
+            <field name="salePrice" colSpan="6"/>
+            <field name="quantity" colSpan="6"/>
+            <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
+        </panel>
+
 		<panel sidebar="true" name="attributes" title="Attributes">
 			<field name="status" colSpan="6" required="true"/>
 			<spacer/>
 			<field name="priority" colSpan="6" required="true"/>
 			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
 			<field name="progressSelect" colSpan="12" widget="SelectProgress" />
-			<field name="plannedProgress" widget="progress"  />
+            <panel name="planning" title="Planning">
+                <field name="plannedProgress" widget="progress" colSpan="12"/>
+                <field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
+            </panel>
 	    </panel>
-	    
-	    
+
 		<panel-mail>
 			<mail-messages/>
 		</panel-mail>

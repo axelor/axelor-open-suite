@@ -15,23 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.module;
+package com.axelor.apps.project.db.repo;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.project.db.repo.ProjectManagementRepository;
-import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
-import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.apps.project.service.app.AppProjectServiceImpl;
+import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 
-public class ProjectModule extends AxelorModule{
-
-	@Override
-	protected void configure() {
-		bind(ProjectRepository.class).to(ProjectManagementRepository.class);
-		bind(AppProjectService.class).to(AppProjectServiceImpl.class);
-		bind(TeamTaskRepository.class).to(TeamTaskProjectRepository.class);
-	}
-
+public class TeamTaskProjectRepository extends TeamTaskRepository {
+    @Override
+    public TeamTask save(TeamTask teamTask) {
+        teamTask.setFullName("#" + teamTask.getId() + " " + teamTask.getName());
+        return super.save(teamTask);
+    }
 }

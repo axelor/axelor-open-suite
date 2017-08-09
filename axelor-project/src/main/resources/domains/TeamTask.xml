@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="project" package="com.axelor.team.db"/>
 
@@ -9,6 +9,8 @@
 	<entity name="TeamTask">
   		<integer name="importId"/>
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+
+        <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 	  	
 	  	<many-to-one name="parentTask" ref="com.axelor.team.db.TeamTask" title="Parent task"/>
 	 	<many-to-one name="category" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
@@ -47,8 +49,7 @@
 	 	<field name="progressSelect"/>
 	 	<field name="membersUserSet"/>
 	 	<field name="description"/>
-	 	<message if="true" on="CREATE">Task created</message>
-	 	<message if="true" on ="UPDATE">Task updated</message>
+	 	<message if="true" on="UPDATE">Task updated</message>
 	 </track>
 	  
 	</entity>
