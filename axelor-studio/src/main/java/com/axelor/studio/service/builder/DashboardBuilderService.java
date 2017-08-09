@@ -31,10 +31,8 @@ import com.axelor.meta.schema.views.Dashboard;
 import com.axelor.meta.schema.views.Dashlet;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.DashletBuilder;
-import com.axelor.studio.db.repo.DashletBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 /**
  * This service class used to generate dashboard from ViewBuilder of type
@@ -50,9 +48,6 @@ public class DashboardBuilderService {
 	@Inject
 	private StudioMetaService metaService;
 
-	@Inject
-	private DashletBuilderRepository dashletBuilderRepo;
-	
 	/**
 	 * Method to generate Dashboard (meta schema) from View Builder.
 	 * 

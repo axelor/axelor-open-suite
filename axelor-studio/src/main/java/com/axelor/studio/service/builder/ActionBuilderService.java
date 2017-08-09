@@ -463,14 +463,14 @@ public class ActionBuilderService {
 		stb.append(format("",1));
 		stb.append(format("function " + fname + "($$, $, _$){",1));
 		stb.append(format("var val = null;", 2));
-		stb.append(format("if ($ != null && $.id != null){", 2));
-		stb.append(format("$ = $json.find($.id);", 3));
+//		stb.append(format("if ($ != null && $.id != null){", 2));
+//		stb.append(format("$ = $json.find($.id);", 3));
 		if (search) {
-			stb.append(format("if ($.jsonModel.name == '" + model + "' ||  $.jsonModel == '" + model + "') {",3));
-			stb.append(format("val = $;", 4));
-			stb.append(format("}", 3));
+			stb.append(format("if ($.jsonModel == '" + model + "') {",2));
+			stb.append(format("val = $;", 3));
+			stb.append(format("}", 2));
 		}
-		stb.append(format("}",2));
+//		stb.append(format("}",2));
 		if (filter && line.getFilter() != null) {
 			stb.append(format("val = " + getQuery(model, line.getFilter(),  true, false), 2));
 		}
@@ -570,6 +570,7 @@ public class ActionBuilderService {
 		stb.append(format("",1));
 		stb.append(format("function " + fname + "($$, filter){",1));
 		stb.append(format("var val  = 0", 2));
+		stb.append(format("if ($$ == null){ return val;}", 2));
 		stb.append(format("$$.forEach(function($){", 2));
 		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = new com.axelor.rpc.JsonContext($); }", 3));
 		String val = "val += " + expr[1] + ";" ;

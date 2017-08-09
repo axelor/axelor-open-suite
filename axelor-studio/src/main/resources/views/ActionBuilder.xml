@@ -11,7 +11,7 @@
   
   <form name="action-builder-form" title="Action builder" model="com.axelor.studio.db.ActionBuilder"  width="large">
       <panel>
-      	  <field name="isJson" showIf="typeSelect == 3" colSpan="12"/>
+      	  <field name="isJson" showIf="typeSelect == 3" colSpan="12" onChange="action-action-builder-method-set-views"/>
 	      <field name="name" colSpan="9"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <field name="metaJsonModel"   widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
