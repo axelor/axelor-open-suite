@@ -27,24 +27,24 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 public class AccountingReportController {
@@ -74,14 +74,14 @@ public class AccountingReportController {
 			response.setValue("totalDebit", debitBalance);
 			response.setValue("totalCredit", creditBalance);
 			response.setValue("balance", debitBalance.subtract(creditBalance));
-			
-			Map<String, Object> view = Maps.newHashMap();
-			
-			view.put("title", I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
-			view.put("resource", MoveLine.class.getName());
-			view.put("domain", query); 
-			
-			response.setView(view);
+
+			ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
+			actionViewBuilder.model(MoveLine.class.getName());
+			actionViewBuilder.add("grid", "move-line-grid");
+			actionViewBuilder.add("form", "move-line-form");
+			actionViewBuilder.domain(query);
+
+			response.setView(actionViewBuilder.map());
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
