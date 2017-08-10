@@ -26,6 +26,7 @@
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
 	    		<field name="vehicleTagSet" widget="TagSelect"  /> 
+	    		<field name="vehicleState" /> 
 	       </panel>
 	       <panel colSpan="12" title="General Properties" >
 	       		<panel itemSpan="12">
