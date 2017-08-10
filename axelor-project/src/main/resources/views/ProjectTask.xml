@@ -264,13 +264,15 @@
 		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
-		<template>
-		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
-		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
-		&lt;div class="card-footer"&gt;
-		&lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
-		&lt;/div&gt;
-		</template>
+        <template>
+            <![CDATA[
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{description}}</div>
+            <div class="card-footer">
+                <i class='fa fa-clock-o'></i> <span>{{dueDate|date:'dd/MM/yyyy'}}</span>
+            </div>
+            ]]>
+        </template>
 	</kanban>
 	
 	
@@ -285,13 +287,15 @@
 		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
-		<template>
-		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
-		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
-		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
-		&lt;/div&gt;
-		</template>
+        <template>
+            <![CDATA[
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{description}}</div>
+            <div class="card-footer">
+                <i class='fa fa-clock-o'></i> <span>{{dueDate|date:'dd/MM/yyyy'}}</span>
+            </div>
+            ]]>
+        </template>
 	</kanban>
 	
 	<calendar name="project-calendar" 
