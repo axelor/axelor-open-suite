@@ -62,7 +62,6 @@
 			        <field name="isActivity" showIf="productTypeSelect == 'service'"  if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
-			        <field name="inventoryTypeSelect" colSpan="12" />
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -70,7 +69,6 @@
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
-			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')" />
 			        <field name="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
 			        <field name="expense" hidden="true"/>
       			</panel>
@@ -124,12 +122,16 @@
 	      		</panel>
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"/>
 	    	</panel>
-	    	<panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+            <panel name="accounting" title="Accounting">
+                <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+                <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+            </panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
+                        <field name="inventoryTypeSelect" colSpan="6"/>
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 						<field name="controlOnReceipt"/>
