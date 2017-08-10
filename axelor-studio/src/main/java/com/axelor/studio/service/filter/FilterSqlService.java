@@ -348,7 +348,7 @@ public class FilterSqlService {
 		
 		joins.add("left join " + metaModel.getTableName() + " " 
 				+ "obj" + joins.size() + " on (obj" + joins.size() + ".id = " 
-				+ "cast(" + parent  + "." + field.getModelField() 
+				+ "cast(" + parent  + "." + getColumn(field.getModel(), field.getModelField()) 
 				+ "->'" + field.getName() +  "'->>'id' as integer))");
 		
 		parent.replace(0, parent.length(), "obj" + (joins.size() - 1));

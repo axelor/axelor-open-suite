@@ -16,10 +16,10 @@
         <field name="name"/>
         <field name="title"/>
         <field name="chartType" required="true"/>
-        <field name="isJson" onChange="action-chart-builder-json-change" colSpan="2"/>
+        <field name="isJson" onChange="action-chart-builder-json-change,action-chart-builder-clear-fields" colSpan="2"/>
         <panel colSpan="4" itemSpan="12">
-        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/> 
-        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" showIf="!isJson" requiredIf="!isJson"/> 
+        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson" onChange="action-chart-builder-clear-fields"/> 
+        	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" showIf="!isJson" requiredIf="!isJson" onChange="action-chart-builder-clear-fields"/> 
         </panel> 
         <panel colSpan="6" itemSpan="12" title="Aggregate" hideIf="model == null">
         	<field name="isJsonAggregateOn" colSpan="2" />
@@ -33,7 +33,7 @@
         <panel colSpan="6" itemSpan="12" title="Group" hideIf="model == null">
         	<field name="isJsonGroupOn" colSpan="2" />
         	<panel itemSpan="12" colSpan="10">
-        		<field name="groupOnJson" onSelect="action-chart-builder-group-on-json-select"  widget="SuggestBox" onChange="action-chart-builder-group-on-change" showIf="isJsonGroupOn" />
+        		<field name="groupOnJson" requiredIf="isJsonGroupOn"  onSelect="action-chart-builder-group-on-json-select"  widget="SuggestBox" onChange="action-chart-builder-group-on-change" showIf="isJsonGroupOn" />
         		<field name="groupOn" requiredIf="!isJsonGroupOn" domain="self.metaModel.fullName = :model AND (self.typeName IN ('LocalDate','ZonedDateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')" onChange="action-chart-builder-group-on-change" widget="SuggestBox" showIf="!isJsonGroupOn" />
         	</panel>
         	<field name="groupDateType" showIf="!isJsonGroupOn &amp;&amp; ['LocalDateTime','LocalDate','ZonedDateTime'].indexOf(groupOn.typeName) > -1 || isJsonGroupOn &amp;&amp; ['date','datetime'].indexOf(groupOnJson.type) > -1" requiredIf="!isJsonGroupOn &amp;&amp; ['LocalDateTime','LocalDate','ZonedDateTime'].indexOf(groupOn.typeName) > -1 || isJsonGroupOn &amp;&amp; ['date','datetime'].indexOf(groupOnJson.type) > -1" />
@@ -65,15 +65,18 @@
   </form>
   
   <action-attrs name="action-chart-builder-aggregate-on-json-select">
-  	<attribute name="domain" for="aggregateOnJson" expr="eval:&quot;self.jsonModel.name = '${model}' AND self.type IN ('datetime','date','many-to-one','json-many-to-one')&quot;"/>
+  	<attribute if="isJson" name="domain" for="aggregateOnJson" expr="eval:&quot;self.jsonModel.name = '${model}' AND self.type IN ('datetime','date','many-to-one','json-many-to-one')&quot;"/>
+  	<attribute if="!isJson" name="domain" for="aggregateOnJson" expr="eval:&quot;self.model = '${model}' AND self.type IN ('datetime','date','many-to-one','json-many-to-one')&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-chart-builder-group-on-json-select">
-  	<attribute name="domain" for="groupOnJson" expr="eval:&quot;self.jsonModel.name = '${model}' AND self.type IN ('datetime','date','many-to-one','json-many-to-one')&quot;"/>
+  	<attribute if="isJson" name="domain" for="groupOnJson" expr="eval:&quot;self.jsonModel.name = '${model}' AND self.type IN ('datetime','date','many-to-one','json-many-to-one')&quot;"/>
+  	<attribute if="!isJson" name="domain" for="groupOnJson" expr="eval:&quot;self.model = '${model}' AND self.type IN ('datetime','date','many-to-one','json-many-to-one')&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-chart-builder-display-field-json-field">
-  	<attribute name="domain" for="displayFieldJson" expr="eval:&quot;self.jsonModel.name = '${model}' AND self.type IN ('integer','decimal')&quot;"/>
+  	<attribute if="isJson" name="domain" for="displayFieldJson" expr="eval:&quot;self.jsonModel.name = '${model}' AND self.type IN ('integer','decimal')&quot;"/>
+	<attribute if="!isJson" name="domain" for="displayFieldJson" expr="eval:&quot;self.model = '${model}' AND self.type IN ('integer','decimal')&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-chart-builder-json-change">
@@ -96,6 +99,21 @@
   	<attribute name="hidden" for="filterList.isJson" expr="eval:isJson"/>
   	<attribute name="hidden" for="filterList.metaField"  expr="eval:isJson"/>
   </action-attrs>
+  
+  <action-attrs name="action-chart-builder-clear-fields">
+  	<attribute name="value" for="aggregateOnJson" expr="eval:null"/>
+  	<attribute name="value" for="aggregateOn" expr="eval:null"/>
+  	<attribute name="value" for="aggregateDateType" expr="eval:null"/>
+  	<attribute name="value" for="aggregateOnTarget" expr="eval:null"/>
+  	<attribute name="value" for="groupOnJson" expr="eval:null"/>
+  	<attribute name="value" for="groupOn" expr="eval:null"/>
+  	<attribute name="value" for="groupDateType" expr="eval:null"/>
+  	<attribute name="value" for="groupOnTarget" expr="eval:null"/>
+  	<attribute name="value" for="displayFieldJson" expr="eval:null"/>
+  	<attribute name="value" for="displayField" expr="eval:null"/>
+  	<attribute name="value" for="filterList" expr="eval:null"/>
+  </action-attrs>
+  
   
   <action-record name="action-chart-builder-aggregate-on-change" model="com.axelor.studio.db.ChartBuilder">
   	<field name="aggregateOnTarget" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getDefaultTarget(aggregateOn)" if="!isJsonAggregateOn &amp;&amp; aggregateOn != null"/>

@@ -222,7 +222,7 @@ public class ChartBuilderService {
 		String sumField = null;
 		if (isJson) {
 			String sqlType = filterSqlService.getSqlType(jsonField.getType());
-			sumField = "cast(self." + jsonField.getModelField() 
+			sumField = "cast(self." + filterSqlService.getColumn(jsonField.getModel(), jsonField.getModelField()) 
 					+ "->>'" + jsonField.getName() 
 					+ "' as " + sqlType + ")";
 		}
@@ -375,6 +375,10 @@ public class ChartBuilderService {
 
 
 	private void addSearchField(List<Filter> filters) throws AxelorException {
+		
+		if (filters == null) {
+			return;
+		}
 		
 		for (Filter filter : filters) {
 			if (!filter.getIsParameter()) {

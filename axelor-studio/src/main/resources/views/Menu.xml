@@ -73,55 +73,5 @@
     <view type="dashboard" name="dasbhoard-wkf"/>
   </action-view>
   
-  <!-- Report menus -->
-  <menuitem name="menu-studio-report" title="Report" parent="menu-studio-root" order="20"/>
-  
-  <menuitem name="menu-report-builder" title="Report builders" parent="menu-studio-report" action="menu.report.builder" order="5"/>
-  
-  <action-view name="menu.report.builder" title="Report builders" model="com.axelor.studio.db.ReportBuilder">
-    <view type="grid" name="report-builder-grid"/>
-    <view type="form" name="report-builder-form"/>
-  </action-view>
-  
-  <!-- Import/Export menus -->
-  <menuitem name="menu-studio-import-export" title="Export" parent="menu-studio-root" order="30"/>
-  
-  <menuitem name="menu-import-export" title="Module export" parent="menu-studio-import-export" action="menu.import.export" order="5"/>
-  
-  <action-view name="menu.import.export" title="Module export" model="com.axelor.studio.db.DataManager">
-    <view type="grid" name="data-manager-grid"/>
-    <view type="form" name="data-manager-form"/>
-  </action-view>
-  
-  <menuitem name="menu-record-import-wizard" title="Record import" parent="menu-studio-import-export" action="menu.record.import.wizard" order="10"/>
-  
-  <action-view name="menu.record.import.wizard" title="Record import" model="com.axelor.studio.db.RecordImportWizard">
-    <view type="grid" name="record-import-wizard-grid"/>
-    <view type="form" name="record-import-wizard-form"/>
-  </action-view>
-  
-  <!-- Configuration menus -->
-  <menuitem name="menu-studio-configuration" title="Configuration" parent="menu-studio-root" order="50"/>
-  
-  <menuitem name="menu-filter-operator" title="Operators" action="action.filter.operator" parent="menu-studio-configuration" order="10"/>
-
-  <action-view name="action.filter.operator" title="Operators" model="com.axelor.studio.db.FilterOperator">
-      <view type="grid" name="filter-operator-grid"/>
-      <view type="form" name="filter-operator-form"/>
-  </action-view>
-  
-  <menuitem name="menu-field-type" title="Field types" action="action.field.type" parent="menu-studio-configuration" order="15"/>
-
-  <action-view name="action.field.type" title="Field types" model="com.axelor.studio.db.FieldType">
-      <view type="grid" name="field-type-grid"/>
-      <view type="form" name="field-type-form"/>
-  </action-view>
-  
-  <menuitem name="menu-studio-template" title="Templates" parent="menu-studio-configuration" action="action.module.manager" order="20"/>
-  
-  <action-view name="action.module.manager" title="Template" model="com.axelor.studio.db.StudioTemplate">
-  	  <view type="grid" name="studio-template-grid"/>
-      <view type="form" name="studio-template-form"/>
-  </action-view>
   
 </object-views>

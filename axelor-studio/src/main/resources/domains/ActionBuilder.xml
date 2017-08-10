@@ -15,7 +15,6 @@
      <string name="firstGroupBy" title="First group by"/>
      <string name="secondGroupBy" title="Second group by"/>
      <string name="title" title="Title" />
-     <many-to-many name="reportBuilderSet" title="Report builders" ref="ReportBuilder" />
      <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
      <one-to-many name="filters" ref="Filter" title="Filters"/>
      <boolean name="transactional" title="Transactional ?" />

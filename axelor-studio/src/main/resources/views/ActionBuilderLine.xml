@@ -74,10 +74,6 @@
   	<attribute name="domain" for="valueField" expr="eval:&quot;self.metaModel.name = '${_parent.valueField?.typeName}'&quot;" if="_parent.valueField != null &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
   
-  <action-method name="action-action-builder-line-method-validate-target">
-  	<call class="com.axelor.studio.web.ActionBuilderLineController" method="validateTarget"/>
-  </action-method>
-	
   <action-record name="action-action-builder-line-set-name-meta" model="com.axelor.studio.db.ActionBuilderLine">
   	<field name="name" expr="eval:metaField?.name"/>
   </action-record>
