@@ -41,12 +41,12 @@ public class FilterController {
 		
 		Boolean isJson = filter.getIsJson();
 
-		if (!isJson && metaField != null && metaField.getRelationship() != null) {
-			response.setValue("targetType", metaField.getRelationship());
+		if (!isJson && metaField != null){
+			String type = metaField.getRelationship() != null ? metaField.getRelationship() : metaField.getTypeName();
+			response.setValue("targetType", type);
 			response.setValue("targetField", metaField.getName());
 		}
-		else if(isJson && metaJson != null 
-				&& (metaJson.getTargetJsonModel() != null || metaJson.getTargetModel() != null)) {
+		else if(isJson && metaJson != null) {
 			response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
 			response.setValue("targetField", metaJson.getName());
 		}	

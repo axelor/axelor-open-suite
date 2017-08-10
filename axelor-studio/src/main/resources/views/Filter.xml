@@ -9,7 +9,7 @@
       <field name="metaField" readonlyIf="isJson" requiredIf="!isJson" widget="SuggestBox" onChange="action-filter-method-update-target-field" onSelect="action-chart-filter-meta-field-domain"/>
       <field name="targetField" onChange="action-filter-method-update-target-type" readonlyIf="!isJson &amp;&amp; metaField.relationship == null || isJson &amp;&amp; metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="!isJson &amp;&amp; metaField.relationship != null || isJson &amp;&amp; metaJsonField.targetModel != null"  />
       <field name="operator"/>
-      <field name="value" readonlyIf="isParameter"/>
+      <field name="value" readonlyIf="isParameter" onChange="action-studio-filter-validate-values"/>
       <field name="isParameter" />
       <field name="defaultValue" readonlyIf="!isParameter"/>
       <field name="logicOp" />
@@ -41,5 +41,13 @@
       <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.model}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany' OR self.relationship != 'ManyToMany')&quot;"/>
   </action-attrs>
   
+  <action-validate name="action-studio-filter-validate-values">
+  	<error message="Please input value bind with single quotation."  action="action-studio-filter-reset-value" 
+  	if="value != null &amp;&amp; targetType != null &amp;&amp; (!value.startsWith(&quot;'&quot;) || !value.endsWith(&quot;'&quot;)) &amp;&amp; (targetType.toLowerCase().contains('string') || targetType.toLowerCase().contains('date'))"/>
+  </action-validate>
+  
+  <action-attrs name="action-studio-filter-reset-value">
+  	<attribute name="value" for="value" expr="eval:null"/>
+  </action-attrs>
   
 </object-views>
