@@ -52,6 +52,9 @@ public class SupplychainBatchService extends AbstractBatchService {
 		case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
 			batch = invoiceOutgoingStockMoves(supplychainBatch);
 			break;
+		case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
+			batch = invoiceOrders(supplychainBatch);
+			break;
 		default:
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), supplychainBatch.getCode()), IException.INCONSISTENCY);
 		}
@@ -65,6 +68,10 @@ public class SupplychainBatchService extends AbstractBatchService {
 
 	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
 		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
+	}
+
+	public Batch invoiceOrders(SupplychainBatch supplychainBatch) {
+		return Beans.get(BatchOrderInvoicing.class).run(supplychainBatch);
 	}
 
 }

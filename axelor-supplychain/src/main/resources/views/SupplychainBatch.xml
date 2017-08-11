@@ -11,8 +11,9 @@
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     </grid>
- 
-	<form  onNew="action-supplychain-batch-record-on-new" name="supplychain-batch-form" title="Supplychain Batch" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+
+	<form name="supplychain-batch-form" title="Supplychain Batch"
+		model="com.axelor.apps.supplychain.db.SupplychainBatch" onNew="action-supplychain-batch-record-on-new">
 		<panel name="main" >
 			<field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 			<field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -21,6 +22,23 @@
 			<field name="archived" title="Archived ?"/>
 		</panel>
 		<panel-tabs>
+			<panel name="invoiceOrdersConfiguration" title="Invoice orders configuration" showIf="actionSelect == 3">
+				<field name="invoiceOrdersTypeSelect" />
+				<panel showIf="invoiceOrdersTypeSelect == 1" colSpan="12">
+					<field name="salespersonOrBuyerSet" widget="TagSelect" title="Salespersons" />
+					<field name="team" />
+					<field name="orderUpToDate" />
+					<field name="deliveryOrReceiptState" widget="MultiSelect" selection="sale.order.delivery.state" title="Delivery state" />
+					<field name="statusSelect" widget="MultiSelect" selection="sale.order.status.select" readonly="true" />
+				</panel>
+				<panel showIf="invoiceOrdersTypeSelect == 2" colSpan="12">
+					<field name="salespersonOrBuyerSet" widget="TagSelect" title="Buyers" />
+					<field name="team" />
+					<field name="orderUpToDate" />
+					<field name="deliveryOrReceiptState" widget="MultiSelect" selection="purchase.order.receipt.state" title="Receipt state" />
+					<field name="statusSelect" widget="MultiSelect" selection="purchase.purchase.order.status.select" readonly="true" />
+				</panel>
+			</panel>
 			<panel name="information" title="Information"  >
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by"  form-view="user-form" grid-view="user-grid"/>
@@ -31,6 +49,7 @@
 		<panel sidebar="true" name="actions" title="Actions">
 		    <button name="billSubBatch" title="Bill Late Subscriptions Batch" showIf="actionSelect == 1"  onClick="save,action-supplychain-batch-method-bill-sub" colSpan="12"/>
 		    <button name="invoiceOutgoingStockMoveBatch" title="Invoice outgoing stock moves" showIf="actionSelect == 2"  onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+		    <button name="invoiceOrdersBatch" title="Invoice orders" showIf="actionSelect == 3" onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
 		</panel>
 	</form>
 
@@ -42,8 +61,7 @@
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
-    
-    
+
     <!-- ACTION METHOD -->
 	<action-method name="action-supplychain-batch-method-bill-sub">
 		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="billSubscriptions"/>
@@ -52,5 +70,9 @@
 	<action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
 		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="invoiceOutgoingStockMoves"/>
 	</action-method>
-	
+
+	<action-method name="action-supplychain-batch-method-invoice-orders">
+		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="invoiceOrders"/>
+	</action-method>
+
 </object-views>
