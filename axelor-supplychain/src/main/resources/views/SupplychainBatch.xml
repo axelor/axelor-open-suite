@@ -23,7 +23,8 @@
 		</panel>
 		<panel-tabs>
 			<panel name="invoiceOrdersConfiguration" title="Invoice orders configuration" showIf="actionSelect == 3">
-				<field name="invoiceOrdersTypeSelect" />
+				<field name="invoiceOrdersTypeSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" />
+				<field name="invoiceOrdersTypeSelect" selection="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" />
 				<panel showIf="invoiceOrdersTypeSelect == 1" colSpan="12">
 					<field name="salespersonOrBuyerSet" widget="TagSelect" title="Salespersons" />
 					<field name="team" />

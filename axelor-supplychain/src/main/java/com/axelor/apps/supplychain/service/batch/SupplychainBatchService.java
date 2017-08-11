@@ -71,7 +71,15 @@ public class SupplychainBatchService extends AbstractBatchService {
 	}
 
 	public Batch invoiceOrders(SupplychainBatch supplychainBatch) {
-		return Beans.get(BatchOrderInvoicing.class).run(supplychainBatch);
+		switch (supplychainBatch.getInvoiceOrdersTypeSelect()) {
+		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_SALE:
+			return Beans.get(BatchOrderInvoicingSale.class).run(supplychainBatch);
+		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_PURCHASE:
+			return Beans.get(BatchOrderInvoicingPurchase.class).run(supplychainBatch);
+		default:
+			throw new IllegalArgumentException(
+					String.format("Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
+		}
 	}
 
 }

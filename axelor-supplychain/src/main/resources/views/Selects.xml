@@ -66,6 +66,10 @@
 	</selection>
 
 	<selection name="supplychain.supplychain.batch.invoice.orders.type.select">
+		<option value="2">Purchase orders</option>
+	</selection>
+
+	<selection name="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select">
 		<option value="1">Sale orders</option>
 		<option value="2">Purchase orders</option>
 	</selection>
