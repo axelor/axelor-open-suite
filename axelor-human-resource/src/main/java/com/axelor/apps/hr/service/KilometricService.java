@@ -46,7 +46,6 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
-import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -62,17 +61,16 @@ import wslite.json.JSONObject;
 
 public class KilometricService {
 	
-	@Inject
 	private AppBaseService appBaseService;
-	
-	@Inject
 	private KilometricLogRepository kilometricLogRepo;
 
 	private String googleMapsApiKey;
 
 	@Inject
-	public KilometricService(AppHumanResourceService appHumanResourceService) {
-		googleMapsApiKey = appHumanResourceService.getAppExpense().getGoogleMapsApiKey();
+	public KilometricService(AppBaseService appBaseService, KilometricLogRepository kilometricLogRepo) {
+		this.appBaseService = appBaseService;
+		this.kilometricLogRepo = kilometricLogRepo;
+		googleMapsApiKey = appBaseService.getAppBase().getGoogleMapApiKey();
 	}
 
 	public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {

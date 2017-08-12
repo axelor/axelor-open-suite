@@ -8,7 +8,6 @@
 		width="large">
 		<panel>
 			<field name="computeDistanceWithWebService" />
-			<field name="googleMapsApiKey" showIf="computeDistanceWithWebService" />
 		</panel>
 	</form>
 
