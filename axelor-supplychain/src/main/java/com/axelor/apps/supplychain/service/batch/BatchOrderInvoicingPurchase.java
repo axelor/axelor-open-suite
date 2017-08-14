@@ -1,7 +1,9 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -76,10 +78,17 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
 		query.filter(filter);
 
 		PurchaseOrderInvoiceService purchaseOrderInvoiceService = Beans.get(PurchaseOrderInvoiceService.class);
+		Set<Long> treatedSet = new HashSet<>();
 
 		for (List<PurchaseOrder> purchaseOrderList; !(purchaseOrderList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA
 				.clear()) {
 			for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+				if (treatedSet.contains(purchaseOrder.getId())) {
+					throw new IllegalArgumentException("Invoice generation error");
+				}
+
+				treatedSet.add(purchaseOrder.getId());
+
 				try {
 					purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
 					incrementDone();
