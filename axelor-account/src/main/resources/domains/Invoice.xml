@@ -82,6 +82,7 @@
 	<!--  Impression -->
 	<integer name="invoicesCopySelect" selection="grade.0.up.to.10.select"/>
     <string name="note" title="Notes" large="true"/>
+      <string name="specificNotes" title="Specific notes" large="true"/>
     
     <!-- Totals & Status -->
     

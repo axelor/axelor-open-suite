@@ -7,7 +7,6 @@
 
     <entity name="FiscalPosition" lang="java">
 
-        <one-to-many name="accountEquivList" ref="com.axelor.apps.account.db.AccountEquiv" title="Account equivalences" mappedBy="fiscalPosition"/>
         <boolean name="customerSpecificNote" title="Customer specific note"/>
 
     </entity>

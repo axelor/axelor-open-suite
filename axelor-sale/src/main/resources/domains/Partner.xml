@@ -5,6 +5,7 @@
   
   <entity name="Partner" lang="java">
   	<string name="saleOrderInformation" multiline="true"/>
+      <string name="specificTaxNote" title="Specific tax note" large="true"/>
   </entity>
   
 </domain-models>
