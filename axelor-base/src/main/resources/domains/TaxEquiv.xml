@@ -11,7 +11,7 @@
     <many-to-one name="fromTax" ref="com.axelor.apps.account.db.Tax" title="Tax to replace"/>
     <many-to-one name="toTax" ref="com.axelor.apps.account.db.Tax" title="Replacement Tax" help="true"/>
 
-      <string name="specificNoteInvoice" title="Specific note on invoice" large="true"/>
+      <string name="specificNote" title="Specific note" large="true"/>
   </entity>
 
 </domain-models>

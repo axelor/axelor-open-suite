@@ -69,6 +69,8 @@ public class SaleOrderLineTaxService {
 		List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<SaleOrderLineTax>();
 		Map<TaxLine, SaleOrderLineTax> map = new HashMap<TaxLine, SaleOrderLineTax>();
         Set<String> specificNotes = new HashSet<String>();
+
+        boolean customerSpecificNote = saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
 		
 		if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
@@ -102,10 +104,10 @@ public class SaleOrderLineTaxService {
 					}
 				}
 
-                if (!saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote()) {
+                if (!customerSpecificNote) {
                     TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
                     if (taxEquiv != null) {
-                        specificNotes.add(taxEquiv.getSpecificNoteInvoice());
+                        specificNotes.add(taxEquiv.getSpecificNote());
                     }
                 }
 			}
@@ -127,7 +129,7 @@ public class SaleOrderLineTaxService {
 			
 		}
 
-        if (!saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote()) {
+        if (!customerSpecificNote) {
             saleOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
         } else {
             saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());

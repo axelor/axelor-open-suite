@@ -67,6 +67,8 @@ public class TaxInvoiceLine extends TaxGenerator {
 		Map<TaxLine, InvoiceLineTax> map = new HashMap<TaxLine, InvoiceLineTax>();
         Set<String> specificNotes = new HashSet<String>();
 
+        boolean customerSpecificNote = invoice.getPartner().getFiscalPosition().getCustomerSpecificNote();
+
 		if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
@@ -105,10 +107,10 @@ public class TaxInvoiceLine extends TaxGenerator {
 					}
 				}
 
-				if (!invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
+				if (!customerSpecificNote) {
                     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
                     if (taxEquiv != null) {
-                        specificNotes.add(taxEquiv.getSpecificNoteInvoice());
+                        specificNotes.add(taxEquiv.getSpecificNote());
                     }
                 }
 			}
@@ -134,7 +136,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 		}
 
-        if (!invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
+        if (!customerSpecificNote) {
             invoice.setSpecificNotes(Joiner.on('\n').join(specificNotes));
         } else {
 		    invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
