@@ -104,5 +104,5 @@ public interface IExceptionMessage {
 	static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
 	static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
 	static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/ "Please fill the payment mode." /*)*/;
-
+    static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/ "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
 }
