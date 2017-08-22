@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -146,4 +148,23 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		}
 		return advancePaymentList;
 	}
+
+	@Override
+	public List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments) {
+		List<MoveLine> moveLines = new ArrayList<>();
+		for (InvoicePayment payment : payments) {
+		    Move move = payment.getMove();
+		    if (move == null || move.getMoveLineList() == null
+					|| move.getMoveLineList().isEmpty()) {
+		    	continue;
+			}
+			for (MoveLine moveLine : move.getMoveLineList()) {
+		    	if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+		    		moveLines.add(moveLine);
+				}
+			}
+		}
+		return moveLines;
+	}
+
 }

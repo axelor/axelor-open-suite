@@ -24,9 +24,13 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.*;
@@ -105,7 +109,6 @@ public class VentilateState extends WorkflowInvoice {
 		updatePaymentSchedule( );
 		setMove( );
 		setStatus( );
-		manageAdvancePayments();
 
 		workflowService.afterVentilation(invoice);
 	}
@@ -275,27 +278,4 @@ public class VentilateState extends WorkflowInvoice {
 
 	}
 
-	protected void manageAdvancePayments() {
-		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
-		List<InvoicePayment> invoicePayments;
-		if (advancePayments == null || advancePayments.isEmpty()) {
-			return;
-		}
-	    InvoicePaymentToolService invoicePaymentToolService =
-				Beans.get(InvoicePaymentToolService.class);
-		for (Invoice advancePayment : advancePayments) {
-		    invoicePayments = invoicePaymentToolService
-					.assignAdvancePayment(invoice, advancePayment);
-			generateAdvancePaymentsMoves(invoicePayments);
-		}
-	}
-
-	protected void generateAdvancePaymentsMoves(List<InvoicePayment> invoicePayments) {
-		if (invoicePayments == null || invoicePayments.isEmpty()) {
-		    return;
-		}
-		for (InvoicePayment invoicePayment : invoicePayments) {
-		    //reconcile the payment with the invoice move
-		}
-	}
 }

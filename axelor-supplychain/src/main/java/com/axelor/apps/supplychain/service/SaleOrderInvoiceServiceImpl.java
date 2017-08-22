@@ -616,8 +616,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
 			   + " AND self.invoice.statusSelect = :statusVentilated";
-		
-		if (currentInvoiceId != null)  {
+
+		//exclude invoices that are advance payments
+		boolean invoiceIsNotAdvancePayment = (currentInvoiceId != null
+				&& invoiceRepo.find(currentInvoiceId).getOperationSubTypeSelect()
+				!= InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+
+        if (invoiceIsNotAdvancePayment) {
 			if(excludeCurrentInvoice)  {
 				query += " AND self.invoice.id <> :invoiceId";
 			}  else  {
@@ -630,7 +635,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		q.setParameter("saleOrderId", saleOrder.getId());
 		q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
 		q.setParameter("invoiceOperationTypeSelect", invoiceOperationTypeSelect);
-		if (currentInvoiceId != null){
+		if (invoiceIsNotAdvancePayment){
 			q.setParameter("invoiceId", currentInvoiceId);
 		}
 

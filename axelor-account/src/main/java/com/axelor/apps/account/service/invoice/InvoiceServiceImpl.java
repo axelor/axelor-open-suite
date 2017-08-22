@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -35,6 +36,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -508,6 +510,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) {
 	    String filter = createAdvancePaymentInvoiceSetDomain(invoice);
 	    return new HashSet<>(invoiceRepo.all().filter(filter).fetch());
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) {
+		List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
+
+		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
+		List<InvoicePayment> invoicePayments;
+		if (advancePayments == null || advancePayments.isEmpty()) {
+			return advancePaymentMoveLines;
+		}
+		InvoicePaymentToolService invoicePaymentToolService =
+				Beans.get(InvoicePaymentToolService.class);
+		for (Invoice advancePayment : advancePayments) {
+			invoicePayments = advancePayment.getInvoicePaymentList();
+			List<MoveLine> creditMoveLines = invoicePaymentToolService
+					.getCreditMoveLinesFromPayments(invoicePayments);
+			advancePaymentMoveLines.addAll(creditMoveLines);
+		}
+		return advancePaymentMoveLines;
 	}
 }
 

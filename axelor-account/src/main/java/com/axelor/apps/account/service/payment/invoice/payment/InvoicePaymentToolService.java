@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
@@ -42,4 +43,6 @@ public interface InvoicePaymentToolService  {
 	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment);
 
 	List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
+
+	List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
 }

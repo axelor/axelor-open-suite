@@ -194,4 +194,12 @@ public interface InvoiceService {
 	 * @return
 	 */
 	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice);
+
+	/**
+     * Return the move lines from the advance payments
+	 * from the previous invoice
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice);
 }

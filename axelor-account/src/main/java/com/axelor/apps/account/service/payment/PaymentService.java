@@ -271,8 +271,8 @@ public class PaymentService {
 			List<Map<Account,BigDecimal>> allMap = new ArrayList<Map<Account,BigDecimal>>();
 			allMap = q.getResultList();
 			for(Map<Account,BigDecimal> map : allMap) {
-				Account accountMap = (Account)map.values().toArray()[1];
-				BigDecimal amountMap = (BigDecimal)map.values().toArray()[0];
+				Account accountMap = (Account)map.values().toArray()[0];
+				BigDecimal amountMap = (BigDecimal)map.values().toArray()[1];
 				BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
 				if(amountDebit.compareTo(BigDecimal.ZERO) > 0)  {
 					MoveLine debitMoveLine = moveLineService.createMoveLine(move,
