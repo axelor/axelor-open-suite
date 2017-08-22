@@ -19,6 +19,7 @@ package com.axelor.studio.service.builder;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -61,6 +62,7 @@ public class ChartBuilderService {
 	private static final String Tab1 = "\n \t";
 	private static final String Tab2 = "\n \t\t";
 	private static final String Tab3 = "\n \t\t\t";
+	private static final List<String> dateTypes = Arrays.asList(new String[]{"DATE","DATETIME","LOCALDATE","LOCALDATETIME","ZONNEDDATETIME"});
 
 	private List<String> searchFields;
 
@@ -260,13 +262,16 @@ public class ChartBuilderService {
 			}
 		}
 		
+		
 		if (object != null) {
 			String[] sqlField = filterSqlService.getSqlField(object, parent.toString());
 			typeName = sqlField[1];
 			group = sqlField[0];
 		}
 		
-		if (dateType != null) {
+		log.debug("Group field type: {}, group: {}, dateType: {}", typeName, group, dateType);
+		
+		if (dateType != null && typeName != null && dateTypes.contains(typeName.toUpperCase())) {
 			group = getDateTypeGroup(dateType, typeName, group);
 
 		} 
@@ -276,16 +281,16 @@ public class ChartBuilderService {
 
 	private String getDateTypeGroup(String dateType, String typeName, String group) {
 		
-		String dtype = "timestamp";
-		if ("Date,date,LocalDate,LocalDateTime,ZonedDateTime".contains(typeName)) {
-			dtype = "date";
-		}
+//		String dtype = "timestamp";
+//		if ("Date,date,LocalDate,LocalDateTime,ZonedDateTime".contains(typeName)) {
+//			dtype = "date";
+//		}
 		switch (dateType) {
 		case "year":
-			group = "to_char(cast(" + group + " as " + dtype +"), 'yyyy')";
+			group = "to_char(cast(" + group + " as date), 'yyyy')";
 			break;
 		case "month":
-			group =  "to_char(cast(" + group + " as " + dtype +"), 'yyyy-mm')";
+			group =  "to_char(cast(" + group + " as date), 'yyyy-mm')";
 			break;
 		}
 		
@@ -503,5 +508,34 @@ public class ChartBuilderService {
 		return filterSqlService.getDefaultTarget(metaJsonField.getName(),
 				metaJsonField.getTargetModel())[0];
 	}
+	
+	
+	public String getTargetType(Object object, String target){
+		
+		if (target == null) {
+			log.debug("No target provided for target type");
+			return null;
+		}
+		
+		Object targetField = null;
+		try {
+			if (object instanceof MetaJsonField) {
+				targetField = filterSqlService.parseJsonField((MetaJsonField)object, target, null, null);
+			}
+			else if (object instanceof MetaField) {
+				targetField = filterSqlService.parseMetaField((MetaField)object, target, null, null, true);
+			}
+		} catch(AxelorException e) {
+		}
+		
+		if (targetField == null) {
+			log.debug("Target field not found");
+			return null;
+		}
+		
+		log.debug("Target field found: {}", targetField);
+		
+		return filterSqlService.getTargetType(targetField);
+	}	
 	
 }

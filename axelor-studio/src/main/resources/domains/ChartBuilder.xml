@@ -7,7 +7,7 @@
   
   <entity name="ChartBuilder" cachable="true">
     <string name="title" title="Title" required="true" />
-    <string name="name" title="Name"  required="true"/>
+    <string name="name" title="Name"  required="true" unique="true"/>
     <string name="model" title="Model" />
     <boolean name="isJson" title="Json ?" />
     <one-to-many name="filterList" title="Filters" ref="com.axelor.studio.db.Filter" mappedBy="chartBuilder" />
@@ -15,11 +15,13 @@
     <boolean name="isJsonAggregateOn" title="Json ?" />
     <many-to-one name="aggregateOnJson" title="Aggregate On" ref="com.axelor.meta.db.MetaJsonField"/>
     <string name="aggregateOnTarget" title="Target" /> 
+    <string name="aggregateOnTargetType" title="Aggregate On type" /> 
     <string name="aggregateDateType" selection="studio.chart.builder.date.type" />
     <many-to-one name="groupOn" title="Group By" ref="com.axelor.meta.db.MetaField" />
     <boolean name="isJsonGroupOn" title="Json ?" />
     <many-to-one name="groupOnJson" title="Group By" ref="com.axelor.meta.db.MetaJsonField" />
     <string name="groupOnTarget" title="Target" />
+    <string name="groupOnTargetType" title="Group on type" />
     <string name="groupDateType" selection="studio.chart.builder.date.type" />
     <many-to-one name="displayField" title="Display" ref="com.axelor.meta.db.MetaField" />
     <integer name="displayType" selection="studio.chart.builder.display.type" />

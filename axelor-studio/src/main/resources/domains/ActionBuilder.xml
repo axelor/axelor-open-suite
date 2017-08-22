@@ -7,9 +7,9 @@
   
   <entity name="ActionBuilder" cachable="true">
      <string name="name" title="Name" required="true"/>
-     <string name="metaJsonModel"  title="Object" />
      <integer name="typeSelect" title="Type" selection="studio.action.builder.type.select" />
-     <string name="targetJsonModel"  title="Target object" />
+     <string name="model" title="Object" />
+     <string name="targetModel"  title="Target object" />
      <one-to-many name="lines" ref="ActionBuilderLine" title="Fields" mappedBy="actionBuilder"/>
      <many-to-one name="assignValueTo" title="Assign value to" ref="com.axelor.meta.db.MetaField" />
      <string name="firstGroupBy" title="First group by"/>
@@ -20,12 +20,10 @@
      <boolean name="transactional" title="Transactional ?" />
      <integer name="scriptType" title="Script type" selection="studio.action.builder.script.type.select"/>
      <string name="scriptText" title="Script" large="true"/>
-     <string name="model" title="Model" />
      
      <!-- Action view fields -->
      <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder"/>
      <boolean name="isJson" title="Json ?" />
-     <string name="metaModel" title="Object" />
      <string name="domainCondition" title="Domain" />
      <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine" orphanRemoval="true" />
      

@@ -19,6 +19,7 @@ package com.axelor.studio.service.wkf;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -170,8 +171,11 @@ class WkfNodeService {
 		String defaultValue = null;
 		removeOldOptions(metaSelect, nodeList);
 		
+		Collections.sort(nodeList, (WkfNode node1, WkfNode node2) -> node1.getSequence().compareTo(node2.getSequence()));
+		
 		for (WkfNode node : nodeList) {
 			
+			log.debug("Procesing node: {}", node.getName());
 			String option = node.getSequence().toString();
 			MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect,
 					option);

@@ -85,7 +85,7 @@ public class FilterSqlService {
 		return type;
 	}
 	
-	public String getSqlFilters(List<Filter> filterList, List<String> joins, boolean checkMeta) throws AxelorException {
+	public String getSqlFilters(List<Filter> filterList, List<String> joins, boolean checkJson) throws AxelorException {
 		
 		String filters = null;
 
@@ -96,7 +96,10 @@ public class FilterSqlService {
 		for (Filter filter : filterList) {
 
 			StringBuilder parent = new StringBuilder("self");
-			Object target = getTargetField(parent, filter, joins, checkMeta);
+			Object target = getTargetField(parent, filter, joins, checkJson);
+			if (target == null) {
+				continue;
+			}
 			String field = getSqlField(target, parent.toString())[0];
 			String value = getParam(filter.getIsParameter(), filter.getValue(), filter.getId());
 			String condition = filterCommonService.getCondition(field, filter.getOperator(), value);
@@ -183,7 +186,17 @@ public class FilterSqlService {
 	
 	public String[] getDefaultTargetJson(String fieldName, MetaJsonModel targetModel) {
 		
-		return new String[]{fieldName + "." +  targetModel.getNameField(), "string"};
+		String name = targetModel.getNameField();
+		if (name == null) {
+			MetaJsonField nameField = metaJsonFieldRepo.all().filter("self.name = 'name' and self.jsonModel = ?1", targetModel).fetchOne();
+			if (nameField == null) {
+				nameField = metaJsonFieldRepo.all().filter("self.name = 'code' and self.jsonModel = ?1", targetModel).fetchOne();
+			}
+			if (nameField != null) {
+				name = nameField.getName();
+			}
+		}
+		return new String[]{fieldName + "." +  name, "string"};
 	}
 	
 	
@@ -192,10 +205,10 @@ public class FilterSqlService {
 		
 		Object target = null;
 		
-		if (!filter.getIsJson()){
+		if (!filter.getIsJson() && filter.getMetaField() != null){
 			target = parseMetaField(filter.getMetaField(), filter.getTargetField(), 
 					joins, parent, checkJson);
-		} else if (checkJson){
+		} else if (checkJson && filter.getMetaJsonField() != null){
 			target = parseJsonField(filter.getMetaJsonField(), filter.getTargetField(),
 					joins, parent);
 		}
@@ -216,8 +229,12 @@ public class FilterSqlService {
 			}
 		}
 		else if (target instanceof MetaJsonField) {
-			Inflector.getInstance().camelize(((MetaJsonField)target).getType());
+			targetType = ((MetaJsonField)target).getType();
+			log.debug("Target json type:", targetType);
+			targetType = Inflector.getInstance().camelize(targetType);
 		}
+		
+		log.debug("Target type: {}, field: {}", targetType, target);
 		
 		return targetType;
 	}

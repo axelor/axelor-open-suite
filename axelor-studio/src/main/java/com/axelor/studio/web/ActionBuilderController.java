@@ -41,7 +41,7 @@ public class ActionBuilderController {
 		inflector = Inflector.getInstance();
 		
 		ActionBuilder builder = request.getContext().asType(ActionBuilder.class);
-		String model = builder.getIsJson() ? builder.getMetaJsonModel() : builder.getMetaModel();
+		String model = builder.getModel();
 		
 		if (builder.getTypeSelect() == 3 && model != null) {
 			if (!builder.getIsJson()) {
@@ -54,7 +54,6 @@ public class ActionBuilderController {
 			response.setValue("actionBuilderViews", views);
 		}
 		
-		response.setValue("model", model);
 	}
 
 	private void addActionBuilderView(List<ActionBuilderView> views, String model, String type, boolean isJson) {

@@ -26,6 +26,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.common.Inflector;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaField;
@@ -36,6 +38,7 @@ import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderLineRepository;
 import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.filter.FilterSqlService;
 import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -51,12 +54,19 @@ public class ActionBuilderService {
 	private int varCount = 0;
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	
+	private Inflector inflector;
+	
+	private boolean isCreate = false;
 
 	@Inject
 	private ActionBuilderLineRepository builderLineRepo;
 	
 	@Inject
 	private StudioMetaService metaService;
+	
+	@Inject
+	private FilterSqlService filterSqlService;
 	
 	@Transactional
 	public MetaAction build(ActionBuilder builder) {
@@ -65,6 +75,7 @@ public class ActionBuilderService {
 			return null;
 		}
 		
+		inflector = Inflector.getInstance();
 		MetaAction metaAction = null;
 		String xml = null;
 		String xmlId = "studio-" + builder.getName();
@@ -123,17 +134,56 @@ public class ActionBuilderService {
 		
 		stb.append(format("var ctx = $request.context;", level));
 		
+		String target = builder.getTypeSelect() == 0 ? builder.getTargetModel() : builder.getModel();
+		
 		if (builder.getTypeSelect() == 0) {
-			stb.append(format("var target = $json.create('" + builder.getTargetJsonModel() + "');" , level));
+			isCreate = true;
+			addCreateCode(builder.getIsJson(), stb, level, target);
+		}
+		else {
+			isCreate = false;
+			addUpdateCode(builder.getIsJson(), stb, level, target);
+		}
+		
+		addRootFunction(builder, stb, level);
+		
+		stb.append(Joiner.on("").join(fbuilder));
+		
+		return stb.toString();
+
+	}
+
+	private void addCreateCode(boolean isJson, StringBuilder stb, int level, String target) {
+		
+		if (isJson) {
+			stb.append(format("var target = $json.create('" + target + "');" , level));
 			stb.append(format("target = setVar0(null, ctx, {});", level));
 			stb.append(format("target = $json.save(target);", level));
 			stb.append(format("Beans.get(" + WkfTrackingService.class.getName() + ".class).track(target);", level));
 		}
 		else {
-			stb.append(format("var target = $json.create('" + builder.getMetaJsonModel() + "');" , level));
+			stb.append(format("var target = new " + target + "();" , level));
 			stb.append(format("target = setVar0(null, ctx, {});", level));
-			stb.append(format("$response.setValues(target);", level));
+			stb.append(format("target = $em.persist(target);", level));
 		}
+		
+	}
+	
+	private void addUpdateCode(boolean isJson, StringBuilder stb, int level, String target) {
+		
+		if (isJson) {
+			stb.append(format("var target = $json.create('" + target + "', ctx);", level));
+		}
+		else {
+			stb.append(format("var target = ctx.asType(" + target + ".class)" , level));
+		}
+		
+		stb.append(format("target = setVar0(null, ctx, {});", level));
+		stb.append(format("$response.setValues(target);", level));
+		
+	}
+
+	private void addRootFunction(ActionBuilder builder, StringBuilder stb, int level) {
 		
 		stb.append(format("function setVar0($$, $, _$){", level));
 		String bindings = addFieldsBinding("target", builder.getLines(), level+1);
@@ -141,10 +191,6 @@ public class ActionBuilderService {
 		stb.append(format("return target;", level + 1));
 		stb.append(format("}", level));
 		
-		stb.append(Joiner.on("").join(fbuilder));
-		
-		return stb.toString();
-
 	}
 
 	private String format(String line, int level) {
@@ -175,6 +221,9 @@ public class ActionBuilderService {
 			
 			String name = line.getName();
 			String value = line.getValue();
+			if (value != null && value.contains(".sum(")){
+				value = getSum(value, line.getFilter());
+			}
 			if (line.getDummy()) {
 				stb.append(format("_$." +  name + " = " + value + ";", level)); 
 				continue;
@@ -183,13 +232,15 @@ public class ActionBuilderService {
 			MetaJsonField jsonField = line.getMetaJsonField();
 			MetaField metaField = line.getMetaField();
 			
-			if (jsonField != null 
-					&& (jsonField.getTargetJsonModel() != null || jsonField.getTargetModel() != null)
-					|| metaField != null && metaField.getRelationship() != null) {
-				value = addRelationalBinding(line, true);
+			if (jsonField != null && (jsonField.getTargetJsonModel() != null || jsonField.getTargetModel() != null)) {
+				value = addRelationalBinding(line, target, true);
 			}
-			if (value.contains(".sum(")){
-				value = getSumValue(value, line.getFilter());
+			else if (metaField != null && metaField.getRelationship() != null) {
+				value = addRelationalBinding(line, target, false);
+			}
+			
+			if (value != null && value.contains("*")) {
+				value = "new BigDecimal(" + value + ")";
 			}
 			
 			
@@ -258,56 +309,35 @@ public class ActionBuilderService {
 //	}
 	
 	
-	private String addRelationalBinding(ActionBuilderLine line, boolean json) {
+	private String addRelationalBinding(ActionBuilderLine line, String target,  boolean json) {
 		
 		line = builderLineRepo.find(line.getId());
-		String subCode = "null;";
+		String subCode = null;
 		
-		if (json) { 
-			MetaJsonField jsonField = line.getMetaJsonField();
-			if (jsonField == null) {
-				return subCode;
-			}
-			switch(jsonField.getType()) {
-				case "many-to-one":
-					subCode = addM2OBinding(line, true, true);
-					break;
-				case "many-to-many":
-					subCode = addM2MBinding(line);
-					break;
-				case "one-to-many":
-					subCode = addO2MBinding(line);
-					break;
-				case "json-many-to-one":
-					subCode = addJsonM2OBinding(line, true, true);
-					break;
-				case "json-many-to-many":
-					subCode = addJsonM2MBinding(line);
-					break;
-				case "json-one-to-many":
-					subCode = addJsonO2MBinding(line);
-					break;
-			}
-		}
-		else {
-			MetaField metaField = line.getMetaField();
-			if (metaField == null || metaField.getRelationship() == null) {
-				return subCode;
-			}
-			switch(metaField.getRelationship()) {
-				case "ManyToOne":
-					subCode = addM2OBinding(line, true, true);
-					break;
-				case "OneToOne":
-					subCode = addM2OBinding(line, true, true);
-					break;
-				case "ManyToMany":
-					subCode = addM2MBinding(line);
-					break;
-				case "OneToMany":
-					subCode = addO2MBinding(line);
-					break;
-			}
+		String type = json ? line.getMetaJsonField().getType() : inflector.dasherize(line.getMetaField().getRelationship()); 
+		
+		switch(type) {
+			case "many-to-one":
+				subCode = addM2OBinding(line, true, true);
+				break;
+			case "many-to-many":
+				subCode = addM2MBinding(line);
+				break;
+			case "one-to-many":
+				subCode = addO2MBinding(line, target);
+				break;
+			case "one-to-one":
+				subCode = addM2OBinding(line, true, true);
+				break;
+			case "json-many-to-one":
+				subCode = addJsonM2OBinding(line, true, true);
+				break;
+			case "json-many-to-many":
+				subCode = addJsonM2MBinding(line);
+				break;
+			case "json-one-to-many":
+				subCode = addJsonO2MBinding(line);
+				break;
 		}
 		
 		return subCode + "($," + line.getValue() + ", _$)";
@@ -342,18 +372,61 @@ public class ActionBuilderService {
 		
 	}
 	
+	private String getRootSourceModel(ActionBuilderLine line) {
+		
+		if (line.getActionBuilder() != null) {
+			return line.getActionBuilder().getModel();
+		}
+		
+		return null;
+	}
+	
 	private String getSourceModel(ActionBuilderLine line) {
 		
 		MetaJsonField jsonField = line.getValueJson();
 		
 		String sourceModel = null;
-		if (jsonField != null && jsonField.getTargetModel() != null) {
-			sourceModel = jsonField.getTargetModel();
+		Object targetObject = null;
+		
+		try {
+			if (jsonField != null && jsonField.getTargetModel() != null) {
+				if (!line.getValue().contentEquals("$." + jsonField.getName())) {
+					targetObject = filterSqlService.parseJsonField(jsonField, line.getValue().replace("$.", ""), null, null);
+				}
+				else {
+					sourceModel = jsonField.getTargetModel();
+				}
+			}
+			
+			MetaField field = line.getValueField();
+			if (field != null && field.getTypeName() != null) {
+				if (!line.getValue().contentEquals("$." + field.getName())) {
+					targetObject = filterSqlService.parseMetaField(field, line.getValue().replace("$.", ""), null, null, false);
+				}
+				else {
+					sourceModel = field.getTypeName();
+				}
+				
+			}
+		} catch(AxelorException e) {
+			
 		}
 		
-		MetaField field = line.getValueField();
-		if (field != null && field.getTypeName() != null) {
-			sourceModel = field.getTypeName();
+		if (sourceModel == null && line.getValue() != null &&  line.getValue().equals("$")) {
+			sourceModel = getRootSourceModel(line);
+		}
+		
+		if (sourceModel == null && line.getValue() != null && line.getValue().equals("$$")) {
+			sourceModel = getRootSourceModel(line);
+		}
+		
+		if (targetObject != null) {
+			if (targetObject instanceof MetaJsonField) {
+				sourceModel = ((MetaJsonField) targetObject).getTargetModel();
+			}
+			else if (targetObject instanceof MetaField) {
+				sourceModel = ((MetaField) targetObject).getTypeName();
+			}
 		}
 		
 		return sourceModel;
@@ -380,14 +453,19 @@ public class ActionBuilderService {
 			srcModel = srcModel.substring(srcModel.lastIndexOf(".") + 1);
 			stb.append(format("$ = $em.find(" + srcModel + ".class, $.id);", 3));
 			log.debug("src model: {}, Target model: {}", srcModel, tModel);
-			if (search && srcModel.equals(tModel)) {
-				stb.append(format("val = $;", 3));
+			if (srcModel.contentEquals(tModel)) {
+				stb.append(format("val = $", 3));
 			}
 			stb.append(format("}",2));
 		}
 		
 		if (filter && line.getFilter() != null) {
-			stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($);",2));
+			if (line.getValue() != null) {
+				stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($);",2));
+			}
+			else {
+				stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($$);",2));
+			}
 			stb.append(format("val = " + getQuery(tModel, line.getFilter(), false, false), 2));
 		}
 		
@@ -397,7 +475,7 @@ public class ActionBuilderService {
 			stb.append(format("val = new " + tModel + "();", 3));
 			stb.append(format("}",2));
 			stb.append(addFieldsBinding("val", lines, 2));
-			stb.append(format("$em.persist(val);", 2));
+//			stb.append(format("$em.persist(val);", 2));
 		}
 		stb.append(format("return val;", 2));
 		stb.append(format("}", 1));
@@ -432,7 +510,7 @@ public class ActionBuilderService {
 		return fname;
 	}
 	
-	private String addO2MBinding(ActionBuilderLine line) {
+	private String addO2MBinding(ActionBuilderLine line, String target) {
 		
 		String fname = "setVar" + varCount;
 		varCount += 1;
@@ -443,8 +521,11 @@ public class ActionBuilderService {
 		stb.append(format("var val  = new ArrayList();", 2));
 		stb.append(format("if(!$){return val;}", 2));
 		stb.append(format("$.forEach(function(v){", 2));
-		stb.append(format("v = " + addM2OBinding(line, false, false) + "($$, v, _$);", 3));
-		stb.append(format("val.add(v);", 3));
+		stb.append(format("var item = " + addM2OBinding(line, false, false) + "($$, v, _$);", 3));
+		if (isCreate && line.getMetaField() != null && line.getMetaField().getMappedBy() != null) {
+			stb.append(format("item." +  line.getMetaField().getMappedBy() + " = " + target, 3));
+		}
+		stb.append(format("val.add(item);", 3));
 		stb.append(format("})", 2));
 		stb.append(format("return val;", 2));
 		stb.append(format("}", 1));
@@ -466,8 +547,9 @@ public class ActionBuilderService {
 //		stb.append(format("if ($ != null && $.id != null){", 2));
 //		stb.append(format("$ = $json.find($.id);", 3));
 		if (search) {
-			stb.append(format("if ($.jsonModel == '" + model + "') {",2));
-			stb.append(format("val = $;", 3));
+			stb.append(format("if ($.id != null) {",2));
+			stb.append(format("val = $json.find($.id);", 3));
+			stb.append(format("if (val.jsonModel != '" + model + "'){val = null;} ", 3));
 			stb.append(format("}", 2));
 		}
 //		stb.append(format("}",2));
@@ -558,7 +640,7 @@ public class ActionBuilderService {
 		return query;
 	}
 	
-	private String getSumValue(String value, String filter) {
+	private String getSum(String value, String filter) {
 		
 		value = value.substring(0,value.length() - 1);
 		String[] expr = value.split("\\.sum\\(");
@@ -568,10 +650,10 @@ public class ActionBuilderService {
 		
 		StringBuilder stb = new StringBuilder();
 		stb.append(format("",1));
-		stb.append(format("function " + fname + "($$, filter){",1));
+		stb.append(format("function " + fname + "(sumOf$, $$, filter){",1));
 		stb.append(format("var val  = 0", 2));
-		stb.append(format("if ($$ == null){ return val;}", 2));
-		stb.append(format("$$.forEach(function($){", 2));
+		stb.append(format("if (sumOf$ == null){ return val;}", 2));
+		stb.append(format("sumOf$.forEach(function($){", 2));
 		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = new com.axelor.rpc.JsonContext($); }", 3));
 		String val = "val += " + expr[1] + ";" ;
 		if (filter != null) {
@@ -579,11 +661,11 @@ public class ActionBuilderService {
 		}
 		stb.append(format(val, 3));
 		stb.append(format("})", 2));
-		stb.append(format("return val;", 2));
+		stb.append(format("return new BigDecimal(val);", 2));
 		stb.append(format("}", 1));
 		
 		fbuilder.add(stb);
-		return fname + "(" + expr[0] + "," + filter + ")";
+		return fname + "(" + expr[0] + ",$," + filter + ")";
 
 	}
 	
@@ -601,7 +683,7 @@ public class ActionBuilderService {
 		
 		String model = MetaJsonRecord.class.getName();
 		if (!builder.getIsJson()) {
-			model = builder.getMetaModel();
+			model = builder.getModel();
 		}
 		xml.append("model=\"" + model + "\">");
 		
@@ -620,7 +702,7 @@ public class ActionBuilderService {
 		String domain = builder.getDomainCondition();
 		
 		if (builder.getIsJson())  {
-			String jsonDomain = "self.jsonModel = '" + builder.getMetaJsonModel() + "'" ;
+			String jsonDomain = "self.jsonModel = '" + builder.getModel() + "'" ;
 			domain = domain == null ? jsonDomain : jsonDomain + " AND (" +  builder.getDomainCondition() + ")";
 		}
 		

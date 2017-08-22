@@ -24,7 +24,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Dashboard;
@@ -109,6 +111,8 @@ public class DashboardBuilderService {
 		
 		dashboard.setItems(dashlets);
 		
+		MetaStore.clear();
+		
 		return metaService.generateMetaView(dashboard);
 	}
 
@@ -141,6 +145,11 @@ public class DashboardBuilderService {
 		xml.append("name=\"" +  name + "\" />");
 		if (dashletBuilder.getPaginationLimit() > 0) {
 			xml.append("\n\t<view-param name=\"limit\" value=\"" + dashletBuilder.getPaginationLimit().toString() + "\"/>");
+		}
+		
+		if (model != null && model.contentEquals(MetaJsonRecord.class.getName())) {
+			String[] models = name.split("-");
+			xml.append("\n\t<domain>self.jsonModel = '" + models[models.length - 2] + "'</domain>");
 		}
 		xml.append("\n</action-view>");
 		

@@ -21,8 +21,8 @@
       <many-to-one name="source" ref="WkfNode" title="From"  />
       <many-to-one name="target" ref="WkfNode" title="To" />
       <integer name="alertTypeSelect" title="Alert or Blocking condition ?" selection="studio.condition.alert.type.select" /> 
-      <string name="alertMsg" title="Message if fail (alert or blocking)" />
-      <string name="successMsg" title="Message if succuss" />
+      <string name="alertMsg" title="Message on alert or blocking" />
+      <string name="successMsg" title="Message on success" />
   </entity>
     
  </domain-models>

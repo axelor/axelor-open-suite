@@ -141,7 +141,7 @@ public class WkfService {
 		status.setSequence(-102);
 		status.setSelection(getSelectName());
 		status.setWidget(null);
-		status.setWidgetAttrs("{\"colSpan\": \"10\"}");
+		status.setWidgetAttrs("{\"colSpan\": \"10\",\"readonly\": \"true\"}");
 		if (workflow.getDisplayTypeSelect() == 0) {
 			status.setWidget("NavSelect");
 		}
@@ -153,6 +153,7 @@ public class WkfService {
 		trackFlow.setWidgetAttrs("{\"colSpan\": \"2\"}");
 		trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
 		trackFlow.setIsWkf(true);
+		trackFlow.setHiddenInGrid(true);
 		saveJsonField(trackFlow);
 		
 		setTrackOnSave(workflow, false);
@@ -352,6 +353,7 @@ public class WkfService {
 		
 		Iterator<MetaJsonField> buttons = fields.iterator();
 		
+		MetaJsonModel jsonModel = jsonModelRepo.findByName(workflow.getModel());
 		while (buttons.hasNext()) {
 			
 			MetaJsonField button = buttons.next();
@@ -366,9 +368,10 @@ public class WkfService {
 				}
 			}
 			buttons.remove();
+			jsonModel.getFields().remove(button);
 			jsonFieldRepo.remove(button);
 		}
-
+		
 
 		return Joiner.on(",").join(actions);
 	}

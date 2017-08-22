@@ -17,6 +17,8 @@
  */
 package com.axelor.studio.db.repo;
 
+import java.util.List;
+
 import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
 
@@ -64,6 +66,12 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
 	public void remove(ChartBuilder chartBuilder) {
 
 		MetaView metaView = chartBuilder.getMetaViewGenerated();
+		List<ChartBuilder> chartBuilders = all().filter("self.metaViewGenerated = ?1 and self.id != ?2"
+				, metaView, chartBuilder.getId()).fetch();
+		for (ChartBuilder builder : chartBuilders) {
+			builder.setMetaViewGenerated(null);
+		}
+		
 		if (metaView != null) {
 			metaViewRepo.remove(metaView);
 		}
