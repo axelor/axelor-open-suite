@@ -179,7 +179,7 @@
 "PurchaseOrder.purchaseInfo","Info. d'achat",,
 "PurchaseOrder.qtyUnit","Qté / Unité",,
 "PurchaseOrder.reference","Référence",,
-"PurchaseOrder.state","Statut",,
+"PurchaseOrder.state","État",,
 "PurchaseOrder.supplier","Fournisseur",,
 "PurchaseOrder.supplyRef","Référence fournisseur",,
 "PurchaseOrder.tax","TVA",,

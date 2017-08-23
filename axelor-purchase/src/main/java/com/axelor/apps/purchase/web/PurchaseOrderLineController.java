@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -38,8 +39,7 @@ public class PurchaseOrderLineController {
 
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
-
-
+	
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		Context context = request.getContext();
@@ -221,15 +221,22 @@ public class PurchaseOrderLineController {
 	}
 	
 	public PurchaseOrder getPurchaseOrder(Context context)  {
-		
+
 		Context parentContext = context.getParent();
+		PurchaseOrder purchaseOrder = null;
 		
-		PurchaseOrder purchaseOrder = parentContext.asType(PurchaseOrder.class);
-		
-		if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
+		if(parentContext != null) {
 			
+			purchaseOrder = parentContext.asType(PurchaseOrder.class);
+			if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
+				
+				PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+				
+				purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+			}
+			
+		} else {
 			PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-			
 			purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 		}
 		
