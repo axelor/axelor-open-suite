@@ -14,8 +14,10 @@
 	</grid>
 	
 	<form name="training-session-form" title="Training session" model="com.axelor.apps.talent.db.TrainingSession" width="large" readonlyIf="$popup()">
+		<panel title="Status">
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" />		
+		</panel>
 		<panel>
-			<field name="statusSelect" colSpan="12" widget="NavSelect" />
 			<field name="training" onChange="action-training-session-training-change" />
 			<field name="location" />
 			<field name="fromDate" />

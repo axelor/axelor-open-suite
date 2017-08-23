@@ -86,6 +86,11 @@
 			<button name="closed-won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
 			<button name="closed-lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,save"/>
 		</toolbar>
+		<menubar>
+	    	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale"/>
+	    	</menu>
+	  	</menubar>
 	  
 		<panel name="main" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="name" css="label-bold bold"/>

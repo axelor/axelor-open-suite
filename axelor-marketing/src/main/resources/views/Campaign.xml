@@ -10,15 +10,19 @@
     </grid>
     
     <form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large">
+    	<toolbar>
+    		<button name="sendEmail" title="Launch emailing" colSpan="3" onClick="action-campaign-validate-send-email,save,action-campaign-method-send-email" showIf="emailing"/>
+    	</toolbar>
+    	<panel title="Stage">
+    		<field name="stageSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
+    	</panel>
 		<panel name="main" >
 			<field name="name"/>
 			<field name="campaignType" />
-			<field name="stageSelect" widget="NavSelect" colSpan="12"/>
 			<field name="emailing" title="Emailing"  widget="inline-checkbox" />
 			<panel showIf="emailing" colSpan="12">
 		    	<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
-				<button name="sendEmail" title="Send email" colSpan="3" onClick="action-campaign-validate-send-email,save,action-campaign-method-send-email" showIf="emailing"/>
 				<field name="emailLog" widget="binary-link" showIf="emailing"/>
 			</panel>
 			<field name="generateEventPerTarget" title="Generate event per target" widget="inline-checkbox"/>

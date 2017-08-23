@@ -66,11 +66,19 @@
 	
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions,action-attrs-po-change-tab-otherInformation-to-invoicing"
 	  onNew="action-group-purchase-order-on-new-actions,action-attrs-po-change-tab-otherInformation-to-invoicing" >
-		<toolbar>
-			<button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
-			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
-		</toolbar>
-		<panel name="Status">
+		<menubar>
+			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order"/>
+			</menu>
+			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+			  <item title="Send email" action="save,action-send-by-email-with-template"/>
+<!-- 			  <item title="New version" showIf="statusSelect == 2" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" action="save,action-purchase-record-newVersion,save"/> -->
+			  <item title="New version" showIf="statusSelect == 2" action="save,action-purchase-record-newVersion,save"/>
+			  <item title="Generate control invoice" showIf="statusSelect == 3"   action="save,action-purchase-order-method-generate-control-invoice"/>
+			  <item title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt"/>
+			</menu>
+		</menubar>
+		<panel title="Status">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 		</panel>
 	  
@@ -138,15 +146,12 @@
 			<field name="poAttrs" colSpan="12" />
 		</panel>
 		
-		<panel sidebar="true" name="actions" title="Actions">
+		<panel sidebar="true" name="actions" title="Actions" hideIf="statusSelect == 4">
 			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions,action-attrs-po-change-tab-otherInformation-to-invoicing"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,action-attrs-po-change-tab-otherInformation-to-invoicing,save"/>
-			<button name="newVersion" title="New version" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
-			<button name="cancelReceipt" title="Cancel receipt" showIf="statusSelect &gt;= 3" onClick="save,action-purchase-order-method-cancel-receipt"/>
 			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplierStockMoveManagement() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>

@@ -17,13 +17,17 @@
     </grid>
     
 	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"   
-		onNew="account-journal-record-default" >
-		
+		onNew="account-journal-record-default" width="large">
+		<panel title="Status">
+			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="9"/>
+			<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save" colSpan="2"/>
+		</panel>
 		<panel name="main" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="company" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
 			<field name="type" grid-view="journal-type-grid" form-view="journal-type-form"/>
+			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
 		</panel>
 		
 		<panel-tabs>
@@ -46,20 +50,15 @@
 					<field name="validAccountTypeSet" canNew="false" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 					<field name="validAccountSet" domain="self.company = :company" canNew="false" grid-view="account-simple-grid" colSpan="6" form-view="account-form"/>
 				</panel>
+				<spacer/>
+				<panel name="exports" title="Exports" colSpan="12">
+					<field name="exportCode" readonlyIf="notExportOk"/>
+					<field name="notExportOk" onChange="account-journal-on-change-not-export-ok"/>
+				</panel>
+				
 			</panel>
 			
 		</panel-tabs>
-		
-		<panel sidebar="true" name="status" title="Status" itemSpan="12">
-			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
-			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
-			<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
-		</panel>
-		
-		<panel sidebar="true" name="exports" title="Exports" itemSpan="12">
-			<field name="exportCode" readonlyIf="notExportOk"/>
-			<field name="notExportOk" onChange="account-journal-on-change-not-export-ok"/>
-		</panel>
 
 	</form>
     

@@ -58,9 +58,25 @@
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
 		 onLoad="action-stock-move-attrs-typeselect-change" onNew="action-group-stock-stockmove-onnew">
+		 
+		 <menubar>
+		 		<menu title="Reports">
+		 			<item title=" Print" action="save,action-print-stock-move" showIf="statusSelect != 1"/>
+		 		</menu>
+		 		<menu title="Tools">
+		 			<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
+		 			<item title="Split into 2" action="save,action-stock-move-split-into-2"/>
+				    <item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit"/>
+				    <item title="Special split"  action="save,action-stock-move-wizard-special-split"/>
+				    <item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+		 		</menu>
+		 </menubar>
+		 
+	  <panel title="Status">
+		<field name="statusSelect" widget="NavSelect" colSpan="8"/>		  
+	  </panel>
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
-		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
 		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity"/>
 	  </panel>
 	  <panel>
@@ -98,17 +114,8 @@
 			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
 			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
-			<button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move" showIf="statusSelect != 1"/>
-			<button name="viewDirection" title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4"   icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
 	  </panel>
 	  
-	   <panel sidebar="true" name="splitShipReceive" title="Split/Ship/Receive" showIf="statusSelect == 1 || statusSelect == 2" >
-		  <button name="splitInto2" title="Split into 2" onClick="save,action-stock-move-split-into-2"/>
-	      <button name="splitByUnit" title="Split by unit" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
-	      <button name="specialSplit" title="Special split"  onClick="save,action-stock-move-wizard-special-split"/>
-	      <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products"/>
-	    </panel>
-
 		<panel sidebar="true" title="Freight Carrier">
 			<field name="shipmentMode" colSpan="12"/>
 			<field name="freightCarrierMode" colSpan="12"/>
@@ -140,12 +147,14 @@
     <form name="stock-move-wizard-stock-per-day" title="Stock Availability" model="com.axelor.apps.base.db.Wizard" 
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
     	 onNew="action-stock-move-wizard-stock-per-day-defaults">
+    	<toolbar>
+    		<button icon="img/16px/create_16px.png" name="runWizard" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
+    	</toolbar>
     	<panel name="main">
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
 	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.Location" required="true" />
 	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" />
-	        <button name="runWizard" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
         </panel>
     </form>
     

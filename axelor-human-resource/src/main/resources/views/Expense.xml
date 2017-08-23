@@ -42,6 +42,9 @@
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
+		<panel title="Status">
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+		</panel>		
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
@@ -67,7 +70,6 @@
 					</viewer>
 				</field>
 			</panel>
-		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>

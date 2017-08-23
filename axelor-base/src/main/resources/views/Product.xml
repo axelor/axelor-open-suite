@@ -30,8 +30,8 @@
 	onNew="action-group-base-product-onnew"
 	onLoad="action-group-product-onload" width="large">
  		<toolbar>
-    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     		<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
+    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="main" >
    			<panel colSpan="7">

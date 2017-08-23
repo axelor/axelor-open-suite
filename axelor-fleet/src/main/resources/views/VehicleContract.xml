@@ -12,8 +12,10 @@
     </grid>
     
     <form name="vehicle-contract-form" title="Vehicle Contract" model="com.axelor.apps.fleet.db.VehicleContract" width="large" >
+      <panel title="Status">
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>      	
+      </panel>
        <panel>
-     		<field name="statusSelect" colSpan="12" widget="NavSelect"/>
      		<field name="name" />
      		<field name="vehicle" title="Vehicle">
       			<editor>
