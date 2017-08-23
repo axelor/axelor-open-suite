@@ -114,7 +114,10 @@ public class AppController {
 		Context context = request.getContext();
 		
 		Set<Map<String,Object>> apps =  new HashSet<Map<String,Object>>();
-		apps.addAll((Collection<Map<String,Object>>)context.get("appsSet"));
+		Collection<Map<String,Object>> appsSet = (Collection<Map<String,Object>>)context.get("appsSet");
+		if (appsSet != null) {
+			apps.addAll(appsSet);
+		}
 
 		Boolean importDemo = (Boolean) context.get("importDemoData");
 		
