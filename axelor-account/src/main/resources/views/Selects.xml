@@ -267,6 +267,7 @@
 		<option value="3">Refund invoice</option>
 		<option value="4">Invoice</option>
 		<option value="5">Other</option>
+		<option value="6">Advance Payment Imputation</option>
 	</selection>
 	
 	<selection name="invoice.payment.status.select">

@@ -115,6 +115,11 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+		if (invoicePayment.getInvoice() != null
+				&& invoicePayment.getInvoice().getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
+		}
 		invoicePaymentRepository.save(invoicePayment);
 	}
 	
@@ -184,8 +189,8 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		
 		return move;
 	}
+
 	
-	
-	
+
 	
 }

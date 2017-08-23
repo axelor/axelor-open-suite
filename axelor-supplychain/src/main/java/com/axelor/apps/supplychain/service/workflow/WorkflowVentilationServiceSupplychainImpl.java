@@ -19,9 +19,12 @@ package com.axelor.apps.supplychain.service.workflow;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -59,12 +62,17 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
 
     @Inject
-    public WorkflowVentilationServiceSupplychainImpl(SaleOrderInvoiceService saleOrderInvoiceService,
-                                                     PurchaseOrderInvoiceService purchaseOrderInvoiceService,
-                                                     SaleOrderRepository saleOrderRepository,
-                                                     PurchaseOrderRepository purchaseOrderRepository,
-                                                     AccountingSituationSupplychainService accountingSituationSupplychainService) {
+    public WorkflowVentilationServiceSupplychainImpl(
+            AccountConfigService accountConfigService,
+            InvoicePaymentRepository invoicePaymentRepo,
+            InvoicePaymentCreateService invoicePaymentCreateService,
+            SaleOrderInvoiceService saleOrderInvoiceService,
+            PurchaseOrderInvoiceService purchaseOrderInvoiceService,
+            SaleOrderRepository saleOrderRepository,
+            PurchaseOrderRepository purchaseOrderRepository,
+            AccountingSituationSupplychainService accountingSituationSupplychainService) {
 
+        super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService);
         this.saleOrderInvoiceService = saleOrderInvoiceService;
         this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
         this.saleOrderRepository = saleOrderRepository;
@@ -73,7 +81,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
 
     public void afterVentilation(Invoice invoice) throws AxelorException {
-
+        super.afterVentilation(invoice);
         if (InvoiceToolService.isPurchase(invoice)) {
 
             //Update amount invoiced on PurchaseOrder

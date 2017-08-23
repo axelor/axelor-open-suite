@@ -110,7 +110,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 			return InvoicePaymentRepository.TYPE_PAYMENT;
 		}
 		else if (determineIfReconcileFromInvoice(move)) {
-			return InvoicePaymentRepository.TYPE_ADVANCEPAYMENT;
+			return InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION;
 		}
 		else  {
 			return InvoicePaymentRepository.TYPE_OTHER;
