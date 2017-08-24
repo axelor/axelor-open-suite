@@ -6,7 +6,7 @@
 
 	<entity name="AppSupplychain" lang="java" cachable="true" extends="App">
 		<boolean name="manageInvoicedAmountByLine" title="Manage the invoiced amount by line" default="false"/>
-		<boolean name="customerStockMoveManagement" title="Customer deliveries management" default="false"/>
+		<boolean name="custStockMoveMgtOnSO" title="Customer deliveries management" default="false"/>
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
 		<boolean name="supplierStockMoveManagement" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>

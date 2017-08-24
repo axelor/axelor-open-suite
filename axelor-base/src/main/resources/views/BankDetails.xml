@@ -16,7 +16,7 @@
 	</grid>
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
-		  onLoad="action-attrs-account-bankdetails-bank-set-address-domain" model="com.axelor.apps.base.db.BankDetails" width="large">
+		  onLoad="action-group-account-bank-details-form-onload" model="com.axelor.apps.base.db.BankDetails" width="large">
 		<panel name="owner" title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
@@ -30,7 +30,10 @@
 		</panel>
 		<panel name="iban" title="IBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
-			<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" />
+			<panel>
+				<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" colSpan="12" />
+				<static name="invalidIbanText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Invalid IBAN</span>]]></static>
+			</panel>
 			<field name="bank" canNew="true" form-view="bank-form" onChange="action-group-bank-details-bank-onchange"/>
 			<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
 			canNew="true" form-view="bank-address-form"/>
@@ -46,7 +49,7 @@
 	</form>
 	
 	<action-group name="action-group-account-bankdetails-iban-onchange">
-		<action name="action-method_bank-details-validIban" />
+		<action name="action-method_bank-details-validate-iban" />
 	</action-group>
 
 	<action-group name="action-group-bank-details-bank-onchange">
@@ -55,12 +58,18 @@
 	</action-group>
 
 	<action-group name="action-group-account-bank-details-form-onnew">
+		<action name="action-method_bank-details-validate-iban"/>
 		<action name="action-set-default-partner"/>
 		<action name="action-set-default-bank"/>
 	</action-group>
 
-	<action-method name="action-method_bank-details-validIban">
-		<call class="com.axelor.apps.base.web.BankDetailsController" method="onChangeIban" />
+	<action-group name="action-group-account-bank-details-form-onload">
+		<action name="action-method_bank-details-validate-iban"/>
+		<action name="action-attrs-account-bankdetails-bank-set-address-domain"/>
+	</action-group>
+
+	<action-method name="action-method_bank-details-validate-iban">
+		<call class="com.axelor.apps.base.web.BankDetailsController" method="validateIban" />
 	</action-method>
 
 	<action-record name="action-set-owner-name" model="com.axelor.apps.base.db.BankDetails">

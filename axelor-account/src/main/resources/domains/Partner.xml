@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
     <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -24,7 +24,9 @@
         <many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr" title="Active UMR" index="false"/>
 
         <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
-
+		
+		<string name="specificTaxNote" title="Specific tax note" large="true"/>
+		
     </entity>
 
 </domain-models>

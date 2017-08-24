@@ -73,7 +73,6 @@ public interface ITranslation {
 	public static final String ACCOUNTING_REPORT_1_FROM = /*$$(*/ "AccountingReportType1.from"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_TO = /*$$(*/ "AccountingReportType1.to"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_PERIOD = /*$$(*/ "AccountingReportType1.period"; /*)*/
-	public static final String ACCOUNTING_REPORT_1_CASH_REGISTER = /*$$(*/ "AccountingReportType1.cashRegister"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_PAYMENT_MODE = /*$$(*/ "AccountingReportType1.paymentMode"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_DESCRIPTION = /*$$(*/ "AccountingReportType1.description"; /*)*/
@@ -91,7 +90,6 @@ public interface ITranslation {
 	public static final String ACCOUNTING_REPORT_2_FROM = /*$$(*/ "AccountingReportType2.from"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_TO = /*$$(*/ "AccountingReportType2.to"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_PERIOD = /*$$(*/ "AccountingReportType2.period"; /*)*/
-	public static final String ACCOUNTING_REPORT_2_CASH_REGISTER = /*$$(*/ "AccountingReportType2.cashRegister"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_PAYMENT_MODE = /*$$(*/ "AccountingReportType2.paymentMode"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_ACCOUNT = /*$$(*/ "AccountingReportType2.account"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_ACCOUNT_LABEL = /*$$(*/ "AccountingReportType2.accountLabel"; /*)*/

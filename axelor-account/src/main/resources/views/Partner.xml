@@ -13,6 +13,7 @@
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
 	        <field name="invoicesCopySelect" hideIf="!isCustomer"/>
+            <field name="specificTaxNote" hidden="true"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel colSpan="6" hideIf="isEmployee">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
@@ -116,7 +117,7 @@
 	<action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) > 0</domain>
+		<domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
@@ -136,4 +137,9 @@
 		<attribute name="hidden" for="accountingSituationList.employeeAccount" expr="eval: !isEmployee"/>
 	</action-attrs>
 
+    <action-attrs name="action-partner-attrs-show-specific-tax-note">
+        <attribute for="specificTaxNote" name="hidden" expr="eval: fiscalPosition == null || !fiscalPosition.customerSpecificNote"/>
+    </action-attrs>
+
+	
 </object-views>

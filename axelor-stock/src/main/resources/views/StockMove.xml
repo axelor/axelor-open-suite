@@ -115,26 +115,27 @@
 			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
 	  </panel>
-	  
-		<panel sidebar="true" title="Freight Carrier">
-			<field name="shipmentMode" colSpan="12"/>
-			<field name="freightCarrierMode" colSpan="12"/>
-			<field name="trackingNumber" />
-			<field name="numOfPalettes" />
-			<field name="numOfPackages" />
-			<field name="grossWeight" />
-		</panel>
-	    
-	    <panel sidebar="true" readonly="true"  colSpan="4">  
-	  		<field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-	          <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total" &gt;{{record.exTaxTotal}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
+	<panel sidebar="true" title="Freight Carrier">
+		<field name="shipmentMode" colSpan="12"/>
+		<field name="freightCarrierMode" colSpan="12"/>
+		<field name="trackingNumber" />
+		<field name="numOfPalettes" />
+		<field name="numOfPackages" />
+		<field name="grossWeight" />
+	</panel>
+	   
+	   <panel sidebar="true" readonly="true"  colSpan="4">  
+	 		<field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+	              <viewer>
+	                  <![CDATA[
+	                <dl class="dl-horizontal">
+	                    <dt class="order-subtotal-total" x-translate>Total W.T.</dt>
+	                    <dd class="order-subtotal-total">{{record.exTaxTotal}}</dd>
+	                </dl>
+	                ]]>
+	            </viewer>
 	        </field>
-      </panel>
+	  </panel>
 	</form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">

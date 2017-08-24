@@ -3,8 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
-	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
-	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
 		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>

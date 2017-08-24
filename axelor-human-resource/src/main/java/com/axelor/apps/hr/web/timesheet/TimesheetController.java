@@ -258,19 +258,21 @@ public class TimesheetController {
 			response.setReload(true);
 		}
 	}
-	
-	//Confirm and continue Button
-		public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException{
 
-			this.confirm(request, response);
-			
-			response.setView(ActionView
-					.define(I18n.get("Timesheet"))
-					.model(Timesheet.class.getName())
-					.add("form", "timesheet-form")
-					.map());
-			
-		}
+    // Continue button
+    public void continueBtn(ActionRequest request, ActionResponse response) throws AxelorException {
+        response.setView(ActionView
+                .define(I18n.get("Timesheet"))
+                .model(Timesheet.class.getName())
+                .add("form", "timesheet-form")
+                .map());
+    }
+
+    // Confirm and continue button
+    public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException {
+        this.confirm(request, response);
+        this.continueBtn(request, response);
+    }
 	
 	
 	//action called when validating a timesheet. Changing status + Sending mail to Applicant

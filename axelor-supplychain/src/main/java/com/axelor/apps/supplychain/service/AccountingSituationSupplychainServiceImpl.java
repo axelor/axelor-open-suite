@@ -56,9 +56,9 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 	}
 	
 	@Override
-	public AccountingSituation createAccountingSituation(Company company) throws AxelorException {
+	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
 		
-		AccountingSituation accountingSituation = super.createAccountingSituation(company);
+		AccountingSituation accountingSituation = super.createAccountingSituation(partner, company);
 		
 		if (appAccountService.getAppAccount().getManageCustomerCredit()) {
 			SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());

@@ -75,13 +75,6 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CUSTOMER_2 = /*$$(*/ "%s : A supplier account is missing for the company %s" /*)*/ ;
 
 	/**
-	 * Cash register line service
-	 */
-	static final String CASH_REGISTER_1 = /*$$(*/ "%s : You must configure an active company for the user %s" /*)*/ ;
-	static final String CASH_REGISTER_2 = /*$$(*/ "%s : A cash register closure already exists for the same date and the same cash register" /*)*/ ;
-	static final String CASH_REGISTER_3 = /*$$(*/ "%s : You must configure a cashier email address for the company %s" /*)*/ ;
-
-	/**
 	 * Check rejection service
 	 */
 	static final String CHECK_REJECTION_1 = /*$$(*/ "%s : You must configure a cheque rejection sequence for the company %s" /*)*/ ;

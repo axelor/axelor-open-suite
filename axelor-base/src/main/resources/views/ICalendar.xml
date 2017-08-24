@@ -23,7 +23,7 @@
 	  <panel name="connectionSettings" title="Connection settings">
 		  <field name="url"/>
 		  <field name="typeSelect"/>
-		  <field name="isSslConnection"/>
+		  <field name="isSslConnection" onChange="action-calendar-record-set-port"/>
 		  <field name="port"/>
 		  <field name="isValid" readonly="true"/>
 		</panel>
@@ -31,7 +31,11 @@
 		  <field name="login"/>
 		  <field name="password" widget="password"/>
 		</panel>
-	  <panel-related field="events" colSpan="12"/>
+	  <panel-dashlet action="action-icalendar-view-ievent-dashlet"/>
 	</form>
-
+	
+	<action-record name="action-calendar-record-set-port" model="com.axelor.apps.base.db.ICalendar">
+     	<field name="port" expr="eval: isSslConnection ? 443 : 80"/>
+    </action-record>
+	
 </object-views>

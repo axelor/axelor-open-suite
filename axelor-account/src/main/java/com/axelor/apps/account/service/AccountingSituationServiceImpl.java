@@ -33,7 +33,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -48,91 +47,64 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		this.accountConfigService = accountConfigService;
 		this.accountingSituationRepo = accountingSituationRepo;
 	}
-
+	
 	public boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company) {
-		if (accountingSituationList != null) {
-			for (AccountingSituation accountingSituation : accountingSituationList) {
-				if (accountingSituation.getCompany().equals(company)) {
+
+		if(accountingSituationList != null)  { 
+			for(AccountingSituation accountingSituation : accountingSituationList) {
+	
+				if(accountingSituation.getCompany().equals(company))  { 
 					return true;
 				}
 			}
 		}
-
+	
 		return false;
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException {
+		Set<Company> companySet = partner.getCompanySet();
+
+		if (companySet != null) {
+			for (Company company : companySet) {
+				if (!checkAccountingSituationList(partner.getAccountingSituationList(), company)) {
+					createAccountingSituation(partner, company);
+				}
+			}
+		}
+
+		return partner.getAccountingSituationList();
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException {
+	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
+		AccountingSituation accountingSituation = new AccountingSituation();
+		accountingSituation.setCompany(company);
+		partner.addCompanySetItem(company);
 
-		Set<Company> companySet = partner.getCompanySet();
 		PaymentMode inPaymentMode = partner.getInPaymentMode();
 		PaymentMode outPaymentMode = partner.getOutPaymentMode();
+		BankDetails defaultBankDetails = company.getDefaultBankDetails();
 
-		if(companySet != null) {
-
-			List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
-
-			if(accountingSituationList == null) {
-				accountingSituationList = new ArrayList<>();
+		if (inPaymentMode != null) {
+			List<BankDetails> authorizedInBankDetails = Beans.get(PaymentModeService.class)
+					.getCompatibleBankDetailsList(inPaymentMode, company);
+			if (authorizedInBankDetails.contains(defaultBankDetails)) {
+				accountingSituation.setCompanyInBankDetails(defaultBankDetails);
 			}
-
-			for(Company company : companySet) {
-
-				if(!checkAccountingSituationList(accountingSituationList, company)) {
-
-					BankDetails defaultBankDetails = company.getDefaultBankDetails();
-					AccountingSituation accountingSituation = this.createAccountingSituation(company);
-					accountingSituation.setPartner(partner);
-					if(inPaymentMode != null) {
-						List<BankDetails> authorizedInBankDetails = Beans.get(PaymentModeService.class)
-								.getCompatibleBankDetailsList(inPaymentMode, company);
-						if(authorizedInBankDetails.contains(defaultBankDetails)) {
-							accountingSituation.setCompanyInBankDetails(defaultBankDetails);
-						}
-					}
-					if(outPaymentMode != null) {
-						List<BankDetails> authorizedOutBankDetails = Beans.get(PaymentModeService.class)
-								.getCompatibleBankDetailsList(outPaymentMode, company);
-						if(authorizedOutBankDetails.contains(defaultBankDetails)) {
-							accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
-						}
-					}
-					accountingSituationList.add(accountingSituation);
-					
-				}
-			}
-			return accountingSituationList;
-		}
-		return null;
-	}
-	
-	public AccountingSituation createAccountingSituation(Company company) throws AxelorException {
-//		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-		AccountingSituation accountingSituation = new AccountingSituation();
-
-		accountingSituation.setCompany(company);
-		accountingSituationRepo.save(accountingSituation);
-
-		return accountingSituation;
-	}
-
-	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
-		List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
-
-		if(accountingSituationList == null) {
-			accountingSituationList = new ArrayList<AccountingSituation>();
 		}
 
-		AccountingSituation accountingSituation = this.createAccountingSituation(company);
-		accountingSituation.setPartner(partner);
-		accountingSituation.setCompanyInBankDetails(company.getDefaultBankDetails());
-		accountingSituationList.add(accountingSituation);
-		
-		partner.addCompanySetItem(company);
+		if (outPaymentMode != null) {
+			List<BankDetails> authorizedOutBankDetails = Beans.get(PaymentModeService.class)
+					.getCompatibleBankDetailsList(outPaymentMode, company);
+			if (authorizedOutBankDetails.contains(defaultBankDetails)) {
+				accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
+			}
+		}
+
 		partner.addAccountingSituationListItem(accountingSituation);
-
-		return accountingSituation;
+		return accountingSituationRepo.save(accountingSituation);
 	}
 
 

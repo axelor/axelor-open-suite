@@ -26,7 +26,6 @@ import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
@@ -84,7 +83,6 @@ public class PaymentVoucherCreateService {
 		PaymentVoucher paymentVoucher = this.createPaymentVoucher(
 				invoice.getCompany(),
 				null,
-				null,
 				paymentMode,
 				date,
 				invoice.getPartner(),
@@ -124,7 +122,7 @@ public class PaymentVoucherCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, LocalDate date, Partner partner,
+	public PaymentVoucher createPaymentVoucher(Company company, User user, PaymentMode paymentMode, LocalDate date, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
 			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
 
@@ -143,7 +141,6 @@ public class PaymentVoucherCreateService {
 		PaymentVoucher paymentVoucher= new PaymentVoucher();
 		if (company != null && paymentMode != null && partner != null)  {
 			paymentVoucher.setCompany(company);
-			paymentVoucher.setCashRegister(cashRegister);
 			paymentVoucher.setUser(user);
 			paymentVoucher.setPaymentDate(date2);
 

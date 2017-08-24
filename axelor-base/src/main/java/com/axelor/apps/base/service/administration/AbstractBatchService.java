@@ -15,37 +15,60 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.batch;
+package com.axelor.apps.base.service.administration;
 
-import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class BaseBatchService extends AbstractBatchService {
+public abstract class AbstractBatchService {
 
-	@Override
-	protected Class<? extends Model> getModelClass() {
-		return BaseBatch.class;
-	}
+	/**
+	 * Get batch model class.
+	 * 
+	 * @return
+	 */
+	abstract protected Class<? extends Model> getModelClass();
 
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
+	/**
+	 * Run a batch with the given batch model.
+	 * 
+	 * @param model
+	 * @return
+	 * @throws AxelorException
+	 */
+	abstract public Batch run(Model model) throws AxelorException;
 
-		BaseBatch baseBatch = (BaseBatch) batchModel;
+	/**
+	 * Run a batch from its code.
+	 * 
+	 * @param code
+	 * @return
+	 * @throws AxelorException
+	 */
+	public Batch run(String code) throws AxelorException {
+		Model model = findModelByCode(code);
 
-		switch (baseBatch.getActionSelect()) {
-
-		default:
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), baseBatch.getActionSelect(), baseBatch.getCode()),
+		if (model == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), code),
 					IException.INCONSISTENCY);
 		}
 
+		return run(model);
+	}
+
+	/**
+	 * Find batch model by its code.
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public Model findModelByCode(String code) {
+		return Query.of(getModelClass()).filter("self.code = :code").bind("code", code).fetchOne();
 	}
 
 }

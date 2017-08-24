@@ -7,6 +7,8 @@
   
     <integer name="incidentTypeSelect" title="Incident type" selection="payer.quality.config.line.incident.type.select"/>
     <many-to-one name="debtRecoveryLevel" ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Debt recovery level"/>
+    <decimal name="burden" title="Burden (weight)"/>
+    <string name="description" title="Description"/>
     <string name="rejectType" title="Reject type"/>
     <string name="name" title="Label">
     	<![CDATA[
@@ -18,8 +20,6 @@
 		}
 	    ]]>
     </string>
-    <decimal name="burden" title="Burden (weight)"/>
-    <string name="description" title="Description"/>
   
   </entity>
   

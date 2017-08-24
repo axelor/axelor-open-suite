@@ -22,15 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.PackLine;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -43,6 +48,9 @@ public class SaleOrderLineController {
 	
 	@Inject
 	private ProductRepository productRepo;
+
+    @Inject
+    private AccountManagementService accountManagementService;
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -135,6 +143,10 @@ public class SaleOrderLineController {
 		try  {
 			TaxLine taxLine = saleOrderLineService.getTaxLine(saleOrder, saleOrderLine);
 			response.setValue("taxLine", taxLine);
+
+			Tax tax = accountManagementService.getProductTax(accountManagementService.getAccountManagement(product, saleOrder.getCompany()), false);
+            TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
+            response.setValue("taxEquiv", taxEquiv);
 			
 			BigDecimal price = saleOrderLineService.getUnitPrice(saleOrder, saleOrderLine, taxLine);
 
@@ -165,6 +177,7 @@ public class SaleOrderLineController {
 	public void resetProductInformation(ActionResponse response)  {
 
 		response.setValue("taxLine", null);
+		response.setValue("taxEquiv", null);
 		response.setValue("productName", null);
 		response.setValue("saleSupplySelect", null);
 		response.setValue("unit", null);

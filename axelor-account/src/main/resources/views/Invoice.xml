@@ -223,6 +223,7 @@
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
 				<field name="note" colSpan="12"/>
+                <field name="specificNotes" colSpan="12" readonly="true"/>
 			</panel>
 			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12" if="__config__.app.isApp('business-project')" >
 				<field name="displayTimesheetOnPrinting" />

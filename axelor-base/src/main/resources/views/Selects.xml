@@ -721,4 +721,15 @@
         <option value="3">Reimbursement blocking</option>
     </selection>
 
+	<selection name="meta.schedule.job.select">
+		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
+		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
+		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
+	</selection>
+
+	<selection name="meta.schedule.batch.service.select" id="base.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
+		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
+	</selection>
+
 </object-views>

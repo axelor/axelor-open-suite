@@ -5,9 +5,9 @@
 	
 	<form name="app-supplychain-config-form" title="App Supplychain" model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
 		<panel>
-			<field name="customerStockMoveManagement" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
-			<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement"  widget="boolean-switch" colSpan="4"/>
-			<field name="terminateSaleOrderOnDelivery"  showIf="customerStockMoveManagement" widget="boolean-switch" colSpan="4"/>
+			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
+			<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
+			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel>
 			<field name="supplierStockMoveManagement" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>

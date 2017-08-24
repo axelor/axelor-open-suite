@@ -24,12 +24,15 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -147,7 +150,11 @@ public class InvoiceLineController {
 			response.setValue("taxLine", taxLine);
 			response.setValue("taxRate", taxLine.getValue());
 			response.setValue("taxCode", taxLine.getTax().getCode());
-			
+
+			Tax tax = accountManagementService.getProductTax(accountManagementService.getAccountManagement(product, invoice.getCompany()), isPurchase);
+            TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+            response.setValue("taxEquiv", taxEquiv);
+
 			BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
 			response.setValue("productName", invoiceLine.getProduct().getName());
@@ -179,6 +186,7 @@ public class InvoiceLineController {
 	public void resetProductInformation(ActionResponse response)  {
 
 		response.setValue("taxLine", null);
+		response.setValue("taxEquiv", null);
 		response.setValue("taxCode", null);
 		response.setValue("taxRate", null);
 		response.setValue("productName", null);

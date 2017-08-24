@@ -230,7 +230,9 @@
 		</panel>
 		
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
-		
+        <panel name="printing" title="Printing">
+            <field name="specificNotes" colSpan="12" readonly="true"/>
+        </panel>
 	  </panel-tabs>
 	  
 	  <panel>
@@ -238,9 +240,9 @@
 	  </panel>
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    <button name="finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
+	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateCustomerStockMove" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCustomerStockMoveManagement() &amp;&amp; !__config__.app.getApp('supplychain').getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
+	    <button name="generateCustomerStockMove" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCustStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
 	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
@@ -269,23 +271,25 @@
 			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
 		</field>
 	  </panel>
-	  
-	  <panel sidebar="true" readonly="true"  colSpan="4">  
-	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-	          <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}  {{record.currency.symbol}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
-	        </field>
-      </panel>
+
+        <panel sidebar="true" readonly="true"  colSpan="4">
+            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
+                        <dt x-translate>Total W.T.</dt>
+                        <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt x-translate>Total tax</dt>
+                        <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt x-translate>Amount invoiced W.T.</dt>
+                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+        </panel>
       
       <panel sidebar="true" itemSpan="6" title="Margin">
       		<field name="totalCostPrice"/>
@@ -399,23 +403,25 @@
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
 	  </panel>
-	  
-	  <panel sidebar="true" readonly="true"  colSpan="4">  
-	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-	          <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
-	        </field>
-      </panel>
+
+        <panel sidebar="true" readonly="true"  colSpan="4">
+            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
+                        <dt x-translate>Total W.T.</dt>
+                        <dd>{{record.exTaxTotal}}</dd>
+                        <dt x-translate>Total tax</dt>
+                        <dd>{{record.taxTotal}}</dd>
+                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
+                        <dt x-translate>Amount invoiced W.T.</dt>
+                        <dd>{{record.amountInvoiced}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+        </panel>
 	  
 	</form>
 	
@@ -462,23 +468,25 @@
 	    	</field>
 	        <field name="salemanUser" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
-	      </panel>      
-	      <panel readonly="true"  css="order-subtotal" colSpan="4">     
-	        <field name="inTaxTotal" showTitle="false" colSpan="12">
-	          <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Total V.A.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.taxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}} {{record.currency.symbol}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
-	        </field>
 	      </panel>
+            <panel readonly="true"  css="order-subtotal" colSpan="4">
+                <field name="inTaxTotal" showTitle="false" colSpan="12">
+                    <viewer>
+                        <![CDATA[
+                        <dl class="dl-horizontal">
+                            <dt x-translate>Total W.T.</dt>
+                            <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
+                            <dt x-translate>Total V.A.T.</dt>
+                            <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
+                            <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+                            <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
+                            <dt x-translate>Amount invoiced W.T.</dt>
+                            <dd>{{record.amountInvoiced}} {{record.currency.symbol}}</dd>
+                        </dl>
+                        ]]>
+                    </viewer>
+                </field>
+            </panel>
 	    </panel>    
 	    <panel-related field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    <panel-related field="saleOrderLineTaxList" showTitle="false" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>

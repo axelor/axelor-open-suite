@@ -91,6 +91,9 @@
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
+	<!-- Impression -->
+    <string name="specificNotes" title="Specific notes" large="true"/>
+
 	<!-- -Json fields -->
 	<string name="soAttrs" title="Fields" json="true" />
 	

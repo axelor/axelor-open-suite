@@ -154,14 +154,16 @@
 		<hilite color="success" if="probability &gt;= 75"/>
 		<hilite color="info" if="probability &gt;= 50"/>
 		<hilite color="warning" if="probability &lt; 50"/>
-		<template>
-		&lt;h4&gt;{{name}}&lt;/h4&gt;
-		&lt;img ng-if="user" ng-src="{{$image('user', 'image')}}"&gt;
-		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
-		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{expectedCloseDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
-		&lt;/div&gt;
-		</template>
+        <template>
+            <![CDATA[
+            <h4>{{name}}</h4>
+            <img ng-if="user" ng-src="{{$image('user', 'image')}}">
+            <div class="card-body">{{description}}</div>
+            <div class="card-footer">
+                <i class='fa fa-clock-o'></i> <span>{{expectedCloseDate|date:'dd/MM/yyyy'}}</span>
+            </div>
+            ]]>
+        </template>
 	</kanban>
     
     <action-group name="action-opportunity-group-new">
