@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -46,6 +47,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -60,8 +62,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -489,27 +493,67 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	@Override
-	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) {
-		String domain = "self.operationSubTypeSelect = "
-				+ InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE;
-		if (invoice.getCurrency() == null
-				&& invoice.getPartner() == null) {
-			return domain;
-		} else if (invoice.getCurrency() == null) {
-			domain += "AND self.partner.id = " + invoice.getPartner().getId();
-		} else if (invoice.getPartner() == null) {
-			domain += "AND self.currency.id = " + invoice.getCurrency().getId();
-		} else {
-			domain += "AND self.currency.id = " + invoice.getCurrency().getId()
-					+ " AND self.partner.id = " + invoice.getPartner().getId();
-		}
+	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
+		Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
+		String domain = "self.id IN (" +
+				StringTool.getIdFromCollection(invoices)
+				+ ")";
+
 		return domain;
 	}
 
 	@Override
-	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) {
-	    String filter = createAdvancePaymentInvoiceSetDomain(invoice);
-	    return new HashSet<>(invoiceRepo.all().filter(filter).fetch());
+	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
+	    Set<Invoice> advancePaymentInvoices;
+
+	    Company company = invoice.getCompany();
+		Currency currency = invoice.getCurrency();
+		Partner partner = invoice.getPartner();
+		if (company == null
+				|| currency == null
+				|| partner == null) {
+			return new HashSet<>();
+		}
+		String filter = writeGeneralFilterForAdvancePayment();
+		filter += " AND self.partner = :_partner AND self.currency = :_currency";
+
+		advancePaymentInvoices = new HashSet<>(
+				Beans.get(InvoiceRepository.class).all().filter(filter)
+						.bind("_status", InvoiceRepository.STATUS_VALIDATED)
+						.bind("_operationSubType",
+								InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+						.bind("_partner", partner)
+						.bind("_currency", currency)
+						.fetch()
+		);
+
+		if (!Beans.get(AccountConfigService.class).getAccountConfig(company)
+				.getGenerateMoveForInvoicePayment()) {
+		    filterAdvancePaymentInvoiceAmount(invoice, advancePaymentInvoices);
+		}
+		return advancePaymentInvoices;
+	}
+
+	@Override
+	public void filterAdvancePaymentInvoiceAmount(Invoice invoice,
+												  Set<Invoice> advancePaymentInvoices) {
+		BigDecimal invoiceTotal = invoice.getInTaxTotal();
+		Iterator<Invoice> advancePaymentIt = advancePaymentInvoices.iterator();
+
+		while (advancePaymentIt.hasNext()) {
+			Invoice advancePaymentInvoice = advancePaymentIt.next();
+			List<InvoicePayment> invoicePayments = advancePaymentInvoice
+					.getInvoicePaymentList();
+			if (invoicePayments == null) {
+				continue;
+			}
+			BigDecimal totalAmount = invoicePayments.stream()
+					.map(InvoicePayment::getAmount)
+					.reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+			if (totalAmount.compareTo(invoiceTotal) > 0) {
+				advancePaymentIt.remove();
+			}
+		}
 	}
 
 	@Override
@@ -530,6 +574,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			advancePaymentMoveLines.addAll(creditMoveLines);
 		}
 		return advancePaymentMoveLines;
+	}
+
+	protected String writeGeneralFilterForAdvancePayment() {
+		return "self.statusSelect = :_status"
+				+ " AND self.operationSubTypeSelect = :_operationSubType";
 	}
 }
 

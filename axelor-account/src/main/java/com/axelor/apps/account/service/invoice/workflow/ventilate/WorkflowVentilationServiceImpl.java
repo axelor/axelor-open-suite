@@ -97,7 +97,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
         }
 
         //if the sum of amounts in advance payment is greater than the amount
-        //of the invoice, the we cancel the ventilation.
+        //of the invoice, then we cancel the ventilation.
         List<InvoicePayment> invoicePayments = invoice.getInvoicePaymentList();
         if (invoicePayments == null || invoicePayments.isEmpty()) {
             return;

@@ -185,15 +185,17 @@ public interface InvoiceService {
 	 * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
 	 * @param invoice
 	 * @return
+	 * @throws AxelorException
 	 */
-	String createAdvancePaymentInvoiceSetDomain(Invoice invoice);
+	String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException;
 
 	/**
 	 * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
 	 * @param invoice
 	 * @return
+	 * @throws AxelorException
 	 */
-	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice);
+	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
 
 	/**
      * Return the move lines from the advance payments
@@ -202,4 +204,14 @@ public interface InvoiceService {
 	 * @return
 	 */
 	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice);
+
+	/**
+	 * Filter a set of advance payment invoice. If the amount of
+	 * the payment is greater than the total of the invoice, we filter it.
+	 * @param invoice
+	 * @param advancePaymentInvoices
+	 * @return
+	 */
+	void filterAdvancePaymentInvoiceAmount(Invoice invoice,
+										   Set<Invoice> advancePaymentInvoices);
 }

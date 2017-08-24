@@ -20,13 +20,22 @@ package com.axelor.apps.supplychain.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
@@ -39,14 +48,45 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
 
 	@Override
-	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) {
+	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
 		SaleOrder saleOrder = invoice.getSaleOrder();
-	    if (saleOrder == null) {
-	    	return super.createAdvancePaymentInvoiceSetDomain(invoice);
+		Company company = invoice.getCompany();
+		Currency currency = invoice.getCurrency();
+	    if (company == null || saleOrder == null) {
+	    	return super.getDefaultAdvancePaymentInvoice(invoice);
+		}
+		boolean generateMoveForInvoicePayment = Beans
+				.get(AccountConfigService.class)
+				.getAccountConfig(company)
+				.getGenerateMoveForInvoicePayment();
+
+		String filter = writeGeneralFilterForAdvancePayment();
+		filter += " AND self.saleOrder = :_saleOrder";
+
+		if (!generateMoveForInvoicePayment) {
+			filter += " AND self.currency = :_currency";
+		}
+		Query<Invoice> query = Beans.get(InvoiceRepository.class).all()
+				.filter(filter)
+				.bind("_status", InvoiceRepository.STATUS_VALIDATED)
+				.bind("_operationSubType",
+						InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+                .bind("_saleOrder", saleOrder);
+
+		if (!generateMoveForInvoicePayment) {
+		    if (currency == null) {
+		    	return new HashSet<>();
+			}
+			query.bind("_currency", currency);
 		}
 
-		return "self.operationSubTypeSelect = "
-				+ InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-				+" AND self.saleOrder.id = " + saleOrder.getId();
+		Set<Invoice> advancePaymentInvoices = new HashSet<>(
+		        query.fetch()
+		);
+		if (!Beans.get(AccountConfigService.class).getAccountConfig(company)
+				.getGenerateMoveForInvoicePayment()) {
+			filterAdvancePaymentInvoiceAmount(invoice, advancePaymentInvoices);
+		}
+		return advancePaymentInvoices;
     }
 }

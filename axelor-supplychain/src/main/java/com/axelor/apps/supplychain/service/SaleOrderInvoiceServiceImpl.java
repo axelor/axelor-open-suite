@@ -121,6 +121,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				return null;
 		}
 		invoice.setSaleOrder(saleOrder);
+
+		//fill default advance payment invoice
+		if (invoice.getOperationSubTypeSelect()
+				!= InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			invoice.setAdvancePaymentInvoiceSet(
+					invoiceService.getDefaultAdvancePaymentInvoice(invoice)
+			);
+		}
 		return invoiceRepo.save(invoice);
 	}
 
@@ -430,8 +438,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
-//		advancePaymentService.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);  //TODO
-		log.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
 
 		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
