@@ -18,8 +18,9 @@
 				   selection="supplychain.sale.order.invoicing.wizard.select"/>
 
             <field name="amountToInvoice" title="Amount to invoice" type="decimal"
-				   hideIf="operationSelect == 3"/>
-            <field name="isPercent" title="Is amount in % ?" type="boolean"/>
+				   hideIf="operationSelect == 1 || operationSelect == 3"/>
+            <field name="isPercent" title="Is amount in % ?" type="boolean"
+				   hideIf="operationSelect == 1"/>
 		</panel>
 		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
@@ -55,6 +56,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
+		<attribute for="operationSelect" name="value" expr="eval: 1"
+				   if="amountInvoiced == 0"/>
 		<attribute for="operationSelect" name="value" expr="eval: 2"
 				   if="amountInvoiced > 0"/>
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
