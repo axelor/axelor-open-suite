@@ -208,10 +208,12 @@ public interface InvoiceService {
 	/**
 	 * Filter a set of advance payment invoice. If the amount of
 	 * the payment is greater than the total of the invoice, we filter it.
+     * If there is no remaining amount in the move lines of the advance
+	 * payment invoice, we filter it too.
 	 * @param invoice
 	 * @param advancePaymentInvoices
-	 * @return
+	 * @throws AxelorException
 	 */
-	void filterAdvancePaymentInvoiceAmount(Invoice invoice,
-										   Set<Invoice> advancePaymentInvoices);
+	void filterAdvancePaymentInvoice(Invoice invoice,
+									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
 }

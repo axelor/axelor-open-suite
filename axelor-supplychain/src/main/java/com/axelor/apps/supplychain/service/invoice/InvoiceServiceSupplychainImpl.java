@@ -83,10 +83,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 		Set<Invoice> advancePaymentInvoices = new HashSet<>(
 		        query.fetch()
 		);
-		if (!Beans.get(AccountConfigService.class).getAccountConfig(company)
-				.getGenerateMoveForInvoicePayment()) {
-			filterAdvancePaymentInvoiceAmount(invoice, advancePaymentInvoices);
-		}
+		filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
 		return advancePaymentInvoices;
     }
 }

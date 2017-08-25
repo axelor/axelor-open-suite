@@ -527,33 +527,66 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 						.fetch()
 		);
 
-		if (!Beans.get(AccountConfigService.class).getAccountConfig(company)
-				.getGenerateMoveForInvoicePayment()) {
-		    filterAdvancePaymentInvoiceAmount(invoice, advancePaymentInvoices);
-		}
+		filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
 		return advancePaymentInvoices;
 	}
 
 	@Override
-	public void filterAdvancePaymentInvoiceAmount(Invoice invoice,
-												  Set<Invoice> advancePaymentInvoices) {
-		BigDecimal invoiceTotal = invoice.getInTaxTotal();
-		Iterator<Invoice> advancePaymentIt = advancePaymentInvoices.iterator();
-
-		while (advancePaymentIt.hasNext()) {
-			Invoice advancePaymentInvoice = advancePaymentIt.next();
-			List<InvoicePayment> invoicePayments = advancePaymentInvoice
-					.getInvoicePaymentList();
-			if (invoicePayments == null) {
-				continue;
-			}
-			BigDecimal totalAmount = invoicePayments.stream()
-					.map(InvoicePayment::getAmount)
-					.reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-			if (totalAmount.compareTo(invoiceTotal) > 0) {
-				advancePaymentIt.remove();
+	public void filterAdvancePaymentInvoice(Invoice invoice,
+											Set<Invoice> advancePaymentInvoices) throws AxelorException {
+		Iterator<Invoice> advPaymentInvoiceIt = advancePaymentInvoices.iterator();
+		while (advPaymentInvoiceIt.hasNext()) {
+			Invoice candidateAdvancePayment = advPaymentInvoiceIt.next();
+			if (removeBecauseOfTotalAmount(invoice, candidateAdvancePayment)
+					|| removeBecauseOfAmountRemaining(invoice, candidateAdvancePayment)) {
+				advPaymentInvoiceIt.remove();
 			}
 		}
+	}
+
+	protected boolean removeBecauseOfTotalAmount(Invoice invoice,
+												 Invoice candidateAdvancePayment) throws AxelorException {
+		if (Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany())
+				.getGenerateMoveForInvoicePayment()) {
+			return false;
+		}
+		BigDecimal invoiceTotal = invoice.getInTaxTotal();
+		List<InvoicePayment> invoicePayments = candidateAdvancePayment
+				.getInvoicePaymentList();
+		if (invoicePayments == null) {
+		    return false;
+		}
+		BigDecimal totalAmount = invoicePayments.stream()
+				.map(InvoicePayment::getAmount)
+				.reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+		return totalAmount.compareTo(invoiceTotal) > 0;
+	}
+
+	protected boolean removeBecauseOfAmountRemaining(Invoice invoice,
+													 Invoice candidateAdvancePayment) {
+	    List<InvoicePayment> invoicePayments = candidateAdvancePayment.getInvoicePaymentList();
+	    //no payment : remove the candidate invoice
+	    if (invoicePayments == null || invoicePayments.isEmpty()) {
+	    	return true;
+		}
+		for (InvoicePayment invoicePayment : invoicePayments) {
+	    	Move move = invoicePayment.getMove();
+	    	if (move == null) {
+	    		continue;
+			}
+			List<MoveLine> moveLineList = move.getMoveLineList();
+	    	if (moveLineList == null || moveLineList.isEmpty()) {
+	    		continue;
+			}
+			for (MoveLine moveLine : moveLineList) {
+	    		BigDecimal amountRemaining = moveLine.getAmountRemaining();
+	    		if (amountRemaining != null
+						&& amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
+	    			return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override
