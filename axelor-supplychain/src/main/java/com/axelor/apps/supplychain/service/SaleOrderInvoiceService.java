@@ -220,6 +220,18 @@ public interface SaleOrderInvoiceService {
 													BigDecimal amount,
 													boolean isPercent) throws AxelorException;
 
+	/**
+	 * Try to set the updated sale order amount invoiced.
+	 * @param saleOrder
+	 * @param currentInvoiceId
+	 * @param excludeCurrentInvoice
+	 * @throws AxelorException if the invoiced amount would be greater than
+	 *                         the exTaxTotal
+	 */
+	void updateAndCheckInvoicedAmount(SaleOrder saleOrder,
+									  Long currentInvoiceId,
+									  boolean excludeCurrentInvoice) throws AxelorException;
+
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder);
 
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);

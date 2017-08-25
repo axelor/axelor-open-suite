@@ -47,6 +47,7 @@ public interface IExceptionMessage {
 	static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/ "Please configure the sale order invoicing product" /*)*/;
 	static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/ "Please configure the advance payment product" /*)*/;
 	static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/ "You must configure an advance payment account for the company %s" /*)*/;
+	static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/ "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
 
 
 	/**

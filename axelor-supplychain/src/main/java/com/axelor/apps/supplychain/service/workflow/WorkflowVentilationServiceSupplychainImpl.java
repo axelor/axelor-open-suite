@@ -102,7 +102,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
             accountingSituationSupplychainService.updateUsedCredit(invoiceSaleOrder.getClientPartner());
             log.debug("Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
-            invoiceSaleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), false));
+            saleOrderInvoiceService.updateAndCheckInvoicedAmount(invoiceSaleOrder, invoice.getId(), false);
 
             //determine if the invoice is a balance invoice.
             if (invoiceSaleOrder.getAmountInvoiced()
@@ -127,7 +127,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
             for (SaleOrder saleOrder : saleOrderList) {
                 log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
-                saleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), false));
+                saleOrderInvoiceService.updateAndCheckInvoicedAmount(saleOrder, invoice.getId(), false);
                 saleOrderRepository.save(saleOrder);
                 accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
             }

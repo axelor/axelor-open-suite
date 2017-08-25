@@ -295,6 +295,7 @@
 "The invoice has already been generated.",,,
 "The location must be filled.",,,
 "The quantity to invoice is greater than the quantity in the sale order",,,
+"The sale order %s invoiced amount cannot be greater than its total amount.",,,
 "The supplier is required and must be the same for all purchase orders",,,
 "There are no lines to invoice",,,
 "Timetable",,,

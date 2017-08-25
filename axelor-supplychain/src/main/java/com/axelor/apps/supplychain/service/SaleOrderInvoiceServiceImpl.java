@@ -572,6 +572,23 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return invoiceLineGenerator.creates();
 	}
 
+	@Override
+	public void updateAndCheckInvoicedAmount(SaleOrder saleOrder,
+											 Long currentInvoiceId,
+											 boolean excludeCurrentInvoice) throws AxelorException {
+	    BigDecimal amountInvoiced = this.getInvoicedAmount(saleOrder,
+				currentInvoiceId, excludeCurrentInvoice);
+	    if (amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
+	    	throw new AxelorException(
+	    			String.format(
+	    					I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
+							saleOrder.getSaleOrderSeq()
+					),
+					IException.FUNCTIONNAL
+			);
+		}
+		saleOrder.setAmountInvoiced(amountInvoiced);
+	}
 
 	@Override
 	public BigDecimal getInvoicedAmount(SaleOrder saleOrder)  {
