@@ -22,13 +22,17 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
@@ -133,30 +137,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 	@Override
-	public BigDecimal computeAmountToInvoice(SaleOrder saleOrder,
-											 BigDecimal amount,
-											 boolean isPercent) throws AxelorException {
-		BigDecimal total = Beans.get(SaleOrderService.class)
-				.getTotalSaleOrderPrice(saleOrder);
-	    if (isPercent) {
-			amount = total.multiply(amount)
-				.divide(
-						new BigDecimal("100"),
-						4,
-						RoundingMode.HALF_EVEN
-				);
-		}
-		if (amount.compareTo(total) > 0) {
-	    	throw new AxelorException(
-	    			I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX),
-					IException.INCONSISTENCY
-			);
-		}
-
-		return amount;
-	}
-
-	@Override
 	public BigDecimal computeAmountToInvoicePercent(SaleOrder saleOrder,
 													BigDecimal amount,
 													boolean isPercent) throws AxelorException {
@@ -193,13 +173,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 					IException.CONFIGURATION_ERROR
 			);
 		}
-		List<SaleOrderLine> createdSOLineList = createSOlinesFromTax(
-				taxLineList, invoicingProduct, percentToInvoice);
-
-		Invoice invoice = generateInvoice(saleOrder, createdSOLineList);
-		BigDecimal absoluteAmount = computeAmountToInvoice(saleOrder,
-				amountToInvoice, isPercent);
-		return determineSubType(saleOrder, invoice, absoluteAmount);
+		Invoice invoice = createInvoiceAndLines(
+				saleOrder, taxLineList, invoicingProduct,
+				percentToInvoice,
+				InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT, null);
+		return invoiceRepo.save(invoice);
 	}
 
 	@Override
@@ -215,21 +193,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		Product invoicingProduct =
 		accountConfigService.getAccountConfig(saleOrder.getCompany())
 				.getAdvancePaymentProduct();
+		Account advancePaymentAccount = accountConfigService
+				.getAccountConfig(saleOrder.getCompany())
+				.getAdvancePaymentAccount();
 		if (invoicingProduct == null) {
 			throw new AxelorException(
 					I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT),
 					IException.CONFIGURATION_ERROR
 			);
 		}
-
-		List<SaleOrderLine> createdSOLineList = createSOlinesFromTax(
-				taxLineList, invoicingProduct, percentToInvoice);
-
-		Invoice invoice = generateInvoice(saleOrder, createdSOLineList);
-		invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
-		Account advancePaymentAccount = accountConfigService
-					.getAccountConfig(saleOrder.getCompany())
-					.getAdvancePaymentAccount();
 		if (advancePaymentAccount == null) {
 			throw new AxelorException(
 					String.format(I18n.get(
@@ -238,17 +210,50 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 					), IException.CONFIGURATION_ERROR
 			);
 		}
-		invoice.setPartnerAccount(advancePaymentAccount);
+
+		Invoice invoice = createInvoiceAndLines(
+				saleOrder, taxLineList, invoicingProduct,
+				percentToInvoice,
+				InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE, advancePaymentAccount);
 
 		return invoiceRepo.save(invoice);
 	}
 
-	@Override
-	public List<SaleOrderLine> createSOlinesFromTax(List<SaleOrderLineTax> taxLineList,
-										Product invoicingProduct,
-										BigDecimal percentToInvoice) {
+	public Invoice createInvoiceAndLines(SaleOrder saleOrder,
+										 List<SaleOrderLineTax> taxLineList,
+										 Product invoicingProduct,
+										 BigDecimal percentToInvoice,
+										 int operationSubTypeSelect,
+										 Account partnerAccount) throws AxelorException {
+		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
-		List<SaleOrderLine> createdSOLineList = new ArrayList<>();
+		Invoice invoice = invoiceGenerator.generate();
+
+		invoiceGenerator.populate(invoice,
+				this.createInvoiceLinesFromTax(
+						invoice, taxLineList, invoicingProduct, percentToInvoice
+                )
+		);
+		this.fillInLines(invoice);
+
+		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+
+		invoice.setOperationSubTypeSelect(operationSubTypeSelect);
+
+		if (partnerAccount != null) {
+			invoice.setPartnerAccount(partnerAccount);
+		}
+
+		return invoice;
+	}
+
+	@Override
+	public List<InvoiceLine> createInvoiceLinesFromTax(Invoice invoice,
+													   List<SaleOrderLineTax> taxLineList,
+													   Product invoicingProduct,
+													   BigDecimal percentToInvoice) throws AxelorException {
+
+		List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
 		if (taxLineList != null) {
 			for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
 				BigDecimal lineAmountToInvoice = percentToInvoice
@@ -256,21 +261,43 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 						.divide(new BigDecimal("100"),
 								4,
 								BigDecimal.ROUND_HALF_EVEN);
+				TaxLine taxLine = saleOrderLineTax.getTaxLine();
 
-				SaleOrderLine createdSOLine = new SaleOrderLine();
-				createdSOLine.setPrice(lineAmountToInvoice);
-				createdSOLine.setPriceDiscounted(lineAmountToInvoice);
-				createdSOLine.setQty(BigDecimal.ONE);
+				InvoiceLineGenerator invoiceLineGenerator =
+						new InvoiceLineGenerator(
+								invoice, invoicingProduct,
+								invoicingProduct.getName(),
+								lineAmountToInvoice, lineAmountToInvoice,
+								invoicingProduct.getDescription(),
+								BigDecimal.ONE,
+								invoicingProduct.getUnit(),
+								taxLine, InvoiceLineGenerator.DEFAULT_SEQUENCE,
+								BigDecimal.ZERO,
+								IPriceListLine.AMOUNT_TYPE_NONE,
+								lineAmountToInvoice, null, false)  {
+							@Override
+							public List<InvoiceLine> creates() throws AxelorException {
 
-				createdSOLine.setProduct(invoicingProduct);
-				createdSOLine.setProductName(invoicingProduct.getName());
+								InvoiceLine invoiceLine = this.createInvoiceLine();
 
-				createdSOLine.setTaxLine(saleOrderLineTax.getTaxLine());
+								List<InvoiceLine> invoiceLines = new ArrayList<>();
+								invoiceLines.add(invoiceLine);
 
-				createdSOLineList.add(createdSOLine);
+								return invoiceLines;
+							}
+						};
+
+				List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
+				//link to the created invoice line the first line of the sale order.
+				for (InvoiceLine invoiceLine : invoiceOneLineList) {
+				    SaleOrderLine saleOrderLine = saleOrderLineTax.getSaleOrder()
+							.getSaleOrderLineList().get(0);
+				    invoiceLine.setSaleOrderLine(saleOrderLine);
+				}
+				createdInvoiceLineList.addAll(invoiceOneLineList);
 			}
 		}
-		return createdSOLineList;
+		return createdInvoiceLineList;
 	}
 
 	@Override
@@ -308,30 +335,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				}
 			}
 		}
-		Invoice invoice = this.generateInvoice(
+		return this.generateInvoice(
 				saleOrder, saleOrder.getSaleOrderLineList(), qtyToInvoiceMap);
-		return determineSubType(
-				saleOrder, invoice,
-				qtyToInvoiceMap
-						.values()
-						.stream()
-						.reduce(BigDecimal.ZERO, (a,b) -> a.add(b))
-		);
-	}
-
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice determineSubType(SaleOrder saleOrder, Invoice invoice,
-							 BigDecimal amountToInvoice) {
-	    if (saleOrder.getAmountInvoiced().add(amountToInvoice)
-				.equals(saleOrder.getExTaxTotal())) {
-	    	invoice.setOperationSubTypeSelect(
-	    			InvoiceRepository.OPERATION_SUB_TYPE_BALANCE);
-		} else {
-			invoice.setOperationSubTypeSelect(
-					InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT);
-		}
-		return invoiceRepo.save(invoice);
 	}
 
 	@Override

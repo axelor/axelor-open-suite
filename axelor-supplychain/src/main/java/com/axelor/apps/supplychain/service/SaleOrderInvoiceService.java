@@ -138,16 +138,6 @@ public interface SaleOrderInvoiceService {
 	Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
 
 	/**
-	 * set the subtype of the invoice, default or balance invoice
-	 * @param saleOrder
-	 * @param invoice
-	 * @param amountToInvoice
-	 * @return
-	 */
-	Invoice determineSubType(SaleOrder saleOrder, Invoice invoice,
-							 BigDecimal amountToInvoice);
-
-	/**
 	 * Allows to create an advance payment from a sale order.
 	 * Creates a one line invoice with the advance payment product.
 	 * @param saleOrder
@@ -161,14 +151,16 @@ public interface SaleOrderInvoiceService {
 	/**
 	 * Create sale order lines from tax line a percent to invoice, and a
 	 * product. Called by {@link #generatePartialInvoice} and {@link #generateAdvancePayment}
-	 * @param taxLineList
-	 * @param invoicingProduct
-	 * @param percentToInvoice
-	 * @return
+	 *
+     * @param invoice
+     * @param taxLineList
+     * @param invoicingProduct
+     * @param percentToInvoice
+     * @return
 	 */
-	List<SaleOrderLine> createSOlinesFromTax(List<SaleOrderLineTax> taxLineList,
-													Product invoicingProduct,
-													BigDecimal percentToInvoice);
+	List<InvoiceLine> createInvoiceLinesFromTax(Invoice invoice, List<SaleOrderLineTax> taxLineList,
+                                                Product invoicingProduct,
+                                                BigDecimal percentToInvoice) throws AxelorException;
 
 	/**
 	 * Allows to create an invoice from lines with given quantity in sale order.
@@ -213,23 +205,8 @@ public interface SaleOrderInvoiceService {
 	 */
 	List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException;
 
-	/**
-	 * Use the different parameters to have the absolute price
-	 * in the created invoice
-	 * @param saleOrder  the sale order used to get the total price
-	 * @param amount  the amount to invoice
-	 * @param isPercent  true if the amount to invoice is in %
-	 * @return The price which will be used in the created invoice
-     * @throws AxelorException  if the amount to invoice is larger than the
-	 * total amount
-	 */
-	BigDecimal computeAmountToInvoice(SaleOrder saleOrder,
-											 BigDecimal amount,
-											 boolean isPercent) throws AxelorException;
-
 
 	/**
-	 * Reverse function of {@link #computeAmountToInvoice}.
 	 * Use the different parameters to have the price in %
 	 * of the created invoice.
 	 * @param saleOrder  the sale order used to get the total price

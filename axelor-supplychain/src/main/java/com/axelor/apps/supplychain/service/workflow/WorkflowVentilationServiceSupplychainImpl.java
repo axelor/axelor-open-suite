@@ -104,6 +104,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
             log.debug("Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
             invoiceSaleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), false));
 
+            //determine if the invoice is a balance invoice.
+            if (invoiceSaleOrder.getAmountInvoiced()
+                    .compareTo(invoiceSaleOrder.getExTaxTotal()) == 0) {
+                invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_BALANCE);
+            }
 
         } else {
 
