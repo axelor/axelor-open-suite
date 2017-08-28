@@ -464,6 +464,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
 	public String computeAddressStr(Address address) {
 		StringBuilder addressString = new StringBuilder();
+		if (address == null) {
+			return "";
+		}
 
 		if (address.getAddressL2() != null) { addressString.append(address.getAddressL2()).append("\n"); }
 		if (address.getAddressL3() != null) { addressString.append(address.getAddressL3()).append("\n"); }
