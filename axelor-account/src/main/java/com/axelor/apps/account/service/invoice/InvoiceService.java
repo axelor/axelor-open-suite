@@ -179,7 +179,6 @@ public interface InvoiceService {
 	
 	public Invoice getInvoice(MoveLine moveLine);
 
-	public String computeAddressStr(Address address);
 
 	/**
 	 * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}

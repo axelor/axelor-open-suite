@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import javax.annotation.Nullable;
@@ -507,7 +508,8 @@ public class InvoiceController {
 
 	public void computeAddressStr(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		response.setValue("addressStr", invoiceService.computeAddressStr(invoice.getAddress()));
+		response.setValue("addressStr", Beans.get(AddressService.class)
+				.computeAddressStr(invoice.getAddress()));
 	}
 	/**
 	 * Called on load and in partner, company or payment mode change.

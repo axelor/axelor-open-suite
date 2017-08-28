@@ -115,6 +115,13 @@ public interface SaleOrderService {
 	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException;
 
 	/**
+	 * Fill {@link SaleOrder#mainInvoicingAddressStr}
+	 * and {@link SaleOrder#deliveryAddressStr}
+	 * @param saleOrder
+	 */
+	public void computeAddressStr(SaleOrder saleOrder);
+
+	/**
 	 * Return the total price, computed from the lines.
 	 * This price is usually equals to {@link SaleOrder#exTaxTotal} but not
 	 * in all cases.

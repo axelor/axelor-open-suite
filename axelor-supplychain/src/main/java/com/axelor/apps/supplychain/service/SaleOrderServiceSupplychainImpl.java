@@ -17,20 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import com.axelor.apps.sale.db.ISaleOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.team.db.Team;
-
+import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -40,6 +28,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.CancelReason;
+import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
@@ -47,14 +36,22 @@ import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
@@ -165,6 +162,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			saleOrder.setPaymentCondition(client.getPaymentCondition());
 			saleOrder.setPaymentMode(client.getInPaymentMode());
 			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
+			this.computeAddressStr(saleOrder);
 			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
 			saleOrder.setPriceList(client.getSalePriceList());
 		}
