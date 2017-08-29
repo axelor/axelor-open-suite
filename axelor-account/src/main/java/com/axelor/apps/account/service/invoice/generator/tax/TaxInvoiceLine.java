@@ -68,7 +68,7 @@ public class TaxInvoiceLine extends TaxGenerator {
         Set<String> specificNotes = new HashSet<String>();
 
         boolean customerSpecificNote = false;
-        
+
         if (invoice.getPartner().getFiscalPosition() != null) {
         	customerSpecificNote = invoice.getPartner().getFiscalPosition().getCustomerSpecificNote();
         }
