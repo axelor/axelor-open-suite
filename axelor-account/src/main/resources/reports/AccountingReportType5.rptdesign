@@ -235,7 +235,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select PaymentVoucher.ref as "PaymentVoucherRef", PaymentVoucher.id as "PaymentVoucherId", 
 AccountingReport.global_by_post as "GlobalByPost",  AccountingReport.global as "Global", 
-Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid",  
+Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid"  
 -- Récupération des informations de l'en-tête du reporting comptable passé en paramètre
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_payment_voucher as PaymentVoucher on (AccountingReport.id = ?) 
@@ -435,7 +435,6 @@ from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company  on (AccountingReport.id = ? and AccountingReport.company = Company.id)
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
 ]]></xml-property>
-
         </oda-data-set>
     </data-sets>
     <styles>
