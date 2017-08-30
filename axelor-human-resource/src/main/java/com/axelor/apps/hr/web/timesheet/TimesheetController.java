@@ -43,6 +43,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
@@ -76,6 +77,8 @@ public class TimesheetController {
 	private Provider<ProductRepository> productRepoProvider;
 	@Inject
 	private Provider<ProjectRepository> projectRepoProvider;
+	@Inject
+	private Provider<UserHrService> userHrservice;
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -106,7 +109,10 @@ public class TimesheetController {
 		Product product = null;
 		if(productContext != null)
 			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
-			
+		
+		if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+			product = userHrservice.get().getTimesheetProduct(timesheet.getUser());
+		}
 		
 		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
 		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
