@@ -19,14 +19,20 @@ package com.axelor.apps.project.web;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -49,6 +55,23 @@ public class ProjectController {
 		BigDecimal duration = new BigDecimal(diffInDays);
 		response.setValue("$visibleDuration", duration);
 		response.setValue("duration", duration);
+	}
+	
+	public void createPlanning(ActionRequest request, ActionResponse response){
+		
+		Project project = request.getContext().asType(Project.class);
+		
+		List<ProjectPlanning> projectPlannings = projectService.createPlanning(project);
+		
+		response.setView(ActionView.define(I18n.get("Project Planning"))
+				.model(ProjectPlanning.class.getName())
+				.add("calendar", "project-planning-calendar")
+				.add("grid", "project-planning-grid")
+				.add("form", "project-planning-form")
+				.domain("self.id in :_planningIds")
+				.context("_planningIds", projectPlannings.stream().map(it->it.getId()).collect(Collectors.toList()))
+				.map());
+				
 	}
 	
 }

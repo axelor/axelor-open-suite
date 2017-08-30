@@ -53,16 +53,13 @@
 	    	</menu>
 	    </menubar>
     	<panel name="head">
-		    <field name="statusSelect" colSpan="9" widget="NavSelect" showTitle="false"/>
-		    <panel colSpan="3" itemSpan="12">
-			    <field name="showEditor" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
-				<button name="fullScreenEditor" title="Fullscreen Editor" showIf="id != null &amp;&amp; showEditor" if="__config__.app.getApp('timesheet').getTimesheetEditor()" onClick="action-timesheet-method-open-timesheet-editor"/>
-			</panel>
+		    <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"/>
+		    <field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
 		</panel>
 		<panel>
 			<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate"/>
-			<button name="Create" colSpan="2" showIf="id" onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
+			<button name="create" title="Create" colSpan="2" hideIf="id" onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
 		</panel>
 	    <panel name="actions" sidebar="true" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
@@ -93,6 +90,7 @@
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
 			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly()" x-can-copy="true"/>
 			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly()" x-can-copy="true" />
+			<button name="fullScreenEditor" colSpan="3" title="Fullscreen Editor" showIf="id != null &amp;&amp; showEditor" if="__config__.app.getApp('timesheet').getTimesheetEditor()" onClick="action-timesheet-method-open-timesheet-editor"/>
 			<field name="$showActivity" hidden="true" type="boolean"/>
 		</panel>
 		<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>

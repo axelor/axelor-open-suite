@@ -54,13 +54,15 @@
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
         </panel>
-
-		<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
-		<panel title="Dependencies">
-			<panel-related field="startToStartSet" colSpan="12" />
-			<panel-related field="finishToStartSet" colSpan="12" />
-			<panel-related field="startToFinishSet" colSpan="12" />
-			<panel-related field="finishToFinishSet" colSpan="12" />
+		
+		<panel canCollapse="true">
+			<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
+		</panel>
+		<panel title="Dependencies" canCollapse="true" sidebar="true">
+			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
 		</panel>
 
         <panel name="followers" title="Followers" sidebar="true">
@@ -79,9 +81,9 @@
 			<spacer/>
 			<field name="priority" colSpan="6" required="true"/>
 			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
-			<field name="progressSelect" colSpan="12" widget="SelectProgress" />
+			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
             <panel name="planning" title="Planning">
-                <field name="plannedProgress" widget="progress" colSpan="12"/>
+                <field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
                 <field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
             </panel>
 	    </panel>
@@ -114,7 +116,7 @@
 		<node model="com.axelor.team.db.TeamTask" domain="self.task.id = :id" onClick="action-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progress" as="progress" />
 		</node>    	
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-task-view">
@@ -122,6 +124,7 @@
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
 		</node>
+		
     
 	</tree>
 	
@@ -131,6 +134,12 @@
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
 	  	<view-param name="popup-save" value="false"/>
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
+    
+    <action-view name="action-team-task-edit-task" title="Task" model="com.axelor.team.db.TeamTask">
+    	<view type="form" name="team-task-form"/>
+        <view-param name="popup" value="reload"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	
@@ -150,6 +159,10 @@
     	<field name="status" expr="new" />
     	<field name="taskDate" expr="#{__date__}" />
     	<field name="project" expr="eval:_project" />
+	</action-record>
+	
+	<action-record name="action-task-update-planned-progress" model="com.axelor.team.db.TeamTask">
+		<field name="plannedProgress" expr="eval: progressSelect"/>
 	</action-record>
 	
 	<action-attrs name="action-task-attrs-project-category-configurations" model="com.axelor.team.db.TeamTask">

@@ -23,6 +23,7 @@
 		 <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Gantt" action="action-project-open-gantt" />
 	            <item title="Book resource" action="save,action-project-book-resource" />
+	            <item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning" />
 	     </menu>
 	     <menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Planification and costs" action="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" />
@@ -249,17 +250,20 @@
     	<column name="name" type="string"/>
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="decimal"/>
+		<column name="editTask" type="button"/>
 		
 		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-project-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
+			<button name="editTask" title="Edit" onClick="action-team-task-edit-task"/>
 		</node>    	
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-project-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
+			<button name="editTask" title="Edit" onClick="action-team-task-edit-task"/>
 		</node>
     
 	</tree>
@@ -441,6 +445,10 @@
 	
 	<action-method name="action-project-method-set-duration">
 		<call class="com.axelor.apps.project.web.ProjectController" method="setDurationDays"/>
+	</action-method>
+	
+	<action-method name="action-project-method-create-planning">
+		<call class="com.axelor.apps.project.web.ProjectController" method="createPlanning"/>
 	</action-method>
 	
 	

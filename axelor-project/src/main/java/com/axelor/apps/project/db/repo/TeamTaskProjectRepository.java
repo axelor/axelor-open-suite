@@ -24,6 +24,7 @@ public class TeamTaskProjectRepository extends TeamTaskRepository {
     @Override
     public TeamTask save(TeamTask teamTask) {
         teamTask.setFullName("#" + teamTask.getId() + " " + teamTask.getName());
+        teamTask.setProgressSelect( ((int)(teamTask.getPlannedProgress().intValue() * 0.10))*10) ;
         return super.save(teamTask);
     }
 }

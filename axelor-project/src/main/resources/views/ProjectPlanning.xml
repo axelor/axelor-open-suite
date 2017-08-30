@@ -46,6 +46,8 @@
 	<calendar name="project-planning-calendar" model="com.axelor.apps.project.db.ProjectPlanning" 
 		eventStart="fromDate" eventStop="toDate" title="Project planning" colorBy="user">
 		<field name="user"/>
+		<field name="project"/>
+		<field name="task"/>
 	</calendar>
 	
 	<action-method name="action-project-planning-method-show-planning">
