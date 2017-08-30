@@ -563,12 +563,27 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	protected boolean removeBecauseOfAmountRemaining(Invoice invoice,
-													 Invoice candidateAdvancePayment) {
+													 Invoice candidateAdvancePayment) throws AxelorException {
 	    List<InvoicePayment> invoicePayments = candidateAdvancePayment.getInvoicePaymentList();
 	    //no payment : remove the candidate invoice
 	    if (invoicePayments == null || invoicePayments.isEmpty()) {
 	    	return true;
 		}
+
+		// if there is no move generated, we simply check if the payment was
+		// imputed
+		if (!Beans.get(AccountConfigService.class)
+				.getAccountConfig(invoice.getCompany())
+				.getGenerateMoveForInvoicePayment()) {
+			for (InvoicePayment invoicePayment : invoicePayments) {
+				if (invoicePayment.getImputedBy() == null) {
+					return false;
+				}
+			}
+			return true;
+        }
+
+        // else we check the remaining amount
 		for (InvoicePayment invoicePayment : invoicePayments) {
 	    	Move move = invoicePayment.getMove();
 	    	if (move == null) {
