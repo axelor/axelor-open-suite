@@ -30,7 +30,7 @@ public interface AccountingSituationSupplychainService extends AccountingSituati
 	
 //	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException;
 	
-	public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation);
+	public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation) throws AxelorException;
 	
 	public void updateUsedCredit(Partner partner) throws AxelorException;
 }

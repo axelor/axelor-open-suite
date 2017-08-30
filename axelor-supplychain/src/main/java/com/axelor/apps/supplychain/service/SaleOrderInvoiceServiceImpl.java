@@ -803,6 +803,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	}
 
 
+	@Override
+	public BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder) {
+		BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+		BigDecimal inTaxTotal = saleOrder.getInTaxTotal();
+
+		BigDecimal exTaxAmountInvoiced = saleOrder.getAmountInvoiced();
+
+		return inTaxTotal.multiply(exTaxAmountInvoiced)
+				.divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
 }
 
 

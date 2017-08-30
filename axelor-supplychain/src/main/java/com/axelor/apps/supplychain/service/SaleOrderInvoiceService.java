@@ -254,6 +254,13 @@ public interface SaleOrderInvoiceService {
 	Invoice mergeInvoice(List<Invoice> invoiceList, Company cmpany, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,
 			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder) throws AxelorException;
+
+	/**
+	 * Compute the invoiced amount of the taxed amount of the invoice.
+	 * @param saleOrder
+	 * @return  the tax invoiced amount
+	 */
+	BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder);
 }
 
 
