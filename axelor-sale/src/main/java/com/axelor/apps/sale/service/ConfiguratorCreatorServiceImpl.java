@@ -32,11 +32,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.rpc.JsonContext;
+import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import wslite.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +131,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     @Override
     public void testCreator(ConfiguratorCreator creator,
-                            JsonContext testingValues)
+                            ScriptBindings testingValues)
             throws AxelorException  {
         List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         if (formulas == null) {
@@ -142,12 +141,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         ConfiguratorService configuratorService =
                 Beans.get(ConfiguratorService.class);
         for (ConfiguratorFormula formula : formulas) {
-            configuratorService.computeFormula(formula.getFormula(), testingValues);
+            configuratorService.testFormula(formula.getFormula(), testingValues);
         }
     }
 
     @Override
-    public JsonContext getTestingValues(ConfiguratorCreator creator) throws AxelorException {
+    public ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException {
         Map<String, Object> attributesValues = new HashMap<>();
         List<MetaJsonField> attributes = creator.getAttributes();
         if (attributes != null) {
@@ -163,10 +162,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
         }
-        JSONObject jsonValues = new JSONObject(attributesValues);
-        JsonContext jsonContextValues =
-                new JsonContext(Configurator.class.getName(), jsonValues.toString());
-        return jsonContextValues;
+        return new ScriptBindings(attributesValues);
     }
 
     /**
