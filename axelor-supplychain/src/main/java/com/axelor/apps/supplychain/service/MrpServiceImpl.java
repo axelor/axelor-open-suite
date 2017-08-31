@@ -461,7 +461,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType purchaseProposalMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
 		String statusSelect = purchaseProposalMrpLineType.getStatusSelect();
-		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
 			statusList.add(IPurchaseOrder.STATUS_VALIDATED);
@@ -498,7 +498,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType saleForecastMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
 		String statusSelect = saleForecastMrpLineType.getStatusSelect();
-		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
 			statusList.add(ISaleOrder.STATUS_ORDER_CONFIRMED);

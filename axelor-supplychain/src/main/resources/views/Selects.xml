@@ -13,11 +13,13 @@
 	
 	<selection name="supplychain.batch.action.select">
 		<option value="1">Bill Late Subscriptions</option>
+		<option value="3">Invoice orders</option>
 	</selection>
 
 	<selection name="supplychain.batch.invoice.stock.moves.action.select">
 		<option value="1">Bill Late Subscriptions</option>
 		<option value="2">Invoice outgoing stock moves</option>
+		<option value="3">Invoice orders</option>
 	</selection>
 	
 	<selection name="supplychain.mrp.status.select">
@@ -61,6 +63,15 @@
 
 	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
+	</selection>
+
+	<selection name="supplychain.supplychain.batch.invoice.orders.type.select">
+		<option value="2">Purchase orders</option>
+	</selection>
+
+	<selection name="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select">
+		<option value="1">Sale orders</option>
+		<option value="2">Purchase orders</option>
 	</selection>
 
 </object-views>

@@ -78,10 +78,10 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
 				I18n.get(IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR,
 						IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL, batch.getDone()),
 				batch.getDone()));
-		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_ANOMALY_SINGULAR,
-						IExceptionMessage.BATCH_OUTGOING_STOCK_MOVE_INVOICING_ANOMALY_PLURAL, batch.getAnomaly()),
-				batch.getAnomaly()));
+		sb.append(String
+				.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+						com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+						batch.getAnomaly()), batch.getAnomaly()));
 		addComment(sb.toString());
 		super.stop();
 	}

@@ -52,6 +52,9 @@ public class SupplychainBatchService extends AbstractBatchService {
 		case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
 			batch = invoiceOutgoingStockMoves(supplychainBatch);
 			break;
+		case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
+			batch = invoiceOrders(supplychainBatch);
+			break;
 		default:
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), supplychainBatch.getCode()), IException.INCONSISTENCY);
 		}
@@ -65,6 +68,18 @@ public class SupplychainBatchService extends AbstractBatchService {
 
 	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
 		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
+	}
+
+	public Batch invoiceOrders(SupplychainBatch supplychainBatch) {
+		switch (supplychainBatch.getInvoiceOrdersTypeSelect()) {
+		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_SALE:
+			return Beans.get(BatchOrderInvoicingSale.class).run(supplychainBatch);
+		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_PURCHASE:
+			return Beans.get(BatchOrderInvoicingPurchase.class).run(supplychainBatch);
+		default:
+			throw new IllegalArgumentException(
+					String.format("Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
+		}
 	}
 
 }

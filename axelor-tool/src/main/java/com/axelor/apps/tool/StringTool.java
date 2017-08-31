@@ -235,7 +235,7 @@ public final class StringTool {
 	 * @param string
 	 * @return list of integers
 	 */
-	public static List<Integer> getIntegerListFromString(String string) {
+	public static List<Integer> getIntegerList(String string) {
 		return string != null ? Arrays.stream(string.split("\\D+")).map(Integer::valueOf).collect(Collectors.toList())
 				: new ArrayList<>();
 	}

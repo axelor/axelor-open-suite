@@ -54,4 +54,12 @@ public class SupplychainBatchController {
 		response.setReload(true);
 	}
 
+	public void invoiceOrders(ActionRequest request, ActionResponse response) {
+		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+		supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
+		Batch batch = supplychainBatchService.invoiceOrders(supplychainBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
+
 }
