@@ -302,8 +302,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
-		List<LocalDate> allDates = new ArrayList<LocalDate>();
-		allDates = dateQuery.getResultList();
+		List<LocalDate> allDates = dateQuery.getResultList();
 
 		log.debug("allDates : {}" , allDates);
 
@@ -861,22 +860,38 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 	public void exportMoveLineTypeSelect1010(AccountingReport accountingReport) throws AxelorException, IOException {
 		log.info("In Export type 1010 service:");
 		List<String[]> allMoveLineData = new ArrayList<>();
-		String moveLineQueryStr = accountingReportService.getMoveLineList(accountingReport);
-		List<MoveLine> moveLineList = moveLineRepo.all().filter(moveLineQueryStr).order("accountCode").fetch();
+		String filterStr = accountingReportService.getMoveLineList(accountingReport);
+		String queryStr = String.format("SELECT self.accountCode, self.accountName, SUM(self.debit), SUM(self.credit) "
+				+ "FROM MoveLine self WHERE %s "
+				+ "GROUP BY self.accountCode, self.accountName ORDER BY self.accountCode", filterStr);
+		Query query = JPA.em().createQuery(queryStr);
 
-		for (MoveLine moveLine : moveLineList) {
-			String[] items = new String[4];
-			items[0] = moveLine.getAccountCode();
-			items[1] = moveLine.getAccountName();
-			items[2] = moveLine.getDebit().toString();
-			items[3] = moveLine.getCredit().toString();
+		@SuppressWarnings("unchecked")
+		List<Object[]> resultList = query.getResultList();
+
+		for (Object[] result : resultList) {
+			String[] items = new String[result.length];
+			for (int i = 0; i < result.length; ++i) {
+				items[i] = String.valueOf(result[i]);
+			}
 			allMoveLineData.add(items);
 		}
 
 		String filePath = accountConfigService
 				.getExportPath(accountConfigService.getAccountConfig(accountingReport.getCompany()));
-		String fileName = String.format("%s %s-%s.csv", I18n.get("General balance"), accountingReport.getRef(),
-				accountingReport.getPeriod().getToDate());
+		LocalDate date;
+
+		if (accountingReport.getDateTo() != null) {
+			date = accountingReport.getDateTo();
+		} else if (accountingReport.getPeriod() != null) {
+			date = accountingReport.getPeriod().getToDate();
+		} else {
+			date = null;
+		}
+
+		String dateStr = date != null ? "-" + date : "";
+
+		String fileName = String.format("%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
 		Files.createDirectories(Paths.get(filePath));
 		Path path = Paths.get(filePath, fileName);
 
