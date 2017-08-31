@@ -54,6 +54,7 @@
 		public static final int EXPORT_REFUNDS = 1007;
 		public static final int EXPORT_TREASURY = 1008;
 		public static final int EXPORT_PURCHASES = 1009;
+		public static final int EXPORT_GENERAL_BALANCE = 1010;
 	
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

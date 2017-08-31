@@ -33,4 +33,13 @@ public interface MoveLineExportService {
 	public void exportMoveLineTypeSelect1007(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException;
 	public void exportMoveLineTypeSelect1008(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException;
 	public void exportMoveLineTypeSelect1009(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException;
+
+	/**
+	 * Export general balance to CSV file.
+	 * 
+	 * @param accountingReport
+	 * @throws AxelorException
+	 * @throws IOException
+	 */
+	void exportMoveLineTypeSelect1010(AccountingReport accountingReport) throws AxelorException, IOException;
 }

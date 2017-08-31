@@ -32,15 +32,14 @@
 		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
 	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
-		model="com.axelor.apps.supplychain.db.SupplychainBatch" >
-		<view type="grid" name="supplychain-batch-grid"/>
-		<view type="form" name="supplychain-batch-form"/>
-		<domain>self.actionSelect IN (:actionSelectList)</domain>
-		<context name="actionSelectList"
-			expr="eval: [__repo__(SupplychainBatch).ACTION_BILL_SUB]"
+		model="com.axelor.apps.supplychain.db.SupplychainBatch">
+		<view type="grid" name="supplychain-batch-grid" />
+		<view type="form" name="supplychain-batch-form" />
+		<domain>self.actionSelect != :disabledActionSelect</domain>
+		<context name="disabledActionSelect"
+			expr="eval: __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES"
 			if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
-		<context name="actionSelectList"
-			expr="eval: [__repo__(SupplychainBatch).ACTION_BILL_SUB, __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES]"
+		<context name="disabledActionSelect" expr="eval: 0"
 			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
 	

@@ -27,6 +27,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
+import com.axelor.script.ScriptBindings;
 import com.google.inject.Inject;
 
 public class ConfiguratorCreatorController {
@@ -63,7 +64,7 @@ public class ConfiguratorCreatorController {
 
         creator = configuratorCreatorRepo.find(creator.getId());
         try {
-            JsonContext testingValues =
+            ScriptBindings testingValues =
                     configuratorCreatorService.getTestingValues(creator);
             try {
                 configuratorCreatorService.testCreator(creator, testingValues);
@@ -71,12 +72,7 @@ public class ConfiguratorCreatorController {
                         I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING)
                 );
             } catch (Exception e) {
-                TraceBackService.trace(e);
-                String alert = I18n.get(
-                        IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR
-                );
-                alert += " " + e.getMessage();
-                response.setAlert(alert);
+                response.setAlert(e.getMessage());
             }
         } catch (AxelorException e) {
             response.setAlert(e.getMessage());

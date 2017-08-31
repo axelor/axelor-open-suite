@@ -559,7 +559,7 @@ public interface IExceptionMessage {
 	/**
 	 * Invoice controller
 	 */
-	static final String INVOICE_1 = /*$$(*/ "Invoiced canceled" /*)*/;
+	static final String INVOICE_1 = /*$$(*/ "Invoice canceled" /*)*/;
 	static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
 	static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
 	static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;

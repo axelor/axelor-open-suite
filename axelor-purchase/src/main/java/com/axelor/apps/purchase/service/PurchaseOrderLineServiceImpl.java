@@ -102,8 +102,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			purchasePrice = supplierCatalog.getPrice();
 			purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
 		} else {
-			purchasePrice = product.getPurchasePrice();
-			purchaseCurrency = product.getPurchaseCurrency();
+			return null;
 		}
 
 		BigDecimal price = this.convertUnitPrice(product, taxLine, purchasePrice, purchaseOrder);

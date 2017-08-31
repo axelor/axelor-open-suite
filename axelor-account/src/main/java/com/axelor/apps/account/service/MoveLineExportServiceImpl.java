@@ -17,8 +17,40 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.*;
-import com.axelor.apps.account.db.repo.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.JournalType;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -38,24 +70,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MoveLineExportServiceImpl implements MoveLineExportService{
 
@@ -842,7 +856,38 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
 	}
 
-	
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void exportMoveLineTypeSelect1010(AccountingReport accountingReport) throws AxelorException, IOException {
+		log.info("In Export type 1010 service:");
+		List<String[]> allMoveLineData = new ArrayList<>();
+		String moveLineQueryStr = accountingReportService.getMoveLineList(accountingReport);
+		List<MoveLine> moveLineList = moveLineRepo.all().filter(moveLineQueryStr).order("accountCode").fetch();
+
+		for (MoveLine moveLine : moveLineList) {
+			String[] items = new String[4];
+			items[0] = moveLine.getAccountCode();
+			items[1] = moveLine.getAccountName();
+			items[2] = moveLine.getDebit().toString();
+			items[3] = moveLine.getCredit().toString();
+			allMoveLineData.add(items);
+		}
+
+		String filePath = accountConfigService
+				.getExportPath(accountConfigService.getAccountConfig(accountingReport.getCompany()));
+		String fileName = String.format("%s %s-%s.csv", I18n.get("General balance"), accountingReport.getRef(),
+				accountingReport.getPeriod().getToDate());
+		Files.createDirectories(Paths.get(filePath));
+		Path path = Paths.get(filePath, fileName);
+
+		log.debug("Full path to export: {}", path);
+		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
+
+		try (InputStream is = new FileInputStream(path.toFile())) {
+			Beans.get(MetaFiles.class).attach(is, fileName, accountingReport);
+		}
+	}
+
 	/**
 	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables)
 	* @throws AxelorException
@@ -1270,7 +1315,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 			this.exportMoveLineTypeSelect1009(accountingReport, false);
 			break;
-			
+
+		case AccountingReportRepository.EXPORT_GENERAL_BALANCE:
+			exportMoveLineTypeSelect1010(accountingReport);
+			break;
+
 		case AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
 			this.exportMoveLineTypeSelect1000(accountingReport);
 			break;

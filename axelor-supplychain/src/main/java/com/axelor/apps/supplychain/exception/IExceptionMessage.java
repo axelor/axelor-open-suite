@@ -83,8 +83,13 @@ public interface IExceptionMessage {
 	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report: " /*)*/;
 	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully, " /*)*/;
 	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully, " /*)*/;
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+	/**
+	 * Batch Order invoicing
+	 */
+	String BATCH_ORDER_INVOICING_REPORT = /*$$(*/ "Order invoicing report: " /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully, " /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully, " /*)*/;
 
 	/**
 	 * Mrp Line Service

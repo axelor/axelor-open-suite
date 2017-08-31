@@ -70,13 +70,17 @@ public interface IExceptionMessage {
 	
 	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
 	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
-	
+
 	/**
 	 * Abstract batch
-	 */
-	
-	static final public String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable !" /*)*/;
-	
+	 */	
+	String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable!" /*)*/;
+	String ABSTRACT_BATCH_REPORT = /*$$(*/ "Batch report: " /*)*/;
+	String ABSTRACT_BATCH_DONE_SINGULAR = /*$$(*/ "%d record processed successfully, " /*)*/;
+	String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully, " /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
 	/**
 	 * Indicator generator grouping service
 	 */

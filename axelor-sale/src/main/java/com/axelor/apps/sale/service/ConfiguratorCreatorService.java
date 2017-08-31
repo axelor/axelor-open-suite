@@ -21,7 +21,7 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.JsonContext;
+import com.axelor.script.ScriptBindings;
 
 public interface ConfiguratorCreatorService {
 
@@ -54,7 +54,7 @@ public interface ConfiguratorCreatorService {
      * @throws AxelorException
      */
     void testCreator(ConfiguratorCreator creator,
-                     JsonContext testingValues) throws AxelorException;
+                     ScriptBindings testingValues) throws AxelorException;
 
     /**
      * Get the testing values in {@link ConfiguratorCreator#attributes}
@@ -62,5 +62,5 @@ public interface ConfiguratorCreatorService {
      * @return
      * @throws AxelorException
      */
-    JsonContext getTestingValues(ConfiguratorCreator creator) throws AxelorException;
+    ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException;
 }
