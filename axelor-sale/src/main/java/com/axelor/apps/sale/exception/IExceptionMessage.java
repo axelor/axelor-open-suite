@@ -54,7 +54,7 @@ public interface IExceptionMessage {
 
 	static final String CONFIGURATOR_GENERATED = /*$$(*/ "The configurator is generated. Please check the configurators menu." /*)*/;
 	String CONFIGURATOR_CREATOR_MISSING_VALUES = /*$$(*/ "Please fill the default values in the attribute list in order to test this configurator creator." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "At least one script has errors, please see the traceback for more details. Error :" /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "At least one script has errors, please see the logs for more details." /*)*/;
 	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "All scripts are working." /*)*/;
 
 	/**

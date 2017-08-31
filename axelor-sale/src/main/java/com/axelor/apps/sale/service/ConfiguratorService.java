@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
+import com.axelor.script.ScriptBindings;
 import wslite.json.JSONException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +38,6 @@ public interface ConfiguratorService {
      */
     void updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators) throws AxelorException;
 
-
     /**
      * Give the result of a formula, with the script variables defined
      * in the values map.
@@ -48,6 +48,16 @@ public interface ConfiguratorService {
      */
     Object computeFormula(String groovyFormula, JsonContext values)
             throws AxelorException;
+
+    /**
+     * Test a formula, with the script variables defined
+     * in the values map.
+     * @param groovyFormula
+     * @param values
+     */
+    void testFormula(String groovyFormula, ScriptBindings values) throws AxelorException;
+
+
 
     /**
      * Generate a product from the configurator
