@@ -85,6 +85,7 @@
 		<option value="1007">Export refunds -> Acc. Soft.</option>
 		<option value="1008">Export treasury -> Acc. Soft.</option>
 		<option value="1009">Export purchase -> Acc. Soft.</option>
+		<option value="1010">Export general balance -> Acc. Soft.</option>
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>

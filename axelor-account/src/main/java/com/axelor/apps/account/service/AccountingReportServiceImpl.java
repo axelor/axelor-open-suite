@@ -183,7 +183,10 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 		}
 		
 		if(accountingReport.getTypeSelect() > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
-			this.addParams("self.move.journal.type = ?%d", this.getJournalType(accountingReport));
+			JournalType journalType = this.getJournalType(accountingReport);
+			if (journalType != null) {
+				this.addParams("self.move.journal.type = ?%d", journalType);
+			}
 		}
 
 		log.debug("Query : {}", this.query);
