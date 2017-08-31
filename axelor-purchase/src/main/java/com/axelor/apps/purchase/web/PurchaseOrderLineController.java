@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -112,6 +111,11 @@ public class PurchaseOrderLineController {
 			response.setValue("taxLine", taxLine);
 			
 			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
+
+			if (price == null) {
+				price = BigDecimal.ZERO;
+				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
+			}
 
 			response.setValue("productName", purchaseOrderLine.getProduct().getName());
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
