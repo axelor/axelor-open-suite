@@ -78,7 +78,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 								expense.getFullName(),
 								expense.getFullName());
 
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, expense.getFullName(), expense.getFullName()));
+		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, expense.getExpenseSeq(), expense.getFullName()));
 		bankOrder = bankOrderRepo.save(bankOrder);
 
 		return bankOrder;

@@ -29,6 +29,8 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
@@ -452,16 +454,24 @@ public class ExpenseServiceImpl implements ExpenseService {
 		addPayment(expense, expense.getCompany().getDefaultBankDetails());
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancelPayment(Expense expense) throws AxelorException {
-		expense.setPaymentDate(null);
-		expense.setBankOrder(null);
-		expense.setPaymentAmount(BigDecimal.ZERO);
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    public void cancelPayment(Expense expense) throws AxelorException {
+        BankOrder bankOrder = expense.getBankOrder();
 
-		expense.setPaymentMode(null);
-		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-		expenseRepository.save(expense);
-	}
+        if (bankOrder != null) {
+            if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
+                throw new AxelorException(I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL), IException.FUNCTIONNAL);
+            } else {
+                Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+
+                expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+                expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
+                expense.setPaymentDate(null);
+                expense.setPaymentAmount(BigDecimal.ZERO);
+                expenseRepository.save(expense);
+            }
+        }
+    }
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
 
