@@ -21,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -526,6 +527,49 @@ public class InvoiceController {
 		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
 				.findDefaultBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	/**
+	 * Called on load and on new, create the domain for the field
+	 * {@link Invoice#advancePaymentInvoiceSet}
+	 * @param request
+	 * @param response
+	 */
+	public void fillAdvancePaymentInvoiceSetDomain(ActionRequest request,
+												   ActionResponse response) {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		try {
+			String domain = invoiceService
+					.createAdvancePaymentInvoiceSetDomain(invoice);
+			response.setAttr("advancePaymentInvoiceSet","domain", domain);
+
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
+		}
+	}
+
+	/**
+	 * Called on partner and currency change, fill the domain of the field
+	 * {@link Invoice#advancePaymentInvoiceSet} with default values.
+     * The default values are every invoices found in the domain.
+	 * @param request
+	 * @param response
+	 */
+	public void fillAdvancePaymentInvoiceSet(ActionRequest request,
+											 ActionResponse response) {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		Set<Invoice> invoices = null;
+		try {
+			invoices = invoiceService
+                    .getDefaultAdvancePaymentInvoice(invoice);
+			response.setValue("advancePaymentInvoiceSet", invoices);
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
+		}
 	}
 
 }

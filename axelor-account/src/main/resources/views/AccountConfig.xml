@@ -233,6 +233,10 @@
 		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" />
 		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" />
 		  	</panel>
+			<panel name="products" title="Products">
+				<field name="invoicingProduct"/>
+				<field name="advancePaymentProduct"/>
+			</panel>
 			<panel name ="termsAndCondition" title="Terms and Conditions">
 				<field name="termsAndConditions" widget="html" colSpan="12" />
 			</panel>

@@ -24,6 +24,8 @@
 			<field name="allowTimetableInvoicing" widget="boolean-switch"/>
 			<field name="checkSaleStocks" widget="boolean-switch"/>
 			<field name="manageInvoicedAmountByLine" widget="boolean-switch" />
+			<field name="invoicingProduct"/>
+			<field name="advancePaymentProduct"/>
 		</panel>
 	</form>
 	

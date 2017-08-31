@@ -116,11 +116,13 @@
         	</menu>
 		</menubar>
 		<panel title="Status">
-			<field name="statusSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
+            <field name="statusSelect" widget="NavSelect" colSpan="12"
+                   showIf="operationSubTypeSelect != 2"/>
+            <field name="statusSelect" widget="NavSelect" selection-in="[1,2,4]"
+                   showIf="operationSubTypeSelect == 2" colSpan="12"/>
 		</panel>
 		<panel name="main" >
 			<field name="invoiceId"/>
-			
 			<panel itemSpan="12" colSpan="6">
 				<field name="operationTypeSelect" selection="iinvoice.operation.type.select" readonlyIf="statusSelect &gt; 1" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange">
 					<viewer>
@@ -136,11 +138,13 @@
 					]]>
 					</viewer>
 				</field>
-
+                <field name="operationSubTypeSelect"
+					   readonlyIf="statusSelect > 1"
+					   showIf="operationTypeSelect == 1 || operationTypeSelect == 3"/>
 			</panel>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="isSubscription" hidden="true"/>
@@ -160,14 +164,14 @@
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
 		<panel-tabs>
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
@@ -211,7 +215,12 @@
 				</panel>
 			</panel>
 
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="statusSelect == 3 || statusSelect == 4"/>
+			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="(statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2) ||statusSelect == 3 || statusSelect == 4"/>
+			<panel title="Advance payments" showIf="operationSubTypeSelect != 2">
+				<field name="advancePaymentInvoiceSet" widget="TagSelect"
+					   onSelect="action-invoice-method-create-advance-payment-domain"
+					   form-view="invoice-form" grid-view="invoice-grid"/>
+			</panel>
 
 			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
 				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
@@ -230,18 +239,18 @@
 				<field name="displayExpenseOnPrinting" />
 			</panel>
 		</panel-tabs>
-		
-		<panel sidebar="true" name="actions" title="Actions" >
-	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
-	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
-	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
-      	  	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
-	        <field name="statusSelect"/>
-	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form"/>
-	    </panel>
 
-		<panel-stack sidebar="true">
+        <panel sidebar="true" name="actions" title="Actions" >
+            <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
+            <button name="ventilate" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+            <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
+            <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
+            <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
+            <field name="statusSelect"/>
+            <field name="validatedByUser" grid-view="user-grid" form-view="user-form"/>
+        </panel>
+
+        <panel-stack sidebar="true">
 			<panel name="referenceDocuments" title="Reference documents" itemSpan="6">
 				<field name="internalReference"/>
 				<field name="externalReference"/>
@@ -384,14 +393,14 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
 		<panel-tabs>
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 		</panel-tabs>
@@ -554,6 +563,7 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
+		<action name="action-invoice-method-fill-advance-payment-set"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -583,8 +593,25 @@
     	<action name="action-invoice-record-due-date"/>
     	<action name="action-invoice-record-estimated-payment-date"/>
 		<action name="action-invoice-method-fill-company-bank-details"/>
+		<action name="action-invoice-method-fill-advance-payment-set"/>
     </action-group>
 
+	<action-group name="action-invoice-group-currency-onchange">
+		<action name="action-invoice-attrs-change-total-title"/>
+        <action name="action-invoice-attrs-hide-totals-company-currency"/>
+		<action name="action-invoice-method-fill-advance-payment-set"/>
+	</action-group>
+
+	<action-group name="action-invoice-group-saleorder-onchange">
+		<action name="action-invoice-method-fill-in-lines"/>
+		<action name="action-invoice-method-fill-advance-payment-set"/>
+	</action-group>
+
+	<action-group name="action-invoice-group-invoice-line-onchange">
+		<action name="action-invoice-method-compute"/>
+		<action name="action-invoice-method-fill-advance-payment-set"/>
+		<action name="save"/>
+	</action-group>
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
@@ -783,6 +810,16 @@
 	
 	<action-method name="action-invoice-method-merge-business-project">
 		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-create-advance-payment-domain">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="fillAdvancePaymentInvoiceSetDomain"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-fill-advance-payment-set">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="fillAdvancePaymentInvoiceSet"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

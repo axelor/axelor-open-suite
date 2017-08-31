@@ -535,6 +535,17 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			}
 		}
 	}
+	
+	@Override
+	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder) {
+		BigDecimal price = BigDecimal.ZERO;
+	    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+	        price = price.add(
+	        		saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted())
+			);
+		}
+		return price;
+	}
 }
 
 

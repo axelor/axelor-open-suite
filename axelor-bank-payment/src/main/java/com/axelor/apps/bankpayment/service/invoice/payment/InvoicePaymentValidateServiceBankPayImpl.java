@@ -25,6 +25,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -110,6 +111,11 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+		if (invoicePayment.getInvoice() != null
+				&& invoicePayment.getInvoice().getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
+		}
 		invoicePaymentRepository.save(invoicePayment);
 	}
 	

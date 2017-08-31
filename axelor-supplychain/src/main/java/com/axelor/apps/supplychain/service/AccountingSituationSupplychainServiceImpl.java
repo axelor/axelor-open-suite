@@ -22,7 +22,10 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -110,8 +113,16 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 			if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
 				// Update UsedCredit
 				accountingSituation = this.computeUsedCredit(accountingSituation);
-				if (saleOrder.getStatusSelect() == 1) {
-					accountingSituation.setUsedCredit(accountingSituation.getUsedCredit().add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced())));
+				if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT) {
+				    BigDecimal inTaxInvoicedAmount =
+							Beans.get(SaleOrderInvoiceService.class)
+									.getInTaxInvoicedAmount(saleOrder);
+
+				    BigDecimal usedCredit = accountingSituation.getUsedCredit()
+                            .add(saleOrder.getInTaxTotal())
+							.subtract(inTaxInvoicedAmount);
+
+				    accountingSituation.setUsedCredit(usedCredit);
 				}
 				boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
 				if (usedCreditExceeded) {
@@ -130,14 +141,41 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 	}
 
 	@Override
-	public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation) {
+	public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation) throws AxelorException {
 		BigDecimal sum = BigDecimal.ZERO;
 		List<SaleOrder> saleOrderList = Beans.get(SaleOrderRepository.class)
 											 .all()
 											 .filter("self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4", accountingSituation.getCompany(), accountingSituation.getPartner(), ISaleOrder.STATUS_DRAFT, ISaleOrder.STATUS_CANCELED)
 											 .fetch();
 		for (SaleOrder saleOrder : saleOrderList) {
-			sum = sum.add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced()));
+			sum = sum.add(saleOrder.getInTaxTotal()
+					.subtract(
+							Beans.get(SaleOrderInvoiceService.class)
+									.getInTaxInvoicedAmount(saleOrder)
+					)
+			);
+		}
+		//subtract the amount of payments if there is no move created for
+		//invoice payments
+		if (!accountConfigService.getAccountConfig(accountingSituation.getCompany())
+				.getGenerateMoveForInvoicePayment()) {
+			List<InvoicePayment> invoicePaymentList = Beans
+					.get(InvoicePaymentRepository.class)
+					.all()
+					.filter("self.invoice.company = :company" +
+							" AND self.invoice.partner = :partner" +
+							" AND self.statusSelect = :validated" +
+							" AND self.typeSelect != :imputation")
+					.bind("company", accountingSituation.getCompany())
+					.bind("partner", accountingSituation.getPartner())
+					.bind("validated", InvoicePaymentRepository.STATUS_VALIDATED)
+					.bind("imputation", InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION)
+					.fetch();
+			if (invoicePaymentList != null) {
+				for (InvoicePayment invoicePayment : invoicePaymentList) {
+				    sum = sum.subtract(invoicePayment.getAmount());
+				}
+			}
 		}
 		sum = accountingSituation.getBalanceCustAccount().add(sum);
 		accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_EVEN));

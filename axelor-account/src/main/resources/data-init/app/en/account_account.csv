@@ -370,7 +370,7 @@
 369;397200;397000;"Goods (or group) B";"currentAsset";;1;;
 370;40;"CL4";"Trade accounts payable";"view";;1;;
 371;400000;40;"Trade accounts payable";"payable";"true";1;;
-372;401;40;"Suppliers";"payable";;1;;
+372;401;40;"Suppliers";"payable";"true";1;;"true"
 373;401100;401;"Suppliers - Purchases of goods and services";"payable";"true";1;"411100|411700|416000";"true"
 374;401700;401;"Suppliers - Holdbacks";"payable";"true";1;"411100|411700|416000";"true"
 375;403000;40;"Payable - Notes Payable";"payable";"true";1;;
@@ -391,7 +391,7 @@
 390;409800;409;"Discounts, rebates, discounts available and other assets not yet received";"currentAsset";"true";1;;
 391;41;"CL4";"Accounts receivable";"view";;1;;
 392;410000;41;"Accounts receivable";"receivable";"true";1;;
-393;411;41;"Customer";"receivable";;1;;
+393;411;41;"Customer";"receivable";"true";1;;"true"
 394;411100;411;"Customers - Sales of goods or services";"receivable";"true";1;"401100|401700|416000";"true"
 395;411700;411;"Customer - Holdbacks";"receivable";"true";1;"401100|401700|416000";"true"
 396;413000;41;"Customers - Accounts Receivable";"receivable";;1;;
@@ -399,11 +399,11 @@
 398;418000;41;"Customers - unbilled";"receivable";"true";1;;
 399;418100;418000;"Customer - Unbilled";"receivable";"true";1;;
 400;418800;418000;"Customer - Accrued interest";"receivable";"true";1;;
-401;419000;41;"Customer prepayments";"receivable";;1;;
-402;419100;419000;"Customer - Advances received on orders";"debt";"true";1;;
-403;419600;419000;"Customer - Debts for returnable packaging and material";"debt";"true";1;;
-404;419700;419000;"Customer - Other assets";"debt";"true";1;;
-405;419800;419000;"Rebates, discounts, rebates and other funds to grant to establish";"debt";"true";1;;
+401;419000;41;"Customer prepayments";"receivable";"true";1;;"true"
+402;419100;419000;"Customer - Advances received on orders";"debt";"true";1;;"true"
+403;419600;419000;"Customer - Debts for returnable packaging and material";"debt";"true";1;;"true"
+404;419700;419000;"Customer - Other assets";"debt";"true";1;;"true"
+405;419800;419000;"Rebates, discounts, rebates and other funds to grant to establish";"debt";"true";1;;"true"
 406;42;"CL4";"Personnel and related accounts";"view";;1;;
 407;421000;42;"Personnel - Compensation due";"debt";;1;;
 408;422000;42;"Works of establishment";"debt";;1;;

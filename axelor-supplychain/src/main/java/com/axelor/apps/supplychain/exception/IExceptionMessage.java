@@ -42,6 +42,13 @@ public interface IExceptionMessage {
 	 * Sale Order Invoice Service
 	 */
 	static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
+	static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
+	static final String SO_INVOICE_QTY_MAX = /*$$(*/ "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
+	static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/ "Please configure the sale order invoicing product" /*)*/;
+	static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/ "Please configure the advance payment product" /*)*/;
+	static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/ "You must configure an advance payment account for the company %s" /*)*/;
+	static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/ "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
+
 
 	/**
 	 * Sale Order Purchase Service
@@ -102,4 +109,10 @@ public interface IExceptionMessage {
 	 * Timetable Controller
 	 */
 	static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/ "The invoice has already been generated." /*)*/;
+
+	/**
+	 * Ventilate State Service
+	 */
+	String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/ "Please configure the advance payment account for the company %s" /*)*/;
 }
+

@@ -249,12 +249,9 @@ public class MoveService {
 		List<MoveLine> creditMoveLineList = moveExcessPaymentService.getAdvancePaymentMoveList(invoice);
 		
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
-		if(accountConfig.getAutoReconcileOnInvoice())
-		{
-			// Récupération des trop-perçus
-			creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
-		}
+
+		// Récupération des trop-perçus
+		creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 
 			Partner partner = invoice.getPartner();

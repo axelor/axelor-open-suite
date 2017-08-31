@@ -495,6 +495,11 @@ public interface IExceptionMessage {
 	static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/ "Invoice date can't be in the future." /*)*/;
 
 	/**
+	 * Workflow ventilation
+	 */
+	String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH =  /*$$(*/ "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
+
+	/**
 	 * Paybox service and controller
 	 */
 	static final String PAYBOX_1 = /*$$(*/ "%s : You must configure an amount paid for the payment entry %s." /*)*/;

@@ -12,6 +12,7 @@
     <!-- HEADER -->
     <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
+    <integer name="operationSubTypeSelect" title="Document Subtype" required="true" default="1" selection="iinvoice.operation.sub.type.select"/>
     
     <!-- Legal informations -->
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
@@ -23,7 +24,6 @@
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     <string name="addressStr" title="Address" large="true" multiline="true"/>
-    <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
     <boolean name="isSubscription" title="Subscription ?" default="false"/>
     <string name="internalReference" title="Internal Ref."/>
     <string name="externalReference" title="External Ref."/>
@@ -111,6 +111,8 @@
     <string name="supplierInvoiceNb" title="Supplier invoice number"/>
     
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
+
+    <many-to-many name="advancePaymentInvoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
     
   	<unique-constraint columns="invoiceId,company"/>
 
@@ -123,7 +125,7 @@
 		public static final int OPERATION_TYPE_SUPPLIER_REFUND = 2;
 		public static final int OPERATION_TYPE_CLIENT_SALE = 3;
 		public static final int OPERATION_TYPE_CLIENT_REFUND = 4;
-	
+
 		// IRRECOVERABLE STATUS SELECT
 		public static final int IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE = 0;
 		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
@@ -134,7 +136,12 @@
 		public static final int STATUS_VALIDATED = 2;
 		public static final int STATUS_VENTILATED = 3;
 		public static final int STATUS_CANCELED = 4;
-	
+
+	    // OPERATION TYPE SUB SELECT
+	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
+	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
+	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+
 	]]></extra-code>
 	
 	<track>
@@ -144,7 +151,7 @@
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
-      <message if="statuSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+      <message if="statusSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
     </track>
 
   </entity>

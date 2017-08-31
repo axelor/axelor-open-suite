@@ -24,6 +24,8 @@ import java.time.LocalDate;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
@@ -32,6 +34,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -112,6 +115,11 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+		if (invoicePayment.getInvoice() != null
+				&& invoicePayment.getInvoice().getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
+		}
 		invoicePaymentRepository.save(invoicePayment);
 	}
 	
@@ -137,36 +145,52 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		BigDecimal paymentAmount = invoicePayment.getAmount();
 		BankDetails companyBankDetails = invoicePayment.getBankDetails();
-		
+
+		Account customerAccount;
+
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		
 		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
-		
+
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
+		if (invoice.getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+
+			AccountConfig accountConfig = accountConfigService
+					.getAccountConfig(company);
+
+		    customerAccount = accountConfigService
+					.getAdvancePaymentAccount(accountConfig);
+		} else {
+			customerAccount = invoiceMoveLine.getAccount();
+		}
 		
 		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails), 
 				paymentAmount, isDebitInvoice, paymentDate, null, 1, ""));
-		
-		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, invoiceMoveLine.getAccount(), 
+
+		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, customerAccount,
 				paymentAmount, !isDebitInvoice, paymentDate, null, 2, "");
 		
 		move.addMoveLineListItem(customerMoveLine);
 		
 		moveService.getMoveValidateService().validate(move);
-		
-		Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
-		
-		invoicePayment.setReconcile(reconcile);
+
+		if (invoice.getOperationSubTypeSelect()
+				!= InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
+
+			invoicePayment.setReconcile(reconcile);
+		}
 		invoicePayment.setMove(move);
 		
 		invoicePaymentRepository.save(invoicePayment);
 		
 		return move;
 	}
+
 	
-	
-	
+
 	
 }

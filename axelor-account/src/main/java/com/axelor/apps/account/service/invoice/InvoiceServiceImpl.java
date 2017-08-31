@@ -17,33 +17,27 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.exception.db.IException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -53,15 +47,28 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -186,6 +193,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
+		//if the invoice is an advance payment invoice, we also "ventilate" it
+		//without creating the move
+		if (invoice.getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+		    ventilate(invoice);
+		}
+
 	}
 
 	@Override
@@ -476,6 +490,143 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		if (address.getAddressL7Country() != null) { addressString = addressString.append("\n").append(address.getAddressL7Country().getName()); }
 
 		return addressString.toString();
+	}
+
+	@Override
+	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
+		Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
+		String domain = "self.id IN (" +
+				StringTool.getIdFromCollection(invoices)
+				+ ")";
+
+		return domain;
+	}
+
+	@Override
+	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
+	    Set<Invoice> advancePaymentInvoices;
+
+	    Company company = invoice.getCompany();
+		Currency currency = invoice.getCurrency();
+		Partner partner = invoice.getPartner();
+		if (company == null
+				|| currency == null
+				|| partner == null) {
+			return new HashSet<>();
+		}
+		String filter = writeGeneralFilterForAdvancePayment();
+		filter += " AND self.partner = :_partner AND self.currency = :_currency";
+
+		advancePaymentInvoices = new HashSet<>(
+				Beans.get(InvoiceRepository.class).all().filter(filter)
+						.bind("_status", InvoiceRepository.STATUS_VALIDATED)
+						.bind("_operationSubType",
+								InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+						.bind("_partner", partner)
+						.bind("_currency", currency)
+						.fetch()
+		);
+
+		filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
+		return advancePaymentInvoices;
+	}
+
+	@Override
+	public void filterAdvancePaymentInvoice(Invoice invoice,
+											Set<Invoice> advancePaymentInvoices) throws AxelorException {
+		Iterator<Invoice> advPaymentInvoiceIt = advancePaymentInvoices.iterator();
+		while (advPaymentInvoiceIt.hasNext()) {
+			Invoice candidateAdvancePayment = advPaymentInvoiceIt.next();
+			if (removeBecauseOfTotalAmount(invoice, candidateAdvancePayment)
+					|| removeBecauseOfAmountRemaining(invoice, candidateAdvancePayment)) {
+				advPaymentInvoiceIt.remove();
+			}
+		}
+	}
+
+	protected boolean removeBecauseOfTotalAmount(Invoice invoice,
+												 Invoice candidateAdvancePayment) throws AxelorException {
+		if (Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany())
+				.getGenerateMoveForInvoicePayment()) {
+			return false;
+		}
+		BigDecimal invoiceTotal = invoice.getInTaxTotal();
+		List<InvoicePayment> invoicePayments = candidateAdvancePayment
+				.getInvoicePaymentList();
+		if (invoicePayments == null) {
+		    return false;
+		}
+		BigDecimal totalAmount = invoicePayments.stream()
+				.map(InvoicePayment::getAmount)
+				.reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+		return totalAmount.compareTo(invoiceTotal) > 0;
+	}
+
+	protected boolean removeBecauseOfAmountRemaining(Invoice invoice,
+													 Invoice candidateAdvancePayment) throws AxelorException {
+	    List<InvoicePayment> invoicePayments = candidateAdvancePayment.getInvoicePaymentList();
+	    //no payment : remove the candidate invoice
+	    if (invoicePayments == null || invoicePayments.isEmpty()) {
+	    	return true;
+		}
+
+		// if there is no move generated, we simply check if the payment was
+		// imputed
+		if (!Beans.get(AccountConfigService.class)
+				.getAccountConfig(invoice.getCompany())
+				.getGenerateMoveForInvoicePayment()) {
+			for (InvoicePayment invoicePayment : invoicePayments) {
+				if (invoicePayment.getImputedBy() == null) {
+					return false;
+				}
+			}
+			return true;
+        }
+
+        // else we check the remaining amount
+		for (InvoicePayment invoicePayment : invoicePayments) {
+	    	Move move = invoicePayment.getMove();
+	    	if (move == null) {
+	    		continue;
+			}
+			List<MoveLine> moveLineList = move.getMoveLineList();
+	    	if (moveLineList == null || moveLineList.isEmpty()) {
+	    		continue;
+			}
+			for (MoveLine moveLine : moveLineList) {
+	    		BigDecimal amountRemaining = moveLine.getAmountRemaining();
+	    		if (amountRemaining != null
+						&& amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
+	    			return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) {
+		List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
+
+		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
+		List<InvoicePayment> invoicePayments;
+		if (advancePayments == null || advancePayments.isEmpty()) {
+			return advancePaymentMoveLines;
+		}
+		InvoicePaymentToolService invoicePaymentToolService =
+				Beans.get(InvoicePaymentToolService.class);
+		for (Invoice advancePayment : advancePayments) {
+			invoicePayments = advancePayment.getInvoicePaymentList();
+			List<MoveLine> creditMoveLines = invoicePaymentToolService
+					.getCreditMoveLinesFromPayments(invoicePayments);
+			advancePaymentMoveLines.addAll(creditMoveLines);
+		}
+		return advancePaymentMoveLines;
+	}
+
+	protected String writeGeneralFilterForAdvancePayment() {
+		return "self.statusSelect = :_status"
+				+ " AND self.operationSubTypeSelect = :_operationSubType";
 	}
 }
 

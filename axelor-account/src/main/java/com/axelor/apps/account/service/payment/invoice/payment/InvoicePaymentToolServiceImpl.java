@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -31,7 +33,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
@@ -126,6 +127,7 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	/**
 	 * @inheritDoc
 	 */
+	@Override
 	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment){
 		PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		if(company == null || paymentMode == null) { return new ArrayList<BankDetails>(); }
@@ -133,4 +135,36 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return Beans.get(PaymentModeService.class).
 				getCompatibleBankDetailsList(paymentMode, company);
     }
+
+    @Override
+    public List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment) {
+		List<InvoicePayment> advancePaymentList =  advancePayment.getInvoicePaymentList();
+		if (advancePaymentList == null || advancePaymentList.isEmpty()) {
+			return advancePaymentList;
+		}
+
+		for (InvoicePayment invoicePayment : advancePaymentList) {
+		    invoice.addInvoicePaymentListItem(invoicePayment);
+		}
+		return advancePaymentList;
+	}
+
+	@Override
+	public List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments) {
+		List<MoveLine> moveLines = new ArrayList<>();
+		for (InvoicePayment payment : payments) {
+		    Move move = payment.getMove();
+		    if (move == null || move.getMoveLineList() == null
+					|| move.getMoveLineList().isEmpty()) {
+		    	continue;
+			}
+			for (MoveLine moveLine : move.getMoveLineList()) {
+		    	if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+		    		moveLines.add(moveLine);
+				}
+			}
+		}
+		return moveLines;
+	}
+
 }

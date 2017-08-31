@@ -22,7 +22,15 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import java.time.LocalDate;
+import java.util.Set;
 
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.*;
@@ -60,7 +68,7 @@ public class VentilateState extends WorkflowInvoice {
 	
 	private InvoiceRepository invoiceRepo;
 
-	private WorkflowVentilationService workflowService;
+	protected WorkflowVentilationService workflowService;
 
 	@Inject
 	public VentilateState(SequenceService sequenceService,

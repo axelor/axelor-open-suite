@@ -370,7 +370,7 @@
 369;397200;397000;"Marchandises (ou groupe) B";"currentAsset";;1;;
 370;40;"CL4";"Fournisseurs et comptes rattachés";"view";;1;;
 371;400000;40;"Fournisseurs et comptes rattachés ";"payable";"true";1;;
-372;401;40;"Fournisseurs";"payable";"";1;;""
+372;401;40;"Fournisseurs";"payable";"true";1;;"true"
 373;401100;401;"Fournisseurs - Achats de biens et prestations de services";"payable";"true";1;"411100|411700|416000";"true"
 374;401700;401;"Fournisseurs - Retenues de garantie";"payable";"true";1;"411100|411700|416000";"true"
 375;403000;40;"Fournisseurs - Effets à payer";"payable";"true";1;;
@@ -391,7 +391,7 @@
 390;409800;409;"Rabais, remises, ristournes à obtenir et autres avoirs non encore reçus";"currentAsset";"true";1;;
 391;41;"CL4";"Clients et comptes rattachés";"view";;1;;
 392;410000;41;"Clients et comptes rattachés ";"receivable";"true";1;;
-393;411;41;"Clients";"receivable";;1;;""
+393;411;41;"Clients";"receivable";"true";1;;"true"
 394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true"
 395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true"
 396;413000;41;"Clients - Effets à recevoir";"receivable";;1;;
@@ -399,11 +399,11 @@
 398;418000;41;"Clients - Produits non encore facturés";"receivable";"true";1;;
 399;418100;418000;"Clients - Factures à établir ";"receivable";"true";1;;
 400;418800;418000;"Clients - Intérêts courus";"receivable";"true";1;;
-401;419000;41;"Clients créditeurs";"receivable";;1;;
-402;419100;419000;"Clients - Avances et acomptes reçus sur commandes";"debt";"true";1;;
-403;419600;419000;"Clients - Dettes pour emballages et matériels consignés ";"debt";"true";1;;
-404;419700;419000;"Clients - Autres avoirs ";"debt";"true";1;;
-405;419800;419000;"Rabais, remises, ristournes à accorder et autres avoirs à établir";"debt";"true";1;;
+401;419000;41;"Clients créditeurs";"receivable";"true";1;;"true"
+402;419100;419000;"Clients - Avances et acomptes reçus sur commandes";"debt";"true";1;;"true"
+403;419600;419000;"Clients - Dettes pour emballages et matériels consignés ";"debt";"true";1;;"true"
+404;419700;419000;"Clients - Autres avoirs ";"debt";"true";1;;"true"
+405;419800;419000;"Rabais, remises, ristournes à accorder et autres avoirs à établir";"debt";"true";1;;"true"
 406;42;"CL4";"Personnel et comptes rattachés";"view";;1;;
 407;421000;42;"Personnel - Rémunérations dues";"debt";;1;;
 408;422000;42;"Comités d'entreprise d'établissement ";"debt";;1;;
