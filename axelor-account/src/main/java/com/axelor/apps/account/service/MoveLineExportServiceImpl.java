@@ -875,8 +875,19 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String filePath = accountConfigService
 				.getExportPath(accountConfigService.getAccountConfig(accountingReport.getCompany()));
-		String fileName = String.format("%s %s-%s.csv", I18n.get("General balance"), accountingReport.getRef(),
-				accountingReport.getPeriod().getToDate());
+		LocalDate date;
+
+		if (accountingReport.getDateTo() != null) {
+			date = accountingReport.getDateTo();
+		} else if (accountingReport.getPeriod() != null) {
+			date = accountingReport.getPeriod().getToDate();
+		} else {
+			date = null;
+		}
+
+		String dateStr = date != null ? "-" + date : "";
+
+		String fileName = String.format("%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
 		Files.createDirectories(Paths.get(filePath));
 		Path path = Paths.get(filePath, fileName);
 
