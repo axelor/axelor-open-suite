@@ -34,15 +34,8 @@
 		<many-to-many name="finishToFinishSet" title="Tasks to finish before finish" ref="TeamTask" />
 	  
 	 <track>
-	 	<field name="name"/>
 	 	<field name="description"/>
-	 	<field name="status"/>
-	 	<field name="priority"/>
 	 	<field name="sequence"/>
-	 	<field name="taskDate"/>
-	 	<field name="taskDeadline"/>
-	 	<field name="taskDuration"/>
-	 	<field name="assignedTo"/>
 	 	<field name="project"/>
 	 	<field name="parentTask"/>
 	 	<field name="category"/>
