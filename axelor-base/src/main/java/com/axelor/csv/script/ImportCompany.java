@@ -49,7 +49,7 @@ public class ImportCompany {
 			final Path path = (Path) values.get("__path__");
 			
 			try {
-				final File image = path.getParent().resolve(fileName).toFile();
+				final File image = path.resolve(fileName).toFile();
 				if(image != null && image.isFile()) {
 					final MetaFile metaFile = metaFiles.upload(image);
 					company.setLogo(metaFile);

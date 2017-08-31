@@ -45,7 +45,7 @@ public class ImportUser {
 	    String fileName = (String) values.get("picture_fileName");
 	    if(Strings.isNullOrEmpty((fileName)))  {  return bean;  }
 		
-	    final File image = path.getParent().resolve(fileName).toFile(); 
+	    final File image = path.resolve(fileName).toFile(); 
         // Create the byte array to hold the data
         byte[] bytes = new byte[(int)image.length()];
 

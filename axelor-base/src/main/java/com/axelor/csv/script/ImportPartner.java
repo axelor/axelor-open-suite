@@ -49,7 +49,7 @@ public class ImportPartner {
 	    String fileName = (String) values.get("picture_fileName");
 		if(Strings.isNullOrEmpty((fileName)))  {  return bean;  }
 		
-	    final File image = path.getParent().resolve(fileName).toFile(); 
+	    final File image = path.resolve(fileName).toFile(); 
 
 		try {
 			final MetaFile metaFile = metaFiles.upload(image);
