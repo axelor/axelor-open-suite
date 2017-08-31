@@ -809,9 +809,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		BigDecimal inTaxTotal = saleOrder.getInTaxTotal();
 
 		BigDecimal exTaxAmountInvoiced = saleOrder.getAmountInvoiced();
-
-		return inTaxTotal.multiply(exTaxAmountInvoiced)
-				.divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_EVEN);
+		if (exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		} else {
+			return inTaxTotal.multiply(exTaxAmountInvoiced)
+					.divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_EVEN);
+		}
 	}
 
 }
