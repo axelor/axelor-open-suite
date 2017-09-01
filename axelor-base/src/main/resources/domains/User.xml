@@ -19,8 +19,8 @@
     <string name="fullName" namecolumn="true" search="partner,name" title="Partner name">
     	<![CDATA[
     	if(partner != null) {
-    		if(partner.getFirstName() != null){
-    			return partner.getFirstName()+partner.getName();
+    		if(partner.getFullName() != null){
+    			return partner.getFullName();
     		}
     		return partner.getName();
     	}
