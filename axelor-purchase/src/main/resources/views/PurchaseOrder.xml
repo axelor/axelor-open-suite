@@ -122,14 +122,14 @@
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="cancelReceipt" title="Cancel receipt" showIf="statusSelect &gt;= 3" onClick="save,action-purchase-order-method-cancel-receipt"/>
-			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.general.getSupplierStockMoveManagement() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.general.getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
 	  
 		<panel sidebar="true" name="info" title="Info.">
 			<panel readonlyIf="statusSelect == 4">
-				<field name="orderDate"/>
+				<field name="orderDate"/>w
 				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">

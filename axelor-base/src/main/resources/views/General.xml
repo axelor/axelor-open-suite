@@ -119,9 +119,9 @@
 				<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO" if-module="axelor-supplychain" widget="Boolean-switch"/>
 				<field name="terminateSaleOrderOnDelivery" if-module="axelor-sale" showIf="custStockMoveMgtOnSO" widget="Boolean-switch"/>
 				
-				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="Boolean-switch"/>
-				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain" widget="Boolean-switch"/>
-				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplierStockMoveManagement" widget="Boolean-switch"/>
+				<field name="supplStockMoveMgtOnSO" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="Boolean-switch"/>
+				<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnSO" if-module="axelor-supplychain" widget="Boolean-switch"/>
+				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplStockMoveMgtOnSO" widget="Boolean-switch"/>
 				
 				<field name="generateInvoiceFromStockMove" widget="Boolean-switch"/>
 			</panel>
