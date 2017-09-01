@@ -54,9 +54,8 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 
 		Partner partner = stockMove.getPartner();
 
-		if (partner == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER),
-					IException.MISSING_FIELD);
+		if (partner == null || !partner.getIsSupplier()) {
+			return;
 		}
 
 		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
@@ -78,9 +77,8 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
 	public void undoCalculation(StockMove stockMove) throws AxelorException {
 		Partner partner = stockMove.getPartner();
 
-		if (partner == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER),
-					IException.MISSING_FIELD);
+		if (partner == null || !partner.getIsSupplier()) {
+			return;
 		}
 
 		List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
