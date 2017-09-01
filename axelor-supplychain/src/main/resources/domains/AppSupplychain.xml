@@ -21,6 +21,16 @@
 		
 		<boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order" default="false"/>
 		<boolean name="allowTimetableInvoicing" title="Allow timetable invoicing" default="false"/>
+
+		<boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
+		<boolean name="intercoFromSale" title="Interco from sale" default="false"/>
+
+		<integer name="intercoPurchaseCreatingStatusSelect"
+				 title="Create sale counterpart on this status"
+				 selection="purchase.purchase.order.status.select"/>
+		<integer name="intercoSaleCreatingStatusSelect"
+				 title="Create purchase counterpart on this status"
+				 selection="sale.order.status.select"/>
 	</entity>
 
 </domain-models>
