@@ -129,7 +129,7 @@
 	  
 		<panel sidebar="true" name="info" title="Info.">
 			<panel readonlyIf="statusSelect == 4">
-				<field name="orderDate"/>w
+				<field name="orderDate"/>
 				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">
