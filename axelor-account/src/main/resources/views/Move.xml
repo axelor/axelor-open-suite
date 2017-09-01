@@ -50,7 +50,15 @@
 			</field>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 			<field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
-			<field name="adjustingMove" colSpan="12"/>
+  			<field name="adjustingMove" showTitle="false" showIf="adjustingMove" colSpan="12">
+				<viewer>
+					<![CDATA[
+						<h4 style="text-align: right;">
+							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record."adjustingMove"" x-translate>Adjusting Move</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
 			<button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 			<button name="account" title="Account" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 		</panel>
