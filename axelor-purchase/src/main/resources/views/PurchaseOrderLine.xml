@@ -63,7 +63,7 @@
 		</panel>
 		<panel hideIf="isTitleLine">
 			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
-				   domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
+				   domain="self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			<field name="productName"/>
 			<panel>
 				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12"/>
