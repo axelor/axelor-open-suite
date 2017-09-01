@@ -159,11 +159,12 @@ public class ManufOrderStockMoveService {
 				company,
 				null,
 				virtualLocation,
-				manufOrder.getProdProcess().getLocation(),
+				manufOrder.getProdProcess().getProducedProductLocation(),
 				plannedEndDate,
 				null,
 				null,
 				null);
+		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;
 	}
