@@ -92,7 +92,7 @@ class WkfTransitionService {
 
 		if (!fields.isEmpty()) {
 			String xml = getActionXML(action, fields);
-			metaService.updateMetaAction(action, action, "action-attrs", xml, null);
+			metaService.updateMetaAction(action, "action-attrs", xml, null);
 			actions.add(new String[]{action});
 		} else {
 			metaService.removeMetaActions(action);
@@ -241,7 +241,7 @@ class WkfTransitionService {
 			String alertAction = actionName + "-alert";
 			xml = getActionValidateXML(alertAction, type, alertMsg,
 					transition.getConditions());
-			metaService.updateMetaAction(alertAction, alertAction, "action-validate",
+			metaService.updateMetaAction(alertAction, "action-validate",
 					xml, null);
 			actions.add(alertAction);
 		}
@@ -255,7 +255,7 @@ class WkfTransitionService {
 		attrs.add(attr);
 		actions.add(actionName);
 		xml = getActionXML(actionName, attrs);
-		metaService.updateMetaAction(actionName, actionName, "action-record", xml, null);
+		metaService.updateMetaAction(actionName, "action-record", xml, null);
 		// actions.add("save");
 //		actions.add(WkfTrackingService.ACTION_TRACK);
 
@@ -263,7 +263,7 @@ class WkfTransitionService {
 		if (successMsg != null) {
 			String sucessAction = actionName + "-success";
 			xml = getActionValidateXML(sucessAction, "notify", successMsg, null);
-			metaService.updateMetaAction(sucessAction, sucessAction, "action-validate",
+			metaService.updateMetaAction(sucessAction, "action-validate",
 					xml, null);
 			actions.add(sucessAction);
 		}

@@ -18,22 +18,33 @@
 package com.axelor.studio.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.Role;
+import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
+import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.AbstractView;
+import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class StudioMetaService {
+	
+	public static final String XML_ID_PREFIX = "studio-build-";
 	
 	private final Logger log = LoggerFactory.getLogger(StudioMetaService.class);
 	
@@ -43,6 +54,12 @@ public class StudioMetaService {
 	@Inject
 	private MetaViewRepository metaViewRepo;
 	
+	@Inject
+	private MetaMenuRepository metaMenuRepo;
+	
+	@Inject
+	private MenuBuilderRepository menuBuilderRepo;
+	
 	/**
 	 * Remove MetaActions from comma separated names in string.
 	 * 
@@ -51,29 +68,43 @@ public class StudioMetaService {
 	 */
 	@Transactional
 	public void removeMetaActions(String actionNames) {
+		
+		log.debug("Removing actions: {}", actionNames);
+		if (actionNames == null) {
+			return;
+		}
 
-		if (actionNames != null) {
-			actionNames = actionNames.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "").replaceAll(WkfTrackingService.ACTION_TRACK,"");
-			List<MetaAction> metaActions = metaActionRepo
-					.all()
-					.filter("self.name in ?1",
-							Arrays.asList(actionNames.split(","))).fetch();
+		actionNames = actionNames.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "").replaceAll(WkfTrackingService.ACTION_TRACK,"");
+		List<MetaAction> metaActions = metaActionRepo
+				.all()
+				.filter("self.name in ?1",
+						Arrays.asList(actionNames.split(","))).fetch();
 
-			for (MetaAction action : metaActions) {
-				metaActionRepo.remove(action);
+		for (MetaAction action : metaActions) {
+			if (action.getXmlId() == null || !action.getXmlId().contentEquals(XML_ID_PREFIX + action.getName())) {
+				continue;
 			}
+			List<MetaMenu> menus = metaMenuRepo.all().filter("self.action = ?1", action).fetch();
+			for (MetaMenu metaMenu : menus) {
+				metaMenu.setAction(null);
+				metaMenuRepo.save(metaMenu);
+			}
+			metaActionRepo.remove(action);
 		}
 	}
 	
 	@Transactional
-	public MetaAction updateMetaAction(String xmlId, String actionName, String actionType,
+	public MetaAction updateMetaAction(String name, String actionType,
 			String xml, String model) {
-
+		
+		String xmlId = XML_ID_PREFIX + name;
 		MetaAction action = metaActionRepo.findByID(xmlId);
-
+		
 		if (action == null) {
-			action = new MetaAction(actionName);
+			action = new MetaAction(name);
 			action.setXmlId(xmlId);
+			Integer priority = getPriority(MetaAction.class.getSimpleName(), name);
+			action.setPriority(priority);
 		}
 		action.setType(actionType);
 		action.setModel(model);
@@ -161,6 +192,89 @@ public class StudioMetaService {
 		}
 		
 		return oldAction;
+	}
+	
+	public MetaMenu createMenu(MenuBuilder builder) {
+		
+		String xmlId = XML_ID_PREFIX + builder.getName();
+		MetaMenu menu = metaMenuRepo.findByID(xmlId);
+		
+		if (menu == null) {
+			menu = new MetaMenu(builder.getName());
+			menu.setXmlId(xmlId);
+			Integer priority = getPriority(MetaMenu.class.getSimpleName(), menu.getName());
+			menu.setPriority(priority);
+		}
+		
+		menu.setTitle(builder.getTitle());
+		menu.setIcon(builder.getIcon());
+		menu.setIconBackground(builder.getIconBackground());
+		menu.setOrder(builder.getOrder());
+		menu.setParent(builder.getParentMenu());
+		
+		if (builder.getGroups() != null) {
+			Set<Group> groups = new HashSet<Group>();
+			groups.addAll(builder.getGroups());
+			menu.setGroups(groups);
+		}
+		
+		if (builder.getRoles() != null) {
+			Set<Role> roles = new HashSet<Role>();
+			roles.addAll(builder.getRoles());
+			menu.setRoles(roles);
+		}
+		
+		menu.setConditionToCheck(builder.getConditionToCheck());
+		menu.setModuleToCheck(builder.getModuleToCheck());
+		menu.setLeft(builder.getLeft());
+		menu.setTop(builder.getTop());
+		menu.setHidden(builder.getHidden());
+		menu.setMobile(builder.getMobile());
+		
+		menu.setTag(builder.getTag());
+		menu.setTagCount(builder.getTagCount());
+		menu.setTagGet(builder.getTagGet());
+		menu.setTagStyle(builder.getTagStyle());
+		
+		menu.setLink(builder.getLink());
+		
+		return menu;
+	}
+	
+	
+	@Transactional
+	public void removeMetaMenu(String name) {
+		
+		MetaMenu metaMenu = metaMenuRepo.findByID(XML_ID_PREFIX + name);
+		
+		if (metaMenu == null) {
+			return;
+		}
+		
+		List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent = ?1", metaMenu).fetch();
+		for (MetaMenu subMenu : subMenus) {
+			subMenu.setParent(null);
+		}
+		List<MenuBuilder> subBuilders = menuBuilderRepo.all().filter("self.parentMenu = ?1", metaMenu).fetch();
+		for (MenuBuilder subBuilder : subBuilders) {
+			subBuilder.setParentMenu(null);
+			menuBuilderRepo.save(subBuilder);
+		}
+		
+		metaMenuRepo.remove(metaMenu);
+	}
+	
+	private Integer getPriority(String object, String name) {
+		
+		Integer priority = (Integer) JPA.em().createQuery("SELECT MAX(obj.priority) FROM " + object + " obj WHERE obj.name = ?1")
+				.setParameter(1, name)
+				.getSingleResult();
+		
+		if (priority == null) {
+			priority = -1;
+		}
+		
+		return priority + 1;
 	}
 
 }
