@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<!--  Partner Dashboard  -->
 	
@@ -73,7 +73,7 @@
 	<action-view title="My Prospects" model="com.axelor.apps.base.db.Partner" name="dashlet.my.prospects">
 		  <view type="grid" name="partner-grid"/>
 		  <view type="form" name="partner-form"/>
-		  <domain>self.user = :__user__ AND self.isCustomer=true AND self.hasOrdered != true AND :activeCompanyId MEMBER OF self.companySet</domain>
+		  <domain>self.user = :__user__ AND self.isProspect=true AND :activeCompanyId MEMBER OF self.companySet</domain>
 		  <context name="activeCompanyId" expr="eval:__user__.activeCompany != null ? __user__.activeCompany.id : null"/>  
 	</action-view>
   	

@@ -27,14 +27,16 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -46,6 +48,9 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	@Inject
 	protected UnitConversionService unitConversionService;
 	
+	@Inject
+	protected AppAccountService appAccountService;
+	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
@@ -56,7 +61,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		Unit unit = null;
 		BigDecimal qty = BigDecimal.ZERO;
 		
-		if(!saleOrderLine.getIsTitleLine())  {
+		if(saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE)  {
 			unit = saleOrderLine.getProduct().getPurchasesUnit();
 			qty = saleOrderLine.getQty();
 			if(unit == null){
@@ -75,7 +80,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 														qty, 
 														unit);
 		
-		purchaseOrderLine.setIsTitleLine(saleOrderLine.getIsTitleLine());
+		purchaseOrderLine.setIsTitleLine(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
 		this.computeAnalyticDistribution(purchaseOrderLine);
 		return purchaseOrderLine;
 		
@@ -95,7 +100,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	
 	public PurchaseOrderLine computeAnalyticDistribution(PurchaseOrderLine purchaseOrderLine) throws AxelorException{
 		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return purchaseOrderLine;  }
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return purchaseOrderLine;  }
 		
 		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 		List<AnalyticMoveLine> analyticMoveLineList = purchaseOrderLine.getAnalyticMoveLineList();
@@ -115,8 +120,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		
 		analyticMoveLine.setPurchaseOrderLine(purchaseOrderLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-		analyticMoveLine.setDate(generalService.getTodayDate());
-
+		analyticMoveLine.setDate(appBaseService.getTodayDate());
 		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 		
 	}

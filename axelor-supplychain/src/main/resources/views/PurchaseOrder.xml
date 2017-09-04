@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <action-method name="action-purchase-order-method-generate-control-invoice">
  		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>
@@ -22,5 +22,13 @@
 	<action-method name="action-purchase-order-method-fill-company-bank-details">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
 	</action-method>
+	
+	<action-view name="action-view-show-invoices-from-purchase-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
+		<view type="grid" name="invoice-light-grid" />
+		<view type="form" name="invoice-form" />
+		<domain>self.purchaseOrder.id = :purchaseOrderId OR (self.purchaseOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.purchaseOrderLine.id IN (:purchaseOrderLineIdList)))</domain>
+		<context name="purchaseOrderId" expr="eval: id" />
+		<context name="purchaseOrderLineIdList" expr="eval: (id != null &amp;&amp; purchaseOrderLineList != null &amp;&amp; !purchaseOrderLineList.isEmpty()) ? purchaseOrderLineList.collect{it.id} : null"/>
+    </action-view>
 
 </object-views>

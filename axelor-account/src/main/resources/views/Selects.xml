@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -65,7 +65,7 @@
 		<option value='4'>Canceled</option>
 	</selection>
 	
-	<selection name='move.line.report.type.select'>
+	<selection name='accounting.report.type.select'>
 		<option value="1">General ledger</option>
 		<option value="2">General balance</option>
 		<option value="3">Detailed customers balance</option>
@@ -79,17 +79,18 @@
 		<option value="2000">Analytic balance</option>
 	</selection>
 	
-	<selection name='move.line.report.type.select.export'>
+	<selection name='accounting.report.type.select.export'>
 		<option value="1000">Export payroll journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
 		<option value="1008">Export treasury -> Acc. Soft.</option>
 		<option value="1009">Export purchase -> Acc. Soft.</option>
+		<option value="1010">Export general balance -> Acc. Soft.</option>
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>
-		<option value='1'>Draft</option>
-		<option value='2'>Simulated</option>
+		<option value='1'>New</option>
+		<option value='2'>Daybook</option>
 		<option value='3'>Validated</option>
 		<option value='4'>Canceled</option>
 	</selection>
@@ -100,14 +101,9 @@
 		<option value='3'>Template</option>
 		<option value='4'>Import</option>
 	</selection>
-	
-	<selection name='iaccount.cash.register.line.status.select'>
-		<option value='0'>Draft</option>
-		<option value='1'>Closed</option>
-	</selection>
-	
+
 	<selection name='payer.quality.config.line.incident.type.select'>
-		<option value='0'>Reminder</option>
+		<option value='0'>Debt recovery</option>
 		<option value='1'>Reject</option>
 	</selection>
 	
@@ -123,7 +119,13 @@
 		<option value='3'>Customer sale</option>
 		<option value='4'>Customer refund</option>
 	</selection>
-	
+
+	<selection name='iinvoice.operation.sub.type.select'>
+		<option value="1">Default</option>
+		<option value="2">Advance payment invoice</option>
+		<option value="3">Balance invoice</option>
+	</selection>
+
 	<selection name='ipayment.operation.type.select'>
 		<option value='1'>Supplier purchase</option>
 		<option value='2'>Supplier refund</option>
@@ -151,7 +153,7 @@
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
 		<option value="12">Direct debit</option>
-		<option value="14">Reminder</option>
+		<option value="14">Debt recovery</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
@@ -164,7 +166,12 @@
 		<option value="2">Supplier Payment</option>
 		<option value="3">Customer Reimbursement</option>
 	</selection>
-	
+
+	<selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
+		<option value="1">Customer refund</option>
+		<option value="2">Partner credit balance reimbursement</option>
+	</selection>
+
 	<selection name="ireimbursement.batch.type.select">
 		<option value="1">Reimbursement Export</option>
 		<option value="2">Rejected Reimbursements Import</option>
@@ -180,8 +187,8 @@
 		<option value="2">Import direct debit rejects</option>
 	</selection>
 	
-	<selection name="ireminder.batch.type.select">
-		<option value="1">Classic reminder</option>
+	<selection name="idebt.recovery.batch.type.select">
+		<option value="1">Classic debt recovery</option>
 	</selection>
 	
 	<selection name="iinterbank.account.order.batch.type.select">
@@ -231,7 +238,7 @@
 		<option value="2">Validated</option>
 	</selection>
 	
-	<selection name="iaccount.move.line.report.status.select">
+	<selection name="iaccount.accounting.report.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
 	</selection>
@@ -261,6 +268,7 @@
 		<option value="3">Refund invoice</option>
 		<option value="4">Invoice</option>
 		<option value="5">Other</option>
+		<option value="6">Advance Payment Imputation</option>
 	</selection>
 	
 	<selection name="invoice.payment.status.select">
@@ -279,6 +287,23 @@
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>
+	</selection>
+
+	<selection name="app.type.select" id="account.app.type.select">
+		<option order="2" value="account">Account</option>
+		<option order="3" value="invoice">Invoice</option>
+		<option order="4" value="budget">Budget</option>
+	</selection>
+
+    <selection name="base.blocking.select" id="account.blocking.select">
+        <option value="1">Reminder blocking</option>
+        <option value="2">Invoicing blocking</option>
+        <option value="3">Reimbursement blocking</option>
+        <option value="4">Debit blocking</option>
+    </selection>
+
+	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
 	</selection>
 
 </object-views>

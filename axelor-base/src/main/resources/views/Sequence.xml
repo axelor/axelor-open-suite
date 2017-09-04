@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
         <field name="name"/>
-        <field name="code" />
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="prefixe"/>
         <field name="suffixe"/>
@@ -14,17 +14,17 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
 		<panel name="main" itemSpan="12">
-			<field name="code" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="name"/>
 		</panel>
 		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
-			<label title="The tags below can be used as a prefix or a suffix :" />
-			<label title="%YYYY  : Full Year (2017)" />
-			<label title="%YY  : Year (17)" />
-			<label title="%M  : Month (1, 2, 3, ...)" />
+			<label title="The tags below can be used as a prefix or a suffix" />
+			<label title="%YYYY : Full Year (2017)" />
+			<label title="%YY : Year (17)" />
+			<label title="%M : Month (1, 2, 3, ...)" />
 			<label title="%FM : Full Month (01, 02, 03, ...)" />
-			<label title="%D  : Day" />
+			<label title="%D : Day" />
 			<label title="%WY : Week number" />
 		</panel>
 		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
@@ -63,7 +63,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     	<field name="padding" expr="3"/>
     	<field name="toBeAdded" expr="1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
 	<action-record name="action-sequence-monthly-reset" model="com.axelor.apps.base.db.Sequence">
@@ -71,13 +71,14 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 	</action-record>
     
     <action-attrs name="action-sequence-attrs">
-    	<attribute name="hidden" for="company" expr="eval: code in ['partner','eventTicket','productTrackingNumber']"/>
-    	<attribute name="required" for="company" expr="eval: !(code in ['partner','eventTicket','productTrackingNumber','bankOrder'])"/>
+		<attribute name="hidden" for="company" expr="eval: code in ['partner','productTrackingNumber','product']"/>
+		<attribute name="required" for="company" expr="eval: !(code in ['partner','productTrackingNumber','product','bankOrder'])"/>
     </action-attrs>
 
     <action-validate name="action-sequence-validate">
     	<error message="Prefix or suffix must contain %YY or %YYYY since yearly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isYearValid(__this__)"/>
 		<error message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
+		<error message="Total sequence length must be less than 15 characters." if="!com.axelor.apps.base.service.administration.SequenceService.isSequenceLengthValid(__this__)"/>
     </action-validate>
 
 	<action-method name="action-method-sequence-document-concerned-onchange">

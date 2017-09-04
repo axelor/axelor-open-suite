@@ -18,15 +18,20 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.project.db.repo.ProjectTaskManagementRepository;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectManagementRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.app.AppProjectServiceImpl;
+import com.axelor.team.db.repo.TeamTaskRepository;
 
 public class ProjectModule extends AxelorModule{
 
 	@Override
 	protected void configure() {
-		bind(ProjectTaskRepository.class).to(ProjectTaskManagementRepository.class);
-		
+		bind(ProjectRepository.class).to(ProjectManagementRepository.class);
+		bind(AppProjectService.class).to(AppProjectServiceImpl.class);
+		bind(TeamTaskRepository.class).to(TeamTaskProjectRepository.class);
 	}
 
 }

@@ -44,9 +44,9 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -69,11 +69,11 @@ public class BankPayPaymentScheduleExportService extends PaymentScheduleExportSe
 			DirectDebitManagementRepository directDebitManagementRepo,
 			InvoiceService invoiceService, InvoiceRepository invoiceRepo,
 			CfonbExportService cfonbExportService, 
-			GeneralService generalService, PartnerService partnerService) {
+			AppAccountService appAccountService, PartnerService partnerService) {
 		super(moveService, moveRepo, moveLineServices, moveLineRepo, reconcileService,
 				sequenceService, paymentModeService, paymentService, blockingService,
 				accountConfigService, paymentScheduleLineRepo,
-				directDebitManagementRepo, invoiceService, invoiceRepo, generalService,
+				directDebitManagementRepo, invoiceService, invoiceRepo, appAccountService,
 				partnerService);
 		this.cfonbExportService = cfonbExportService;
 	}
@@ -118,7 +118,7 @@ public class BankPayPaymentScheduleExportService extends PaymentScheduleExportSe
 		}
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_1),
-					GeneralServiceImpl.EXCEPTION,paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,paymentSchedule.getScheduleId()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cfonbExportService.testBankDetailsField(bankDetails);
@@ -131,7 +131,7 @@ public class BankPayPaymentScheduleExportService extends PaymentScheduleExportSe
 
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceImpl.EXCEPTION, invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cfonbExportService.testBankDetailsField(bankDetails);
@@ -144,7 +144,7 @@ public class BankPayPaymentScheduleExportService extends PaymentScheduleExportSe
 
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cfonbExportService.testBankDetailsField(bankDetails);

@@ -27,7 +27,7 @@ import java.util.Set;
 
 import javax.persistence.EntityTransaction;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,14 +57,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
@@ -98,7 +98,7 @@ public class IrrecoverableService{
 	protected LocalDate date;
 
 	@Inject
-	public IrrecoverableService(GeneralService generalService, SequenceService sequenceService, MoveService moveService, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
+	public IrrecoverableService(AppAccountService appAccountService, SequenceService sequenceService, MoveService moveService, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
 			ReconcileService reconcileService, TaxService taxService, TaxAccountService taxAccountService, PaymentScheduleService paymentScheduleService, PaymentScheduleRepository paymentScheduleRepo,
 			PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo,
 			InvoiceRepository invoiceRepo, ManagementObjectRepository managementObjectRepo, IrrecoverableRepository irrecoverableRepo) {
@@ -119,7 +119,7 @@ public class IrrecoverableService{
 		this.managementObjectRepo = managementObjectRepo;
 		this.irrecoverableRepo = irrecoverableRepo;
 		
-		this.date = generalService.getTodayDate();
+		this.date = appAccountService.getTodayDate();
 
 	}
 
@@ -451,7 +451,7 @@ public class IrrecoverableService{
 		Move move = this.createIrrecoverableMove(paymentScheduleLine.getRejectMoveLine());
 		if(move == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 		moveService.getMoveValidateService().validateMove(move);
 		irrecoverable.getMoveSet().add(move);
@@ -469,7 +469,7 @@ public class IrrecoverableService{
 		Move move = this.createIrrecoverableMove(invoice, prorataRate, invoice.getRejectMoveLine() != null);
 		if(move == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 		moveService.getMoveValidateService().validateMove(move);
 		irrecoverable.getMoveSet().add(move);
@@ -792,7 +792,7 @@ public class IrrecoverableService{
 		MoveLine customerMoveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
 		if(customerMoveLine == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-					GeneralServiceImpl.EXCEPTION, invoice.getInvoiceId()), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION, invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
 		customerMoveLine.setIrrecoverableStatusSelect(MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
@@ -892,7 +892,7 @@ public class IrrecoverableService{
 		String seq = sequenceService.getSequenceNumber(IAdministration.IRRECOVERABLE, company);
 		if(seq == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_4),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return seq;
@@ -922,7 +922,7 @@ public class IrrecoverableService{
 
 			if(moveLine == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-						GeneralServiceImpl.EXCEPTION,invoice.getInvoiceId()), IException.INCONSISTENCY);
+						AppAccountServiceImpl.EXCEPTION,invoice.getInvoiceId()), IException.INCONSISTENCY);
 			}
 
 			this.passInIrrecoverable(moveLine, managementObject, false);
@@ -948,7 +948,7 @@ public class IrrecoverableService{
 
 		if(moveLine == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-					GeneralServiceImpl.EXCEPTION,invoice.getInvoiceId()), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION,invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
 
 		this.passInIrrecoverable(moveLine, managementObject, false);

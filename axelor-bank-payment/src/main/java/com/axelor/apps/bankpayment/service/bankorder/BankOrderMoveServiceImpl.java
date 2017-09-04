@@ -17,7 +17,8 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -40,7 +42,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -215,7 +216,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 
 		default:
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 		
 	}

@@ -24,7 +24,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -42,16 +42,16 @@ public class MoveManagementRepository extends MoveRepository {
 		} catch (AxelorException e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
-		copy.setStatusSelect(STATUS_DRAFT);
+		copy.setStatusSelect(STATUS_NEW);
 		copy.setReference(null);
-		copy.setDate(Beans.get(GeneralService.class).getTodayDate());
+		copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
 		copy.setExportNumber(null);
 		copy.setExportDate(null);
-		copy.setMoveLineReport(null);
+		copy.setAccountingReport(null);
 		copy.setValidationDate(null);
 		copy.setPeriod(period);
 		copy.setAccountingOk(false);
-		copy.setIgnoreInReminderOk(false);
+		copy.setIgnoreInDebtRecoveryOk(false);
 		copy.setPaymentVoucher(null);
 		copy.setRejectOk(false);
 
@@ -75,7 +75,7 @@ public class MoveManagementRepository extends MoveRepository {
 	@Override
 	public void remove(Move entity){
 		
-		if(!entity.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+		if(!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)){
 			throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
 		}else{
 			entity.setArchived(true);

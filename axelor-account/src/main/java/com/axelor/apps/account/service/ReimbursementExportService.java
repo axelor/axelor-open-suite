@@ -30,8 +30,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +45,8 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -74,8 +76,6 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
@@ -104,7 +104,7 @@ public class ReimbursementExportService {
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
 			SequenceService sequenceService, AccountBlockingService accountBlockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
-			PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
+			PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -116,7 +116,7 @@ public class ReimbursementExportService {
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
 		this.partnerRepository = partnerRepository;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 	}
 
 	/**
@@ -166,11 +166,11 @@ public class ReimbursementExportService {
 				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-//				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
-			reimbursementRepo.save(reimbursement);
-//			return reimbursement;
+			reimbursement = reimbursementRepo.save(reimbursement);
+			return reimbursement;
 		}
 
 		log.debug("End runReimbursementProcess");
@@ -270,7 +270,7 @@ public class ReimbursementExportService {
 
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -300,6 +300,7 @@ public class ReimbursementExportService {
 	public Reimbursement createReimbursement(Partner partner, Company  company) throws AxelorException   {
 		Reimbursement reimbursement = new Reimbursement();
 		reimbursement.setPartner(partner);
+		reimbursement.setCompany(company);
 
 		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
 
@@ -318,8 +319,7 @@ public class ReimbursementExportService {
 	 * @return
 	 */
 	public boolean canBeReimbursed(Partner partner, Company company){
-
-		return !accountBlockingService.isReminderBlocking(partner, company);
+		return !accountBlockingService.isReimbursementBlocking(partner, company);
 	}
 
 
@@ -348,14 +348,14 @@ public class ReimbursementExportService {
 	/**
 	 * Méthode permettant de créer un fichier xml de virement au format SEPA
 	 * @param export
-	 * @param dateTime
+	 * @param datetime
 	 * @param reimbursementList
 	 * @throws AxelorException
 	 * @throws DatatypeConfigurationException
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	public void exportSepa(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+	public void exportSepa(Company company, ZonedDateTime datetime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
 
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 
@@ -367,7 +367,7 @@ public class ReimbursementExportService {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-		Date date = dateTime.toDate();
+		Date date = Date.from(datetime.toInstant());
 		BigDecimal ctrlSum = BigDecimal.ZERO;
 		int nbOfTxs = 0;
 
@@ -556,7 +556,7 @@ public class ReimbursementExportService {
 		Partner partner = invoice.getPartner();
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		// récupération des trop-perçus du tiers
-		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
 				MoveRepository.STATUS_VALIDATED , partner, MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 

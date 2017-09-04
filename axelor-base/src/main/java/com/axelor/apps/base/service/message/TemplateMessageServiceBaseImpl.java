@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +33,6 @@ import com.axelor.meta.MetaFiles;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +82,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		logger.debug("Generate birt metafile: {}", birtTemplate.getName());
 
-		String fileName = birtTemplate.getName() + "-" + new DateTime().toString("yyyyMMddHHmmss");
+		String fileName = birtTemplate.getName() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		File file = generateBirtTemplate( maker,
 				fileName,
 				birtTemplate.getTemplateLink(),

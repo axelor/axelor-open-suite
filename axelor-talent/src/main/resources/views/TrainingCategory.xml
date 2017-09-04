@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="training-category-grid" title="Training Categories" model="com.axelor.apps.talent.db.TrainingCategory">
+		<field name="name" />
+	</grid>
+	
+	<form name="training-category-form" title="Training Category" model="com.axelor.apps.talent.db.TrainingCategory" width="large">
+		<panel>
+			<field name="name" />
+		</panel>
+	</form>
+	
+</object-views>

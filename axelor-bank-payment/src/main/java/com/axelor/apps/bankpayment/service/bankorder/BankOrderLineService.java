@@ -20,11 +20,11 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
+import java.time.LocalDate;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,8 +172,7 @@ public class BankOrderLineService {
 		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() != null) {
 
-			    bankDetailsIds = Beans.get(BankDetailsService.class)
-						.getIdStringListFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+			    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
 
 				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
 					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -186,8 +185,7 @@ public class BankOrderLineService {
 
 		//case where the bank order is for a partner
 		else if (bankOrderLine.getPartner() != null) {
-		    bankDetailsIds = Beans.get(BankDetailsService.class).
-					getIdStringListFromCollection(bankOrderLine.getPartner().getBankDetailsList());
+		    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getPartner().getBankDetailsList());
 		}
 
 		if (bankDetailsIds.equals("")) {
@@ -207,8 +205,7 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 		    domain += " AND self.id IN (" +
-					Beans.get(BankDetailsService.class).
-							getIdStringListFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
+					StringTool.getIdFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
 

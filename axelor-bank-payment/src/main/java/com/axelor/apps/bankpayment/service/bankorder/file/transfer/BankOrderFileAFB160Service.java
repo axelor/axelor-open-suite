@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -155,7 +156,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	 */
 	protected String getSenderC13Area()  {
 	
-		return this.bankOrderDate.toString("ddMMy");
+		return this.bankOrderDate.format(DateTimeFormatter.ofPattern("ddMMy"));
 	
 	}
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppAccount" lang="java" cachable="true" extends="App">
+
+		<!-- Comptabilité -->
+		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"
+			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
+		<many-to-one name="chequeInterbankCode" ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques" />
+		<one-to-many name="payerQualityConfigLineList" ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)" />
+		
+		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>
+		
+		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
+		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
+		
+		<boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="false" />
+		
+		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
+
+		<extra-code><![CDATA[
+	
+	   
+		public static final int DISTRIBUTION_TYPE_FREE = 1;
+		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
+		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
+	
+	
+		]]></extra-code>
+		
+	</entity>
+
+</domain-models>

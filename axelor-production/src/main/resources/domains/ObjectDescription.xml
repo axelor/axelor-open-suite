@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -12,7 +12,7 @@
  	<many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
     <integer name="sequence" title="Sequence"/>
     <string name="description" title="Description" large="true"/>
-    <many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Picture" help="true"/>
+    <many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Picture"/>
     
   </entity>
 </domain-models>

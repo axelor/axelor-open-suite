@@ -1,0 +1,2 @@
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"condition";"conditionParams"
+"perm.contract.all";"com.axelor.apps.contract.db.*";"true";"true";"true";"true";"true";;

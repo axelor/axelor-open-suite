@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -25,6 +25,22 @@
 		<option value="1">Free</option>
 		<option value="2">By delivery</option>
 		<option value="3">Per order</option>
+	</selection>
+	
+	<selection name="app.type.select" id="purchase.app.type.select">
+		<option order="6" value="purchase">Purchase</option>
+		<option order="7" value="purchase-request">Purchase Request</option>
+	</selection>
+	
+	<selection name="purchase.request.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Requested</option>
+		<option value="3">Accepted</option>
+		<option value="4">Purchased</option>
+		<option value="5">Partial delivery</option>
+		<option value="6">Delivered</option>
+		<option value="7">Refused</option>
+		<option value="8">Canceled</option>
 	</selection>
 	
 </object-views>

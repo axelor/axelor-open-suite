@@ -1,11 +1,16 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-sale"
-	version "4.1.0"
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
 	title "Axelor :: Sale"
+	description "Axelor Sale Module"
 
 	removable true
+}
 
-	module "modules:axelor-crm"
+dependencies {
+	compile project(":modules:axelor-crm")
 }

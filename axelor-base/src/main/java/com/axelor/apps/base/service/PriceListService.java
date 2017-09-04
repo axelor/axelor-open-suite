@@ -23,14 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -44,7 +43,7 @@ public class PriceListService {
 	private PriceListRepository priceListRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList)  {
 
@@ -138,12 +137,12 @@ public class PriceListService {
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect,BigDecimal discountAmount)  {
 
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.subtract(discountAmount).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			return  unitPrice.subtract(discountAmount).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
 					BigDecimal.ONE.subtract(
-							discountAmount.divide(new BigDecimal(100),generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP))).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+							discountAmount.divide(new BigDecimal(100),appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP))).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 
 		return unitPrice;
@@ -155,12 +154,12 @@ public class PriceListService {
 		Map<String, Object> discounts = new HashMap<String, Object>();
 
 		if(priceListLine != null)  {
-			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 			discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
 
 		}
 		else  {
-			discounts.put("discountAmount", priceList.getGeneralDiscount().setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+			discounts.put("discountAmount", priceList.getGeneralDiscount().setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 			discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
 		}
 

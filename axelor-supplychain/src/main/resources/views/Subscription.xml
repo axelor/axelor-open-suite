@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="subscription-grid" title="Subscriptions" model="com.axelor.apps.supplychain.db.Subscription" orderBy="invoicingDate">
 		<field name="invoicingDate"/>
@@ -11,6 +11,9 @@
 	 </grid>
 	 
 	 <grid name="subscription-from-menu-grid" title="Subscriptions" model="com.axelor.apps.supplychain.db.Subscription">
+	 	<toolbar>
+	 		<button name="subscriptionLinesToInvoice" title="Subscription lines to invoice" onClick="sc-subscription-method-lines-to-invoice"/>
+	 	</toolbar>
     	 <menubar>
 		    <menu title="Actions" icon="fa-list-ul" showTitle="true">
 		      <item title="Generate invoice from selected subscrip" prompt="Are you sure you want to generate invoice for selected subscriptions ?" action="action-validate-supplychain-subscription-check-selection, com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForSelectedSubscriptions"/>
@@ -44,5 +47,9 @@
 	<action-validate name="action-validate-supplychain-subscription-check-selection">
 		<error message="You have to select at least one subscription" if="_ids == null || _ids.size() == 0"/>
 	</action-validate>
+	
+	<action-method name="sc-subscription-method-lines-to-invoice">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getSubscriptionSaleOrdersToInvoice"/>
+	</action-method>
 	
 </object-views>

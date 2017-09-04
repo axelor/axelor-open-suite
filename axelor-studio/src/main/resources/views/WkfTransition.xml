@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="wkf-transition-grid" title="Transition" model="com.axelor.studio.db.WkfTransition">
+       <field name="name"/>
+       <field name="source" />
+       <field name="target" />
+  </grid>
+    
+  <form name="wkf-transition-form" title="Transition" model="com.axelor.studio.db.WkfTransition" width="large">
+      <panel>
+        <field name="name" readonly="true"/>
+        <spacer />
+        <field name="source" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
+        <field name="target" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
+        <field name="isButton"/>
+        <field name="buttonTitle" showIf="isButton" requiredIf="isButton"/>
+        <field name="alertTypeSelect" showIf="isButton"/>
+        <field name="alertMsg" showIf="isButton"/>
+        <field name="successMsg" showIf="isButton"/>
+        <field name="wkf" hidden="true"/>
+        <field name="wkf.model" hidden="true"/>
+      </panel>
+      <panel-related field="conditions" colSpan="12" editable="true" onNew="action-wkf-transition-filter-set-defaults">
+      	  <field name="metaJsonField" required="true" widget="SuggestBox" onSelect="action-wkf-transition-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
+	      <field name="targetField" readonlyIf="metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null"  />
+	      <field name="operator"/>
+	      <field name="value" onChange="action-studio-filter-validate-values" />
+	      <field name="logicOp" />
+	      <field name="metaJsonField.targetModel" hidden="true" />
+	      <field name="metaJsonField.targetJsonModel" hidden="true" />
+	      <field name="isJson" hidden="true" />
+	      <field name="targetType" hidden="true" />
+      </panel-related>
+      <panel-related field="roleSet" colSpan="12" showIf="isButton"/>
+  </form>
+  
+  <action-attrs name="action-wkf-transition-filter-meta-json-field-domain">
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.jsonModel.name = '${_parent.wkf.model}' AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many')&quot;"/>
+  </action-attrs>
+  
+  <action-attrs name="action-wkf-transition-filter-set-defaults">
+  	<attribute for="isJson" name="value" expr="eval:true" /> 
+  </action-attrs>
+  
+</object-views>

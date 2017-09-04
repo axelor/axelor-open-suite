@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.hr.web.lunch.voucher;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.HRConfig;
@@ -37,7 +40,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.joda.time.LocalDate;
 
 public class LunchVoucherAdvanceController {
 	
@@ -80,7 +82,7 @@ public class LunchVoucherAdvanceController {
 
 	public void print(ActionRequest request, ActionResponse response) {
 	    LunchVoucherAdvance lunchVoucherAdvance = request.getContext().asType(LunchVoucherAdvance.class);
-	    String name = lunchVoucherAdvance.getEmployee().getName() + "-" + LocalDate.now().toString("YYYY-MM-dd");
+	    String name = lunchVoucherAdvance.getEmployee().getName() + "-" + LocalDate.now().format(DateTimeFormatter.ISO_DATE);
 	    try {
 	    	String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)
 					.addParam("lunchVoucherAdvId", lunchVoucherAdvance.getId())

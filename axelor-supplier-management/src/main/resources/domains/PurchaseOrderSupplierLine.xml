@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="suppliermanagement" package="com.axelor.apps.suppliermanagement.db"/>
 
@@ -15,7 +15,7 @@
   	
   	<string name="comments" title="Comments" large="true"/>
   	
-	<date name="estimatedDelivDate" title="Estim. delivery date" help="true"/>  	
+	<date name="estimatedDelivDate" title="Estim. delivery date"/>  	
   	
   	<integer name="stateSelect" title="State" selection="isuppliermanagement.purchase.order.supplier.line.state.select" initParam="true"/>
   	

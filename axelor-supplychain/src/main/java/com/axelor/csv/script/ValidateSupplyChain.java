@@ -17,19 +17,24 @@
  */
 package com.axelor.csv.script;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
@@ -39,11 +44,13 @@ import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -52,19 +59,19 @@ import com.google.inject.persist.Transactional;
 
 public class ValidateSupplyChain {
 	@Inject
-	InventoryService inventoryService;
+	private InventoryService inventoryService;
 
 	@Inject
-	PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 
 	@Inject
-	InvoiceService invoiceService;
+	private InvoiceService invoiceService;
 
 	@Inject
-	SaleOrderStockService saleOrderStockService;
+	private SaleOrderStockService saleOrderStockService;
 
 	@Inject
-	SaleOrderLineService saleOrderLineService;
+	private SaleOrderLineService saleOrderLineService;
 
 	@Inject
 	private StockMoveRepository stockMoveRepo;
@@ -77,10 +84,19 @@ public class ValidateSupplyChain {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
+	
+	@Inject
+	private SaleConfigRepository saleConfigRepo;
+	
+	@Inject
+	private SupplychainSaleConfigService configService;
+	
+	@Inject
+	private StockConfigService stockConfigService;
 
 //	@Inject
 //	ProductionOrderSaleOrderService productionOrderSaleOrderService;
-
+	
 	@SuppressWarnings("rawtypes")
 	public Object validateSupplyChain(Object bean, Map values) {
 		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
@@ -88,6 +104,11 @@ public class ValidateSupplyChain {
 		"UNION ALL(SELECT 'po' as type,id,order_date as date from purchase_purchase_order) order by date";
 
 		Query query = JPA.em().createNativeQuery(objectQuery);
+		List<SaleConfig> configs = saleConfigRepo.all().fetch();
+		for (SaleConfig config : configs) {
+			configService.updateCustomerCredit(config);
+		}
+		
 		for(Object objects : query.getResultList()){
 			Object[] object = (Object[]) objects;
 			if(object[0].toString().equals("inv"))
@@ -101,15 +122,12 @@ public class ValidateSupplyChain {
 	}
 
 	@Transactional
-	void validateInventory(Long inventoryId){
-		try{
+	void validateInventory(Long inventoryId) {
+		try {
 			Inventory inventory = inventoryRepo.find(inventoryId);
-			StockMove stockMove = inventoryService.generateStockMove(inventory);
+			StockMove stockMove = inventoryService.validateInventory(inventory);
 			stockMove.setRealDate(inventory.getDateT().toLocalDate());
-			stockMoveRepo.save(stockMove);
-			inventory.setStatusSelect(3);
-			inventoryRepo.save(inventory);
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -120,6 +138,12 @@ public class ValidateSupplyChain {
 		try{
 			PurchaseOrder purchaseOrder = purchaseOrderRepo.find(poId);
 			purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+			for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLineList()) {
+				Product product = line.getProduct();
+				if (product.getWeightUnit() == null) {
+					product.setWeightUnit(stockConfigService.getStockConfig(purchaseOrder.getCompany()).getCustomsWeightUnit());
+				}
+			}
 			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
 				purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
 				StockMove stockMove = stockMoveRepo.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
@@ -136,7 +160,7 @@ public class ValidateSupplyChain {
 					invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 				}
 				else{
-					invoice.setInvoiceDate(new LocalDate());
+					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);
@@ -155,8 +179,13 @@ public class ValidateSupplyChain {
 
 		try{
 			SaleOrder saleOrder = saleOrderRepo.find(soId);
-			for(SaleOrderLine line : saleOrder.getSaleOrderLineList())
+			for(SaleOrderLine line : saleOrder.getSaleOrderLineList()) {
 				line.setTaxLine(saleOrderLineService.getTaxLine(saleOrder, line));
+				Product product = line.getProduct();
+				if (product.getWeightUnit() == null) {
+					product.setWeightUnit(stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsWeightUnit());
+				}
+			}
 			saleOrderService.computeSaleOrder(saleOrder);
 			if(saleOrder.getStatusSelect() == ISaleOrder.STATUS_ORDER_CONFIRMED){
 				//taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation of tasks in project module
@@ -170,7 +199,7 @@ public class ValidateSupplyChain {
 					invoice.setInvoiceDate(saleOrder.getConfirmationDate());
 				}
 				else{
-					invoice.setInvoiceDate(new LocalDate());
+					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);

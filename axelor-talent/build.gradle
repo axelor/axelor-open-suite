@@ -1,0 +1,15 @@
+apply plugin: "com.axelor.app-module"
+
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
+	title "Axelor Talent"
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-human-resource")
+	compile project(":modules:axelor-crm")
+}

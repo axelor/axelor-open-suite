@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -27,10 +27,10 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,7 +45,7 @@ public class MoveAdjustementService {
 	protected LocalDate today;
 
 	@Inject
-	public MoveAdjustementService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, 
+	public MoveAdjustementService(AppAccountService appAccountService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, 
 			MoveToolService moveToolService, MoveDueService moveDueService, MoveRepository moveRepository) {
 
 		this.moveLineService = moveLineService;
@@ -53,7 +53,7 @@ public class MoveAdjustementService {
 		this.moveValidateService = moveValidateService;
 		this.moveRepository = moveRepository;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 
 	}
 	

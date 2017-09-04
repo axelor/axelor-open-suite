@@ -1,0 +1,2 @@
+"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn";"sequence"
+"Leave Management";"LEAVE";"Leave Management";"leave";"app-leave.png";"axelor-human-resource";"acccount,project,employee";10

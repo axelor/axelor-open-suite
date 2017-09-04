@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
-	<menuitem name="menu-products-dashboard-1" parent="referential-report"  
+	<menuitem name="menu-products-dashboard-1" parent="referential-report"  if="__config__.app.isApp('supplychain')"
 		title="Products"  action="supplychain.products.dashboard.1" />	
 		
 	<action-view name="supplychain.products.dashboard.1" title="Products Details">
@@ -12,55 +12,70 @@
 	</action-view>
 
 
-	<menuitem name="stock-multi-sale-invoicing" parent="stock-root"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing" order="-5"/>
-
 	<menuitem name="stock-multi-purchase-invoicing" parent="stock-root"
-		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" order="-10"/>
-
-	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
-	</action-view>
-
+		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" order="35"/>
+	
 	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
 	</action-view>
-	
-	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
+		
+	<menuitem name="stock-multi-sale-invoicing" parent="stock-root" if="__config__.app.isApp('supplychain')"
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"  order="40"/>
+		
+	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
+	</action-view>	
+
+	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch" if="__config__.app.isApp('supplychain')"
 		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
 	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
-		model="com.axelor.apps.supplychain.db.SupplychainBatch" >
-		<view type="grid" name="supplychain-batch-grid"/>
-		<view type="form" name="supplychain-batch-form"/>
+		model="com.axelor.apps.supplychain.db.SupplychainBatch">
+		<view type="grid" name="supplychain-batch-grid" />
+		<view type="form" name="supplychain-batch-form" />
+		<domain>self.actionSelect != :disabledActionSelect</domain>
+		<context name="disabledActionSelect"
+			expr="eval: __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES"
+			if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
+		<context name="disabledActionSelect" expr="eval: 0"
+			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
 	
-	<menuitem name="sale-order-root-subscription" parent="sc-root-sale"
-		title="Subscriptions" order="-60" groups="admins,ERP"/>
+	<menuitem name="subscription-root"  if="__config__.app.isApp('subscription')" parent="sc-root-sale"
+		title="Subscriptions" order="50"  icon="fa-clone" icon-background="#e0a83c" />
 	
-	<menuitem name="sale-order-line-subscription-to-invoiced" parent="sale-order-root-subscription" 
-    	title="Subscriptions to invoice" action="sale.order.line.subscription.toinvoiced" /> 
+	<menuitem name="subscription-root-subscription-to-invoice" parent="subscription-root" 
+    	title="Subscriptions to invoice" action="subscription.root.subscription.to.invoice" /> 
 
-	<action-view name="sale.order.line.subscription.toinvoiced" title="Subscriptions to invoice" model="com.axelor.apps.supplychain.db.Subscription">
+	<action-view name="subscription.root.subscription.to.invoice" title="Subscriptions to invoice" model="com.axelor.apps.supplychain.db.Subscription">
     	<view type="grid" name="subscription-from-menu-grid"/>
 	    <view type="form" name="subscription-from-menu-form"/>
 	    <domain>self.invoicingDate &lt;= :todayDate AND self.invoiced = false</domain>
-	    <context name="todayDate" expr="eval: eval:__config__.generalService.getTodayDate()"/>
+	    <context name="todayDate" expr="eval: eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="sc-root-sale-orders-subscription" parent="sale-order-root-subscription" order="-2"
-		groups="admins,ERP" title="Subscription Sale orders To Invoice" action="sc.root.sale.orders.subscription" />
-	
-	<action-method name="sc.root.sale.orders.subscription">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getSubscriptionSaleOrdersToInvoice"/>
-	</action-method>
+	<menuitem name="subscription-root-subscription-products" parent="subscription-root"
+		title="Subscription products" action="subscription.root.subscription.products" />
+
+	<action-view name="subscription.root.subscription.products" title="Subscription products"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_isModel" expr="false"/>
+		<context name="_productTypeSelect" expr="subscriptable"/>
+	</action-view>
 	
 	
 <!-- 	MRP -->
 	
-	<menuitem name="stock-mrp" parent="stock-root" title="MRP"/>
+	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 
 	
 	<menuitem name="stock-mrp-calculation" parent="stock-mrp" title="Calculation" action="stock.mrp.calculation"/>
 	
@@ -74,12 +89,11 @@
 	<action-view name="stock.mrp.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
    	    <view type="grid" name="mrp-forecast-grid"/>
 	    <view type="form" name="mrp-forecast-form"/>
-   		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+   		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
 	
-	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="configuration"/>
-	
+	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration"/>
 	
 	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="MRP move types" action="stock.mrp.configuration.mrp.line.type"/>
 	
@@ -87,10 +101,31 @@
     	<view type="grid" name="mrp-line-type-grid"/>
 	    <view type="form" name="mrp-line-type-form"/>
 	</action-view>
-		
-		
 	
+	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase" if="__config__.app.isApp('stock')"
+		title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
+
+	<action-view name="top.menu.purchase.suparrivals" title="Supplier Arrivals"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-in-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="supplier-arrivals-filters"/>
+		<domain>self.fromLocation.typeSelect = 2</domain>
+		<context name="_typeSelect" expr="3"/>
+		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+	</action-view>
 	
+	<menuitem name="top-menu-sales-custdeliveries" parent="top-menu-sales"  if="__config__.app.isApp('stock')"
+		title="Customer deliveries" action="top.menu.sales.custdeliveries" top="true"/>
+
+	<action-view name="top.menu.sales.custdeliveries" title="Customer deliveries"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-out-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+		<domain>self.toLocation.typeSelect = 2</domain>
+		<context name="_typeSelect" expr="2"/>
+	</action-view>
 	
 	
 </object-views>

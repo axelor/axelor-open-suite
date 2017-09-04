@@ -26,21 +26,17 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
@@ -57,7 +53,6 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -153,20 +148,6 @@ public class EventController {
 	}
 
 
-	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		Event event = request.getContext().asType(Event.class);
-
-		if(event.getTicketNumberSeq() ==  null && event.getTypeSelect() == IEvent.TICKET){
-			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.EVENT_TICKET);
-			if (seq == null)
-				throw new AxelorException(I18n.get(IExceptionMessage.EVENT_1),
-								IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("ticketNumberSeq", seq);
-		}
-	}
-
 	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -201,7 +182,7 @@ public class EventController {
 			else
 				response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
 		}else
-			response.setFlash(I18n.get(IExceptionMessage.EVENT_2));
+			response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
 	}
 
 
@@ -343,13 +324,13 @@ public class EventController {
 		Map<Integer,Boolean> daysMap = new HashMap<Integer,Boolean>();
 		Map<Integer,Boolean> daysCheckedMap = new HashMap<Integer,Boolean>();
 		if(recurrenceType == 2){
-			daysMap.put(DateTimeConstants.MONDAY, monday);
-			daysMap.put(DateTimeConstants.TUESDAY, tuesday);
-			daysMap.put(DateTimeConstants.WEDNESDAY, wednesday);
-			daysMap.put(DateTimeConstants.THURSDAY, thursday);
-			daysMap.put(DateTimeConstants.FRIDAY, friday);
-			daysMap.put(DateTimeConstants.SATURDAY, saturday);
-			daysMap.put(DateTimeConstants.SUNDAY, sunday);
+			daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
+			daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
+			daysMap.put(DayOfWeek.WEDNESDAY.getValue(), wednesday);
+			daysMap.put(DayOfWeek.THURSDAY.getValue(), thursday);
+			daysMap.put(DayOfWeek.FRIDAY.getValue(), friday);
+			daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
+			daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
 			
 			for (Integer day : daysMap.keySet()) {
 				if(daysMap.get(day)){
@@ -381,16 +362,16 @@ public class EventController {
 						IException.CONFIGURATION_ERROR);
 			}
 		}
-		LocalDate endDate = new LocalDate();
+		LocalDate endDate = LocalDate.now();
 		if(endType == 2){
 			if(request.getContext().get("endDate") == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
 			
-			endDate = new LocalDate(request.getContext().get("endDate").toString());
+			endDate = LocalDate.parse(request.getContext().get("endDate").toString(), DateTimeFormatter.ISO_DATE);
 			
-			if(endDate.isBefore(event.getStartDateTime()) && endDate.isEqual(event.getStartDateTime())){
+			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
@@ -523,13 +504,13 @@ public class EventController {
 		Map<Integer,Boolean> daysMap = new HashMap<Integer,Boolean>();
 		Map<Integer,Boolean> daysCheckedMap = new HashMap<Integer,Boolean>();
 		if(recurrenceType == 2){
-			daysMap.put(DateTimeConstants.MONDAY, monday);
-			daysMap.put(DateTimeConstants.TUESDAY, tuesday);
-			daysMap.put(DateTimeConstants.WEDNESDAY, wednesday);
-			daysMap.put(DateTimeConstants.THURSDAY, thursday);
-			daysMap.put(DateTimeConstants.FRIDAY, friday);
-			daysMap.put(DateTimeConstants.SATURDAY, saturday);
-			daysMap.put(DateTimeConstants.SUNDAY, sunday);
+			daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
+			daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
+			daysMap.put(DayOfWeek.WEDNESDAY.getValue(), wednesday);
+			daysMap.put(DayOfWeek.THURSDAY.getValue(), thursday);
+			daysMap.put(DayOfWeek.FRIDAY.getValue(), friday);
+			daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
+			daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
 			
 			for (Integer day : daysMap.keySet()) {
 				if(daysMap.get(day)){
@@ -561,16 +542,16 @@ public class EventController {
 						IException.CONFIGURATION_ERROR);
 			}
 		}
-		LocalDate endDate = new LocalDate();
+		LocalDate endDate = LocalDate.now();
 		if(endType == 2){
 			if(conf.getEndDate() == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
 			
-			endDate = new LocalDate(conf.getEndDate());
+			endDate = conf.getEndDate();
 			
-			if(endDate.isBefore(event.getStartDateTime()) && endDate.isEqual(event.getStartDateTime())){
+			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
@@ -620,10 +601,10 @@ public class EventController {
 		User user = AuthUtils.getUser();
 		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
 		if(calendarIdlist.isEmpty()){
-			response.setAttr("calendarCrm", "domain", "self.id is null");
+			response.setAttr("calendar", "domain", "self.id is null");
 		}
 		else{
-			response.setAttr("calendarCrm", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
+			response.setAttr("calendar", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
 		}
 	}
 	
@@ -631,7 +612,7 @@ public class EventController {
 		Event event = request.getContext().asType(Event.class);
 		User user = AuthUtils.getUser();
 		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
-		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendarCrm().getId())){
+		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendar().getId())){
 			response.setAttr("calendarConfig", "readonly", "true");
 			response.setAttr("meetingGeneral", "readonly", "true");
 			response.setAttr("addGuests", "readonly", "true");

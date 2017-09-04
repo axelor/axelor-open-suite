@@ -21,12 +21,11 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
@@ -35,10 +34,10 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -53,10 +52,11 @@ public class PaymentVoucherCreateService {
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherRepository paymentVoucherRepository;
+	protected ZonedDateTime todayTime;
 	protected LocalDate today;
 
 	@Inject
-	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
+	public PaymentVoucherCreateService(AppAccountService appAccountService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
 			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
 			PaymentVoucherRepository paymentVoucherRepository) {
 
@@ -65,7 +65,8 @@ public class PaymentVoucherCreateService {
 		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherRepository = paymentVoucherRepository;
-		this.today = generalService.getTodayDate();
+		this.todayTime = appAccountService.getTodayDateTime();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -81,7 +82,6 @@ public class PaymentVoucherCreateService {
 
 		PaymentVoucher paymentVoucher = this.createPaymentVoucher(
 				invoice.getCompany(),
-				null,
 				null,
 				paymentMode,
 				date,
@@ -122,7 +122,7 @@ public class PaymentVoucherCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, LocalDate date, Partner partner,
+	public PaymentVoucher createPaymentVoucher(Company company, User user, PaymentMode paymentMode, LocalDate date, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
 			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
 
@@ -141,7 +141,6 @@ public class PaymentVoucherCreateService {
 		PaymentVoucher paymentVoucher= new PaymentVoucher();
 		if (company != null && paymentMode != null && partner != null)  {
 			paymentVoucher.setCompany(company);
-			paymentVoucher.setCashRegister(cashRegister);
 			paymentVoucher.setUser(user);
 			paymentVoucher.setPaymentDate(date2);
 

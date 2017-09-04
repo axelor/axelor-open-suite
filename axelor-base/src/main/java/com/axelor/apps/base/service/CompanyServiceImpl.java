@@ -19,10 +19,10 @@ package com.axelor.apps.base.service;
 
 import java.util.Set;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 
 public class CompanyServiceImpl implements CompanyService {
@@ -33,10 +33,10 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	public void checkMultiBanks(Company company) {
 		if (countActiveBankDetails(company) > 1) {
-			GeneralService generalService = Beans.get(GeneralService.class);
-			General general = generalService.getGeneral();
-			if (!general.getManageMultiBanks()) {
-				generalService.setManageMultiBanks(true);
+			AppBaseService appBaseService = Beans.get(AppBaseService.class);
+			AppBase appBase = appBaseService.getAppBase();
+			if (!appBase.getManageMultiBanks()) {
+				appBaseService.setManageMultiBanks(true);
 			}
 		}
 

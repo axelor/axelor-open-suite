@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
@@ -32,11 +32,12 @@ public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleO
 	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychainImpl;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException{
+		
 		Currency currency;
 		if (opportunity.getCurrency() != null) {
 			currency = opportunity.getCurrency();
@@ -47,7 +48,8 @@ public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleO
 		}
 
 		SaleOrder saleOrder = saleOrderServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
-				null, generalService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+				null, appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+		
 
 		saleOrderRepo.save(saleOrder);
 

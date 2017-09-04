@@ -58,15 +58,13 @@ public interface IExceptionMessage {
 	/**
 	 * Event controller
 	 */
-	static final String EVENT_1 = /*$$(*/ "There's no configured sequence for the tickets" /*)*/;
-	static final String EVENT_2 = /*$$(*/ "Input location please" /*)*/;
-
+	static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;
+	
+	
 	/**
 	 * Lead controller
 	 */
 	static final String LEAD_1 = /*$$(*/ "Please select the Lead(s) to print." /*)*/;
-	static final String LEAD_2 = /*$$(*/ "Can not open map, Please Configure Application Home First." /*)*/;
-	static final String LEAD_3 = /*$$(*/ "Can not open map, Please Check your Internet connection." /*)*/;
 	static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
 	static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
 
@@ -82,11 +80,6 @@ public interface IExceptionMessage {
 	static final String CRM_CONFIG_TEMPLATES = /*$$(*/ "Please configure all templates in CRM configuration for company %s" /*)*/;
 	static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/ "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
 	
-	
-	/**
-	 * Calendar
-	 */
-	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	
 	/*
 	 * Recurrence

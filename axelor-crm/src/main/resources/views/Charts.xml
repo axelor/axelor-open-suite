@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	  
 	  
 		
@@ -219,8 +219,8 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.set.date">
-	  <field name="toDateT" expr="eval:LocalDateTime.parse(todayDate).withHourOfDay(23).withMinuteOfHour(59)"/>
-	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	  <field name="toDateT" expr="eval:LocalDate.parse(todayDate).atStartOfDay().withHour(23).withMinute(59)"/>
+	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).atStartOfDay().withDayOfMonth(1).withMonth(1)"/>
 	</action-record>
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
@@ -262,7 +262,7 @@
 			FROM
 			   crm_lead as self
 			LEFT JOIN   
-			   base_team as team ON self.team = team.id
+			   team_team as team ON self.team = team.id
 			LEFT JOIN
 	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
 	    	LEFT JOIN 
@@ -332,7 +332,6 @@
 				LEFT JOIN
 					auth_user AS _user
 					ON _event.user_id = _user.id
-					
 				JOIN
 					(SELECT 
 						cast(_item.value as int) AS _select_value,
@@ -414,7 +413,7 @@
 				FROM
 					ical_event AS _event
 				LEFT JOIN
-					base_team AS _team
+					team_team AS _team
 					ON _event.team = _team.id
 						
 				JOIN
@@ -456,7 +455,7 @@
 				FROM
 					ical_event AS _event
 				LEFT JOIN
-					base_team AS _team
+					team_team AS _team
 					ON _event.team = _team.id
 						
 				JOIN
@@ -488,7 +487,7 @@
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
-		    <field type="reference" name="activeTeam" target="com.axelor.apps.base.db.Team" x-required="true" title="Team" />
+		    <field type="reference" name="activeTeam" target="com.axelor.team.db.Team" x-required="true" title="Team" />
 		</search-fields>
 		<dataset type="jpql">
 		    <![CDATA[
@@ -516,7 +515,7 @@
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user" stacked="false">
 	<search-fields>
 	<field name="toDateT" title="From Date" type="date" x-required="true"/>
-	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.apps.base.db.Team"/>
+	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.team.db.Team"/>
 	</search-fields>
 	<dataset type="jpql">
 	SELECT
@@ -542,85 +541,9 @@
 
 	
 	
-	<chart name="chart.open.tickets.by.priority.bar" title="Open tickets by priority">
-		<dataset type="sql">
-		    <![CDATA[
-				SELECT
-				    COUNT(self.id)  AS _tickets,
-				    selection_item.title AS _priority
-				FROM
-				    ical_event as self
-				RIGHT JOIN 
-				    meta_select_item as selection_item     
-				ON 
-				    (cast(selection_item.value as int) = self.priority_select 
-				    and self.status_select != 25)    
-				WHERE            
-				    selection_item.select_id =(select id from meta_select where name='crm.event.ticket.priority.select')
-				    AND self.type_select = 5
-				GROUP BY
-				    _priority
-				ORDER BY
-				    _priority    
-			  ]]>
-	    </dataset>
-	    <category key="_priority" type="text" title="Priority"/>
-	    <series key="_tickets" type="bar" title="Tickets"/>
-	</chart>  	
-	
-	<chart name="chart.open.ticket.priority.distribution.bar" title="Open tickets distribution by Priority">
-		<dataset type="sql">
-		    <![CDATA[
-			    select
-			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from ical_event where status_select!= 25 and priority_select is not null)) as _tickets,
-			        selection_item.title as _priority
-			    from
-			        ical_event self
-			    RIGHT JOIN
-			        meta_select_item selection_item
-			    ON
-			        (cast(selection_item.value as int)=self.priority_select
-			        and
-			        self.status_select!= 25)
-			    where
-			        selection_item.select_id=(select id from meta_select where name='crm.event.ticket.priority.select')
-			        AND self.type_select = 5
-			    group by
-			        _priority
-			  ]]>
-	    </dataset>
-	    <category key="_priority" type="text" title="Priority"/>
-	    <series key="_tickets" type="donut" title="Tickets"/>
-	</chart>  	
 	
 	
-	<chart name="chart.open.tickets.by.status.bar" title="Open tickets by status">
-		<dataset type="sql">
-		    <![CDATA[
-			    SELECT
-			      COUNT(self.id)    AS     _tickets,
-			      selection_item.title     AS     _status
-			    FROM
-			        ical_event as self
-			    RIGHT JOIN 
-			        meta_select_item as selection_item     
-			    ON 
-			        (cast(selection_item.value as decimal) = self.status_select and self.status_select != 25)
-			    WHERE
-			        selection_item.select_id = (select id from meta_select where name = 'crm.event.status.select')
-			    AND
-			        cast(selection_item.value as int)!=5
-			    AND
-			        self.type_select = 5
-			    GROUP BY
-			        _status
-			    ORDER BY
-			        _status     
-			  ]]>
-	    </dataset>
-	    <category key="_status" type="text" title="Status"/>
-	    <series key="_tickets" type="bar" title="Tickets"/>
-	</chart>  	
+	
 	  	
 	<chart name="chart.user.by.open.cases.bar" title="Open Cases by Agents" stacked="true">
 	  <dataset type="sql">
@@ -638,8 +561,7 @@
 	    JOIN 
 	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
 	    WHERE
-	      self.type_select = 5
-	      AND self.status_select != 25    
+	      self.status_select != 25    
 	      AND cast(selection_item.value as decimal) = self.status_select       
 	    GROUP BY
 	        _status,
@@ -652,38 +574,6 @@
 	  <category key="_sale_man" type="text" title="Salesman"/>
 	  <series key="_cases" type="bar" groupBy="_status" title="Cases"/>
 	</chart>
-	
-	<chart onInit="action.crm.chart.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
-		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
-		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
-		</search-fields>
-	  <dataset type="jpql">
-	    
-	    SELECT
-	      COUNT(self.id)      AS   _cases,
-	      self.clientPartner.fullName     AS   _partner,
-	      selection_item.title   AS   _status
-	    FROM
-	        Event self,        
-	        MetaSelectItem selection_item
-	    WHERE
-	      self.typeSelect = 5
-	      AND self.statusSelect != 25
-	      AND self.createdOn >= :fromDateT AND self.createdOn &lt;= :toDateT        
-	      AND selection_item.select.name = 'crm.event.status.select'
-	      AND cast(selection_item.value as int) = self.statusSelect    
-	    GROUP BY
-	        selection_item.title,
-	        self.clientPartner.fullName
-	    ORDER BY
-	         selection_item.title,  
-	         self.clientPartner.fullName
-	      
-	  </dataset>
-	  <category key="_partner" type="text" title="Customer"/>
-	  <series key="_cases" groupBy="_status" type="bar" title="Cases"/>
-	</chart>	
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
 		<search-fields> 	        
@@ -738,112 +628,9 @@
 	</chart>
 
 
-	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
-		<dataset type="sql">
-		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    		AS 	_total_ticket,
-			    (select Count(id) from ical_event as open_ticket where open_ticket.status_select != 25) as _open_ticket
-			FROM
-			  	ical_event as self
-			  ]]>	
-	    </dataset>
-	   	<category key="_total_ticket" type="text"/>
-	   	<series key="_open_ticket" type="gauge"/>
-	    <config name="min" value="0"/>
-    	<config name="max" value="_total_ticket"/>
-	</chart> 
 	
 	
-	<chart stacked="true" name="chart.created.tickets.by.month.by.priority.bar" title="Total created tickets by month by priority">
-		<dataset type="sql">
-			SELECT
-				COUNT(_ticket.id) AS _tickets,  
-			   	_meta_status.status_title AS _priority,
-			   	to_char(_ticket.created_on,'yyyy-MM') AS _month
-			FROM
-			   	ical_event AS _ticket  
-			JOIN
-			   	(SELECT    
-			     		cast(_item.value as int) AS status_value,
-			     		_item.title AS status_title
-			   	 FROM
-			    		 meta_select AS _selection
-			   	 LEFT JOIN
-			     		 meta_select_item AS _item ON _selection.name = 'crm.event.ticket.priority.select'    
-			   	 WHERE
-			     		_selection.id = _item.select_id    
-			     	) AS _meta_status
-			ON
-				_ticket.priority_select = _meta_status.status_value  
-			WHERE 
-			  _ticket.type_select=5 AND _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
-			GROUP BY
-			  _priority, _month
-			ORDER BY
-			 	 _month, _priority
-		  </dataset>
-		  <category key="_month" type="month" title="Month"/>
-		  <series key="_tickets" groupBy="_priority" type="bar" title="No of Tickets" aggregate="sum"/>
-		  <config name="xFormat" value="MM-YYYY"/>
-	</chart>
 	
-	<chart stacked="true" name="chart.created.tickets.by.month.by.status" title="Total created tickets by month by status">
-	  	<dataset type="sql">
-			SELECT
-				COUNT(_ticket.id) AS _tickets,  
-		    	_meta_status.status_title AS _status,
-		     	to_char(_ticket.created_on,'yyyy-MM') AS _month
-			FROM
-		    	ical_event AS _ticket    
-		  	JOIN
-		    	(SELECT    
-		      		cast(_item.value as int) AS status_value,
-		      		_item.title AS status_title
-		    	FROM
-		      		meta_select AS _selection
-		    	LEFT JOIN
-		      		meta_select_item AS _item ON _selection.name = 'crm.event.status.select'    
-		    	WHERE
-		      		_selection.id = _item.select_id    
-		    	) AS _meta_status
-		   	ON
-		    	_ticket.status_select = _meta_status.status_value  
-		  	WHERE
-		    	_ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now() AND _ticket.type_select=5
-		  	GROUP BY
-		    	_status, _month
-		   	ORDER BY
-	 		  _month,_tickets DESC     
-	  	</dataset>
-		<category key="_month" type="month" title="Month"/>
-		<series key="_tickets" groupBy="_status" type="bar" title="Tickets"/>
-		<config name="xFormat" value="MM-YYYY"/>
-	</chart>
-	
-	<chart stacked="true" name="chart.open.tickets.by.month.by.agent" title="Total open tickets by month by user">
-		<dataset type="sql">
-			SELECT
-	    		COUNT(_ticket.id) AS _tickets,  
-	    		_user.full_name AS _agent,
-	  			to_char(_ticket.created_on,'yyyy-MM') AS _month
-			FROM
-				ical_event AS _ticket    
-			LEFT JOIN
-				auth_user AS _user
-			ON
-				_ticket.user_id = _user.id  
-			WHERE
-				_ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now() AND _ticket.type_select = 5
-			GROUP BY
-				_agent, _month
-			ORDER BY
-				_month   
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_tickets" groupBy="_agent" type="bar" title="Tickets"/>
-	  <config name="xFormat" value="MM-YYYY"/>
-	</chart>
 	
 	<!-- 	  Target user charts -->
 	  
@@ -888,7 +675,7 @@
 		</chart>
 		
 		<action-record name="action.chart.crm.chart.set.active.user" model="com.axelor.apps.crm.db.Event">
-		    <field name="activeUser" expr="eval:__repo__.of(User).find(__user__.id)" />
+		    <field name="activeUser" expr="eval:__repo__(User).find(__user__.id)" />
 		</action-record>
 		
 		<chart name="chart.user.meeting.target.gauge" title="Meetings number target completed (%)">
@@ -1191,7 +978,7 @@
 		
 		<chart name="chart.team.call.target.bar" title="Calls emitted historical" onInit="action.chart.crm.chart.set.active.team">
 		    <search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1235,7 +1022,7 @@
 		
 		<chart name="chart.team.meeting.target.bar" title="Meeting number historical" onInit="action.chart.crm.chart.set.active.team">
 		    <search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1275,7 +1062,7 @@
 		
 		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1315,7 +1102,7 @@
 		
 		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1355,7 +1142,7 @@
 		
 		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1395,7 +1182,7 @@
 		
 		<chart name="chart.team.sale.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1435,7 +1222,7 @@
 		
 		<chart name="chart.team.sale.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
@@ -1475,7 +1262,7 @@
 		
 		<chart name="chart.team.sale.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.team">
 			<search-fields>
-		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" x-required="true" />
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.team.db.Team" x-required="true" />
 		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[

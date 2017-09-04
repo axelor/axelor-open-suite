@@ -17,8 +17,23 @@
  */
 package com.axelor.apps.hr.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.*;
 import com.axelor.apps.hr.db.repo.*;
@@ -33,19 +48,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PayrollPreparationService {
 	
@@ -57,10 +59,10 @@ public class PayrollPreparationService {
 	protected PayrollPreparationRepository payrollPreparationRepo;
 	
 	@Inject
-	HRConfigService hrConfigService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
-	GeneralService  generalService;
+	HRConfigService hrConfigService;
 	
 	@Inject
 	public PayrollPreparationService(LeaveService leaveService, LeaveRequestRepository leaveRequestRepo, WeeklyPlanningService weeklyPlanningService){
@@ -146,7 +148,7 @@ public class PayrollPreparationService {
 	public BigDecimal computeWorkingDaysNumber(PayrollPreparation payrollPreparation, List<PayrollLeave> payrollLeaveList){
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
-		LocalDate itDate = new LocalDate(fromDate);
+		LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
 		BigDecimal workingDays = BigDecimal.ZERO;
 		BigDecimal leaveDays = BigDecimal.ZERO;
 		while(!itDate.isAfter(toDate)){
@@ -237,7 +239,7 @@ public class PayrollPreparationService {
 		CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationExportHeader(), list);
 		
 		payrollPreparation.setExported(true);
-		payrollPreparation.setExportDate(generalService.getTodayDate());
+		payrollPreparation.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
 		
 		payrollPreparationRepo.save(payrollPreparation);
 		
@@ -295,8 +297,8 @@ public class PayrollPreparationService {
 				if (payrollLeave.getLeaveReason().getPayrollPreprationExport()){
 					String leaveLine[] = createExportFileLine(payrollPreparation);
 					leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
-					leaveLine[4] = payrollLeave.getFromDate().toString("dd/MM/YYYY");
-					leaveLine[5] = payrollLeave.getToDate().toString("dd/MM/YYYY");
+					leaveLine[4] = payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+					leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
 					leaveLine[6] = payrollLeave.getDuration().toString();
 					list.add(leaveLine);
 				}
@@ -342,14 +344,14 @@ public class PayrollPreparationService {
 		}
 		
 		payrollPreparation.setExported(true);
-		payrollPreparation.setExportDate(generalService.getTodayDate());
+		payrollPreparation.setExportDate(appBaseService.getTodayDate());
 		payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION);
 		payrollPreparationRepo.save(payrollPreparation);
 	}
 	
 	
 	public String getPayrollPreparationExportName(){
-		return I18n.get("Payroll preparation") + " - " + generalService.getTodayDateTime().toString() + ".csv";
+		return I18n.get("Payroll preparation") + " - " + Beans.get(AppBaseService.class).getTodayDateTime().toString() + ".csv";
 	}
 	
 	public String[] getPayrollPreparationExportHeader(){

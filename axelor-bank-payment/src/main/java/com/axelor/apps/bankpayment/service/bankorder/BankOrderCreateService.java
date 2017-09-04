@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -34,13 +42,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 
 public class BankOrderCreateService {
 
@@ -105,7 +107,7 @@ public class BankOrderCreateService {
 		
 		bankOrder.setSenderLabel(senderLabel);
 		bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
-		bankOrderRepo.save(bankOrder);
+		bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
 		
 		return bankOrder;
 	}
@@ -129,19 +131,22 @@ public class BankOrderCreateService {
 		BigDecimal amount = invoicePayment.getAmount();
 		Currency currency = invoicePayment.getCurrency();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
-		
-		BankOrder bankOrder = this.createBankOrder( 
+		BankDetails bankDetails = invoicePayment.getBankDetails() != null ? invoicePayment.getBankDetails()
+				: this.getSenderBankDetails(invoice);
+
+		BankOrder bankOrder = this.createBankOrder(
 								paymentMode,
 								this.getBankOrderPartnerType(invoice),
 								paymentDate,
 								company,
-								this.getSenderBankDetails(invoice),
+								bankDetails,
 								currency,
 								invoice.getInvoiceId(),
 								invoice.getInvoiceId());
-		
+
 		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, invoice.getInvoiceId(), null));
-		
+		bankOrder = bankOrderRepo.save(bankOrder);
+
 		return bankOrder;
 		
 	}

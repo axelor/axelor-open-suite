@@ -1,18 +1,16 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-bank-payment"
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
 	title "Axelor bank payment"
-	
-	version "4.1.0"
-	
+	description "Axelor Bank Payment Module"
 	removable true
-	
-	// module dependencies
-	module "modules:axelor-account"
 }
 
 dependencies {
+	compile project(":modules:axelor-account")
 	compile files("src/main/lib/ebics-1.0.2.jar")
-	compile "org.bouncycastle:bcprov-jdk14:1.38"
 }

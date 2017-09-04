@@ -17,11 +17,16 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -39,25 +44,18 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-
 
 
 public class BatchPayrollPreparationExport extends BatchStrategy {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
 	protected int total;
 	protected HrBatch hrBatch;
-	private Company company;
 	
 	protected PayrollPreparationService payrollPreparationService;
 	
@@ -125,7 +123,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 	public MetaFile standardExport(List<PayrollPreparation> payrollPreparationList) throws IOException {
 		
 		List<String[]> list = new ArrayList<String[]>();
-		LocalDate today = Beans.get(GeneralService.class).getTodayDate();
+		LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 		
 		for (PayrollPreparation payrollPreparation : payrollPreparationList) {
 			String item[] = new String[5];

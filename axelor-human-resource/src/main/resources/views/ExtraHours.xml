@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
 		<hilite color="danger" if="statusSelect == 4"/>
@@ -26,8 +26,10 @@
 
 	<form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" cols="12" width="large"
 	    onNew="action-group-extra-hours-onnew"
-	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project-task" canNew="false" canCopy="false">
-
+	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project" canNew="false" canCopy="false">
+		<panel title="Status">
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>			
+		</panel>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validateButton" onClick="action-extra-hours-group-validate" title="Validate"/>
@@ -36,7 +38,6 @@
 	    	<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel name="head">
-		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
@@ -49,6 +50,10 @@
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
 	<form name="popup-extra-hours-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.ExtraHours">
@@ -63,7 +68,7 @@
 	<action-group name="action-group-extra-hours-onnew">
 		<action name="action-extra-hours-record-default"/>
 		<action name="action-extra-hours-attrs-buttons"/>
-		<action name="action-extra-hours-attrs-title-project-task"/>
+		<action name="action-extra-hours-attrs-title-project"/>
 	</action-group>
 
 	<action-group name="action-extra-hours-group-confirm">
@@ -102,8 +107,8 @@
 		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 	</action-attrs>
 	
-	<action-attrs name="action-extra-hours-attrs-title-project-task">
-		<attribute name="title" for="extraHoursLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+	<action-attrs name="action-extra-hours-attrs-title-project">
+		<attribute name="title" for="extraHoursLineList.project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-extra-hours-attrs-domain-extra-hours-select">

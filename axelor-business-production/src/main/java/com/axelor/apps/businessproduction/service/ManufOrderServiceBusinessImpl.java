@@ -20,7 +20,7 @@ package com.axelor.apps.businessproduction.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +120,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 		ProdProcess prodProcess = manufOrder.getProdProcess();
 		
 		if(manufOrder.getPlannedStartDateT() == null){
-			manufOrder.setPlannedStartDateT(generalService.getTodayDateTime().toLocalDateTime());
+			manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 		}
 		
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {

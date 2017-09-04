@@ -18,13 +18,12 @@
 package com.axelor.apps.businessproject.service;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -32,8 +31,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
@@ -43,10 +42,10 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		int count = 0;
-		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
+		DateTimeFormatter ddmmFormat = DateTimeFormatter.ofPattern("dd/MM");
 		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
 		//Check if a consolidation by product and user must be done
-		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
+		boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			Object[] tabInformations = new Object[6];
@@ -57,11 +56,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
 			tabInformations[4] = timesheetLine.getVisibleDuration();
-			tabInformations[5] = timesheetLine.getProjectTask();
+			tabInformations[5] = timesheetLine.getProject();
 
 			String key = null;
 			if(consolidate){
-				key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getUser().getId() + "|" + timesheetLine.getProjectTask().getId();
+				key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getUser().getId() + "|" + timesheetLine.getProject().getId();
 				if (timeSheetInformationsMap.containsKey(key)){
 					tabInformations = timeSheetInformationsMap.get(key);
 					//Update date
@@ -93,16 +92,15 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
 			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
-			ProjectTask projectTask = (ProjectTask) timesheetInformations[5];
-
+			Project project = (Project) timesheetInformations[5];
 			if (consolidate){
-				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
+				strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
 			}else{
-				strDate = ddmmFormat.format(startDate.toDate());
+				strDate = startDate.format(ddmmFormat);
 			}
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));
-			invoiceLineList.get(0).setProject(projectTask);
+			invoiceLineList.get(0).setProject(project);
 			count++;
 		}
 
@@ -111,10 +109,10 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 	}
 	
 	@Override
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
+	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
 		TimesheetLine timesheetLine = super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 		
-		if(project != null && (project.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED || (project.getProject() != null && project.getProject().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)))
+		if(project != null && (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED || (project.getProject() != null && project.getProject().getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
 				timesheetLine.setToInvoice(true);
 		
 		return timesheetLine;

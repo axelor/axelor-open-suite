@@ -1,0 +1,45 @@
+.bpmn-canvas {
+	width: 100%;
+	height: 100%;
+	outline: none;
+}
+
+.bpmn-editor {
+	height: 530px;
+	border: 1px solid #ddd;
+	position: relative;
+	border-bottom: 4px solid #ddd;
+	outline: none;
+}
+
+.bpmn-editor,
+.bpmn-editor * {
+	box-sizing: border-box;
+}
+
+[class^="bpmn-icon-"]:before,
+[class*=" bpmn-icon-"]:before {
+	margin: 0;
+}
+
+.bpmn-editor .bjs-powered-by {
+	top: 14px !important;
+	right: 10px !important;
+	bottom: inherit !important;
+}
+
+.bpmn-editor .bjs-powered-by img {
+	width: 24px !important;
+	height: 24px !important;
+}
+
+.bpmn-editor .djs-label {
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.djs-context-pad .entry.fa-pencil {
+	font: normal normal normal 14px/1 FontAwesome;
+    text-align: center;
+    width: 1em;
+    height: 1em;
+}

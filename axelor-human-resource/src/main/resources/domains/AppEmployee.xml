@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppEmployee" lang="java" cachable="true" extends="App">
+		
+		<decimal name="dailyWorkHours" title="Daily work hours"/>
+		<boolean name="advanceManagement" default="true" />
+		<boolean name="payrollPreparation" title="Payroll preparation"/>
+		<boolean name="lunchVoucher" title="Lunch Voucher"/>
+		<boolean name="employeeBonus" title="Employee bonus"/>
+		
+		<extra-code>
+   		<![CDATA[
+   			public static final Integer INVOICING_LOG_TIMES_LINE_ACTIVITY = 1;
+   			public static final Integer INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY = 2;
+   		]]>
+   	</extra-code>
+	</entity>
+
+</domain-models>

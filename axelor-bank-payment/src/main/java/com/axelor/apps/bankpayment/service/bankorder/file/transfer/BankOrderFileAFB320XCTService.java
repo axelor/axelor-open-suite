@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -121,7 +122,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	/**
 	 * Method to create a sender record for international transfer AFB320
 	 * @param company
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -141,7 +142,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Date de création
-			senderRecord += cfonbToolService.createZone("4", this.generationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
+			senderRecord += cfonbToolService.createZone("4", this.generationDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			
 			// Zone 5 : Raison sociale émetteur
 			senderRecord += cfonbToolService.createZone("5", senderCompany.getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35); 
@@ -205,7 +206,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 20 : Date :
 			// Cette donnée est obligatoire pour les remises mono-date (zone 19 de l'"Entête" = "1" ou "2"), pour les autres remises, elle ne doit pas être renseignée. 
 			if(!isMultiDates)  {
-				senderRecord += cfonbToolService.createZone("20", bankOrderDate.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
+				senderRecord += cfonbToolService.createZone("20", bankOrderDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			}
 			else  {
 				senderRecord += cfonbToolService.createZone("20", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_NUMERIC, 8);
@@ -294,7 +295,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	/**
 	 * Method to create a recipient record for international transfer AFB320
 	 * @param company
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -378,7 +379,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 24-2 : Date ( Cette donnée est obligatoire pour les remises multi dates (zone 19 de l'"Entête" = "3" ou "4"), pour les autres remises, elle ne doit pas être renseignée.)
 			if(isMultiDates)  {
 				String bankOrderDate = "";
-				if(bankOrderLine.getBankOrderDate() != null)  {  bankOrderDate = bankOrderLine.getBankOrderDate().toString("yyyyMMdd");  } 
+				if(bankOrderLine.getBankOrderDate() != null)  {  bankOrderDate = bankOrderLine.getBankOrderDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"));  } 
 				detailRecord += cfonbToolService.createZone("24-2", bankOrderDate, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			}  
 			else  {
@@ -410,7 +411,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	/**
 	 * Method to create a dependent receiver bank record for international transfer AFB320
 	 * @param company
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -472,7 +473,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	/**
 	 * Method to create an optional further information record for international transfer AFB320
 	 * @param company
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -580,7 +581,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	/**
 	 * Method to create a total record for internationnal transfer AFB320
 	 * @param company
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -597,7 +598,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("3", sequence, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Date de création
-			totalRecord += cfonbToolService.createZone("4", this.generationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
+			totalRecord += cfonbToolService.createZone("4", this.generationDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			
 			// Zone 5 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("5", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4*35);

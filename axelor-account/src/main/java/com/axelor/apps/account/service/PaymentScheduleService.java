@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +36,13 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -63,7 +63,7 @@ public class PaymentScheduleService {
 	protected LocalDate date;
 
 	@Inject
-	public PaymentScheduleService(GeneralService generalService, PaymentScheduleLineService paymentScheduleLineService, PaymentScheduleLineRepository paymentScheduleLineRepo,
+	public PaymentScheduleService(AppAccountService appAccountService, PaymentScheduleLineService paymentScheduleLineService, PaymentScheduleLineRepository paymentScheduleLineRepo,
 			SequenceService sequenceService, PaymentScheduleRepository paymentScheduleRepo, PartnerService partnerService) {
 		this.paymentScheduleLineService = paymentScheduleLineService;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
@@ -71,7 +71,7 @@ public class PaymentScheduleService {
 		this.paymentScheduleRepo = paymentScheduleRepo;
 		this.partnerService = partnerService;
 		
-		date = generalService.getTodayDate();
+		date = appAccountService.getTodayDate();
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class PaymentScheduleService {
 		if(seq == null)  {
 			throw new AxelorException(String.format("%s :\n"+
 							I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" %s",
-							GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		return seq;
 	}
@@ -294,7 +294,7 @@ public class PaymentScheduleService {
 		for (Invoice invoice : paymentSchedule.getInvoiceSet())  {
 			if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0 && invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
 				for (MoveLine moveLine : invoice.getMove().getMoveLineList()){
-					if (moveLine.getAccount().getReconcileOk() && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
+					if (moveLine.getAccount().getUseForPartnerBalance() && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
 						moveLines.add(moveLine);
 					}
 				}
@@ -318,7 +318,7 @@ public class PaymentScheduleService {
 
 		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
-					GeneralServiceImpl.EXCEPTION, paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION, paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
 		}
 
 //		this.updateInvoices(paymentSchedule); //TODO
@@ -337,7 +337,7 @@ public class PaymentScheduleService {
 
 			for (MoveLine moveLineInvoice : moveLineInvoiceToPay){
 
-				moveLineInvoice.getMove().setIgnoreInReminderOk(true);
+				moveLineInvoice.getMove().setIgnoreInDebtRecoveryOk(true);
 				this.updateInvoice(moveLineInvoice.getMove().getInvoice(), paymentSchedule);
 
 			}
@@ -427,7 +427,7 @@ public class PaymentScheduleService {
 	}
 
   	public LocalDate getMostOldDatePaymentScheduleLine(List<PaymentScheduleLine> paymentScheduleLineList)  {
-		LocalDate minPaymentScheduleLineDate = new LocalDate();
+		LocalDate minPaymentScheduleLineDate = LocalDate.now();
 
 		if(paymentScheduleLineList != null && !paymentScheduleLineList.isEmpty())  {
 			for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
@@ -439,7 +439,7 @@ public class PaymentScheduleService {
 	}
 
   	public LocalDate getMostRecentDatePaymentScheduleLine(List<PaymentScheduleLine> paymentScheduleLineList)  {
-		LocalDate minPaymentScheduleLineDate = new LocalDate();
+		LocalDate minPaymentScheduleLineDate = LocalDate.now();
 
 		if(paymentScheduleLineList != null && !paymentScheduleLineList.isEmpty())  {
 			for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {

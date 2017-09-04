@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="job-position-grid" title="Job positions" model="com.axelor.apps.talent.db.JobPosition">
+		<field name="jobReference" />
+		<field name="jobTitle" />
+		<field name="companyDepartment" />
+		<field name="employee" />
+		<field name="contractType" />
+		<field name="statusSelect" />
+	</grid>
+	
+	<form name="job-position-form" title="Job position" model="com.axelor.apps.talent.db.JobPosition" width="large">
+		<toolbar>
+			<button name="createJobApplication" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
+		</toolbar>
+		
+		<panel title="Status">
+			<field name="statusSelect" widget="NavSelect" colSpan="6" showTitle="false"/>			
+		</panel>		
+		<panel>
+			<field name="jobTitle" colSpan="8" />
+			<field name="jobReference" colSpan="4"/>
+			<field name="companyDepartment" />
+			<field name="employee" />
+			<field name="contractType" />
+			<field name="experienceSelect" />
+			<field name="salary" />
+			<field name="location" />
+			<field name="jobDescription" widget="html" colSpan="12" />
+			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
+			<spacer/>
+			<panel-dashlet action="action-job-position-all-applications" colSpan="12" title="All applications"/>
+			<field name="nbOpenJob" />
+			<field name="nbPeopleHired" />
+		</panel>
+	</form>
+	
+	<cards name="job-position-cards" model="com.axelor.apps.talent.db.JobPosition" title="Job positions">
+		<field name="jobTitle" />
+		<field name="jobReference" />
+		<template><![CDATA[
+			<div>
+			  <div class="span12">
+				<span><strong>{{jobTitle}}</strong></span>
+		  		<br/>
+		  		<span><strong>{{jobReference}}</strong></span>
+		  	  </div>
+			</div>
+		]]>
+		</template>
+	</cards>
+	
+	<action-view name="action-job-position-all-applications" title="All applications" model="com.axelor.apps.talent.db.JobApplication">
+		<view type="grid" name="job-application-grid"/>
+		<view type="form" name="job-application-form"/>
+		<domain>self.jobPosition.id = :_jobPositionId</domain>
+		<context name="_jobPositionId" expr="eval:id"/>
+	</action-view>
+	
+	<action-view name="action-job-position-create-application" title="Job Application" model="com.axelor.apps.talent.db.JobApplication">
+		<view type="form" name="job-application-form"/>
+		<view type="grid" name="job-application-grid"/>
+		<domain>self.jobPosition.id = :_jobPositionId</domain>
+		<context name="_jobPositionId" expr="eval:id"/>
+		<context name="_responsibleId" expr="eval:employee.id"/>
+	</action-view>
+	
+</object-views>

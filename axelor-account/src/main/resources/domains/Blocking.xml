@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+    <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Blocking" lang="java">
-  
-    <!-- GROUP Direct Debit Blocking -->
-    <boolean name="debitBlockingOk" title="Block Direct Debit ?"/>
-    <date name="debitBlockingToDate" title="Block until"/>
-    <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
-    
-  </entity>
-
+    <entity name="Blocking" lang="java">
+        <extra-code>
+            <![CDATA[
+                public static final Integer DEBIT_BLOCKING = 4;
+            ]]>
+        </extra-code>
+    </entity>
 </domain-models>

@@ -1,11 +1,16 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-stock"
-	version "4.1.0"
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
 	title "Axelor :: Stock"
+	description "Axelor Stock Module"
 
 	removable true
+}
 
-	module "modules:axelor-base"
+dependencies {
+	compile project(":modules:axelor-base")
 }

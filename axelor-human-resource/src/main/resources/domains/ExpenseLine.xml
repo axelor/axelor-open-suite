@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="human-resource" package="com.axelor.apps.hr.db"/>
 
 	<entity name="ExpenseLine" cachable="true">
 	    <!-- Original part of expenseLine -->
 	    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"/>
-	    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task" />
+	    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
 	    <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product" title="Expense Type" required="true" />
 	    <date name="expenseDate" title="Expense date" required="true" default="now"/>
 	    <decimal name="untaxedAmount" title="Untaxed amount" readonly="true"/>
@@ -30,6 +30,17 @@
         <string name="fromCity" title="Starting city with Zip" />
         <string name="toCity" title="Arriving city with Zip" />
   		
+  		<!-- -Json fields -->
+	    <string name="expenseLineAttrs" title="Fields" json="true" />
+
+		<extra-code>
+		<![CDATA[
+			// KILOMETRIC TYPE SELECT
+			public static final int KILOMETRIC_TYPE_ONE_WAY = 1;
+			public static final int KILOMETRIC_TYPE_ROUND_TRIP = 2;
+		]]>
+		</extra-code>
+
   </entity>
-  
+
 </domain-models>

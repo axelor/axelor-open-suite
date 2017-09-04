@@ -25,7 +25,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
 	public ManufOrder copy(ManufOrder entity, boolean deep) {
 		entity.setStatusSelect(IManufOrder.STATUS_DRAFT);
 		entity.setManufOrderSeq(null);
-		entity.setRealEndDateT(null);
+		entity.setRealStartDateT(null);
 		entity.setRealEndDateT(null);
 		entity.setInStockMove(null);
 		entity.setOutStockMove(null);

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +43,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -169,7 +169,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 						/***  Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement  ***/
 						if((invoiceRejectedList == null || invoiceRejectedList.isEmpty()) && (paymentScheduleLineRejectedList == null || paymentScheduleLineRejectedList.isEmpty()))  {
 							throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_8),
-									GeneralServiceImpl.EXCEPTION,refDebitReject), IException.NO_VALUE);
+									AppAccountServiceImpl.EXCEPTION,refDebitReject), IException.NO_VALUE);
 						}
 						else  {
 							i++;

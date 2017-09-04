@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
@@ -37,10 +37,11 @@ import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -48,7 +49,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -56,7 +56,7 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected ReminderService reminderService;
+	protected DebtRecoveryService debtRecoveryService;
 	protected DoubtfulCustomerService doubtfulCustomerService;
 	protected ReimbursementExportService reimbursementExportService;
 	protected ReimbursementImportService reimbursementImportService;
@@ -93,10 +93,12 @@ public abstract class BatchStrategy extends AbstractBatch {
 	@Inject
 	protected ReimbursementService reimbursementService;
 
+	protected BatchStrategy() {
+	}
 
-	protected BatchStrategy(ReminderService reminderService) {
+	protected BatchStrategy(DebtRecoveryService debtRecoveryService) {
 		super();
-		this.reminderService = reminderService;
+		this.debtRecoveryService = debtRecoveryService;
 	}
 
 	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
@@ -203,9 +205,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 		incrementDone();
 	}
 
-	protected void updateMoveLineReport( MoveLineReport moveLineReport){
+	protected void updateAccountingReport( AccountingReport accountingReport){
 
-		moveLineReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
+		accountingReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
 
 		incrementDone();
 	}
@@ -214,7 +216,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 		if(accountingBatch.getBankDetails() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
-					GeneralServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());

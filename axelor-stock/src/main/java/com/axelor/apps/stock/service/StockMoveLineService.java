@@ -20,11 +20,12 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
@@ -36,7 +37,9 @@ public interface StockMoveLineService {
 
 	public static final int TYPE_SALES = 1;
 	public static final int TYPE_PURCHASES = 2;
-	public static final int TYPE_PRODUCTIONS = 3;
+	public static final int TYPE_OUT_PRODUCTIONS = 3;
+	public static final int TYPE_IN_PRODUCTIONS = 4;
+	public static final int TYPE_WASTE_PRODUCTIONS = 5;
 
 
 	/**
@@ -69,7 +72,7 @@ public interface StockMoveLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber);
 
 
 
@@ -91,15 +94,51 @@ public interface StockMoveLineService {
 
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
-	
+
+	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
+
+	/**
+	 * Check in the product if the stock move line needs to have a conformity
+	 * selected.
+	 * @param stockMoveLine
+	 * @param stockMove
+	 * @throws AxelorException if the stock move line needs to have a
+	 * conformity selected and it is not selected.
+	 */
+	public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
+
+	/**
+	 * Check for all lines in the stock move if it needs to have a conformity
+	 * selected.
+	 * @param stockMove
+	 * @throws AxelorException  if one or more stock move line needs to have
+	 * a conformity selected and it is not selected.
+	 */
+	public void checkConformitySelection(StockMove stockMove) throws AxelorException;
+
+	/**
+	 * Check for warranty dates and expiration dates.
+	 * 
+	 * @param stockMove
+	 * @throws AxelorException
+	 */
+	public void checkExpirationDates(StockMove stockMove) throws AxelorException;
+
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
+	/**
+	 * Store customs code information on each stock move line from its product.
+	 * 
+	 * @param stockMoveLineList List of StockMoveLines on which to operate
+	 */
+	public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
 
-
-
-
-
-
-
+	/**
+	 * Get a merged stock move line.
+	 * 
+	 * @param stockMoveLineList
+	 * @return
+	 */
+	StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList);
 
 }

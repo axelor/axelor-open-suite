@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -137,7 +138,7 @@ public class TimetableService {
 	    SaleOrder saleOrder = timetable.getSaleOrder();
 	    if (saleOrder != null) {
 	    	for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-	    		if (!saleOrderLine.getIsTitleLine()) {
+	    		if (saleOrderLine.getTypeSelect() == null || !saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_TITLE)) {
 	    			return saleOrderLine;
 				}
 			}

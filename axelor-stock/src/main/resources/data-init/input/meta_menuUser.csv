@@ -1,0 +1,8 @@
+name;roles
+stock-root;role.user
+stock-root-custdeliveries;role.user
+stock-root-suparrivals;role.user
+stock-root-internal;role.user
+stock-root-planned;role.user
+stock-root-inventories;role.user
+stock-root-all-line;role.user

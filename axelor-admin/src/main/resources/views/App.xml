@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
+		<field name="name" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		<field name="active" />
+		<field name="demoDataLoaded" />
+	</grid>
+	
+	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" 
+		onSave="action-app-method-check-parent,save,action-app-method-install-app"
+		onLoad="action-app-on-load-attrs">
+		<panel>
+			<field name="image" widget="Image" colSpan="2"/>
+			<panel colSpan="8">
+				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" readonly="true" />
+				<field name="name" colSpan="8" readonly="true" />
+				<field name="dependsOn" colSpan="12" widget="multi-select" readonly="true" hideIf="dependsOnAll" />
+				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="2"/>
+				<field name="languageSelect" colSpan="3" />
+				<field name="demoDataLoaded" readonly="true" colSpan="4"/>
+				<spacer colSpan="12"/>
+				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3" />
+				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" />
+			</panel>
+			<field name="description" colSpan="12" readonly="true"/>
+			<field name="typeSelect" hidden="true" />
+			<field name="initDataLoaded" hidden="true" />
+		</panel>
+	</form> 
+	
+	<form model="com.axelor.apps.base.db.App" title="Bulk install" name="bulk-install-app-form">
+		<panel>
+			<button name="selectAll" title="Select all" colSpan="4" onClick="action-app-bulk-install-select-all,action-app-bulk-install-apps-set-change"/>
+			<field type="many-to-many" name="appsSet" target="com.axelor.apps.base.db.App" colSpan="12" title="Apps" canNew="false" domain="self.active = false or self.demoDataLoaded = false" height="200" onChange="action-app-bulk-install-apps-set-change"/>			
+			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4"/>
+			<field type="boolean" name="importDemoData" title="Import demo data ?" colSpan="3"/>
+			<button name="install" title="Install" colSpan="4" onClick="action-app-method-bulk-install" hidden="true"/>
+		</panel>
+	</form>
+	
+	<cards name="app-cards" model="com.axelor.apps.base.db.App" title="Apps" css="rect-image" orderBy="sequence" width="25%:200" > 
+		<toolbar>
+			<button name="bulkInstall" title="Bulk install" onClick="action-app-open-bulk-install-selector"/>
+			<button name="refreshApp" title="Refresh Apps" onClick="action-app-method-refresh-app"/>
+		</toolbar>
+		<field name="name" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		<field name="image" />
+		<field name="description"/>
+		<field name="typeSelect"/>
+		<field name="active"/>
+		<field name="sequence"/>
+		<template><![CDATA[
+			<div>
+			  <div class="span4 card-image">
+			    <img ng-src="{{$image('image', 'content')}}" />
+			  </div>
+			  <div class="span8">
+					  <span><strong>{{name}}</strong></span>
+		  			<br/>
+		        <br/>
+		 		  	<label class="iswitch form-item"><input type="checkbox" ng-model="active"/><span class="box"/></label>
+		      	<a class="btn btn-small btn-success pull-right" href="" ng-show="active" ui-action-click="com.axelor.apps.base.web.AppController:configure" x-translate>Configure</a>
+		 		</div>
+			</div>
+		]]>
+		</template>
+	</cards>
+	
+	<action-record name="action-app-bulk-install-select-all" model="com.axelor.apps.base.db.App">
+	 	<field name="appsSet" expr="eval:(__repo__(App).all().filter('self.active = false or self.demoDataLoaded = false').fetch()).toSet()"/>
+	</action-record>
+	
+	<action-method name="action-method-app-import-data-demo">
+		<call class="com.axelor.apps.base.web.AppController" method="importDataDemo"/>
+	</action-method>
+	
+	 <action-method name="action-app-method-check-parent">
+	    <call class="com.axelor.apps.base.web.AppController" method="checkParent"  if="__this__.active &amp;&amp; __this__.active != __self__.active"/>
+	 </action-method>
+	 
+	 <action-method name="action-app-method-install-app">
+	    <call class="com.axelor.apps.base.web.AppController" method="installApp" if="__this__.active" />
+	 </action-method>
+	 
+	 <action-method name="action-app-method-check-children">
+	    <call class="com.axelor.apps.base.web.AppController" method="checkChildren" if="!active"/>
+	 </action-method>
+	 
+	 <action-method name="action-app-method-bulk-install" >
+	 	<call class="com.axelor.apps.base.web.AppController" method="bulkInstall" />
+	 </action-method>
+	 
+	 <action-method name="action-app-method-refresh-app">
+		<call class="com.axelor.apps.base.web.AppController" method="refreshApp"/>
+	 </action-method>
+
+	 <action-view name="action-app-open-bulk-install-selector" title="Bulk install" model="com.axelor.apps.base.db.App">
+	 	<view type="form" name="bulk-install-app-form"/>
+	 	<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup" value="true" />  
+		<view-param name="popup-save" value="false" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="height" value="400" />
+	 </action-view>
+	 
+	 <action-attrs name="action-app-on-load-attrs">
+	 	<attribute name="hidden" for="configure" expr="eval:!__self__.active"/>
+	 	<attribute name="hidden" for="demoDataLoaded" expr="eval:!__self__.active"/>
+	 	<attribute name="hidden" for="importDataDemo" expr="eval:!__self__.active || demoDataLoaded"/>
+	 </action-attrs>
+	 
+	 <action-attrs name="action-app-bulk-install-apps-set-change">
+	 	<attribute name="hidden" for="install" expr="eval:appsSet == null || appsSet.empty"/>
+	 </action-attrs>
+       
+</object-views>

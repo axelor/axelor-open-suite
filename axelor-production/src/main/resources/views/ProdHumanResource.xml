@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="prod-human-resource-grid" title="Prod. Human resources" editable="true" model="com.axelor.apps.production.db.ProdHumanResource"
         onNew="action-prod-human-resource-record-default">
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" form-view="product-form" grid-view="product-grid" domain="self.productTypeSelect = 'service' "/>
         <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
         <field name="duration" widget="duration" x-big="true" x-seconds="true" aggregate="sum"/>
 	  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
@@ -31,7 +31,7 @@
     </form>
     
     <action-record name="action-prod-human-resource-record-default" model="com.axelor.apps.production.db.ProdHumanResource">
-        <field name="costSheetGroup" expr="eval: __config__?.general?.workCenterCostSheetGroup"/>
+        <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " />
     </action-record>
     
 </object-views>

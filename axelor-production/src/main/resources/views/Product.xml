@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 
    <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
@@ -15,11 +15,11 @@
 	</form>    
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">
-    	<field name="costSheetGroup" expr="eval: __config__?.general?.productCostSheetGroup"/>
+    	<field name="costSheetGroup" expr="eval: __config__.app.getApp('production')?.getProductCostSheetGroup()"  />
     </action-record>
     
     <action-attrs name="action-product-attrs-scale-and-precision-production" if-module="axelor-production">
-		<attribute name="scale" for="lastProductionPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="lastProductionPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
 	</action-attrs>
 	
 </object-views>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="WkfTransition" cachable="true">
+      <![CDATA[
+    	WkfTransition stores the transition information for the nodes(state) of a workflow. 
+    	It contains source and destination nodes. The transition can be done on button click or on satisfaction of some conditions. 
+    	It is used to generate the buttons and actions required to call a transition.
+      ]]>
+      <string name="name" title="Name" required="true" />
+      <string name="xmlId" title="xmlId" />
+      <boolean name="isButton" title="Button ?" />
+      <string name="buttonTitle" title="Button title" />
+      <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="Restricted Roles"/>
+      <one-to-many name="conditions" ref="Filter" title="Conditions" mappedBy="wkfTransition"/>
+      <many-to-one name="wkf" ref="Wkf" />
+      <many-to-one name="source" ref="WkfNode" title="From"  />
+      <many-to-one name="target" ref="WkfNode" title="To" />
+      <integer name="alertTypeSelect" title="Alert or Blocking condition ?" selection="studio.condition.alert.type.select" /> 
+      <string name="alertMsg" title="Message on alert or blocking" />
+      <string name="successMsg" title="Message on success" />
+  </entity>
+    
+ </domain-models>

@@ -29,12 +29,8 @@ import com.axelor.apps.base.test.TestModule;
 import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
 import com.google.inject.Inject;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules({ TestModule.class })
 public class TemplateRuleTest {
 	
 	@Inject

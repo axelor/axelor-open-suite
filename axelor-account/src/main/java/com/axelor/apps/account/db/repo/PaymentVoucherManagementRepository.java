@@ -21,7 +21,7 @@ import javax.persistence.PersistenceException;
 
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 
 public class PaymentVoucherManagementRepository extends PaymentVoucherRepository {
@@ -34,7 +34,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
 
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setRef(null);
-		copy.setPaymentDate(Beans.get(GeneralService.class).getTodayDate());
+		copy.setPaymentDate(Beans.get(AppBaseService.class).getTodayDate());
 		copy.clearPayVoucherDueElementList();
 		copy.clearPayVoucherElementToPayList();
 		copy.setGeneratedMove(null);

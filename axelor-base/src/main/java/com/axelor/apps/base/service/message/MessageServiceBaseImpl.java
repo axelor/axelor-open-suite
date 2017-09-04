@@ -17,10 +17,26 @@
  */
 package com.axelor.apps.base.service.message;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.lang.invoke.MethodHandles;
+
+import javax.mail.MessagingException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -38,18 +54,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.mail.MessagingException;
-import java.io.File;
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
@@ -59,7 +63,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	protected UserService userService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 
 	@Inject
@@ -101,7 +105,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		TemplateMaker maker = new TemplateMaker( new Locale(language), '$', '$');
 		maker.setContext( messageRepo.find(message.getId()), "Message" );
 
-		String fileName = "Message " + message.getSubject() + "-" + new DateTime().toString("yyyyMMdd");;
+		String fileName = "Message " + message.getSubject() + "-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 		File file = Beans.get(TemplateMessageServiceBaseImpl.class).generateBirtTemplate(maker, fileName,
 				birtTemplate.getTemplateLink(), birtTemplate.getFormat(), birtTemplate.getBirtTemplateParameterList());
 
@@ -113,7 +117,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 				
-		if(generalService.getGeneral().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
+		if(appBaseService.getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
 		
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);

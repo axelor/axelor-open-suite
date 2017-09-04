@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -275,7 +275,7 @@ public class PartnerService {
 		char[] Str = new char[9];
 		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty() ){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PARTNER_2),
-					GeneralServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else {
             String registrationCode = partner.getRegistrationCode();

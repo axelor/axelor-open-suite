@@ -61,7 +61,7 @@ public class AccountingSituationController {
 			response.setAttr("companyInBankDetails","domain", domain);
 		}
 		else {
-			response.setAttr("companyInBankDetails","self.id in (0)", domain);
+			response.setAttr("companyInBankDetails", "domain", "self.id in (0)");
 		}
 	}
 

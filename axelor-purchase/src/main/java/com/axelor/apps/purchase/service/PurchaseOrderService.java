@@ -19,7 +19,7 @@ package com.axelor.apps.purchase.service;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -98,7 +98,7 @@ public interface PurchaseOrderService {
 	public void updateCostPrice(PurchaseOrder purchaseOrder);
 	
 	public void draftPurchaseOrder(PurchaseOrder purchaseOrder);
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder);
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 	public void finishPurchaseOrder(PurchaseOrder purchaseOrder);
 	public void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 	

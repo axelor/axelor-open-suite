@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -54,5 +57,23 @@ public class ProdProcessController {
 			prodProcessService.changeProdProcessListOutsourcing(prodProcess);
 		}
 		response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
+	}
+	
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ProdProcess prodProcess = request.getContext().asType(ProdProcess.class );
+		String prodProcessId = prodProcess.getId().toString();
+		String prodProcessLabel = prodProcess.getName().toString();
+		
+		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLabel+"-${date}")
+				.addParam("Locale", prodProcessService.getLanguageToPrinting(prodProcess))
+				.addParam("ProdProcessId", prodProcessId)
+				.generate()
+				.getFileLink();
+		
+		response.setView(ActionView
+				.define(prodProcessLabel)
+				.add("html", fileLink).map());
+		
 	}
 }

@@ -25,7 +25,6 @@ import com.axelor.db.JPA;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import org.slf4j.Logger;

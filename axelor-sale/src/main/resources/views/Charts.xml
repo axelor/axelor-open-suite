@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	  
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.dates.this.last.year">
 		<field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
-		<field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonthOfYear(12).withDayOfMonth(31)"/>  
+		<field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonth(12).withDayOfMonth(31)"/>  
 	</action-record>
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.family.sale.turnover.per.month" title="Family sale turnover (Excl. Tax) per month">
@@ -246,7 +246,7 @@
 	  		FROM 
 	    		sale_sale_order self
 	  		JOIN
-	    		base_team team ON team.id=self.team
+	    		team_team team ON team.id=self.team
 	  		JOIN 
 	    		auth_user _user ON _user.id = :_user_id AND self.company = _user.active_company
 	  		WHERE

@@ -22,46 +22,55 @@ import java.math.RoundingMode;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
-
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.web.ManufOrderController;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class OperationOrderWorkflowService {
-
-	@Inject
-	private OperationOrderStockMoveService operationOrderStockMoveService;
-
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
+	protected OperationOrderStockMoveService operationOrderStockMoveService;
 	protected OperationOrderRepository operationOrderRepo;
+	protected OperationOrderDurationRepository operationOrderDurationRepo;
+	protected AppProductionService appProductionService;
 
-	private LocalDateTime today;
+	protected LocalDateTime now;
 	
 	@Inject
-	public OperationOrderWorkflowService(GeneralService generalService) {
-		this.generalService = generalService;
-		today = this.generalService.getTodayDateTime().toLocalDateTime();
+	public OperationOrderWorkflowService(OperationOrderStockMoveService operationOrderStockMoveService, OperationOrderRepository operationOrderRepo,
+										 OperationOrderDurationRepository operationOrderDurationRepo, AppProductionService appProductionService) {
+		this.operationOrderStockMoveService = operationOrderStockMoveService;
+		this.operationOrderRepo = operationOrderRepo;
+		this.operationOrderDurationRepo = operationOrderDurationRepo;
 
+		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
+	/**
+	 * Plan an operation order.
+	 * For successive calls, must be called by order of operation order priority.
+	 * 
+	 * @param operationOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
 
@@ -71,16 +80,24 @@ public class OperationOrderWorkflowService {
 
 		operationOrder.setPlannedDuration(
 				this.getDuration(
-				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
+				));
 
 		operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+		return operationOrderRepo.save(operationOrder);
 	}
 	
+	/**
+	 * Replan an operation order.
+	 * For successive calls, must reset planned dates first, then call by order of operation order priority.
+	 * 
+	 * @param operationOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional
 	public OperationOrder replan(OperationOrder operationOrder) throws AxelorException  {
 
@@ -90,12 +107,28 @@ public class OperationOrderWorkflowService {
 
 		operationOrder.setPlannedDuration(
 				this.getDuration(
-				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
+				));
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
-
+		return operationOrderRepo.save(operationOrder);
 	}
 
+	/**
+	 * Reset the planned dates from the specified operation order list.
+	 * 
+	 * @param operationOrderList
+	 * @return
+	 */
+	@Transactional
+	public List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList) {
+		for (OperationOrder operationOrder : operationOrderList) {
+			operationOrder.setPlannedStartDateT(null);
+			operationOrder.setPlannedEndDateT(null);
+			operationOrder.setPlannedDuration(null);
+		}
+
+		return operationOrderList;
+	}
 
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 
@@ -126,23 +159,32 @@ public class OperationOrderWorkflowService {
 
 		return operationOrder.getManufOrder().getPlannedStartDateT();
 	}
-	
 
 
-
+	/**
+	 * Starts the given {@link OperationOrder} and sets its starting time
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(OperationOrder operationOrder)  {
+	public void start(OperationOrder operationOrder) throws AxelorException {
+		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
+			operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+			operationOrder.setRealStartDateT(now);
 
-		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+			startOperationOrderDuration(operationOrder);
 
-			operationOrder.setRealStartDateT(today);
-
-			operationOrder.setStartedBy(AuthUtils.getUser());
-
-			operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+			if (operationOrder.getManufOrder() != null) {
+				int beforeOrAfterConfig = Beans
+						.get(ProductionConfigService.class)
+						.getProductionConfig(operationOrder.getManufOrder().getCompany())
+						.getStockMoveRealizeOrderSelect();
+				if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
+					operationOrderStockMoveService.finish(operationOrder);
+				}
+			}
+			operationOrderRepo.save(operationOrder);
 		}
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
-		Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 		if (operationOrder.getManufOrder().getStatusSelect()
 				!= IManufOrder.STATUS_IN_PROGRESS) {
@@ -151,41 +193,182 @@ public class OperationOrderWorkflowService {
 
 	}
 
-
+	/**
+	 * Pauses the given {@link OperationOrder} and sets its pausing time
+	 *
+	 * @param operationOrder An operation order
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(OperationOrder operationOrder) throws AxelorException  {
+	public void pause(OperationOrder operationOrder) {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
 
-		operationOrderStockMoveService.cancel(operationOrder);
+		stopOperationOrderDuration(operationOrder);
 
+		operationOrderRepo.save(operationOrder);
+	}
+
+	/**
+	 * Resumes the given {@link OperationOrder} and sets its resuming time
+	 *
+	 * @param operationOrder An operation order
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void resume(OperationOrder operationOrder) {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+
+		startOperationOrderDuration(operationOrder);
+
+		operationOrderRepo.save(operationOrder);
+	}
+
+	/**
+	 * Ends the given {@link OperationOrder} and sets its stopping time<br>
+	 * Realizes the linked stock moves
+	 *
+	 * @param operationOrder An operation order
+	 */
+	@Transactional
+	public void finish(OperationOrder operationOrder) throws AxelorException {
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
+		operationOrder.setRealEndDateT(now);
+
+		stopOperationOrderDuration(operationOrder);
+
+		operationOrderStockMoveService.finish(operationOrder);
+		operationOrderRepo.save(operationOrder);
+	}
+
+	/**
+	 * Cancels the given {@link OperationOrder} and its linked stock moves
+     * And sets its stopping time
+	 *
+	 * @param operationOrder An operation order
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancel(OperationOrder operationOrder) throws AxelorException {
+	    int oldStatus = operationOrder.getStatusSelect();
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
 
-		Beans.get(OperationOrderRepository.class).save(operationOrder);
+		if (oldStatus == IOperationOrder.STATUS_IN_PROGRESS) {
+			stopOperationOrderDuration(operationOrder);
+		}
+		operationOrderStockMoveService.cancel(operationOrder);
 
+		operationOrderRepo.save(operationOrder);
+	}
+
+
+	/**
+	 * Starts an {@link OperationOrderDuration} and links it to the given {@link OperationOrder}
+	 *
+	 * @param operationOrder An operation order
+	 */
+	public void startOperationOrderDuration(OperationOrder operationOrder) {
+		OperationOrderDuration duration = new OperationOrderDuration();
+		duration.setStartedBy(AuthUtils.getUser());
+		duration.setStartingDateTime(now);
+		operationOrder.addOperationOrderDurationListItem(duration);
+	}
+
+	/**
+	 * Ends the last {@link OperationOrderDuration} and sets the real duration of {@code operationOrder}<br>
+	 * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
+	 *
+	 * @param operationOrder An operation order
+	 */
+	public void stopOperationOrderDuration(OperationOrder operationOrder) {
+		OperationOrderDuration duration = operationOrderDurationRepo.all().filter("self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL", operationOrder.getId()).fetchOne();
+		duration.setStoppedBy(AuthUtils.getUser());
+		duration.setStoppingDateTime(now);
+
+		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_FINISHED) {
+			long durationLong = getDuration(computeRealDuration(operationOrder));
+			operationOrder.setRealDuration(durationLong);
+			Machine machine = operationOrder.getWorkCenter().getMachine();
+			if (machine != null) {
+				machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
+			}
+		}
+
+		operationOrderDurationRepo.save(duration);
+	}
+
+
+	/**
+	 * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder}
+	 *
+	 * @param operationOrder An operation order
+	 * @return Real duration of {@code operationOrder}
+	 */
+	public Duration computeRealDuration(OperationOrder operationOrder) {
+		Duration totalDuration = Duration.ZERO;
+
+		List<OperationOrderDuration> operationOrderDurations = operationOrder.getOperationOrderDurationList();
+		for (OperationOrderDuration operationOrderDuration : operationOrderDurations) {
+			totalDuration = totalDuration.plus(Duration.between(operationOrderDuration.getStartingDateTime(), operationOrderDuration.getStoppingDateTime()));
+		}
+
+		return totalDuration;
+	}
+
+	/**
+	 * Set planned start and end dates.
+	 * 
+	 * @param operationOrder
+	 * @param plannedStartDateT
+	 * @param plannedEndDateT
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public OperationOrder setPlannedDates(OperationOrder operationOrder, LocalDateTime plannedStartDateT,
+			LocalDateTime plannedEndDateT) {
+
+		operationOrder.setPlannedStartDateT(plannedStartDateT);
+		operationOrder.setPlannedEndDateT(plannedEndDateT);
+		return computeDuration(operationOrder);
+	}
+
+	/**
+	 * Set real start and end dates.
+	 * 
+	 * @param operationOrder
+	 * @param realStartDateT
+	 * @param realEndDateT
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public OperationOrder setRealDates(OperationOrder operationOrder, LocalDateTime realStartDateT,
+			LocalDateTime realEndDateT) {
+
+		operationOrder.setRealStartDateT(realStartDateT);
+		operationOrder.setRealEndDateT(realEndDateT);
+		return computeDuration(operationOrder);
 	}
 
 	@Transactional
-	public OperationOrder finish(OperationOrder operationOrder) throws AxelorException  {
+	public OperationOrder computeDuration(OperationOrder operationOrder)  {
+		Long duration;
 
-		operationOrderStockMoveService.finish(operationOrder);
+		if(operationOrder.getPlannedStartDateT() != null && operationOrder.getPlannedEndDateT() != null) {
+			duration = this.getDuration(
+					Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
+			);
+			operationOrder.setPlannedDuration(duration);
+		}
 
-		operationOrder.setRealEndDateT(today);
+		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
+			duration = this.getDuration(
+					Duration.between(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())
+			);
+			operationOrder.setRealDuration(duration);
+		}
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
-
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
-
-	}
-
-
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
-
+		return operationOrder;
 	}
 
 	public long getDuration(Duration duration)  {
 
-		return duration.toStandardSeconds().getSeconds();
+		return duration.getSeconds();
 
 	}
 
@@ -269,11 +452,5 @@ public class OperationOrderWorkflowService {
 
 		return qty.multiply(new BigDecimal(duration)).longValue();
 	}
-
-
-
-
-
-
 }
 

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -25,12 +26,18 @@ import com.google.inject.Inject;
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
 	
 	@Inject
+	private AppService appService;
+	
+	@Inject
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderService;
 	
 	
 	@Override
 	public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-		purchaseOrderService.generateBudgetDistribution(purchaseOrder);
+		
+		if (appService.isApp("supplychain")) {
+			purchaseOrderService.generateBudgetDistribution(purchaseOrder);
+		}
 		return super.save(purchaseOrder);
 		
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -9,9 +9,9 @@
   	<many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate" />
   	<string name="name" title="Label"/>
   	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select" required="true"/>
-  	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product" help="true"/>
-  	<many-to-one name="account" title="Account" ref="Account" help="true" required="true"/>
-	<decimal name="percentage" title="Percentage" precision="20" scale="2"  min="0" max="100" help="true"/>
+  	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+  	<many-to-one name="account" title="Account" ref="Account" required="true"/>
+	<decimal name="percentage" title="Percentage" precision="20" scale="2"  min="0" max="100"/>
 	<boolean name="hasPartnerToDebit" title="Partner to debit" />
 	<boolean name="hasPartnerToCredit" title="Partner to credit" />
 	<boolean name="isValid" title="Valid ?"/>  	

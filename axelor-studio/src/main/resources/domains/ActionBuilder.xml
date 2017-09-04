@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="ActionBuilder" cachable="true">
+     <string name="name" title="Name" required="true"/>
+     <integer name="typeSelect" title="Type" selection="studio.action.builder.type.select" />
+     <string name="model" title="Object" />
+     <string name="targetModel"  title="Target object" />
+     <one-to-many name="lines" ref="ActionBuilderLine" title="Fields" mappedBy="actionBuilder"/>
+     <many-to-one name="assignValueTo" title="Assign value to" ref="com.axelor.meta.db.MetaField" />
+     <string name="firstGroupBy" title="First group by"/>
+     <string name="secondGroupBy" title="Second group by"/>
+     <string name="title" title="Title" />
+     <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
+     <one-to-many name="filters" ref="Filter" title="Filters"/>
+     <boolean name="transactional" title="Transactional ?" />
+     <integer name="scriptType" title="Script type" selection="studio.action.builder.script.type.select"/>
+     <string name="scriptText" title="Script" large="true"/>
+     
+     <!-- Action view fields -->
+     <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder"/>
+     <boolean name="isJson" title="Json ?" />
+     <string name="domainCondition" title="Domain" />
+     <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine" orphanRemoval="true" />
+     
+  </entity>
+  
+</domain-models>

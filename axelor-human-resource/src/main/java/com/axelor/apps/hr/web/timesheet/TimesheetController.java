@@ -22,8 +22,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.axelor.apps.hr.service.HRMenuValidateService;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -41,10 +43,11 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -59,7 +62,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
@@ -74,8 +76,9 @@ public class TimesheetController {
 	@Inject
 	private Provider<ProductRepository> productRepoProvider;
 	@Inject
-	private Provider<ProjectTaskRepository> projectTaskRepoProvider;
-	
+	private Provider<ProjectRepository> projectRepoProvider;
+	@Inject
+	private Provider<UserHrService> userHrservice;
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -91,24 +94,27 @@ public class TimesheetController {
 		
 		LocalDate fromGenerationDate = null;
 		if(context.get("fromGenerationDate") != null)
-			fromGenerationDate = new LocalDate(context.get("fromGenerationDate"));
+			fromGenerationDate = LocalDate.parse(context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
 		LocalDate toGenerationDate = null;
 		if(context.get("toGenerationDate") != null)
-			toGenerationDate = new LocalDate(context.get("toGenerationDate"));
+			toGenerationDate = LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
 		BigDecimal logTime = BigDecimal.ZERO;
 		if(context.get("logTime") != null)
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
-		Map<String, Object> projectTaskContext = (Map<String, Object>) context.get("projectTask");
-		ProjectTask projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
+		Project project = projectRepoProvider.get().find(((Integer) projectContext.get("id")).longValue());
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
 		if(productContext != null)
 			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
-			
 		
-		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, projectTask, product);
+		if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+			product = userHrservice.get().getTimesheetProduct(timesheet.getUser());
+		}
+		
+		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
 		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
 	}
 
@@ -153,7 +159,7 @@ public class TimesheetController {
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-validate-grid")
 				   .add("form","timesheet-form")
-				   .context("todayDate", Beans.get(GeneralService.class).getTodayDate());
+				   .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
 
 		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -258,19 +264,21 @@ public class TimesheetController {
 			response.setReload(true);
 		}
 	}
-	
-	//Confirm and continue Button
-		public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException{
 
-			this.confirm(request, response);
-			
-			response.setView(ActionView
-					.define(I18n.get("Timesheet"))
-					.model(Timesheet.class.getName())
-					.add("form", "timesheet-form")
-					.map());
-			
-		}
+    // Continue button
+    public void continueBtn(ActionRequest request, ActionResponse response) throws AxelorException {
+        response.setView(ActionView
+                .define(I18n.get("Timesheet"))
+                .model(Timesheet.class.getName())
+                .add("form", "timesheet-form")
+                .map());
+    }
+
+    // Confirm and continue button
+    public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException {
+        this.confirm(request, response);
+        this.continueBtn(request, response);
+    }
 	
 	
 	//action called when validating a timesheet. Changing status + Sending mail to Applicant
@@ -367,4 +375,34 @@ public class TimesheetController {
 				.define(name)
 				.add("html", fileLink).map());	
 	}
+	
+	public void setShowActivity(ActionRequest request, ActionResponse response) {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		boolean showActivity = true;
+		
+		User user = timesheet.getUser();
+		if (user != null) {
+			Company company = user.getActiveCompany();
+			if (company != null && company.getHrConfig() != null) {
+				showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+			}
+		}
+		
+		response.setValue("$showActivity", showActivity);
+	}
+	
+	public void openTimesheetEditor(ActionRequest request, ActionResponse response) {
+		
+		Context context = request.getContext();
+		
+		String url = "hr/timesheet?timesheetId=" + context.get("id") + "&showActivity=" + context.get("showActivity");
+		
+		response.setView(ActionView
+				.define(I18n.get("Timesheet lines"))
+				.add("html", url).map());       
+
+	}
+	
 }

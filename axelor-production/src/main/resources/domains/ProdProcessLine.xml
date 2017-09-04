@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -10,7 +10,7 @@
   	<integer name="importId"/>
   
  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
-  	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+  	<many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     <string name="name" title="Label"/>
     <integer name="priority" title="Priority"/>
     <string name="description" title="Description" large="true"/>
@@ -18,7 +18,8 @@
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
     <boolean name="outsourcing" title="Outsourcing"/>
-    
+    <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
+
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
     <one-to-many name="objectDescriptionList" ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine" title="Descriptions"/>
   </entity>

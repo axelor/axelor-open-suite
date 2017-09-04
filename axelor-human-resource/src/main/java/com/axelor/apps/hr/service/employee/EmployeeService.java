@@ -19,7 +19,7 @@ package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;

@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
@@ -42,9 +42,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-
 	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	protected AnalyticMoveLineService analyticMoveLineService;
@@ -75,7 +74,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 	
 	public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) throws AxelorException{
 		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return saleOrderLine;  }
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return saleOrderLine;  }
 		
 		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 		List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
@@ -95,8 +94,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 		
 		analyticMoveLine.setSaleOrderLine(saleOrderLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-		analyticMoveLine.setDate(generalService.getTodayDate());
-
+		analyticMoveLine.setDate(appAccountService.getTodayDate());
 		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 		
 	}

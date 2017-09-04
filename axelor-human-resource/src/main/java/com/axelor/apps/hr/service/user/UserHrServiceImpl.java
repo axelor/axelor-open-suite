@@ -17,14 +17,16 @@
  */
 package com.axelor.apps.hr.service.user;
 
+import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.AppLeave;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
@@ -35,20 +37,24 @@ public class UserHrServiceImpl implements UserHrService {
 
 	@Inject
 	UserRepository userRepo;
+	
+	@Inject
+	private AppHumanResourceService appHumanResourceService;
 
 	@Transactional
 	public void createEmployee(User user) {
 		if (user.getPartner() == null) {
 			Beans.get(UserService.class).createPartner(user);
 		}
-
-		General config = Beans.get(GeneralService.class).getGeneral();
-
+		
+		AppBase appBase = appHumanResourceService.getAppBase();
+		AppLeave appLeave = appHumanResourceService.getAppLeave();
+		
 		Employee employee = new Employee();
 		employee.setContactPartner(user.getPartner());
-		employee.setTimeLoggingPreferenceSelect(config.getTimeLoggingPreferenceSelect());
-		employee.setDailyWorkHours(config.getDailyWorkHours());
-		employee.setNegativeValueLeave(config.getAllowNegativeLeaveEmployees());
+		employee.setTimeLoggingPreferenceSelect(appBase.getTimeLoggingPreferenceSelect());
+		employee.setDailyWorkHours(appBase.getDailyWorkHours());
+		employee.setNegativeValueLeave(appLeave.getAllowNegativeLeaveEmployees());
 
 		PublicHolidayPlanning planning = null;
 		Company company = user.getActiveCompany();
@@ -66,4 +72,29 @@ public class UserHrServiceImpl implements UserHrService {
 		user.setEmployee(employee);
 		userRepo.save(user);
 	}
+	
+	@Override
+	public Product getTimesheetProduct(User user) {
+		
+		if (user == null || user.getId() == null) {
+			return null;
+		}
+		
+		user = userRepo.find(user.getId());
+		
+	    Product product = null;
+	    HRConfig hrConfig = user.getActiveCompany().getHrConfig();
+		if (hrConfig != null && hrConfig.getUseUniqueProductForTimesheet()) {
+			product = hrConfig.getUniqueTimesheetProduct();
+		}
+		
+		
+		if (product == null && user.getEmployee() != null) {
+			product = user.getEmployee().getProduct();
+		}
+		
+		return product;
+		
+	 }
+
 }

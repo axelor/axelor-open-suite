@@ -17,18 +17,19 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.common.base.Joiner;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.exception.AxelorException;
@@ -50,7 +51,10 @@ public class PurchaseOrderController {
 	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppSupplychainService appSupplychainService;
+	
+	@Inject
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -61,12 +65,12 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder.getId() != null) {
 			if (purchaseOrderServiceSupplychain.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())){
-				if(!generalService.getGeneral().getSupplierStockMoveGenerationAuto()){
+				if(!appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()){
 					response.setFlash(I18n.get("An active stockMove already exists for this purchaseOrder"));
 				}
 			}else{
 				Long stockMoveId = purchaseOrderServiceSupplychain.createStocksMove(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-				if (!generalService.getGeneral().getSupplierStockMoveGenerationAuto()){
+				if (!appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()){
 					response.setView(ActionView
 							.define(I18n.get("Stock move"))
 							.model(StockMove.class.getName())
@@ -101,7 +105,7 @@ public class PurchaseOrderController {
 	
 	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 			purchaseOrderServiceSupplychain.generateBudgetDistribution(purchaseOrder);
 			response.setValues(purchaseOrder);
@@ -309,5 +313,12 @@ public class PurchaseOrderController {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		purchaseOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
 		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+	}
+	
+	public void applyToallBudgetDistribution(ActionRequest request, ActionResponse response) {
+		
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrderServiceSupplychain.applyToallBudgetDistribution(purchaseOrder);
 	}
 }

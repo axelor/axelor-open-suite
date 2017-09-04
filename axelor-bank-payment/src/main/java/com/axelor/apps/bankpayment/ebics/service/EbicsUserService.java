@@ -21,13 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Signature;
+import java.time.LocalDateTime;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
-import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsRequestLog;
@@ -241,7 +241,7 @@ public class EbicsUserService {
 		
 		EbicsRequestLog requestLog = new EbicsRequestLog();
 		requestLog.setEbicsUser(ebicsUserRepo.find(ebicsUserId));
-		LocalDateTime time = new LocalDateTime();
+		LocalDateTime time = LocalDateTime.now();
 		requestLog.setRequestTime(time);
 		requestLog.setRequestType(requestType);
 		requestLog.setResponseCode(responseCode);
