@@ -41,6 +41,7 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-interco"/>
+		<action name="action-sale-order-record-interco"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
@@ -101,12 +102,14 @@
 		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
 
+    <action-record name="action-sale-order-record-interco"
+				   model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
+	</action-record>
 
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
-		<attribute for="interco" name="value"
-				   expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
 		<attribute for="interco" name="value" expr="eval: false"
 				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 	</action-attrs>
