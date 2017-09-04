@@ -406,7 +406,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}
 			}
 		}
-
+		int intercoPurchaseCreatingStatus =
+				Beans.get(AppSupplychainService.class)
+				.getAppSupplychain()
+				.getIntercoPurchaseCreatingStatusSelect();
+		if (purchaseOrder.getInterco()
+				&& intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
+			Beans.get(IntercoService.class)
+					.generateIntercoSaleFromPurchase(purchaseOrder);
+		}
 		super.requestPurchaseOrder(purchaseOrder);
 	}
 
@@ -441,6 +449,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		
 		if (appAccountService.getAppBudget().getActive() && !appAccountService.getAppBudget().getManageMultiBudget()) {
 			generateBudgetDistribution(purchaseOrder);
+		}
+		int intercoPurchaseCreatingStatus =
+				Beans.get(AppSupplychainService.class)
+						.getAppSupplychain()
+						.getIntercoPurchaseCreatingStatusSelect();
+		if (purchaseOrder.getInterco()
+				&& intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
+			Beans.get(IntercoService.class)
+					.generateIntercoSaleFromPurchase(purchaseOrder);
 		}
 	}
 

@@ -27,9 +27,10 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -41,24 +42,80 @@ public class IntercoServiceImpl implements IntercoService {
     protected PurchaseOrderLineService purchaseOrderLineService;
     protected PurchaseOrderRepository purchaseOrderRepository;
     protected CompanyRepository companyRepository;
+    protected SaleOrderService saleOrderService;
+    protected SaleOrderLineService saleOrderLineService;
+    protected SaleOrderRepository saleOrderRepository;
 
     @Inject
     public IntercoServiceImpl(PurchaseOrderService purchaseOrderService,
                               PurchaseOrderLineService purchaseOrderLineService,
                               PurchaseOrderRepository purchaseOrderRepository,
-                              CompanyRepository companyRepository) {
+                              CompanyRepository companyRepository,
+                              SaleOrderService saleOrderService,
+                              SaleOrderLineService saleOrderLineService,
+                              SaleOrderRepository saleOrderRepository) {
+
         this.purchaseOrderService = purchaseOrderService;
         this.purchaseOrderLineService = purchaseOrderLineService;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.companyRepository = companyRepository;
+        this.saleOrderService = saleOrderService;
+        this.saleOrderLineService = saleOrderLineService;
+        this.saleOrderRepository = saleOrderRepository;
     }
+
 
     @Override
     @Transactional
-    public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder) {
-        Beans.get(AppSupplychainService.class).getAppSupplychain().getIntercoFromSale();
-        return null;
-    }
+    public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
+            throws AxelorException {
+
+        //create sale order
+        SaleOrder saleOrder = saleOrderService.createSaleOrder(
+                null,
+                findIntercoCompany(purchaseOrder),
+                purchaseOrder.getContactPartner(),
+                purchaseOrder.getCurrency(),
+                purchaseOrder.getDeliveryDate(),
+                null,
+                null,
+                purchaseOrder.getOrderDate(),
+                purchaseOrder.getPriceList(),
+                purchaseOrder.getCompany().getPartner(),
+                null
+        );
+
+        //copy date
+        saleOrder.setOrderDate(purchaseOrder.getOrderDate());
+
+        //copy payments
+        saleOrder.setPaymentMode(purchaseOrder.getPaymentMode());
+        saleOrder.setPaymentCondition(purchaseOrder.getPaymentCondition());
+
+        //copy delivery info
+        saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
+        saleOrder.setLocation(purchaseOrder.getLocation());
+        saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
+        saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
+
+        //copy timetable info
+        saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
+        saleOrder.setAmountToBeSpreadOverTheTimetable(purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+
+        //create lines
+        List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+        if (purchaseOrderLineList != null) {
+            for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+                this.createIntercoSaleLineFromPurchaseLine(purchaseOrderLine, saleOrder);
+            }
+        }
+
+        //compute the sale order
+        saleOrderService.computeSaleOrder(saleOrder);
+
+        saleOrder.setCreatedByInterco(true);
+        return saleOrderRepository.save(saleOrder);
+   }
 
     @Override
     @Transactional
@@ -107,6 +164,8 @@ public class IntercoServiceImpl implements IntercoService {
 
         //compute the purchase order
         purchaseOrderService.computePurchaseOrder(purchaseOrder);
+
+        purchaseOrder.setCreatedByInterco(true);
         return purchaseOrderRepository.save(purchaseOrder);
     }
 
@@ -138,8 +197,47 @@ public class IntercoServiceImpl implements IntercoService {
         //delivery
         purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getEstimatedDelivDate());
 
+        //tax
+        purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
+
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
         return purchaseOrderLine;
+    }
+
+    /**
+     *
+     * @param purchaseOrderLine  the purchase order line needed to create
+     *                           the sale order line
+     * @param saleOrder  the sale order line belongs to this
+     *                   purchase order
+     * @return the created purchase order line
+     */
+    protected SaleOrderLine createIntercoSaleLineFromPurchaseLine(PurchaseOrderLine purchaseOrderLine,
+                                                                  SaleOrder saleOrder) {
+        SaleOrderLine saleOrderLine = new SaleOrderLine();
+
+        saleOrderLine.setSaleOrder(saleOrder);
+        saleOrderLine.setProduct(purchaseOrderLine.getProduct());
+        saleOrderLine.setProductName(purchaseOrderLine.getProductName());
+
+        saleOrderLine.setDescription(purchaseOrderLine.getDescription());
+        saleOrderLine.setQty(purchaseOrderLine.getQty());
+        saleOrderLine.setUnit(purchaseOrderLine.getUnit());
+
+        //compute amount
+        saleOrderLine.setPrice(purchaseOrderLine.getPrice());
+        saleOrderLine.setExTaxTotal(purchaseOrderLine.getExTaxTotal());
+        saleOrderLine.setDiscountTypeSelect(purchaseOrderLine.getDiscountTypeSelect());
+        saleOrderLine.setDiscountAmount(purchaseOrderLine.getDiscountAmount());
+
+        //delivery
+        saleOrderLine.setEstimatedDelivDate(purchaseOrderLine.getEstimatedDelivDate());
+
+        //tax
+        saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
+
+        saleOrder.addSaleOrderLineListItem(saleOrderLine);
+        return saleOrderLine;
     }
 
     @Override

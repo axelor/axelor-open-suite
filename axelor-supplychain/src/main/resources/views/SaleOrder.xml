@@ -104,11 +104,11 @@
 
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
-				   expr="eval: !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="value"
 				   expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
 		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 	</action-attrs>
 
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">

@@ -23,6 +23,7 @@
         <integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
         <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
         <boolean name="interco" title="Interco"/>
+        <boolean name="createdByInterco" default="false"/>
         <date name="expectedRealisationDate" title="Expected realisation date"/>
         <extra-code>
             <![CDATA[

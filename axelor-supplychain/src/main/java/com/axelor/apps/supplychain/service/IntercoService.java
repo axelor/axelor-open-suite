@@ -30,7 +30,7 @@ public interface IntercoService {
      * @param purchaseOrder
      * @return the generated sale order
      */
-    SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder);
+    SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder) throws AxelorException;
 
     /**
      * Given a sale order, generate the sale order counterpart for
