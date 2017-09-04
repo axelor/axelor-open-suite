@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
+     	<hilite if="paymentDate &gt; paymentDueDate" color="warning"/>
 	    <field name="paymentDate"/>
 	    <field name="amount" aggregate="sum"/>
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -20,6 +21,8 @@
 			<field name="amount"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
    			<field name="paymentDate"/>
+   			<field name="paymentDueDate" showIf="paymentDate &gt; paymentDueDate"/>
+		    <field name="delayReason" showIf="paymentDate &gt; paymentDueDate" readonly="false"/>
 	    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" onChange="action-invoice-payment-method-fill-bank-details"/>
 			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-invoice-payment-method-bank-details-domain"/>
 	 	</panel>
@@ -40,6 +43,7 @@
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>
     	<field name="paymentDate" expr="eval: __date__"/>
+    	<field name="paymentDueDate" expr="eval: _invoice?.dueDate"/>
     	<field name="amount" expr="eval: new BigDecimal(_invoice?.inTaxTotal) - new BigDecimal(_invoice?.amountPaid)"/>
     	<field name="paymentMode" expr="eval: _invoice?.paymentMode"/>
 		<field name="bankDetails" expr="eval: _invoice?.companyBankDetails"/>
