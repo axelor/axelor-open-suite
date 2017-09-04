@@ -38,6 +38,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.Filter;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class FilterSqlService {
@@ -100,7 +101,7 @@ public class FilterSqlService {
 			if (target == null) {
 				continue;
 			}
-			String field = getSqlField(target, parent.toString())[0];
+			String field = getSqlField(target, parent.toString(), null)[0];
 			String value = getParam(filter.getIsParameter(), filter.getValue(), filter.getId());
 			String condition = filterCommonService.getCondition(field, filter.getOperator(), value);
 			
@@ -117,23 +118,41 @@ public class FilterSqlService {
 	}
 	
 
-	public String[] getSqlField(Object target, String source) {
+	public String[] getSqlField(Object target, String source, List<String> joins) {
 		
 		String field = null;
 		String type = null;
+		String selection = null;
 		
 		if (target instanceof MetaField) {
 			MetaField metaField = (MetaField)target;
 			field = source + "." + getColumn(metaField);
 			type = metaField.getTypeName();
+			try {
+				selection = Mapper.of(Class.forName(metaField.getMetaModel().getFullName())).getProperty(metaField.getName()).getSelection();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		else {
 			MetaJsonField metaJsonField = (MetaJsonField)target;
+			selection = metaJsonField.getSelection();
 			String jsonColumn = getColumn(metaJsonField.getModel(), metaJsonField.getModelField());
 			field = "cast(" + source + "." + jsonColumn + "->>'"
 					+ metaJsonField.getName() 
 					+ "' as " + getSqlType(metaJsonField.getType()) + ")";
 			type = metaJsonField.getType();
+		}
+		
+		log.debug("Selection for field :{} : {}", field, selection);
+		if (joins != null && !Strings.isNullOrEmpty(selection)) {
+			int join = joins.size();
+			joins.add("left join meta_select obj" + join + " on (obj" + join + ".name = '" + selection + "')");
+			join = joins.size();
+			joins.add("left join meta_select_item obj" + join + " on (obj" + join + ".select_id = obj" + (join-1) + ".id and obj" + join + ".value = cast(" + field + " as varchar))" );
+			join = joins.size();
+			joins.add("left join meta_translation obj" + join + " on (obj" + join + ".message_key = obj" + (join-1) + ".title and obj" + join + ".language = (select language from auth_user where id = :__user__))" );
+			field = "COALESCE(nullif(obj"+ join + ".message_value,''), obj" + (join-1) + ".title)";
 		}
 		
 		return new String[]{field, type};
