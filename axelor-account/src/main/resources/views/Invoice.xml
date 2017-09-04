@@ -527,8 +527,17 @@
         <field name="invoiceDate"/>
         <field name="statusSelect"/>
     </grid>
-    
-    
+
+	<grid model="com.axelor.apps.account.db.Invoice" title="Release details" name="invoice-release-details-grid">
+		<field name="invoiceId" />
+		<field name="partner.partnerSeq" />
+		<field name="partner.name" />
+		<field name="invoiceDate" />
+		<field name="dueDate" />
+		<field name="inTaxTotal" />
+		<field name="currency" />
+	</grid>
+
     <!-- CUSTOMER INVOICES MERGE  -->
     <form name="customer-invoices-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge Cust. Invoices" width="large">
 		<panel-related field="$invoiceToMerge" form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice" domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false" />
