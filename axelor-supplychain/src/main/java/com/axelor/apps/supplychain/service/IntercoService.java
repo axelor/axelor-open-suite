@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
@@ -41,16 +43,19 @@ public interface IntercoService {
     PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException;
 
     /**
-     * Find the interco company from the sale order
-     * @param saleOrder
-     * @return
+     * Given an invoice, generate the invoice counterpart for the
+     * other company.
+     * @param invoice
+     * @return  the generated invoice
+     * @throws AxelorException
      */
-    Company findIntercoCompany(SaleOrder saleOrder);
+    Invoice generateIntercoInvoice(Invoice invoice) throws AxelorException;
 
     /**
-     * Find the interco company from the purchase order
-     * @param purchaseOrder
-     * @return
+     * Find the interco company from the partner
+     *
+     * @param partner
      */
-    Company findIntercoCompany(PurchaseOrder purchaseOrder);
+    Company findIntercoCompany(Partner partner);
+
 }

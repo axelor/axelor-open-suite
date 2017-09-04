@@ -47,6 +47,8 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -131,6 +133,8 @@ public class AccountModule extends AxelorModule {
         bind(WorkflowVentilationService.class).to(WorkflowVentilationServiceImpl.class);
 
         bind(WorkflowCancelService.class).to(WorkflowCancelServiceImpl.class);
+
+        bind(WorkflowValidationService.class).to(WorkflowValidationServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

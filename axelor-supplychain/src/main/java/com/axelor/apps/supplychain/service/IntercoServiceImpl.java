@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -28,52 +31,27 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 import java.util.List;
 
 public class IntercoServiceImpl implements IntercoService {
 
-    protected PurchaseOrderService purchaseOrderService;
-    protected PurchaseOrderLineService purchaseOrderLineService;
-    protected PurchaseOrderRepository purchaseOrderRepository;
-    protected CompanyRepository companyRepository;
-    protected SaleOrderService saleOrderService;
-    protected SaleOrderLineService saleOrderLineService;
-    protected SaleOrderRepository saleOrderRepository;
-
-    @Inject
-    public IntercoServiceImpl(PurchaseOrderService purchaseOrderService,
-                              PurchaseOrderLineService purchaseOrderLineService,
-                              PurchaseOrderRepository purchaseOrderRepository,
-                              CompanyRepository companyRepository,
-                              SaleOrderService saleOrderService,
-                              SaleOrderLineService saleOrderLineService,
-                              SaleOrderRepository saleOrderRepository) {
-
-        this.purchaseOrderService = purchaseOrderService;
-        this.purchaseOrderLineService = purchaseOrderLineService;
-        this.purchaseOrderRepository = purchaseOrderRepository;
-        this.companyRepository = companyRepository;
-        this.saleOrderService = saleOrderService;
-        this.saleOrderLineService = saleOrderLineService;
-        this.saleOrderRepository = saleOrderRepository;
-    }
-
-
     @Override
     @Transactional
     public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
             throws AxelorException {
 
+        SaleOrderService saleOrderService =
+                Beans.get(SaleOrderService.class);
+
         //create sale order
         SaleOrder saleOrder = saleOrderService.createSaleOrder(
                 null,
-                findIntercoCompany(purchaseOrder),
+                findIntercoCompany(purchaseOrder.getSupplierPartner()),
                 purchaseOrder.getContactPartner(),
                 purchaseOrder.getCurrency(),
                 purchaseOrder.getDeliveryDate(),
@@ -114,7 +92,7 @@ public class IntercoServiceImpl implements IntercoService {
         saleOrderService.computeSaleOrder(saleOrder);
 
         saleOrder.setCreatedByInterco(true);
-        return saleOrderRepository.save(saleOrder);
+        return Beans.get(SaleOrderRepository.class).save(saleOrder);
    }
 
     @Override
@@ -122,12 +100,15 @@ public class IntercoServiceImpl implements IntercoService {
     public PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder)
             throws AxelorException {
 
+        PurchaseOrderService purchaseOrderService =
+                Beans.get(PurchaseOrderService.class);
+
         //create purchase order
         PurchaseOrder purchaseOrder;
         purchaseOrder = purchaseOrderService
                 .createPurchaseOrder(
                         null,
-                        findIntercoCompany(saleOrder),
+                        findIntercoCompany(saleOrder.getClientPartner()),
                         saleOrder.getContactPartner(),
                         saleOrder.getCurrency(),
                         saleOrder.getDeliveryDate(),
@@ -166,7 +147,7 @@ public class IntercoServiceImpl implements IntercoService {
         purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
         purchaseOrder.setCreatedByInterco(true);
-        return purchaseOrderRepository.save(purchaseOrder);
+        return Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
     }
 
 
@@ -180,7 +161,7 @@ public class IntercoServiceImpl implements IntercoService {
      */
     protected PurchaseOrderLine createIntercoPurchaseLineFromSaleLine(SaleOrderLine saleOrderLine,
                                                                       PurchaseOrder purchaseOrder) throws AxelorException {
-        PurchaseOrderLine purchaseOrderLine = purchaseOrderLineService
+        PurchaseOrderLine purchaseOrderLine = Beans.get(PurchaseOrderLineService.class)
                 .createPurchaseOrderLine(purchaseOrder,
                         saleOrderLine.getProduct(),
                         saleOrderLine.getProductName(),
@@ -241,17 +222,37 @@ public class IntercoServiceImpl implements IntercoService {
     }
 
     @Override
-    public Company findIntercoCompany(SaleOrder saleOrder) {
-        Partner partner = saleOrder.getClientPartner();
-        return companyRepository.all()
-                .filter("self.partner = ?", partner)
-                .fetchOne();
+    public Invoice generateIntercoInvoice(Invoice invoice) throws AxelorException {
+        Invoice generatedInvoice = Beans.get(InvoiceManagementRepository.class)
+                .copy(invoice, true);
+
+        //set the status
+        int generatedOperationTypeSelect = 0;
+        switch (invoice.getOperationTypeSelect()) {
+            case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+                generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+                break;
+            case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+                generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+                break;
+            case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+                generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+                break;
+            case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+                generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+                break;
+        }
+        generatedInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
+
+        //set the correct company and partner
+        generatedInvoice.setCompany(findIntercoCompany(invoice.getPartner()));
+        generatedInvoice.setPartner(invoice.getCompany().getPartner());
+        return Beans.get(InvoiceRepository.class).save(generatedInvoice);
     }
 
     @Override
-    public Company findIntercoCompany(PurchaseOrder purchaseOrder) {
-        Partner partner = purchaseOrder.getSupplierPartner();
-        return companyRepository.all()
+    public Company findIntercoCompany(Partner partner) {
+        return Beans.get(CompanyRepository.class).all()
                 .filter("self.partner = ?", partner)
                 .fetchOne();
     }

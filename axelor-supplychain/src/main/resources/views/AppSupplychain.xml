@@ -30,6 +30,7 @@
 			<field name="intercoFromSale" widget="boolean-switch"/>
 			<field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"/>
 			<field name="intercoSaleCreatingStatusSelect" selection-in="[2,3]"/>
+			<field name="intercoFromInvoice" widget="boolean-switch"/>
 		</panel>
 	</form>
 
