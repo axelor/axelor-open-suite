@@ -56,7 +56,7 @@
 	<action-view name="sc.root.sale.quotations" title="Sale quotations"
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
-		<view type="grid" name="sale-order-grid" />
+		<view type="grid" name="sale-order-quotation-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -213,7 +213,7 @@
 	
 	<action-view name="top.menu.sales.quotations" title="Quotations"
 		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="cards" name="sale-order-cards" />
+		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
@@ -237,8 +237,9 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
+		<context name="status" expr="3"/>
 	</action-view>
-	
+		
 	<menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="-205"
 		title="Salesman"  action="saleman.dashboard.view.sample" />
 		

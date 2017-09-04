@@ -19,8 +19,9 @@
 		<panel name="main">
 	    	<field name="name"/>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+	        <field name="location" required="true" grid-view="location-grid" form-view="location-form" onChange="action-prod-process-record-set-second-location"/>
 	        <field name="product" grid-view="product-grid" form-view="product-form"/>
+	        <field name="producedProductLocation" grid-view="location-grid" form-view="location-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
             <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -48,4 +49,8 @@
     <action-method name="action-production-process-print">
 		<call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
 	</action-method>
+	
+	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
+		<field name="producedProductLocation" expr="eval: location" if="producedProductLocation == null"/>
+	</action-record>
 </object-views>
