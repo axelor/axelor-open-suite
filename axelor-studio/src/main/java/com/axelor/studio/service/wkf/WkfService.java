@@ -156,6 +156,13 @@ public class WkfService {
 		trackFlow.setHiddenInGrid(true);
 		saveJsonField(trackFlow);
 		
+		MetaJsonField wkfEnd = getJsonField("wkfEnd", "panel");
+		wkfEnd.setSequence(-1);
+		wkfEnd.setHiddenInGrid(true);
+		wkfEnd.setIsWkf(true);
+		wkfEnd.setWidgetAttrs("{\"colSpan\": \"12\"}");
+		saveJsonField(panel);
+		
 		setTrackOnSave(workflow, false);
 		
 	}
@@ -204,7 +211,7 @@ public class WkfService {
 
 		String xml = XMLViews.toXml(actionGroup, true);
 
-		metaService.updateMetaAction(name, name, "action-group", xml, null);
+		metaService.updateMetaAction(name, "action-group", xml, null);
 
 		return actionGroup;
 	}

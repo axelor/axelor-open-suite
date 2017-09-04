@@ -41,6 +41,7 @@
   <action-view name="menu.action.builder" title="Action builders" model="com.axelor.studio.db.ActionBuilder">
     <view type="grid" name="action-builder-grid"/>
     <view type="form" name="action-builder-form"/>
+    <domain>self.menuAction = false</domain>
   </action-view>
   
   <menuitem name="menu-menu-builder" title="Menu builders" parent="menu-studio-view" action="menu.menu.builder" order="23"/>

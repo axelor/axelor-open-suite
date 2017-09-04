@@ -29,7 +29,7 @@
 			<panel showIf="generateEventPerTarget" colSpan="12">
 				<field name="eventUser" showIf="generateEventPerTarget" />
 		  		<field name="subject" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
-		  		<field name="eventType" domain="self.value IN ('1','2','3','5')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
+		  		<field name="eventType" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
 		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
 		  		<field name="duration" widget="duration" x-big="true" showIf="generateEventPerTarget" />
 		  		<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-generate-events" showIf="generateEventPerTarget" />
@@ -39,7 +39,7 @@
 		  <panel title="Target List" name="targetList">
 		  	<panel-related field="targetModelSet" colSpan="12"/>
 		  	<button name="generateTargets" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
-		  	<panel-related field="partnerSet" colSpan="12"/>
+		  	<panel-related field="partnerSet" colSpan="12" form-view="partner-form"/>
 		  	<panel-related field="leadSet" colSpan="12"/>
 		  </panel>
 		  <panel title="Attendees">

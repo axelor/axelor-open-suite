@@ -132,7 +132,7 @@ public class DashboardBuilderService {
 		String actionName = "action-"
 				+ (dashboard + "-" + name).replace(".", "-");
 		
-		String xmlId = "studio-" + actionName;
+		String xmlId = StudioMetaService.XML_ID_PREFIX + actionName;
 		StringBuilder xml = new StringBuilder();
 		xml.append("<action-view name=\"" + actionName + "\" ");
 		xml.append("id=\"" + xmlId + "\" ");
@@ -153,8 +153,7 @@ public class DashboardBuilderService {
 		}
 		xml.append("\n</action-view>");
 		
-		return metaService.updateMetaAction(xmlId,
-				actionName, "action-view", xml.toString(), model);
+		return metaService.updateMetaAction(actionName, "action-view", xml.toString(), model);
 	}
 	
 }

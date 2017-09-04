@@ -16,9 +16,9 @@
   	<many-to-one name="campaignType" ref="CampaignType" title="Campaign Type" />
   	<many-to-many name="leads" ref="com.axelor.apps.crm.db.Lead" title="Leads" />
   	<many-to-many name="partners" ref="com.axelor.apps.base.db.Partner" title="Partners" />
-  	<many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Event user"/>
+  	<many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<string name="subject" title="Subject"/>
-  	<integer name="eventType" title="Event type" selection="crm.event.type.select"/>
+  	<integer name="eventType" title="Event type" selection="icalendar.event.type.select"/>
   	<datetime name="eventStartDateTime" title="Start date time"/>
   	<long name="duration" title="Duration"/>
   	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partner/Contacts Target List" />

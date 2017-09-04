@@ -5,7 +5,6 @@
   
   <grid name="menu-builder-grid" title="Menu builder" model="com.axelor.studio.db.MenuBuilder">
       <field name="parentMenu" />
-      <field name="name" />	
       <field name="title" />	
       <field name="actionBuilder.model" title="Model" />
       <field name="order" />
@@ -13,17 +12,16 @@
   
   <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
       <panel>
-	      <field name="name"/>
+      	  <field name="$existingMenu" title="Exsting menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
+	      <spacer hideIf="id"/>
 	      <field name="title" />
 	      <field name="parentMenu" />
-	      <field name="order"/>
 	      <field name="icon" />
 	      <field name="iconBackground"/>
+	      <field name="order"/>
 	      <field name="showAction" widget="boolean-switch" onChange="action-menu-builder-show-action" />
 	      <field name="actionBuilder" colSpan="12" showIf="showAction" showTitle="false">
 	      	<editor>
-	      		<field name="name" title="Action name" requiredIf="_parent.showAction" colSpan="12" />
-	      		<field name="title" title="Action title" requiredIf="_parent.showAction" colSpan="12" />
 	      		<field name="isJson" colSpan="2"/>
 				<field name="model"   widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
 						hideIf="!isJson"
@@ -58,6 +56,7 @@
 	      	<field name="tagCount"/>
 	      	<field name="tagStyle" />
 	      </panel>
+	      <field name="name" hidden="true"/> 
 	  </panel>
   </form>
 	
@@ -69,5 +68,9 @@
   	<attribute name="value" for="actionBuilder.name" expr="eval:name.replaceAll('-','.')" if="showAction &amp;&amp; name != null" />
   	<attribute name="value" for="actionBuilder.title" expr="eval:title" if="showAction" />
   </action-attrs>
+  
+  <action-method name="action-menubuilder-method-fetch-menu">
+  	<call class="com.axelor.studio.web.MenuBuilderController" method="fetchMenu"/>
+  </action-method>
   
 </object-views>
