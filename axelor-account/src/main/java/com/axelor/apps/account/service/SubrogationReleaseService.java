@@ -18,4 +18,6 @@ public interface SubrogationReleaseService {
 
 	String exportToCSV(SubrogationRelease subrogationRelease) throws AxelorException, IOException;
 
+	void accountRelease(SubrogationRelease subrogationRelease);
+
 }

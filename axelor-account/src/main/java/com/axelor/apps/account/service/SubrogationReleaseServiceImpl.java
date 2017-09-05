@@ -80,4 +80,10 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 		return path.toString();
 	}
 
+	@Override
+	public void accountRelease(SubrogationRelease subrogationRelease) {
+		
+		subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
+	}
+
 }
