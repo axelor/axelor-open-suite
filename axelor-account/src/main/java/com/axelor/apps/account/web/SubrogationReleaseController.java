@@ -39,10 +39,10 @@ public class SubrogationReleaseController {
 		response.setReload(true);
 	}
 
-	public void printToPDF(ActionRequest request, ActionResponse response) {
+	public void printToPDF(ActionRequest request, ActionResponse response) throws AxelorException {
 		SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
 		String name = String.format("%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequence());
-		String fileLink = subrogationReleaseService.printToPDF(subrogationRelease);
+		String fileLink = subrogationReleaseService.printToPDF(subrogationRelease, name);
 		response.setView(ActionView.define(name).add("html", fileLink).map());
 		response.setReload(true);
 	}

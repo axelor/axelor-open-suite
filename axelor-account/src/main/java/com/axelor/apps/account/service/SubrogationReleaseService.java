@@ -14,7 +14,7 @@ public interface SubrogationReleaseService {
 
 	void transmitRelease(SubrogationRelease subrogationRelease);
 
-	String printToPDF(SubrogationRelease subrogationRelease);
+	String printToPDF(SubrogationRelease subrogationRelease, String name) throws AxelorException;
 
 	String exportToCSV(SubrogationRelease subrogationRelease) throws AxelorException, IOException;
 

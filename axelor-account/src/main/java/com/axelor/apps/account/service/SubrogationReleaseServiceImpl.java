@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -16,6 +17,7 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -46,9 +48,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 	}
 
 	@Override
-	public String printToPDF(SubrogationRelease subrogationRelease) {
-		// TODO Auto-generated method stub
-		return null;
+	public String printToPDF(SubrogationRelease subrogationRelease, String name) throws AxelorException {
+		return ReportFactory.createReport("SubrogationRelease", name)
+				.addParam("SubrogationReleaseId", subrogationRelease.getId())
+				.addParam("Locale", AuthUtils.getUser().getLanguage()).addFormat("pdf").toAttach(subrogationRelease)
+				.generate().getFileLink();
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
 	@Override
 	public void accountRelease(SubrogationRelease subrogationRelease) {
-		
+
 		subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
 	}
 
