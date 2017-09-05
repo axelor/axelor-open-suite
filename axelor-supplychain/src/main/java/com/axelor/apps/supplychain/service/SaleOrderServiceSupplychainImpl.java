@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.axelor.apps.sale.db.ISaleOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +97,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		if(appSupplychain.getCustomerStockMoveGenerationAuto())  {
 			saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 		}
-		
+		int intercoSaleCreatingStatus = Beans.get(AppSupplychainService.class)
+				.getAppSupplychain()
+				.getIntercoSaleCreatingStatusSelect();
+		if (saleOrder.getInterco()
+				&& intercoSaleCreatingStatus == ISaleOrder.STATUS_ORDER_CONFIRMED) {
+		    Beans.get(IntercoService.class)
+					.generateIntercoPurchaseFromSale(saleOrder);
+		}
 	}
 	
 	@Override
@@ -221,9 +229,18 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 	
 	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 		super.finalizeSaleOrder(saleOrder);
+		int intercoSaleCreatingStatus = Beans.get(AppSupplychainService.class)
+				.getAppSupplychain()
+				.getIntercoSaleCreatingStatusSelect();
+		if (saleOrder.getInterco()
+				&& intercoSaleCreatingStatus == ISaleOrder.STATUS_FINALIZE) {
+		    Beans.get(IntercoService.class)
+					.generateIntercoPurchaseFromSale(saleOrder);
+		}
 	}
 
 }

@@ -40,6 +40,8 @@
 		<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="action-sale-order-method-fill-company-bank-details"/>
+        <action name="action-sale-order-attrs-interco"/>
+		<action name="action-sale-order-record-interco"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
@@ -48,6 +50,7 @@
 		<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
+		<action name="action-sale-order-attrs-interco"/>
 		<action name="save"/>
 	</action-group>
 
@@ -98,8 +101,20 @@
 		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
-	
-	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
+
+    <action-record name="action-sale-order-record-interco"
+				   model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
+	</action-record>
+
+	<action-attrs name="action-sale-order-attrs-interco">
+		<attribute for="interco" name="hidden"
+				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+		<attribute for="interco" name="value" expr="eval: false"
+				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+	</action-attrs>
+
+	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-light-grid" />
 		<view type="form" name="invoice-form" />
 		<domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>

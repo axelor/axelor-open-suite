@@ -182,9 +182,10 @@
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	    <field name="subscription" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect >= 3"/>
 	    <field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 1"  />
+		<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information">
-	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
+	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="mainInvoicingAddress" canNew="true" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	      <field name="deliveryAddress" canNew="true" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
@@ -690,6 +691,16 @@
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="save" if="saleOrderLineList.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
     </action-group>
+
+	<action-group name="action-sale-order-group-client-partner-change">
+		<action name="action-sale-order-record-partner"/>
+        <action name="action-partner-attrs-hide-contact-partner"/>
+		<action name="action-sale-order-validate-information"/>
+		<action name="action-sale-order-attrs-interco"
+				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-sale-order-record-interco"
+				if="__config__.app.isApp('supplychain')"/>
+	</action-group>
     
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
