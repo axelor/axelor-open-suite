@@ -13,11 +13,13 @@
 
 	<form model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"
 		name="subrogation-release-form">
-	
+
 		<menubar>
 			<menu title="Print/Export">
-				<item action="" title="Print to PDF" showIf="statusSelect >= 2"/>
-				<item action="" title="Export to CSV" showIf="statusSelect >= 2"/>
+				<item action="action-subrogation-release-print-to-pdf" title="Print to PDF"
+					readonlyIf="statusSelect &lt; 2" />
+				<item action="action-subrogation-release-export-to-csv" title="Export to CSV"
+					readonlyIf="statusSelect &lt; 2" />
 			</menu>
 		</menubar>
 
@@ -48,6 +50,16 @@
 	<action-method name="action-subrogation-release-transmit-release">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="transmitRelease" />
+	</action-method>
+
+	<action-method name="action-subrogation-release-print-to-pdf">
+		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
+			method="printToPDF" />
+	</action-method>
+
+	<action-method name="action-subrogation-release-export-to-csv">
+		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
+			method="exportToCSV" />
 	</action-method>
 
 </object-views>
