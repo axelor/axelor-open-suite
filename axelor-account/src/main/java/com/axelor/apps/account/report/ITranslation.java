@@ -147,4 +147,17 @@ public interface ITranslation {
 	public static final String ACCOUNT_MOVE_LINE_CURRENCY_AMOUNT = /*$$(*/ "moveLine.currency.amount"; /*)*/
 	public static final String ACCOUNT_MOVE_LINE_TAX_RATE = /*$$(*/ "moveLine.tax.rate"; /*)*/
 	public static final String ACCOUNT_MOVE_LINE_RECONCILE_LIST = /*$$(*/ "moveLine.reconcile.list"; /*)*/
+
+	public static final String SUBROGATION_RELEASE_TITLE = /*$$(*/ "SubrogationRelease.title"; /*)*/
+	public static final String SUBROGATION_RELEASE_SELLER_CODE = /*$$(*/ "SubrogationRelease.sellerCode"; /*)*/
+	public static final String SUBROGATION_RELEASE_FACTOR = /*$$(*/ "SubrogationRelease.factor"; /*)*/
+	public static final String SUBROGATION_RELEASE_PARTNER_SEQ = /*$$(*/ "SubrogationRelease.partnerSeq"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_ID = /*$$(*/ "SubrogationRelease.invoiceId"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_DATE = /*$$(*/ "SubrogationRelease.invoiceDate"; /*)*/
+	public static final String SUBROGATION_RELEASE_DUE_DATE = /*$$(*/ "SubrogationRelease.dueDate"; /*)*/
+	public static final String SUBROGATION_RELEASE_IN_TAX_TOTAL = /*$$(*/ "SubrogationRelease.inTaxtTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_CURRENCY_CODE = /*$$(*/ "SubrogationRelease.currencyCode"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_TOTAL = /*$$(*/ "SubrogationRelease.invoiceTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_CREDIT_TOTAL = /*$$(*/ "SubrogationRelease.creditTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_GRAND_TOTAL = /*$$(*/ "SubrogationRelease.grandTotal"; /*)*/
 }

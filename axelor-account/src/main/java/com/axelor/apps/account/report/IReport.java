@@ -27,6 +27,6 @@ public interface IReport {
 	public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
 	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
 	public static final String ACCOUNT_MOVE = "AccountMove.rptdesign";
-	
-	
+	public static final String SUBROGATION_RELEASE = "SubrogationRelease.rptdesign";
+
 }
