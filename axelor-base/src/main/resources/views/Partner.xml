@@ -210,6 +210,7 @@
                         <field name="taxNbr" colSpan="6" hideIf="partnerTypeSelect== 2"/>
                         <field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
                         <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
+                        <field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
                     </panel>
                 </panel>
                 <panel name="settings" title="Settings" colSpan="12">

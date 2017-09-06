@@ -29,6 +29,7 @@
 
 		<boolean name="isFactor" title="Factor?" />
 		<boolean name="factorizedCustomer" />
+		<string name="sellerCode" />
     </entity>
 
 </domain-models>
