@@ -99,11 +99,12 @@ public class ValidateSupplyChain {
 	
 	@SuppressWarnings("rawtypes")
 	public Object validateSupplyChain(Object bean, Map values) {
-		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory) " +
+		String objectQuery = "(SELECT 'inv' as type,id,datet as date from stock_inventory WHERE stock_inventory.status_select < ? ) " +
 		"UNION ALL(SELECT 'so' as type,id,confirmation_date as date from sale_sale_order) " +
 		"UNION ALL(SELECT 'po' as type,id,order_date as date from purchase_purchase_order) order by date";
 
 		Query query = JPA.em().createNativeQuery(objectQuery);
+		query.setParameter(1, InventoryRepository.STATUS_VALIDATED);
 		List<SaleConfig> configs = saleConfigRepo.all().fetch();
 		for (SaleConfig config : configs) {
 			configService.updateCustomerCredit(config);

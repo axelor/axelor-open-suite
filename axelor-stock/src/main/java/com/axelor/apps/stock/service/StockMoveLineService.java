@@ -35,6 +35,7 @@ import com.axelor.exception.AxelorException;
 
 public interface StockMoveLineService {
 
+	public static final int TYPE_NULL = 0;
 	public static final int TYPE_SALES = 1;
 	public static final int TYPE_PURCHASES = 2;
 	public static final int TYPE_OUT_PRODUCTIONS = 3;
