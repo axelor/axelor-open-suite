@@ -76,18 +76,19 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 				.sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId)).collect(Collectors.toList());
 
 		for (Invoice invoice : releaseDetails) {
-			String[] items = new String[5];
+			String[] items = new String[6];
 			BigDecimal inTaxTotal = invoice.getInTaxTotal().abs();
 
 			if (InvoiceToolService.isOutPayment(invoice)) {
 				inTaxTotal = inTaxTotal.negate();
 			}
 
-			items[0] = invoice.getInvoiceId();
-			items[1] = invoice.getInvoiceDate().toString();
-			items[2] = invoice.getDueDate().toString();
-			items[3] = inTaxTotal.toString();
-			items[4] = invoice.getCurrency().getCode();
+			items[0] = invoice.getPartner().getPartnerSeq();
+			items[1] = invoice.getInvoiceId();
+			items[2] = invoice.getInvoiceDate().toString();
+			items[3] = invoice.getDueDate().toString();
+			items[4] = inTaxTotal.toString();
+			items[5] = invoice.getCurrency().getCode();
 			allMoveLineData.add(items);
 		}
 
