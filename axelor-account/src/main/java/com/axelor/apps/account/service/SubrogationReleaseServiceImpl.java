@@ -38,7 +38,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 		Query<Invoice> query = Beans.get(InvoiceRepository.class).all()
 				.filter("self.company = :company AND self.partner.factorizedCustomer = TRUE "
 						+ "AND self.statusSelect = :statusSelect "
-						+ "AND self.amountRemaining > 0 AND self.hasPendingPayments = FALSE");
+						+ "AND self.amountRemaining > 0 AND self.hasPendingPayments = FALSE")
+				.order("invoiceDate").order("dueDate").order("invoiceId");
 		query.bind("company", company);
 		query.bind("statusSelect", InvoiceRepository.STATUS_VENTILATED);
 		List<Invoice> invoiceList = query.fetch();
