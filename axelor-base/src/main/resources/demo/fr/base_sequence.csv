@@ -78,4 +78,4 @@
 9;"productTrackingNumber";"N° de suivi";1;12;"NS";;1;0;1
 10;"productionOrder";"Ordre de production";1;12;"OP";;1;0;1
 11;"manufOrder";"Ordre de fabrication";1;12;"OF";;1;0;1
-169;"subrogationRelease";"Quittance subrogative";1;3;"QS%YY%FM";;1;0;1
+169;"subrogationRelease";"Quittance subrogative";1;4;"QS%YY%FM";;1;1;1
