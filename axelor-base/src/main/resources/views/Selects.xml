@@ -355,6 +355,7 @@
 		<option value="reconcile">Reconcile</option>
 		<option value="product">Product</option>
 		<option value="expense">Expense</option>
+		<option value="subrogationRelease">Subrogation release</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

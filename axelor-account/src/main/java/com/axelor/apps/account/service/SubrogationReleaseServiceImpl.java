@@ -21,6 +21,7 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
@@ -49,8 +50,10 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void transmitRelease(SubrogationRelease subrogationRelease) {
-		// TODO: assign sequence
-		subrogationRelease.setSequence("CITEL17092C1001");
+		SequenceService sequenceService = Beans.get(SequenceService.class);
+		String sequenceNumber = sequenceService.getSequenceNumber("subrogationRelease",
+				subrogationRelease.getCompany());
+		subrogationRelease.setSequenceNumber(sequenceNumber);
 		subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
 	}
 
@@ -73,7 +76,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 		Comparator<Invoice> byDueDate = (i1, i2) -> i1.getDueDate().compareTo(i2.getDueDate());
 		Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
-		List<Invoice> releaseDetails = subrogationRelease.getReleaseDetails().stream()
+		List<Invoice> releaseDetails = subrogationRelease.getInvoiceSet().stream()
 				.sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId)).collect(Collectors.toList());
 
 		for (Invoice invoice : releaseDetails) {
@@ -96,7 +99,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 		String filePath = accountConfigService
 				.getExportPath(accountConfigService.getAccountConfig(subrogationRelease.getCompany()));
-		String fileName = String.format("%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequence());
+		String fileName = String.format("%s %s.csv", I18n.get("Subrogation release"),
+				subrogationRelease.getSequenceNumber());
 		Files.createDirectories(Paths.get(filePath));
 		Path path = Paths.get(filePath, fileName);
 		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);

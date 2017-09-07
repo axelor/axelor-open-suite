@@ -7,7 +7,7 @@
 
 	<entity name="SubrogationRelease" lang="java">
 
-		<string name="sequence" namecolumn="true" readonly="true" />
+		<string name="sequenceNumber" namecolumn="true" readonly="true" />
 
 		<integer name="statusSelect" title="Status"
 			selection="account.subrogation.release.status.select" readonly="true"
@@ -15,7 +15,7 @@
 
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" />
 
-		<one-to-many name="releaseDetails" ref="com.axelor.apps.account.db.Invoice" />
+		<many-to-many name="invoiceSet" title="Release details" ref="com.axelor.apps.account.db.Invoice" />
 
 		<extra-code><![CDATA[
 			// STATUS SELECT

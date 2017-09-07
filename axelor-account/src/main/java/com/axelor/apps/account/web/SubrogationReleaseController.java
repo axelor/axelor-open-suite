@@ -28,8 +28,8 @@ public class SubrogationReleaseController {
 	public void retrieveInvoices(ActionRequest request, ActionResponse response) {
 		SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
 		Company company = subrogationRelease.getCompany();
-		List<Invoice> releaseDetails = subrogationReleaseService.retrieveInvoices(company);
-		response.setValue("releaseDetails", releaseDetails);
+		List<Invoice> invoiceList = subrogationReleaseService.retrieveInvoices(company);
+		response.setValue("invoiceSet", invoiceList);
 	}
 
 	public void transmitRelease(ActionRequest request, ActionResponse response) {
@@ -41,7 +41,7 @@ public class SubrogationReleaseController {
 
 	public void printToPDF(ActionRequest request, ActionResponse response) throws AxelorException {
 		SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
-		String name = String.format("%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequence());
+		String name = String.format("%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
 		String fileLink = subrogationReleaseService.printToPDF(subrogationRelease, name);
 		response.setView(ActionView.define(name).add("html", fileLink).map());
 		response.setReload(true);

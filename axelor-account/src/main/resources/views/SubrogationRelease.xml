@@ -5,7 +5,7 @@
 
 	<grid model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation releases"
 		name="subrogation-release-grid">
-		<field name="sequence" />
+		<field name="sequenceNumber" />
 		<field name="company" />
 		<field name="company.factor" />
 		<field name="statusSelect" />
@@ -24,12 +24,12 @@
 		</menubar>
 
 		<panel>
-			<field name="sequence" />
+			<field name="sequenceNumber" />
 			<field name="statusSelect" widget="NavSelect" colSpan="12" />
 			<field name="company" form-view="company-form" />
 			<field name="company.factor" readonly="true" form-view="partner-form" />
-			<panel-related field="releaseDetails" grid-view="invoice-release-details-grid"
-				form-view="invoice-form" colSpan="12" />
+			<panel-related field="invoiceSet" grid-view="invoice-release-details-grid"
+				form-view="invoice-form" colSpan="12" canNew="false" />
 		</panel>
 
 		<panel name="actions" title="Actions" sidebar="true">
@@ -37,8 +37,8 @@
 				onClick="action-subrogation-release-retrieve-invoices" readonlyIf="company == null"
 				showIf="statusSelect == 1" />
 			<button name="transmitRelease" title="Transmit release"
-				onClick="save,action-subrogation-release-transmit-release" readonlyIf="releaseDetails == null || releaseDetails.length == 0"
-				showIf="statusSelect == 1" />
+				onClick="save,action-subrogation-release-transmit-release"
+				readonlyIf="invoiceSet == null || invoiceSet.length == 0" showIf="statusSelect == 1" />
 			<button name="accountRelease" title="Account release"
 				onClick="save,action-subrogation-release-account-release" showIf="statusSelect == 2" />
 			<button name="cancelRelease" title="Cancel release"
