@@ -1438,6 +1438,7 @@
 "Wire transfer operation code","Code Opér. Virement",,
 "With Payment Rejected","Factures avec paiement rejeté",,
 "Year","Année",,
+"You can't register a payment if there are no invoice lines.","Vous ne pouvez pas enregistrer un paiement s’il n’y a pas de lignes de facture.",,
 "You can't remove this record, because the move has already been validated","Vous ne pouvez pas supprimer cet enregistrement car l'écriture a déjà été validée",,
 "You have to choose at least one invoice","Vous devez sélectionner au moins une facture",,
 "You must configure a RIB for the reimbursement","Veuillez configurer un RIB pour le remboursement",,
