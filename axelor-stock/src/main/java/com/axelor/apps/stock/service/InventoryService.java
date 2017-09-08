@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -74,7 +75,7 @@ public class InventoryService {
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-
+	
 
 	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete,
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
@@ -227,10 +228,10 @@ public class InventoryService {
 		if(sequence != null && !sequence.isEmpty())  {
 			return Beans.get(TrackingNumberRepository.class).findBySeq(sequence);
 		}
-
 		return null;
 
 	}
+	
 	
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public StockMove validateInventory(Inventory inventory) throws AxelorException {
@@ -240,9 +241,11 @@ public class InventoryService {
 		return stockMove;
 	}
 
+
 	private void storeLastInventoryData(Inventory inventory) {
 		Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
 		Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
+		Map<Product, String> realRacks = new HashMap<>();
 
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
 
@@ -256,6 +259,8 @@ public class InventoryService {
 				BigDecimal realQty = consolidatedRealQties.getOrDefault(product, BigDecimal.ZERO);
 				realQty = realQty.add(inventoryLine.getRealQty());
 				consolidatedRealQties.put(product, realQty);
+				
+				realRacks.put(product, inventoryLine.getRack());
 			}
 		}
 
@@ -268,6 +273,11 @@ public class InventoryService {
 				if (realQty != null) {
 					locationLine.setLastInventoryRealQty(realQty);
 					locationLine.setLastInventoryDateT(inventory.getDateT());
+				}
+				
+				String rack = realRacks.get(product);
+				if (rack != null) {
+					locationLine.setRack(rack);
 				}
 			}
 		}
@@ -282,6 +292,11 @@ public class InventoryService {
 				if (realQty != null) {
 					detailsLocationLine.setLastInventoryRealQty(realQty);
 					detailsLocationLine.setLastInventoryDateT(inventory.getDateT());
+				}
+				
+				String rack = realRacks.get(product);
+				if (rack != null) {
+					detailsLocationLine.setRack(rack);
 				}
 			}
 		}
@@ -420,8 +435,8 @@ public class InventoryService {
 				inventory,
 				locationLine.getProduct(),
 				locationLine.getCurrentQty(),
+				locationLine.getRack(),
 				locationLine.getTrackingNumber());
-
 	}
 
 
