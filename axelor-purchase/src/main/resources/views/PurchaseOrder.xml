@@ -66,7 +66,7 @@
 		</panel>
 		
 		<panel name="supplierInformation" title="Supplier information">
-			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3" form-view="partner-form" grid-view="partner-grid" onSelect="action-set-supplier-partner-domain"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -161,6 +161,10 @@
 	  </panel-mail>
 		
 	</form>
+	
+	<action-attrs name="action-set-supplier-partner-domain">
+		<attribute name="domain" for="supplierPartner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isSupplier = true&quot;"/>
+	</action-attrs>
 	
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
