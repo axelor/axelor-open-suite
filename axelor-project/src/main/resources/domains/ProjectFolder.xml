@@ -8,7 +8,7 @@
 	<entity name="ProjectFolder">
   		<string name="name"/>
   		<string name="description" large="true"/>
- 	 	<one-to-many name="projectList" ref="com.axelor.apps.project.db.Project" mappedBy="projectFolder"/>
+ 	 	<many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" mappedBy="projectFolderSet"/>
 	</entity>
 	
 </domain-models>

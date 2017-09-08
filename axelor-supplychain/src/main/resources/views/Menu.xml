@@ -21,7 +21,8 @@
 	</action-view>
 		
 	<menuitem name="stock-multi-sale-invoicing" parent="stock-root" if="__config__.app.isApp('supplychain')"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"  order="40"/>
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"  order="36"/>
+		
 		
 	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
 		model="com.axelor.apps.stock.db.StockMove" >

@@ -597,7 +597,7 @@ public class EventController {
 		response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
 	}
 	
-	public void setCalendarCrmDomain(ActionRequest request, ActionResponse response){
+	public void setCalendarDomain(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
 		if(calendarIdlist.isEmpty()){
