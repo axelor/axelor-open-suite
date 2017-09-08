@@ -12,7 +12,7 @@
 	</grid>
 
 	<form model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"
-		name="subrogation-release-form">
+		name="subrogation-release-form" onNew="action-subrogation-release-onnew">
 
 		<menubar>
 			<menu title="Print/Export">
@@ -71,6 +71,11 @@
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="accountRelease" />
 	</action-method>
+
+	<action-record name="action-subrogation-release-onnew"
+		model="com.axelor.apps.account.db.SubrogationRelease">
+		<field name="company" expr="eval: __user__.getActiveCompany()" />
+	</action-record>
 
 	<action-record name="action-subrogation-release-cancel-release"
 		model="com.axelor.apps.account.db.SubrogationRelease">

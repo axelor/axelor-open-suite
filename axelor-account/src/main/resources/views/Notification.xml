@@ -22,22 +22,20 @@
 			<field name="subrogationRelease" colSpan="4"
 				domain="self.company.factor = :factor AND self.statusSelect = 3"
 				onChange="action-notification-subrogation-release-onchange" />
-			<panel-related field="notificationItemList" form-view="notification-item-form"
-				colSpan="12" editable="true" canNew="false" canRemove="false">
-				<field name="invoice" readonly="true" />
-				<field name="amountPaid" />
-			</panel-related>
+			<panel-related field="notificationItemList" grid-view="notification-item-grid"
+				colSpan="12" editable="true" canNew="false" canRemove="false" />
 		</panel>
 
-		<panel name="actions" title="Actions" sidebar="true">
-			<button name="validate" title="Validate" readonlyIf="statusSelect > 1"
-				onClick="save,action-notification-validate" />
+		<panel sidebar="true">
+			<button name="validate" title="Validate"
+				onClick="save,action-notification-validate" hideIf="statusSelect > 1" />
 		</panel>
 	</form>
 
 	<action-record name="action-notification-onnew"
 		model="com.axelor.apps.account.db.Notification">
 		<field name="factor" expr="eval: __user__.getActiveCompany()?.getFactor()" />
+		<field name="paymentDate" expr="eval: __date__" />
 	</action-record>
 
 	<action-record name="action-notification-factor-onchange"

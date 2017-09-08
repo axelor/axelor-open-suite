@@ -1,14 +1,31 @@
 package com.axelor.apps.account.service;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Notification;
 import com.axelor.apps.account.db.NotificationItem;
+import com.axelor.apps.account.db.SubrogationRelease;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class NotificationServiceImpl implements NotificationService {
@@ -37,10 +54,81 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void validate(Notification notification) {
-		// TODO Auto-generated method stub
+	public void validate(Notification notification) throws AxelorException {
+		MoveService moveService = Beans.get(MoveService.class);
+		MoveLineService moveLineService = Beans.get(MoveLineService.class);
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+		InvoicePaymentCreateService invoicePaymentCreateService = Beans.get(InvoicePaymentCreateService.class);
+		ReconcileService reconcileService = Beans.get(ReconcileService.class);
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+
+		SubrogationRelease subrogationRelease = notification.getSubrogationRelease();
+		Company company = subrogationRelease.getCompany();
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+		boolean allCleared = true;
+
+		for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+			Invoice invoice = notificationItem.getInvoice();
+			BigDecimal amountRemaining = invoice.getAmountRemaining();
+
+			if (amountRemaining.signum() > 0) {
+				BigDecimal amountPaid = notificationItem.getAmountPaid();
+
+				if (amountRemaining.compareTo(amountPaid) > 0) {
+					allCleared = false;
+				}
+
+				Move paymentMove = moveService.getMoveCreateService().createMove(journal, company,
+						company.getCurrency(), invoice.getPartner(), notification.getPaymentDate(), null,
+						MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+				MoveLine debitMoveLine, creditMoveLine;
+				boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
+
+				if (isOutPayment) {
+					debitMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+							accountConfig.getFactorCreditAccount(), amountPaid, true, notification.getPaymentDate(),
+							null, 1, subrogationRelease.getSequenceNumber());
+					creditMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+							invoice.getPartnerAccount(), amountPaid, false, notification.getPaymentDate(), null, 2,
+							subrogationRelease.getSequenceNumber());
+				} else {
+					creditMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+							accountConfig.getFactorDebitAccount(), amountPaid, false, notification.getPaymentDate(),
+							null, 1, subrogationRelease.getSequenceNumber());
+					debitMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+							invoice.getPartnerAccount(), amountPaid, true, notification.getPaymentDate(), null, 2,
+							subrogationRelease.getSequenceNumber());
+				}
+
+				moveLineRepo.save(debitMoveLine);
+				moveLineRepo.save(creditMoveLine);
+				invoicePaymentCreateService.createInvoicePayment(invoice, amountPaid, paymentMove);
+				moveService.getMoveValidateService().validateMove(paymentMove);
+
+				if (isOutPayment) {
+					reconcileService.reconcile(findInvoiceAccountMoveLine(invoice), creditMoveLine, true, true);
+				} else {
+					reconcileService.reconcile(debitMoveLine, findInvoiceAccountMoveLine(invoice), true, true);
+				}
+
+			}
+		}
+
+		if (allCleared) {
+			subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
+		}
 
 		notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
+	}
+
+	private MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
+		for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
+			if (moveLine.getAccount().equals(invoice.getPartnerAccount())) {
+				return moveLine;
+			}
+		}
+		throw new NoSuchElementException();
 	}
 
 }

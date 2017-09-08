@@ -11,12 +11,14 @@
 			selection="account.notification.status.select" readonly="true"
 			default="1" />
 
-		<many-to-one name="factor" ref="com.axelor.apps.base.db.Partner" />
-		<date name="paymentDate" />
+		<many-to-one name="factor" ref="com.axelor.apps.base.db.Partner"
+			required="true" />
+		<date name="paymentDate" required="true" />
 		<many-to-one name="subrogationRelease"
-			ref="com.axelor.apps.account.db.SubrogationRelease" />
+			ref="com.axelor.apps.account.db.SubrogationRelease" required="true" />
 		<one-to-many name="notificationItemList" title="Invoices"
-			ref="com.axelor.apps.account.db.NotificationItem" mappedBy="notification" />
+			ref="com.axelor.apps.account.db.NotificationItem" mappedBy="notification"
+			required="true" />
 
 		<extra-code><![CDATA[
 			// STATUS SELECT
