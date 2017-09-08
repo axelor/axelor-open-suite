@@ -306,6 +306,7 @@ public class InventoryService {
 			BigDecimal currentQty = inventoryLine.getCurrentQty();
 			BigDecimal realQty = inventoryLine.getRealQty();
 			Product product = inventoryLine.getProduct();
+			TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
 
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
@@ -314,9 +315,12 @@ public class InventoryService {
 						product, product.getName(), 
 						product.getDescription(), diff,
 						product.getCostPrice(),
-						product.getUnit(), stockMove, 0,false, BigDecimal.ZERO);
+						product.getUnit(), stockMove, StockMoveLineService.TYPE_NULL, false, BigDecimal.ZERO);
 				if (stockMoveLine == null)  {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq, IException.CONFIGURATION_ERROR);
+				}
+				if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
+					stockMoveLine.setTrackingNumber(trackingNumber);
 				}
 
 				stockMove.addStockMoveLineListItem(stockMoveLine);
