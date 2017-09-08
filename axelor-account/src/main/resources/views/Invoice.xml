@@ -33,7 +33,7 @@
         <field name="currency"/>
         <field name="statusSelect"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
     
     <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -85,7 +85,7 @@
         <field name="currency"/>
         <field name="statusSelect"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
     
     <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -349,7 +349,6 @@
 		<toolbar>
 			<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
 			<button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
-			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 
 		<panel name="main" >
@@ -768,6 +767,11 @@
     <action-validate name="action-validate-invoice-check-selection">
 		<error message="You have to choose at least one invoice" if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
 	</action-validate>
+	
+	<action-validate name="action-validate-send-email-remove-access-for-client">
+		<error message="Error - You are not authorized to perform this action" if="__user__.group.code == 'CLT' "/>
+    </action-validate>
+   
 
 	<!-- ACTION METHOD -->
 

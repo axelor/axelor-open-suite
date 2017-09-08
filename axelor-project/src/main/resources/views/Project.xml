@@ -20,14 +20,14 @@
 			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" showIf="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		</toolbar>
 		<menubar>
+	     <menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Planification and costs" action="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" />
+	        </menu>
 		 <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Gantt" action="action-project-open-gantt" />
 	            <item title="Book resource" action="save,action-project-book-resource" />
 	            <item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning" />
 	     </menu>
-	     <menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Planification and costs" action="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" />
-	        </menu>
 		</menubar>
 		
 		<panel name="overview" title="Overview">
