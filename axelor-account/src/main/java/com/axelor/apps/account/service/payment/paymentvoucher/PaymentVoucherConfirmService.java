@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -48,7 +49,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -122,7 +122,7 @@ public class PaymentVoucherConfirmService  {
 
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 && !journal.getExcessPaymentOk())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3),
-					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 
 		if(paymentVoucher.getPayboxPaidOk())  {
@@ -145,7 +145,7 @@ public class PaymentVoucherConfirmService  {
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.getMoveCreateService().createMove(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC, paymentVoucher.getCashRegister());
+			Move move = moveService.getMoveCreateService().createMoveWithPaymentVoucher(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 			move.setPaymentVoucher(paymentVoucher);
 

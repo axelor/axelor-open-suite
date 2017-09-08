@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="import-configuration-grid" title="Imports" model="com.axelor.apps.base.db.ImportConfiguration">
 		<field name="name"/>
@@ -32,6 +32,13 @@
         <panel name="main" >
     		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
     		<button name="import" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
+        </panel>      	
+	</form>
+	
+	<form name="import-icalendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
+        <panel name="main" >
+    		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
+    		<button name="import" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
         </panel>      	
 	</form>
   

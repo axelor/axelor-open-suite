@@ -67,7 +67,7 @@ public interface IAdministration {
 	static final String PAYMENT_VOUCHER = "paymentVoucher";
 	static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";
 	static final String DEBIT = "debit";
-	static final String MOVE_LINE_REPORT = "moveLineReport";
+	static final String ACCOUNTING_REPORT = "accountingReport";
 	static final String REIMBOURSEMENT = "reimbursement";
 	static final String ACCOUNT_CLEARANCE = "accountClearance";
 	static final String IRRECOVERABLE = "irrecoverable";
@@ -80,7 +80,6 @@ public interface IAdministration {
 	static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
 	static final String SALES_ORDER = "saleOrder";
 	static final String PURCHASE_ORDER = "purchaseOrder";
-	static final String EVENT_TICKET = "eventTicket";
 	static final String INTERNAL = "intStockMove";
 	static final String OUTGOING = "outStockMove";
 	static final String INCOMING = "inStockMove";
@@ -89,7 +88,8 @@ public interface IAdministration {
 	static final String PRODUCTION_ORDER = "productionOrder";
 	static final String MANUF_ORDER = "manufOrder";
 	static final String RECONCILE = "reconcile";
-	
+	static final String PRODUCT = "product";
+
 	
 	/**
 	 * Static select in General

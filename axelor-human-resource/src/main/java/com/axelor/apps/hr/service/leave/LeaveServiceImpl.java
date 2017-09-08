@@ -26,17 +26,18 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.DurationService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -67,29 +68,29 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	protected DurationService durationService;
 	protected LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
-	protected EventService eventService;
-	protected EventRepository eventRepo;
 	protected PublicHolidayService publicHolidayService;
 	protected LeaveRequestRepository leaveRequestRepo;
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	protected HRConfigService hrConfigService;
 	protected TemplateMessageService templateMessageService;
+	protected ICalendarEventRepository icalEventRepo;
+	protected ICalendarService icalendarService;
 	
 	@Inject
-	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService, EventService eventService,
-			EventRepository eventRepo,PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, GeneralService generalService,
-			HRConfigService hrConfigService, TemplateMessageService templateMessageService){
+	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
+			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
+			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
 		
 		this.durationService = durationService;
 		this.leaveLineRepo = leaveLineRepo;
 		this.weeklyPlanningService = weeklyPlanningService;
-		this.eventService = eventService;
-		this.eventRepo = eventRepo;
 		this.publicHolidayService = publicHolidayService;
 		this.leaveRequestRepo = leaveRequestRepo;
-		this.generalService = generalService;
+		this.appBaseService = appBaseService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
+		this.icalEventRepo = icalEventRepo;
+		this.icalendarService = icalendarService;
 	}
 
 	/**
@@ -196,7 +197,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			//Else if it's on several days
 			else{
 				duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(from, startOn, weeklyPlanning)));
-				LocalDate itDate = new LocalDate(from.plusDays(1));
+				LocalDate itDate = leave.getFromDate().plusDays(1);
 
 				while(!itDate.isEqual(to) && !itDate.isAfter(to)){
 					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
@@ -365,8 +366,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		DayPlanning endDay = weeklyPlanningService.findDayPlanning(weeklyPlanning,leave.getToDate());
 		if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
 			if(startDay != null && startDay.getMorningFrom() != null){
-				startTimeHour = startDay.getMorningFrom().getHourOfDay();
-				startTimeMin = startDay.getMorningFrom().getMinuteOfHour();
+				startTimeHour = startDay.getMorningFrom().getHour();
+				startTimeMin = startDay.getMorningFrom().getMinute();
 			}
 			else{
 				startTimeHour = 8;
@@ -375,22 +376,22 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 		else{
 			if(startDay != null && startDay.getAfternoonFrom() != null){
-				startTimeHour = startDay.getAfternoonFrom().getHourOfDay();
-				startTimeMin = startDay.getAfternoonFrom().getMinuteOfHour();
+				startTimeHour = startDay.getAfternoonFrom().getHour();
+				startTimeMin = startDay.getAfternoonFrom().getMinute();
 			}
 			else{
 				startTimeHour = 14;
 				startTimeMin = 0;
 			}
 		}
-		LocalDateTime fromDateTime = new LocalDateTime(leave.getFromDate().getYear(),leave.getFromDate().getMonthOfYear(),leave.getFromDate().getDayOfMonth(),startTimeHour,startTimeMin);
+		LocalDateTime fromDateTime = LocalDateTime.of(leave.getFromDate().getYear(),leave.getFromDate().getMonthValue(),leave.getFromDate().getDayOfMonth(),startTimeHour,startTimeMin);
 
 		int endTimeHour = 0;
 		int endTimeMin = 0;
 		if(leave.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING){
 			if(endDay != null && endDay.getMorningTo() != null){
-				endTimeHour = endDay.getMorningTo().getHourOfDay();
-				endTimeMin = endDay.getMorningTo().getMinuteOfHour();
+				endTimeHour = endDay.getMorningTo().getHour();
+				endTimeMin = endDay.getMorningTo().getMinute();
 			}
 			else{
 				endTimeHour = 12;
@@ -399,19 +400,20 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 		else{
 			if(endDay != null && endDay.getAfternoonTo() != null){
-				endTimeHour = endDay.getAfternoonTo().getHourOfDay();
-				endTimeMin = endDay.getAfternoonTo().getMinuteOfHour();
+				endTimeHour = endDay.getAfternoonTo().getHour();
+				endTimeMin = endDay.getAfternoonTo().getMinute();
 			}
 			else{
 				endTimeHour = 18;
 				endTimeMin = 0;
 			}
 		}
-		LocalDateTime toDateTime = new LocalDateTime(leave.getToDate().getYear(),leave.getToDate().getMonthOfYear(),leave.getToDate().getDayOfMonth(),endTimeHour,endTimeMin);
+		LocalDateTime toDateTime = LocalDateTime.of(leave.getToDate().getYear(),leave.getToDate().getMonthValue(),leave.getToDate().getDayOfMonth(),endTimeHour,endTimeMin);
 
-		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventRepository.TYPE_LEAVE, leave.getLeaveLine().getLeaveReason().getLeaveReason()+" "+leave.getUser().getFullName());
-		eventRepo.save(event);
-		leave.setEvent(event);
+		ICalendarEvent event = icalendarService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), 4, leave.getLeaveLine().getLeaveReason().getLeaveReason()+" "+leave.getUser().getFullName());
+		icalEventRepo.save(event);
+		leave.setIcalendarEvent(event);
+		
 		return leave;
 	}
 	
@@ -437,9 +439,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			leaveDays = leaveDays.add(new BigDecimal(this.computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
 		}
 		
-		LocalDate itDate = new LocalDate(fromDate);
+		LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
 		if(fromDate.isBefore(leaveRequest.getFromDate()) || fromDate.equals(leaveRequest.getFromDate())){
-			itDate = new LocalDate(leaveRequest.getFromDate().plusDays(1));
+			itDate = leaveRequest.getFromDate().plusDays(1);
 		}
 
 		while(!itDate.isEqual(leaveRequest.getToDate()) && !itDate.isAfter(toDate)){
@@ -464,6 +466,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				dataList.add(map);
 			}
 			response.setData(dataList);
+			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);
@@ -475,7 +478,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
 		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("leaveReason").toString()));
-		
+		if(user.getEmployee() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
+		}
 		if(user != null && leaveReason != null){
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);
@@ -485,17 +490,25 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_LINE),user.getEmployee().getName(), leaveReason.getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
 			leave.setLeaveLine(leaveLine);
-			leave.setRequestDate(Beans.get(GeneralService.class).getTodayDate());
-			leave.setFromDate(new LocalDate(request.getData().get("fromDate").toString()));
+			leave.setRequestDate(appBaseService.getTodayDate());
+			if (request.getData().get("fromDate") != null) {
+				leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+			}
 			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
-			leave.setToDate(new LocalDate(request.getData().get("toDate").toString()));
+			if (request.getData().get("toDate") != null) {
+				leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+			}
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-			if(request.getData().get("comment") != null){
-				leave.setComments(request.getData().get("comment").toString());
+			if(request.getData().get("comments") != null){
+				leave.setComments(request.getData().get("comments").toString());
 			}
-			Beans.get(LeaveRequestRepository.class).save(leave);
+			leave = Beans.get(LeaveRequestRepository.class).save(leave);
+			response.setTotal(1);
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			data.put("id", leave.getId());
+			response.setData(data);
 		}
 	}
 	
@@ -507,10 +520,10 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			manageCancelLeaves(leaveRequest);
 		}
 		
-		if (leaveRequest.getEvent() != null){
-			Event event = leaveRequest.getEvent();
-			leaveRequest.setEvent(null);
-			eventRepo.remove(eventRepo.find(event.getId()));
+		if (leaveRequest.getIcalendarEvent() != null){
+			ICalendarEvent event = leaveRequest.getIcalendarEvent();
+			leaveRequest.setIcalendarEvent(null);
+			icalEventRepo.remove(icalEventRepo.find(event.getId()));
 		}
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
 	}
@@ -538,7 +551,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-		leaveRequest.setRequestDate(generalService.getTodayDate());
+		leaveRequest.setRequestDate(appBaseService.getTodayDate());
+		
+		leaveRequestRepo.save(leaveRequest);
 
 	}
 
@@ -566,8 +581,10 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
 		leaveRequest.setValidatedBy(AuthUtils.getUser());
-		leaveRequest.setValidationDate(generalService.getTodayDate());
-
+		leaveRequest.setValidationDate(appBaseService.getTodayDate());
+		
+		leaveRequestRepo.save(leaveRequest);
+		
 		createEvents(leaveRequest);
 	}
 	
@@ -595,7 +612,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);
 		leaveRequest.setRefusedBy(AuthUtils.getUser());
-		leaveRequest.setRefusalDate(generalService.getTodayDate());
+		leaveRequest.setRefusalDate(appBaseService.getTodayDate());
 		
 		leaveRequestRepo.save(leaveRequest);
 		
@@ -617,11 +634,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	
 	public boolean willHaveEnoughDays(LeaveRequest leaveRequest){
 		
-		LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
+		LocalDate todayDate = appBaseService.getTodayDate();
 		LocalDate beginDate = leaveRequest.getFromDate() ;
-		
-		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthOfYear() - todayDate.getMonthOfYear();
+			
+		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthValue() - todayDate.getMonthValue();
 		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
+		
 		if (leaveRequest.getDuration().compareTo( num ) == 1){
 			return false;
 		}else{

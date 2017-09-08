@@ -17,49 +17,51 @@
  */
 package com.axelor.apps.marketing.web;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.TargetList;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.service.FilterService;
+import com.axelor.studio.service.filter.FilterJpqlService;
 import com.google.inject.Inject;
 
 public class TargetListController {
 	
 	@Inject
-	private FilterService filterService;
+	private FilterJpqlService filterJpqlService;
 	
-	@Inject
-	private PartnerRepository partnerRepo;
-	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	public void applyQuery(ActionRequest request, ActionResponse response) {
+	public void openFilteredLeads(ActionRequest request, ActionResponse response) {
 		
 		TargetList targetList = request.getContext().asType(TargetList.class);
 		
-		String partnerFilters = filterService.getSqlFilters(targetList.getPartnerFilterList());
+		String leadFilers = filterJpqlService.getJpqlFilters(targetList.getLeadFilterList());
+		if (leadFilers != null) {
+			response.setView(ActionView.define(I18n.get("Leads"))
+					.model(Lead.class.getName())
+					.add("grid", "lead-grid")
+					.add("form", "lead-form")
+					.domain(leadFilers)
+					.map());
+		}
+	}
+	
+	public void openFilteredPartners(ActionRequest request, ActionResponse response) {
+		
+		TargetList targetList = request.getContext().asType(TargetList.class);
+		
+		String partnerFilters = filterJpqlService.getJpqlFilters(targetList.getPartnerFilterList());
 		if (partnerFilters != null) {
-			List<Partner> partners = partnerRepo.all().filter(partnerFilters).fetch();
-			Set<Partner> partnerSet = new HashSet<Partner>();
-			partnerSet.addAll(partners);
-			response.setValue("partnerSet", partnerSet);
+			response.setView(ActionView.define(I18n.get("Partners"))
+					.model(Partner.class.getName())
+					.add("grid", "partner-grid")
+					.add("form", "partner-form")
+					.domain(partnerFilters)
+					.map());
 		}
 		
-		String leadFilers = filterService.getSqlFilters(targetList.getLeadFilterList());
-		if (leadFilers != null) {
-			List<Lead> leads = leadRepo.all().filter(leadFilers).fetch();
-			Set<Lead> leadSet = new HashSet<Lead>();
-			leadSet.addAll(leads);
-			response.setValue("leadSet", leadSet);
-		}
 	}
 }

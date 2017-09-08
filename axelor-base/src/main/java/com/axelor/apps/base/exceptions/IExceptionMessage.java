@@ -70,13 +70,17 @@ public interface IExceptionMessage {
 	
 	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
 	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
-	
+
 	/**
 	 * Abstract batch
-	 */
-	
-	static final public String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable !" /*)*/;
-	
+	 */	
+	String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable!" /*)*/;
+	String ABSTRACT_BATCH_REPORT = /*$$(*/ "Batch report: " /*)*/;
+	String ABSTRACT_BATCH_DONE_SINGULAR = /*$$(*/ "%d record processed successfully, " /*)*/;
+	String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully, " /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
 	/**
 	 * Indicator generator grouping service
 	 */
@@ -88,7 +92,7 @@ public interface IExceptionMessage {
 	 * Indicator generator service 
 	 */
 	static final public String INDICATOR_GENERATOR_1 = /*$$(*/ "Error : a request has to be set for the indicatior generator %s" /*)*/;
-	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Error : incorrrect request for the indicatior generator %s" /*)*/;
+	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Error : incorrect request for the indicatior generator %s" /*)*/;
 	static final public String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
 	
 	
@@ -106,6 +110,11 @@ public interface IExceptionMessage {
 	 */
 	static final public String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 	static final public String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+
+	/**
+	 * Product service
+	 */
+	static final public String PRODUCT_NO_SEQUENCE = /*$$(*/ "There is no configured sequence for product" /*)*/;
 	
 	/**
 	 * Importer
@@ -198,4 +207,12 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
+	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
+	
+	
 }

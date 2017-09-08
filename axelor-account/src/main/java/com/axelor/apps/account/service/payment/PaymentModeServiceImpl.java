@@ -22,11 +22,11 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,7 +50,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
 
-		if(accountManagement != null)  {
+		if(accountManagement != null && accountManagement.getCashAccount() != null)  {
 			return accountManagement.getCashAccount();
 		}
 
@@ -64,7 +64,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
 		if(paymentMode.getAccountManagementList() == null)  {  return null;  }
 		
-		if(!Beans.get(GeneralService.class).getGeneral().getManageMultiBanks())  {  
+		if(!Beans.get(AppAccountService.class).getAppBase().getManageMultiBanks())  {  
 			return getAccountManagement(paymentMode, company);
 		}
 		
@@ -94,11 +94,11 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 	public Sequence getPaymentModeSequence(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException  {
 
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
-
+		
 		if(accountManagement == null || accountManagement.getSequence() == null)  {
 			throw new AxelorException(String.format(
 							I18n.get(IExceptionMessage.PAYMENT_MODE_2),
-							GeneralServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountManagement.getSequence();
@@ -108,11 +108,11 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 	public Journal getPaymentModeJournal(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException  {
 
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
-
+		
 		if(accountManagement == null || accountManagement.getJournal() == null)  {
 			throw new AxelorException(String.format(
 							I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-							GeneralServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountManagement.getJournal();

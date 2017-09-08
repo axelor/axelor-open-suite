@@ -1,0 +1,27 @@
+"name","requestLanguage","request","result"
+"Number of purchase orders",1,"SELECT COUNT(*) FROM PurchaseOrder",9
+"Number of delivery orders",1,"SELECT COUNT(*) FROM StockMove WHERE typeSelect = 2",7
+"Number of goods receipts",1,"SELECT COUNT(*) FROM StockMove WHERE typeSelect = 3",5
+"Number of customer invoices",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 3",7
+"Number of customer refunds",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 4",0
+"Number of users",1,"SELECT COUNT(*) FROM User",22
+"Number of partners",1,"SELECT COUNT(*) FROM Partner",68
+"Number of addresses",1,"SELECT COUNT(*) FROM Address",252
+"Number of leads",1,"SELECT COUNT(*) FROM Lead",30
+"Number of events",1,"SELECT COUNT(*) FROM Event",51
+"Number of supplier invoices",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 1",6
+"Number of supplier refunds",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 2",0
+"Number of calls",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 1",14
+"Number of meetings",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 2",25
+"Number of tasks",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 3",6
+"Number of tickets",1,"SELECT COUNT(*) FROM Event WHERE typeSelect = 6",0
+"Number of manufacturing orders",1,"SELECT COUNT(*) FROM ManufOrder",0
+"Number of operation orders",1,"SELECT COUNT(*) FROM OperationOrder",0
+"Number of products",1,"SELECT COUNT(*) FROM Product WHERE isModel = false",48
+"Number of bills of materials",1,"SELECT COUNT(*) FROM BillOfMaterial",45
+"Number of sale orders",1,"SELECT COUNT(*) FROM SaleOrder",11
+"Number of payments",1,"SELECT COUNT(*) FROM PaymentVoucher",10
+"Number of moves",1,"SELECT COUNT(*) FROM Move",12
+"Number of move lines",1,"SELECT COUNT(*) FROM MoveLine",59
+"Number of leave requests",1,"SELECT COUNT(*) FROM LeaveRequest",0
+"Number of expenses",1,"SELECT COUNT(*) FROM Expense",0

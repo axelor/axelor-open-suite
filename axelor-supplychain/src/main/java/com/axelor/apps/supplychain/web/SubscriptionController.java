@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.persistence.Query;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -54,7 +54,7 @@ public class SubscriptionController {
 	protected SaleOrderLineRepository saleOrderLineRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -106,7 +106,7 @@ public class SubscriptionController {
 	public void generateInvoiceForAllSubscriptions(ActionRequest request, ActionResponse response)  throws AxelorException{
 
 		Query q = JPA.em().createQuery("SELECT DISTINCT saleOrderLine.saleOrder.id FROM Subscription WHERE invoicingDate <= ?1 AND invoiced = false ", Long.class);
-		q.setParameter(1, generalService.getTodayDate());
+		q.setParameter(1, appBaseService.getTodayDate());
 		List<Long> saleOrderIdList = q.getResultList();
 		if(saleOrderIdList != null){
 			SaleOrder saleOrder = null;

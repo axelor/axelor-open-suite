@@ -19,12 +19,13 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.joda.time.LocalDate;
-
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
@@ -33,7 +34,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -44,6 +48,9 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -106,11 +113,17 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 				
 		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment())  {
 			this.createMoveForInvoicePayment(invoicePayment);
+		} else {
+			Beans.get(AccountingSituationService.class).updateCustomerCredit(invoicePayment.getInvoice().getPartner());
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+		if (invoicePayment.getInvoice() != null
+				&& invoicePayment.getInvoice().getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
+		}
 		invoicePaymentRepository.save(invoicePayment);
-
 	}
 	
 	
@@ -135,36 +148,56 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		BigDecimal paymentAmount = invoicePayment.getAmount();
 		BankDetails companyBankDetails = invoicePayment.getBankDetails();
-		
+
+		Account customerAccount;
+
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		
 		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
-		
+
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
+		if (invoiceMoveLine == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.NO_INVOICE_LINE),IException.MISSING_FIELD);
+		}
+		
+		if (invoice.getOperationSubTypeSelect()
+				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+
+			AccountConfig accountConfig = accountConfigService
+					.getAccountConfig(company);
+
+		    customerAccount = accountConfigService
+					.getAdvancePaymentAccount(accountConfig);
+		} else {
+			customerAccount = invoiceMoveLine.getAccount();
+		}
 		
 		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails), 
 				paymentAmount, isDebitInvoice, paymentDate, null, 1, ""));
-		
-		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, invoiceMoveLine.getAccount(), 
+
+		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, customerAccount,
 				paymentAmount, !isDebitInvoice, paymentDate, null, 2, "");
 		
 		move.addMoveLineListItem(customerMoveLine);
 		
 		moveService.getMoveValidateService().validate(move);
-		
-		Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
-		
-		invoicePayment.setReconcile(reconcile);
+
+		if (invoice.getOperationSubTypeSelect()
+				!= InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+			Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
+
+			invoicePayment.setReconcile(reconcile);
+		}
 		invoicePayment.setMove(move);
 		
 		invoicePaymentRepository.save(invoicePayment);
 		
 		return move;
 	}
+
 	
-	
-	
+
 	
 }

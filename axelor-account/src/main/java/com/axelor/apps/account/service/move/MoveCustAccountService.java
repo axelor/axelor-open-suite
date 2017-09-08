@@ -41,7 +41,7 @@ public class MoveCustAccountService {
 	}
 
 
-	public void flagPartners(Move move)  {
+	public void flagPartners(Move move) throws AxelorException {
 
 		accountCustomerService.flagPartners(this.getPartnerOfMove(move), move.getCompany());
 
@@ -56,7 +56,7 @@ public class MoveCustAccountService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCustomerAccount(Move move)  {
+	public void updateCustomerAccount(Move move) throws AxelorException {
 
 		if( AccountingService.getUpdateCustomerAccount() )  {
 			accountCustomerService.updatePartnerAccountingSituation(this.getPartnerOfMove(move), move.getCompany(), true, true, false);
@@ -76,7 +76,7 @@ public class MoveCustAccountService {
 	public List<Partner> getPartnerOfMove(Move move)  {
 		List<Partner> partnerList = new ArrayList<Partner>();
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getPartner() != null
+			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getPartner() != null
 					&& !partnerList.contains(moveLine.getPartner()))  {
 				partnerList.add(moveLine.getPartner());
 			}

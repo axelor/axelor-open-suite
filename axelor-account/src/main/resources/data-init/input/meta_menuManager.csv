@@ -1,0 +1,7 @@
+name;roles
+invoice-root;role.manager
+invoice-root-report;role.manager
+account-root;role.manager
+account-root-budget-management;role.manager
+account-root-budget-management-all-budgets;role.manager
+account-conf;role.manager

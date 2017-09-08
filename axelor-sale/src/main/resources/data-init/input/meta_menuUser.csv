@@ -1,0 +1,13 @@
+name;roles
+sc-root-sale;role.user
+sc-root-sale-customers;role.user
+sc-root-sale-contacts;role.user
+sc-root-sale-quotations;role.user
+sc-root-sale-orders;role.user
+sc-root-sale-report;role.user
+menu-saleman-dashboard-sample;role.user
+menu-sale-dashboard-1;role.user
+menu-sale-dashboard-2;role.user
+menu-dashboards-customers;role.user
+sc-root-sale-maps;role.user
+sc-root-sale-conf;role.user

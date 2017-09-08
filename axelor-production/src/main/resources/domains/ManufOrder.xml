@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -36,6 +36,7 @@
     
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>
+    <one-to-one name="costSheet" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet"/>
     
 <!--     Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true" required="true"/> 
@@ -54,7 +55,16 @@
     <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
-    
-    
+
+	<extra-code><![CDATA[
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_CANCELED = 2;
+		public static final int STATUS_PLANNED = 3;
+		public static final int STATUS_IN_PROGRESS = 4;
+		public static final int STATUS_STANDBY = 5;
+		public static final int STATUS_FINISHED = 6;
+	]]></extra-code>
+
   </entity>
 </domain-models>

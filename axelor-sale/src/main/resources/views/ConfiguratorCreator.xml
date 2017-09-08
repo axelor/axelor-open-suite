@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+    	<field name="name"/>
+		<field name="isActive"/>
+    </grid>
+    
+    <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+    	<panel>
+    		<field name="name"/>
+    		<panel-related field="attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
+    	</panel>
+		<panel sidebar="true" title="Actions">
+			<button name="activate" title="Activate" readonlyIf="isActive"
+					onClick="action-configurator-creator-record-activate,save"/>
+			<button name="test" title="Test this creator"
+					onClick="action-configurator-creator-method-test"/>
+			<field name="generateProduct" widget="boolean-switch"/>
+		</panel>
+		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
+					   grid-view="configurator-formula-grid"/>
+        <panel>
+			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"
+					title="Create configurator" onClick="action-configurator-creator-group-create-configurator"/>
+		</panel>
+    </form>
+	
+	<action-group name="action-configurator-creator-group-create-configurator">
+        <action name="save"/>
+		<action name="action-configurator-creator-create-configurator"/>
+	</action-group>
+    
+    <action-method name="action-configurator-creator-create-configurator">
+    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="createConfigurator"/>
+    </action-method>
+
+	<action-method name="action-configurator-creator-method-test">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="testCreator"/>
+	</action-method>
+
+	<action-record name="action-configurator-creator-record-activate"
+				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
+		<field name="isActive" expr="eval: true"/>
+	</action-record>
+
+</object-views>

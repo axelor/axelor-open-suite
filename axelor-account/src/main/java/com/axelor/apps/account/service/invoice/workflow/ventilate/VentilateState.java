@@ -21,22 +21,30 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.account.db.*;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
-import com.axelor.inject.Beans;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.util.Set;
+
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.axelor.apps.account.db.*;
+import com.axelor.inject.Beans;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,20 +58,32 @@ public class VentilateState extends WorkflowInvoice {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
 	private SequenceService sequenceService;
 
-	@Inject
 	private MoveService moveService;
 
-	@Inject
 	private AccountConfigService accountConfigService;
 
-	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
-	@Inject
 	private InvoiceRepository invoiceRepo;
+
+	protected WorkflowVentilationService workflowService;
+
+	@Inject
+	public VentilateState(SequenceService sequenceService,
+						  MoveService moveService,
+						  AccountConfigService accountConfigService,
+						  AppAccountService appAccountService,
+						  InvoiceRepository invoiceRepo,
+						  WorkflowVentilationService workflowService) {
+		this.sequenceService = sequenceService;
+		this.moveService = moveService;
+		this.accountConfigService = accountConfigService;
+		this.appAccountService = appAccountService;
+		this.invoiceRepo = invoiceRepo;
+		this.workflowService = workflowService;
+	}
 
 	@Override
 	public void init(Invoice invoice){
@@ -89,6 +109,8 @@ public class VentilateState extends WorkflowInvoice {
 		updatePaymentSchedule( );
 		setMove( );
 		setStatus( );
+
+		workflowService.afterVentilation(invoice);
 	}
 
 	protected void updatePaymentSchedule( ){
@@ -121,10 +143,10 @@ public class VentilateState extends WorkflowInvoice {
 	}
 
 	protected void setDate( ) throws AxelorException{
-
+		
 		if(invoice.getInvoiceDate() == null)  {
-			invoice.setInvoiceDate(generalService.getTodayDate());
-		} else if (invoice.getInvoiceDate().compareTo(generalService.getTodayDate()) > 0) {
+			invoice.setInvoiceDate(appAccountService.getTodayDate());
+		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
 			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
 					IException.CONFIGURATION_ERROR);
 		}
@@ -156,7 +178,7 @@ public class VentilateState extends WorkflowInvoice {
 		if(sequence.getMonthlyResetOk())  {
 
 			query += String.format("AND EXTRACT (month from self.invoiceDate) = ?%d ", i++);
-			params.add(invoice.getInvoiceDate().getMonthOfYear());
+			params.add(invoice.getInvoiceDate().getMonthValue());
 
 		}
 		if(sequence.getYearlyResetOk())  {

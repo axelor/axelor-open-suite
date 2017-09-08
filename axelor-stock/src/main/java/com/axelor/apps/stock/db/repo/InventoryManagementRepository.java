@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.axelor.apps.stock.db.Inventory;
 
@@ -29,7 +29,7 @@ public class InventoryManagementRepository extends InventoryRepository {
 		
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setInventorySeq(null);
-		copy.setDateT(DateTime.now());
+		copy.setDateT(ZonedDateTime.now());
 		return copy;
 	}
 }

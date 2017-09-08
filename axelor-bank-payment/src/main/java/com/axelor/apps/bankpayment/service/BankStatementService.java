@@ -19,9 +19,9 @@ package com.axelor.apps.bankpayment.service;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -82,11 +82,11 @@ public class BankStatementService {
 		
 		if(bankStatement.getFromDate() != null)  {
 			if(name != "")  {  name += "-";  }
-			name += bankStatement.getFromDate().toString("YYYY/MM/DD");
+			name += bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
 		}
 		if(bankStatement.getToDate() != null)  {
 			if(name != "")  {  name += "-";  }
-			name += bankStatement.getToDate().toString("YYYY/MM/DD");
+			name += bankStatement.getToDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
 		}
 		
 		return name;

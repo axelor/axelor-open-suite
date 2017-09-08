@@ -1,12 +1,80 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
-        <field name="$realQty" expr="call:com.axelor.apps.stock.service.LocationService:getRealQty(id, null)" />
-        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.LocationService:getFutureQty(id, null)" />
+        <field name="$realQty" expr="call:com.axelor.apps.stock.service.LocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
+        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.LocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
     </action-record>
+
+    <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">
+        <attribute name="scale" for="avgPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
+    </action-attrs>
     
+    <cards name="stock-product-cards" title="Product" css="rect-image" model="com.axelor.apps.base.db.Product" width="25%" orderBy="code,name">
+		<field name="picture"/>
+		<field name="fullName"/>
+		<template><![CDATA[
+		   <div class="span12"><strong>{{fullName}}</strong></div>
+		   <div>
+			  <div class="span4 card-image">
+			    <img ng-src="{{$image('picture', 'content')}}" />
+			  </div>
+			  <div class="span8">
+			   <strong><span x-translate>Min stock</span>(<span>{{$fmt('$stockMinDate')}}</span>):</strong> <span>{{$fmt('$stockMin')}}</span>
+				 <br/>
+			    <strong><span x-translate>Max stock</span>(<span>{{$fmt('$stockMaxDate')}}</span>):</strong> <span>{{$fmt('$stockMax')}}</span>
+			  </div>
+		   </div>
+		]]></template>
+	</cards>
+	
+	<grid name="stock-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+	    <field name="name" width="400"/>
+	    <field name="$stockMinDate" title="Min stock date" type="date" />
+	    <field name="$stockMin" title="Min stock"  type="integer"/>
+	    <field name="$stockMaxDate" title="Max stock date" type="date" />
+	    <field name="$stockMax" title="Max stock" type="integer" />
+    </grid>
+    
+    <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product" width="large"
+    	onLoad="action-stock-product-method-set-stock-per-day">
+    	<panel name="main">
+	   		<panel colSpan="2">
+	     		<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
+				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
+				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
+			</panel>
+			<panel colSpan="10">
+	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+	       			<editor x-show-titles="false">
+	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
+	         				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
+	       			</editor>
+	     			</field>
+	   		</panel>
+	   		<panel colSpan="12">
+	   			<field name="$stockPerDayList" title="Stock per day" type="one-to-many" target="com.axelor.apps.base.db.Wizard"  grid-view="wizard-stock-perday-grid" form-view="wizard-stock-perday-form" readonly="true" colSpan="12" />
+   			</panel>
+   		</panel>
+	</form>
+	
+	<grid model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-grid" orderBy="$date">
+		<field name="$date" title="Date" type="date"/>
+		<field name="$qty" title="Qty" type="decimal"/>
+	</grid>
+	
+	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false">
+		<panel name="main">
+			<field name="$date" title="Date" type="date"/>
+			<field name="$qty" title="Qty" type="decimal"/>
+		</panel>
+	</form>
+	
+	<action-method name="action-stock-product-method-set-stock-per-day">
+		<call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>
+	</action-method>
 	
 </object-views>

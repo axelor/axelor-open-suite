@@ -19,10 +19,9 @@ package com.axelor.apps.bankpayment.ebics.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
@@ -30,6 +29,7 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.service.BankStatementService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -67,11 +67,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 		if(ebicsPartner.getBankStatementGetModeSelect() == EbicsPartnerRepository.GET_MODE_PERIOD)  {
 			bankStatementStartDate = ebicsPartner.getBankStatementStartDate();
 			if(bankStatementStartDate != null)  {
-				startDate = bankStatementStartDate.toDate();
+				startDate = DateTool.toDate(bankStatementStartDate);
 			}
 			bankStatementToDate = ebicsPartner.getBankStatementEndDate();
 			if(bankStatementToDate != null)  {
-				endDate = bankStatementToDate.toDate();
+				endDate = DateTool.toDate(bankStatementToDate);
 			}
 		}
 		else if(ebicsPartner.getBankStatementLastExeDateT() != null) {

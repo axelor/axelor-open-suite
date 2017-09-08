@@ -19,16 +19,15 @@ package com.axelor.apps.businessproject.web;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderProjectService;
-import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -55,24 +54,24 @@ public class SaleOrderProjectController {
 	public void generateProject(ActionRequest request, ActionResponse response){
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		ProjectTask project = saleOrderProjectService.generateProject(saleOrder);
+		Project project = saleOrderProjectService.generateProject(saleOrder);
 
 		response.setReload(true);
 		response.setView(ActionView
 				.define("Project")
-				.model(ProjectTask.class.getName())
+				.model(Project.class.getName())
 				.add("form", "project-form")
 				.param("forceEdit", "true")
 				.context("_showRecord", String.valueOf(project.getId())).map());
 	}
 
-	public void generateTasks(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void generateProjects(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 		if(saleOrder.getProject() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT)), IException.CONFIGURATION_ERROR);
 		}
-		List<Long> listId = saleOrderProjectService.generateTasks(saleOrder);
+		List<Long> listId = saleOrderProjectService.generateProjects(saleOrder);
 		if(listId == null || listId.isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES)), IException.CONFIGURATION_ERROR);
 		}
@@ -81,7 +80,7 @@ public class SaleOrderProjectController {
 			response.setReload(true);
 			response.setView(ActionView
 					.define("Tasks generated")
-					.model(ProjectTask.class.getName())
+					.model(Project.class.getName())
 					.add("grid","task-grid")
 					.add("form", "task-form")
 					.param("forceEdit", "true")
@@ -90,7 +89,7 @@ public class SaleOrderProjectController {
 		else{
 			response.setView(ActionView
 					.define("Tasks generated")
-					.model(ProjectTask.class.getName())
+					.model(Project.class.getName())
 					.add("grid","task-grid")
 					.add("form", "task-form")
 					.param("forceEdit", "true")
@@ -103,8 +102,10 @@ public class SaleOrderProjectController {
 		
 		SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf( request.getContext().get("_id").toString() ) );
 		
-		final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
-		LocalDate deadline = dtf.parseLocalDate(request.getContext().get("deadline").toString() );
+		LocalDate deadline= null;
+		if (request.getContext().get("deadline") != null) {
+			deadline = LocalDate.parse(request.getContext().get("deadline").toString(), DateTimeFormatter.ISO_DATE);
+		}
 		
 		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("invoicingTypeSelect").toString() ));
 		

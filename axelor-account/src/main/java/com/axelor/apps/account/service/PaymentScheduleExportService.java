@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +56,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.account.service.AccountBlockingService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -94,7 +94,7 @@ public class PaymentScheduleExportService{
 	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileService reconcileService,
 			SequenceService sequenceService, PaymentModeService paymentModeService, PaymentService paymentService,
 			AccountBlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
-			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService, PartnerService partnerService) {
+			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, AppAccountService appAccountService, PartnerService partnerService) {
 		
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -112,7 +112,7 @@ public class PaymentScheduleExportService{
 		this.invoiceRepo = invoiceRepo;
 		this.partnerService = partnerService;
 
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -142,7 +142,6 @@ public class PaymentScheduleExportService{
 	}
 
 
-
 	/**
 	 * Procédure permettant de vérifier que la date d'échéance est bien remplie
 	 * @param company
@@ -152,7 +151,7 @@ public class PaymentScheduleExportService{
 		if(accountingBatch.getDebitDate() == null)  {
 			throw new AxelorException(String.format(
 					I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_3)
-					,GeneralServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+					,AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}
 

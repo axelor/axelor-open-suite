@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppTimesheet" lang="java" cachable="true" extends="App">
+		
+		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
+		<boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>
+		<integer name="defaultEndFormat" title="Timesheet default end date format" selection="hr.timesheet.default.end.format" />
+			
+		<!-- Timesheet Timer configuration -->
+		<boolean name="enableTimer" title="Start&amp;Stop" default="true"/>
+		<boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
+		<boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
+		
+		<boolean name="timesheetEditor" title="Timesheet editor"/>
+		
+	</entity>
+
+</domain-models>

@@ -27,8 +27,16 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class CancelState extends WorkflowInvoice {
+
+	private WorkflowCancelService workflowService;
+
+	@Inject
+	CancelState(WorkflowCancelService workflowService) {
+		this.workflowService = workflowService;
+	}
 
 	@Override
 	public void init(Invoice invoice){
@@ -38,12 +46,14 @@ public class CancelState extends WorkflowInvoice {
 	@Override
 	public void process() throws AxelorException {
 
+		workflowService.beforeCancel(invoice);
+
 		if(invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice())  {
 			cancelMove();
 		}
 
 		setStatus();
-
+		workflowService.afterCancel(invoice);
 	}
 
 	protected void setStatus(){

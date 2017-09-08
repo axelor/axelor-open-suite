@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.base.web;
 
+import java.math.BigDecimal;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.apps.base.db.ShippingCoef;
+import com.axelor.apps.base.db.SupplierCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +32,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -46,7 +49,7 @@ public class ProductController {
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	private GeneralService generalService;
+	private AppBaseService appBaseService;
 	
 	@Inject
 	private ProductService productService;
@@ -84,7 +87,7 @@ public class ProductController {
 
 		User user =  Beans.get(UserService.class).getUser();
 
-		int currentYear = generalService.getTodayDateTime().getYear();
+		int currentYear = appBaseService.getTodayDateTime().getYear();
 		String productIds = "";
 
 		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
@@ -138,4 +141,26 @@ public class ProductController {
 				.define(name)
 				.add("html", fileLink).map());	
 	}
+
+	public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
+	    Product product = request.getContext().asType(Product.class);
+	    if (!product.getDefShipCoefByPartner()) {
+	    	return;
+		}
+	    product = productRepo.find(product.getId());
+		BigDecimal productShippingCoef = null;
+	    for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+	    	if (!supplierCatalog.getSupplierPartner().equals(product.getDefaultSupplierPartner()) ||
+					supplierCatalog.getShippingCoefList() == null) {
+	    		continue;
+			}
+	    	for(ShippingCoef shippingCoef : supplierCatalog.getShippingCoefList()) {
+	    	    if (shippingCoef.getCompany() == Beans.get(UserService.class).getUserActiveCompany()) {
+	    	        productShippingCoef = shippingCoef.getShippingCoef();
+	    	        break;
+				}
+			}
+		}
+	    response.setValue("$shippingCoef", productShippingCoef);
+    }
 }

@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +35,16 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -53,6 +56,7 @@ public class MoveService {
 	protected MoveLineService moveLineService;
 	protected MoveCreateService moveCreateService;
 	protected MoveValidateService moveValidateService;
+	protected MoveAccountService moveAccountService;
 	protected MoveRemoveService moveRemoveService;
 	protected MoveToolService moveToolService;
 	protected ReconcileService reconcileService;
@@ -64,12 +68,13 @@ public class MoveService {
 	protected LocalDate today;
 
 	@Inject
-	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
+	public MoveService(AppAccountService appAccountService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveAccountService moveAccountService, MoveToolService moveToolService,
 			MoveRemoveService moveRemoveService, ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
 		this.moveCreateService = moveCreateService;
 		this.moveValidateService = moveValidateService;
+		this.moveAccountService = moveAccountService;
 		this.moveRemoveService = moveRemoveService;
 		this.moveToolService = moveToolService;
 		this.reconcileService = reconcileService;
@@ -79,7 +84,7 @@ public class MoveService {
 		this.moveRepository = moveRepository;
 		this.accountConfigService = accountConfigService;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 
 	}
 
@@ -87,6 +92,7 @@ public class MoveService {
 	public MoveLineService getMoveLineService()  { return moveLineService; }
 	public MoveCreateService getMoveCreateService()  { return moveCreateService; }
 	public MoveValidateService getMoveValidateService()  { return moveValidateService; }
+	public MoveAccountService getMoveAccountService()  { return moveAccountService; }
 	public MoveRemoveService getMoveRemoveService()  { return moveRemoveService; }
 	public MoveToolService getMoveToolService()  { return moveToolService; }
 	public ReconcileService getReconcileService()  { return reconcileService; }
@@ -243,12 +249,9 @@ public class MoveService {
 		List<MoveLine> creditMoveLineList = moveExcessPaymentService.getAdvancePaymentMoveList(invoice);
 		
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
-		if(accountConfig.getAutoReconcileOnInvoice())
-		{
-			// Récupération des trop-perçus
-			creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
-		}
+
+		// Récupération des trop-perçus
+		creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 
 			Partner partner = invoice.getPartner();
@@ -389,7 +392,7 @@ public class MoveService {
 								  today,
 								  move.getPaymentMode(),
 								  MoveRepository.TECHNICAL_ORIGIN_ENTRY,	
-								  move.getIgnoreInReminderOk(),
+								  move.getIgnoreInDebtRecoveryOk(),
 								  move.getIgnoreInAccountingOk());
 		
 		move.setInvoice(move.getInvoice());
@@ -415,5 +418,24 @@ public class MoveService {
 		return moveRepository.save(newMove);
 	}
 
+	public String getLanguageToPrinting(Move move)  {
+		
+		User user = AuthUtils.getUser();
+		
+		String language = "en";
+		
+		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
+			return user.getLanguage();
+		}
+		
+		if(move == null)  {  return language;  }
+		Company company = move.getCompany();
+		
+		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
+			language = company.getPrintingSettings().getLanguageSelect();
+		}
+		
+		return language;
+	}
 		
 }

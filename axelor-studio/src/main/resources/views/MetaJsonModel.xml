@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel">
+    <toolbar>
+    	<button name="openWorkflow" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
+    </toolbar>
+    <panel title="Overview">
+      <field name="name" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
+      <field name="title" />
+      <field name="onNew" />
+      <field name="onSave" />
+    </panel>
+    <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true">
+      <field name="name" />
+      <field name="type" />
+    </panel-related>
+  </form>
+  
+  
+  <action-method name="action-studio-json-model-method-open-workflow">
+	<call class="com.axelor.studio.web.MetaJsonModelController" method="openWorkflow"/>  
+  </action-method>
+  
+</object-views>

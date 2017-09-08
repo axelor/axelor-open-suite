@@ -1,0 +1,4 @@
+name;roles
+marketing-root;role.user
+campaign-all;role.user
+target-list-all;role.user

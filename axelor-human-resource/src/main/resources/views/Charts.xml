@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<chart name="chart.total.hours.per.day" title="" stacked="true">
 		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
-			self.date AS _day,
-			self.projectTask.fullName AS _project
+			self.project.fullName AS _project,
+			self.date AS _day
 		FROM
 			TimesheetLine self
 		WHERE
 			self.timesheet.id= :timesheet_id
 		GROUP BY
 			self.date,
-			self.projectTask.fullName
+			self.project.fullName
 		ORDER BY 
 			self.date
 		]]></dataset>
@@ -74,7 +74,7 @@
 	<action-record model="com.axelor.apps.hr.db.Expense"
 				   name="action.hr.chart.set.period.last.month">
 		<field name="period"
-			   expr="eval: __repo__.of(Period).all().filter('fromDate &lt;= ?1 and toDate &gt;= ?1', __date__.minusMonths(1)).fetchOne()"/>
+			   expr="eval: __repo__(Period).all().filter('fromDate &lt;= ?1 and toDate &gt;= ?1', __date__.minusMonths(1)).fetchOne()"/>
 	</action-record>
 
 </object-views>

@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="production" package="com.axelor.apps.production.db"/>
+    <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="Machine" lang="java">
-  	
-  	<integer name="importId"/>
-  	
-  	<string name="name" title="Name" required="true"/>
-    <string name="serialNumber" title="Serial Nbr"/>
-	<string name="brand" title="Brand"/>
-    <string name="description" title="Description" large="true"/>
-    <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
-    <long name="startingDuration" title="Starting duration (hh:mm)"/>
-    <long name="setupDuration" title="Duration between two cycles (hh:mm)"/>
-    <long name="endingDuration" title="Ending duration (hh:mm)"/>
-    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Machine's planning"/>
-    
-  </entity>
+    <entity name="Machine" lang="java">
+
+        <integer name="importId"/>
+
+        <string name="name" title="Name" required="true"/>
+        <string name="serialNumber" title="Serial Nbr"/>
+        <string name="brand" title="Brand"/>
+        <string name="description" title="Description" large="true"/>
+        <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
+        <long name="startingDuration" title="Starting duration (hh:mm)"/>
+        <long name="setupDuration" title="Duration between two cycles (hh:mm)"/>
+        <long name="endingDuration" title="Ending duration (hh:mm)"/>
+        <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Machine's planning"/>
+        <long name="operatingDuration" title="Operating duration" default="0"/>
+
+    </entity>
 </domain-models>

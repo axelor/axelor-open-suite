@@ -17,29 +17,32 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Query;
 
-import org.eclipse.birt.core.exception.BirtException;
-import org.joda.time.LocalDate;
+import com.axelor.apps.sale.db.CancelReason;
+import com.google.common.base.Strings;
+import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Team;
+import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -49,6 +52,7 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -69,14 +73,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected PartnerService partnerService;
 	protected PartnerRepository partnerRepo;
 	protected SaleOrderRepository saleOrderRepo;
-	protected GeneralService generalService;
+	protected AppSaleService appSaleService;
 	protected User currentUser;
 	
 	protected LocalDate today;
 	
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
-			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService)  {
+			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService)  {
 		
 		this.saleOrderLineService = saleOrderLineService;
 		this.saleOrderLineTaxService = saleOrderLineTaxService;
@@ -84,9 +88,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.partnerService = partnerService;
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
-		this.generalService = generalService;
+		this.appSaleService = appSaleService;
 
-		this.today = generalService.getTodayDate();
+		this.today = appSaleService.getTodayDate();
 		this.currentUser = userService.getUser();
 	}
 	
@@ -105,9 +109,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException  {
-
+		
+		AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+		if (appSale != null && appSale.getActive() && appSale.getProductPackMgt()) {
+			this._addPackLines(saleOrder);
+		}
+		
 		this.initSaleOrderLineTaxList(saleOrder);
 
 		this._computeSaleOrderLineList(saleOrder);
@@ -117,6 +125,39 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this._computeSaleOrder(saleOrder);
 
 		return saleOrder;
+	}
+	
+	@Override
+	public void computeMarginSaleOrder(SaleOrder saleOrder) {
+
+		if (saleOrder.getSaleOrderLineList() == null) {
+			
+			saleOrder.setTotalCostPrice(BigDecimal.ZERO);
+			saleOrder.setTotalGrossMargin(BigDecimal.ZERO);
+			saleOrder.setMarginRate(BigDecimal.ZERO);
+		} else {
+			
+			BigDecimal totalCostPrice = BigDecimal.ZERO;
+			BigDecimal totalGrossMargin = BigDecimal.ZERO;
+			BigDecimal marginRate = BigDecimal.ZERO;
+
+			for (SaleOrderLine saleOrderLineList : saleOrder.getSaleOrderLineList()) {
+				
+				if (saleOrderLineList.getProduct() == null
+						|| saleOrderLineList.getSubTotalCostPrice().compareTo(BigDecimal.ZERO) == 0
+						|| saleOrderLineList.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+					continue;
+				} else {
+					
+					totalCostPrice = totalCostPrice.add(saleOrderLineList.getSubTotalCostPrice());
+					totalGrossMargin = totalGrossMargin.add(saleOrderLineList.getSubTotalGrossMargin());
+					marginRate = totalGrossMargin.divide(totalCostPrice, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+				}
+			}
+			saleOrder.setTotalCostPrice(totalCostPrice);
+			saleOrder.setTotalGrossMargin(totalGrossMargin);
+			saleOrder.setMarginRate(marginRate);
+		}
 	}
 
 
@@ -196,7 +237,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		Partner clientPartner = partnerRepo.find(saleOrder.getClientPartner().getId());
 		clientPartner.setIsCustomer(true);
-		clientPartner.setHasOrdered(true);
+		clientPartner.setIsProspect(false);
 
 		return partnerRepo.save(clientPartner);
 	}
@@ -218,7 +259,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
 		SaleOrder saleOrder = new SaleOrder();
-		saleOrder.setCreationDate(generalService.getTodayDate());
+		saleOrder.setCreationDate(appSaleService.getTodayDate());
 		if(company != null){
 			saleOrder.setCompany(company);
 			saleOrder.setSaleOrderSeq(this.getSequence(company));
@@ -241,7 +282,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setClientPartner(clientPartner);
-		saleOrder.setCreationDate(generalService.getTodayDate());
+		saleOrder.setCreationDate(appSaleService.getTodayDate());
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
@@ -282,30 +323,42 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancelSaleOrder(SaleOrder saleOrder){
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
 		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
 		if((long) q.getSingleResult() == 1)  {
-			saleOrder.getClientPartner().setHasOrdered(false);
+			saleOrder.getClientPartner().setIsCustomer(false);
+			saleOrder.getClientPartner().setIsProspect(true);
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
+		saleOrder.setCancelReason(cancelReason);
+		if (Strings.isNullOrEmpty(cancelReasonStr)) {
+			saleOrder.setCancelReasonStr(cancelReason.getName());
+		} else {
+			saleOrder.setCancelReasonStr(cancelReasonStr);
+		}
 		saleOrderRepo.save(saleOrder);
 	}
 
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
+	protected void _finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
-		if (generalService.getGeneral().getManageSaleOrderVersion()){
+		if (appSaleService.getAppSale().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
 		if (saleOrder.getVersionNumber() == 1){
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
 	}
-	
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		_finalizeSaleOrder(saleOrder);
+	}
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
@@ -324,8 +377,70 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		saleOrderRepo.save(saleOrder);
 	}
+	
+	@Override
+	@Transactional
+	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency, Partner clientPartner, Company company, Partner contactPartner, PriceList priceList, Team team) throws AxelorException {
+		
+		String numSeq = "";
+		String externalRef = "";
+		for (SaleOrder saleOrderLocal : saleOrderList) {
+			if (!numSeq.isEmpty()){
+				numSeq += "-";
+			}
+			numSeq += saleOrderLocal.getSaleOrderSeq();
 
+			if (!externalRef.isEmpty()){
+				externalRef += "|";
+			}
+			if (saleOrderLocal.getExternalReference() != null){
+				externalRef += saleOrderLocal.getExternalReference();
+			}
+		}
+		
+		SaleOrder saleOrderMerged = this.createSaleOrder(
+				AuthUtils.getUser(),
+				company,
+				contactPartner,
+				currency,
+				null,
+				numSeq,
+				externalRef,
+				LocalDate.now(),
+				priceList,
+				clientPartner,
+				team);
+		
+		this.attachToNewSaleOrder(saleOrderList,saleOrderMerged);
+		
+		this.computeSaleOrder(saleOrderMerged);
+		
+		saleOrderRepo.save(saleOrderMerged);
+		
+		this.removeOldSaleOrders(saleOrderList);
+		
+		return saleOrderMerged;
+	}
 
+	//Attachment of all sale order lines to new sale order
+	public void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
+		for(SaleOrder saleOrder : saleOrderList)  {
+			int countLine = 1;
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				saleOrderLine.setSequence(countLine * 10);
+				saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
+				countLine++;
+			}
+		}
+	}
+	
+	//Remove old sale orders after merge
+	public void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
+		for(SaleOrder saleOrder : saleOrderList)  {
+			saleOrderRepo.remove(saleOrder);
+		}
+	}
+	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
 		
@@ -391,14 +506,45 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 	
 	@Override
-	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException{
-
-		return ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
-		.addParam("Locale", language)
-		.addParam("SaleOrderId", saleOrder.getId())
-		.addFormat(format)
-		.generate()
-		.getFileLink();
+	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException{
+        return ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+                .addParam("Locale", language)
+                .addParam("SaleOrderId", saleOrder.getId())
+                .addParam("ProformaInvoice", proforma)
+                .addFormat(format)
+                .generate()
+                .getFileLink();
+	}
+	
+	private void _addPackLines(SaleOrder saleOrder) {
+		
+		if (saleOrder.getSaleOrderLineList() == null) {
+			return;
+		}
+		
+		List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
+		lines.addAll(saleOrder.getSaleOrderLineList());
+		for (SaleOrderLine line : lines) {
+			if (line.getSubLineList() == null) {
+				continue;
+			}
+			for (SaleOrderLine subLine : line.getSubLineList()) {
+				if (subLine.getSaleOrder() == null) {
+					saleOrder.addSaleOrderLineListItem(subLine);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder) {
+		BigDecimal price = BigDecimal.ZERO;
+	    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+	        price = price.add(
+	        		saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted())
+			);
+		}
+		return price;
 	}
 }
 

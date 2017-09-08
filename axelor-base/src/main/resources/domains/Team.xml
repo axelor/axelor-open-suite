@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="team" package="com.axelor.team.db"/>
 
-  <entity name="Team" lang="java">
+  <entity name="Team" lang="java" >
   
   	<string name="importId"/>
     <string name="code" title="Code"/>
-    <string name="name" title="Name" required="true"/>
-    <many-to-many name="userSet" ref="com.axelor.auth.db.User" mappedBy="teamSet" title="Users/Employees"/>
-  
+
   </entity>
 
 </domain-models>

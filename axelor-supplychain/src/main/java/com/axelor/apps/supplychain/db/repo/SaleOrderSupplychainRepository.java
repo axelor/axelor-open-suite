@@ -17,18 +17,33 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.db.Subscription;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
+	
+	@Inject
+	private AppService appService;
+	
+	@Inject
+	private AccountingSituationSupplychainService accountingSituationSupplychainService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
-
+		
 		SaleOrder copy = super.copy(entity, deep);
-
+		
+		if (!appService.isApp("supplychain")) {
+				return copy;
+		}
+		
 		copy.setShipmentDate(null);
 		copy.setDeliveryState(STATE_NOT_DELIVERED);
 		copy.setAmountInvoiced(null);
@@ -44,5 +59,20 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 		}
 
 		return copy;
+	}
+	
+	@Override
+	public void remove(SaleOrder order) {
+		
+		Partner partner = order.getClientPartner();
+		
+		super.remove(order);
+		
+		try {
+			accountingSituationSupplychainService.updateUsedCredit(partner);
+		} catch (AxelorException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -59,7 +59,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 		else{
 			if(stockMove.getSaleOrder() != null){
 				taxLine = accountManagementService.getTaxLine(
-						generalService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
+						appBaseService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
 						stockMove.getSaleOrder().getClientPartner().getFiscalPosition(), false);
 				unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
 				PriceList priceList = stockMove.getSaleOrder().getPriceList();
@@ -74,7 +74,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 			}
 			else{
 				taxLine = accountManagementService.getTaxLine(
-						generalService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
+						appBaseService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
 						stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(), true);
 				unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
 				PriceList priceList = stockMove.getPurchaseOrder().getPriceList();

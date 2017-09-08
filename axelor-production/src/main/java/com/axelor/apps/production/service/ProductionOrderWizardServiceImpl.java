@@ -17,30 +17,34 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import java.lang.invoke.MethodHandles;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.Map;
 
 public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
 	@Inject
 	protected ProductionOrderService productionOrderService;
 	
@@ -51,8 +55,8 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 	protected ProductRepository productRepo;
 	
 	@Inject
-	protected GeneralService generalService;
-
+	protected AppProductionService appProductionService;
+	
 	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {
 	
@@ -71,11 +75,11 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 			product = billOfMaterial.getProduct();
 		}
 		
-		DateTime startDate;
+		ZonedDateTime startDate;
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-			startDate = new DateTime(context.get("_startDate") );
+			startDate = ZonedDateTime.parse((CharSequence) context.get("_startDate"), DateTimeFormatter.ISO_DATE_TIME);
 		}else{
-			startDate = generalService.getTodayDateTime().toDateTime();
+			startDate = appProductionService.getTodayDateTime();
 		}
 		
 		ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, startDate.toLocalDateTime());

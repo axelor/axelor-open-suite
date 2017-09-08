@@ -1,0 +1,18 @@
+apply plugin: "com.axelor.app-module"
+
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
+	title "Axelor :: Admin"
+	description "Axelor Admin Module"
+
+	removable false
+}
+
+dependencies {
+	compile project(":modules:axelor-exception")
+	compile 'com.itextpdf:itextpdf:5.0.6'
+}
+

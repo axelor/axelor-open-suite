@@ -22,14 +22,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
@@ -42,15 +47,12 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -60,9 +62,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected AccountManagementServiceImpl accountManagementServiceImpl;
 	protected CurrencyService currencyService;
-
+	protected UnitConversionRepository unitConversionRepo;
+	protected AppAccountService appAccountService;
+	protected InvoiceLineService invoiceLineService;
+	protected AccountManagementAccountService accountManagementService;
+	
 	protected Invoice invoice;
 	protected Product product;
 	protected String productName;
@@ -83,18 +88,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	public static final int DEFAULT_SEQUENCE = 0;
 
-	@Inject
-	protected UnitConversionRepository unitConversionRepo;
-
-	@Inject
-	protected GeneralService generalService;
-
-
 	protected InvoiceLineGenerator() { }
 
 	protected InvoiceLineGenerator( Invoice invoice ) {
 
         this.invoice = invoice;
+        this.unitConversionRepo = Beans.get(UnitConversionRepository.class);
+        this.appAccountService = Beans.get(AppAccountService.class);
+        this.invoiceLineService = Beans.get(InvoiceLineService.class);
+        this.accountManagementService = Beans.get(AccountManagementAccountService.class);
 
     }
 
@@ -110,9 +112,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.unit = unit;
         this.sequence = sequence;
         this.isTaxInvoice = isTaxInvoice;
-        this.today = Beans.get(GeneralService.class).getTodayDate();
+        this.today = Beans.get(AppAccountService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
 	}
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
@@ -156,10 +157,16 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setInvoice(invoice);
 
 		invoiceLine.setProduct(product);
+		
 		invoiceLine.setProductName(productName);
 		if(product != null)  {
+			boolean isPurchase = invoiceLineService.isPurchase(invoice);
 			invoiceLine.setProductCode(product.getCode());
+			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
+			Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
+			invoiceLine.setAccount(account);
 		}
+		
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
 
@@ -204,7 +211,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			Company company = invoice.getCompany();
 			Partner partner = invoice.getPartner();
 			
-			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, company, partner.getFiscalPosition(), InvoiceToolService.isPurchase(invoice));
+			taxLine =  accountManagementService.getTaxLine(today, product, company, partner.getFiscalPosition(), InvoiceToolService.isPurchase(invoice));
 		}
 		
 	}

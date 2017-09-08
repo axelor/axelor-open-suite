@@ -29,11 +29,11 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
@@ -43,8 +43,6 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoiceServiceImpl{
 
-
-
 	@Inject
 	private PriceListService priceListService;
 
@@ -52,7 +50,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 	private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBusinessProjectService appBusinessProjectService;
 
 
 	@Override
@@ -65,7 +63,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
 			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
 				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-				invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProjectTask());
+				invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProject());
 				purchaseOrderLine.setInvoiced(true);
 			}
 		}
@@ -86,7 +84,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 				if(priceListLine!=null){
 					discountTypeSelect = priceListLine.getTypeSelect();
 				}
-				if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+				if((appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT)
 				{
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 					if(discounts != null){
@@ -125,7 +123,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 			return invoiceLineGenerator.creates();
 		}
 		else if(invoice.getPartner().getChargeBackPurchaseSelect() == PartnerRepository.CHARGING_BACK_TYPE_PERCENTAGE){
-			price = price.multiply(invoice.getPartner().getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
+			price = price.multiply(invoice.getPartner().getChargeBackPurchase().divide(new BigDecimal(100), appBusinessProjectService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(appBusinessProjectService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
 			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
 						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
 						null, null,false)  {

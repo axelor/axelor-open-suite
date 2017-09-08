@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.eclipse.birt.core.exception.BirtException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,6 @@ public class LocationController {
 		}
 	}
 	
-
 	/**
 	 * Method that generate inventory as a pdf
 	 *

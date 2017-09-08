@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<dashboard title="Dashboard" name="manufacturing.dashboard.sample"  >
 		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" colSpan="12"/>
@@ -18,7 +18,7 @@
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
 		 <domain>self.plannedStartDateT &gt;= :_today</domain>
-  		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
+  		<context name="_today" expr="eval: __date__.atStartOfDay()" />
 	</action-view>
 	
 	<action-view name="manufacturing.dashboard.current.production.orders" title="All Current Manufacturing Orders"
@@ -26,7 +26,7 @@
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
 		<domain>self.realStartDateT &lt;= :_today and self.realEndDateT &gt;= :_today</domain>
- 		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
+ 		<context name="_today" expr="eval: __date__.atStartOfDay()" />
 	</action-view>
 	
 	<action-view name="manufacturing.dashboard.standby.manuf.orders" title="Manufacturing orders on StandBy"

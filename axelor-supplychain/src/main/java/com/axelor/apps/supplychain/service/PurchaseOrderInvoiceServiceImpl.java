@@ -66,8 +66,9 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(purchaseOrder);
-		invoiceRepo.save(invoice);
+		invoice = invoiceRepo.save(invoice);
 		invoiceService.setDraftSequence(invoice);
+		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
 
 		if(invoice != null) {
 			purchaseOrder.setInvoice(invoice);

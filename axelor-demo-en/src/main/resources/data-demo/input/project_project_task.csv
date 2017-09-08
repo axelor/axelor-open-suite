@@ -1,6 +1,0 @@
-"importId";"name";"clientPartner.importId";"code";"membersUserSet.importId";"typeSelect";"company.importId";"statusSelect";"projTaskInvTypeSelect";"project.importId";"assignedTo.importId";"fullName"
-1;"123Service Project";88;"123SP";1;"project";1;1;3;;1;"123SP - 123Service Project"
-2;"Prepare offer for tender";;;;"task";;1;;1;1;"Prepare offer for tender"
-3;"Audit";;;;"task";;1;;1;2;"Audit"
-4;"Document preparation";;;;"task";;1;;1;3;"Document preparation"
-5;"Presentation";;;;"task";;1;;1;4;"Presentation"

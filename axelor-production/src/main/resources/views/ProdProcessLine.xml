@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="prod-process-line-grid" title="Phases" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
     	<field name="priority"/>
@@ -18,8 +18,9 @@
     	<panel name="main"> 
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
-	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" onChange="action-prod-process-line-record-capacity-settings"/>
+	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
 	    	<field name="outsourcing"/>
+			<field name="location"/>
 	    	<panel name="capacitySettings" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
@@ -30,11 +31,16 @@
     		</panel>
     	</panel>
     	<panel-tabs>
-    		<panel-related name="toConsumeProdProductList"  field="toConsumeProdProductList" title="To consume products" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+			<panel-related name="toConsumeProdProductList" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
     		<panel-related  field="objectDescriptionList" colSpan="12"/>
     	</panel-tabs>
     	        
     </form>
+
+	<action-group name="action-prod-process-line-group-work-center-onchange">
+		<action name="action-prod-process-line-record-capacity-settings"/>
+		<action name="action-prod-process-line-attrs-hide-capacity-settings"/>
+	</action-group>
     
     <action-record name="action-prod-process-line-record-capacity-settings" model="com.axelor.apps.production.db.ProdProcessLine">
     	<field name="minCapacityPerCycle" expr="eval: workCenter?.minCapacityPerCycle"/>
@@ -44,11 +50,20 @@
     
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
     	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }.getPriority() + 10"/>
+    	<field name="location" expr="eval:__parent__?.company?.getProductionConfig().getProductionVirtualLocation()"/>
     </action-record>
     
     <action-attrs name="action-prod-process-line-attrs-default">
     	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+		<attribute name="hidden" for="location" expr="eval: !__parent__.isConsProOnOperation"/>
+		<attribute for="capacitySettings" name="hidden"
+				   expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>
+
+	<action-attrs name="action-prod-process-line-attrs-hide-capacity-settings">
+		<attribute for="capacitySettings" name="hidden"
+				   expr="eval: workCenter?.workCenterTypeSelect == 1"/>
+	</action-attrs>
     
 </object-views>
 

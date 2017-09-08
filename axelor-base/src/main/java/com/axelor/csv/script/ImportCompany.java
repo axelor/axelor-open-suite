@@ -55,7 +55,7 @@ public class ImportCompany {
 					company.setLogo(metaFile);
 				}
 			} catch (Exception e) {
-				LOG.error("Error when importing product picture : {}", e);
+				LOG.error("Error when importing company : {}", e);
 			}
 		}
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
-		<field name="code"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="actionSelect"/>
 		<field name="company"/>
 		<field name="description"/>
@@ -14,11 +14,11 @@
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
 	  	<panel name="main">
 		    <field name="actionSelect"/>
-		    <field name="code"/>
+		    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		    <field name="company"/>
 		</panel>
 		<panel-tabs>
-			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
+			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="$contains([1, 5], actionSelect)">
 			    <field name="leaveReason" colSpan="3" onChange="action-hr-batch-record-day-number-default" requiredIf="actionSelect == 1"/>
 			    <field name="comments" colSpan="9"/>
 			    <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>

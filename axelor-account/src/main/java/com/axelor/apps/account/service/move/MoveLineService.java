@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,17 +45,17 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -68,41 +68,42 @@ public class MoveLineService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected AccountManagementServiceAccountImpl accountManagementService;
+	protected AccountManagementAccountService accountManagementService;
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
 	protected LocalDate today;
 	protected AnalyticMoveLineService analyticMoveLineService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected CurrencyService currencyService;
 	protected CompanyConfigService companyConfigService;
 
 
 	
 	@Inject
-	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
-			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService,
+	public MoveLineService(AccountManagementAccountService accountManagementService, TaxAccountService taxAccountService,
+			FiscalPositionServiceAccountImpl fiscalPositionService, AppAccountService appAccountService,
 			AnalyticMoveLineService analyticMoveLineService, 
 			CurrencyService currencyService, CompanyConfigService companyConfigService) {
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;
 		this.analyticMoveLineService = analyticMoveLineService;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.currencyService = currencyService;
 		this.companyConfigService = companyConfigService;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 	}
 	
 	
 	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
+
 		List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-		if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+		if(analyticMoveLineList != null && appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() != AppAccountRepository.DISTRIBUTION_TYPE_FREE){
 			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 				analyticDistributionLine.setMoveLine(moveLine);
 				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
-				analyticDistributionLine.setDate(generalService.getTodayDate());
+				analyticDistributionLine.setDate(appAccountService.getTodayDate());
 			}
 		}
 		return moveLine;
@@ -204,7 +205,7 @@ public class MoveLineService {
 
 	/**
 	 * Créer une ligne d'écriture comptable
-	 *
+	 * 
 	 * @param move
 	 * @param partner
 	 * @param account
@@ -212,21 +213,11 @@ public class MoveLineService {
 	 * @param isDebit
 	 * 		<code>true = débit</code>,
 	 * 		<code>false = crédit</code>
-	 * @param isMinus
-	 * 		<code>true = moins</code>,
-	 * 		<code>false = plus</code>
-	 * @param dueDate
-	 * 		Date d'échécance
+	 * @param date
 	 * @param ref
-	 * @param ignoreInAccountingOk
-	 * 		<code>true = ignoré en compta</code>
-	 * @param ignoreInReminderOk
-	 * 		<code>true = ignoré en relance</code>
-	 * @param fromSchedulePaymentOk
-	 * 		<code>true = proviens d'un échéancier</code>
-	 *
+	 * @param origin
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
 
@@ -514,7 +505,7 @@ public class MoveLineService {
 	 */
 	public MoveLine getCreditCustomerMoveLine(Move move)  {
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				return moveLine;
 			}
@@ -545,7 +536,7 @@ public class MoveLineService {
 	 */
 	public MoveLine getDebitCustomerMoveLine(Move move)  {
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
 					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 				return moveLine;
 			}

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -15,7 +15,7 @@
     onNew="action-year-record-new" onSave="action-year-check-date,action-civil-year-check-date">
     	<panel name="main" >
 	        <field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
 	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -25,13 +25,13 @@
     
      <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="typeSelect" expr="eval:0"/>
     </action-record>
     
     <action-validate name="action-civil-year-check-date">
-		<error message="Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}." if="id == null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
- 		<error message="Civil year already exist for ${fromDate.toString('dd/MM/yyyy')} and ${toDate.toString('dd/MM/yyyy')}." if="id != null &amp;&amp; __repo__.of(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+		<error message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}." if="id == null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+ 		<error message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}." if="id != null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
 	</action-validate>
 	
     <action-validate name="action-year-check-date">

@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="human-resource" package="com.axelor.apps.hr.db" />
 
@@ -14,6 +15,9 @@
 		<integer name="statusSelect" title="Status" selection="hrs.lunch.voucher.mgt.status.select" default="1" readonly="true" />
 		<integer name="requestedLunchVouchers" title="Requested lunch vouchers on the period" readonly="true" />
 		<integer name="totalLunchVouchers" title="Total lunch vouchers" readonly="true" />
+		<integer name="givenLunchVouchers"
+				 title="Given lunch vouchers on the period"
+				 readonly="true"/>
 
 		<decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20" readonly="true" />
 		<decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20" readonly="true" />

@@ -1,0 +1,12 @@
+name;roles
+sc-root-purchase;role.user
+sc-root-purchase-suppliers;role.user
+sc-root-purchase-contacts;role.user
+sc-root-purchase-quotations;role.user
+sc-root-purchase-orders;role.user
+sc-root-purchase-report;role.user
+menu-purchase-dashboard-1;role.user
+menu-purchase-dashboard-3;role.user
+purchase-maps-partner-suppliers;role.user
+sc-root-purchase-conf;role.user
+sc-root-purchase-conf-price-list;role.user

@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,16 +44,16 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -76,7 +76,7 @@ public class PaymentScheduleImportService {
 	protected PaymentScheduleService paymentScheduleService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected PaymentModeService paymentModeService;
-	protected ReminderService reminderService;
+	protected DebtRecoveryService debtRecoveryService;
 	protected AccountConfigService accountConfigService;
 	protected DirectDebitManagementRepository directDebitManagementRepo;
 	protected InvoiceRepository invoiceRepo;
@@ -88,9 +88,9 @@ public class PaymentScheduleImportService {
 	private List<Invoice> invoiceList = new ArrayList<Invoice>();										// liste des factures rejetées
 
 	@Inject
-	public PaymentScheduleImportService(GeneralService generalService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
+	public PaymentScheduleImportService(AppAccountService appAccountService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
 			PaymentScheduleService paymentScheduleService, PaymentScheduleLineRepository paymentScheduleLineRepo, PaymentModeService paymentModeService,
-			ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
+			DebtRecoveryService debtRecoveryService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
 			InvoiceRepository invoiceRepo, PaymentService paymentService) {
 
 		this.moveLineService = moveLineService;
@@ -99,12 +99,12 @@ public class PaymentScheduleImportService {
 		this.paymentScheduleService = paymentScheduleService;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.paymentModeService = paymentModeService;
-		this.reminderService = reminderService;
+		this.debtRecoveryService = debtRecoveryService;
 		this.accountConfigService = accountConfigService;
 		this.directDebitManagementRepo = directDebitManagementRepo;
 		this.invoiceRepo = invoiceRepo;
 		this.paymentService = paymentService;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -139,7 +139,7 @@ public class PaymentScheduleImportService {
 
 		if(rejectJournal.getSequence() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_4),
-					GeneralServiceImpl.EXCEPTION, company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -622,7 +622,7 @@ public class PaymentScheduleImportService {
 		}
 
 		// Mise à jour de la date de la dernière relance sur le tiers
-		reminderService.getReminder(partner, company).setReminderDate(today);
+		debtRecoveryService.getDebtRecovery(partner, company).setDebtRecoveryDate(today);
 	}
 
 
@@ -648,7 +648,7 @@ public class PaymentScheduleImportService {
 			// Génération du message
 			this.createImportRejectMessage(invoice.getPartner(), company, accountConfig.getRejectPaymentScheduleTemplate(), invoice.getRejectMoveLine());
 			// Mise à jour de la date de la dernière relance sur le tiers
-			reminderService.getReminder(partner, company).setReminderDate(today);
+			debtRecoveryService.getDebtRecovery(partner, company).setDebtRecoveryDate(today);
 			// Changement du mode de paiement de la facture, du tiers
 			this.setPaymentMode(invoice);
 			// Alarme générée dans l'historique du client ?

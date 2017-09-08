@@ -1,26 +1,116 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
         <field name="name"/>
+        <field name="campaignType"/>
+        <field name="stageSelect"/>
     </grid>
     
     <form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large">
+    	<toolbar>
+    		<button name="sendEmail" title="Launch emailing" colSpan="3" onClick="action-campaign-validate-send-email,save,action-campaign-method-send-email" showIf="emailing"/>
+    	</toolbar>
+    	<panel title="Stage">
+    		<field name="stageSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
+    	</panel>
 		<panel name="main" >
-		  <field name="name"/>
-		  <field name="stageSelect" widget="NavSelect" colSpan="12"/>
-		  <panel-related field="targetListSet" colSpan="12"/>
-		  <field name="partnerTemplate" domain="self.metaModel.name = 'Partner'" />
-		  <field name="leadTemplate" domain="self.metaModel.name = 'Lead'" />
-		  <button name="sendEmail" title="Send email" colSpan="3" onClick="action-campaign-method-send-email"/>
-		  <field name="emailLog" widget="binary-link" />
+			<field name="name"/>
+			<field name="campaignType" />
+			<field name="emailing" title="Emailing"  widget="inline-checkbox" />
+			<panel showIf="emailing" colSpan="12">
+		    	<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
+				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
+				<field name="emailLog" widget="binary-link" showIf="emailing"/>
+			</panel>
+			<field name="generateEventPerTarget" title="Generate event per target" widget="inline-checkbox"/>
+			<panel showIf="generateEventPerTarget" colSpan="12">
+				<field name="eventUser" showIf="generateEventPerTarget" />
+		  		<field name="subject" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
+		  		<field name="eventType" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
+		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
+		  		<field name="duration" widget="duration" x-big="true" showIf="generateEventPerTarget" />
+		  		<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-generate-events" showIf="generateEventPerTarget" />
+		    </panel>
 		</panel>
+	  <panel-tabs>
+		  <panel title="Target List" name="targetList">
+		  	<panel-related field="targetModelSet" colSpan="12"/>
+		  	<button name="generateTargets" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
+		  	<panel-related field="partnerSet" colSpan="12" form-view="partner-form"/>
+		  	<panel-related field="leadSet" colSpan="12"/>
+		  </panel>
+		  <panel title="Attendees">
+		  	<panel-related field="leads" colSpan="12" grid-view="lead-grid"/>
+		  	<panel-related field="partners" colSpan="12" grid-view="partner-grid"/>
+		  </panel>	
+		  <panel title="Targets to contact">
+		  	<button name="openPlannedEvents" title="Open planned events" colSpan="3" onClick="dashlet.target.to.contact.planned"/>
+  			<panel-dashlet action="dashlet.target.to.contact.planned" height="350" colSpan="12"/>
+  			<panel-dashlet action="dashlet.target.to.contact.realized.cancel" height="350" colSpan="12"/>
+		  </panel>
+	  </panel-tabs>
 	</form>
+	
+	<kanban name="campaign-kanban" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" columnBy="stageSelect" sequenceBy="stageSelect" draggable="true" limit="10">
+	  <field name="name"/>
+	  <field name="campaignType" />
+	  <hilite color="danger" if="stageSelect &lt;= 1"/>
+	  <hilite color="warning" if="stageSelect &lt;= 2"/>
+	  <hilite color="info" if="stageSelect &lt;= 3"/>
+	  <hilite color="success" if="stageSelect &lt;= 4"/>
+	  <template><![CDATA[
+	        <h4>{{name}}</h4>
+	        <div class="card-body">{{campaignType.name}}</div>
+	]]></template>
+	</kanban>
+
 	
 	<action-method name="action-campaign-method-send-email">
 		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendEmail"/>
 	</action-method>
+	
+	<action-view name="action-lead-view-marketing-campaigns" title="Marketing Campaigns" model="com.axelor.apps.marketing.db.Campaign">
+		<view type="grid" name="campaign-grid"/>
+		<view type="form" name="campaign-form"/>
+		<domain>self.leadSet.id IN (:id)</domain>
+	</action-view>
+	
+	<action-view name="action-partner-view-marketing-campaigns" title="Marketing Campaigns" model="com.axelor.apps.marketing.db.Campaign">
+		<view type="grid" name="campaign-grid"/>
+		<view type="form" name="campaign-form"/>
+		<domain>self.partnerSet.id IN (:id)</domain>
+	</action-view>
     
+     <action-validate name="action-campaign-alert-event-user">
+     	<alert message="An event will be generated by target, are you sure you want to continue ?"/>
+     </action-validate>
+     
+	<action-method name="action-campaign-generate-events" model="com.axelor.apps.marketing.db.Campaign">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="generateEvents"/>
+	</action-method>
+	
+	<action-view name="dashlet.target.to.contact.planned" title="Planned events"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.campaign.id = :_id AND self.statusSelect IN (1)</domain>
+	</action-view>
+	
+	<action-view name="dashlet.target.to.contact.realized.cancel" title="Past events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.campaign.id = :_id AND self.statusSelect IN (2,3)</domain>
+	</action-view>
+	
+	<action-method name="action-campaign-generate-targets"  model="com.axelor.apps.marketing.db.Campaign">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="generateTargets"/>
+	</action-method>
+	
+	<action-validate name="action-campaign-validate-send-email">
+		<error message="Please select at least one template" if="partnerTemplate == null &amp;&amp; leadTemplate == null"/>
+	</action-validate>
+     
 </object-views>

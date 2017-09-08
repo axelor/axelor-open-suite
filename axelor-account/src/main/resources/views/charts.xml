@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
    	<chart name="chart.account.invoice.summary" title="Account Invoice Summary">
 		<dataset type="sql">
@@ -440,7 +440,7 @@
 	  </chart>
 
 	<action-record name="action.account.active.fiscal.year" model="com.axelor.apps.account.db.Move">
-	  <field name="year" expr="eval:__repo__.of(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
+	  <field name="year" expr="eval:__repo__(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
 	</action-record>
 	
 	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">

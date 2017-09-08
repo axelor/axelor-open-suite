@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -19,6 +19,7 @@
       <integer name="givenToEmployee" title="Given to Employee"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation" />
       <integer name="statusSelect" title="Status" selection="hr.lunch.voucher.line.status.select" readonly="true" />
+      <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" readonly="true"/>
 
       <extra-code>
           <![CDATA[

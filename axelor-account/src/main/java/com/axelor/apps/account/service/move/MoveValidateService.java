@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.move;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.time.LocalDate;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +30,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,7 +51,7 @@ public class MoveValidateService {
 	protected MoveRepository moveRepository;
 
 	@Inject
-	public MoveValidateService(GeneralService generalService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
+	public MoveValidateService(AppAccountService appAccountService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
 
 		this.sequenceService = sequenceService;
 		this.moveCustAccountService = moveCustAccountService;
@@ -70,7 +71,7 @@ public class MoveValidateService {
 				moveLine.setDate(date);
 			}
 						
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getDueDate() == null)  {
+			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDueDate() == null)  {
 				moveLine.setDueDate(date);
 			}
 			if (partner != null){
@@ -129,6 +130,10 @@ public class MoveValidateService {
 		}
 
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+
+		if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+			move.setAdjustingMove(true);
+		}
 
 		this.validateEquiponderanteMove(move);
 		this.fillMoveLines(move);

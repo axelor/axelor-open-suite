@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
@@ -29,14 +29,14 @@ import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BudgetSupplychainService extends BudgetService{
 	
 	@Inject 
-	GeneralService generalservice;
+	private AppAccountService appAccountService;
 	
 	@Override
 	public List<BudgetLine> updateLines(Budget budget){
@@ -46,10 +46,10 @@ public class BudgetSupplychainService extends BudgetService{
 				budgetLine.setAmountRealized(BigDecimal.ZERO);
 			}
 			List<Integer> statusList= new ArrayList<Integer>();
-			if (generalservice.getGeneral().getManageBudget()){
-				if(!generalservice.getGeneral().getBudgetStatusSelect().isEmpty()){
-					String str= generalservice.getGeneral().getBudgetStatusSelect();
-					String[] numbers = str.split(", ");
+			if (appAccountService.isApp("budget")){
+				String budgetStatus = appAccountService.getAppBudget().getBudgetStatusSelect();
+				if(!budgetStatus.isEmpty()){
+					String[] numbers = budgetStatus.split(", ");
 					for(int c = 0; c < numbers.length; c++) 
 						statusList.add(Integer.parseInt(numbers[c]));
 				}

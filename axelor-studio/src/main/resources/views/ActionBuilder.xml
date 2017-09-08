@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="action-builder-grid" title="Action builder" model="com.axelor.studio.db.ActionBuilder">
+  	  <field name="name" />	
+      <field name="model" />
+      <field name="typeSelect" />
+  </grid>
+  
+  <form name="action-builder-form" title="Action builder" model="com.axelor.studio.db.ActionBuilder"  width="large">
+      <panel>
+      	  <field name="isJson" colSpan="12" onChange="action-action-builder-method-set-views,action-action-builder-type-select-change"/>
+	      <field name="name" colSpan="9" required="true"/>
+	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
+	      <panel colSpan="6" itemSpan="12">
+		      <field name="model"  widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
+		      		requiredIf="typeSelect &lt; 2 &amp;&amp; isJson" 
+		      		hideIf="typeSelect == 2 || !isJson"
+		      		onChange="action-action-builder-method-set-views" />
+		      <field name="model" hideIf="typeSelect == 2 || isJson"
+		      		requiredIf="typeSelect &lt; 2 &amp;&amp; !isJson" 
+		      		widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
+		      		onChange="action-action-builder-method-set-views" />
+	      </panel>
+	      <panel colSpan="6" itemSpan="12">
+		      <field name="targetModel" requiredIf="typeSelect == 0 &amp;&amp; isJson" showIf="typeSelect == 0 &amp;&amp; isJson" widget="ref-text" 
+		      		x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel"/>
+		      <field name="targetModel"  requiredIf="typeSelect == 0 &amp;&amp; !isJson" showIf="typeSelect == 0 &amp;&amp; !isJson" widget="ref-text" 
+		      		x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"/>
+		  </panel>
+      	  <field name="title" colSpan="12" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>
+      	  <field name="actionBuilderViews"  showIf="typeSelect == 3" colSpan="12">
+      	  	<editor>
+      	  		<field name="viewType" colSpan="4" />
+      	  		<field name="viewName" colSpan="8" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain"/>
+      	  	</editor>
+      	  </field>
+      	  <field name="lines" title="Context"  hideIf="typeSelect != 3" colSpan="12">
+      	  	<editor>
+      	  		<field name="name" title="Name" colSpan="4" />
+      	  		<field name="value" colSpan="8"/>
+      	  	</editor>
+      	  </field>
+      	  <field name="viewParams" title="View params"  hideIf="typeSelect != 3" colSpan="12">
+      	  	<editor>
+      	  		<field name="name" title="Name" colSpan="4" />
+      	  		<field name="value" title="Value" colSpan="8"/>
+      	  	</editor>
+      	  </field>
+	      <field name="domainCondition" showIf="typeSelect == 3" colSpan="12" />
+	      <panel-related field="lines" colSpan="12"  hideIf="typeSelect &gt; 1" grid-view="action-builder-line-grid" form-view="action-builder-line-form" />
+	      <panel showIf="typeSelect == 2" colSpan="12" >
+	      	<field name="scriptType" />
+	      	<field name="transactional" />
+	      	<field name="scriptText" colSpan="12" />
+	      </panel>
+	  </panel>
+  </form>
+  
+  <action-record name="action-action-builder-type-select-change" model="com.axelor.studio.db.ActionBuilder">
+  	<field name="model" expr="eval:null"/>
+  	<field name="targetModel" expr="eval:null"/>
+  </action-record>
+  
+  <action-attrs name="action-action-builder-view-name-domain">
+    <attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' &quot;" if="viewType == 'dashboard'"/>
+  	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = 'com.axelor.meta.db.MetaJsonRecord' and self.name = 'custom-model-${_parent.model}-${viewType}' &quot;" if="_parent.isJson &amp;&amp; viewType != 'dashboard'"/>
+  	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = '${_parent.model}'&quot;" if="!_parent.isJson &amp;&amp; viewType != 'dashboard'"/>
+  </action-attrs>
+  
+  <action-method name="action-action-builder-method-set-views">
+  	<call class="com.axelor.studio.web.ActionBuilderController" method="setViews" if="typeSelect == 3"/>
+  </action-method>
+  
+</object-views>

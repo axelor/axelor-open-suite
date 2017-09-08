@@ -21,11 +21,12 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastReason;
@@ -35,13 +36,13 @@ import com.google.inject.Inject;
 public class ForecastService {
 
 	@Inject
-	protected GeneralService generalService;
-
+	protected AppBaseService appBaseService;
+	
 	public void generate(ForecastGenerator forecastGenerator) {
 		LocalDate fromDate = forecastGenerator.getFromDate();
 		LocalDate toDate = forecastGenerator.getToDate();
-		LocalDate itDate = new LocalDate(fromDate);
-		LocalDate todayDate = generalService.getTodayDate();
+		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE);
+		LocalDate todayDate = appBaseService.getTodayDate();
 		int count = 0;
 
 		if (forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()) {

@@ -25,7 +25,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +37,10 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -55,11 +55,11 @@ public class PaymentService {
 	protected LocalDate today;
 
 	@Inject
-	public PaymentService(GeneralService generalService, ReconcileService reconcileService, MoveLineService moveLineService)  {
+	public PaymentService(AppAccountService appAccountService, ReconcileService reconcileService, MoveLineService moveLineService)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 	}
 
 
@@ -271,8 +271,8 @@ public class PaymentService {
 			List<Map<Account,BigDecimal>> allMap = new ArrayList<Map<Account,BigDecimal>>();
 			allMap = q.getResultList();
 			for(Map<Account,BigDecimal> map : allMap) {
-				Account accountMap = (Account)map.values().toArray()[1];
-				BigDecimal amountMap = (BigDecimal)map.values().toArray()[0];
+				Account accountMap = (Account)map.values().toArray()[0];
+				BigDecimal amountMap = (BigDecimal)map.values().toArray()[1];
 				BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
 				if(amountDebit.compareTo(BigDecimal.ZERO) > 0)  {
 					MoveLine debitMoveLine = moveLineService.createMoveLine(move,
@@ -346,7 +346,7 @@ public class PaymentService {
 		BigDecimal amountRemaining = BigDecimal.ZERO;
 		if(psl.getAdvanceOrPaymentMove() != null && psl.getAdvanceOrPaymentMove().getMoveLineList() != null)  {
 			for(MoveLine moveLine : psl.getAdvanceOrPaymentMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk())  {
+				if(moveLine.getAccount().getUseForPartnerBalance())  {
 					amountRemaining = amountRemaining.add(moveLine.getCredit());
 				}
 			}
@@ -358,7 +358,7 @@ public class PaymentService {
 		BigDecimal amountRemaining = BigDecimal.ZERO;
 		if(invoice.getPaymentMove() != null && invoice.getPaymentMove().getMoveLineList() != null)  {
 			for(MoveLine moveLine : invoice.getPaymentMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk())  {
+				if(moveLine.getAccount().getUseForPartnerBalance())  {
 					amountRemaining = amountRemaining.add(moveLine.getCredit());
 				}
 			}

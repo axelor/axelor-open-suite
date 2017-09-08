@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,8 +9,10 @@
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" index="false"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
     <many-to-one name="freightCarrier" ref="com.axelor.apps.stock.db.FreightCarrier" index="false"/>
-
+    <decimal name="supplierQualityRating" title="Supplier quality rating"/>
+    <decimal name="supplierQualityRatingSelect" title="Supplier quality rating" selection="rating.icon.select"/>
+    <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty"/>
+    <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
   </entity>
-  
+
 </domain-models>
-    

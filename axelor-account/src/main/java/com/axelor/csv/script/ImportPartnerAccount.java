@@ -18,22 +18,16 @@
 package com.axelor.csv.script;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.inject.Inject;
 
 
 public class ImportPartnerAccount {
-		
-		@Inject
-		private PartnerRepository partnerRepo;
 		
 		@Inject
 		private AccountRepository accountRepo;
@@ -42,10 +36,6 @@ public class ImportPartnerAccount {
 			assert bean instanceof Partner;
 	        try{
 	            Partner partner = (Partner) bean;
-				partner.setContactPartnerSet(new HashSet<Partner>());
-				List<? extends Partner> partnerList = partnerRepo.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
-				for(Partner pt : partnerList)
-					partner.getContactPartnerSet().add(pt);
 				for(Company company : partner.getCompanySet())  {
 					AccountingSituation accountingSituation = new AccountingSituation();
 					accountingSituation.setPartner(partner);

@@ -18,7 +18,7 @@
 package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.*;
 import com.axelor.apps.hr.db.repo.*;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -33,12 +33,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,16 +119,20 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		List<LunchVoucherMgtLine> lunchVoucherMgtLineList = lunchVoucherMgt.getLunchVoucherMgtLineList();
 		int total = 0;
 		int totalInAdvance = 0;
+
+		int totalGiven = 0;
 		
 		if(!ObjectUtils.isEmpty(lunchVoucherMgtLineList)) {
 			for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherMgtLineList) {
 				total += lunchVoucherMgtLine.getLunchVoucherNumber();
 				totalInAdvance += lunchVoucherMgtLine.getInAdvanceNbr();
+				totalGiven += lunchVoucherMgtLine.getGivenToEmployee();
 			}
 		}
 		
 		lunchVoucherMgt.setTotalLunchVouchers(total + totalInAdvance + lunchVoucherMgt.getStockLineQuantity());
 		lunchVoucherMgt.setRequestedLunchVouchers(total + lunchVoucherMgt.getStockLineQuantity());
+		lunchVoucherMgt.setGivenLunchVouchers(totalGiven);
 	}
 	
 	@Override
@@ -140,13 +144,31 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		
 		return availableStoclLV - numberToUse - minStoclLV;
 	}
-	
+	@Transactional
+	@Override
+	public LunchVoucherMgt updateStock(LunchVoucherMgt lunchVoucherMgt,
+									   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines)
+			throws AxelorException{
+		HRConfig hrConfig = hrConfigService.getHRConfig(lunchVoucherMgt.getCompany());
+
+		int newLunchVoucherQty = hrConfig.getAvailableStockLunchVoucher();
+		int i = 0;
+		for (LunchVoucherMgtLine line : lunchVoucherMgt.getLunchVoucherMgtLineList()) {
+		    int oldQty = oldLunchVoucherMgtLines.get(i).getGivenToEmployee();
+		    int newQty = line.getGivenToEmployee();
+		    newLunchVoucherQty = newLunchVoucherQty - newQty + oldQty;
+		    i++;
+		}
+		hrConfig.setAvailableStockLunchVoucher(newLunchVoucherQty);
+		Beans.get(HRConfigRepository.class).save(hrConfig);
+		lunchVoucherMgt.setStockQuantityStatus(hrConfig.getAvailableStockLunchVoucher());
+		return lunchVoucherMgt;
+	}
+
 	@Transactional
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 		MetaFile metaFile = new MetaFile();
-		metaFile.setFileName(I18n.get("LunchVoucherCommand") + " - "
-				+ LocalDate.now().toString("YYYY-MM-dd") + ".csv");
-
+		metaFile.setFileName(I18n.get("LunchVoucherCommand") + " - " + LocalDate.now().format(DateTimeFormatter.ISO_DATE) + ".csv");
 		
 		Path tempFile = MetaFiles.createTempFile(null, ".csv");
 		final OutputStream os = new FileOutputStream(tempFile.toFile());
@@ -184,8 +206,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		*/
 		//lunchVoucherMgt.setExported(true);
 		lunchVoucherMgt.setCsvFile(metaFile);
-
-		lunchVoucherMgt.setExportDate(Beans.get(GeneralService.class).getTodayDate());
+		lunchVoucherMgt.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
 		
 		lunchVoucherMgtRepository.save(lunchVoucherMgt);
 		

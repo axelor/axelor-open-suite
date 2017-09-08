@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <menuitem name="menu-auth-permission-assistant" parent="menu-auth" title="Permission Assistant"
+    action="action-auth-permission-assistant"/>
+
+  <action-view name="action-auth-permission-assistant" title="Permission Assistant"
+    model="com.axelor.auth.db.PermissionAssistant">
+    <view type="grid" name="permission-assistant-grid" />
+    <view type="form" name="permission-assistant-form" />
+  </action-view>
+  
+  <menuitem name="menu-meta-group-menu-assistant" parent="menu-auth" title="Group Menu Assistant"
+    action="action-group-menu-assistant" />
+
+  <action-view name="action-group-menu-assistant" title="Group Menu Assistant"
+    model="com.axelor.meta.db.MetaGroupMenuAssistant">
+    <view type="grid" name="meta-group-menu-assistant-grid" />
+    <view type="form" name="meta-group-menu-assistant-form" />
+  </action-view>
+  
+  <menuitem name="admin-root" title="Application Config" order="-60"
+		icon="fa-gear" icon-background="#31b4a9"/>
+		
+  <menuitem name="admin-root-app-management" parent="admin-root" order="5"
+	title="Apps management" action="admin.root.app.management" />
+
+  <action-view name="admin.root.app.management" title="Apps management"
+	model="com.axelor.apps.base.db.App" >
+	<view type="cards" name="app-cards"/>
+	<view type="grid" name="app-grid"/>
+	<view type="form" name="app-form"/>
+  </action-view>
+  
+</object-views>

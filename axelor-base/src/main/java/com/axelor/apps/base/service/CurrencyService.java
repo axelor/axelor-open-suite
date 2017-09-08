@@ -22,14 +22,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -40,21 +40,21 @@ public class CurrencyService {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private LocalDate today;
 
 	@Inject
-	public CurrencyService(GeneralService generalService) {
+	public CurrencyService(AppBaseService appBaseService) {
 
-		this.generalService = generalService;
-		this.today = generalService.getTodayDate();
+		this.appBaseService = appBaseService;
+		this.today = appBaseService.getTodayDate();
 	}
 
 
 	public CurrencyService(LocalDate today) {
 
-		this.generalService = Beans.get(GeneralService.class);
+		this.appBaseService = Beans.get(AppBaseService.class);
 		this.today = today;
 	}
 
@@ -95,7 +95,7 @@ public class CurrencyService {
 
 	private CurrencyConversionLine getCurrencyConversionLine(Currency startCurrency, Currency endCurrency, LocalDate localDate)  {
 
-		List<CurrencyConversionLine> currencyConversionLineList = generalService.getCurrencyConfigurationLineList();
+		List<CurrencyConversionLine> currencyConversionLineList = appBaseService.getCurrencyConfigurationLineList();
 
 		if(currencyConversionLineList == null)  {
 			return null;

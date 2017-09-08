@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -23,8 +23,8 @@
   	<date name="startDate" title="Start date"/>
   	<date name="endDate" title="End date"/>
  	<string name="comments" title="Comment" />
-	<many-to-many name="employeeSet" ref="com.axelor.apps.hr.db.Employee" title="Employees" help="Leave empty to select every employee"/>
-	<many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Plannings" help="Leave empty to select every planning"/>
+	<many-to-many name="employeeSet" ref="com.axelor.apps.hr.db.Employee" title="Employees"/>
+	<many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Plannings"/>
 	<boolean name="useWeeklyPlanningCoef" title="Use weekly plannning coef." />
 	
 	
@@ -49,6 +49,7 @@
 		public static final int ACTION_SENIORITY_LEAVE_MANAGEMENT = 2;
 		public static final int ACTION_PAYROLL_PREPARATION_GENERATION = 3;
 		public static final int ACTION_PAYROLL_PREPARATION_EXPORT = 4;
+		public static final int ACTION_LEAVE_MANAGEMENT_RESET = 5;
 		
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;

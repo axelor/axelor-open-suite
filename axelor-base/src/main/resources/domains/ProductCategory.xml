@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -8,8 +8,8 @@
     <integer name="importId"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <string name="name" title="Name" unique="true" required="true" namecolumn="true"/>
-    <many-to-one name="parentProductCategory" ref="ProductCategory" title="Parent category" help="true"/>
-  	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product Family" help="true"/>
+    <many-to-one name="parentProductCategory" ref="ProductCategory" title="Parent category"/>
+  	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product Family"/>
   	
   </entity>
   

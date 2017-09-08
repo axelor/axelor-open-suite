@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<selection name="hrs.expenses.status.select">
 		<option value="1">Draft</option>
@@ -77,6 +77,12 @@
         <option value="2">Miscellaneous Amendment</option>
         <option value="3">Extension and Miscellaneous Amendment</option>
     </selection>
+
+	<selection name="hr.employment.contract.status">
+		<option value="1">In Trial</option>
+		<option value="2">Active</option>
+		<option value="3">Closed</option>
+	</selection>
     
     <selection name="hr.employment.contract.executiveStatus.select">
         <option value="1">Executive</option>
@@ -99,6 +105,7 @@
 		<option value="2">Seniority leave Management</option>
 		<option value="3">Payroll preparation generation</option>
 		<option value="4">Payroll preparation export</option>
+		<option value="5">Leave Management Reset</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
@@ -110,6 +117,7 @@
 		<option value="1">Draft</option>
 		<option value="2">Calculated</option>
 		<option value="3">Validated</option>
+		<option value="4">Closed</option>
 	</selection>
 	
 	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
@@ -150,6 +158,14 @@
 		<option value="4">Forecast (expense)</option>
 	</selection>
 	
+	<selection name="app.type.select" id="human.resource.app.type.select">
+		<option order="12" value="employee">Employee management</option>
+		<option order="13" value="leave">Leave management</option>
+		<option order="14" value="timesheet">Timesheet management</option>
+		<option order="15" value="expense">Expense management</option>
+		<option order="16" value="exthrs">Extra hours</option>
+	</selection>
+	
 	<selection name="hr.batch.payroll.preparation.export.type.select">
 		<option value="1">Standard</option>
 		<option value="2">MeilleureGestion</option>
@@ -161,4 +177,14 @@
 		<option value="3">Cohabitee</option>
 	</selection>
 	
+	<selection name="hr.timesheet.default.end.format" >
+		<option value="0">None</option>
+		<option value="1">End of the week</option>
+		<option value="2">End of month</option>
+	</selection>
+
+	<selection name="meta.schedule.batch.service.select" id="hr.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.hr.service.batch.HrBatchService">com.axelor.apps.hr.service.batch.HrBatchService</option>
+	</selection>
+
 </object-views>

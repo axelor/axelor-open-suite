@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="app-supplychain-config-form" title="App Supplychain" model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
+		<panel>
+			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
+			<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
+			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+		</panel>
+		<panel>
+			<field name="supplierStockMoveManagement" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
+			<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" widget="boolean-switch" colSpan="4"/>
+			<field name="terminatePurchaseOrderOnReceipt" showIf="supplierStockMoveManagement" widget="boolean-switch" colSpan="4"/>
+		</panel>
+		<panel>
+			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
+			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
+			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
+		</panel>
+		<panel>
+			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch"/>
+			<field name="allowTimetableInvoicing" widget="boolean-switch"/>
+			<field name="checkSaleStocks" widget="boolean-switch"/>
+			<field name="manageInvoicedAmountByLine" widget="boolean-switch" />
+		</panel>
+	</form>
+
+	
+</object-views>

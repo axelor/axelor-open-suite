@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -12,6 +12,7 @@
     <!-- HEADER -->
     <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
+    <integer name="operationSubTypeSelect" title="Document Subtype" required="true" default="1" selection="iinvoice.operation.sub.type.select"/>
     
     <!-- Legal informations -->
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
@@ -20,12 +21,12 @@
  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true" />
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" required="true" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
-    <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
+    <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
-    <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
+    <string name="addressStr" title="Address" large="true" multiline="true"/>
     <boolean name="isSubscription" title="Subscription ?" default="false"/>
-    <string name="internalReference" title="Internal Ref." help="true"/>
-    <string name="externalReference" title="External Ref." help="true"/>
+    <string name="internalReference" title="Internal Ref."/>
+    <string name="externalReference" title="External Ref."/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
     
@@ -40,7 +41,7 @@
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
     <many-to-one name="oldMove" ref="com.axelor.apps.account.db.Move" title="Previous Move" readonly="true"/>
     <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     
     
@@ -49,7 +50,7 @@
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax Lines" readonly="true" />
     
     <!-- Configuration -->
-    <boolean name="alreadyPrintedOk" title="Already printed ?" default="true" help="true"/>
+    <boolean name="alreadyPrintedOk" title="Already printed ?" default="true"/>
     <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
     <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice" title="Refunds"/>
     <integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
@@ -63,10 +64,10 @@
     <date name="debitBlockingToDate" title="Blocking until"/>
     <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
     
-    <boolean name="reminderBlockingOk" title="Reminder blocking"/>
-    <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <date name="reminderBlockingToDate" title="Blocking until"/>
-    <many-to-one name="reminderBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
+    <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
+    <many-to-one name="debtRecoveryBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <date name="debtRecoveryBlockingToDate" title="Blocking until"/>
+    <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
 
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
@@ -82,23 +83,24 @@
 	<!--  Impression -->
 	<integer name="invoicesCopySelect" selection="grade.0.up.to.10.select"/>
     <string name="note" title="Notes" large="true"/>
+      <string name="specificNotes" title="Specific notes" large="true"/>
     
     <!-- Totals & Status -->
     
 	<!--     Total based on the partner currency in the company accounts -->
-    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true" help="true"/>
-    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" />
     <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
-    
-    
+
 	<!--     Totals based on the company currency -->
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="companyTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="companyInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
+    <boolean name="hasPendingPayments" readonly="true"/>
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
@@ -109,6 +111,8 @@
     <string name="supplierInvoiceNb" title="Supplier invoice number"/>
     
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
+
+    <many-to-many name="advancePaymentInvoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
     
   	<unique-constraint columns="invoiceId,company"/>
 
@@ -121,7 +125,7 @@
 		public static final int OPERATION_TYPE_SUPPLIER_REFUND = 2;
 		public static final int OPERATION_TYPE_CLIENT_SALE = 3;
 		public static final int OPERATION_TYPE_CLIENT_REFUND = 4;
-	
+
 		// IRRECOVERABLE STATUS SELECT
 		public static final int IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE = 0;
 		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
@@ -132,7 +136,12 @@
 		public static final int STATUS_VALIDATED = 2;
 		public static final int STATUS_VENTILATED = 3;
 		public static final int STATUS_CANCELED = 4;
-	
+
+	    // OPERATION TYPE SUB SELECT
+	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
+	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
+	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+
 	]]></extra-code>
 	
 	<track>
@@ -142,7 +151,7 @@
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
-      <message if="statuSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+      <message if="statusSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
     </track>
 
   </entity>

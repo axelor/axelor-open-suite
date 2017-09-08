@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -11,7 +11,7 @@
     <many-to-one name="account" ref="Account" required="true" title="Account" initParam="true"/>
     <date name="date" column="date_val" title="Date" initParam="true"/>
     <date name="dueDate" title="Due Date" initParam="true"/>
-    <integer name="counter" title="Line Nbr." initParam="true" help="true"/>
+    <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
@@ -69,7 +69,7 @@
     </string>
     <decimal name="amountRemaining" title="To pay / To use" >
     	<![CDATA[
-    	if (account != null && account.getReconcileOk()){
+    	if (account != null && account.getUseForPartnerBalance()){
 		    if (credit.compareTo(BigDecimal.ZERO) == 1) return credit.subtract(amountPaid);
 		    else if (debit.compareTo(BigDecimal.ZERO) == 1) return debit.subtract(amountPaid);
 		    else return BigDecimal.ZERO;

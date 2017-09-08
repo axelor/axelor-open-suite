@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="payment-mode-grid" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
     <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default" width="large">
         <panel name="main" >
         	<field name="name"/>
-	        <field name="code" x-bind="{{code|uppercase}}"/>
-	        <field name="invoiceLabel" />
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-record-empty"/>
 			<field name="inOutSelect" colSpan="3"/>
-			<field name="generateBankOrder" if-module="axelor-bank-payment" showIf="typeSelect == 2 || typeSelect == 9"/>
-  			<field name="automaticTransmission" showIf="generateBankOrder" if-module="axelor-bank-payment"/>
-  			<field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder" if-module="axelor-bank-payment"/>
-  			<field name="orderTypeSelect" selection-in="[2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2" if-module="axelor-bank-payment" />
-    		<field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9" if-module="axelor-bank-payment" />
-  			<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-bank-payment"/>
-  			<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-bank-payment"/>
+			<field name="generateBankOrder" if-module="axelor-bank-payment" showIf="typeSelect == 2 || typeSelect == 9" if="__config__.app.isApp('account')" />
+  			<field name="automaticTransmission" showIf="generateBankOrder" if-module="axelor-bank-payment" if="__config__.app.isApp('account')" />
+  			<field name="orderTypeSelect" selection-in="[2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2" if-module="axelor-bank-payment" if="__config__.app.isApp('account')" />
+    		<field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9" if-module="axelor-bank-payment" if="__config__.app.isApp('account')" />
+  			<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-bank-payment" if="__config__.app.isApp('account')" />
+  			<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-bank-payment" if="__config__.app.isApp('account')" />
         </panel>
         <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
-	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account"/>
+	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account" if="__config__.app.isApp('account')" />
     </form>
     
     <action-record name="action-payment-mode-record-cheque"
@@ -34,7 +32,7 @@
 	</action-record>
 	
 	<action-record name="action-payment-mode-set-default" model="com.axelor.apps.account.db.PaymentMode">
-	    <field name="accountManagementList" expr="eval:__repo__.of(Company).all().fetch().collect{__repo__.of(AccountManagement).create([company:it])}"/> 
+	    <field name="accountManagementList" expr="eval:__repo__(Company).all().fetch().collect{__repo__(AccountManagement).create([company:it])}"/> 
 	</action-record> 
 	
 	<action-record name="action-payment-mode-record-empty" model="com.axelor.apps.account.db.PaymentMode">

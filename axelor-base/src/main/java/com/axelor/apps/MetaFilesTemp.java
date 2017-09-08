@@ -29,7 +29,7 @@ import java.nio.file.StandardCopyOption;
 import javax.persistence.PersistenceException;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
@@ -42,7 +42,7 @@ import com.google.inject.persist.Transactional;
 public class MetaFilesTemp {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final String DEFAULT_UPLOAD_PATH = "{java.io.tmpdir}/axelor/attachments";
 	private static final String UPLOAD_PATH = AppSettings.get().getPath("file.upload.dir", DEFAULT_UPLOAD_PATH);
@@ -166,7 +166,7 @@ public class MetaFilesTemp {
 		MetaAttachment attachment = new MetaAttachment();
 		attachment.setMetaFile(file);
 		attachment.setObjectId(entity.getId());
-		attachment.setObjectName(generalService.getPersistentClass(entity).getCanonicalName());
+		attachment.setObjectName(appBaseService.getPersistentClass(entity).getCanonicalName());
 
 		return attachment;
 	}

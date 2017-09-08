@@ -22,7 +22,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
@@ -37,9 +37,9 @@ import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -86,10 +86,10 @@ public class PaymentVoucherLoadService {
 		List<MoveLine> moveLines = null;
 
 		String query = "self.partner = ?1 " +
-				"and self.account.reconcileOk = 't' " +
+				"and self.account.useForPartnerBalance = 't' " +
 				"and self.amountRemaining > 0 " +
 				"and self.move.statusSelect = ?3 " +
-				"and self.move.ignoreInReminderOk = 'f' " +
+				"and self.move.ignoreInDebtRecoveryOk = 'f' " +
 				"and self.move.company = ?2 ";
 
 		if(paymentVoucherToolService.isDebitToPay(paymentVoucher))  {
@@ -156,7 +156,7 @@ public class PaymentVoucherLoadService {
 		if (paymentVoucherContext.getPayVoucherElementToPayList() != null)  {  
 
 			if (paymentVoucherContext.getPaidAmount() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 			}
 			
 			paymentVoucher.setPaidAmount(paymentVoucherContext.getPaidAmount());

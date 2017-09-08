@@ -45,4 +45,21 @@ public class SupplychainBatchController {
 			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
+
+	public void invoiceOutgoingStockMoves(ActionRequest request, ActionResponse response) {
+		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+		supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
+		Batch batch = supplychainBatchService.invoiceOutgoingStockMoves(supplychainBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
+
+	public void invoiceOrders(ActionRequest request, ActionResponse response) {
+		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+		supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
+		Batch batch = supplychainBatchService.invoiceOrders(supplychainBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
+
 }

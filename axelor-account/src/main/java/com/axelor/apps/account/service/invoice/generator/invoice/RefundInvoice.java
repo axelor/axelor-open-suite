@@ -28,9 +28,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -71,7 +71,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));
 
 		if (refund.getPaymentMode() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REFUND_INVOICE_1), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REFUND_INVOICE_1), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 		}
 
 		return refund;

@@ -22,7 +22,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+
+import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -44,6 +46,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -68,7 +71,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	private PartnerRepository partnerRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppPurchaseService appPurchaseService;
 	
 	@Inject
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -220,7 +223,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 		Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
 		supplierPartner.setIsSupplier(true);
-		supplierPartner.setHasOrdered(true);
 
 		return partnerRepo.save(supplierPartner);
 	}
@@ -269,7 +271,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}
 		purchaseOrderRepo.save(purchaseOrder);
-		if (generalService.getGeneral().getManagePurchaseOrderVersion()){
+		if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()){
 			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
 		}
 	}
@@ -350,11 +352,24 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		if(purchaseOrder.getPurchaseOrderLineList() != null){
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 				Product product = purchaseOrderLine.getProduct();
-				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
-					product.setPurchasePrice(purchaseOrderLine.getPrice());
-					product.setCostPrice(purchaseOrderLine.getPrice());
+				product.setPurchasePrice(purchaseOrderLine.getPrice());
+				if (product.getDefShipCoefByPartner()) {
+					BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
+							.getShippingCoef(
+									product,
+									purchaseOrder.getSupplierPartner(),
+									purchaseOrder.getCompany()
+							);
+					if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
+						product.setShippingCoef(shippingCoef);
+					}
 				}
-				
+				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
+					product.setCostPrice(purchaseOrderLine.getPrice());
+					if (product.getAutoUpdateSalePrice()) {
+						Beans.get(ProductService.class).updateSalePrice(product);
+					}
+                }
 			}
 			purchaseOrderRepo.save(purchaseOrder);
 		}
@@ -367,15 +382,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		purchaseOrderRepo.save(purchaseOrder);
 	}
-	
+
 	@Override
-	@Transactional
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder){
-		
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		computePurchaseOrder(purchaseOrder);
+
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-		purchaseOrderRepo.save(purchaseOrder);
+		purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
+		purchaseOrder.setValidatedByUser(AuthUtils.getUser());
+
+		purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
+
+		if (purchaseOrder.getCompany() != null) {
+			purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
+		}
+
+		updateCostPrice(purchaseOrder);
 	}
-	
+
 	@Override
 	@Transactional
 	public void finishPurchaseOrder(PurchaseOrder purchaseOrder){

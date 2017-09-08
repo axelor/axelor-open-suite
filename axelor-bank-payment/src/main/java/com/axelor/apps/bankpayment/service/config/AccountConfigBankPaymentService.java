@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -35,7 +35,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 
 		if(accountConfig.getExternalBankToBankAccount() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getExternalBankToBankAccount();
@@ -46,7 +46,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 
 		if(accountConfig.getExternalBankToBankAccount() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getInternalBankToBankAccount();
@@ -58,7 +58,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getSepaCreditTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getSepaCreditTransSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getSepaCreditTransSequence();
@@ -67,7 +67,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getSepaDirectDebitSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getSepaDirectDebitSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_6), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getSepaDirectDebitSequence();
@@ -76,7 +76,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getIntCreditTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getIntCreditTransSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_7), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getIntCreditTransSequence();
@@ -85,7 +85,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getIntDirectDebitSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getIntDirectDebitSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_8), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getIntDirectDebitSequence();
@@ -94,7 +94,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getNatTreasuryTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getNatTreasuryTransSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getNatTreasuryTransSequence();
@@ -103,7 +103,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getIntTreasuryTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getIntTreasuryTransSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getIntTreasuryTransSequence();
@@ -112,7 +112,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public Sequence getOtherBankOrderSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getOtherBankOrderSequence() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_11), 
-					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountConfig.getOtherBankOrderSequence();
@@ -123,7 +123,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	public User getDefaultSignatoryUser(AccountConfig accountConfig) throws AxelorException  {
 		if(accountConfig.getDefaultSignatoryUser() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		return accountConfig.getDefaultSignatoryUser();
 	}
