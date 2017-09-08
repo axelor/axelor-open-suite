@@ -122,18 +122,18 @@
 		</menubar>
 
 		<panel>
+			<field name="statusSelect" widget="NavSelect" showTitle="false"
+				colSpan="12" />
 			<field name="clientPartner.saleOrderInformation" css="bold red"
 				colSpan="12" showTitle="false"
 				hideIf="clientPartner == null || clientPartner.saleOrderInformation == null" />
 			<field name="bloqued" colSpan="4" readonly="true" showIf="bloqued" />
 			<field name="manualUnblock" colSpan="4" showIf="bloqued == true" />
 			<field name="saleOrderSeq" css="label-bold bold" />
-			<field name="statusSelect" widget="NavSelect" showTitle="false"
-				colSpan="12" />
 			<field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 			<field name="company" widget="SuggestBox"
 				onChange="action-sale-group-onchange-company" form-view="company-form"
-				grid-view="company-grid" readonlyIf="statusSelect >= 3" />
+				grid-view="company-grid" readonlyIf="statusSelect >= 3 || clientPartner != null" />
 			<field name="currency" canEdit="false" form-view="currency-form"
 				grid-view="currency-grid" readonlyIf="statusSelect >= 3" />
 			<field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()" />
@@ -145,7 +145,7 @@
 				if="__config__.general.getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect >= 3" />
 		</panel>
 
-		<panel name="customerInformation" title="Customer information">
+		<panel name="customerInformation" title="Customer information" hideIf="company == null">
 			<field name="clientPartner" onChange="action-sale-group-onchange-client-partner"
 				form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect >= 3"
 				onSelect="action-set-client-partner-domain" />
@@ -164,7 +164,7 @@
 			<field name="hideDiscount" />
 			<field name="externalReference" />
 		</panel>
-		<panel-tabs>
+		<panel-tabs hideIf="clientPartner == null">
 			<panel name="content" title="Content">
 				<panel-related field="saleOrderLineList" form-view="sale-order-line-form"
 					colSpan="12" onChange="action-sale-order-method-compute"
@@ -190,7 +190,7 @@
 					if-module="axelor-stock" form-view="freight-carrier-mode-form"
 					grid-view="freight-carrier-mode-grid" />
 				<panel-dashlet action="action-view-show-stock-move-line"
-					title="Customer deliveries" colSpan="12" if-module="axelor-supplychain" />
+					title="Customer deliveries" colSpan="12" if-module="axelor-supplychain" showIf="statusSelect >= 3" />
 			</panel>
 
 
@@ -198,7 +198,7 @@
 				showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" 
 				grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/> -->
 			<panel-dashlet action="action-view-show-invoices-from-sale-order"
-				title="Invoicing" if-module="axelor-supplychain" />
+				title="Invoicing" if-module="axelor-supplychain" showIf="statusSelect >= 3"/>
 			<panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()"
 				title="Business project" colSpan="12" if-module="axelor-business-project">
 				<field name="project"
@@ -248,7 +248,7 @@
 			</panel>
 		</panel-tabs>
 
-		<panel sidebar="true" name="actions" title="Actions" stacked="true">
+		<panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 			<button name="finalize" title="Finalize" showIf="statusSelect == 1"
 				colSpan="12" onClick="save,action-sale-order-method-finalize" />
 			<button name="newVersion" title="New version"
@@ -286,7 +286,7 @@
 			<field name="message" hidden="true" type="string" />
 		</panel>
 
-		<panel sidebar="true" name="info" title="Info.">
+		<panel sidebar="true" name="info" title="Info." hideIf="clientPartner == null">
 			<field name="creationDate" readonlyIf="statusSelect != 1"
 				colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" />
 			<field name="confirmedByUser" readonly="true" colSpan="6"
@@ -307,7 +307,7 @@
 			</field>
 		</panel>
 
-		<panel sidebar="true" readonly="true" colSpan="4">
+		<panel sidebar="true" readonly="true" colSpan="4" hideIf="clientPartner == null">
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false"
 				colSpan="12">
 				<viewer>
@@ -327,7 +327,7 @@
 			</field>
 		</panel>
 
-		<panel sidebar="true">
+		<panel sidebar="true" hideIf="clientPartner == null">
 			<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
 				<field name="salemanUser" grid-view="user-grid" form-view="user-form" />
 				<field name="team" onSelect="action-sale-order-domain-on-team"
