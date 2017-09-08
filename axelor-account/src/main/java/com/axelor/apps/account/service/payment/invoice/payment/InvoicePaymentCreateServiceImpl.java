@@ -87,20 +87,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		if (paymentVoucher != null) {
 			invoicePayment.setBankDetails(paymentVoucher.getCompanyBankDetails());
 		}
-
-		//check if the payment is an advance payment imputation
-		Invoice advanceInvoice = determineIfReconcileFromInvoice(paymentMove);
-		if (advanceInvoice != null) {
-			List<InvoicePayment> invoicePaymentList = advanceInvoice.getInvoicePaymentList();
-			if (invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
-				invoicePayment.setTypeSelect(InvoicePaymentRepository
-						.TYPE_ADV_PAYMENT_IMPUTATION);
-				InvoicePayment advancePayment = advanceInvoice
-						.getInvoicePaymentList().get(0);
-				advancePayment.setImputedBy(invoicePayment);
-				invoicePaymentRepository.save(advancePayment);
-			}
-		}
+		computeAdvancePaymentImputation(invoicePayment, paymentMove);
 		invoice.addInvoicePaymentListItem(invoicePayment);
 		invoicePaymentToolService.updateAmountPaid(invoice);
 		invoicePaymentRepository.save(invoicePayment);
@@ -127,6 +114,47 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 			return InvoicePaymentRepository.TYPE_OTHER;
 		}
 	
+	}
+
+	protected void computeAdvancePaymentImputation(InvoicePayment invoicePayment,
+												   Move paymentMove) {
+
+		// check if the payment is an advance payment imputation
+		Invoice advanceInvoice = determineIfReconcileFromInvoice(paymentMove);
+		if (advanceInvoice != null) {
+			List<InvoicePayment> invoicePaymentList = advanceInvoice.getInvoicePaymentList();
+			if (invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
+				//set right type
+				invoicePayment.setTypeSelect(InvoicePaymentRepository
+						.TYPE_ADV_PAYMENT_IMPUTATION);
+
+				// create link between advance payment and its imputation
+				InvoicePayment advancePayment = advanceInvoice
+						.getInvoicePaymentList().get(0);
+				advancePayment.setImputedBy(invoicePayment);
+				invoicePaymentRepository.save(advancePayment);
+
+				// set the imputed payment currency
+				invoicePayment.setCurrency(advancePayment.getCurrency());
+
+				BigDecimal currentImputedAmount = invoicePayment.getAmount();
+
+				// we force the payment amount to be equal to the advance
+				// invoice amount, so we get the right amount in the
+				// right currency.
+				BigDecimal totalAmountInAdvanceInvoice =
+						advancePayment.getInvoice().getCompanyInTaxTotal();
+
+				BigDecimal convertedImputedAmount =
+						currentImputedAmount.divide(
+								totalAmountInAdvanceInvoice,
+								2,
+								BigDecimal.ROUND_HALF_EVEN
+						).multiply(advancePayment.getAmount());
+
+				invoicePayment.setAmount(convertedImputedAmount);
+			}
+		}
 	}
 
 	/**
