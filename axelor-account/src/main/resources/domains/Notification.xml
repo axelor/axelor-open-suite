@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="account" package="com.axelor.apps.account.db" />
+
+	<entity name="Notification" lang="java">
+
+		<integer name="statusSelect" title="Status"
+			selection="account.notification.status.select" readonly="true"
+			default="1" />
+
+		<many-to-one name="factor" ref="com.axelor.apps.base.db.Partner" />
+		<date name="paymentDate" />
+		<many-to-one name="subrogationRelease"
+			ref="com.axelor.apps.account.db.SubrogationRelease" />
+		<one-to-many name="notificationItemList" title="Invoices"
+			ref="com.axelor.apps.account.db.NotificationItem" mappedBy="notification" />
+
+		<extra-code><![CDATA[
+			// STATUS SELECT
+			public static final int STATUS_NEW = 1;
+			public static final int STATUS_VALIDATED = 2;
+		]]></extra-code>
+
+	</entity>
+
+</domain-models>

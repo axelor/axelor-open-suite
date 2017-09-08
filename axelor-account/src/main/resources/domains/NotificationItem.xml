@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="account" package="com.axelor.apps.account.db" />
+
+	<entity name="NotificationItem" lang="java">
+
+		<many-to-one name="notification"
+			ref="com.axelor.apps.account.db.Notification" />
+		<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"
+			initParam="true" />
+		<decimal name="amountPaid" initParam="true" />
+
+	</entity>
+
+</domain-models>

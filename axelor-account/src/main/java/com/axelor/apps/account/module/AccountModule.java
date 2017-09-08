@@ -138,6 +138,8 @@ public class AccountModule extends AxelorModule {
 
         bind(SubrogationReleaseService.class).to(SubrogationReleaseServiceImpl.class);
 
+        bind(NotificationService.class).to(NotificationServiceImpl.class);
+
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
     

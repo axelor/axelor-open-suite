@@ -15,7 +15,8 @@
 
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" />
 
-		<many-to-many name="invoiceSet" title="Release details" ref="com.axelor.apps.account.db.Invoice" />
+		<many-to-many name="invoiceSet" title="Release details"
+			ref="com.axelor.apps.account.db.Invoice" />
 
 		<extra-code><![CDATA[
 			// STATUS SELECT

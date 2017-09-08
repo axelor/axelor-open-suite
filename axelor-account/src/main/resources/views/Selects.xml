@@ -314,4 +314,9 @@
 		<option value="5">Release canceled</option>
 	</selection>
 
+	<selection name="account.notification.status.select">
+		<option value="1">New notification</option>
+		<option value="2">Notification validated</option>
+	</selection>
+
 </object-views>

@@ -189,6 +189,15 @@
 		<view type="form" name="subrogation-release-form" />
 	</action-view>
 
+	<menuitem title="Notifications" name="debt-recovery-root-notifications"
+		parent="account-root-debt-recovery" action="debt.recovery.root.notifications" />
+
+	<action-view name="debt.recovery.root.notifications"
+		title="Notifications" model="com.axelor.apps.account.db.Notification">
+		<view type="grid" name="notification-grid" />
+		<view type="form" name="notification-form" />
+	</action-view>
+
 	<menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
 		title="Configuration"  />
 
