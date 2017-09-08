@@ -264,7 +264,7 @@ public class ChartBuilderService {
 		
 		
 		if (object != null) {
-			String[] sqlField = filterSqlService.getSqlField(object, parent.toString());
+			String[] sqlField = filterSqlService.getSqlField(object, parent.toString(), joins);
 			typeName = sqlField[1];
 			group = sqlField[0];
 		}

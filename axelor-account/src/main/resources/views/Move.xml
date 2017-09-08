@@ -5,7 +5,7 @@
     
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
-            <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
+            <button name="validateMove" title="Validate" if="__repo__(AccountConfig).findByCompany(__user__.getActiveCompany()).getAccountingDaybook()" prompt=" The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
             <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
         	<button name="moveLines" title="See Move Lines" onClick="account.root.move.move.line" />
         </toolbar>
@@ -50,7 +50,15 @@
 			</field>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 			<field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
-			<field name="adjustingMove" colSpan="12"/>
+  			<field name="adjustingMove" showTitle="false" showIf="adjustingMove" colSpan="12">
+				<viewer>
+					<![CDATA[
+						<h4 style="text-align: right;">
+							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record."adjustingMove"" x-translate>Adjusting Move</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
 			<button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 			<button name="account" title="Account" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 		</panel>

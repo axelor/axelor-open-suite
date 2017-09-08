@@ -78,15 +78,14 @@ public class ActionBuilderService {
 		inflector = Inflector.getInstance();
 		MetaAction metaAction = null;
 		String xml = null;
-		String xmlId = "studio-" + builder.getName();
 		if (builder.getTypeSelect() == 3) {
 			String[] val = buildActionView(builder);
 			xml = val[1];
-			metaAction = metaService.updateMetaAction(xmlId, builder.getName(), "action-view", xml, val[0]);
+			metaAction = metaService.updateMetaAction(builder.getName(), "action-view", xml, val[0]);
 		}
 		else {
 			xml = buildActionScript(builder);
-			metaAction = metaService.updateMetaAction(xmlId, builder.getName(), "action-script", xml, null);
+			metaAction = metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
 		}
 
 		log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
@@ -687,6 +686,12 @@ public class ActionBuilderService {
 		}
 		xml.append("model=\"" + model + "\">");
 		
+		builder.getActionBuilderViews().sort(new Comparator<ActionBuilderView>(){
+			@Override
+			public int compare(ActionBuilderView action1, ActionBuilderView action2) {
+				return action1.getSequence().compareTo(action2.getSequence());
+			}
+		});
 		for (ActionBuilderView view : builder.getActionBuilderViews()) {
 			xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
 			xml.append("name=\"" + view.getViewName() + "\" />");
@@ -702,19 +707,33 @@ public class ActionBuilderService {
 		String domain = builder.getDomainCondition();
 		
 		if (builder.getIsJson())  {
-			String jsonDomain = "self.jsonModel = '" + builder.getModel() + "'" ;
-			domain = domain == null ? jsonDomain : jsonDomain + " AND (" +  builder.getDomainCondition() + ")";
+			String jsonDomain = "self.jsonModel = :jsonModel" ;
+			if (domain == null) {
+				domain = jsonDomain;
+			}
+			else if (!domain.contains(jsonDomain)){
+				domain = jsonDomain + " AND (" +  domain + ")";
+			}
 		}
 		
 		if (domain != null) {
 			xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(domain) + "</domain>");
 		}
 		
+		boolean addJsonCtx = true;
 		if (builder.getLines() != null) {
 			for (ActionBuilderLine context : builder.getLines()) {
+				if (context.getName().contentEquals("jsonModel")) {
+					addJsonCtx = false;
+				}
 				xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
 				xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
 			}
+		}
+		
+		if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
+			xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
+			xml.append("expr=\"eval:" + builder.getModel() + "\" />");
 		}
 		
 		xml.append("\n" + "</action-view>");

@@ -20,7 +20,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.company = :activeCompany
 				AND self.product.productFamily.id = :id
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -391,7 +391,7 @@
 		<series key="amount" type="donut" title="Amount"/>
 	</chart>
 	   
-	<chart stacked="true" onInit="action.general.chart.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
+	<chart stacked="true" onInit="action.sale.chart.set.date.1m" name="chart.my.turnover.per.month" title="My Turnover per month">
   <search-fields>
     <field name="fromDate" title="From Date" type="date" x-required="true"/>
     <field name="toDate" title="To Date" type="date" x-required="true"/>
@@ -533,7 +533,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.company = :activeCompany
 				AND self.product.id = :id
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -560,7 +560,7 @@
 			FROM
 			  SaleOrderLine AS self
 			WHERE
-				self.saleOrder.statusSelect = 3  
+				self.saleOrder.statusSelect in (3,4)  
 				AND self.saleOrder.company = :activeCompany
 				AND self.product = :product
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
@@ -585,7 +585,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salemanUser =:salemanUser
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
 				AND self.saleOrder.company = :activeCompany
@@ -616,7 +616,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salemanUser =:salemanUser
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
 				AND self.saleOrder.company = :activeCompany
@@ -648,7 +648,7 @@
 				SaleOrderLine self,
 				MetaSelectItem item
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND item.select.name='partner.partner.type.select'
@@ -672,7 +672,7 @@
 		    FROM
 		    	SaleOrderLine self
 		    WHERE
-			    self.saleOrder.statusSelect = 3
+			    self.saleOrder.statusSelect in (3,4)
 			    AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate) 
 			    AND self.saleOrder.company = :activeCompany
 		    GROUP BY
@@ -695,7 +695,7 @@
 				SaleOrderLine self,
 				IndustrySector industrySector
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND industrySector.id = self.saleOrder.clientPartner.industrySector.id
@@ -718,7 +718,7 @@
 			FROM
 			    SaleOrderLine self
 			WHERE
-			    self.saleOrder.statusSelect = 3
+			    self.saleOrder.statusSelect in (3,4)
 			    AND self.saleOrder.company = :activeCompany
 			    AND self.product.productCategory.id = :id
 			    AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -752,7 +752,7 @@
 			WHERE  
 				saleOrder = saleOrderLine.saleOrder
 				AND
-				  saleOrder.statusSelect=3
+				  saleOrder.statusSelect in (3,4) 
 				AND
 				  saleOrder.company =:activeCompany
 				AND

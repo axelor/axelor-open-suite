@@ -146,6 +146,8 @@
   	
   	<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
   	
+  	<finder-method name="findByCompany" using="company" />
+  	
   	<extra-code><![CDATA[
 	
 	   	// TYPE SELECT

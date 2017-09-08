@@ -1,4 +1,4 @@
-"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.importId"
+"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.importId"
 100;"accountClearance";"Overpayment clearance";1;6;"ACCCLR%YY";;1;1;1
 101;"chequeReject";"Cheque reject";1;6;"CHQREJ%YY";;1;1;1
 102;"invoice";"Customer Invoice";1;9;"INV%YY";;1;1;1

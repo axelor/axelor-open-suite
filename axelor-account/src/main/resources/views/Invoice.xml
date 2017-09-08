@@ -33,7 +33,7 @@
         <field name="currency"/>
         <field name="statusSelect"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
     
     <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -85,7 +85,7 @@
         <field name="currency"/>
         <field name="statusSelect"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
     
     <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -146,6 +146,7 @@
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
+			<field name="interco"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="isSubscription" hidden="true"/>
 		</panel>
@@ -348,7 +349,6 @@
 		<toolbar>
 			<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
 			<button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
-			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 
 		<panel name="main" >
@@ -564,6 +564,8 @@
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
+		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-record-interco-supplychain"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -574,6 +576,7 @@
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-attrs-ventilate"/>
+		<action name="action-invoice-attrs-interco-supplychain"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -594,6 +597,8 @@
     	<action name="action-invoice-record-estimated-payment-date"/>
 		<action name="action-invoice-method-fill-company-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
+		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-record-interco-supplychain"/>
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -683,6 +688,12 @@
 		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
 		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
 	</action-record>
+
+	<action-record name="action-invoice-record-interco-supplychain"
+				   model="com.axelor.apps.account.db.Invoice">
+		<field name="interco"
+			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
+	</action-record>
 	
     <!-- ACTION ATTRS -->
     
@@ -725,6 +736,13 @@
 		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
 	</action-attrs>
 
+	<action-attrs name="action-invoice-attrs-interco-supplychain">
+		<attribute for="interco" name="hidden"
+				   expr="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
+		<attribute for="interco" name="value" expr="eval: false"
+				   if="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
+	</action-attrs>
+
 	<!-- DOMAIN -->
 	
 	<action-attrs name="action-invoice-partner-account-domain">
@@ -749,6 +767,11 @@
     <action-validate name="action-validate-invoice-check-selection">
 		<error message="You have to choose at least one invoice" if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
 	</action-validate>
+	
+	<action-validate name="action-validate-send-email-remove-access-for-client">
+		<error message="Error - You are not authorized to perform this action" if="__user__.group.code == 'CLT' "/>
+    </action-validate>
+   
 
 	<!-- ACTION METHOD -->
 

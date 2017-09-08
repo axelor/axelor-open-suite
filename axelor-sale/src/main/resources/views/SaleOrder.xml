@@ -5,7 +5,7 @@
     
     <grid name="sale-order-quotation-grid" title="Quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     	<toolbar>
-    		<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-order-merge-form"/>
+    		<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
     		<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
     	</toolbar>
     	<menubar>
@@ -31,7 +31,7 @@
     <grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     	<toolbar>
     		<button name="mergeSaleOrders" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
-    		<button name="seeSaleOrderLines" title="See sale order lines" onClick="action-view-open-sale-order-lines"/>
+    		<button name="seeSaleOrderLines" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
     	</toolbar>
     	<menubar>
 	        <menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">   
@@ -90,6 +90,13 @@
 		<panel-related field="$saleOrderToMerge" form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-grid"/>
 		<panel sidebar="true" title="Actions">
 			<button name="generateMergedSaleOrder" title="Merge into single sale order" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>			
+	  	</panel>
+    </form>
+    
+    <form name="sale-quotation-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge quotations" width="large">
+		<panel-related field="$saleQuotationToMerge" form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-quotation-grid"/>
+		<panel sidebar="true" title="Actions">
+			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>			
 	  	</panel>
     </form>
     
@@ -175,9 +182,10 @@
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	    <field name="subscription" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect >= 3"/>
 	    <field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 1"  />
+		<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information">
-	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
+	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field name="mainInvoicingAddress" canNew="true" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	      <field name="deliveryAddress" canNew="true" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
@@ -496,7 +504,8 @@
 	
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
-    		<button name="seeSaleOrderLines" title="See sale order lines" onClick="action-view-open-sale-order-lines"/>
+			<button name="mergeSaleOrders" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
+    		<button name="seeSaleOrderLines" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
 		</toolbar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
@@ -553,6 +562,7 @@
 	
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
+			<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
 			<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
 		</toolbar>
 		<field name="saleOrderSeq"/>
@@ -681,6 +691,16 @@
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="save" if="saleOrderLineList.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
     </action-group>
+
+	<action-group name="action-sale-order-group-client-partner-change">
+		<action name="action-sale-order-record-partner"/>
+        <action name="action-partner-attrs-hide-contact-partner"/>
+		<action name="action-sale-order-validate-information"/>
+		<action name="action-sale-order-attrs-interco"
+				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-sale-order-record-interco"
+				if="__config__.app.isApp('supplychain')"/>
+	</action-group>
     
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
@@ -742,6 +762,10 @@
     
     <action-view name="action-open-sale-order-merge-form" title="Merge sale orders" model="com.axelor.apps.base.db.Wizard">
 	    <view type="form" name="sale-order-merge-form"/>
+	</action-view>
+	
+	<action-view name="action-open-sale-quotation-merge-form" title="Merge sale quotation" model="com.axelor.apps.base.db.Wizard">
+	    <view type="form" name="sale-quotation-merge-form"/>
 	</action-view>
     
     <action-view name="action-sale-order-view-cancel" title="Cancellation" model="com.axelor.apps.sale.db.SaleOrder">

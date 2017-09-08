@@ -76,7 +76,7 @@
 		<context name="locationLineIdList" expr="call:com.axelor.apps.stock.service.LocationService:getBadLocationLineId()"/>
 	</action-view>
 	
-	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
+	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />

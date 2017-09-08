@@ -323,4 +323,6 @@
 "You have to choose at least one outgoing stock move",,,
 "You have to select at least one subscription",,,
 "You must configure an advance payment account for the company %s",,,
+"com.axelor.apps.supplychain.job.BillSubJob",,,
+"com.axelor.apps.supplychain.service.batch.SupplychainBatchService",,,
 "month(s)",,,

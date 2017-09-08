@@ -11,7 +11,7 @@
   	
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
     <string name="name" title="Name" required="true" namecolumn="true"/>
-    <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/> 
+    <string name="codeSelect" title="Concerned Document" required="true" selection="sequence.generic.code.select"/> 
     <string name="prefixe" title="Prefix"/>
     <string name="suffixe" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
@@ -22,9 +22,10 @@
     
     <one-to-many name="sequenceVersionList" ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
     
-    <index columns="code,company" name="idx_sequence_code_company"/>
+    <index columns="codeSelect,company" name="idx_sequence_code_select_company"/>
     
-    <finder-method name="find" using="code,company"/>
+    <finder-method name="find" using="codeSelect,company"/>
+    <finder-method name="findByCodeSelect" using="codeSelect"/>
     
   </entity>
 
