@@ -179,7 +179,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			for (ExpenseLine expenseLine : expenseLineList) {
 				//if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
 				//so we ignore it, it will be taken into account in the next loop.
-				if (expenseLine.getDistance() == null || expenseLine.getDistance().equals(BigDecimal.ZERO)) {
+				if (expenseLine.getDistance() == null || expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0) {
 					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
 					taxTotal = taxTotal.add(expenseLine.getTotalTax());
 					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
