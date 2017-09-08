@@ -63,7 +63,7 @@
 		<field name="workingDaysVariableName" />
         <field name="totalWorkingDaysVariableName"/>
 	</panel>
-  	<panel title="Export" >
+  	<panel title="Exports" >
   		<field name="exportCodeForLunchVoucherManagement" />
   		<field name="exportCodeForExtraHours" />
   		

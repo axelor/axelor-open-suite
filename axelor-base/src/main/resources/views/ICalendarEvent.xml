@@ -4,6 +4,14 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 	
 	<grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
+	  <field name="calendar"/>
+	  <field name="subject" />
+	  <field name="startDateTime" />
+	  <field name="endDateTime" />
+	  <field name="allDay" />
+	</grid>
+	
+	<grid name="calendar-event-calendar-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
 	  <field name="subject" />
 	  <field name="startDateTime" />
 	  <field name="endDateTime" />
@@ -11,27 +19,37 @@
 	</grid>
 	
 	<form name="calendar-event-form" model="com.axelor.apps.base.db.ICalendarEvent" title="Event" >
-	  <field name="subject" />
-	  <field name="status" />
-	  <field name="allDay" />
-	  <field name="organizer" />
-	  <field name="startDateTime" />
-	  <field name="endDateTime" />
-	  <field name="location" />
-	  <field name="geo" />
-	  <notebook>
-	    <page title="Attendees" cols="1">
+	  <panel>
+		  <field name="calendar"/>
+		  <field name="subject" />
+		  <field name="status" />
+		  <field name="allDay" />
+		  <field name="organizer" />
+		  <field name="startDateTime" />
+		  <field name="endDateTime" />
+		  <field name="location" />
+		  <field name="geo" />
+	  </panel>
+	  <panel-tabs>
+	    <panel title="Attendees" cols="1">
 	      <field name="attendees" />
-	    </page>
-	    <page title="Description" cols="1">
+	    </panel>
+	    <panel title="Description" cols="1">
 	      <field name="description" />
-	    </page>
-	  </notebook>
+	    </panel>
+	  </panel-tabs>
 	</form>
 	
 	<calendar name="calendar-all" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
 	  eventStart="startDateTime" eventStop="endDateTime" colorBy="calendar">
 	  <field name="summary" />
 	</calendar>
+	
+	<action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
+		<view type="grid" name="calendar-event-grid"/>
+		<view type="form" name="calendar-event-calendar-grid"/>
+		<domain>self.calendar.id = :calendarId</domain>
+		<context name="calendarId" expr="eval:_id"/>
+	</action-view>
 
 </object-views>

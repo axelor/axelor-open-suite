@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -42,9 +42,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -383,7 +380,7 @@ where
 AnalyticMoveLine.date_val <= MoveLineReport.date_val AND 
 Company.id = MoveLineReport.company 
 AND (MoveLineReport.analytic_journal IS NULL OR MoveLineReport.analytic_journal  = AnalyticJournal.id)  
-AND AnalyticMoveLine.status_select = 3
+AND AnalyticMoveLine.type_select = 3
 
 group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id 
 order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id  ]]></xml-property>

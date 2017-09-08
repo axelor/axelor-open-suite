@@ -198,6 +198,7 @@
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
 				<field name="note" colSpan="12"/>
+                <field name="specificNotes" colSpan="12" readonly="true"/>
 			</panel>
 			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12">
 				<field name="displayTimesheetOnPrinting" />
@@ -218,11 +219,11 @@
 		</panel-stack>
 	 
 	    <panel sidebar="true" name="actions" title="Actions" >
-	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
+	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
 	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
-      	  	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
+      	  	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
 	        <field name="statusSelect"/>
 	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form"/>
 	    </panel>

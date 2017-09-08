@@ -75,13 +75,6 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CUSTOMER_2 = /*$$(*/ "%s : A supplier account is missing for the company %s" /*)*/ ;
 
 	/**
-	 * Cash register line service
-	 */
-	static final String CASH_REGISTER_1 = /*$$(*/ "%s : You must configure an active company for the user %s" /*)*/ ;
-	static final String CASH_REGISTER_2 = /*$$(*/ "%s : A cash register closure already exists for the same date and the same cash register" /*)*/ ;
-	static final String CASH_REGISTER_3 = /*$$(*/ "%s : You must configure a cashier email address for the company %s" /*)*/ ;
-
-	/**
 	 * Check rejection service
 	 */
 	static final String CHECK_REJECTION_1 = /*$$(*/ "%s : You must configure a cheque rejection sequence for the company %s" /*)*/ ;
@@ -262,6 +255,17 @@ public interface IExceptionMessage {
 	 */
 	static final String BATCH_REMINDER_1 = /*$$(*/ "Reminder's reporting :\n" /*)*/;
 	static final String BATCH_REMINDER_2 = /*$$(*/ "Partner(s) treated" /*)*/;
+
+	/**
+	 * Batch credit transfer
+	 */
+	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch: " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR = /*$$(*/ "%d reimbursement created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/ "%d reimbursements created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
 	/**
 	 * Batch strategy

@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
@@ -58,17 +59,24 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	}
 	
 	
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
-		
-		invoice.setAmountPaid(this.computeAmountPaid(invoice));
+
+		invoice.setAmountPaid(computeAmountPaid(invoice));
 		invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+		updateHasPendingPayments(invoice);
 		invoiceRepo.save(invoice);
 		log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
 		
 	}
-	
-	
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateHasPendingPayments(Invoice invoice) {
+		invoice.setHasPendingPayments(checkPendingPayments(invoice));
+	}
+
 	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
 		
 		BigDecimal amountPaid = BigDecimal.ZERO;
@@ -78,10 +86,10 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		CurrencyService currencyService = Beans.get(CurrencyService.class);
 		
 		Currency invoiceCurrency = invoice.getCurrency();
-		
-		for(InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
-			
-			if(invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED)  {
+
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
 				
 				log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 				
@@ -100,6 +108,20 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return amountPaid;
 	}
 
+	/**
+	 * Check whether there are any pending payments.
+	 * 
+	 * @param invoice
+	 * @return
+	 */
+	protected boolean checkPendingPayments(Invoice invoice) {
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @inheritDoc

@@ -211,7 +211,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 
 			if(duration.compareTo(BigDecimal.ZERO) < 0){
-				duration.equals(BigDecimal.ZERO);
+				duration = BigDecimal.ZERO;
 			}
 			return duration;
 		}

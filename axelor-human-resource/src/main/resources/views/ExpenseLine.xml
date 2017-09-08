@@ -23,10 +23,9 @@
 		  onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" orderBy="expenseDate">
 		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
         <field name="expenseDate" title="Date" width="95"/>
-		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-in-tax-total" width="70"/>
-        <field name="kilometricRate" readonly="true" onChange="action-kilometric-allowance-record-in-tax-total" width="50" hidden="true"/>
-        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total" width="85"/>
-        <field name="distance" required="true" onChange="action-kilometric-allowance-record-in-tax-total" width="60"/>
+		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" width="70"/>
+        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" width="85"/>
+        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="60"/>
         <field name="fromCity" required="true" width="80"/>
         <field name="toCity" required="true" width="80"/>
 	    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="75" readonly="true"/>
@@ -70,9 +69,9 @@
 			<panel name="kilometricAllowance" title="Kilometric Allowance">
 				<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
 		        <field name="expenseDate"/>
-				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-in-tax-total"/>
-		        <field name="kilometricTypeSelect" required="true"/>
-		        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" required="true"/>
+				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute"/>
+		        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute"/>
+		        <field name="distance" onChange="action-kilometric-allowance-method-compute" required="true"/>
 		        <field name="fromCity" required="true"/>
 		        <field name="toCity" required="true"/>
 		    	<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonly="true"/>
@@ -95,7 +94,14 @@
 	<action-method name="action-expense-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAnalyticDistribution"/>
 	</action-method>
-	
+
+	<action-method name="action-kilometric-allowance-method-domain-on-select-on-kap">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="domainOnSelectOnKAP"/>
+	</action-method>
+
+	<action-method name="action-kilometric-allowance-method-update-kap">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateKAPOfKilometricAllowance"/>
+	</action-method>
 	
 	<action-method name="action-expense-line-method-fill-kilometric-expense-product">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="fillKilometricExpenseProduct"/>
@@ -116,13 +122,6 @@
     <action-method name="action-kilometric-allowance-method-compute">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeKilometricExpense"/>
     </action-method>
-
-    <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.ExpenseLine">
-        <field name="totalAmount" if="kilometricTypeSelect == 1"  expr="eval: kilometricRate * distance"/>
-        <field name="totalAmount" if="kilometricTypeSelect == 2"  expr="eval: kilometricRate * distance * 2"/>
-        <field name="untaxedAmount" if="kilometricTypeSelect == 1"  expr="eval: kilometricRate * distance"/>
-        <field name="untaxedAmount" if="kilometricTypeSelect == 2"  expr="eval: kilometricRate * distance * 2"/>
-    </action-record>
 	
 	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
 		<field name="user" expr="eval: _parent?.user"/>

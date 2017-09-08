@@ -12,7 +12,7 @@
 	<string name="password" title="Password"/>
 	<integer name="typeSelect" title="Type" selection="crm.calendar.type.select"/>
 	<boolean name="isSslConnection" title="SSL ?"/>
-	<integer name="port" title="Port"/>
+	<integer name="port" title="Port" default="80"/>
 	<boolean name="isValid" title="Valid"/>
 	<one-to-many name="eventsCrm" ref="com.axelor.apps.crm.db.Event" mappedBy="calendarCrm" title="Events"/>
     

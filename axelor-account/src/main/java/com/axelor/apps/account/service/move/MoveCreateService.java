@@ -24,7 +24,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -173,9 +172,8 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, PaymentVoucher paymentVoucher, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect, CashRegister cashRegister) throws AxelorException{
+	public Move createMoveWithPaymentVoucher(Journal journal, Company company, PaymentVoucher paymentVoucher, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect) throws AxelorException{
 		Move move = this.createMove(journal, company, paymentVoucher.getCurrency(), partner, date, paymentMode, technicalOriginSelect);
-		move.setCashRegister(cashRegister);
 		move.setPaymentVoucher(paymentVoucher);
 		return move;
 	}

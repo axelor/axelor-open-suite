@@ -17,22 +17,25 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 public interface ExpenseService  {
 
@@ -66,7 +69,17 @@ public interface ExpenseService  {
 	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;
 	public void addPayment(Expense expense) throws AxelorException;
+
+	/**
+	 * Cancel the payment in the expense in argument.
+     * Revert the payment status and clear all payment fields.
+	 * @param expense
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancelPayment(Expense expense) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
 
@@ -81,4 +94,6 @@ public interface ExpenseService  {
 	public BigDecimal computeAdvanceAmount(Expense expense);
 
 	public void setDraftSequence(Expense expense);
+
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
 }

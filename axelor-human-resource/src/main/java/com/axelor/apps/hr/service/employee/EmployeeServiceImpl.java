@@ -168,7 +168,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		LocalDate itDate = new LocalDate(fromDate);
 
-		while(!itDate.isEqual(toDate) && !itDate.isAfter(toDate)){
+		while(!itDate.isAfter(toDate)){
 			duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
 			itDate = itDate.plusDays(1);
 		}

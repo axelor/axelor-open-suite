@@ -122,7 +122,7 @@
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="cancelReceipt" title="Cancel receipt" showIf="statusSelect &gt;= 3" onClick="save,action-purchase-order-method-cancel-receipt"/>
-			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.general.getSupplierStockMoveManagement() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.general.getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
@@ -137,22 +137,24 @@
 				<field name="validationDate"/>
 	    	</panel>
 		</panel>
-		<panel sidebar="true">
-			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-				<viewer>
-					&lt;dl class="dl-horizontal"&gt;
-					  &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-					  &lt;dd&gt;{{record.exTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
-					  &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-					  &lt;dd&gt;{{record.taxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
-					  &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-					  &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}  {{record.currency.symbol}}&lt;/dd&gt;
-					  &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-					  &lt;dd&gt;{{record.amountInvoiced}}  {{record.currency.symbol}}&lt;/dd&gt;
-					&lt;/dl&gt;
-				</viewer>
-	        </field>   
-	  </panel>
+        <panel sidebar="true">
+            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
+                        <dt x-translate>Total W.T.</dt>
+                        <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt x-translate>Total tax</dt>
+                        <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt x-translate>Amount invoiced W.T.</dt>
+                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+        </panel>
 	  <panel-mail>
 		  <mail-messages limit="4" />
 		  <mail-followers />
@@ -189,14 +191,8 @@
     
     <action-group name="action-group-purchase-order-on-validate-actions">    	
     	<action name="action-purchase-order-validate-location"/>
-    	<action name="action-purchase-order-method-compute"/>
-    	<action name="action-purchase-order-create-stock-move" if="eval: __config__.general.getSupplierStockMoveGenerationAuto()"/>
-    	<action name="action-purchase-order-record-validate"/>
-    	<action name="action-purchase-order-method-validate-supplier"/>
-    	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
-    	<action name="action-purchase-order-method-update-cost-price"/>
-    	<action name="action-purchase-order-method-generate-budget-distribution"/>
+    	<action name="action-purchase-order-method-validate"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-merge-action">
@@ -321,7 +317,11 @@
     <action-method name="action-purchase-order-method-show-purchase-order">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
-	
+
+	<action-method name="action-purchase-order-method-validate">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validate"/>
+	</action-method>
+
     <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="eval:supplierPartner != null &amp;&amp; supplierPartner.partnerTypeSelect == 2" />
     </action-attrs>

@@ -14,7 +14,7 @@
 		  <field name="user"/>
 		  <field name="keepRemote" />
 	  </panel>
-	  <panel-related field="events" colSpan="12"/>
+	  <panel-dashlet action="action-icalendar-view-ievent-dashlet"/>
 	</form>
-
+	
 </object-views>

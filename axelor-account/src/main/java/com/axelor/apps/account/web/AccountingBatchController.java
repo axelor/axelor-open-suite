@@ -191,6 +191,13 @@ public class AccountingBatchController {
 
 	}
 
+	public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Batch batch = accountingBatchService.creditTransfer(accountingBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
 
 	// WS
 

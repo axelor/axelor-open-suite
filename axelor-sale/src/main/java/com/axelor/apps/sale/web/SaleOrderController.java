@@ -132,15 +132,18 @@ public class SaleOrderController {
 	}
 
 	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
-
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		try {
+			saleOrderService.finalizeSaleOrder(saleOrder);
+		} catch (AxelorException e) {
+			response.setFlash(e.getMessage());
+		}
 
 		response.setReload(true);
-
 	}
-	
+
 	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);

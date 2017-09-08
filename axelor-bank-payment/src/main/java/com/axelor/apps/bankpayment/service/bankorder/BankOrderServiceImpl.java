@@ -28,12 +28,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import com.axelor.apps.bankpayment.db.*;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.BankDetailsService;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -44,8 +38,16 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
@@ -53,6 +55,8 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
@@ -72,6 +76,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	protected InvoicePaymentRepository invoicePaymentRepo;
 	protected BankOrderLineService bankOrderLineService;
 	protected EbicsService ebicsService;
+	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	@Inject
 	private AccountConfigBankPaymentService accountConfigBankPaymentService;
@@ -81,12 +86,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
-			BankOrderLineService bankOrderLineService, EbicsService ebicsService) {
+			BankOrderLineService bankOrderLineService, EbicsService ebicsService,
+			InvoicePaymentToolService invoicePaymentToolService) {
 
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
 		this.ebicsService = ebicsService;
+		this.invoicePaymentToolService = invoicePaymentToolService;
 
 	}
 
@@ -220,6 +227,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
 		if (invoicePayment != null) {
 			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+			invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
 		}
 	}
 
@@ -229,6 +237,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
 		if (invoicePayment != null) {
 			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+			invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
 		}
 
 	}
@@ -363,8 +372,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		String domain = "";
 		if (bankOrder.getSenderCompany() != null) {
 
-			String bankDetailsIds = Beans.get(BankDetailsService.class)
-					.getIdStringListFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
+			String bankDetailsIds = StringTool.getIdFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
 
 			if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
 				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
