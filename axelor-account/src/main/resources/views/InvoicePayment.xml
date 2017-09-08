@@ -34,6 +34,7 @@
 	
 	<action-group name="action-invoice-payment-group-new">
 		<action name="action-invoice-payment-record-new"/>
+		<action name="action-invoice-payment-attrs-new"/>
 		<action name="action-invoice-payment-method-new"/>
 	</action-group>
 	
@@ -46,6 +47,13 @@
     	<field name="invoice" expr="eval: _invoice"/>
     	<field name="typeSelect" expr="2"/>
     </action-record>
+
+	<action-attrs name="action-invoice-payment-attrs-new">
+		<attribute for="amount" name="readonly"
+				   expr="eval: _invoice?.operationSubTypeSelect == 2"/>
+		<attribute for="currency" name="readonly"
+				   expr="eval: _invoice?.operationSubTypeSelect == 2"/>
+	</action-attrs>
     
 	<action-method name="action-invoice-payment-method-new">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
