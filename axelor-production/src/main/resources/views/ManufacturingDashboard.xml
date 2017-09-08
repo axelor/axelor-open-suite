@@ -18,7 +18,7 @@
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
 		 <domain>self.plannedStartDateT &gt;= :_today</domain>
-  		<context name="_today" expr="eval: __date__.atStartOfDay()" />
+  		<context name="_today" expr="eval: __datetime__" />
 	</action-view>
 	
 	<action-view name="manufacturing.dashboard.current.production.orders" title="All Current Manufacturing Orders"
@@ -26,7 +26,7 @@
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
 		<domain>self.realStartDateT &lt;= :_today and self.realEndDateT &gt;= :_today</domain>
- 		<context name="_today" expr="eval: __date__.atStartOfDay()" />
+ 		<context name="_today" expr="eval: __datetime__" />
 	</action-view>
 	
 	<action-view name="manufacturing.dashboard.standby.manuf.orders" title="Manufacturing orders on StandBy"

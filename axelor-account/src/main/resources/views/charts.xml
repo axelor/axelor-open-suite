@@ -281,7 +281,7 @@
 	    (SELECT 
 	      _invoice.id AS _invoice_id,
 	      _invoice.invoice_date AS _invoice_date,
-	      _line.ex_tax_total AS _turn_over,
+	      _line.company_ex_tax_total AS _turn_over,
 	      _line.product AS _line_product
 	    FROM
 	      account_invoice AS _invoice
@@ -584,7 +584,7 @@
 	  <dataset type="sql">
 	    
 	  SELECT
-	     coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
+	     coalesce(SUM(self.company_ex_tax_total),0.00)  AS ex_tax_total,
 	     to_char(self.invoice_date,'yyyy-MM') AS _month
 	  FROM
 	      account_invoice self
@@ -651,7 +651,7 @@
 	    FROM
 	  	    account_payment_condition AS _payment_condition
 	    CROSS JOIN 
-	            (SELECT _invoice.ex_tax_total As _ex_tax_total,
+	            (SELECT _invoice.company_ex_tax_total As _ex_tax_total,
 	                  _invoice.payment_condition AS _payment_condition
 	                FROM account_invoice _invoice
 			        JOIN  
@@ -854,7 +854,7 @@
 	    (
 	      (SELECT 
 	        'Invoiced Amount' as _label,
-	        self.in_tax_total as _sum
+	        self.company_in_tax_total as _sum
 	      FROM
 	        account_invoice AS self
 	      JOIN

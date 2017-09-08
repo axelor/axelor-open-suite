@@ -46,8 +46,9 @@
 				<field name="createdOn" title="Created on" colSpan="6"/>
 			</panel>
 			<panel title=" " colSpan="12">
-				<field name="taskDate" colSpan="4" required="true" title="Task date"/>
-				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true"/>
+				<field name="taskDate" colSpan="4" required="true" title="Task date" onChange="action-task-attrs-set-task-duration"/>
+				<field name="taskEndDate" colSpan="4"  onChange="action-task-attrs-set-task-duration"/>
+				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true" onChange="action-task-attrs-set-dates"/>
 				<field name="taskDeadline" colSpan="4"/>
 			</panel>
 			<panel title="Description" colSpan="12">
@@ -94,7 +95,7 @@
 	</form>
 	
 	<gantt name="task-gantt" title="Tasks" model="com.axelor.team.db.TeamTask" 
-		taskStart="taskDate" taskDuration="taskDuration" taskParent="parentTask" taskSequence="sequence"
+		taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
 		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
 		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">	
 		<field name="name"/>
@@ -179,6 +180,14 @@
 	
 	<action-attrs name="action-task-attrs-project-members-user-set-configurations" model="com.axelor.team.db.TeamTask">
 		<attribute name="domain" expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="membersUserSet"/>
+	</action-attrs>
+	
+	<action-attrs name="action-task-attrs-set-task-duration">
+		<attribute name="value" for="taskDuration" expr="eval:java.time.temporal.ChronoUnit.DAYS.between(taskDate, taskEndDate)*86400" if="taskDate != null &amp;&amp; taskEndDate != null"/>
+	</action-attrs>
+	
+	<action-attrs name="action-task-attrs-set-dates">
+		<attribute name="value" for="taskEndDate" expr="eval:taskDate.plus((taskDuration/86400).longValue(), java.time.temporal.ChronoUnit.DAYS)" if="taskDate != null"/>
 	</action-attrs>
 	
 	<action-view name="action-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
