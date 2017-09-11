@@ -235,8 +235,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		);
 		this.fillInLines(invoice);
 
-		invoice.setAddressStr(Beans.get(AddressService.class)
-				.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
 		invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -445,8 +444,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
 		this.fillInLines(invoice);
 
-		invoice.setAddressStr(Beans.get(AddressService.class)
-				.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
 		return invoice;
 
