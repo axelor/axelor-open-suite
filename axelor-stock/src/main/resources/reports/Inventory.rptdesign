@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706142203</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -20,7 +20,6 @@
         <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
-            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
         <structure>
             <property name="name">queryText</property>
@@ -33,6 +32,26 @@
         <structure>
             <property name="name">rowFetchSize</property>
             <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -47,6 +66,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -78,6 +100,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite-dev-50</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -90,6 +115,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -103,6 +131,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -161,7 +192,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-dev-50</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -312,6 +345,12 @@ where Inventory.id = ?]]></xml-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">unit</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">trackingNumber</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">trackingNumber</text-property>
+                    <text-property name="heading">trackingNumber</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -355,6 +394,11 @@ where Inventory.id = ?]]></xml-property>
                     <structure>
                         <property name="position">6</property>
                         <property name="name">unit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">trackingNumber</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -403,36 +447,27 @@ where Inventory.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">trackingNumber</property>
+                    <property name="nativeName">trackingNumber</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Product.name as "productName", Product.code as "productCode", InventoryLine.current_qty,
 (CASE WHEN Inventory.status_select = '2' THEN null ELSE InventoryLine.real_qty END) AS "real_qty", 
-InventoryLine.description, Unit.name as "unit"
+InventoryLine.description, Unit.name as "unit", TrackingNumber.tracking_number_seq as "trackingNumber"
 from stock_inventory_line as InventoryLine 
 inner join stock_inventory as Inventory on (InventoryLine.inventory = Inventory.id)
 left outer join base_product as Product on (InventoryLine.product = Product.id)
 left outer join base_unit as Unit on (Product.unit = Unit.id)
+left outer join stock_tracking_number as TrackingNumber on (InventoryLine.tracking_number = TrackingNumber.id)
 where Inventory.id = ?
 order by Product.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -713,12 +748,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["unit"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">trackingNumber</property>
+                    <text-property name="displayName">trackingNumber</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["trackingNumber"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="3768">
-                <property name="width">2.7604166666666665in</property>
+                <property name="width">2in</property>
             </column>
             <column id="3769">
-                <property name="width">1.4166666666666667in</property>
+                <property name="width">1.2in</property>
             </column>
             <column id="3770">
                 <property name="width">0.59375in</property>
@@ -730,16 +772,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="width">0.7604166666666666in</property>
             </column>
             <column id="3773">
-                <property name="width">1.8333333333333333in</property>
+                <property name="width">1in</property>
+            </column>
+            <column id="3909">
+                <property name="width">1in</property>
             </column>
             <header>
                 <row id="3814">
                     <property name="height">0.2604166666666667in</property>
                     <cell id="3815">
-                        <property name="backgroundColor">white</property>
-                    </cell>
-                    <cell id="3816">
-                        <property name="colSpan">3</property>
+                        <property name="colSpan">7</property>
                         <property name="rowSpan">1</property>
                         <property name="backgroundColor">white</property>
                         <image id="3894">
@@ -777,12 +819,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                         </image>
                     </cell>
-                    <cell id="3819">
-                        <property name="backgroundColor">white</property>
-                    </cell>
-                    <cell id="3820">
-                        <property name="backgroundColor">white</property>
-                    </cell>
                 </row>
                 <row id="3821">
                     <property name="height">0.2604166666666667in</property>
@@ -790,24 +826,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="backgroundColor">white</property>
                     </cell>
                     <cell id="3823">
-                        <property name="colSpan">3</property>
+                        <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
                         <property name="backgroundColor">white</property>
                         <text id="3836">
                             <property name="fontSize">13pt</property>
                         </text>
                     </cell>
-                    <cell id="3826">
+                    <cell id="3827">
                         <property name="backgroundColor">white</property>
                     </cell>
-                    <cell id="3827">
+                    <cell id="3899">
                         <property name="backgroundColor">white</property>
                     </cell>
                 </row>
                 <row id="3828">
                     <property name="height">0.2604166666666667in</property>
                     <cell id="3829">
-                        <property name="colSpan">6</property>
+                        <property name="colSpan">7</property>
                         <property name="rowSpan">1</property>
                         <property name="backgroundColor">white</property>
                         <text id="3837">
@@ -859,6 +895,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="backgroundColor">white</property>
                     </cell>
                     <cell id="3844">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="3901">
                         <property name="backgroundColor">white</property>
                     </cell>
                 </row>
@@ -1041,6 +1080,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </text>
                     </cell>
                     <cell id="3859">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <property name="backgroundColor">white</property>
                         <property name="borderBottomColor">#606062</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1108,6 +1149,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="backgroundColor">white</property>
                     </cell>
                     <cell id="3866">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="3903">
                         <property name="backgroundColor">white</property>
                     </cell>
                 </row>
@@ -1238,6 +1282,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <cell id="3852">
                         <property name="backgroundColor">white</property>
                     </cell>
+                    <cell id="3904">
+                        <property name="backgroundColor">white</property>
+                    </cell>
                 </row>
                 <row id="3874">
                     <property name="height">0.2604166666666667in</property>
@@ -1258,6 +1305,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="backgroundColor">white</property>
                     </cell>
                     <cell id="3880">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="3905">
                         <property name="backgroundColor">white</property>
                     </cell>
                 </row>
@@ -1477,6 +1527,51 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="3906">
+                        <property name="backgroundColor">#606062</property>
+                        <text id="4004">
+                            <property name="fontWeight">bold</property>
+                            <property name="color">#FFFFFF</property>
+                            <property name="borderBottomColor">#606062</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#606062</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#606062</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#606062</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'Inventory.trackingNumber'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                 </row>
             </header>
             <detail>
@@ -1590,6 +1685,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text-property name="content"><![CDATA[<VALUE-OF>row["description"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="3907">
+                        <property name="borderBottomColor">#606062</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#606062</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4005">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["trackingNumber"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                 </row>
             </detail>
             <footer>
@@ -1600,6 +1713,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <cell id="3765"/>
                     <cell id="3766"/>
                     <cell id="3767"/>
+                    <cell id="3908"/>
                 </row>
             </footer>
         </table>
