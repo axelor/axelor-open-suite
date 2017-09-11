@@ -73,8 +73,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Inject
 	private SequenceService sequenceService;
 
-	protected LocalDate today;
-
 	@Inject
 	private  StockMoveLineRepository stockMoveLineRepo;
 
@@ -87,13 +85,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Inject
 	protected PartnerProductQualityRatingServiceImpl partnerProductQualityRatingService;
 
-	@Inject
-	public StockMoveServiceImpl() {
-
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
-
-	}
-	
 	
 	@Override
 	public BigDecimal compute(StockMove stockMove){
@@ -277,7 +268,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				false);
 
 		if(stockMove.getEstimatedDate() == null)  {
-			stockMove.setEstimatedDate(this.today);
+			stockMove.setEstimatedDate(appBaseService.getTodayDate());
 		}
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
@@ -317,7 +308,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
-		stockMove.setRealDate(this.today);
+		stockMove.setRealDate(appBaseService.getTodayDate());
 		resetWeights(stockMove);
 
 		try {
@@ -562,7 +553,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				false);
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
-		stockMove.setRealDate(this.today);
+		stockMove.setRealDate(appBaseService.getTodayDate());
 
 		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
 			partnerProductQualityRatingService.undoCalculation(stockMove);

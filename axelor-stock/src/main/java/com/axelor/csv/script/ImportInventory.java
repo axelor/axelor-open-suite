@@ -17,29 +17,31 @@
  */
 package com.axelor.csv.script;
 
+import java.util.Map;
+
 import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ImportInventory {
 	
 	@Inject
-	InventoryRepository inventoryRepo;
-	
-	@Inject
 	InventoryService inventoryService;
 	
 	@Transactional
-	void validateInventory(Long inventoryId) {
-		try {
-			Inventory inventory = inventoryRepo.find(inventoryId);
-			StockMove stockMove = inventoryService.validateInventory(inventory);
-			stockMove.setRealDate(inventory.getDateT().toLocalDate());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public Object validateInventory(Object bean, Map<String,Object> values) throws AxelorException {
+		
+		assert bean instanceof InventoryLine;
+		
+		Inventory inventory = (Inventory) bean;
+		StockMove stockMove = inventoryService.validateInventory(inventory);
+		stockMove.setRealDate(inventory.getDateT().toLocalDate());
+		
+		return inventory;
+		
 	}
 }
