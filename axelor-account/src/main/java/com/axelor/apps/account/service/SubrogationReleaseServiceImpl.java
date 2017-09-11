@@ -7,21 +7,30 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
@@ -113,7 +122,35 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 	}
 
 	@Override
-	public void accountRelease(SubrogationRelease subrogationRelease) {
+	public void postRelease(SubrogationRelease subrogationRelease) throws AxelorException {
+		MoveService moveService = Beans.get(MoveService.class);
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+		AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
+		Company company = subrogationRelease.getCompany();
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+
+		for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
+			LocalDate date = appBaseService.getTodayDate();
+			Move move = moveService.getMoveCreateService().createMove(journal, company, company.getCurrency(),
+					invoice.getPartner(), date, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+			MoveLine moveLine;
+
+			if (InvoiceToolService.isOutPayment(invoice)) {
+				moveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
+						accountConfig.getFactorCreditAccount(), invoice.getCompanyInTaxTotalRemaining(), false, date,
+						null, 1, invoice.getInvoiceId());
+			} else {
+				moveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
+						accountConfig.getFactorDebitAccount(), invoice.getCompanyInTaxTotalRemaining(), true, date,
+						null, 1, invoice.getInvoiceId());
+			}
+
+			moveLineRepo.save(moveLine);
+			moveService.getMoveValidateService().validateMove(move);
+		}
 
 		subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
 	}
