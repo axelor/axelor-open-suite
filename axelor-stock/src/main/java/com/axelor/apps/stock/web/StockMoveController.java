@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.stock.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
@@ -52,6 +38,19 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StockMoveController {
 
@@ -341,6 +340,12 @@ public class StockMoveController {
 			.map());
 		
 	}
-	
+
+	public void fillAddressesStr(ActionRequest request, ActionResponse response) {
+	    StockMove stockMove = request.getContext().asType(StockMove.class);
+	    stockMoveService.computeAddressStr(stockMove);
+
+	    response.setValues(stockMove);
+	}
 
 }
