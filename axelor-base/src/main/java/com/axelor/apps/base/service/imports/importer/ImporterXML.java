@@ -30,7 +30,7 @@ class ImporterXML extends Importer {
 		
 		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
 		importer.addListener( listener );
-		importer.run(null);
+		importer.run();
 		
 		return addHistory( listener );
 		

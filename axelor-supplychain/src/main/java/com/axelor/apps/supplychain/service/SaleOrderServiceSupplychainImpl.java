@@ -20,20 +20,26 @@ package com.axelor.apps.supplychain.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.axelor.apps.sale.db.ISaleOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.team.db.Team;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
@@ -43,6 +49,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -51,19 +58,20 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
 	protected AppSupplychain appSupplychain;
 	protected AccountConfigService accountConfigService;
-
+	protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService , AccountConfigService accountConfigService) {
+			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService , 
+			AccountConfigService accountConfigService, AccountingSituationSupplychainService accountingSituationSupplychainService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
 				partnerService, partnerRepo, saleOrderRepo, appSaleService, userService);
@@ -72,6 +80,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
 		this.appSupplychain = appSupplychainService.getAppSupplychain();
 		this.accountConfigService = accountConfigService;
+		this.accountingSituationSupplychainService = accountingSituationSupplychainService;
 		
 	}
 	
@@ -88,7 +97,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		if(appSupplychain.getCustomerStockMoveGenerationAuto())  {
 			saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 		}
-		
+		int intercoSaleCreatingStatus = Beans.get(AppSupplychainService.class)
+				.getAppSupplychain()
+				.getIntercoSaleCreatingStatusSelect();
+		if (saleOrder.getInterco()
+				&& intercoSaleCreatingStatus == ISaleOrder.STATUS_ORDER_CONFIRMED) {
+		    Beans.get(IntercoService.class)
+					.generateIntercoPurchaseFromSale(saleOrder);
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
+		super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
+		try {
+			accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
+		} catch (AxelorException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -188,9 +215,32 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
 		return saleOrderMerged;
 	}
+	
+	public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
+		List<Timetable> timetableList = saleOrder.getTimetableList();
+		BigDecimal totalHT = saleOrder.getExTaxTotal();
+		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+		if (timetableList != null) {
+			for (Timetable timetable : timetableList) {
+				sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount().multiply(timetable.getQty()));
+			}
+		}
+		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
+		super.finalizeSaleOrder(saleOrder);
+		int intercoSaleCreatingStatus = Beans.get(AppSupplychainService.class)
+				.getAppSupplychain()
+				.getIntercoSaleCreatingStatusSelect();
+		if (saleOrder.getInterco()
+				&& intercoSaleCreatingStatus == ISaleOrder.STATUS_FINALIZE) {
+		    Beans.get(IntercoService.class)
+					.generateIntercoPurchaseFromSale(saleOrder);
+		}
+	}
+
 }
-
-
-
-
-

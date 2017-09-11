@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import java.time.LocalDate;
@@ -55,7 +56,7 @@ public class ManufOrderStockMoveService {
 	@Inject
 	private LocationRepository locationRepo;
 
-	private static final Logger log = LoggerFactory.getLogger(ManufOrderStockMoveService.class);
+	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
 
@@ -158,11 +159,12 @@ public class ManufOrderStockMoveService {
 				company,
 				null,
 				virtualLocation,
-				manufOrder.getProdProcess().getLocation(),
+				manufOrder.getProdProcess().getProducedProductLocation(),
 				plannedEndDate,
 				null,
 				null,
 				null);
+		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;
 	}

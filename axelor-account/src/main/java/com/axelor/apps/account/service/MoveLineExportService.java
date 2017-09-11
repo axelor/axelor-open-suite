@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 
@@ -26,11 +26,20 @@ import java.time.LocalDate;
 
 public interface MoveLineExportService {
 
-	public void exportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
-	public void replayExportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
-	public MoveLineReport createMoveLineReport(Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate) throws AxelorException;
-	public void exportMoveLineTypeSelect1006(MoveLineReport mlr, boolean replay) throws AxelorException, IOException;
-	public void exportMoveLineTypeSelect1007(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;
-	public void exportMoveLineTypeSelect1008(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;
-	public void exportMoveLineTypeSelect1009(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;
+	public void exportMoveLine(AccountingReport accountingReport) throws AxelorException, IOException;
+	public void replayExportMoveLine(AccountingReport accountingReport) throws AxelorException, IOException;
+	public AccountingReport createAccountingReport(Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate) throws AxelorException;
+	public void exportMoveLineTypeSelect1006(AccountingReport mlr, boolean replay) throws AxelorException, IOException;
+	public void exportMoveLineTypeSelect1007(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException;
+	public void exportMoveLineTypeSelect1008(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException;
+	public void exportMoveLineTypeSelect1009(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException;
+
+	/**
+	 * Export general balance to CSV file.
+	 * 
+	 * @param accountingReport
+	 * @throws AxelorException
+	 * @throws IOException
+	 */
+	void exportMoveLineTypeSelect1010(AccountingReport accountingReport) throws AxelorException, IOException;
 }

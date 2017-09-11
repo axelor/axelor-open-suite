@@ -5,7 +5,6 @@
 	
 	<form name="app-account-config-form" title="App account" model="com.axelor.apps.base.db.AppAccount" canDelete="false" canNew="false" width="large">
 		<panel>
-			<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
 			<field name="manageAnalyticAccounting"  widget="boolean-switch"/>
 			<field name="analyticDistributionTypeSelect"  showIf="manageAnalyticAccounting"/>
 			<field name="manageCustomerCredit" widget="boolean-switch"/>
@@ -29,5 +28,10 @@
 		<call class="com.axelor.apps.account.web.AppAccountController" method="payerQualityProcess" />
 	</action-method>
 	
+	<action-view name="admin.root.conf.account.config" title="Account configurations"
+		model="com.axelor.apps.account.db.AccountConfig" >
+		<view type="grid" name="account-config-grid"/>
+		<view type="form" name="account-config-form"/>
+	</action-view>
 	
 </object-views>

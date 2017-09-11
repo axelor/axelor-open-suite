@@ -11,6 +11,7 @@
 		<field name="durationStored" hidden="true"/>
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" hidden="true" />
 		<field name="comments" />
 		<field name="project" hidden="true" />
 	</grid>
@@ -23,6 +24,7 @@
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" hidden="true" />
 		<field name="comments" />
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
@@ -37,6 +39,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" hidden="true" />
 		<field name="comments" />
 	</grid>
 
@@ -49,6 +52,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		<field name="comments" />
+		<field name="enableEditor" hidden="true" />
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 
@@ -64,6 +68,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<field name="enableEditor" />
 			<field name="comments" />
 		</panel>
 	</form>
@@ -79,6 +84,7 @@
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<field name="enableEditor" />
 			<field name="comments" />
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
@@ -97,17 +103,18 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="comments" />
+			<field name="enableEditor" />
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 
 	<action-group name="action-timesheet-line-group-project-onchange">
 		<action name="action-timesheet-line-record-to-invoice"/>
-		<action name="action-hr-timesheet-line-record-empty-product"/>
+<!-- 		<action name="action-hr-timesheet-line-record-empty-product"/> -->
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="eval:project == null || project?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productList)&quot;"/>
+		<attribute name="domain" for="product" expr="eval:project == null || project?.productSet.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-project">
@@ -133,7 +140,7 @@
 	
 	<action-record name="action-hr-default-timesheet-line-timesheet" model="com.axelor.apps.hr.db.TimesheetLine">
 	    <field name="user" expr="eval:__parent__.user" />
-	    <field name="product" expr="eval:__user__.employee?.product" />
+	    <field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__(User).find(__parent__.user.id))" if="__parent__.user != null"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
@@ -145,19 +152,23 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: project?.projInvTypeSelect == 2 || project?.project?.projInvTypeSelect == 2"/>
+		<field name="toInvoice" expr="eval: project?.projInvTypeSelect == 2 || project?.project?.projInvTypeSelect == 2"  if="__config__.app.isApp('business-project')"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice-parent" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.project?.project?.projInvTypeSelect == 2"/>
+		<field name="toInvoice" expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.project?.project?.projInvTypeSelect == 2"  if="__config__.app.isApp('business-project')"/>
 	</action-record>
 	
 	<action-record name="action-hr-timesheet-line-record-empty-product" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="product" expr="eval:null" if="!project?.productList?.contains(product)"/>
+		<field name="product" expr="eval:null" if="!project?.productSet?.contains(product)"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-line-editor-record-get-default" model="com.axelor.apps.hr.db.TimesheetLine">
+		<field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(user)"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">
-		<error message="This date is invalide, it must be included in the timesheet's period" if="date != null &amp;&amp; (date &lt; _parent.fromDate || ( _parent.toDate != null &amp;&amp; date &gt; _parent.toDate))" action="action-timesheet-line-null-date"/>
+		<error message="This date is invalid. It must be included in the timesheet's period." if="date != null &amp;&amp; (date &lt; _parent.fromDate || ( _parent.toDate != null &amp;&amp; date &gt; _parent.toDate))" action="action-timesheet-line-null-date"/>
 	</action-validate>
 	
 	<action-record name="action-timesheet-line-null-date" model="com.axelor.apps.hr.db.TimesheetLine">

@@ -14,6 +14,14 @@ axelor {
 dependencies {
 	compile project(":modules:axelor-account")
 	compile project(":modules:axelor-project")
-	compile project(":modules:axelor-crm")
 	compile project(":modules:axelor-bank-payment")
 }
+
+task copyWebapp(type: Copy) {
+	destinationDir = file(rootProject.buildDir)
+	into("webapp/hr") {
+		from "src/main/webapp"
+	}
+}
+
+rootProject.tasks.war.dependsOn copyWebapp

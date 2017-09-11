@@ -52,18 +52,18 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 		
 		Employee employee = planning.getUser().getEmployee();
 		
-		if (employee != null) {
+		LocalDateTime fromDate = planning.getFromDate();
+		LocalDateTime toDate = planning.getToDate();
+		
+		if (employee != null && fromDate != null && toDate != null && planning.getId() != null) {
 			
 			BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 			
-			LocalDateTime startDate = planning.getFromDate();
-			LocalDateTime toDate = planning.getToDate();
-			
 			removeOldPlanningTime(planning);
 			
-			while (startDate.isBefore(toDate)) {
+			while (fromDate.isBefore(toDate)) {
 				
-				LocalDate date = startDate.toLocalDate();
+				LocalDate date = fromDate.toLocalDate();
 				
 				log.debug("Create Planning for the date: {}", date);
 				
@@ -87,7 +87,7 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 					planningTimeRepo.save(planningTime);
 				}
 				
-				startDate = startDate.plusDays(1);
+				fromDate = fromDate.plusDays(1);
 			}
 			
 		}
@@ -98,6 +98,9 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 	@Transactional
 	public void removeOldPlanningTime(ProjectPlanning planning) {
 		
+		if (planning.getId() == null) {
+			return;
+		}
 		List<ProjectPlanningTime> planningTimes = planningTimeRepo.all()
 				.filter("self.date NOT BETWEEN self.projectPlanning.fromDate AND self.projectPlanning.toDate AND self.projectPlanning = ?1"
 				,planning).fetch();

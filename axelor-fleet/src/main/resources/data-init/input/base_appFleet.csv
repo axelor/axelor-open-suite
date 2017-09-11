@@ -1,0 +1,2 @@
+name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
+Fleet;FLEET;Fleet management;fleet;app-fleet.png;axelor-fleet;base;51

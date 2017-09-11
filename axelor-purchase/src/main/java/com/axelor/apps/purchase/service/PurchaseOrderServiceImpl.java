@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
@@ -381,15 +382,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		purchaseOrderRepo.save(purchaseOrder);
 	}
-	
+
 	@Override
-	@Transactional
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder){
-		
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		computePurchaseOrder(purchaseOrder);
+
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-		purchaseOrderRepo.save(purchaseOrder);
+		purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
+		purchaseOrder.setValidatedByUser(AuthUtils.getUser());
+
+		purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
+
+		if (purchaseOrder.getCompany() != null) {
+			purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
+		}
+
+		updateCostPrice(purchaseOrder);
 	}
-	
+
 	@Override
 	@Transactional
 	public void finishPurchaseOrder(PurchaseOrder purchaseOrder){

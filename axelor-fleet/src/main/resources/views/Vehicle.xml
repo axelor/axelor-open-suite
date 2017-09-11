@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="vehicle-grid" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" >
+       <field name="plateNo" />
+       <field name="vehicleModel" />
+       <field name="name" />
+       <field name="driverContact" />
+       <field name="chasisNo" />
+       <field name="acquisitionDate" />
+       <field name="vehicleState" />
+       <field name="vehicleOdometer" />
+       <field name="vehicleOdometer.unit" />
+    </grid>
+    
+   <form name="vehicle-form" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" width="large"
+    	onNew="action-fleet-vehicle-set-defaults" >
+       <panel>
+       	   <panel colSpan="2">
+       	   		<field name="image" widget="Image" colSpan="12"/>
+       	   </panel>
+       	   <panel colSpan="6" itemSpan="12">
+       	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" />
+	     		<field name="name" readonly="true"/>
+	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
+	    		<field name="vehicleTagSet" widget="TagSelect"  /> 
+	    		<field name="vehicleState" /> 
+	       </panel>
+	       <panel colSpan="12" title="General Properties" >
+	       		<panel itemSpan="12">
+		       		<field name="driverContact" />
+		       		<field name="location" />
+		       		<field name="chasisNo" />
+		       		<field name="company" />
+	       		</panel>
+	       		<panel itemSpan="12">
+		       		<field name="vehicleOdometer" colSpan="8"/>
+		       		<field name="acquisitionDate" />
+		       		<field name="carValue" />
+		       		<field name="isarchived"/>
+	       		</panel>
+	       </panel>
+	       <panel colSpan="12" title="Additional Properties">
+	       		<panel itemSpan="12">
+		       		<field name="seats" />
+		       		<field name="doors" />
+		       		<field name="color" />
+	       		</panel>
+	       		<panel itemSpan="12" title="Engine Options">
+		       		<field name="transmissionSelect"/>
+		       		<field name="fuelType"/>
+		       		<field name="co2emission" colSpan="8"/>
+		       		<label title="g/km" colSpan="2"/>
+		       		<field name="horsepower" />
+		       		<field name="horsepowerTax" />
+		       		<field name="powerKw" />
+	       		</panel>
+	       </panel>
+       </panel>
+       <panel-tabs>
+    			<panel-related field="vehicleFuelLogList" title="Vehicle Fuel Log"  colSpan="12">
+            	<field name="liter"/>
+            	<field name="pericePerLiter" />
+							<field name="date" />
+      		</panel-related>
+    			<panel-related field="vehicleServiceLogList" title="Vehicle service" colSpan="12">
+              <field name="date" />
+            	<field name="purchasePartner	"/>
+              <field name="invocieRef" />
+              <field name="vendorPartner" />
+      		</panel-related>
+      		<panel-related field="vehicleContractList" title="Vehicle Contract" colSpan="12">
+            	<field name="costFrequencySelect"/>
+            	<field name="activationCost"/>
+            	<field name="vehicleOdometer" />
+      		</panel-related>
+      		<panel-related field="vehicleCostList" title="Vehicle Cost" colSpan="12">
+            <field name="serviceType" />	
+            <field name="totalPrice"/>
+            <field name="date" />
+      		</panel-related>
+    </panel-tabs>
+    
+       
+       <panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	   </panel-mail>
+       
+    </form>
+    
+    <cards name="vehicle-cards" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" width="25%" css="rect-image" orderBy="name">
+		<field name="image" />
+		<field name="name" />
+		<field name="plateNo" />
+		<field name="driverContact" />
+		<field name="vehicleState" />
+		<template><![CDATA[
+		    <div class="span12"><strong>{{name}}</strong></div>
+			<div>
+			  <div class="span4 card-image">
+			    <img ng-src="{{$image(null, 'image')}}" />
+			  </div>
+			  <div class="span8">
+			    <span>{{plateNo}}<br/>
+			    {{driverContact.name}}<br/>
+			    {{vehicleState.name}}</span>
+			  </div>
+			</div>
+		]]>
+		</template>
+	</cards>
+    
+  <action-method name="action-fleet-set-vehicle-name">
+  	<call class="com.axelor.apps.fleet.web.VehicleController" method="setVehicleName"/>
+  </action-method>
+  
+  <action-method name="action-method-set-image-in-vehicle" model="com.axelor.apps.fleet.web.Vehicle">
+		<call class="com.axelor.apps.fleet.web.VehicleController" method="setImage"/>
+	</action-method>
+</object-views>

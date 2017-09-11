@@ -9,12 +9,33 @@
 	</grid>
 	
 	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" >
+	<toolbar>
+		  <button name="testConnect" title="Connect" onClick="com.axelor.apps.base.web.ICalendarController:testConnect"/>
+		  <button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
+    	  <button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.base.web.ICalendarController:importCalendar"/>
+    	  <button name="synchronizeCalendars" title="Synchronize calendar" onClick="save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
+    </toolbar>
 	  <panel name="main" >
 		  <field name="name" />
 		  <field name="user"/>
 		  <field name="keepRemote" />
 	  </panel>
-	  <panel-related field="events" colSpan="12"/>
+	  <panel name="connectionSettings" title="Connection settings">
+		  <field name="url"/>
+		  <field name="typeSelect"/>
+		  <field name="isSslConnection" onChange="action-calendar-record-set-port"/>
+		  <field name="port"/>
+		  <field name="isValid" readonly="true"/>
+		</panel>
+		<panel name="credentials" title="Credentials">
+		  <field name="login"/>
+		  <field name="password" widget="password"/>
+		</panel>
+	  <panel-dashlet action="action-icalendar-view-ievent-dashlet"/>
 	</form>
-
+	
+	<action-record name="action-calendar-record-set-port" model="com.axelor.apps.base.db.ICalendar">
+     	<field name="port" expr="eval: isSslConnection ? 443 : 80"/>
+    </action-record>
+	
 </object-views>

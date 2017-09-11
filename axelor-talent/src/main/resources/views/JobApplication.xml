@@ -8,7 +8,7 @@
 		<field name="firstName" />
 		<field name="emailAddress" />
 		<field name="fixedPhone" />
-		<field name="mobilePhoned" />
+		<field name="mobilePhone" />
 		<field name="jobPosition" />
 		<field name="status" />
 	</grid>
@@ -16,15 +16,15 @@
 	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large"
 		onNew="action-job-application-defaults" onLoad="action-talent-method-set-social-network-url">
 		<menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	        <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
 		<panel name="main">
 			<field name="statusSelect" colSpan="4"/>
-			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="2" showIf="statusSelect &lt; 3"/>
-			<field name="employee" showIf="statusSelect == 3" />
-			<field name="hiringStage" />
+			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="2" showIf="statusSelect == 0" />
+			<field name="employee" showIf="statusSelect == 1" />
+			<field name="hiringStage" x-order="sequence"/>
 			<panel title="Job info" colSpan="12">
 				<field name="jobPosition" />
 				<field name="jobPosition.companyDepartment" />
@@ -63,6 +63,10 @@
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
 		</panel-tabs>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	    </panel-mail>
 	</form>
 	
     <action-view name="action-job-application-schedule-event" title="Schedule Event" model="com.axelor.apps.crm.db.Event">
@@ -91,7 +95,7 @@
     </action-validate>
     
     <action-method name="action-talent-method-set-social-network-url">
-    	<call class="com.axelor.apps.talent.web.TalentController" method="setSocialNetworkUrl"/>
+    	<call class="com.axelor.apps.talent.web.JobApplicationController" method="setSocialNetworkUrl"/>
     </action-method>
     
 </object-views>

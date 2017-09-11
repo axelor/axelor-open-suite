@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherConfirmService  {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
@@ -144,7 +145,7 @@ public class PaymentVoucherConfirmService  {
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.getMoveCreateService().createMove(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC, paymentVoucher.getCashRegister());
+			Move move = moveService.getMoveCreateService().createMoveWithPaymentVoucher(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 			move.setPaymentVoucher(paymentVoucher);
 

@@ -24,9 +24,11 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -36,8 +38,7 @@ public class PurchaseOrderLineController {
 
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
-
-
+	
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		Context context = request.getContext();
@@ -110,6 +111,11 @@ public class PurchaseOrderLineController {
 			response.setValue("taxLine", taxLine);
 			
 			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
+
+			if (price == null) {
+				price = BigDecimal.ZERO;
+				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
+			}
 
 			response.setValue("productName", purchaseOrderLine.getProduct().getName());
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
@@ -219,15 +225,22 @@ public class PurchaseOrderLineController {
 	}
 	
 	public PurchaseOrder getPurchaseOrder(Context context)  {
+
+		Context parentContext = context.getParent();
+		PurchaseOrder purchaseOrder = null;
 		
-		Context parentContext = context.getParentContext();
-		
-		PurchaseOrder purchaseOrder = parentContext.asType(PurchaseOrder.class);
-		
-		if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
+		if(parentContext != null) {
 			
+			purchaseOrder = parentContext.asType(PurchaseOrder.class);
+			if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
+				
+				PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+				
+				purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+			}
+			
+		} else {
 			PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-			
 			purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 		}
 		
@@ -245,4 +258,31 @@ public class PurchaseOrderLineController {
 			response.setValues(purchaseOrderLine);
 		}
 	}
+
+	public void checkQty(ActionRequest request, ActionResponse response) {
+		if (request.getAction().endsWith("onnew")) {
+			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+			return;
+		}
+
+		Context context = request.getContext();
+		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+		BigDecimal minQty = purchaseOrderLineService.getMinQty(purchaseOrder, purchaseOrderLine);
+
+		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
+			String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+
+			if (request.getAction().endsWith("onchange")) {
+				response.setFlash(msg);
+			}
+
+			response.setAttr("minQtyNotRespectedLabel", "title",
+					String.format("<span class='label label-warning'>%s</span>", msg));
+			response.setAttr("minQtyNotRespectedLabel", "hidden", false);
+		} else {
+			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+		}
+	}
+
 }

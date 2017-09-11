@@ -17,26 +17,26 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class InvoiceServiceProjectImpl extends InvoiceServiceImpl {
+import java.util.Arrays;
+import java.util.List;
+
+public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 
 	@Inject
 	public InvoiceServiceProjectImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,

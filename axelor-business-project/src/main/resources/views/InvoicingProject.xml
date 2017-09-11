@@ -15,8 +15,10 @@
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
   			<button name="print" title="Print delivery sheet" />
   		</toolbar>
+  		<panel title="Status">
+  			<field name="statusSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
+  		</panel>
 		<panel name="main" >
-			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
 			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<field name="deadlineDate" readonlyIf="invoice != null" onChange="save,action-invoicing-project-method-fill-in"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>

@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.lang.invoke.MethodHandles;
 
 import com.axelor.i18n.I18n;
+
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +52,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private SaleOrderService saleOrderService;
@@ -68,8 +70,23 @@ public class SaleOrderController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-
-
+	
+	public void computeMargin(ActionRequest request, ActionResponse response) {
+		
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		
+		try {
+			saleOrderService.computeMarginSaleOrder(saleOrder);
+			
+			response.setValue("totalCostPrice", saleOrder.getTotalCostPrice());
+			response.setValue("totalGrossMargin", saleOrder.getTotalGrossMargin());
+			response.setValue("marginRate", saleOrder.getMarginRate());
+			
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
 	/**
 	 * Method that print the sale order as a Pdf
 	 *
@@ -87,10 +104,31 @@ public class SaleOrderController {
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_PDF); 
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_PDF);
 
 		logger.debug("Printing "+name);
 	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
+	}
+
+	/**
+	 * Method that prints a proforma invoice as a PDF
+     *
+	 */
+	public void printProformaInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+
+		String name = saleOrderService.getFileName(saleOrder);
+
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, true, ReportSettings.FORMAT_PDF);
+
+		logger.debug("Printing "+name);
+
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());
@@ -104,7 +142,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_XLS); 
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_XLS);
 
 		logger.debug("Printing "+name);
 
@@ -123,7 +161,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_DOC);
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_DOC);
 		
 
 		logger.debug("Printing "+name);
@@ -145,15 +183,18 @@ public class SaleOrderController {
 	}
 
 	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
-
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		try {
+			saleOrderService.finalizeSaleOrder(saleOrder);
+		} catch (AxelorException e) {
+			response.setFlash(e.getMessage());
+		}
 
 		response.setReload(true);
-
 	}
-	
+
 	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -371,4 +412,5 @@ public class SaleOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
+	
 }

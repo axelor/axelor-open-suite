@@ -3,8 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
-	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
-	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
 		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
@@ -13,7 +11,7 @@
 
 	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
 	
-	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" />
+	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType"/>
      
 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode"  search="self.importId = :importId" />
 	
@@ -45,19 +43,20 @@
         </bind>
     </input>
 	
-	<input file="account_reminderLevel.csv" separator=";" type="com.axelor.apps.account.db.ReminderLevel" search="self.name = :name"/>
+	<input file="account_debtRecoveryLevel.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryLevel" search="self.name = :name"/>
 	
-	<input file="account_reminderMethod.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethod" search="self.code = :code"/>
+	<input file="account_debtRecoveryMethod.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
 	
-	<input file="account_reminderMethodLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethodLine" />
+	<input file="account_debtRecoveryMethodLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethodLine" />
 	
 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId">
 		<bind search="self.importId = :company_id" to="company" update="true" />
-		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" />
-		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" />
-		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" />
-		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" />
-		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" />
+		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" if="cashAccount_code"/>
+ 		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" if="saleAccount_code"/>
+ 		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" if="purchaseAccount_code"/>
+ 		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" if="sequence_importId"/>
+ 		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" if="journal_importId"/>
+  		<bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true" if="bankDetails_importId"/>
 	</input>
 		
 	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" />
@@ -66,7 +65,7 @@
 	
 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
 	
-	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
+	<input file="account_debtRecoveryConfigLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryConfigLine" />
 	
 	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
 	

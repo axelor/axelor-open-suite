@@ -20,13 +20,17 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import java.math.BigDecimal;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import com.axelor.apps.account.db.*;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateService {
@@ -105,11 +109,62 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		else if (move.getPaymentVoucher() != null)  {
 			return InvoicePaymentRepository.TYPE_PAYMENT;
 		}
+		else if (determineIfReconcileFromInvoice(move)) {
+			return InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION;
+		}
 		else  {
 			return InvoicePaymentRepository.TYPE_OTHER;
 		}
 	
 	}
-	
+
+	/**
+	 * We try to get to the status of the invoice from the reconcile to see
+	 * if this move was created from a payment for an advance payment invoice.
+	 * @param move
+	 * @return  true if the move is from a payment that comes from
+	 *          an advance payment invoice,
+	 *          false in other cases
+	 */
+	protected boolean determineIfReconcileFromInvoice(Move move) {
+		List<MoveLine> moveLineList = move.getMoveLineList();
+		if (moveLineList == null || moveLineList.size() != 2) {
+			return false;
+		}
+		InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
+		for (MoveLine moveLine : moveLineList) {
+			//search for the reconcile between the debit line
+			if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+			    Reconcile reconcile = Beans.get(ReconcileRepository.class).all()
+						.filter("self.debitMoveLine = ?", moveLine)
+						.fetchOne();
+				if (reconcile == null) {
+					return false;
+				}
+				//in the reconcile, search for the credit line to get the
+				//associated payment
+				if (reconcile.getCreditMoveLine() == null
+						|| reconcile.getCreditMoveLine().getMove() == null) {
+					continue;
+				}
+				Move candidatePaymentMove = reconcile
+						.getCreditMoveLine().getMove();
+				InvoicePayment invoicePayment =
+						invoicePaymentRepo.all()
+								.filter("self.move = :_move")
+								.bind("_move", candidatePaymentMove)
+								.fetchOne();
+				//if the invoice linked to the payment is an advance
+				//payment, then return true.
+				if (invoicePayment != null
+						&& invoicePayment.getInvoice() != null
+						&& invoicePayment.getInvoice().getOperationSubTypeSelect()
+						== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 }

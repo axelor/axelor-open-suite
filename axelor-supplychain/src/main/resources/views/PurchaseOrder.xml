@@ -23,4 +23,25 @@
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
 	</action-method>
 
+	<action-attrs name="action-purchase-order-attrs-interco">
+		<attribute for="interco" name="hidden"
+				   expr="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
+		<attribute for="interco" name="value" expr="eval: false"
+				   if="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
+	</action-attrs>
+
+	<action-record name="action-purchase-order-record-interco"
+				   model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="interco"
+			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromPurchase()"/>
+	</action-record>
+
+	<action-view name="action-view-show-invoices-from-purchase-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
+		<view type="grid" name="invoice-light-grid" />
+		<view type="form" name="invoice-form" />
+		<domain>self.purchaseOrder.id = :purchaseOrderId OR (self.purchaseOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.purchaseOrderLine.id IN (:purchaseOrderLineIdList)))</domain>
+		<context name="purchaseOrderId" expr="eval: id" />
+		<context name="purchaseOrderLineIdList" expr="eval: (id != null &amp;&amp; purchaseOrderLineList != null &amp;&amp; !purchaseOrderLineList.isEmpty()) ? purchaseOrderLineList.collect{it.id} : null"/>
+    </action-view>
+
 </object-views>

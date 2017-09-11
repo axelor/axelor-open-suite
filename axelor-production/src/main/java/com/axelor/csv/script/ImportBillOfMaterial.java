@@ -41,6 +41,9 @@ public class ImportBillOfMaterial {
 	
 	@Transactional
 	public Object computeCostPrice(Object bean, Map values) throws AxelorException{
+		if (bean == null) {
+			return bean;
+		}
 		assert bean instanceof BillOfMaterial;
         BillOfMaterial bom = (BillOfMaterial) bean;
         bom = bomRepo.save(bom);

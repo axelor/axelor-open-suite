@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
@@ -41,7 +41,7 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -56,7 +56,7 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected ReminderService reminderService;
+	protected DebtRecoveryService debtRecoveryService;
 	protected DoubtfulCustomerService doubtfulCustomerService;
 	protected ReimbursementExportService reimbursementExportService;
 	protected ReimbursementImportService reimbursementImportService;
@@ -93,10 +93,12 @@ public abstract class BatchStrategy extends AbstractBatch {
 	@Inject
 	protected ReimbursementService reimbursementService;
 
+	protected BatchStrategy() {
+	}
 
-	protected BatchStrategy(ReminderService reminderService) {
+	protected BatchStrategy(DebtRecoveryService debtRecoveryService) {
 		super();
-		this.reminderService = reminderService;
+		this.debtRecoveryService = debtRecoveryService;
 	}
 
 	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
@@ -203,9 +205,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 		incrementDone();
 	}
 
-	protected void updateMoveLineReport( MoveLineReport moveLineReport){
+	protected void updateAccountingReport( AccountingReport accountingReport){
 
-		moveLineReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
+		accountingReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
 
 		incrementDone();
 	}

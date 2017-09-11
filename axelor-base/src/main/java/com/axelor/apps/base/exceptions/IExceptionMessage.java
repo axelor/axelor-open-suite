@@ -70,13 +70,17 @@ public interface IExceptionMessage {
 	
 	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
 	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
-	
+
 	/**
 	 * Abstract batch
-	 */
-	
-	static final public String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable !" /*)*/;
-	
+	 */	
+	String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable!" /*)*/;
+	String ABSTRACT_BATCH_REPORT = /*$$(*/ "Batch report: " /*)*/;
+	String ABSTRACT_BATCH_DONE_SINGULAR = /*$$(*/ "%d record processed successfully, " /*)*/;
+	String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully, " /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
 	/**
 	 * Indicator generator grouping service
 	 */
@@ -125,7 +129,8 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
 	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
 	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
-	
+	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ " - Not null : " /*)*/;
+
 	/**
 	 * Template message service base impl
 	 */
@@ -202,4 +207,12 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
+	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
+	
+	
 }

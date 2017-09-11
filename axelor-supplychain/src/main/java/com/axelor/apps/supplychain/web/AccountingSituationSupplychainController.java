@@ -18,53 +18,28 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-import java.util.Map;
 
 public class AccountingSituationSupplychainController {
-
-    private PartnerRepository partnerRepo;
+	
+	@Inject
     private AccountingSituationSupplychainServiceImpl accountingSituationService;
-
-    @Inject
-    public AccountingSituationSupplychainController(AccountingSituationSupplychainServiceImpl accountingSituationService, PartnerRepository partnerRepo) {
-        this.accountingSituationService = accountingSituationService;
-        this.partnerRepo = partnerRepo;
-    }
-
+	
     public void computeUsedCredit(ActionRequest request, ActionResponse response) {
         AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-        accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);
-        response.setValues(accountingSituation);
-    }
-
-    public void updateCustomerCreditFromPartner(ActionRequest request, ActionResponse response) throws AxelorException {
-        Partner partnerView = request.getContext().asType(Partner.class);
-        if (partnerView.getId() != null && partnerView.getId() > 0) {
-            Partner partner = partnerRepo.find(partnerView.getId());
-            accountingSituationService.updateAcceptedCredit(partner);
-            accountingSituationService.updateUsedCredit(partner);
-            response.setValue("accountingSituationList", partner.getAccountingSituationList());
+        try {
+            accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);
+            response.setValue("usedCredit", accountingSituation.getUsedCredit());
+        } catch (AxelorException e) {
+            TraceBackService.trace(e);
+            response.setError(e.getMessage());
         }
     }
-
-    public void updateCustomerCreditFromSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-        saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-        if (saleOrder.getClientPartner() != null) {
-            Partner partner = saleOrder.getClientPartner();
-            Map<String, Object> map = accountingSituationService.updateCustomerCreditFromSaleOrder(partnerRepo.find(partner.getId()), saleOrder);
-            response.setValues(map);
-        }
-    }
+    
 }

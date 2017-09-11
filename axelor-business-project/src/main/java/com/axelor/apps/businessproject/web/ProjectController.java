@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ import com.google.inject.Inject;
 
 public class ProjectController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private ProjectService projectService;
@@ -104,7 +105,7 @@ public class ProjectController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
-		String name = I18n.get("Plannification and cost");
+		String name = I18n.get("Planification and costs");
 		
 		if (project.getCode() != null) {
 			name += " (" + project.getCode() + ")";

@@ -56,6 +56,18 @@ public class AppraisalController {
 		
 	}
 	
+	public void realize(ActionRequest request, ActionResponse response) {
+		
+		Appraisal appraisal = request.getContext().asType(Appraisal.class);
+		
+		appraisal = appraisalRepo.find(appraisal.getId());
+		
+		appraisalService.realize(appraisal);
+		
+		response.setReload(true);
+		
+	}
+	
 	public void cancel(ActionRequest request, ActionResponse response) {
 		
 		Appraisal appraisal = request.getContext().asType(Appraisal.class);
@@ -63,6 +75,18 @@ public class AppraisalController {
 		appraisal = appraisalRepo.find(appraisal.getId());
 		
 		appraisalService.cancel(appraisal);
+		
+		response.setReload(true);
+		
+	}
+	
+	public void draft(ActionRequest request, ActionResponse response) {
+		
+		Appraisal appraisal = request.getContext().asType(Appraisal.class);
+		
+		appraisal = appraisalRepo.find(appraisal.getId());
+		
+		appraisalService.draft(appraisal);
 		
 		response.setReload(true);
 		

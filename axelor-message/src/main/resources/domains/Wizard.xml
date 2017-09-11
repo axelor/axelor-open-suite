@@ -9,6 +9,8 @@
 
 		<string name="name" title="Name" />
 		<string name="code" title="Code" />
+		<string name="recordId" title="Record Id" transient="true"/>
+		<string name="recordName" title="Record Name" transient="true"/>
 
 	</entity>
 

@@ -8,17 +8,17 @@
 		icon="fa-cogs"  icon-background="#84429f"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
-		title="Bills of materials" action="manufacturing.root.bill.of.material" />
+		title="Bills of materials" action="manufacturing.root.bill.of.material" order="1" />
 
 	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL</domain>
+		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
-		title="Production processes" action="manufacturing.root.prod.process" />
+		title="Production processes" action="manufacturing.root.prod.process" order="5" />
 
 	<action-view name="manufacturing.root.prod.process" title="Production processes"
 		model="com.axelor.apps.production.db.ProdProcess" >
@@ -27,7 +27,7 @@
 	</action-view>
 		
 	<menuitem name="manufacturing-root-production-order" parent="manufacturing-root"
-		title="Productions orders" action="manufacturing.root.production.order" />
+		title="Productions orders" action="manufacturing.root.production.order" order="15" />
 
 	<action-view name="manufacturing.root.production.order" title="Productions orders"
 		model="com.axelor.apps.production.db.ProductionOrder" >
@@ -37,7 +37,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
-		title="Manufacturing orders" action="manufacturing.root.manuf.order" />
+		title="Manufacturing orders" action="manufacturing.root.manuf.order" order="20" />
 
 	<action-view name="manufacturing.root.manuf.order" title="Manufacturing orders"
 		model="com.axelor.apps.production.db.ManufOrder" >
@@ -48,7 +48,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
-		title="Operations orders" action="manufacturing.root.operation.order" />
+		title="Operations orders" action="manufacturing.root.operation.order" order="25" />
 
 	<action-view name="manufacturing.root.operation.order" title="Operation orders"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -59,7 +59,7 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
-		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" />
+		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" order="30" />
 
 	<action-view name="manufacturing.root.operation.order.planned.calendar" title="Planned operations"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -69,7 +69,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
-		title="Real operations" action="manufacturing.root.operation.order.real.calendar" />
+		title="Real operations" action="manufacturing.root.operation.order.real.calendar" order="35" />
 
 	<action-view name="manufacturing.root.operation.order.real.calendar" title="Real operations"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -79,7 +79,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
-		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" />
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" order="40" />
 
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		>
@@ -88,9 +88,9 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
-		title="Reportings"/>
+		title="Reportings" order="45" />
 		
-	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
+	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
 		title="Resources" action="manufacturing.conf.work.center" />
@@ -126,7 +126,7 @@
 		title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
 	
 	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
-		model="com.axelor.apps.production.db.ConfiguratorCreator" >
+		model="com.axelor.apps.sale.db.ConfiguratorCreator" >
 		<view type="grid" name="configurator-creator-grid" />
 		<view type="form" name="configurator-creator-form" />
 	</action-view>
@@ -135,13 +135,39 @@
 		title="Configurators" action="manufacturing.conf.configurator.configurators"/>
 	
 	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
-		model="com.axelor.apps.production.db.Configurator" >
+		model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
 	</action-view>
-	
-		
-	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" 
+
+	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators"
+			  title="Configurator BOM" action="manufacturing.conf.configurator.bom"/>
+
+	<action-view name="manufacturing.conf.configurator.bom" title="Configurator BOM"
+				 model="com.axelor.apps.production.db.ConfiguratorBOM" >
+		<view type="grid" name="configurator-bom-grid" />
+		<view type="form" name="configurator-bom-form" />
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-prodprocess" parent="manufacturing-conf-configurators"
+			  title="Configurator production process" action="manufacturing.conf.configurator.prod.process"/>
+
+	<action-view name="manufacturing.conf.configurator.prod.process" title="Configurator production process"
+				 model="com.axelor.apps.production.db.ConfiguratorProdProcess" >
+		<view type="grid" name="configurator-prod-process-grid" />
+		<view type="form" name="configurator-prod-process-form" />
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-prod-process-line" parent="manufacturing-conf-configurators"
+			  title="Configurator Phase" action="manufacturing.conf.configurator.prod.process.line"/>
+
+	<action-view name="manufacturing.conf.configurator.prod.process.line" title="Configurator Phase"
+				 model="com.axelor.apps.production.db.ConfiguratorProdProcessLine" >
+	<view type="grid" name="configurator-prod-process-line-grid" />
+	<view type="form" name="configurator-prod-process-line-form" />
+	</action-view>
+
+	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report"
 		title="Manufacturing"  action="manufacturing.dashboard.view" />	
 
 	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
@@ -182,6 +208,6 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL</domain>
+		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
 	</action-view>
 </object-views>

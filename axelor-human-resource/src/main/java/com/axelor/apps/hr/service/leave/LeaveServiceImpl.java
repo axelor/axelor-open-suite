@@ -31,13 +31,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -68,29 +68,29 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	protected DurationService durationService;
 	protected LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
-	protected EventService eventService;
-	protected EventRepository eventRepo;
 	protected PublicHolidayService publicHolidayService;
 	protected LeaveRequestRepository leaveRequestRepo;
 	protected AppBaseService appBaseService;
 	protected HRConfigService hrConfigService;
 	protected TemplateMessageService templateMessageService;
+	protected ICalendarEventRepository icalEventRepo;
+	protected ICalendarService icalendarService;
 	
 	@Inject
-	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService, EventService eventService,
-			EventRepository eventRepo,PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
-			HRConfigService hrConfigService, TemplateMessageService templateMessageService){
+	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
+			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
+			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
 		
 		this.durationService = durationService;
 		this.leaveLineRepo = leaveLineRepo;
 		this.weeklyPlanningService = weeklyPlanningService;
-		this.eventService = eventService;
-		this.eventRepo = eventRepo;
 		this.publicHolidayService = publicHolidayService;
 		this.leaveRequestRepo = leaveRequestRepo;
 		this.appBaseService = appBaseService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
+		this.icalEventRepo = icalEventRepo;
+		this.icalendarService = icalendarService;
 	}
 
 	/**
@@ -237,12 +237,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		else{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void manageValidLeaves(LeaveRequest leave) throws AxelorException{
+	public void manageValidateLeaves(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -260,12 +259,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),leave.getLeaveLine().getLeaveReason().getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+			leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
 		}
 		else{
 			leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -285,7 +284,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		else{
 			leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -306,6 +304,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			else{
 				leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
 			}
+			leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
 		}
 		else if(leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION){
 			if(leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME){
@@ -315,7 +314,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
 			}
 		}
-		leaveLineRepo.save(leaveLine);
 
 	}
 
@@ -412,9 +410,10 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 		LocalDateTime toDateTime = LocalDateTime.of(leave.getToDate().getYear(),leave.getToDate().getMonthValue(),leave.getToDate().getDayOfMonth(),endTimeHour,endTimeMin);
 
-		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventRepository.TYPE_LEAVE, leave.getLeaveLine().getLeaveReason().getLeaveReason()+" "+leave.getUser().getFullName());
-		eventRepo.save(event);
-		leave.setEvent(event);
+		ICalendarEvent event = icalendarService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), 4, leave.getLeaveLine().getLeaveReason().getLeaveReason()+" "+leave.getUser().getFullName());
+		icalEventRepo.save(event);
+		leave.setIcalendarEvent(event);
+		
 		return leave;
 	}
 	
@@ -513,16 +512,20 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 	}
 	
-	@Transactional
-	public void cancel(LeaveRequest leaveRequest) {
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 		
-		if (leaveRequest.getEvent() != null){
-			Event event = leaveRequest.getEvent();
-			leaveRequest.setEvent(null);
-			eventRepo.remove(eventRepo.find(event.getId()));
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageCancelLeaves(leaveRequest);
+		}
+		
+		if (leaveRequest.getIcalendarEvent() != null){
+			ICalendarEvent event = leaveRequest.getIcalendarEvent();
+			leaveRequest.setIcalendarEvent(null);
+			icalEventRepo.remove(icalEventRepo.find(event.getId()));
 		}
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
-		leaveRequestRepo.save(leaveRequest);
 	}
 	
 	public Message sendCancellationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
@@ -539,22 +542,21 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(LeaveRequest leaveRequest) throws AxelorException  {
-		
-				
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageSentLeaves(leaveRequest);
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void confirm(LeaveRequest leaveRequest) throws AxelorException {
+
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageSentLeaves(leaveRequest);
 		}
-		
+
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
 		leaveRequest.setRequestDate(appBaseService.getTodayDate());
 		
 		leaveRequestRepo.save(leaveRequest);
-		
+
 	}
-	
-	
+
 	public Message sendConfirmationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
@@ -574,7 +576,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public void validate(LeaveRequest leaveRequest) throws AxelorException  {
 		
 		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()){
-			this.manageValidLeaves(leaveRequest);
+			manageValidateLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
@@ -604,8 +606,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void refuse(LeaveRequest leaveRequest) throws AxelorException  {
 		
-		if(leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation())  {
-			this.manageRefuseLeaves(leaveRequest);
+		if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+			manageRefuseLeaves(leaveRequest);
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);

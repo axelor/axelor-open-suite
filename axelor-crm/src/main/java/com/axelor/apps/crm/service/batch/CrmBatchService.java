@@ -20,14 +20,14 @@ package com.axelor.apps.crm.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.ICrmBatch;
-import com.axelor.apps.crm.db.repo.CrmBatchRepository;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -37,44 +37,31 @@ import com.google.inject.Inject;
  * 
  * @version 0.1
  */
-public class CrmBatchService {
+public class CrmBatchService extends AbstractBatchService {
 
-	
-	@Inject
-	protected CrmBatchRepository crmBatchRepo;
-	
-// Appel 	
-	
-	/**
-	 * Lancer un batch à partir de son code.
-	 * 
-	 * @param batchCode
-	 * 		Le code du batch souhaité.
-	 * 
-	 * @throws AxelorException
-	 */
-	public Batch run(String batchCode) throws AxelorException {
+	@Override
+	protected Class<? extends Model> getModelClass() {
+		return CrmBatch.class;
+	}
+
+	@Override
+	public Batch run(Model batchModel) throws AxelorException {
 				
 		Batch batch;
-		CrmBatch crmBatch = crmBatchRepo.findByCode(batchCode);
+		CrmBatch crmBatch = (CrmBatch) batchModel;
 		
-		if (crmBatch != null){
-			switch (crmBatch.getActionSelect()) {
+		switch (crmBatch.getActionSelect()) {
+		
+		case ICrmBatch.BATCH_EVENT_REMINDER:
+			batch = eventReminder(crmBatch);
+			break;
 			
-			case ICrmBatch.BATCH_EVENT_REMINDER:
-				batch = eventReminder(crmBatch);
-				break;
-				
-			case ICrmBatch.BATCH_TARGET:
-				batch = target(crmBatch);
-				break;
-				
-			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), crmBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
-			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
+		case ICrmBatch.BATCH_TARGET:
+			batch = target(crmBatch);
+			break;
+			
+		default:
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), crmBatch.getActionSelect(), crmBatch.getCode()), IException.INCONSISTENCY);
 		}
 		
 		return batch;

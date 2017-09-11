@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
@@ -27,14 +32,15 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +49,7 @@ public class OperationOrderWorkflowService {
 	protected OperationOrderStockMoveService operationOrderStockMoveService;
 	protected OperationOrderRepository operationOrderRepo;
 	protected OperationOrderDurationRepository operationOrderDurationRepo;
+	protected AppProductionService appProductionService;
 
 	protected LocalDateTime now;
 	
@@ -56,6 +63,14 @@ public class OperationOrderWorkflowService {
 		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
+	/**
+	 * Plan an operation order.
+	 * For successive calls, must be called by order of operation order priority.
+	 * 
+	 * @param operationOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
 
@@ -75,6 +90,14 @@ public class OperationOrderWorkflowService {
 		return operationOrderRepo.save(operationOrder);
 	}
 	
+	/**
+	 * Replan an operation order.
+	 * For successive calls, must reset planned dates first, then call by order of operation order priority.
+	 * 
+	 * @param operationOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional
 	public OperationOrder replan(OperationOrder operationOrder) throws AxelorException  {
 
@@ -90,6 +113,22 @@ public class OperationOrderWorkflowService {
 		return operationOrderRepo.save(operationOrder);
 	}
 
+	/**
+	 * Reset the planned dates from the specified operation order list.
+	 * 
+	 * @param operationOrderList
+	 * @return
+	 */
+	@Transactional
+	public List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList) {
+		for (OperationOrder operationOrder : operationOrderList) {
+			operationOrder.setPlannedStartDateT(null);
+			operationOrder.setPlannedEndDateT(null);
+			operationOrder.setPlannedDuration(null);
+		}
+
+		return operationOrderList;
+	}
 
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 
@@ -128,15 +167,30 @@ public class OperationOrderWorkflowService {
 	 * @param operationOrder An operation order
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(OperationOrder operationOrder) {
+	public void start(OperationOrder operationOrder) throws AxelorException {
 		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
 			operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
 			operationOrder.setRealStartDateT(now);
 
 			startOperationOrderDuration(operationOrder);
 
+			if (operationOrder.getManufOrder() != null) {
+				int beforeOrAfterConfig = Beans
+						.get(ProductionConfigService.class)
+						.getProductionConfig(operationOrder.getManufOrder().getCompany())
+						.getStockMoveRealizeOrderSelect();
+				if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
+					operationOrderStockMoveService.finish(operationOrder);
+				}
+			}
 			operationOrderRepo.save(operationOrder);
 		}
+
+		if (operationOrder.getManufOrder().getStatusSelect()
+				!= IManufOrder.STATUS_IN_PROGRESS) {
+		    Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		}
+
 	}
 
 	/**
@@ -257,6 +311,39 @@ public class OperationOrderWorkflowService {
 		return totalDuration;
 	}
 
+	/**
+	 * Set planned start and end dates.
+	 * 
+	 * @param operationOrder
+	 * @param plannedStartDateT
+	 * @param plannedEndDateT
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public OperationOrder setPlannedDates(OperationOrder operationOrder, LocalDateTime plannedStartDateT,
+			LocalDateTime plannedEndDateT) {
+
+		operationOrder.setPlannedStartDateT(plannedStartDateT);
+		operationOrder.setPlannedEndDateT(plannedEndDateT);
+		return computeDuration(operationOrder);
+	}
+
+	/**
+	 * Set real start and end dates.
+	 * 
+	 * @param operationOrder
+	 * @param realStartDateT
+	 * @param realEndDateT
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public OperationOrder setRealDates(OperationOrder operationOrder, LocalDateTime realStartDateT,
+			LocalDateTime realEndDateT) {
+
+		operationOrder.setRealStartDateT(realStartDateT);
+		operationOrder.setRealEndDateT(realEndDateT);
+		return computeDuration(operationOrder);
+	}
 
 	@Transactional
 	public OperationOrder computeDuration(OperationOrder operationOrder)  {
@@ -276,7 +363,7 @@ public class OperationOrderWorkflowService {
 			operationOrder.setRealDuration(duration);
 		}
 
-		return operationOrderRepo.save(operationOrder);
+		return operationOrder;
 	}
 
 	public long getDuration(Duration duration)  {
@@ -331,9 +418,7 @@ public class OperationOrderWorkflowService {
 			if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
 				duration += qty.multiply(durationPerCycle).longValue();
 			} else {
-				duration += qty.divide(
-                            maxCapacityPerCycle, 0, RoundingMode.HALF_EVEN
-						).multiply(durationPerCycle).longValue();
+				duration += (qty.divide(maxCapacityPerCycle,RoundingMode.HALF_UP)).multiply(durationPerCycle).longValue();
 			}
 
 			duration += machine.getEndingDuration();

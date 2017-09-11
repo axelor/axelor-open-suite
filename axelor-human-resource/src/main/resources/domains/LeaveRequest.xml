@@ -23,7 +23,7 @@
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
-      <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event" />
+      <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent" title="Event" />
       <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
       <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
       

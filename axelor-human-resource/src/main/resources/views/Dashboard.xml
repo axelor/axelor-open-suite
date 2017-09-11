@@ -6,10 +6,12 @@
 	
 	<!-- Dashboard Manager -->
 	<dashboard title="Dashboard" name="hr.manager.dashboard.sample"  >
-		<dashlet action="hr.dashboard.timesheets.to.validate" height="450" canSearch="true"/>
-		<dashlet action="hr.dashboard.extrahours.to.validate" height="450" canSearch="true"/>
-		<dashlet action="hr.dashboard.expenses.to.validate" height="450" canSearch="true"/>
-		<dashlet action="hr.dashboard.leave.requests.to.validate" height="450" canSearch="true"/>
+		<dashlet action="hr.dashboard.timesheets.to.validate" height="450" canSearch="true" if="__config__.app.isApp('timesheet')"/>
+		<dashlet action="hr.dashboard.extrahours.to.validate" height="450" canSearch="true" if="__config__.app.isApp('exthrs')"/>
+		<dashlet action="hr.dashboard.expenses.to.validate" height="450" canSearch="true" if="__config__.app.isApp('expense')"/>
+		<dashlet action="hr.dashboard.leave.requests.to.validate" height="450" canSearch="true" if="__config__.app.isApp('leave')"/>
+		<dashlet action="hr.dashboard.leave.per.employee" colSpan="12" height="450" canSearch="true" if="__config__.app.isApp('leave')"/>
+		<dashlet action="hr.dashboard.show.employee.expenses" colSpan="12" height="450" canSearch="true"  if="__config__.app.isApp('expense')"/>
 	</dashboard>
 	
 	<action-view name="hr.dashboard.timesheets.to.validate" title="Timesheets to validate"
@@ -40,13 +42,23 @@
 		 <domain>self.statusSelect = 2</domain>
 	</action-view>
 
+	<action-view name="hr.dashboard.leave.per.employee" title="Leave Per Employee"
+		model="com.axelor.apps.hr.db.Charts">
+		<view type="chart" name="chart.leave.per.employee"/>
+	</action-view>
+
+	<action-view name="hr.dashboard.show.employee.expenses"
+				 title="Expense Per Employee"
+				 model="com.axelor.apps.hr.db.Expense">
+		<view type="chart" name="chart.expense.per.employee"/>
+	</action-view>
 
 	<!-- Dashboard User -->
 	<dashboard title="Dashboard" name="hr.user.dashboard.sample"  >
-		<dashlet action="hr.dashboard.my.timesheets" height="350" canSearch="true"/>
-		<dashlet action="hr.dashboard.my.extrahours" height="350" canSearch="true"/>
-		<dashlet action="hr.dashboard.my.expenses" height="350" canSearch="true"/>
-		<dashlet action="hr.dashboard.my.leave.requests" height="350" canSearch="true"/>
+		<dashlet action="hr.dashboard.my.timesheets" height="350" canSearch="true" if="__config__.app.isApp('timesheet')"/>
+		<dashlet action="hr.dashboard.my.extrahours" height="350" canSearch="true" if="__config__.app.isApp('exthrs')"/>
+		<dashlet action="hr.dashboard.my.expenses" height="350" canSearch="true" if="__config__.app.isApp('expense')"/>
+		<dashlet action="hr.dashboard.my.leave.requests" height="350" canSearch="true" if="__config__.app.isApp('leave')"/>
 	</dashboard>
 	
 	<action-view name="hr.dashboard.my.extrahours" title="My extra hours" model="com.axelor.apps.hr.db.ExtraHours">

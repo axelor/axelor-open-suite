@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public interface SaleOrderService {
 
 
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+	
+	public void computeMarginSaleOrder(SaleOrder saleOrder);
 
 
 	/**
@@ -90,7 +93,7 @@ public interface SaleOrderService {
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
-	
+
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
 
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
@@ -109,7 +112,16 @@ public interface SaleOrderService {
 
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 	
-	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException;
+	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException;
+
+	/**
+	 * Return the total price, computed from the lines.
+	 * This price is usually equals to {@link SaleOrder#exTaxTotal} but not
+	 * in all cases.
+	 * @param saleOrder
+	 * @return  total price from the sale order lines
+	 */
+	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
 }
 
 

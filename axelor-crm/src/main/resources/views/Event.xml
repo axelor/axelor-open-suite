@@ -54,22 +54,18 @@
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 	onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" onSave="action-event-group-on-save">
 		<toolbar>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+			<button name="grabEvent" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
-			<button name="start" help="Start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
-			<button name="pause" help="Pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
-			<button name="accept" help="Finish" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
+			<button name="start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
+			<button name="pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
+			<button name="accept" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
 		<menubar>
-			<menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 			  <item title="Create opportunity" action="save,action-event-view-create-opportunity"/>
 			  <item title="Create event" action="save,action-event-view-create-event"/>
 			</menu>
 		</menubar>
-		<panel colSpan="12" name="calendarConfig">
-			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
-			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
-		</panel>
 		<panel colSpan="12" name="meetingGeneral">
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="5" css="highlight" showIf="typeSelect == 2"/>
@@ -80,8 +76,8 @@
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
-			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
-			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
+			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
+			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<panel colSpan="12" hideIf="typeSelect == 1">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
@@ -96,6 +92,12 @@
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
+		<panel colSpan="12">
+			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator"/>
+		</panel>
+		<panel colSpan="12">
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
+		</panel>
 		<panel title="Add Guests" name="addGuests" sidebar="true">
 			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
 			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
@@ -106,12 +108,11 @@
 		</panel>
 
 		<panel sidebar="true" title="Attributes" name="meetingAttributes">
-			<field name="typeSelect" domain="self.value IN ('1','2','3','5')"/>
+			<field name="typeSelect" domain="self.value IN ('0','1','2','3')"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" />
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid" />
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
-			<field name="statusSelect" hidden="true" showIf="!typeSelect"/>
-			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2" />
+			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0" />
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
  			<field name="limitDateT" showIf="typeSelect == 4"/>
 		</panel>
@@ -121,6 +122,8 @@
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
+			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>	
+			<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-supplier-form" grid-view="partner-supplier-grid" />
 		</panel>
 		
 		<panel>
@@ -136,7 +139,7 @@
 	
 	<action-group name="action-group-crm-event-onload">
 		<action name="action-partner-attrs-hide-contact-partner" />
-		<action name="action-partner-method-check-rights" if="calendarCrm != null"/>
+		<action name="action-partner-method-check-rights" if="calendar != null"/>
 		<action name="action-event-hide-private" if="typeSelect == 2" />
 	</action-group>
 	
@@ -144,8 +147,8 @@
 		<field name="user" expr="eval:__user__"/>
 	</action-record>
     
-    <action-method name="action-event-method-domain-calendar-crm">
-    	<call class="com.axelor.apps.crm.web.EventController" method="setCalendarCrmDomain"/>
+    <action-method name="action-event-method-domain-calendar">
+    	<call class="com.axelor.apps.crm.web.EventController" method="setCalendarDomain"/>
     </action-method>
     
     <action-method name="action-partner-method-check-rights">
@@ -234,7 +237,7 @@
     
     <action-group name="action-event-new-record">
     	<action name="action-event-default-record"/>
-    	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
+    	<action name="action-event-record-default-duration" if="typeSelect != 0"/>
     	<action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     	<action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
@@ -267,13 +270,13 @@
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
-    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    	<field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
     	<field name="clientPartner" expr="eval: _clientPartner"/>
     	<field name="contactPartner" expr="eval: _contactPartner"/>
-    	<field name="lead" expr="eval: _eventLead"/>
+    	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
@@ -298,19 +301,20 @@
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="clientPartner" expr="eval:_saleOrder.clientPartner?.id != null ? __repo__(Partner).find(_saleOrder.clientPartner.id) : _saleOrder.clientPartner"/>
-	    <field name="contactPartner" expr="eval:_saleOrder.contactPartner?.id != null ? __repo__(Partner).find(_saleOrder.contactPartner.id) : _saleOrder.contactPartner"/>
+	    <field name="clientPartner" expr="eval:_clientPartner?.id != null ? __repo__(Partner).find(_clientPartner.id) : _clientPartner"/>
+		<field name="contactPartner" expr="eval:_contactPartner?.id != null ? __repo__(Partner).find(_contactPartner.id) : _contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
 	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
-    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false &amp;&amp; _partner.isCustomer == true"/>
     	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />
     	<field name="team" expr="eval: _partner.team"/>
+    	<field name="supplierPartner" expr="eval: _partner" if="_partner.isContact == false &amp;&amp; _partner.isSupplier == true"/>
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
@@ -324,8 +328,7 @@
 	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">
 		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
 	</action-record>
-    
-  
+
 	<!-- ACTIONS TO SET SELECTS -->
 	
 	<action-record name="action-set-task-status-select-2" model="com.axelor.apps.crm.db.Event">

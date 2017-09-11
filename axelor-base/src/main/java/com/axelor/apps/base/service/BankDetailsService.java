@@ -84,20 +84,4 @@ public class BankDetailsService {
 		
 		return bankDetails;
 	}
-
-	/**
-	 * Groovy equivalent : bankDetailsList.collect{it.id}.join(',')
-	 *
-	 * @param bankDetailsList
-	 * @return A string with a list of id following this format :
-	 *         13,1,5
-	 */
-	public String getIdStringListFromCollection(Collection<BankDetails> bankDetailsList) {
-		String idList = "";
-		for (BankDetails bankDetails : bankDetailsList) {
-			idList += idList.equals("") ? "" : ",";
-			idList += bankDetails.getId();
-		}
-		return idList;
-	}
 }

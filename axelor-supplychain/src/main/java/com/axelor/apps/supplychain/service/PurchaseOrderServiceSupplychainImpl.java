@@ -17,8 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -30,9 +34,12 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
@@ -43,8 +50,10 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -57,26 +66,50 @@ import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
-	@Inject
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
 	protected UnitConversionService unitConversionService;
-	
-	@Inject
 	protected StockMoveRepository stockMoveRepo;
+	protected AppSupplychainService appSupplychainService;
+	protected AccountConfigService accountConfigService;
+	protected AppAccountService appAccountService;
+	protected LocalDate today;
 	
 	@Inject
-	protected AppSupplychainService appSupplychainService; 
-
+	private BudgetDistributionRepository budgetDistributionRepo;
+  
 	@Inject
-	protected AccountConfigService accountConfigService;
-
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
+	public PurchaseOrderServiceSupplychainImpl(UnitConversionService unitConversionService, StockMoveRepository stockMoveRepo,
+											   AppSupplychainService appSupplychainService, AccountConfigService accountConfigService,
+											   AppAccountService appAccountService) {
+		this.unitConversionService = unitConversionService;
+		this.stockMoveRepo = stockMoveRepo;
+		this.appSupplychainService = appSupplychainService;
+		this.accountConfigService = accountConfigService;
+		this.appAccountService = appAccountService;
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
+	}
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
@@ -308,4 +341,124 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		purchaseOrderRepo.save(purchaseOrder);
 		
 	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder) {
+		List<Timetable> timetableList = purchaseOrder.getTimetableList();
+		BigDecimal totalHT = purchaseOrder.getExTaxTotal();
+		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+		if (timetableList != null) {
+			for (Timetable timetable : timetableList) {
+				sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
+			}
+		}
+		purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+	}
+	
+		
+	@Transactional
+	public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder) {
+		
+		for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+			BudgetDistribution newBudgetDistribution = new BudgetDistribution();
+			newBudgetDistribution.setAmount(BigDecimal.ZERO);
+			newBudgetDistribution.setBudget(purchaseOrder.getBudget());
+			newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
+			budgetDistributionRepo.save(newBudgetDistribution);
+		}
+	}
+
+	@Override
+	@Transactional(rollbackOn = {Exception.class})
+	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
+		// budget control
+		if (appAccountService.isApp("budget") && appAccountService.getAppBudget().getCheckAvailableBudget()) {
+			List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+
+			Map<Budget, BigDecimal> amountPerBudget = new HashMap<Budget, BigDecimal>();
+			if (appAccountService.getAppBudget().getManageMultiBudget()) {
+				for (PurchaseOrderLine pol : purchaseOrderLines) {
+					for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
+						Budget budget = bd.getBudget();
+
+						if (!amountPerBudget.containsKey(budget)) {
+							amountPerBudget.put(budget, bd.getAmount());
+						} else {
+							BigDecimal oldAmount = amountPerBudget.get(budget);
+							amountPerBudget.put(budget, oldAmount.add(bd.getAmount()));
+						}
+
+						isBudgetExceeded(budget, amountPerBudget.get(budget));
+					}
+				}
+			} else {
+				for (PurchaseOrderLine pol : purchaseOrderLines) {
+					// getting Budget associated to POL
+					Budget budget = pol.getBudget();
+
+					if (!amountPerBudget.containsKey(budget)) {
+						amountPerBudget.put(budget, pol.getExTaxTotal());
+					} else {
+						BigDecimal oldAmount = amountPerBudget.get(budget);
+						amountPerBudget.put(budget, oldAmount.add(pol.getExTaxTotal()));
+					}
+
+					isBudgetExceeded(budget, amountPerBudget.get(budget));
+				}
+			}
+		}
+		int intercoPurchaseCreatingStatus =
+				Beans.get(AppSupplychainService.class)
+				.getAppSupplychain()
+				.getIntercoPurchaseCreatingStatusSelect();
+		if (purchaseOrder.getInterco()
+				&& intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
+			Beans.get(IntercoService.class)
+					.generateIntercoSaleFromPurchase(purchaseOrder);
+		}
+		super.requestPurchaseOrder(purchaseOrder);
+	}
+
+	public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
+		if (budget == null) { return; }
+
+		// getting BudgetLine of the period
+		BudgetLine bl = null;
+		for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+			if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), today)) {
+				bl = budgetLine;
+				break;
+			}
+		}
+
+		// checking budget excess
+		if (bl != null) {
+			if (amount.add(bl.getAmountCommitted()).compareTo(bl.getAmountExpected()) > 0) {
+				throw new AxelorException(I18n.get(IExceptionMessage.PURCHASE_ORDER_2), IException.INCONSISTENCY, budget.getCode());
+			}
+		}
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		super.validatePurchaseOrder(purchaseOrder);
+
+		if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
+				&& !existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
+			createStocksMove(purchaseOrder);
+		}
+		
+		if (appAccountService.getAppBudget().getActive() && !appAccountService.getAppBudget().getManageMultiBudget()) {
+			generateBudgetDistribution(purchaseOrder);
+		}
+		int intercoPurchaseCreatingStatus =
+				Beans.get(AppSupplychainService.class)
+						.getAppSupplychain()
+						.getIntercoPurchaseCreatingStatusSelect();
+		if (purchaseOrder.getInterco()
+				&& intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
+			Beans.get(IntercoService.class)
+					.generateIntercoSaleFromPurchase(purchaseOrder);
+		}
+	}
+
 }

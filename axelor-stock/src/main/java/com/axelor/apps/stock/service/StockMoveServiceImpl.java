@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -64,7 +65,7 @@ import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected StockMoveLineService stockMoveLineService;
@@ -82,6 +83,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
+	
+	@Inject
+	protected PartnerProductQualityRatingServiceImpl partnerProductQualityRatingService;
 
 	@Inject
 	public StockMoveServiceImpl() {
@@ -298,6 +302,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		String newStockSeq = null;
 		stockMoveLineService.checkConformitySelection(stockMove);
+		stockMoveLineService.checkExpirationDates(stockMove);
 
 		stockMoveLineService.updateLocations(
 				stockMove.getFromLocation(),
@@ -310,6 +315,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
+		
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		resetWeights(stockMove);
@@ -332,9 +338,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 			computeWeights(stockMove);
 			stockMoveRepo.save(stockMove);
 		}
+		
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+			partnerProductQualityRatingService.calculate(stockMove);
+		}
 
 		return newStockSeq;
 	}
+
 
 	/**
 	 * Check and raise an exception if the provided stock move is involved in an
@@ -552,7 +563,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
-		stockMoveRepo.save(stockMove);
+
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+			partnerProductQualityRatingService.undoCalculation(stockMove);
+		}
 	}
 
 	@Override
@@ -735,6 +749,47 @@ public class StockMoveServiceImpl implements StockMoveService {
 		Double qty = inQty-outQty;
 		
 		return qty;
+	}
+
+
+	@Override
+	public List<StockMoveLine> changeConformityStockMove(StockMove stockMove) {
+		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+
+		if (stockMoveLineList != null) {
+			for (StockMoveLine stockMoveLine : stockMoveLineList) {
+				stockMoveLine.setConformitySelect(stockMove.getConformitySelect());
+			}
+		}
+
+		return stockMoveLineList;
+	}
+
+
+	@Override
+	public Integer changeConformityStockMoveLine(StockMove stockMove) {
+		Integer stockMoveConformitySelect;
+		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+
+		if (stockMoveLineList != null) {
+			stockMoveConformitySelect = StockMoveRepository.CONFORMITY_COMPLIANT;
+
+			for (StockMoveLine stockMoveLine : stockMoveLineList) {
+				Integer conformitySelect = stockMoveLine.getConformitySelect();
+
+				if (!conformitySelect.equals(StockMoveRepository.CONFORMITY_COMPLIANT)) {
+					stockMoveConformitySelect = conformitySelect;
+					if (conformitySelect.equals(StockMoveRepository.CONFORMITY_NON_COMPLIANT)) {
+						break;
+					}
+				}
+			}
+		} else {
+			stockMoveConformitySelect = StockMoveRepository.CONFORMITY_NONE;
+		}
+
+		stockMove.setConformitySelect(stockMoveConformitySelect);
+		return stockMoveConformitySelect;
 	}
 
 }

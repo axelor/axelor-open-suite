@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PaymentScheduleLineService paymentScheduleLineService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
@@ -293,7 +294,7 @@ public class PaymentScheduleService {
 		for (Invoice invoice : paymentSchedule.getInvoiceSet())  {
 			if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0 && invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
 				for (MoveLine moveLine : invoice.getMove().getMoveLineList()){
-					if (moveLine.getAccount().getReconcileOk() && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
+					if (moveLine.getAccount().getUseForPartnerBalance() && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
 						moveLines.add(moveLine);
 					}
 				}
@@ -336,7 +337,7 @@ public class PaymentScheduleService {
 
 			for (MoveLine moveLineInvoice : moveLineInvoiceToPay){
 
-				moveLineInvoice.getMove().setIgnoreInReminderOk(true);
+				moveLineInvoice.getMove().setIgnoreInDebtRecoveryOk(true);
 				this.updateInvoice(moveLineInvoice.getMove().getInvoice(), paymentSchedule);
 
 			}

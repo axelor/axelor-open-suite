@@ -18,15 +18,22 @@
 package com.axelor.apps.base.service.imports.importer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -45,15 +52,21 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
+import com.google.inject.Inject;
+
+import org.apache.poi.ss.usermodel.Sheet;
 
 public abstract class Importer {
 
 	private static final File DEFAULT_WORKSPACE = createDefaultWorkspace();
 	
-	protected Logger log = LoggerFactory.getLogger(getClass());
+	protected Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private ImportConfiguration configuration;
 	private File workspace;
+	
+	@Inject
+	ExcelToCSV excelToCSV;
 
 	public void setConfiguration( ImportConfiguration configuration ) { this.configuration = configuration; }
 
@@ -117,6 +130,9 @@ public abstract class Importer {
 		if ( isZip( data ) ) { unZip( data, finalWorkspace ); }
 		else { FileUtils.copyFile(data, new File( finalWorkspace, metaFile.getFileName() ) ); }
 		
+		if (Files.getFileExtension(data.getName()).equals("xlsx")) 
+			importExcel(new File ( finalWorkspace, metaFile.getFileName()));
+		
 		return finalWorkspace;
 		
 	}
@@ -153,6 +169,9 @@ public abstract class Importer {
 					fileOutputStream.write(buffer, 0, bytesRead);
 				}
 
+				if (Files.getFileExtension(extractFile.getName()).equals("xlsx")) {
+					importExcel(extractFile);
+				}
 			} catch (IOException ioException) {
 				log.error( ioException.getMessage() );
 				continue;
@@ -191,4 +210,22 @@ public abstract class Importer {
 		
 	}
 
-}
+	public void importExcel(File excelFile) throws IOException {
+		List<Map> sheetList = excelToCSV.generateExcelSheets(excelFile);
+		FileInputStream inputStream = new FileInputStream(excelFile);
+		Workbook workBook = new XSSFWorkbook(inputStream);
+
+		try {
+				for (int i = 0; i < sheetList.size(); i++) {
+					Sheet sheet = workBook.getSheet(sheetList.get(i).get("name").toString());
+					File sheetFile = new File(excelFile.getParent() + "/" + sheetList.get(i).get("name").toString() + ".csv");
+					excelToCSV.writeTOCSV(sheetFile, sheet);
+				}
+
+		} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+
+	
+	}

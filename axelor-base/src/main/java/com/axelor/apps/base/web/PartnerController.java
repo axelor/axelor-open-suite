@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.apps.base.db.*;
-import com.axelor.apps.base.db.repo.PartnerListRepository;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -74,7 +74,7 @@ public class PartnerController {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);

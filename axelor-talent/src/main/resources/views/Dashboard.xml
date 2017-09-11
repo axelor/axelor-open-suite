@@ -8,8 +8,7 @@
 		<dashlet action="chart:chart.nb.hours.per.category" height="350" />
 		<dashlet action="chart:chart.nb.hours.per.training" height="350" />
 		<dashlet action="chart:chart.nb.trained.employee.per.category" height="350" />
-		<dashlet action="chart:chart.nb.delivered.hours.for.last.3.years" height="350" />
-		<dashlet action="chart:chart.nb.delivered.hours.per.month" height="350" />
+		<dashlet action="chart:chart.nb.training.hours.per.month" height="350" />
 	</dashboard>
 	
 

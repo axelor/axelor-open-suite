@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 
 public class PayVoucherElementToPayService {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	/**
 	 * Generic method for creating invoice to pay lines (2nd O2M in the view)

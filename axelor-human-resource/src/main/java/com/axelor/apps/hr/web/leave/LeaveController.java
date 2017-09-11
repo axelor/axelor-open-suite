@@ -224,7 +224,7 @@ public class LeaveController {
 	}
 	
 	//validating leave request and sending an email to the applicant
-	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void validate(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
 			LeaveService leaveService = leaveServiceProvider.get();

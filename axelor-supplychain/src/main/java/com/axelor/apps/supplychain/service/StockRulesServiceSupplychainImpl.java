@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,6 +25,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
+
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -35,6 +42,7 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -53,6 +61,15 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 	@Inject
 	private PurchaseOrderRepository purchaseOrderRepo;
+	
+	@Inject
+	private TemplateRepository templateRepo;
+	
+	@Inject
+	private TemplateMessageService templateMessageService;
+	
+	@Inject
+	private MessageRepository messageRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -75,8 +92,17 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 			if(stockRules.getOrderAlertSelect() ==  StockRulesRepository.ORDER_ALERT_ALERT)  {
 
-				//TODO
-
+				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  StockRules.class.getName()).fetchOne();
+				try {
+					Message message = templateMessageService.generateMessage(stockRules, template);
+					messageRepo.save(message);
+//					if (JPA.em().getTransaction().isActive()) {
+//						JPA.em().getTransaction().commit();
+//						JPA.em().getTransaction().begin();
+//					}
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
+					throw new AxelorException(e, IException.TECHNICAL);
+				}
 			}
 			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
 

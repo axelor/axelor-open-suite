@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -86,7 +87,7 @@ import com.google.inject.persist.Transactional;
 
 public class ReimbursementExportService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;
@@ -165,11 +166,11 @@ public class ReimbursementExportService {
 				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-//				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
-			reimbursementRepo.save(reimbursement);
-//			return reimbursement;
+			reimbursement = reimbursementRepo.save(reimbursement);
+			return reimbursement;
 		}
 
 		log.debug("End runReimbursementProcess");
@@ -299,6 +300,7 @@ public class ReimbursementExportService {
 	public Reimbursement createReimbursement(Partner partner, Company  company) throws AxelorException   {
 		Reimbursement reimbursement = new Reimbursement();
 		reimbursement.setPartner(partner);
+		reimbursement.setCompany(company);
 
 		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
 
@@ -317,8 +319,7 @@ public class ReimbursementExportService {
 	 * @return
 	 */
 	public boolean canBeReimbursed(Partner partner, Company company){
-
-		return !accountBlockingService.isReminderBlocking(partner, company);
+		return !accountBlockingService.isReimbursementBlocking(partner, company);
 	}
 
 
@@ -555,7 +556,7 @@ public class ReimbursementExportService {
 		Partner partner = invoice.getPartner();
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		// récupération des trop-perçus du tiers
-		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
 				MoveRepository.STATUS_VALIDATED , partner, MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 

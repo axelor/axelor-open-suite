@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.ebics.xml;
 
 import java.io.ByteArrayInputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -157,7 +158,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    addNamespaceDecl("", "http://www.ebics.org/H003");
+    addNamespaceDecl(XMLConstants.DEFAULT_NS_PREFIX, "http://www.ebics.org/H003");
     setSaveSuggestedPrefixes("http://www.w3.org/2000/09/xmldsig#", "ds");
 
     return super.toByteArray();

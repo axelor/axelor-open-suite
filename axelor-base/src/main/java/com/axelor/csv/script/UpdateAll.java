@@ -51,8 +51,8 @@ public class UpdateAll {
 						for(Integer month : Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12})) {
 							Period period = new Period();
 							LocalDate dt = LocalDate.of(year.getFromDate().getYear(),month,1);
-							period.setToDate(dt.withDayOfMonth(1));
-							period.setFromDate(dt.withDayOfMonth(dt.lengthOfMonth()));
+							period.setFromDate(dt.withDayOfMonth(1));
+							period.setToDate(dt.withDayOfMonth(dt.lengthOfMonth()));
 							period.setYear(year);
 							period.setStatusSelect(PeriodRepository.STATUS_OPENED);
 							period.setCode((dt.toString().split("-")[1]+"/"+year.getCode().split("_")[0]+"_"+company.getCode()).toUpperCase());

@@ -17,11 +17,15 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.db.Model;
+import com.google.common.base.Joiner;
+
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Collection;
 
 public final class StringTool {
 	
@@ -52,11 +56,12 @@ public final class StringTool {
 		return string.replaceFirst("\\w", Character.toString(string.toUpperCase().charAt(0)));
 		
 	}
-	
+
 	/**
 	 * Complete string with fixed length.
-	 * 
-	 * @param string
+	 * @param s
+	 * @param fillChar
+	 * @param size
 	 * @return
 	 */
 	public static String fillStringRight(String s, char fillChar, int size){
@@ -69,11 +74,12 @@ public final class StringTool {
 		return string;
 		
 	}
-	
+
 	/**
 	 * Complete string with fixed length.
-	 * 
-	 * @param string
+	 * @param s
+	 * @param fillChar
+	 * @param size
 	 * @return
 	 */
 	public static String fillStringLeft(String s, char fillChar, int size){
@@ -204,12 +210,11 @@ public final class StringTool {
 		
 		return sb.toString();
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de mettre la première lettre d'une chaine de caractère en majuscule
-	 * @param value
-	 * 			Une chaine de caractère
+	 * @param s
 	 * @return
 	 */
 	public static String capitalizeFirstLetter(String s) {
@@ -230,9 +235,29 @@ public final class StringTool {
 	 * @param string
 	 * @return list of integers
 	 */
-	public static List<Integer> getIntegerListFromString(String string) {
+	public static List<Integer> getIntegerList(String string) {
 		return string != null ? Arrays.stream(string.split("\\D+")).map(Integer::valueOf).collect(Collectors.toList())
 				: new ArrayList<>();
 	}
 
+
+	/**
+	 * Retrieve an ID list from a collection of any object
+	 * if the collection is empty, this method will return "0"
+	 * @param collection
+	 * @return
+	 */
+	public static String getIdFromCollection(Collection<? extends Model> collection) {
+		List<Long> idList = new ArrayList<>();
+		String idString;
+		if (collection.isEmpty()) {
+			idString = "0";
+		} else {
+			for (Model item : collection) {
+				idList.add(item.getId());
+			}
+			idString = Joiner.on(",").join(idList);
+		}
+		return idString;
+	}
 }

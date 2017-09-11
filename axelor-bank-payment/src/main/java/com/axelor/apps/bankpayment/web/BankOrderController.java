@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
@@ -47,7 +48,7 @@ import com.google.inject.Inject;
 
 public class BankOrderController {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected BankOrderService bankOrderService;

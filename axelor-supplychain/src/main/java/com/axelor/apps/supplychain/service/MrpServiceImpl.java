@@ -17,7 +17,19 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.Pair;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
@@ -41,12 +53,18 @@ import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
-import com.axelor.apps.supplychain.db.*;
+import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.db.MrpFamily;
+import com.axelor.apps.supplychain.db.MrpForecast;
+import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.db.MrpLineOrigin;
+import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.tool.Pair;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -58,18 +76,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
 
 
 public class MrpServiceImpl implements MrpService  {
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected MrpRepository mrpRepository;
 	protected LocationRepository locationRepository;
@@ -450,7 +461,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType purchaseProposalMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
 		String statusSelect = purchaseProposalMrpLineType.getStatusSelect();
-		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
 			statusList.add(IPurchaseOrder.STATUS_VALIDATED);
@@ -487,7 +498,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType saleForecastMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
 		String statusSelect = saleForecastMrpLineType.getStatusSelect();
-		List<Integer> statusList = StringTool.getIntegerListFromString(statusSelect);
+		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
 			statusList.add(ISaleOrder.STATUS_ORDER_CONFIRMED);
@@ -732,7 +743,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected List<Location> getAllLocationAndSubLocation(Location location)  {
 	
-		List<Location> subLocationList =  locationRepository.all().filter("self.parent = ?1", location).fetch();
+		List<Location> subLocationList =  locationRepository.all().filter("self.parentLocation = ?1", location).fetch();
 	
 		for(Location subLocation : subLocationList)  {
 			

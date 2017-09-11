@@ -12,27 +12,15 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber"/>
+        <field name="trackingNumber" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
         <field name="conformitySelect"/>
-    </grid>
-    
-    <grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
-        <field name="productName" readonly="true" />
-        <field name="product" readonly="true" form-view="product-form" grid-view="product-grid"/>
-        <field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-        <field name="qty" aggregate="sum"/>
-        <field name="unitPriceUntaxed" x-scale="2"/>
-        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
-        <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" readonly="true"/>
-        <field name="conformitySelect" readonly="true"/>
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-group-onload" width="large">
         <panel name="main" >
             <field name="productName" />
-	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" colSpan="3"/>
 	        <field name="realQty" colSpan="3"/>
@@ -41,12 +29,24 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netWeight" readonly="true" showIf="netWeight != 0"/>
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"  />
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
+
+	<grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+		<field name="productName" readonly="true" />
+		<field name="product" readonly="true" form-view="product-form" grid-view="product-grid"/>
+		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="unitPriceUntaxed" x-scale="2"/>
+		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+		<field name="conformitySelect" readonly="true"/>
+	</grid>
     
     <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock Move line">
     	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
@@ -58,7 +58,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
         <field name="conformitySelect"/>
     </grid>
     
@@ -74,7 +74,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
         <field name="stockMove.statusSelect"/>
     </grid>
 
@@ -90,7 +90,7 @@
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
-		<field name="trackingNumber" />
+		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" />
 		<field name="stockMove.statusSelect" />
 	</grid>
 
@@ -116,7 +116,7 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
             <field name="netWeight" readonly="true" showIf="netWeight != 0"/>
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
@@ -130,7 +130,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
     </grid>
     
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -143,7 +143,7 @@
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"  />
 	        <field name="stockMove" hidden="true"/>
         </panel>
@@ -167,6 +167,7 @@
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
         <action name="action-inventory-line-attrs-tracking-number"/>
         <action name="action-stock-move-line-attrs-show-unit-price-taxed"/>
+		<action name="action-stock-move-line-tracking-number-attrs"/>
 	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
@@ -181,6 +182,10 @@
     	<action name="action-stock-move-line-record-new"/>
     	<action name="stock-move-line-production-record-default"/>
     </action-group>
+
+	<action-attrs name="action-stock-move-line-tracking-number-attrs">
+		<attribute for="trackingNumber" name="readonly" expr="eval: product?.trackingNumberConfiguration?.generatePurchaseAutoTrackingNbr || product?.trackingNumberConfiguration?.generateProductionAutoTrackingNbr || product?.trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
+	</action-attrs>
     
     <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">
     	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>

@@ -7,6 +7,7 @@
 		<panel>
 			<field name="projectLabel"/>
 			<field name="generatedElementTypeSelect"/>
+			<field name="resourceManagement" widget="boolean-switch" />
 		</panel>
 	</form>
 	

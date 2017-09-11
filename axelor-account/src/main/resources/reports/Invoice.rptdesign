@@ -853,7 +853,8 @@
 	BankDetail.iban, 
 	Bank.code as "bic",
 	BankDetail.bank_address, 
-	Invoice.note, 
+	Invoice.note,
+	Invoice.specific_notes, 
 	Invoice.internal_reference, 
 	Invoice.external_reference, 
 	PrintingSettings.pdf_header as "header", 
@@ -1690,9 +1691,11 @@ AND Invoice.id in (@INJECTID)
             <property name="leftMargin">0.4in</property>
             <property name="rightMargin">0.15625in</property>
             <property name="headerHeight">0cm</property>
-            <property name="footerHeight">1cm</property>
+            <property name="footerHeight">2.4cm</property>
             <page-footer>
                 <grid id="3692">
+                    <property name="height">1.905cm</property>
+                    <property name="width">19.261666666666667cm</property>
                     <column id="3693">
                         <property name="width">5.802083333333333in</property>
                     </column>
@@ -1702,12 +1705,40 @@ AND Invoice.id in (@INJECTID)
                     </column>
                     <column id="3714">
                         <property name="textAlign">right</property>
-                        <property name="width">2cm</property>
+                        <property name="width">3.4395833333333337cm</property>
                     </column>
+                    <row id="4291">
+                        <property name="height">0.5cm</property>
+                        <cell id="4292">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <text id="4273">
+                                <property name="fontSize">9pt</property>
+                                <property name="fontStyle">italic</property>
+                                <property name="paddingBottom">5pt</property>
+                                <property name="textAlign">justify</property>
+                                <property name="dataSet">InvoiceDB</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">specific_notes</property>
+                                        <text-property name="displayName">specific_notes</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["specific_notes"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["specific_notes"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
                     <row id="3695">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <property name="height">0.5cm</property>
+                        <property name="height">1.2435416666666665cm</property>
                         <cell id="3696">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -1735,6 +1766,12 @@ AND Invoice.id in (@INJECTID)
                                         <text-property name="displayName">operation_type_select</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["operation_type_select"]</expression>
                                         <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">invoicecountry</property>
+                                        <text-property name="displayName">invoicecountry</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["invoicecountry"]</expression>
+                                        <property name="dataType">string</property>
                                     </structure>
                                     <structure>
                                         <property name="name">invoice_date</property>
@@ -1779,9 +1816,39 @@ AND Invoice.id in (@INJECTID)
                                         <property name="dataType">string</property>
                                     </structure>
                                     <structure>
-                                        <property name="name">address_str</property>
-                                        <text-property name="displayName">address_str</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["address_str"]</expression>
+                                        <property name="name">addressl2</property>
+                                        <text-property name="displayName">addressl2</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["addressl2"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">addressl3</property>
+                                        <text-property name="displayName">addressl3</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["addressl3"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">addressl4</property>
+                                        <text-property name="displayName">addressl4</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["addressl4"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">addressl5</property>
+                                        <text-property name="displayName">addressl5</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["addressl5"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">addressl6</property>
+                                        <text-property name="displayName">addressl6</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["addressl6"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">countryName</property>
+                                        <text-property name="displayName">countryName</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["countryName"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
                                     <structure>

@@ -5,12 +5,12 @@
     
     <grid name="partner-category-grid" title="Partner categories" model="com.axelor.apps.base.db.PartnerCategory">
 		<field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
     <form name="partner-category-form" title="Partner category" model="com.axelor.apps.base.db.PartnerCategory"  >
     	<panel name="main" >
-			<field name="code" x-bind="{{code|uppercase}}"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="name"/>
         </panel>
     </form>

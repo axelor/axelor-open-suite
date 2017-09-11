@@ -43,14 +43,14 @@ public class AccountingBatchController {
 	 * @param request
 	 * @param response
 	 */
-	public void actionReminder(ActionRequest request, ActionResponse response){
+	public void actionDebtRecovery(ActionRequest request, ActionResponse response){
 
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
 		Batch batch = null;
 
-		if(accountingBatch.getReminderTypeSelect() == AccountingBatchRepository.ACTION_REMINDER)  {
-			batch = accountingBatchService.reminder(accountingBatchRepo.find(accountingBatch.getId()));
+		if(accountingBatch.getDebtRecoveryTypeSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
+			batch = accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
 		}
 		if(batch != null)
 			response.setFlash(batch.getComments());
@@ -191,6 +191,13 @@ public class AccountingBatchController {
 
 	}
 
+	public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Batch batch = accountingBatchService.creditTransfer(accountingBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
 
 	// WS
 

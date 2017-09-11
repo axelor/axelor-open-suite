@@ -5,7 +5,7 @@
 
 
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
-		<field name="code"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="actionSelect"/>
 		<field name="company"/>
 		<field name="description"/>
@@ -14,11 +14,11 @@
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
 	  	<panel name="main">
 		    <field name="actionSelect"/>
-		    <field name="code"/>
+		    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		    <field name="company"/>
 		</panel>
 		<panel-tabs>
-			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
+			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="$contains([1, 5], actionSelect)">
 			    <field name="leaveReason" colSpan="3" onChange="action-hr-batch-record-day-number-default" requiredIf="actionSelect == 1"/>
 			    <field name="comments" colSpan="9"/>
 			    <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>

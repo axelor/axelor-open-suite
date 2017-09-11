@@ -31,7 +31,7 @@
 	</cards>
 	
 	<grid name="stock-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
-	    <field name="code"/>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="$stockMinDate" title="Min stock date" type="date" />
 	    <field name="$stockMin" title="Min stock"  type="integer"/>
@@ -50,7 +50,7 @@
 			<panel colSpan="10">
 	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 	       			<editor x-show-titles="false">
-	         				<field name="code" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" x-bind="{{code|uppercase}}"/>
+	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
 	         				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
 	       			</editor>
 	     			</field>

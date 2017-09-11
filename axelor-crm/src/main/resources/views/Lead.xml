@@ -5,10 +5,10 @@
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
     	<toolbar>
-    		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+    		<button name="grabLeads" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
 <!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->
-    		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records" help=""/>
+    		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records"/>
     		<button name="importLeads" title="Import leads" onClick="action-crm-method-lead-import-leads" /> 
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
@@ -25,7 +25,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
+        <button name="grabLead" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -33,16 +33,16 @@
    	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
 		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
 		onNew="action-group-crm-lead-onnew" >
-		
-		<toolbar>
-			<button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" readonlyIf="statusSelect == 4 || statusSelect == 6" onClick="save,action-lead-view-convert-lead"/>
-			<button name="sendByEmail" title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 6" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
-			<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
-		</toolbar>
+
 		<menubar>
-			<menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+			  <item title="Print" action="action-crm-lead-method-print"/>
+			</menu>
+			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
 			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
+			  <item title="Convert lead" hideIf="statusSelect == 4" readonlyIf="statusSelect == 4 || statusSelect == 6" action="save,action-lead-view-convert-lead"/>
+			  <item title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 6" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
 		<panel name="main" >
@@ -78,14 +78,14 @@
 		
 		<panel name="contactDetails" title="Contact details">
 			<panel colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-				<field name="mobilePhone" colSpan="4" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
-				<field name="isDoNotCall" colSpan="2"/>
-				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="4">
+				<field name="mobilePhone" colSpan="3" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
+				<field name="isDoNotCall" colSpan="3"/>
+				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="3">
 					<editor x-show-titles="false">
 						<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 					</editor>
 				</field>
-				<field name="isDoNotSendEmail" colSpan="2"/>
+				<field name="isDoNotSendEmail" colSpan="3"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
 				<field name="fax" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fax-phone-number"/>
 				<field name="webSite"/>
@@ -133,12 +133,11 @@
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
 		
-		<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="lead-form"/>
+		<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="event-form"/>
 		<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
 			<panel-dashlet action="action-lead-view-opportunity"/>
-			<panel-dashlet action="action-lead-view-event-ticket"/>
 			<panel-dashlet action="action-lead-view-emails"/>
 			<panel-dashlet action="action-lead-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')"/>
  		</panel>
@@ -149,7 +148,7 @@
 	  	</panel-mail>
 
 	</form>
-
+	
 	<grid name="event-lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
         <field name="name"/>
         <field name="firstName"/>
@@ -249,13 +248,6 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-lead-view-event-ticket" title="Tickets" model="com.axelor.apps.crm.db.Ticket">
-		<view type="grid" name="ticket-grid"/>
-		<view type="form" name="ticket-form"/>
-		<domain>self.lead.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-	
 	<action-view name="action-lead-view-emails" title="Emails" model="com.axelor.apps.message.db.Message">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
@@ -289,7 +281,5 @@
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>
-	
-	
 	
 </object-views>

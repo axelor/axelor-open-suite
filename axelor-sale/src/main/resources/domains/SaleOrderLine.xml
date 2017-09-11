@@ -29,11 +29,12 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
-  	<string name="productName" title="Displayed Product name" required="true"/>
+  	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
   	<decimal name="price" title="Unit price" precision="20" scale="10"/>
   	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
   	
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+      <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
   	<decimal name="inTaxTotal" title="Total A.T.I."/>
   	
@@ -46,9 +47,14 @@
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>
   	
+<!-- 	Margins -->
+	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>
+	<decimal name="subTotalGrossMargin" title="SubTotal gross margin"/>
+	<decimal name="subMarginRate" title="Sub margin rate"/>
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
+	<decimal name="deliveredQuantities" title="Delivered quantities"/>
 
 <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>

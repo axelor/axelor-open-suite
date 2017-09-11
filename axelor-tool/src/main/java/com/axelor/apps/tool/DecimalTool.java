@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -32,7 +33,7 @@ import com.axelor.apps.tool.date.DateTool;
  */
 public final class DecimalTool {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DecimalTool.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	/**
 	 * Proratiser une valeur en fonction de date.

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.xml;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,7 +36,7 @@ import org.w3c.dom.NodeList;
 
 public class XPathParse {
 
-	private static final Logger LOG = LoggerFactory.getLogger(XPathParse.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private Document doc;
 

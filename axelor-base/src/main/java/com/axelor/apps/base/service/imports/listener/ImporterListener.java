@@ -28,9 +28,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 
+import java.lang.invoke.MethodHandles;
+
 public class ImporterListener implements Listener {
 
-	protected Logger log = LoggerFactory.getLogger(getClass());
+	protected Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private String name, importLog = "";
 	private int totalRecord, successRecord, notNull, anomaly;
@@ -43,7 +45,7 @@ public class ImporterListener implements Listener {
 	public String getImportLog(){
 		
 		String log = importLog;
-		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1)+ totalRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2)  + successRecord + " - Non null : " + notNull;
+		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1)+ totalRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2)  + successRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_5) + notNull;
 		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_3) + anomaly;
 		
 		return log;

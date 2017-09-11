@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -51,11 +52,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class StockMoveController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private StockMoveService stockMoveService;
@@ -65,6 +65,7 @@ public class StockMoveController {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -84,6 +85,7 @@ public class StockMoveController {
 			StockMove stockMove = stockMoveRepo.find(stockMoveFromRequest.getId());
 			String newSeq = stockMoveService.realize(stockMove);
 			
+			
 			response.setReload(true);
 
 			if(newSeq != null)  {
@@ -98,6 +100,8 @@ public class StockMoveController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
 
@@ -288,49 +292,17 @@ public class StockMoveController {
 		}
 
 	}
-	
-	@Transactional
+
 	public void changeConformityStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		
-		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()){
-				stockMoveLine.setConformitySelect(stockMove.getConformitySelect());
-			}
-			response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
-		} 
+		response.setValue("stockMoveLineList", stockMoveService.changeConformityStockMove(stockMove));
 	}
-	
-	@Transactional
+
 	public void changeConformityStockMoveLine(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		
-		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()){
-				Integer i = 0;
-				if(stockMoveLine.getConformitySelect() != null){
-					Integer conformitySelectBase = 1;
-					while(i < stockMove.getStockMoveLineList().size()){
-						Integer conformityLineSelect = stockMoveLine.getConformitySelect();
-						if(conformityLineSelect == 3){
-							response.setValue("conformitySelect", conformityLineSelect);
-							return;
-						}
-						
-						if (conformityLineSelect == conformitySelectBase){
-							response.setValue("conformitySelect", conformitySelectBase);
-						} else if (conformityLineSelect != conformitySelectBase){
-							conformitySelectBase = conformityLineSelect;
-						}
-						i++;
-					}
-				}
-				
-			}
-		}
+		response.setValue("conformitySelect", stockMoveService.changeConformityStockMoveLine(stockMove));
 	}
-	
-	
+
 	public void  compute(ActionRequest request, ActionResponse response) {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);

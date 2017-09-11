@@ -7,12 +7,10 @@ apply {
 axelor {
 	title "Axelor bank payment"
 	description "Axelor Bank Payment Module"
-
 	removable true
 }
 
 dependencies {
 	compile project(":modules:axelor-account")
 	compile files("src/main/lib/ebics-1.0.2.jar")
-//	compile "org.bouncycastle:bcprov-jdk14:1.38"
 }

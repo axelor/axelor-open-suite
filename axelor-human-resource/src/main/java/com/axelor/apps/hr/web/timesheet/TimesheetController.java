@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
@@ -60,11 +62,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
@@ -76,7 +77,8 @@ public class TimesheetController {
 	private Provider<ProductRepository> productRepoProvider;
 	@Inject
 	private Provider<ProjectRepository> projectRepoProvider;
-	
+	@Inject
+	private Provider<UserHrService> userHrservice;
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -107,7 +109,10 @@ public class TimesheetController {
 		Product product = null;
 		if(productContext != null)
 			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
-			
+		
+		if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+			product = userHrservice.get().getTimesheetProduct(timesheet.getUser());
+		}
 		
 		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
 		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
@@ -259,19 +264,21 @@ public class TimesheetController {
 			response.setReload(true);
 		}
 	}
-	
-	//Confirm and continue Button
-		public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException{
 
-			this.confirm(request, response);
-			
-			response.setView(ActionView
-					.define(I18n.get("Timesheet"))
-					.model(Timesheet.class.getName())
-					.add("form", "timesheet-form")
-					.map());
-			
-		}
+    // Continue button
+    public void continueBtn(ActionRequest request, ActionResponse response) throws AxelorException {
+        response.setView(ActionView
+                .define(I18n.get("Timesheet"))
+                .model(Timesheet.class.getName())
+                .add("form", "timesheet-form")
+                .map());
+    }
+
+    // Confirm and continue button
+    public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException {
+        this.confirm(request, response);
+        this.continueBtn(request, response);
+    }
 	
 	
 	//action called when validating a timesheet. Changing status + Sending mail to Applicant
@@ -369,12 +376,33 @@ public class TimesheetController {
 				.add("html", fileLink).map());	
 	}
 	
-	public void showTimesheetLineEditor(ActionRequest request, ActionResponse response) {
+	public void setShowActivity(ActionRequest request, ActionResponse response) {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
+		boolean showActivity = true;
+		
+		User user = timesheet.getUser();
+		if (user != null) {
+			Company company = user.getActiveCompany();
+			if (company != null && company.getHrConfig() != null) {
+				showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+			}
+		}
+		
+		response.setValue("$showActivity", showActivity);
+	}
+	
+	public void openTimesheetEditor(ActionRequest request, ActionResponse response) {
+		
+		Context context = request.getContext();
+		
+		String url = "hr/timesheet?timesheetId=" + context.get("id") + "&showActivity=" + context.get("showActivity");
+		
 		response.setView(ActionView
 				.define(I18n.get("Timesheet lines"))
-				.add("html", "studio/timesheet?timesheetId=" + timesheet.getId()).map());	
+				.add("html", url).map());       
+
 	}
+	
 }

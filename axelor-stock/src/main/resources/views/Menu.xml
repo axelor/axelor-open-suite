@@ -143,8 +143,23 @@
 	<action-view name="stock.root.stock.per.day" title="Stock Availability"
 		model="com.axelor.apps.base.db.Wizard" >
 		<view type="form" name="stock-move-wizard-stock-per-day"/>
-	</action-view>		
+	</action-view>	
 	
+	<menuitem name="sc-root-stock-products" parent="stock-root" order="38"
+		title="Products &amp; services" action="sc.root.stock.products" />
+
+	<action-view name="sc.root.stock.products" title="Products &amp; services"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false AND self.purchas = true</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromSale" expr="eval:true" />
+	</action-view>
+		
 	<menuitem name="stock-root-report" parent="stock-root"
 		title="Reportings" order="45"/>
 		

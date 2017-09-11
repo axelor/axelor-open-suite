@@ -19,6 +19,8 @@ package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.AccountAccountRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -28,8 +30,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportManagementRepository;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -43,6 +45,12 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
+import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -69,6 +77,8 @@ public class AccountModule extends AxelorModule {
         bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
 
         bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
+        
+        bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
 
         bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
 
@@ -80,9 +90,9 @@ public class AccountModule extends AxelorModule {
         
         bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
         
-        bind(MoveLineReportRepository.class).to(MoveLineReportManagementRepository.class);
+        bind(AccountingReportRepository.class).to(AccountingReportManagementRepository.class);
         
-        bind(MoveLineReportService.class).to(MoveLineReportServiceImpl.class);
+        bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
         
         bind(JournalRepository.class).to(JournalManagementRepository.class);
 
@@ -117,6 +127,14 @@ public class AccountModule extends AxelorModule {
         bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
         bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
+
+        bind(AccountRepository.class).to(AccountAccountRepository.class);
+
+        bind(WorkflowVentilationService.class).to(WorkflowVentilationServiceImpl.class);
+
+        bind(WorkflowCancelService.class).to(WorkflowCancelServiceImpl.class);
+
+        bind(WorkflowValidationService.class).to(WorkflowValidationServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

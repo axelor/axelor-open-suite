@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,25 +26,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.Role;
-import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.loader.XMLViews;
-import com.axelor.meta.schema.actions.ActionGroup;
-import com.axelor.meta.schema.actions.ActionGroup.ActionItem;
-import com.axelor.meta.schema.actions.ActionRecord;
+import com.axelor.meta.schema.actions.ActionAttrs;
+import com.axelor.meta.schema.actions.ActionAttrs.Attribute;
 import com.axelor.meta.schema.actions.ActionValidate;
-import com.axelor.meta.schema.actions.ActionRecord.RecordField;
 import com.axelor.meta.schema.actions.ActionValidate.Alert;
 import com.axelor.meta.schema.actions.ActionValidate.Info;
 import com.axelor.meta.schema.actions.ActionValidate.Notify;
 import com.axelor.meta.schema.actions.ActionValidate.Validator;
 import com.axelor.studio.db.Filter;
-import com.axelor.studio.db.ViewBuilder;
-import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.WkfTransition;
-import com.axelor.studio.service.FilterService;
+import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -59,7 +57,7 @@ class WkfTransitionService {
 
 	private WkfService wkfService;
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private List<String> wkfButtonNames;
 
@@ -67,111 +65,105 @@ class WkfTransitionService {
 	private MetaPermissionRepository metaPermissionRepo;
 
 	@Inject
-	private FilterService filterService;
-
+	private FilterGroovyService filterGroovyService;
+	
+	@Inject
+	private StudioMetaService metaService;
+	
 	@Inject
 	protected WkfTransitionService(WkfService wkfService) {
 		this.wkfService = wkfService;
 	}
-
+	
 	/**
 	 * Root method to access the service. Method call different method to
 	 * process transition. Create wkf action that call on save of model to
 	 * update status. It save all changes to ViewBuilder linked with Workflow.
 	 */
-	protected void process(ActionGroup actionGroup) {
-
-		String action = "action-" + wkfService.dasherizeModel + "-wkf";
+	protected List<String[]> process() {
+		
+		log.debug("Processing transitions");
+		List<String[]> actions = new ArrayList<String[]>();
+		
+		String action = "action-" + wkfService.wkfId;
 		wkfButtonNames = new ArrayList<String>();
 
-		List<RecordField> fields = proccessTransitions();
-		ViewBuilder viewBuilder = wkfService.viewBuilder;
+		List<ActionAttrs.Attribute> fields = proccessTransitions();
 
-		String onSave = viewBuilder.getOnSave();
-		if (!fields.isEmpty() || actionGroup != null) {
-			if (!fields.isEmpty()) {
-				String xml = getActionRecordXML(action, fields);
-				this.wkfService.updateMetaAction(action, "action-record", xml);
-			} else {
-				this.wkfService.removeMetaActions(action);
-			}
-			if (actionGroup != null) {
-				ActionItem actionItem = new ActionItem();
-				actionItem.setName(action);
-				actionGroup.getActions().add(actionItem);
-				String xml = XMLViews.toXml(actionGroup, true);
-				action = actionGroup.getName();
-				this.wkfService.updateMetaAction(action, "action-group", xml);
-			}
-			onSave = this.wkfService.getUpdatedActions(onSave, action, false);
+		if (!fields.isEmpty()) {
+			String xml = getActionXML(action, fields);
+			metaService.updateMetaAction(action, "action-attrs", xml, null);
+			actions.add(new String[]{action});
+		} else {
+			metaService.removeMetaActions(action);
 		}
 
-		else {
-			this.wkfService.removeMetaActions(action);
-		}
+		String actionsToRemove = wkfService.clearOldButtons(wkfButtonNames);
+		metaService.removeMetaActions(actionsToRemove);
 
-		log.debug("Wkf onSave : {}", onSave);
-
-		String actionsToRemove = wkfService.clearViewButtons(
-				viewBuilder.getToolbar(), null, wkfButtonNames);
-		wkfService.removeMetaActions(actionsToRemove);
-
-		viewBuilder.setOnSave(onSave);
-
+		return actions;
 	}
-
+	
 	/**
 	 * Method process each WkfTransition and create RecordField. RecordField
 	 * contains status and condition to assign the status. Based on record
-	 * fields onSave action will be created. It also add button for transition
+	 * fields wkf action will be created. It also add button for transition
 	 * if transition executed based on button.
 	 * 
 	 * @return List of RecordField
 	 */
-	private List<RecordField> proccessTransitions() {
+	private List<ActionAttrs.Attribute> proccessTransitions() {
 
-		List<RecordField> fields = new ArrayList<RecordField>();
+		List<ActionAttrs.Attribute> fields = new ArrayList<ActionAttrs.Attribute>();
 
-		Integer buttonSeq = 0;
-		if (wkfService.viewBuilder.getToolbar() != null) {
-			buttonSeq = wkfService.viewBuilder.getToolbar().size();
-		}
+		Integer buttonSeq = -100;
 
 		for (WkfTransition transition : wkfService.workflow.getTransitions()) {
 			
-			MetaField status = wkfService.workflow.getWkfField();
+			MetaJsonField status = wkfService.workflow.getStatusField();
 			String condition =  status.getName() + " == " + getTyped(transition.getSource().getSequence(), status) ;
-
+			
+			log.debug("Processing transition : {}, isButton: {}", transition.getName(), transition.getIsButton());
 			if (transition.getIsButton()) {
 				buttonSeq++;
-				addButton(wkfService.viewBuilder, transition, condition,
+				addButton(transition, condition,
 						buttonSeq);
 				continue;
 			}
-
-			log.debug("Conditions : {}", transition.getConditions());
-			String filters = filterService.getGroovyFilters(
-					transition.getConditions(), null);
-			log.debug("Filters : {}", filters);
+			
+			String filters = getFilters(transition.getConditions());
 			if (filters != null) {
 				condition += " && (" + filters + ")";
 			}
+			
+			log.debug("Conditions : {}", transition.getConditions());
 
-			RecordField field = new RecordField();
-			field.setName(status.getName());
-			field.setCondition(condition);
-			field.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), status));
+			ActionAttrs.Attribute attrs = new ActionAttrs.Attribute();
+			attrs.setName("value");
+			attrs.setFieldName(status.getName());
+			attrs.setCondition(condition);
+			attrs.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), status));
 
-			fields.add(field);
+			fields.add(attrs);
 		}
 
 		return fields;
 	}
 
-	private String getTyped(Integer value, MetaField status) {
+	private String getFilters(List<Filter> filterList) {
+		
+		String jsonField = wkfService.workflow.getIsJson() ? null : "$" + wkfService.workflow.getJsonField();
+		String filters = filterGroovyService.getGroovyFilters(
+				filterList, jsonField);
+		log.debug("Filters : {}", filters);
+		
+		return filters;
+	}
+
+	private String getTyped(Integer value, MetaJsonField status) {
 			
-		String typeName = status.getTypeName();
-		if (typeName.equals("Integer")) {
+		String typeName = status.getType();
+		if (typeName.equals("integer")) {
 			return value.toString();
 		}
 		
@@ -191,7 +183,7 @@ class WkfTransitionService {
 	 * @param sequence
 	 *            Sequence of button to add in toolbar.
 	 */
-	private void addButton(ViewBuilder viewBuilder, WkfTransition transition,
+	private void addButton(WkfTransition transition,
 			String condition, Integer sequence) {
 
 		String source = transition.getSource().getName();
@@ -201,22 +193,26 @@ class WkfTransitionService {
 			name = "wkf" + name;
 		}
 		wkfButtonNames.add(name);
+		
+		MetaJsonField button = wkfService.getJsonField(name, "button");
+		button.setTitle(title);;
+		button.setShowIf(condition);
+		button.setSequence(sequence);
+		button.setHiddenInGrid(true);
+		button.setIsWkf(true);
+		button.setWidgetAttrs("{\"colSpan\": \"3\"}");
+		button.setOnClick(addButtonActions(transition, name));
+		
+		log.debug("Adding button : {}", button.getName());
+		wkfService.saveJsonField(button);
 
-		ViewItem viewButton = wkfService.getViewButton(viewBuilder, name);
-		viewButton.setTitle(title);
-		viewButton.setShowIf(condition);
-		viewButton.setSequence(sequence);
-		viewButton.setWkfButton(true);
-
-		addButtonActions(viewButton, transition, name);
-
-		String permName = this.wkfService.moduleName + "."
-				+ wkfService.dasherizeModel.replace("-", ".") + name;
-		clearOldMetaPermissions(permName);
-		addButtonPermissions(permName, name, transition.getRoleSet());
+//		String permName = this.wkfService.moduleName + "."
+//				+ wkfService.dasherizeModel.replace("-", ".") + name;
+//		clearOldMetaPermissions(permName);
+//		addButtonPermissions(permName, name, transition.getRoleSet());
 
 	}
-
+	
 	/**
 	 * Method create action for button from WkfTransition and related
 	 * destination nodes. It set onClick of ViewButton with new action created.
@@ -228,11 +224,11 @@ class WkfTransitionService {
 	 * @param buttonName
 	 *            Name of button used in creation of action name.
 	 */
-	public void addButtonActions(ViewItem viewButton, WkfTransition transition,
+	private String addButtonActions(WkfTransition transition,
 			String buttonName) {
 
 		String actionName = buttonName.toLowerCase().replace(" ", "-");
-		actionName = "action-" + wkfService.dasherizeModel + "-" + actionName;
+		actionName = "action-" + wkfService.wkfId + "-" + actionName;
 		List<String> actions = new ArrayList<String>();
 		String xml = "";
 		Integer alterType = transition.getAlertTypeSelect();
@@ -245,36 +241,37 @@ class WkfTransitionService {
 			String alertAction = actionName + "-alert";
 			xml = getActionValidateXML(alertAction, type, alertMsg,
 					transition.getConditions());
-			this.wkfService.updateMetaAction(alertAction, "action-validate",
-					xml);
+			metaService.updateMetaAction(alertAction, "action-validate",
+					xml, null);
 			actions.add(alertAction);
 		}
 
-		List<RecordField> fields = new ArrayList<RecordField>();
-		RecordField field = new RecordField();
-		MetaField wkfField = wkfService.workflow.getWkfField();
-		field.setName(wkfField.getName());
-		field.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
-		fields.add(field);
+		List<Attribute> attrs = new ArrayList<Attribute>();
+		Attribute attr = new Attribute();
+		MetaJsonField wkfField = wkfService.workflow.getStatusField();
+		attr.setName("value");
+		attr.setFieldName(wkfField.getName());
+		attr.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
+		attrs.add(attr);
 		actions.add(actionName);
-		xml = getActionRecordXML(actionName, fields);
-		this.wkfService.updateMetaAction(actionName, "action-record", xml);
+		xml = getActionXML(actionName, attrs);
+		metaService.updateMetaAction(actionName, "action-record", xml, null);
 		// actions.add("save");
-		actions.add(WkfTrackingService.ACTION_TRACK);
+//		actions.add(WkfTrackingService.ACTION_TRACK);
 
 		String successMsg = transition.getSuccessMsg();
 		if (successMsg != null) {
 			String sucessAction = actionName + "-success";
 			xml = getActionValidateXML(sucessAction, "notify", successMsg, null);
-			this.wkfService.updateMetaAction(sucessAction, "action-validate",
-					xml);
+			metaService.updateMetaAction(sucessAction, "action-validate",
+					xml, null);
 			actions.add(sucessAction);
 		}
+		actions.add("save");
+		actions.add("action-group-" + wkfService.wkfId);
+		actions.add("save");
 
-		if (!actions.isEmpty()) {
-			viewButton.setOnClick(Joiner.on(",").join(actions));
-		}
-
+		return Joiner.on(",").join(actions);
 	}
 
 	/**
@@ -287,12 +284,12 @@ class WkfTransitionService {
 	 *            List of ActionRecord.
 	 * @return Xml of ActionRecord created.
 	 */
-	private String getActionRecordXML(String name, List<RecordField> fields) {
-
-		ActionRecord action = new ActionRecord();
-		action.setModel(wkfService.workflow.getMetaModel().getFullName());
+	private String getActionXML(String name, List<Attribute> attrs) {
+		
+		log.debug("Creating action attrs: {}", name);
+		ActionAttrs action = new ActionAttrs();
 		action.setName(name);
-		action.setFields(fields);
+		action.setAttributes(attrs);
 
 		return XMLViews.toXml(action, true);
 
@@ -315,7 +312,7 @@ class WkfTransitionService {
 		ActionValidate actionValidate = new ActionValidate();
 		actionValidate.setName(name);
 		List<Validator> validators = new ArrayList<ActionValidate.Validator>();
-		String condition = filterService.getGroovyFilters(conditions, null);
+		String condition = getFilters(conditions);
 		switch (type) {
 		case "notify":
 			Notify notify = new Notify();
@@ -364,7 +361,7 @@ class WkfTransitionService {
 		MetaPermission permission = metaPermissionRepo.findByName(name);
 		if (permission == null) {
 			permission = new MetaPermission(name);
-			permission.setObject(wkfService.workflow.getMetaModel().getFullName());
+			permission.setObject(wkfService.workflow.getModel());
 			MetaPermissionRule rule = new MetaPermissionRule();
 			rule.setCanRead(false);
 			rule.setField(buttonName);

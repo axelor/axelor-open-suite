@@ -5,9 +5,9 @@
     
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
-            <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
-            <button name="deleteMoves" title="delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
-        	<button name="moveLines" title="See Move Lines" action="account.root.move.move.line" />
+            <button name="validateMove" title="Validate" if="__repo__(AccountConfig).findByCompany(__user__.getActiveCompany()).getAccountingDaybook()" prompt=" The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
+            <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
+        	<button name="moveLines" title="See Move Lines" onClick="account.root.move.move.line" />
         </toolbar>
         
         <hilite color="info" if="statusSelect == 1"/>
@@ -26,6 +26,7 @@
 	onNew="action-account-move-onnew-group" onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status">
 	
 		<toolbar>
+			<button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
 			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
 			<button name="deleteMove" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
 		</toolbar>
@@ -49,7 +50,15 @@
 			</field>
 			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 			<field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
-			<field name="adjustingMove" colSpan="12"/>
+  			<field name="adjustingMove" showTitle="false" showIf="adjustingMove" colSpan="12">
+				<viewer>
+					<![CDATA[
+						<h4 style="text-align: right;">
+							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record."adjustingMove"" x-translate>Adjusting Move</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
 			<button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 			<button name="account" title="Account" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
 		</panel>
@@ -59,19 +68,18 @@
 				<field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
 				<field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
-				<field name="cashRegister" domain="self.company =:company" canNew="false" form-view="cash-register-form" grid-view="cash-register-grid"/>
 			</panel>
 			
 			<panel name="accountingExport" title="Accounting export" hideIf="statusSelect == 1" hidden="true" readonly="true">
 				<field name="accountingOk"/>
 				<field name="exportNumber" showIf="accountingOk"/>
 				<field name="exportDate" showIf="accountingOk"/>
-				<field name="moveLineReport" form-view="move-line-report-export-form" showIf="accountingOk" grid-view="move-line-report-grid"/>
+				<field name="accountingReport" form-view="accounting-report-export-form" showIf="accountingOk" grid-view="accounting-report-grid"/>
 			</panel>
 			
 			<panel name="others" title="Others">
 				<field name="ignoreInAccountingOk"/>
-				<field name="ignoreInReminderOk"/>
+				<field name="ignoreInDebtRecoveryOk"/>
 				<field name="rejectOk"/>
 			</panel>
 		</panel-tabs>
@@ -101,7 +109,6 @@
 	   
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
-        <field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
@@ -167,6 +174,10 @@
 		<view type="form" name="move-line-form" />
 		<view-param name="search-filters" value="move-line-filters"/>
 	</action-view>
+
+	<action-method name="action-account-move-method-print-move">
+		<call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
+	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">

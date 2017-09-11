@@ -6,6 +6,7 @@
 
 	<entity name="HiringStage" lang="java" cachable="true">
 		<string name="name" title="Name" required="true" />
+		<integer name="sequence" title="Sequence"  />
 	</entity>
 
 </domain-models>

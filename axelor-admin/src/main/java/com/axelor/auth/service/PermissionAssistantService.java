@@ -20,6 +20,7 @@ package com.axelor.auth.service;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,7 +67,7 @@ import com.opencsv.CSVWriter;
 
 public class PermissionAssistantService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PermissionAssistantService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private MetaPermissionRepository metaPermissionRepository;

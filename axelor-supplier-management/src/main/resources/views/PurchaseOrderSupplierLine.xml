@@ -20,8 +20,16 @@
 
 	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"
 		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new" canNew="false">
+		<menubar>
+			<menu title="Tools">
+				<item title="Write to the supplier" action="save,action-send-by-email-with-template"/>
+			</menu>		
+		</menubar>
+				
+		<panel title="Status">
+			<field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>	
+		</panel>
 	   <panel name="main" >
-    	 <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
     	 <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
     	 <field name="availableQty"/>
     	 <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -43,7 +51,6 @@
 	    <button name="notAccept" title="Not accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-record-not-accept,save"/>
 	    <button name="cancel" title="Cancel" hideIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
 	    <button name="request" title="Request" showIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-request,save"/>
-	    <button name="sendByEmail" title="Write to the supplier"   icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	  </panel>
 	</form>
 	

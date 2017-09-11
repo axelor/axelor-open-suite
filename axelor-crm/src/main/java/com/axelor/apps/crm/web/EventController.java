@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,7 @@ import net.fortuna.ical4j.model.ValidationException;
 
 public class EventController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private EventRepository eventRepo;
@@ -596,14 +597,14 @@ public class EventController {
 		response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
 	}
 	
-	public void setCalendarCrmDomain(ActionRequest request, ActionResponse response){
+	public void setCalendarDomain(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
 		if(calendarIdlist.isEmpty()){
-			response.setAttr("calendarCrm", "domain", "self.id is null");
+			response.setAttr("calendar", "domain", "self.id is null");
 		}
 		else{
-			response.setAttr("calendarCrm", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
+			response.setAttr("calendar", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
 		}
 	}
 	
@@ -611,7 +612,7 @@ public class EventController {
 		Event event = request.getContext().asType(Event.class);
 		User user = AuthUtils.getUser();
 		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
-		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendarCrm().getId())){
+		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendar().getId())){
 			response.setAttr("calendarConfig", "readonly", "true");
 			response.setAttr("meetingGeneral", "readonly", "true");
 			response.setAttr("addGuests", "readonly", "true");

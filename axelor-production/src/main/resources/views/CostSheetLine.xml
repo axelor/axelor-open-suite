@@ -5,7 +5,7 @@
     
     <grid name="cost-sheet-line-grid" title="Cost sheet lines" model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code">
         <field name="typeSelect"/>
-		<field name="code"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="name"/>
 		<field name="bomLevel"/>
 		<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>

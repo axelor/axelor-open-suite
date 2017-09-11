@@ -21,7 +21,8 @@
 	</action-view>
 		
 	<menuitem name="stock-multi-sale-invoicing" parent="stock-root" if="__config__.app.isApp('supplychain')"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"  order="40"/>
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"  order="36"/>
+		
 		
 	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
 		model="com.axelor.apps.stock.db.StockMove" >
@@ -32,9 +33,15 @@
 		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
 	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
-		model="com.axelor.apps.supplychain.db.SupplychainBatch" >
-		<view type="grid" name="supplychain-batch-grid"/>
-		<view type="form" name="supplychain-batch-form"/>
+		model="com.axelor.apps.supplychain.db.SupplychainBatch">
+		<view type="grid" name="supplychain-batch-grid" />
+		<view type="form" name="supplychain-batch-form" />
+		<domain>self.actionSelect != :disabledActionSelect</domain>
+		<context name="disabledActionSelect"
+			expr="eval: __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES"
+			if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
+		<context name="disabledActionSelect" expr="eval: 0"
+			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
 	
 	<menuitem name="subscription-root"  if="__config__.app.isApp('subscription')" parent="sc-root-sale"

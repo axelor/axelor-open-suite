@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.address;
 
+import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class AddressTool {
 	static private Service service = null;
 	static private QAPortType client = null;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressTool.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public void setService(String wsdlUrl) throws MalformedURLException {
 		// TODO: inject this

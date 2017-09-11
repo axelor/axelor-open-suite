@@ -39,6 +39,8 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.lang.invoke.MethodHandles;
+
 public class SequenceService {
 
 	private final static String
@@ -50,7 +52,7 @@ public class SequenceService {
 		PATTERN_WEEK = "%WY",
 		PADDING_STRING = "0";
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private SequenceVersionRepository sequenceVersionRepository;
 
@@ -84,12 +86,12 @@ public class SequenceService {
 	 *
 	 * @return
 	 */
-	public Sequence getSequence(String code, Company company) {
+	public Sequence getSequence(String codeSelect, Company company) {
 
-		if (code == null)  { return null; }
-		if (company == null)  { return sequenceRepo.findByCode(code); }
+		if (codeSelect == null)  { return null; }
+		if (company == null)  { return sequenceRepo.findByCodeSelect(codeSelect); }
 
-		return sequenceRepo.find(code, company);
+		return sequenceRepo.find(codeSelect, company);
 
 	}
 
@@ -169,14 +171,17 @@ public class SequenceService {
 
 	}
 
+	public static boolean isSequenceLengthValid(Sequence sequence) {
+		String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
+		String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
+
+		return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
+	}
+
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
 	 *
-	 * @param seq
-	 * @param todayYear
-	 * @param todayMoy
-	 * @param todayDom
-	 * @param todayWoy
+	 * @param sequence
 	 * @return
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -247,7 +252,7 @@ public class SequenceService {
 	public String getDefaultTitle(Sequence sequence) {
 		MetaSelectItem item = Beans.get(MetaSelectItemRepository.class)
 								   .all()
-								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCode())
+								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCodeSelect())
 								   .fetchOne();
 
 		return item.getTitle();

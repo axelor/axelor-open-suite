@@ -28,6 +28,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 
 public class ValidateState extends WorkflowInvoice {
 
@@ -53,6 +54,8 @@ public class ValidateState extends WorkflowInvoice {
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );
+
+		Beans.get(WorkflowValidationService.class).afterValidation(invoice);
 
 	}
 

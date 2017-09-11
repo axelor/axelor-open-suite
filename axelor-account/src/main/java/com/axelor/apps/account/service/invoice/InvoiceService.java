@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -34,6 +31,10 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -75,17 +76,18 @@ public interface InvoiceService {
 	
 	
 	/**
-	 * Validation d'une facture.
-	 * (Transaction)
+	 * Validate an invoice.
 	 * 
 	 * @param invoice
-	 * 		Une facture.
-	 * 
+	 * @param compute
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Invoice invoice, boolean compute) throws AxelorException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Invoice invoice) throws AxelorException;
-	
+
 	/**
 	 * Ventilation comptable d'une facture.
 	 * (Transaction)
@@ -178,4 +180,40 @@ public interface InvoiceService {
 	public Invoice getInvoice(MoveLine moveLine);
 
 	public String computeAddressStr(Address address);
+
+	/**
+	 * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
+	 * @param invoice
+	 * @return
+	 * @throws AxelorException
+	 */
+	String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException;
+
+	/**
+	 * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
+	 * @param invoice
+	 * @return
+	 * @throws AxelorException
+	 */
+	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
+
+	/**
+     * Return the move lines from the advance payments
+	 * from the previous invoice
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice);
+
+	/**
+	 * Filter a set of advance payment invoice. If the amount of
+	 * the payment is greater than the total of the invoice, we filter it.
+     * If there is no remaining amount in the move lines of the advance
+	 * payment invoice, we filter it too.
+	 * @param invoice
+	 * @param advancePaymentInvoices
+	 * @throws AxelorException
+	 */
+	void filterAdvancePaymentInvoice(Invoice invoice,
+									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
 }

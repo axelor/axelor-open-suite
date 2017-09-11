@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,7 +48,7 @@ import com.google.inject.persist.Transactional;
 
 public class MoveToolService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected MoveLineService moveLineService;
 	protected MoveLineRepository moveLineRepository;
@@ -305,7 +306,7 @@ public class MoveToolService {
 
 		if(originalInvoice != null && originalInvoice.getMove() != null)  {
 			for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+				if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
 						&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
 				}

@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -46,7 +42,6 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
-import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -58,11 +53,18 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SaleOrderController{
 	
@@ -186,34 +188,50 @@ public class SaleOrderController{
 		}
 	}
 
-
+	/**
+	 * Called from the sale order invoicing wizard.
+	 * Call {@link com.axelor.apps.supplychain.service.SaleOrderInvoiceService#generateInvoice }
+     * Return to the view the generated invoice.
+	 * @param request
+	 * @param response
+	 */
+	@SuppressWarnings(value="unchecked")
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
+		Context context = request.getContext();
 		try {
+			SaleOrder saleOrder = context.asType(SaleOrder.class);
+			int operationSelect = Integer.parseInt(context.get("operationSelect").toString());
+			boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+			BigDecimal amountToInvoice = new BigDecimal(
+						context.getOrDefault("amountToInvoice", "0").toString()
+				);
+			Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
-			saleOrder = saleOrderRepo.find(saleOrder.getId());
-			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
-			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
-			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				if (saleOrderLine.isSelected()){
-					saleOrderLineIdSelected.add(saleOrderLine.getId());
+			List<Map<String, Object>> saleOrderLineListContext;
+			saleOrderLineListContext = (List<Map<String,Object>>)
+					request.getRawContext().get("saleOrderLineList");
+			for (Map<String, Object> map : saleOrderLineListContext ) {
+				if (map.get("amountToInvoice") != null) {
+					BigDecimal qtyToInvoiceItem = new BigDecimal(
+							map.get("amountToInvoice").toString()
+					);
+					if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
+						Long SOlineId = new Long((Integer) map.get("id"));
+						qtyToInvoiceMap.put(SOlineId, qtyToInvoiceItem);
+					}
 				}
 			}
 
-			Invoice invoice = null;
+			saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-			if (!saleOrderLineIdSelected.isEmpty()){
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
-			}else{
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
-			}
+			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
+							saleOrder, operationSelect, amountToInvoice, isPercent,
+							qtyToInvoiceMap
+					);
 
 			if(invoice != null)  {
-				response.setReload(true);
-				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+				response.setCanClose(true);
 				response.setView(ActionView
 		            .define(I18n.get("Invoice generated"))
 		            .model(Invoice.class.getName())
@@ -254,7 +272,7 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				
 				response.setCanClose(true);
-				
+
 				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
 				response.setView(ActionView
 		            .define(I18n.get("Invoice generated"))
@@ -347,15 +365,6 @@ public class SaleOrderController{
 	            .add("grid", "invoice-grid")
 	            .context("_showRecord",String.valueOf(invoice.getId()))
 	            .map());
-	}
-	
-	public void updateTimetable(ActionRequest request, ActionResponse response){
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if(saleOrder.getId() != null && saleOrder.getId() > 0){
-			saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-		}
-		Beans.get(TimetableService.class).updateTimetable(saleOrder);
-		response.setValues(saleOrder);
 	}
 	
 	@Transactional
@@ -578,5 +587,11 @@ public class SaleOrderController{
 		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
 				.findDefaultBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
+		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 }

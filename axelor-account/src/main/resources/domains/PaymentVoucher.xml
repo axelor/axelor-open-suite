@@ -15,7 +15,6 @@
 	    <date name="paymentDate" title="Payment date"/>
 		<decimal name="paidAmount" title="Amount paid" />
 		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
-        <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
 		<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Overdue moveline" />
 		<decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate" />
 		<decimal name="allocatedAmount" title="Allocated amount" />
@@ -23,7 +22,7 @@
 		<one-to-many name="payVoucherElementToPayList" ref="com.axelor.apps.account.db.PayVoucherElementToPay" title="List of invoices to pay" mappedBy="paymentVoucher" />
 		<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.payment.voucher.status.select"/>
 		<many-to-one name="generatedMove" ref="com.axelor.apps.account.db.Move" title="Generated move" readonly="true"/>
-		<boolean name="hasAutoInput" title="Auto. input." default="false" help="true"/>
+		<boolean name="hasAutoInput" title="Auto. input." default="false"/>
 	 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	 	<string name="bankCardTransactionNumber" title="CC Transaction N°" readonly="true"/>
 	 	<string name="receiptNo" title="Receipt N°" readonly="true"/>

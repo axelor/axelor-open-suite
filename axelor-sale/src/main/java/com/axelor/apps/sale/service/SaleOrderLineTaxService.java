@@ -17,12 +17,17 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.axelor.apps.account.db.TaxEquiv;
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +39,7 @@ import com.google.inject.Inject;
 
 public class SaleOrderLineTaxService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineTaxService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private SaleOrderToolService saleOrderToolService;
@@ -63,9 +68,15 @@ public class SaleOrderLineTaxService {
 		
 		List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<SaleOrderLineTax>();
 		Map<TaxLine, SaleOrderLineTax> map = new HashMap<TaxLine, SaleOrderLineTax>();
+        Set<String> specificNotes = new HashSet<String>();
+        
+        boolean customerSpecificNote = false;
+		if (saleOrder.getClientPartner().getFiscalPosition() != null) {
+			customerSpecificNote = saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
+		}
 		
 		if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
-
+			
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
 			
 			for (SaleOrderLine saleOrderLine : saleOrderLineList) {
@@ -95,6 +106,13 @@ public class SaleOrderLineTaxService {
 						
 					}
 				}
+
+                if (!customerSpecificNote) {
+                    TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
+                    if (taxEquiv != null) {
+                        specificNotes.add(taxEquiv.getSpecificNote());
+                    }
+                }
 			}
 		}
 			
@@ -114,9 +132,12 @@ public class SaleOrderLineTaxService {
 			
 		}
 
+        if (!customerSpecificNote) {
+            saleOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
+        } else {
+            saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());
+        }
+
 		return saleOrderLineTaxList;
 	}
-
-	
-	
 }

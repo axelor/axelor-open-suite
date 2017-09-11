@@ -6,20 +6,12 @@
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
-    	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-    	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="purchaseOrder.purchaseOrderSeq" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+    	<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
-    	<field name="desiredDelivDate"/>
-    	<field name="estimatedDelivDate"/>
         <field name="qty" aggregate="sum"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" x-scale="2"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-	    <field name="inTaxTotal" aggregate="sum"/>
-        <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
-        <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-        <field name="createdOn"/>
-        <field name="salePrice" hidden="true"/>
+        <field name="purchaseOrder.buyerUser"/>
     </grid>
     
     <grid name="purchase-order-line-menu-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -62,72 +54,78 @@
 	    <field name="inTaxTotal" aggregate="sum"/>
     </grid>
 
-	<form name="purchase-order-line-form" title="PO line" 
-		model="com.axelor.apps.purchase.db.PurchaseOrderLine" 
-		onNew="action-group-purchase-purchase-orderline-onnew"
-		onLoad="action-group-purchase-purchase-orderline-onload" width="large">
+	<form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
+		  onNew="action-group-purchase-purchase-orderline-onnew"
+		  onLoad="action-group-purchase-purchase-orderline-onload" width="large">
 		<panel>
 			<field name="isTitleLine" onChange="action-purchase-order-line-method-empty-line"/>
 			<field name="productName" showIf="isTitleLine" title="Title"/>
 		</panel>
 		<panel hideIf="isTitleLine">
 			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
-				domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
-			   <field name="productName"/>
-			   <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
-			   <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-			   <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
-			   <field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
-			     <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
-			   </field>
-			   <field name="priceDiscounted" colSpan="4" readonly="true" hidden="true"/>
-			   <field name="exTaxTotal" readonly="true"/>
-			   <field name="inTaxTotal" readonly="true"/>
-			   <field name="saleMinPrice" readonly="true"/>
-			   <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" if-module="axelor-business-project"/>
-			   <field name="invoiced" showIf="toInvoice"/>
-			   <field name="salePrice" hidden="true"/>
-		</panel>  
-	  
-	  <panel name="discount" title="Discount" canCollapse="true" hideIf="isTitleLine">
-	    <field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
-	    <field name="discountAmount" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
-	  </panel>
-	  <panel-tabs hideIf="isTitleLine">
-	    <panel name="details" title="Details">
-	      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-	      <field name="createdOn"/>
-	    </panel>
-	    <panel name="deliveryPanel" title="Delivery" hidden="true">
-	      <field name="desiredDelivDate"/>
-	      <field name="estimatedDelivDate"/>	      
-	      <panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
-	    </panel>
-	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
-	      <field name="project" form-view="project-form" grid-view="project-grid"/>
-	    </panel>
-	    <panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getManageSupplier()" >
-	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
-	      <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
-	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
-	    </panel>
-	    <panel name="invoicing" title="Invoicing" if-module="axelor-account" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
-	      <field name="amountInvoiced"/>
-	      <panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
-	    </panel>
-	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				   domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
+			<field name="productName"/>
+			<panel>
+				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12"/>
+				<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+			</panel>
+			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
+				<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
+			</field>
+			<field name="priceDiscounted" colSpan="4" readonly="true" hidden="true"/>
+			<field name="exTaxTotal" readonly="true"/>
+			<field name="inTaxTotal" readonly="true"/>
+			<field name="saleMinPrice" readonly="true"/>
+			<field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="toInvoice"/>
+			<field name="salePrice" hidden="true"/>
 		</panel>
-		<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
-			<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-			<field name="budgetDistributionList" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
+
+		<panel name="discount" title="Discount" canCollapse="true" hideIf="isTitleLine">
+			<field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
+			<field name="discountAmount" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 		</panel>
-	  </panel-tabs>
-	  <panel>
+		<panel-tabs hideIf="isTitleLine">
+			<panel name="details" title="Details">
+				<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+				<field name="createdOn"/>
+			</panel>
+			<panel name="notes" title="Notes">
+				<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+			</panel>
+			<panel name="deliveryPanel" title="Delivery" hidden="true">
+				<field name="desiredDelivDate"/>
+				<field name="estimatedDelivDate"/>
+				<field name="supplierComment" colSpan="12"/>
+				<panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
+			</panel>
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
+				<field name="project" form-view="project-form" grid-view="project-grid"/>
+			</panel>
+			<panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
+				<button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
+				<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
+				<panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
+			</panel>
+			<panel name="invoicing" title="Invoicing" if-module="axelor-account" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
+				<field name="amountInvoiced"/>
+				<panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
+			</panel>
+			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
+				<field name="analyticDistributionTemplate" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
+				<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
+				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+			</panel>
+			<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+				<field name="budgetDistributionList" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
+			</panel>
+		</panel-tabs>
+		<panel>
 			<field name="polAttrs" colSpan="12" />
-	  </panel>
+		</panel>
 	</form>
 	
 	<form name="purchase-order-line-menu-form" title="PO line" 
@@ -166,6 +164,7 @@
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
+		<action name="action-purchase-order-line-method-check-qty"/>
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
@@ -174,6 +173,7 @@
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
+		<action name="action-purchase-order-line-method-check-qty"/>
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
@@ -192,6 +192,7 @@
 		<action name="action-purchase-order-line-method-get-discount"/>
 		<action name="action-purchase-order-line-method-compute"/>
 		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<action name="action-purchase-order-line-method-check-qty"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-generate-supplierreq-click">
@@ -249,7 +250,11 @@
 	<action-method name="action-purchase-order-line-method-generate-suppliers-requests">
 		<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderLineController" method="generateSuppliersRequests"/>
 	</action-method>
-	
+
+	<action-method name="action-purchase-order-line-method-check-qty">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="checkQty"/>
+	</action-method>
+
 	<!-- ACTION ATTRS -->
 	
     <action-attrs name="action-purchase-order-line-attrs-discountamount-title">

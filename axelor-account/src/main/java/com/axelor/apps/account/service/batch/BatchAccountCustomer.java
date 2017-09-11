@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ import com.axelor.i18n.I18n;
 
 public class BatchAccountCustomer extends BatchStrategy {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected AccountingSituationRepository accountingSituationRepo;
 
@@ -69,7 +70,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 		
 		boolean updateCustAccountOk = accountingBatch.getUpdateCustAccountOk();
 		boolean updateDueCustAccountOk = accountingBatch.getUpdateDueCustAccountOk();
-		boolean updateDueReminderCustAccountOk = accountingBatch.getUpdateDueReminderCustAccountOk();
+		boolean updateDueDebtRecoveryCustAccountOk = accountingBatch.getUpdateDueDebtRecoveryCustAccountOk();
 		
 		List<AccountingSituation> accountingSituationList = (List<AccountingSituation>) accountingSituationRepo.all().filter("self.company = ?1", company).fetch();
 		int i = 0;
@@ -81,7 +82,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 						accountingSituationRepo.find(accountingSituation.getId()),
 						updateCustAccountOk,
 						updateDueCustAccountOk,
-						updateDueReminderCustAccountOk);
+						updateDueDebtRecoveryCustAccountOk);
 				
 				if(accountingSituation != null)  {
 					this.updateAccountingSituation(accountingSituation);

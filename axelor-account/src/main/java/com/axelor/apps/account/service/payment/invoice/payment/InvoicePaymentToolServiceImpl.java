@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -36,6 +38,7 @@ import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,7 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	protected MoveToolService moveToolService;
 
 	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	public InvoicePaymentToolServiceImpl(InvoiceRepository invoiceRepo, MoveToolService moveToolService)  {
@@ -57,17 +60,24 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	}
 	
 	
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
-		
-		invoice.setAmountPaid(this.computeAmountPaid(invoice));
+
+		invoice.setAmountPaid(computeAmountPaid(invoice));
 		invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+		updateHasPendingPayments(invoice);
 		invoiceRepo.save(invoice);
 		log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
 		
 	}
-	
-	
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateHasPendingPayments(Invoice invoice) {
+		invoice.setHasPendingPayments(checkPendingPayments(invoice));
+	}
+
 	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
 		
 		BigDecimal amountPaid = BigDecimal.ZERO;
@@ -77,10 +87,10 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		CurrencyService currencyService = Beans.get(CurrencyService.class);
 		
 		Currency invoiceCurrency = invoice.getCurrency();
-		
-		for(InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
-			
-			if(invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED)  {
+
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
 				
 				log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 				
@@ -99,10 +109,25 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return amountPaid;
 	}
 
+	/**
+	 * Check whether there are any pending payments.
+	 * 
+	 * @param invoice
+	 * @return
+	 */
+	protected boolean checkPendingPayments(Invoice invoice) {
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @inheritDoc
 	 */
+	@Override
 	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment){
 		PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		if(company == null || paymentMode == null) { return new ArrayList<BankDetails>(); }
@@ -110,4 +135,36 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return Beans.get(PaymentModeService.class).
 				getCompatibleBankDetailsList(paymentMode, company);
     }
+
+    @Override
+    public List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment) {
+		List<InvoicePayment> advancePaymentList =  advancePayment.getInvoicePaymentList();
+		if (advancePaymentList == null || advancePaymentList.isEmpty()) {
+			return advancePaymentList;
+		}
+
+		for (InvoicePayment invoicePayment : advancePaymentList) {
+		    invoice.addInvoicePaymentListItem(invoicePayment);
+		}
+		return advancePaymentList;
+	}
+
+	@Override
+	public List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments) {
+		List<MoveLine> moveLines = new ArrayList<>();
+		for (InvoicePayment payment : payments) {
+		    Move move = payment.getMove();
+		    if (move == null || move.getMoveLineList() == null
+					|| move.getMoveLineList().isEmpty()) {
+		    	continue;
+			}
+			for (MoveLine moveLine : move.getMoveLineList()) {
+		    	if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+		    		moveLines.add(moveLine);
+				}
+			}
+		}
+		return moveLines;
+	}
+
 }

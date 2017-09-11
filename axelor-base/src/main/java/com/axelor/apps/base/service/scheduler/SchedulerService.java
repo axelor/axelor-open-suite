@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.scheduler;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -53,7 +54,7 @@ public class SchedulerService {
 
 	protected AppBaseService appBaseService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private LocalDate today;
 

@@ -17,6 +17,13 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Product;
@@ -31,17 +38,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.temporal.ChronoField;
 import java.util.List;
 
 public class CostSheetServiceImpl implements CostSheetService  {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected UnitConversionService unitConversionService;
 	protected CostSheetLineService costSheetLineService;
@@ -190,9 +193,9 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 	protected void _computeToConsumeProduct(BillOfMaterial billOfMaterial, int bomLevel, CostSheetLine parentCostSheetLine) throws AxelorException  {
 
-		if(billOfMaterial.getBillOfMaterialList() != null)  {
+		if(billOfMaterial.getBillOfMaterialSet() != null)  {
 
-			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
+			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet())  {
 
 				Product product = billOfMaterialLine.getProduct();
 

@@ -41,15 +41,14 @@
 		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" colSpan="12"/>
 		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	    <dashlet action="dashlet.production.stock.move.in.planned"  height="350" canSearch="true" colSpan="12"/>    
 	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true" colSpan="12"/>       			
 	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true" colSpan="12"/>
 	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true" colSpan="12"/>  
-	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />       			
+	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 	</dashboard>
 
-	<dashboard title="Dashboard" name="stock.dashboard.one"  >	
+	<dashboard title="Dashboard" name="stock.dashboard.one"  >
 		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>	
@@ -57,8 +56,8 @@
 		<dashlet action="dashlet.production.stock.move.in.planned" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" colSpan="12"/>	
-		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" colSpan="12"/>	
-		<dashlet action="dashlet.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
+		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.location.line.bad.futur.stock.mini" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.two"  >
@@ -68,8 +67,16 @@
   	    <dashlet action="dashlet.stockMove.deliveries.time.delay.in.nbr" height="350"/>
   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350"/>
 	</dashboard>
+
+	<action-view name="dashlet.location.line.bad.futur.stock.mini" title="Bad location lines"
+				 model="com.axelor.apps.stock.db.LocationLine">
+		<view type="grid" name="location-line-bad-line-grid"/>
+		<view type="form" name="location-line-bad-line-form"/>
+		<domain>self.id IN (:locationLineIdList)</domain>
+		<context name="locationLineIdList" expr="call:com.axelor.apps.stock.service.LocationService:getBadLocationLineId()"/>
+	</action-view>
 	
-	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
+	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
@@ -95,13 +102,6 @@
 		  <view type="form" name="stock-move-form"/>
 		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="eval:__user__.activeCompany" />
-	</action-view>
-
-	<action-view title="Product soon out of stock by location" model="com.axelor.apps.stock.db.LocationLine" name="dashlet.location.line.product.out.stock.bylocation">
-		  <view type="grid" name="location-line-grid"/>
-		  <view type="form" name="location-line-form"/>
-		  <domain>self.futureQty &lt; 0 AND self.location.company=:active_company</domain>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 	
 	<action-view title="Production Stock Move in Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.in.planned">

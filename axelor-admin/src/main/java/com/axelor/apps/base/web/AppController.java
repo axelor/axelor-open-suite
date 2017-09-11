@@ -75,7 +75,7 @@ public class AppController {
 		String viewName = "app-" + type + "-config-form";
 		
 		if (metaViewRepo.findByName(viewName) == null) {
-			response.setFlash(I18n.get("No configuraiton required"));
+			response.setFlash(I18n.get("No configuration required"));
 		}
 		else {
 			response.setView(ActionView.define(I18n.get("Configure: ") + app.getName())
@@ -114,13 +114,19 @@ public class AppController {
 		Context context = request.getContext();
 		
 		Set<Map<String,Object>> apps =  new HashSet<Map<String,Object>>();
-		apps.addAll((Collection<Map<String,Object>>)context.get("appsSet"));
+		Collection<Map<String,Object>> appsSet = (Collection<Map<String,Object>>)context.get("appsSet");
+		if (appsSet != null) {
+			apps.addAll(appsSet);
+		}
 
 		Boolean importDemo = (Boolean) context.get("importDemoData");
+		
+		String language = (String) context.get("languageSelect");
 		
 		List<App> appList = new ArrayList<App>();
 		for (Map<String,Object> appData : apps) {
 			App app = appRepo.find(Long.parseLong(appData.get("id").toString()));
+			app = appService.updateLanguage(app, language);
 			appList.add(app);
 		}
 		

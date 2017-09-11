@@ -10,7 +10,7 @@
 		    <button name="back" title="Back" hidden="true"/>
 		    <button name="copy" title="Copy" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
-		    <button name="exportObjects" title="Export Object" onClick="action-method-general-export-objects"/>
+		    <button name="exportObjects" title="Export Object" onClick="action-base-general-export-objects"/>
 		    <button name="remindTimesheets" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
 		</toolbar>
 		<panel>
@@ -34,6 +34,8 @@
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
+				<field name="enterpriseCommunication" widget="boolean-switch"/>
+				<field name="document" widget="boolean-switch"/>
 			</panel>
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">
@@ -58,7 +60,7 @@
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-check-duplicate-on-new-attrs">
-		<panel-related field="$fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
+		<panel-related field="$fieldsSet" title="Fields" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
   		<panel name="main" >
     		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-base-method-show-duplicate"/>
   		</panel>
@@ -93,10 +95,6 @@
 	
 	<action-method name="action-method-general-remind-timesheet">
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
-	</action-method>
-	
-	<action-method name="action-method-general-export-objects">
-	    <call method="exportObjects" class="com.axelor.apps.base.web.GeneralController"/>
 	</action-method>
 	
 </object-views>

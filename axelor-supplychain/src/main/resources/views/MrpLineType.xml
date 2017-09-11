@@ -13,7 +13,7 @@
     
 	<form name="mrp-line-type-form" model="com.axelor.apps.supplychain.db.MrpLineType" title="MRP Type">
 	    <panel name="main" >
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
    	        <field name="label"/>
    	        <field name="name"/>
         	<field name="elementSelect"/>

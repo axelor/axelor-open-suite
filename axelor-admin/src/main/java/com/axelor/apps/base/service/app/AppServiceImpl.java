@@ -67,11 +67,15 @@ public class AppServiceImpl implements AppService {
 
 	private static final String DIR_DEMO = "demo";
 
-	private static final String DIR_INIT = "data-init";
-
-	private static final String DIR_INIT_INPUT = "app";
+	private static final String DIR_INIT = "data-init" + File.separator + "app";
 
 	private static final String APP_TYPE_SELECT = "app.type.select";
+	
+	private static final String CONFIG_PATTERN = "-config.xml";
+	
+	private static final String IMG_DIR = "img";
+	
+	private static final String EXT_DIR = "extra";
 
 	private static Pattern patCsv = Pattern.compile("^\\<\\s*csv-inputs");
 
@@ -90,28 +94,41 @@ public class AppServiceImpl implements AppService {
 		app = appRepo.find(app.getId());
 
 		importParentData(app);
-
-		String modules = app.getModules();
-		String type = app.getTypeSelect();
-		String lang = AppSettings.get().get("application.locale");
-		log.debug("App type: {}, App lang: {}", type, lang);
-
+		
+		String lang = getLanguage(app);
 		if (lang == null) {
 			return I18n.get("No application language set. Please set 'application.locale' property.");
 		}
-
+		
+		importData(app, DIR_DEMO);
+		
+		app = appRepo.find(app.getId());
+		app.setDemoDataLoaded(true);
+		
+		saveApp(app);
+		
+		return I18n.get("Demo data loaded successfully");
+	}
+	
+	private void importData(App app, String dataDir) {
+		
+		String modules = app.getModules();
+		String type = app.getTypeSelect();
+		String lang = getLanguage(app);
+		
+		log.debug("Data import: App type: {}, App lang: {}", type, lang);
+		
 		for (String module : modules.split(",")) {
 			log.debug("Importing module: {}", module);
-			File tmp = extract(module, DIR_DEMO);
+			File tmp = extract(module, dataDir, lang, type);
 			if (tmp == null) {
-				log.debug("Demo data not found");
 				continue;
 			}
 			try {
-				File config = FileUtils.getFile(tmp, DIR_DEMO,  type + "-config.xml");
+				File config = FileUtils.getFile(tmp, dataDir, type + CONFIG_PATTERN);
+				File data = FileUtils.getFile(tmp, dataDir);
 				if (config != null && config.exists()) {
-					File data = FileUtils.getFile(config.getParentFile(), lang);
-					importData(config, data);
+					runImport(config, data);
 				}
 				else {
 					log.debug("Config file not found");
@@ -121,12 +138,17 @@ public class AppServiceImpl implements AppService {
 			}
 		}
 		
-		app = appRepo.find(app.getId());
-		app.setDemoDataLoaded(true);
+	}
+
+	private String getLanguage(App app) {
 		
-		saveApp(app);
+		String lang = AppSettings.get().get("application.locale");
 		
-		return I18n.get("Demo data loaded successfully");
+		if (app.getLanguageSelect() != null) {
+			lang = app.getLanguageSelect();
+		}
+		
+		return lang;
 	}
 	
 	private void importParentData(App app) {
@@ -149,32 +171,13 @@ public class AppServiceImpl implements AppService {
 
 	private void importDataInit(App app) {
 
-		log.debug("Data init...");
-		String modules = app.getModules();
-		String type = app.getTypeSelect();
-		String lang = AppSettings.get().get("application.locale");
-		log.debug("App type: {}, App lang: {}", type, lang);
+		String lang = getLanguage(app);
 		if (lang == null) {
 			return;
 		}
-
-		for (String module : modules.split(",")) {
-			File tmp = extract(module, DIR_INIT);
-			if (tmp == null) {
-				continue;
-			}
-			try {
-				File config = FileUtils.getFile(tmp, DIR_INIT, DIR_INIT_INPUT, type + "-config.xml");
-				log.debug("Config path: {}", config.getAbsolutePath());
-				if (config != null && config.exists()) {
-					File data = FileUtils.getFile(config.getParentFile(), lang);
-					importData(config, data);
-				}
-			} finally {
-				clean(tmp);
-			}
-		}
-
+		
+		importData(app, DIR_INIT);
+		
 		app = appRepo.find(app.getId());
 		app.setInitDataLoaded(true);
 
@@ -182,9 +185,9 @@ public class AppServiceImpl implements AppService {
 
 	}
 
-	private void importData(File config, File data) {
+	private void runImport(File config, File data) {
 
-		log.debug("config path: {}, data path: {}", config.getAbsolutePath(), data.getAbsolutePath());
+		log.debug("Running import with config path: {}, data path: {}", config.getAbsolutePath(), data.getAbsolutePath());
 
 		try {
 			Scanner scanner = new Scanner(config);
@@ -212,19 +215,27 @@ public class AppServiceImpl implements AppService {
 
 	}
 	
-	private File extract(String module, String dirName) {
-
-		final List<URL> files = MetaScanner.findAll(module, dirName, "(.+?)");
-
+	private File extract(String module, String dirName, String lang, String type) {
+		
+		String dirPath = dirName + File.separator;
+		List<URL> files = new ArrayList<URL>();
+		files.addAll(MetaScanner.findAll(module, dirName, type + CONFIG_PATTERN));
 		if (files.isEmpty()) {
 			return null;
 		}
+		files.addAll(fetchUrls(module, dirPath + lang));
+		if (files.isEmpty()) {
+			return null;
+		}
+		files.addAll(fetchUrls(module, dirPath + IMG_DIR));
+		files.addAll(fetchUrls(module, dirPath + EXT_DIR));
 
 		final File tmp = Files.createTempDir();
 
 		for (URL file : files) {
 			String name = file.toString();
 			name = name.substring(name.lastIndexOf(dirName));
+			name = name.replace(dirName + File.separator + lang, dirName);
 			try {
 				copy(file.openStream(), tmp, name);
 			} catch (IOException e) {
@@ -234,6 +245,12 @@ public class AppServiceImpl implements AppService {
 
 		return tmp;
 	}
+	
+	
+	private List<URL> fetchUrls(String module, String fileName) {
+		return  MetaScanner.findAll(module, fileName, "(.+?)");
+	}
+	
 
 	private void copy(InputStream in, File toDir, String name) throws IOException {
 		File dst = FileUtils.getFile(toDir, name);
@@ -262,7 +279,7 @@ public class AppServiceImpl implements AppService {
 		if (type == null) {
 			return null;
 		}
-		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).fetchOne();
+		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).cacheable().fetchOne();
 	}
 
 	@Override
@@ -336,7 +353,8 @@ public class AppServiceImpl implements AppService {
 		}
 
 		app = appRepo.find(app.getId());
-
+		
+		log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getTypeSelect());
 		if (!app.getInitDataLoaded()) {
 			importDataInit(app);
 		}
@@ -458,6 +476,18 @@ public class AppServiceImpl implements AppService {
 			}
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public App updateLanguage(App app, String language) {
+		
+		if (language != null) {
+			app.setLanguageSelect(language);
+			app = appRepo.save(app);
+		}
+		
+		return app;
 	}
 
 }

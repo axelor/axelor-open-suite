@@ -62,8 +62,10 @@
 	      <button name="refuse" title="Refuse" showIf="statusSelect == 6"  onClick="action-purchase-request-set-status-refused,save"/>
 	      <button name="cancel" title="Cancel" showIf="statusSelect != 3 &amp;&amp; statusSelect != 8"  onClick="action-purchase-request-set-status-cancel,save"/>
 	    </toolbar>
+	    <panel title="Status">
+      		<field name="statusSelect" readonly="true" colSpan="12" widget="nav-select" showTitle="false"/>
+      	</panel>
 		<panel name="main" >
-		  <field name="statusSelect" readonly="true" colSpan="12" widget="nav-select" />
 		  <field name="company" form-view="company-form"  grid-view="company-grid"/>
 		  <spacer/>
 		  <field name="newProduct"/>

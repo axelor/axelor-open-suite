@@ -27,9 +27,11 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+
 public class DateTool{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(DateTool.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	public static long daysBetween(LocalDate date1, LocalDate date2, boolean days360) {
 

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import com.google.inject.Inject;
 
 public class MoveDueService {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	private MoveLineRepository moveLineRepository;
 	
@@ -52,7 +53,7 @@ public class MoveDueService {
 
 		if(originalInvoice != null && originalInvoice.getMove() != null)  {
 			for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {
-				if(moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+				if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
 						&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
 				}
@@ -81,14 +82,14 @@ public class MoveDueService {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 				othersDebitMoveLines = moveLineRepository.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
+						 " AND self.account.useForPartnerBalance = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 AND self NOT IN (?5) ORDER BY self.date ASC ",
 						 company, MoveRepository.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
 			}
 			else  {
 				othersDebitMoveLines = moveLineRepository.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
+						 " AND self.account.useForPartnerBalance = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 ORDER BY self.date ASC ",
 						 company, MoveRepository.STATUS_VALIDATED, true, partner).fetch();
 			}

@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -43,7 +44,7 @@ import com.google.inject.Inject;
 public class ManufOrderController {
 
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	private ManufOrderWorkflowService manufOrderWorkflowService;
@@ -77,7 +78,7 @@ public class ManufOrderController {
 //	}
 	
 	
-	public void start (ActionRequest request, ActionResponse response) {
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Long manufOrderId = (Long)request.getContext().get("id");
 		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
@@ -215,6 +216,50 @@ public class ManufOrderController {
 		manufOrder = manufOrderRepo.find(manufOrder.getId());
 		StockMove wasteStockMove = manufOrderService.generateWasteStockMove(manufOrder);
 		response.setReload(true);
+	}
+  
+	public void updateQty(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
+		ManufOrder newManufOrder = manufOrderService.updateQty(manufOrder);
+		response.setReload(true);
+		response.setCanClose(true);
+	}
+	
+	public void printProdProcess(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+		String prodProcessId = manufOrder.getProdProcess().getId().toString();
+		String prodProcessLable = manufOrder.getProdProcess().getName().toString();
+		
+		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable+"-${date}")
+				.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+				.addParam("ProdProcessId", prodProcessId)
+				.generate()
+				.getFileLink();
+		
+		response.setView(ActionView
+				.define(prodProcessLable)
+				.add("html", fileLink).map());
+		
+	}
+
+	public void updatePlannedDates(ActionRequest request, ActionResponse response) throws AxelorException {
+		ManufOrder manufOrderView = request.getContext().asType(ManufOrder.class);
+
+		if (manufOrderView.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+			ManufOrder manufOrder = manufOrderRepo.find(manufOrderView.getId());
+
+			if (manufOrderView.getPlannedStartDateT() != null) {
+				if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+					manufOrderWorkflowService.updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
+					response.setReload(true);
+				}
+			} else {
+				response.setValue("plannedStartDateT", manufOrder.getPlannedStartDateT());
+			}
+
+		}
 	}
 
 }

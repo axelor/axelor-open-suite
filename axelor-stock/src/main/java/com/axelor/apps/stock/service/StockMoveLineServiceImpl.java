@@ -173,7 +173,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);
@@ -193,7 +193,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		return stockMoveLine;
 	}
-
 
 
 	@Override
@@ -246,7 +245,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				stockMoveLine.getStockMove(),
 				trackingNumber);
 
-		stockMoveLine.getStockMove().getStockMoveLineList().add(newStockMoveLine);
+		stockMoveLine.getStockMove().addStockMoveLineListItem(newStockMoveLine);
 
 		stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
 		stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
@@ -400,6 +399,39 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
     }
 
 	@Override
+	public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+		List<String> errorList = new ArrayList<>();
+
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+			TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+
+			if (trackingNumber == null) {
+				continue;
+			}
+
+			Product product = trackingNumber.getProduct();
+
+			if (product == null || !product.getCheckExpirationDateAtStockMoveRealization()) {
+				continue;
+			}
+
+			if (product.getHasWarranty()
+					&& trackingNumber.getWarrantyExpirationDate().isBefore(appBaseService.getTodayDate())
+					|| product.getIsPerishable()
+							&& trackingNumber.getPerishableExpirationDate().isBefore(appBaseService.getTodayDate())) {
+				errorList.add(product.getName());
+			}
+		}
+
+		if (!errorList.isEmpty()) {
+			String errorStr = errorList.stream().collect(Collectors.joining(", "));
+			throw new AxelorException(
+					String.format(I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS), errorStr),
+					IException.CONFIGURATION_ERROR);
+		}
+	}
+
+	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
 
@@ -470,6 +502,37 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			stockMoveLine.setCustomsCodeNomenclature(customsCodeNomenclature);
 			stockMoveLine.setCustomsCode(customsCodeNomenclature != null ? customsCodeNomenclature.getCode() : null);
 		}
+	}
+
+
+	@Override
+	public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList) {
+		if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
+			return null;
+		}
+
+		StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
+
+		if (stockMoveLineList.size() == 1) {
+			return firstStockMoveLine;
+		}
+
+		Product product = firstStockMoveLine.getProduct();
+		String productName = firstStockMoveLine.getProductName();
+		String description = firstStockMoveLine.getDescription();
+		BigDecimal quantity = firstStockMoveLine.getQty();
+		BigDecimal unitPriceUntaxed = firstStockMoveLine.getUnitPriceUntaxed();
+		BigDecimal unitPriceTaxed = firstStockMoveLine.getUnitPriceTaxed();
+		Unit unit = firstStockMoveLine.getUnit();
+		StockMove stockMove = firstStockMoveLine.getStockMove();
+		TrackingNumber trackingNumber = firstStockMoveLine.getTrackingNumber();
+
+		for (StockMoveLine stockMoveLine : stockMoveLineList.subList(1, stockMoveLineList.size())) {
+			quantity = quantity.add(stockMoveLine.getQty());
+		}
+
+		return createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit,
+				stockMove, trackingNumber);
 	}
 
 }

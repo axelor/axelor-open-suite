@@ -16,7 +16,6 @@
     onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate" onLoad="action-user-apply-applicaton-mode">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" if="__config__.app.isApp('employee')" />
 	        <button name="createEmployee"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
@@ -42,10 +41,14 @@
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<field name="teamSet" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
-        	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm"  if="__config__.app.isApp('crm')" >
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        	<panel name="calendarsConfiguration" title="Calendars Configuration">
+        		<panel-related field="followersCalUserSet" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
+        		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
+        	<panel name="personalCredential" if-module="axelor-social-network" title="SN Personal Credential" > 
+		    	<field name="snPersonalCredential" form-view="sn-personal-credential-form" grid-view="sn-personal-credential-grid" canNew="true"/>
+		    </panel>  
         </panel-tabs>
     </form>
     
@@ -62,7 +65,13 @@
 				<field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length &gt;= 4 &amp;&amp; confirm == newPassword)"/>
 				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 			</panel>
+			<field name="email"/>
+			<field name="theme"/>
+			<field name="noHelp"/>
+			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>
+			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+			<panel-related field="calendarManagementList" colSpan="12"/>
 		</panel>
 	</form>
     
@@ -78,7 +87,7 @@
     </action-attrs>
     
     <action-attrs name="action-user-attrs-domain-active-company">
-  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany"/>
+  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " if="companySet != null &amp;&amp; !companySet.isEmpty()" for="activeCompany"/>
     </action-attrs>
 
     
@@ -92,7 +101,7 @@
     
     <action-group name="action-user-group-employee">
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
-		<action name="action-hr-user-show-employee" if="partner != null"/>
+		<action name="action-employee-user-show-employee" if="partner != null"/>
     </action-group>
     
 	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">

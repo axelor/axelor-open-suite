@@ -41,11 +41,11 @@
 <!--     Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true" required="true"/> 
   
-    <datetime name="plannedStartDateT" title="Start date" initParam="true"/>
-  	<datetime name="plannedEndDateT" title="End date"/>
+    <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
+  	<datetime name="plannedEndDateT" title="Planned end date"/>
   	
- 	<datetime name="realStartDateT" title="Start date"/>
-  	<datetime name="realEndDateT" title="End date"/>
+ 	<datetime name="realStartDateT" title="Real start date"/>
+  	<datetime name="realEndDateT" title="Real end date"/>
     
     <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     <many-to-one name="outStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move out"/>
@@ -55,7 +55,16 @@
     <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
-    
-    
+
+	<extra-code><![CDATA[
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_CANCELED = 2;
+		public static final int STATUS_PLANNED = 3;
+		public static final int STATUS_IN_PROGRESS = 4;
+		public static final int STATUS_STANDBY = 5;
+		public static final int STATUS_FINISHED = 6;
+	]]></extra-code>
+
   </entity>
 </domain-models>

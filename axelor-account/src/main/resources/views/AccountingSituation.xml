@@ -10,7 +10,7 @@
 		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
 		<field name="balanceCustAccount"/>
 		<field name="balanceDueCustAccount"/>
-		<field name="balanceDueReminderCustAccount"/>
+		<field name="balanceDueDebtRecoveryCustAccount"/>
 		<field name="acceptedCredit"/>
 		<field name="usedCredit"/>
 	</grid>
@@ -19,7 +19,7 @@
 		  onLoad="action-accounting-situation-group-form-onload"
 		  onNew="action-account-accounting-situation-default-set" width="large">
 		<panel name="main">
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
 			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
@@ -29,10 +29,10 @@
 		<panel name="customerBalance" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
-			<field name="balanceDueReminderCustAccount"/>
+			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
-		<panel name="reminderProcess" title="Reminder process">
-			<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
+		<panel name="debtRecoveryProcess" title="Debt recovery process">
+			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
 		</panel>
 
 		<panel-related field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
@@ -54,7 +54,7 @@
        	<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
-        <field name="balanceDueReminderCustAccount"/>
+        <field name="balanceDueDebtRecoveryCustAccount"/>
 		<field name="acceptedCredit"/>
 		<field name="usedCredit"/>
     </grid>
@@ -75,10 +75,10 @@
 		<panel name="customerBalance" title="Customer balance"  itemSpan="4" >
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
-			<field name="balanceDueReminderCustAccount"/>
+			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
-	    <panel name="reminderProcess" title="Reminder process"  >
-	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
+	    <panel name="debtRecoveryProcess" title="Debt recovery process"  >
+	    	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
 	    </panel>
 
 		 <panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
@@ -115,14 +115,14 @@
 	</action-method>
 
 	<action-method name="action-supplychain-method-compute-used-credit">
-		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit"/>
+		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
 	</action-method>
 	
 	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
         <view type="grid" name="move-line-accounting-situation-grid"/>
     	<view type="form" name="move-line-form"/>
     	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
-    	AND self.account.reconcileOk = 'true' AND self.move.statusSelect = 3</domain>
+    	AND self.account.useForPartnerBalance = 'true' AND self.move.statusSelect = 3</domain>
     </action-view>
     
 	<action-record name="action-account-accounting-situation-default-set" model="com.axelor.apps.account.db.AccountingSituation">

@@ -12,13 +12,15 @@
 		<string name="description" multiline="true" large="true"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>      
-		<many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
+		<many-to-many name="projectFolderSet" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
 		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
 		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronisable"/>
+		<many-to-one name="projectParent" ref="com.axelor.apps.project.db.Project" title="Project Parent"/>
+		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
 		
 		<string name="code" title="Code" />
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
@@ -48,7 +50,7 @@
 		
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 		
-		<many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Type of authorized activities"/>
+		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Type of authorized activities"/>
 		
 		<boolean name="excludePlanning" title="Exclude planning" />
 		

@@ -26,7 +26,11 @@ public interface AppraisalService {
 	
 	public void send(Appraisal appraisal);
 	
+	public void realize(Appraisal appraisal);
+	
 	public void cancel(Appraisal appraisal);
+	
+	public void draft(Appraisal appraisal);
 	
 	public Set<Long> createAppraisals(Appraisal appraisalTemplate, Set<Employee> employees, Boolean send);
 }

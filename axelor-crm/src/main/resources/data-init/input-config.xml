@@ -13,8 +13,6 @@
     
     <input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" search="self.code = :code"/>
 	
-	<input file="crm_ticketCategory.csv" separator=";" type="com.axelor.apps.crm.db.TicketCategory" search="self.importId = :importId"/>
-	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
 	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>

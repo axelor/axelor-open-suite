@@ -22,6 +22,7 @@ public interface IReport {
 	
 	public static final String MANUF_ORDER = "ManufOrder.rptdesign";
 	public static final String OPERATION_ORDER = "OperationOrder.rptdesign";
-	
+	public static final String PROD_PROCESS= "ProdProcess.rptdesign";
+	public static final String BILL_OF_MATERIAL = "BillOfMaterial.rptdesign";
 	
 }

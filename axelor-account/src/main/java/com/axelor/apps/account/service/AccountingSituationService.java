@@ -31,10 +31,10 @@ public interface AccountingSituationService	{
 	
 	boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company);
 	List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException;
-	AccountingSituation createAccountingSituation(Company company) throws AxelorException;
 	AccountingSituation getAccountingSituation(Partner partner, Company company);
 	AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException;
 	String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails);
 	BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner);
+	void updateCustomerCredit(Partner partner) throws AxelorException;
 
 }
