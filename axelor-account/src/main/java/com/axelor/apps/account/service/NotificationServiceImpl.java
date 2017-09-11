@@ -20,7 +20,6 @@ import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
@@ -56,7 +55,6 @@ public class NotificationServiceImpl implements NotificationService {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void validate(Notification notification) throws AxelorException {
 		MoveService moveService = Beans.get(MoveService.class);
-		MoveLineService moveLineService = Beans.get(MoveLineService.class);
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		InvoicePaymentCreateService invoicePaymentCreateService = Beans.get(InvoicePaymentCreateService.class);
 		ReconcileService reconcileService = Beans.get(ReconcileService.class);
@@ -86,17 +84,17 @@ public class NotificationServiceImpl implements NotificationService {
 				boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
 
 				if (isOutPayment) {
-					debitMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+					debitMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							accountConfig.getFactorCreditAccount(), amountPaid, true, notification.getPaymentDate(),
 							null, 1, subrogationRelease.getSequenceNumber());
-					creditMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+					creditMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							invoice.getPartnerAccount(), amountPaid, false, notification.getPaymentDate(), null, 2,
 							subrogationRelease.getSequenceNumber());
 				} else {
-					creditMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+					creditMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							accountConfig.getFactorDebitAccount(), amountPaid, false, notification.getPaymentDate(),
 							null, 1, subrogationRelease.getSequenceNumber());
-					debitMoveLine = moveLineService.createMoveLine(paymentMove, invoice.getPartner(),
+					debitMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							invoice.getPartnerAccount(), amountPaid, true, notification.getPaymentDate(), null, 2,
 							subrogationRelease.getSequenceNumber());
 				}
