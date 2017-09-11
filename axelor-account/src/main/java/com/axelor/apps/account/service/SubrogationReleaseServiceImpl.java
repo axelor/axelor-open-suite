@@ -122,6 +122,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 	}
 
 	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease) throws AxelorException {
 		MoveService moveService = Beans.get(MoveService.class);
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
@@ -136,19 +137,26 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 			LocalDate date = appBaseService.getTodayDate();
 			Move move = moveService.getMoveCreateService().createMove(journal, company, company.getCurrency(),
 					invoice.getPartner(), date, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-			MoveLine moveLine;
+			MoveLine creditMoveLine, debitMoveLine;
 
 			if (InvoiceToolService.isOutPayment(invoice)) {
-				moveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
-						accountConfig.getFactorCreditAccount(), invoice.getCompanyInTaxTotalRemaining(), false, date,
-						null, 1, invoice.getInvoiceId());
+				creditMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
+						accountConfig.getFactorDebitAccount(), invoice.getCompanyInTaxTotalRemaining(), false, date,
+						null, 1, subrogationRelease.getSequenceNumber());
+				debitMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
+						accountConfig.getFactorCreditAccount(), invoice.getCompanyInTaxTotalRemaining(), true, date,
+						null, 2, subrogationRelease.getSequenceNumber());
 			} else {
-				moveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
+				creditMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
+						accountConfig.getFactorCreditAccount(), invoice.getCompanyInTaxTotalRemaining(), false, date,
+						null, 1, subrogationRelease.getSequenceNumber());
+				debitMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
 						accountConfig.getFactorDebitAccount(), invoice.getCompanyInTaxTotalRemaining(), true, date,
-						null, 1, invoice.getInvoiceId());
+						null, 2, subrogationRelease.getSequenceNumber());
 			}
 
-			moveLineRepo.save(moveLine);
+			moveLineRepo.save(creditMoveLine);
+			moveLineRepo.save(debitMoveLine);
 			moveService.getMoveValidateService().validateMove(move);
 		}
 
