@@ -122,7 +122,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 	}
 
 	@Override
-	public void postRelease(SubrogationRelease subrogationRelease) throws AxelorException {
+	public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease) throws AxelorException {
 		MoveService moveService = Beans.get(MoveService.class);
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);

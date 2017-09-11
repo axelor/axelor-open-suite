@@ -46,11 +46,11 @@ public interface SubrogationReleaseService {
 	String exportToCSV(SubrogationRelease subrogationRelease) throws AxelorException, IOException;
 
 	/**
-	 * Post a subrogation release (create moves).
+	 * Enter a subrogation release in the accounts (create moves).
 	 * 
 	 * @param subrogationRelease
 	 * @throws AxelorException
 	 */
-	void postRelease(SubrogationRelease subrogationRelease) throws AxelorException;
+	void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease) throws AxelorException;
 
 }

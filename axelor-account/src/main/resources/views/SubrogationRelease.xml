@@ -39,8 +39,8 @@
 			<button name="transmitRelease" title="Transmit release"
 				onClick="save,action-subrogation-release-transmit-release"
 				readonlyIf="invoiceSet == null || invoiceSet.length == 0" showIf="statusSelect == 1" />
-			<button name="postRelease" title="Post release"
-				onClick="save,action-subrogation-release-post-release" showIf="statusSelect == 2" />
+			<button name="enterReleaseInTheAccounts" title="Enter release in the accounts"
+				onClick="save,action-subrogation-release-enter-release-in-the-accounts" showIf="statusSelect == 2" />
 			<button name="cancelRelease" title="Cancel release"
 				onClick="action-subrogation-release-cancel-release,save" showIf="statusSelect > 1 &amp;&amp; statusSelect &lt; 3" />
 		</panel>
@@ -67,9 +67,9 @@
 			method="exportToCSV" />
 	</action-method>
 
-	<action-method name="action-subrogation-release-post-release">
+	<action-method name="action-subrogation-release-enter-release-in-the-accounts">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
-			method="postRelease" />
+			method="enterReleaseInTheAccounts" />
 	</action-method>
 
 	<action-record name="action-subrogation-release-onnew"

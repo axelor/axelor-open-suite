@@ -53,10 +53,10 @@ public class SubrogationReleaseController {
 		response.setReload(true);
 	}
 
-	public void postRelease(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void enterReleaseInTheAccounts(ActionRequest request, ActionResponse response) throws AxelorException {
 		SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
 		subrogationRelease = Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
-		subrogationReleaseService.postRelease(subrogationRelease);
+		subrogationReleaseService.enterReleaseInTheAccounts(subrogationRelease);
 		response.setReload(true);
 	}
 
