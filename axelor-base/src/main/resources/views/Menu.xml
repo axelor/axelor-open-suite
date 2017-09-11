@@ -561,5 +561,13 @@
 		<view type="form" name="calendar-configuration-form"/>
 	</action-view>
 	
+	<menuitem name="admin-root-document-generator" parent="admin-root"
+			  title="Doc generator" order="60" action="admin.root.doc.generator"/>
+			  
+	<action-view name="admin.root.doc.generator" title="Doc generator"
+		model="com.axelor.apps.base.db.DocumentGenerator" >
+		<view type="grid" name="document-generator-grid"/>
+		<view type="form" name="document-generator-form"/>
+	</action-view>
 	
 </object-views>

@@ -454,6 +454,10 @@
 		<option value="3">No Discount</option>
 	</selection>
 	
+	<selection name="document.export.type.select">
+		<option value="html">HTML</option>
+		<option value="pdf">PDF</option>
+	</selection>
 	
 	<selection name="day.month.select">
 		<option value="0">00</option>
