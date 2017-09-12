@@ -49,7 +49,27 @@
 		<category key="_product" type="text" title="Product"/>
 		<series key="_quantity" type="bar" title="Quantity"/>
 	</chart> 
-		
+
+    <chart name="chart.duration.on.mos" title="">
+        <dataset type="jpql">
+            <![CDATA[
+                SELECT
+                    TO_CHAR(self.stoppingDateTime, 'YYYY-MM-DD') AS _date,
+                    EXTRACT(EPOCH FROM SUM(self.stoppingDateTime - self.startingDateTime))/3600 AS _hours
+                FROM
+                    OperationOrderDuration self
+                WHERE
+                    self.startedBy.id = :userId
+                    AND self.startingDateTime IS NOT NULL AND self.stoppingDateTime IS NOT NULL
+                    AND TO_CHAR(self.startingDateTime, 'YYYY-MM-DD') >= :dateFrom AND TO_CHAR(self.stoppingDateTime, 'YYYY-MM-DD') <= :dateTo
+                GROUP BY
+                    TO_CHAR(self.stoppingDateTime, 'YYYY-MM-DD')
+            ]]>
+        </dataset>
+        <category key="_date" type="text" title="User"/>
+        <series key="_hours" type="bar" title="Duration (hours)"/>
+    </chart>
+
 	<action-record name="action.production.chart.set.from.date.to.date" model="com.axelor.apps.production.db.Machine">
  	    <field name="toDateTime" expr="eval:__datetime__.plusDays(1)" />
  	    <field name="fromDateTime" expr="eval:__datetime__"/>
