@@ -10,7 +10,6 @@
  	<decimal name="amount" title="Amount" required="true" default="0" min="0" initParam="true"/>
  	
  	<date name="paymentDate" title="Date" required="true" initParam="true"/>
- 	<date name="paymentDueDate" title="Payment Due Date"/>
  	<string name="delayReason" title="Delay reason"/>
  	
  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true" initParam="true"/>

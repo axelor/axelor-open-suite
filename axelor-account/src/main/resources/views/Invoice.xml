@@ -321,6 +321,7 @@
 		</panel>
 		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true" >
 			<field name="company.currency.symbol" hidden="true"/>
+			<field name="companyInTaxTotalRemaining" hidden="true"/>
 			<field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal" >
 				<viewer><![CDATA[
 		         <dl class="dl-horizontal">
