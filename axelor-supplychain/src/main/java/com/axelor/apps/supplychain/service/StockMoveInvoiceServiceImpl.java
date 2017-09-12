@@ -123,7 +123,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		if (invoice != null) {
 
 			this.extendInternalReference(stockMove, invoice);
-
+			invoice.setAddressStr(
+					Beans.get(AddressService.class)
+							.computeAddressStr(invoice.getAddress()
+							)
+			);
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -169,7 +173,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		if (invoice != null) {
 			saleOrderInvoiceService.fillInLines(invoice);
 			this.extendInternalReference(stockMove, invoice);
-
+			invoice.setAddressStr(
+					Beans.get(AddressService.class)
+							.computeAddressStr(invoice.getAddress()
+							)
+			);
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -573,7 +581,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-
+			invoice.setAddressStr(
+					Beans.get(AddressService.class)
+							.computeAddressStr(invoice.getAddress()
+							)
+			);
 			invoiceRepository.save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);
