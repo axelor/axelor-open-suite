@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
+		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
 	    <field name="paymentDate"/>
 	    <field name="amount" aggregate="sum"/>
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -20,6 +21,8 @@
 			<field name="amount"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
    			<field name="paymentDate"/>
+   			<field name="invoice.dueDate" showIf="paymentDate &gt; invoice.dueDate"/>
+		    <field name="delayReason" showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
 	    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" onChange="action-invoice-payment-method-fill-bank-details"/>
 			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-invoice-payment-method-bank-details-domain"/>
 	 	</panel>
@@ -50,6 +53,7 @@
 	<action-method name="action-invoice-payment-method-new">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
 	</action-method>
+	
     <action-method name="action-invoice-payment-method-cancel">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
     </action-method>

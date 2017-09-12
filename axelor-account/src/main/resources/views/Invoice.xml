@@ -246,7 +246,7 @@
             <button name="ventilate" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
             <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
-            <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
+            <button name="addPayment" title="Register payment" showIf="((statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; !hasPendingPayments) || $number(amountRemaining) &gt; 0" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
             <field name="statusSelect"/>
             <field name="validatedByUser" grid-view="user-grid" form-view="user-form"/>
         </panel>
@@ -320,6 +320,7 @@
 		</panel>
 		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true" >
 			<field name="company.currency.symbol" hidden="true"/>
+			<field name="companyInTaxTotalRemaining" hidden="true"/>
 			<field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal" >
 				<viewer><![CDATA[
 		         <dl class="dl-horizontal">
