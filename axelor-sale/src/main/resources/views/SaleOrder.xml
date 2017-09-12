@@ -155,8 +155,8 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 				  </div>
 				</div>
@@ -541,8 +541,8 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -599,8 +599,8 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
