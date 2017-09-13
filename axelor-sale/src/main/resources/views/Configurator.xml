@@ -33,7 +33,7 @@
                     onClick="save,action-configurator-generate-product"/>
             <field name="configuratorCreator.generateProduct" hidden="true"/>
         </panel>
-        <panel title="Configurator Bom" if-module="axelor-production" colSpan="12">
+        <panel title="Configurator BoM" if-module="axelor-production" colSpan="12">
             <field name="configuratorBom" if-module="axelor-production" colSpan="12">
                 <editor>
                     <panel title="Label">
