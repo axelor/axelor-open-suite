@@ -21,16 +21,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -168,6 +169,25 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		return null;
 		
+	}
+		
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException  {
+		
+		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+		timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
+		for (int i = 0; i < timesheetLines.size(); i++) {
+			
+			if (i+1 < timesheetLines.size()) {
+				LocalDate dateOne = timesheetLines.get(i).getDate();
+				LocalDate dateTwo = timesheetLines.get(i+1).getDate();
+
+				if (ChronoUnit.DAYS.between(dateOne, dateTwo) > 1) {
+					String message = "Alert for missing " + dateOne.plusDays(1).getDayOfWeek();
+					throw new AxelorException(message, 1);
+				}	
+			}
+		}
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

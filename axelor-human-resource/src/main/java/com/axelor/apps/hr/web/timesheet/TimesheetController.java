@@ -21,7 +21,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -284,10 +283,12 @@ public class TimesheetController {
 	//action called when validating a timesheet. Changing status + Sending mail to Applicant
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		
-		try{
+		try {
 			Timesheet timesheet = request.getContext().asType(Timesheet.class);
 			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
 			TimesheetService timesheetService = timesheetServiceProvider.get();
+			
+			timesheetService.checkEmptyPeriod(timesheet);
 
 			timesheetService.validate(timesheet);
 			computeTimeSpent(request, response);
@@ -295,12 +296,13 @@ public class TimesheetController {
 			Message message = timesheetService.sendValidationEmail(timesheet);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
+			}
 			
-		}  catch(Exception e)  {
+		} catch (AxelorException e) {
+			response.setAlert(e.getMessage());
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 		

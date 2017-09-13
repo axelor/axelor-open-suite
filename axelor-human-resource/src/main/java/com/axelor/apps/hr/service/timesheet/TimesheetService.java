@@ -47,7 +47,10 @@ public interface TimesheetService {
 	public void confirm(Timesheet timesheet) throws AxelorException;
 	
 	public Message sendConfirmationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
-		
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
+	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Timesheet timesheet) throws AxelorException;
 		
@@ -84,4 +87,5 @@ public interface TimesheetService {
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
 	
 	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
+
 }
