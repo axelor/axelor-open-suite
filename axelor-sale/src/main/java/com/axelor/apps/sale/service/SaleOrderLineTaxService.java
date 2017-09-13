@@ -70,7 +70,10 @@ public class SaleOrderLineTaxService {
 		Map<TaxLine, SaleOrderLineTax> map = new HashMap<TaxLine, SaleOrderLineTax>();
         Set<String> specificNotes = new HashSet<String>();
 
-        boolean customerSpecificNote = saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
+        boolean customerSpecificNote = false;
+        if (saleOrder.getClientPartner().getFiscalPosition() != null) {
+            customerSpecificNote = saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
+        }
 		
 		if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
