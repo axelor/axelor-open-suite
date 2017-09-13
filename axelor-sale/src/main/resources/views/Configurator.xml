@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator">
+    <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator" >
         <field name="configuratorCreator"/>
     </grid>
 
@@ -22,7 +22,8 @@
 					]]>
                 </viewer>
             </field>
-            <field name="configuratorCreator" domain="self.isActive = true"/>
+            <field name="configuratorCreator"
+                   onSelect="action-configurator-method-creator-domain"/>
             <field name="attributes" colSpan="12"/>
         </panel>
         <panel readonly="true">
@@ -119,6 +120,11 @@
                    model="com.axelor.apps.sale.db.Configurator">
         <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
     </action-record>
+
+    <action-method name="action-configurator-method-creator-domain">
+        <call class="com.axelor.apps.sale.web.ConfiguratorController"
+              method="createDomainForCreator"/>
+    </action-method>
 
     <action-method name="action-configurator-wizard-method-generate">
         <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateForSaleOrder"/>

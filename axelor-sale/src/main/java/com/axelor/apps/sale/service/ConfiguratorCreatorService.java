@@ -63,4 +63,11 @@ public interface ConfiguratorCreatorService {
      * @throws AxelorException
      */
     ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException;
+
+    /**
+     * Compute the correct domain to filter creator that are not authorized
+     * for the current user.
+     * @return the domain
+     */
+    String getConfiguratorCreatorDomain();
 }

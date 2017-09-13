@@ -138,6 +138,8 @@
 		model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
+		<domain>:__user__ IN self.configuratorCreator.authorizedUserList OR :groupId IN self.configuratorCreator.authorizedGroupList</domain>
+		<context name="groupId" expr="eval: __user__.group.id"/>
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators"
