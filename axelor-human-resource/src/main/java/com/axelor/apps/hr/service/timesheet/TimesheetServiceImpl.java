@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.mail.MessagingException;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -55,6 +68,8 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -64,17 +79,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.mail.MessagingException;
 
 /** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
@@ -169,6 +173,46 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     return null;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException {
+    User user = timesheet.getUser();
+    // Leave list
+    List<LeaveRequest> leaveList =
+        JPA.all(LeaveRequest.class)
+            .filter("self.user = :userId AND self.statusSelect IN (:awaitingValidation,:validated)")
+            .bind("userId", user)
+            .bind("awaitingValidation", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
+            .bind("validated", LeaveRequestRepository.STATUS_VALIDATED)
+            .fetch();
+    // Public holidays list
+    List<EventsPlanningLine> publicHolidayList =
+        user.getEmployee().getPublicHolidayEventsPlanning().getEventsPlanningLineList();
+
+    List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+    timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
+    for (int i = 0; i < timesheetLines.size(); i++) {
+
+      if (i + 1 < timesheetLines.size()) {
+        LocalDate date1 = timesheetLines.get(i).getDate();
+        LocalDate date2 = timesheetLines.get(i + 1).getDate();
+        LocalDate missingDay = date1.plusDays(1);
+
+        while (ChronoUnit.DAYS.between(date1, date2) > 1) {
+
+          if (isLeaveDay(leaveList, missingDay) && isPublicHoliday(publicHolidayList, missingDay)) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                "Line for %s is missing.",
+                missingDay.getDayOfWeek());
+          }
+
+          date1 = missingDay;
+          missingDay = missingDay.plusDays(1);
+        }
+      }
+    }
   }
 
   @Override
@@ -337,33 +381,15 @@ public class TimesheetServiceImpl implements TimesheetService {
           break;
         }
       }
+
       if (dayPlanningCurr.getMorningFrom() != null
           || dayPlanningCurr.getMorningTo() != null
           || dayPlanningCurr.getAfternoonFrom() != null
           || dayPlanningCurr.getAfternoonTo() != null) {
-        /*Check if the day is not a leaving day */
-        boolean noLeave = true;
-        if (leaveList != null) {
-          for (LeaveRequest leave : leaveList) {
-            if ((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
-                || leave.getFromDate().isEqual(fromDate)
-                || leave.getToDate().isEqual(fromDate)) {
-              noLeave = false;
-              break;
-            }
-          }
-        }
 
         /*Check if the day is not a public holiday */
-        boolean noPublicHoliday = true;
-        if (publicHolidayList != null) {
-          for (EventsPlanningLine publicHoliday : publicHolidayList) {
-            if (publicHoliday.getDate().isEqual(fromDate)) {
-              noPublicHoliday = false;
-              break;
-            }
-          }
-        }
+        boolean noLeave = isLeaveDay(leaveList, fromGenerationDate);
+        boolean noPublicHoliday = isPublicHoliday(publicHolidayList, fromGenerationDate);
 
         if (noLeave && noPublicHoliday) {
           TimesheetLine timesheetLine =
@@ -381,6 +407,45 @@ public class TimesheetServiceImpl implements TimesheetService {
       fromDate = fromDate.plusDays(1);
     }
     return timesheet;
+  }
+
+  /**
+   * Checks if the given day is a leave day.
+   *
+   * @param leaves
+   * @param date
+   * @return
+   */
+  public boolean isLeaveDay(List<LeaveRequest> leaves, LocalDate date) {
+    if (ObjectUtils.notEmpty(leaves)) {
+      for (LeaveRequest leave : leaves) {
+        if ((leave.getFromDate().isBefore(date) && leave.getToDate().isAfter(date))
+            || leave.getFromDate().isEqual(date)
+            || leave.getToDate().isEqual(date)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if the given day is a public holiday.
+   *
+   * @param publicHolidays
+   * @param fromDate
+   * @return
+   */
+  public boolean isPublicHoliday(List<EventsPlanningLine> publicHolidays, LocalDate fromDate) {
+    if (ObjectUtils.notEmpty(publicHolidays)) {
+      for (EventsPlanningLine publicHoliday : publicHolidays) {
+        if (publicHoliday.getDate().getMonth() == fromDate.getMonth()
+            && publicHoliday.getDate().getDayOfMonth() == fromDate.getDayOfMonth()) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Override

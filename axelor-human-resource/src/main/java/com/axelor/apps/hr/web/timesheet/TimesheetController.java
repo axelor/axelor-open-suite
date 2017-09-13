@@ -406,6 +406,8 @@ public class TimesheetController {
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
+      timesheetService.checkEmptyPeriod(timesheet);
+
       timesheetService.validate(timesheet);
       computeTimeSpent(request, response);
 
