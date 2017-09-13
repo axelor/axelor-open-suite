@@ -219,23 +219,26 @@ public class StockMoveController {
 		response.setCanClose(true);
 	}
 
-	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
-		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
-		if(stockMoveLines == null){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
-			return;
-		}
-		Integer splitQty = (Integer)request.getContext().get("splitQty");
-		if(splitQty < 1){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
-			return ;
-		}
-		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
-		if(!selected)
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
-		response.setReload(true);
-		response.setCanClose(true);
-	}
+    public void splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
+        List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
+		if (stockMoveLines == null) {
+            response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
+            return;
+        }
+
+        Integer splitQty = (Integer)request.getContext().get("splitQty");
+        if (splitQty < 1) {
+            response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
+            return;
+        }
+
+        Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
+        if (!selected) {
+            response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
+        }
+
+        response.setCanClose(true);
+    }
 
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
