@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.lang.invoke.MethodHandles;
 
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.i18n.I18n;
 
+import com.axelor.inject.Beans;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -412,5 +414,16 @@ public class SaleOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
-	
+
+	/**
+	 * Set the address string with their values.
+	 * @param request
+	 * @param response
+	 */
+	public void computeAddressStr(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrderService.computeAddressStr(saleOrder);
+
+		response.setValues(saleOrder);
+	}
 }

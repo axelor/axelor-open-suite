@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.base.service.AddressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,6 +177,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
+		this.computeAddressStr(stockMove);
 		stockMove.setCompany(company);
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
@@ -783,4 +785,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return stockMoveConformitySelect;
 	}
 
+	@Override
+	public void computeAddressStr(StockMove stockMove) {
+		AddressService addressService = Beans.get(AddressService.class);
+	    stockMove.setFromAddressStr(
+	    		addressService.computeAddressStr(stockMove.getFromAddress())
+		);
+		stockMove.setToAddressStr(
+				addressService.computeAddressStr(stockMove.getToAddress())
+		);
+	}
 }

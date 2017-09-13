@@ -23,9 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -37,6 +35,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -79,7 +78,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	protected SaleOrderRepository saleOrderRepo;
 
 	protected InvoiceRepository invoiceRepo;
-	
+
 	protected InvoiceService invoiceService;
 
 	@Inject
@@ -236,7 +235,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		);
 		this.fillInLines(invoice);
 
-		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
 		invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -445,7 +444,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
 		this.fillInLines(invoice);
 
-		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
 		return invoice;
 

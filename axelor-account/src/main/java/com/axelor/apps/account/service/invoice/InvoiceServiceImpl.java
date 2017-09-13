@@ -476,21 +476,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return invoice;
 	}
 
-	public String computeAddressStr(Address address) {
-		StringBuilder addressString = new StringBuilder();
-		if (address == null) {
-			return "";
-		}
-
-		if (address.getAddressL2() != null) { addressString.append(address.getAddressL2()).append("\n"); }
-		if (address.getAddressL3() != null) { addressString.append(address.getAddressL3()).append("\n"); }
-		if (address.getAddressL4() != null) { addressString.append(address.getAddressL4()).append("\n"); }
-		if (address.getAddressL5() != null) { addressString.append(address.getAddressL5()).append("\n"); }
-		if (address.getAddressL6() != null) { addressString.append(address.getAddressL6()); }
-		if (address.getAddressL7Country() != null) { addressString = addressString.append("\n").append(address.getAddressL7Country().getName()); }
-
-		return addressString.toString();
-	}
 
 	@Override
 	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
