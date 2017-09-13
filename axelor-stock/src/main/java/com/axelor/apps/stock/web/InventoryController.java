@@ -19,7 +19,6 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -27,16 +26,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -60,10 +56,7 @@ public class InventoryController {
 	
 	@Inject
 	ProductRepository productRepo;
-	
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+		
 	private static final String PATH = AppSettings.get().get("file.upload.dir");
 	
 	/**
@@ -155,18 +148,6 @@ public class InventoryController {
 			
 			response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
 		}
-	}
-	
-	public BigDecimal getCurrentQty(Location location, Product product){
-		
-		if(location != null && product != null){
-			LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
-			if(locationLine != null ){
-				LOG.debug("Current qty found: {}",locationLine.getCurrentQty());
-				return locationLine.getCurrentQty();
-			}
-		}
-		return BigDecimal.ZERO;
 	}
 	
 	
