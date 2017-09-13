@@ -42,13 +42,21 @@ public interface ITranslation {
 	public static final String INVOICE_CLIENT_REF = /*$$(*/ "Invoice.clientRef"; /*)*/
 	public static final String INVOICE_SUPPLY_REF = /*$$(*/ "Invoice.supplyRef"; /*)*/
 	public static final String INVOICE_PURCHASE_INVOICE_NO = /*$$(*/ "Invoice.purchaseInvoiceNo"; /*)*/
+	public static final String INVOICE_PURCHASE_INVOICE_ADV_PAYMENT_NO = /*$$(*/ "Invoice.purchaseInvoiceAdvPaymentNo"; /*)*/
+	public static final String INVOICE_PURCHASE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.purchaseInvoiceBalanceNo"; /*)*/
 	public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
 	public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
+	public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/ "Invoice.invoiceAdvPaymentNo"; /*)*/
+	public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
 	public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
-	
+	public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
+	public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
+	public static final String INVOICE_IMPUTED_ON = /*$$(*/ "Invoice.imputedOn"; /*)*/
+	public static final String INVOICE_TOTAL_TO_PAY = /*$$(*/ "Invoice.totalToPay"; /*)*/
+
 
 	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
 	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/

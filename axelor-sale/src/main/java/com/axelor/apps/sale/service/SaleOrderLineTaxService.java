@@ -109,7 +109,8 @@ public class SaleOrderLineTaxService {
 
                 if (!customerSpecificNote) {
                     TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
-                    if (taxEquiv != null) {
+                    if (taxEquiv != null
+							&& taxEquiv.getSpecificNote() != null) {
                         specificNotes.add(taxEquiv.getSpecificNote());
                     }
                 }
