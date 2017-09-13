@@ -29,15 +29,12 @@ allprojects {
 	targetCompatibility = 1.8
 }
 
-def modules = new File('modules/abs').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists()
+def modules = []; 
+new File("modules").eachDir(){
+    dir -> dir.eachDir(){
+       subDir-> if (new File(subDir,"build.gradle").exists()) modules.add(subDir);
+    }
 }
-
-def customModules = new File('modules').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists()
-}
-
-modules.addAll(customModules)
 
 axelor {
 	title "Axelor :: ERP"
