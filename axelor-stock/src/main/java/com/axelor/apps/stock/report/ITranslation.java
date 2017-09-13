@@ -43,6 +43,7 @@ public interface ITranslation {
 	public static final String INVENTORY_UNIT = /*$$(*/ "Inventory.unit"; /*)*/
 	public static final String INVENTORY_REAL_QTY = /*$$(*/ "Inventory.realQty"; /*)*/
 	public static final String INVENTORY_DESCRIPTION = /*$$(*/ "Inventory.description"; /*)*/
+	public static final String INVENTORY_TRACKINGNUMBER = /*$$(*/ "Inventory.trackingNumber"; /*)*/
 	
 	public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
 	public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/
