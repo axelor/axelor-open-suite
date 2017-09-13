@@ -235,7 +235,7 @@ public class TimesheetController {
   }
 
   public void editTimesheetSelected(ActionRequest request, ActionResponse response) {
-    Map timesheetMap = (Map) request.getContext().get("timesheetSelect");
+    Map<?, ?> timesheetMap = (Map<?, ?>) request.getContext().get("timesheetSelect");
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
@@ -430,6 +430,8 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
+
+      timesheetService.checkEmptyPeriod(timesheet);
 
       computeTimeSpent(request, response);
 
