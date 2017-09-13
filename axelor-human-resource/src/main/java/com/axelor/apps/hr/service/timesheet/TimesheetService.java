@@ -47,6 +47,9 @@ public interface TimesheetService {
           IllegalAccessException, MessagingException, IOException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 
   public Message sendValidationEmail(Timesheet timesheet)
