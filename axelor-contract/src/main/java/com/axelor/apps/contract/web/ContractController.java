@@ -1,24 +1,36 @@
 package com.axelor.apps.contract.web;
 
+import java.time.LocalDate;
+import java.util.Map;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-
-import java.time.LocalDate;
+import com.google.inject.persist.Transactional;
 
 public class ContractController {
 
 	@Inject
 	protected ContractService service;
+	
+	@Inject
+	protected DurationService durationService;
 
 	public void waiting(ActionRequest request, ActionResponse response) {
 		try  {
@@ -42,30 +54,99 @@ public class ContractController {
 
 	public void ongoing(ActionRequest request, ActionResponse response) {
 		try  {
-			service.ongoingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
-			response.setReload(true);
+			Invoice invoice = service.ongoingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
+			if ( invoice == null){
+				response.setReload(true);
+			}else{
+				response.setView ( ActionView.define( I18n.get("Invoice") ) 
+						.model(Invoice.class.getName())
+						.add("form", "invoice-form")
+						.add("grid", "invoice-grid")
+						.param("forceTitle", "true")
+						.context("_showRecord", invoice.getId().toString())
+						.map() );
+			}
+			
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 
-	public void invoicing(ActionRequest request, ActionResponse response) {
+	public void invoicing(ActionRequest request, ActionResponse response) throws AxelorException {
 		try  {
-			service.invoicingContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
-			response.setReload(true);
+			Invoice invoice = service.invoicingContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
+			
+			if (invoice == null){
+				response.setError("ERROR");
+				return;
+			}
+			
+			response.setView ( ActionView.define( I18n.get("Invoice") ) 
+					.model(Invoice.class.getName())
+					.add("form", "invoice-form")
+					.add("grid", "invoice-grid")
+					.param("forceTitle", "true")
+					.context("_showRecord", invoice.getId().toString())
+					.map() );
+			
+			
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 
-	public void terminated(ActionRequest request, ActionResponse response) {
+	public void terminated(ActionRequest request, ActionResponse response) throws AxelorException {
+		Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 		try  {
-			service.terminateContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), true, getToDay());
+			
+			if (contract.getTerminatedDate() == null){
+				response.setError("Please enter a terminated date for this version.");
+				return;
+			}
+			
+			if ( contract.getCurrentVersion().getIsWithEngagement() ){
+				
+				if (contract.getEngagementStartDate() == null){
+					response.setError("Please enter a engagement date.");
+					return;
+				}
+					if (contract.getTerminatedDate().isBefore( durationService.computeDuration(contract.getCurrentVersion().getEngagementDuration(), contract.getEngagementStartDate() ) ) ){
+					response.setError("Engagement duration is not fullfilled.");
+					return;
+				}
+			}
+			
+			if (contract.getCurrentVersion().getIsWithPriorNotice()){
+				
+				if (contract.getEngagementStartDate() == null){
+					response.setError("Please enter a engagement date.");
+					return;
+				}
+				
+				if (contract.getTerminatedDate().isBefore( durationService.computeDuration(contract.getCurrentVersion().getPriorNoticeDuration(), getToDay()) ) ){
+					response.setError("Prior notice duration is not respected.");  
+					return;
+				}
+			}
+			
+			service.terminateContract( contract, true, getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void renew(ActionRequest request, ActionResponse response) throws AxelorException {
+		try  {
+			Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
+			service.renewContract(contract, getToDay());
+			response.setReload(true);
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
 
 	public void activeNextVersion(ActionRequest request, ActionResponse response) {
 		try  {
@@ -115,5 +196,27 @@ public class ContractController {
 
 		response.setReload(true);
 	}
-
+	
+	@Transactional
+	public void copyFromTemplate(ActionRequest request, ActionResponse response){
+		
+		ContractTemplate template = JPA.find(ContractTemplate.class, new Long((Integer) ((Map) request.getContext().get("contractTemplate")).get("id"))) ;
+		
+		Contract copy = service.createContractFromTemplate(template);
+		
+		if (request.getContext().asType(Contract.class).getPartner() != null ){
+			copy.setPartner(Beans.get(PartnerRepository.class).find( request.getContext().asType(Contract.class).getPartner().getId() ) );
+			Beans.get(ContractRepository.class).save(copy);
+		}
+		
+		response.setView ( ActionView.define( I18n.get("Contract") ) 
+				.model(Contract.class.getName())
+				.add("form", "contract-form")
+				.add("grid", "contract-grid")
+				.param("forceTitle", "true")
+				.context("_showRecord", copy.getId().toString())
+				.map() );
+		
+		
+	}
 }

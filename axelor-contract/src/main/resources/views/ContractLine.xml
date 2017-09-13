@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="contract-line-grid" title="Contract Lines" model="com.axelor.apps.contract.db.ContractLine">
+    	<hilite if="isComsumptionLine" background="primary" />
        <field name="productName"/>
        <field name="qty"/>
        <field name="price"/>
@@ -21,6 +22,7 @@
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
             <field name="isConsumptionLine" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute"/>
+            <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
             <field name="description" colSpan="12"/>
         </panel>
     </form>
@@ -38,14 +40,22 @@
     </action-method>
 
     <grid name="consumption-line-grid" title="Consumption Lines" model="com.axelor.apps.contract.db.ConsumptionLine">
-        <field name="contractLine"/>
+    	<hilite if="isError" background="danger"/>
+        <field name="reference" />
+        <field name="product" />
         <field name="qty"/>
+        <field name="unit" />
     </grid>
 
     <form name="consumption-line-form" title="Consumption Line" model="com.axelor.apps.contract.db.ConsumptionLine">
         <panel>
-            <field name="contractLine" readonly="true" canEdit="false" onSelect="action-method-consumption-line-contract-line-domain"/>
+        	<field name="consumptionLineDate" required="true" />
+        	<field name="product" required="true" />
+        	<field name="reference" />
+        	<field name="unit" />
             <field name="qty"/>
+            <field name="isInvoiced" readonly="true" />
+            <field name="isError" readonly="true" />
         </panel>
     </form>
 

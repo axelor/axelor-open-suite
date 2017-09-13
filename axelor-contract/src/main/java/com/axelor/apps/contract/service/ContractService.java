@@ -1,10 +1,12 @@
 package com.axelor.apps.contract.service;
 
+import java.time.LocalDate;
+
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-
-import java.time.LocalDate;
 
 public interface ContractService {
 
@@ -36,7 +38,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
+	public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
 	/**
 	 * Waiting next version
@@ -77,15 +79,16 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void terminateContract(Contract contract, Boolean isManual, LocalDate date);
+	public void terminateContract(Contract contract, Boolean isManual, LocalDate date) throws AxelorException;
 
 	/**
 	 * Invoicing the contract
 	 *
 	 * @param contract
+	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void invoicingContract(Contract contract);
+	public Invoice invoicingContract(Contract contract) throws AxelorException;
 
 	/**
 	 * Renew a contract
@@ -95,5 +98,15 @@ public interface ContractService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void renewContract(Contract contract, LocalDate date) throws AxelorException;
+	
+	/**
+	 * Generate a new contract based on template
+	 *
+	 * @param template
+	 */
+	@Transactional
+	public Contract createContractFromTemplate(ContractTemplate template) ;
+	
+	
 
 }

@@ -26,8 +26,8 @@ public class ContractVersionController {
 		response.setValue("invoicingFrequency", contract.getCurrentVersion().getInvoicingFrequency());
 
 		response.setValue("invoicingMoment", contract.getCurrentVersion().getInvoicingMoment());
-		response.setValue("isConsumptionManagement", contract.getCurrentVersion().getIsConsumptionManagement());
-		response.setValue("isAdditionaBenefitManagement", contract.getCurrentVersion().getIsAdditionaBenefitManagement());
+		//response.setValue("isConsumptionManagement", contract.getIsConsumptionManagement());
+		//response.setValue("isAdditionaBenefitManagement", contract.getIsAdditionaBenefitManagement());
 		response.setValue("isPeriodicInvoicing", contract.getCurrentVersion().getIsPeriodicInvoicing());
 		response.setValue("automaticInvoicing", contract.getCurrentVersion().getAutomaticInvoicing());
 		response.setValue("isProratedInvoice", contract.getCurrentVersion().getIsProratedInvoice());

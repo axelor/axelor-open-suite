@@ -7,20 +7,21 @@
 	<entity name="Contract" repository="none">
 		<string name="importId" copy="false"/>
 
-		<string name="name" title="Name" required="true" />
+		<string name="name" title="Name" required="true" namecolumn="true" />
 		<string name="contractId" title="Contract N°" readonly="true"/>
 		<integer name="statusSelect" title="Status" selection="contract.status.select" default="1" required="true"/>
 		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
 
 		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
-		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" required="true"/>
+		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" />
 
 		<date name="startDate" title="Start date"/>
 		<date name="endDate" title="End date"/>
 		<date name="terminatedDate" title="Terminated date"/>
+		<date name="engagementStartDate" title="Engagement start date" />
+		<date name="terminationDemandDate" title="Termination demand date" />
 		<many-to-one name="terminatedBy" ref="com.axelor.auth.db.User" title="Terminated By"/>
 
-		<boolean name="isTacitRenewal" title="Tacit renewal"/>
 		<integer name="renewalNumber" title="Number of renewal"/>
 		<date name="lastRenewalDate" title="Last renewal date"/>
 
@@ -39,6 +40,23 @@
 		<boolean name="terminatedManually" title="Terminated manually" default="false"/>
 
 		<one-to-many name="versionHistory" ref="com.axelor.apps.contract.db.ContractVersion" mappedBy="contractHistory" orderBy="-createdOn"/>
+		
+		<boolean name="isInvoicingManagement" title="Manage invoices" />
+		
+		<boolean name="isConsumptionManagement" title="Consumption management" />
+		<boolean name="isAdditionaBenefitManagement" title="Additional benefit management" />
+		
+		<date name="invoicePeriodStartDate" title="Start of next invoicing period" />
+		<date name="invoicePeriodEndDate" title="End of next invoicing period" />
+		<date name="invoicingDate" title="Invoicing date" />
+		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
+		
+		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+		
+		<string name="description" title="Description" multiline="true" large="true" />
+		
+		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
+		
 	</entity>
 
 	<entity name="ContractVersion" repository="none">
@@ -52,13 +70,11 @@
 		<date name="supposedEndDate" title="Supposed end date" copy="false"/>
 		<date name="endDate" title="End date" copy="false"/>
 
-		<boolean name="doNotRenew" title="Do not renew"/>
+		<boolean name="doNotRenew" title="Do not renew" default="false" /> 
 
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
 		<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
 		<integer name="invoicingMoment" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
-		<boolean name="isConsumptionManagement" title="Consumption management" default="false"/>
-		<boolean name="isAdditionaBenefitManagement" title="Additional benefit management" default="false"/>
 		<boolean name="automaticInvoicing" title="Automatic invoicing" default="false"/>
 		<boolean name="isPeriodicInvoicing" title="Periodic Invoicing" default="false"/>
 
@@ -66,16 +82,40 @@
 		<boolean name="isProratedFirstInvoice" title="Prorated Starting periods" default="false"/>
 		<boolean name="isProratedLastInvoice" title="Prorated finished periods" default="false"/>
 		<many-to-one name="invoicingFrequency" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
+		<boolean name="isTimeProratedInvoice" title="Protrate temporally" />
+		<boolean name="isVersionProratedInvoice" title="Prorate from versions" />
 
 		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
-		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
-		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
-
-		<string name="note" multiline="true" large="true" title="Notes" copy="false"/>
+		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumptions"/>
 
 		<one-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="currentVersion" copy="false"/>
 		<one-to-one name="contractNext" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="nextVersion" copy="false"/>
 		<many-to-one name="contractHistory" ref="com.axelor.apps.contract.db.Contract" title="Contract" copy="false"/>
+		<many-to-one name="renewalDuration" title="Renewal duration" ref="com.axelor.apps.base.db.Duration" />
+		<boolean name="isTacitRenewal" title="Tacit renewal"/>
+		
+		<boolean name="isWithEngagement" title="With engagement"/>
+		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
+		
+		<boolean name="engagementStartFromVersion" title="Engagement start from version"/>
+		<boolean name="isWithPriorNotice" title="With prior notice"/>
+		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />
+		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
+		
+		<string name="fullName" namecolumn="true">
+			<![CDATA[
+	  		String fullName = "";
+	  		if(contract != null )  {
+				fullName += contract.getName();
+				if (contract.getVersionNumber() != null && contract.getVersionNumber() != 0){
+					fullName += " " +  contract.getVersionNumber();
+				}
+			}
+			
+	  		return fullName;
+	  	]]>
+		</string>
+		
 
 	</entity>
 
@@ -106,13 +146,36 @@
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 
 		<boolean name="isConsumptionLine" title="Invoice from consumption" default="false"/>
-
+		
+		<boolean name="isInvoiced" title="Is invoiced" />
+		
 	</entity>
 
-	<entity name="ConsumptionLine" repository="none">
+	<entity name="ConsumptionLine" >
 
 		<decimal name="qty" title="Quantity"/>
-		<many-to-one name="contractLine" ref="com.axelor.apps.contract.db.ContractLine" title="Contract Line" required="true" initParam="true"/>
+		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+		<date name="consumptionLineDate" title="Date" />
+		<boolean name="isInvoiced" title="Invoiced" />
+		<boolean name="isError" title="Error" />
+		<string name="reference" title="Reference" />
+		<many-to-one name="contractLine" ref="com.axelor.apps.contract.db.ContractLine" title="Contract line" />
+		<many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine" title="Invoice line" />
+		
+		<string name="fullName" namecolumn="true">
+		<![CDATA[
+	  		String fullName = "";
+	  		if(product != null && product.getName() != null)  {
+				fullName += product.getName();
+				if (reference != null) {
+					fullName += " - " + reference;
+				}
+			}
+	  		return fullName;
+	  	]]>
+		</string>
+		
 
 	</entity>
 
@@ -120,7 +183,11 @@
 
 		<string name="fullName" namecolumn="true">
 			<![CDATA[
-	  		return startDate.toString() + " - " + endDate.toString();
+			String fullname = "";
+			if( startDate != null && endDate != null) {
+				fullname = startDate.toString() + " - " + endDate.toString();
+			}
+	  		return fullname;
 	  	]]>
 		</string>
 
@@ -136,6 +203,57 @@
 
 		<many-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract"/>
 
+	</entity>
+	
+	<entity name="ContractTemplate">
+	
+		<string name="importId" copy="false"/>
+
+		<string name="name" title="Template name" required="true" namecolumn="true" />
+		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
+
+		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
+
+		<date name="firstPeriodEndDate" title="First period end date"/>
+		<integer name="periodNumber" title="Number of finished periods" default="0"/>
+
+		<boolean name="isInvoicingManagement" title="Manage invoices" />
+		
+		<boolean name="isConsumptionManagement" title="Consumption management" />
+		<boolean name="isAdditionaBenefitManagement" title="Additional benefit management" />
+		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+		<string name="description" title="Description" multiline="true" large="true" />
+		<string name="note" multiline="true" large="true" title="Notes"/>
+		
+		
+		<!-- Version  -->
+		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
+		<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+		<integer name="invoicingMoment" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
+		<boolean name="automaticInvoicing" title="Automatic invoicing" default="false"/>
+		<boolean name="isPeriodicInvoicing" title="Periodic Invoicing" default="false"/>
+
+		<boolean name="isProratedInvoice" title="Prorated Invoice" default="false"/>
+		<boolean name="isProratedFirstInvoice" title="Prorated Starting periods" default="false"/>
+		<boolean name="isProratedLastInvoice" title="Prorated finished periods" default="false"/>
+		<many-to-one name="invoicingFrequency" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
+		<boolean name="isTimeProratedInvoice" title="Protrate temporally" />
+		<boolean name="isVersionProratedInvoice" title="Prorate from versions" />
+
+		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
+
+		<many-to-one name="renewalDuration" title="Renewal duration" ref="com.axelor.apps.base.db.Duration" />
+		<boolean name="isTacitRenewal" title="Tacit renewal"/>
+		
+		<boolean name="isWithEngagement" title="With engagement"/>
+		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
+		
+		<boolean name="engagementStartFromVersion" title="Engagement start from version"/>
+		<boolean name="isWithPriorNotice" title="With prior notice"/>
+		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />
+		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
+		
+		
 	</entity>
 
 </domain-models>

@@ -31,5 +31,19 @@
 		<view type="form" name="contract-form"/>
 		<domain>self.statusSelect = 3</domain>
 	</action-view>
+	
+	<menuitem name="contract-template-all" title="Contract templates" parent="contracts-root-conf-all" action="contract.templates.all"/>
 
+	<action-view name="contract.templates.all" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
+		<view type="grid" name="contract-template-grid"/>
+		<view type="form" name="contract-template-form"/>
+	</action-view>
+	
+	<menuitem name="duration-all" title="Durations" parent="contracts-root-conf-all" action="duration.all" />
+	
+	<action-view name="duration.all" title="Duration" model="com.axelor.apps.base.db.Duration">
+		<view type="grid" name="duration-grid"/>
+		<view type="form" name="duration-form"/>
+	</action-view>
+	
 </object-views>
