@@ -40,8 +40,7 @@ public class CashRegisterLineController {
 		cashRegisterLine = cashRegisterLineRepo.find(cashRegisterLine.getId());
 		
 		try  {
-			Message message = cashRegisterLineService.closeCashRegister(cashRegisterLine);
-//			Beans.get(MailService.class).generatePdfMail(mail);
+			cashRegisterLineService.closeCashRegister(cashRegisterLine);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	

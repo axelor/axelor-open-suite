@@ -28,8 +28,8 @@
 		<panel name="main" >
 			<field name="ref" readonly="true" />
 			<field name="date" readonlyIf="statusSelect == 2"/>
-			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />
-			<field name="exportTypeSelect" />
+			<field name="typeSelect" readonlyIf="company == null" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />
+			<field name="exportTypeSelect"/>
 			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		
