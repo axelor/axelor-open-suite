@@ -4713,34 +4713,34 @@ row["first_name"]
                         </grid>
                     </cell>
                 </row>
-                <row id="3874">
-                    <property name="pageBreakAfter">always</property>
-                    <property name="height">0.7604166666666666in</property>
+            </detail>
+            <footer>
+                <row id="3880">
                     <list-property name="visibility">
                         <structure>
                             <property name="format">all</property>
                             <expression name="valueExpr" type="javascript">row["buyer_signature_path"] == null</expression>
                         </structure>
                     </list-property>
-                    <cell id="3875">
-                        <property name="paddingTop">5pt</property>
+                    <cell id="3881">
+                        <property name="paddingTop">1pt</property>
                         <property name="paddingRight">20pt</property>
                         <property name="textAlign">right</property>
-                        <image id="3878">
+                        <image id="3882">
                             <property name="marginTop">0pt</property>
                             <property name="height">50px</property>
                             <property name="source">file</property>
                             <property name="proportionalScale">true</property>
                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["buyer_signature_path"]</expression>
                         </image>
-                        <text id="3879">
+                        <text id="3883">
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["buyer_full_name"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
-            </detail>
+            </footer>
         </table>
     </body>
 </report>
