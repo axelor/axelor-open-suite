@@ -174,6 +174,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException  {
 		
+		User user = timesheet.getUser();
+		//Leaving list
+		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
+		//Public holidays list
+		List<PublicHolidayDay> publicHolidayList = user.getEmployee().getPublicHolidayPlanning().getPublicHolidayDayList();
+				 
+		
 		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 		timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
 		for (int i = 0; i < timesheetLines.size(); i++) {
@@ -181,10 +188,15 @@ public class TimesheetServiceImpl implements TimesheetService{
 			if (i+1 < timesheetLines.size()) {
 				LocalDate dateOne = timesheetLines.get(i).getDate();
 				LocalDate dateTwo = timesheetLines.get(i+1).getDate();
-
-				if (ChronoUnit.DAYS.between(dateOne, dateTwo) > 1) {
-					String message = "Alert for missing " + dateOne.plusDays(1).getDayOfWeek();
-					throw new AxelorException(message, 1);
+				
+				LocalDate missingDay = dateOne.plusDays(1);
+				while (ChronoUnit.DAYS.between(dateOne, dateTwo) > 1) {
+					if (checkNoLeavingDay(leaveList, missingDay) && checkNoPublicHoliday(publicHolidayList, missingDay)) {
+						String message = "Alert for missing " + missingDay.getDayOfWeek();
+						throw new AxelorException(message, 1);
+					}
+					dateOne = missingDay;
+					missingDay = missingDay.plusDays(1);
 				}	
 			}
 		}
@@ -310,34 +322,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 					break;
 				}
 			}
-			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
-			{
-				/*Check if the day is not a leaving day */
-				boolean noLeave = true;
-				if(leaveList != null){
-					for (LeaveRequest leave : leaveList) {
-						if((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
-							|| leave.getFromDate().isEqual(fromDate) || leave.getToDate().isEqual(fromDate))
-						{
-							noLeave = false;
-							break;
-						}
-					}
-				}
+			
+			if (dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null
+					|| dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null) {
 				
-				/*Check if the day is not a public holiday */
-				boolean noPublicHoliday = true;
-				if(publicHolidayList != null){
-					for (PublicHolidayDay publicHoliday : publicHolidayList) {
-						if(publicHoliday.getDate().isEqual(fromDate))
-						{
-							noPublicHoliday = false;
-							break;
-						}
-					}
-				}
+				boolean noLeave = checkNoLeavingDay(leaveList, fromGenerationDate);
+				boolean noPublicHoliday = checkNoPublicHoliday(publicHolidayList, fromGenerationDate);
 				
-				if(noLeave && noPublicHoliday){
+				if (noLeave && noPublicHoliday) {
 					TimesheetLine timesheetLine = createTimesheetLine(project, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
@@ -347,14 +339,42 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 		return timesheet;
 	}
+	
+	/*Check if the day is not a leaving day*/
+	public boolean checkNoLeavingDay(List<LeaveRequest> leaveList, LocalDate fromDate) {
+				
+		if (leaveList != null) {
+			for (LeaveRequest leave : leaveList) {
+				if ((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
+						|| leave.getFromDate().isEqual(fromDate)
+						|| leave.getToDate().isEqual(fromDate)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/*Check if the day is not a public holiday */
+	public boolean checkNoPublicHoliday(List<PublicHolidayDay> publicHolidayList, LocalDate fromDate) {
+		
+		if (publicHolidayList != null) {
+			for (PublicHolidayDay publicHoliday : publicHolidayList) {
+				if (publicHoliday.getDate().getMonth() == fromDate.getMonth()
+						&& publicHoliday.getDate().getDayOfMonth() == fromDate.getDayOfMonth()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public LocalDate getFromPeriodDate(){
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser()).fetchOne();
 		if(timesheet != null){
 			return timesheet.getToDate();
-		}
-		else{
+		} else {
 			return null;
 		}
 	}
@@ -363,8 +383,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = ?1 AND self.user.id = ?2", TimesheetRepository.STATUS_DRAFT, AuthUtils.getUser().getId()).order("-id").fetchOne();
 		if(timesheet != null){
 			return timesheet;
-		}
-		else{
+		} else {
 			return null;
 		}
 	}
