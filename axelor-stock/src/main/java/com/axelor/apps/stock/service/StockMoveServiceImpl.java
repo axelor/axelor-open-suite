@@ -42,6 +42,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -66,6 +68,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -797,6 +811,40 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setToAddressStr(
 				addressService.computeAddressStr(stockMove.getToAddress())
 		);
+	}
+	@Override
+	public Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException {
+
+		Address fromAddress = stockMove.getFromAddress();
+		Address toAddress = stockMove.getToAddress();
+		if(fromAddress == null)
+			fromAddress =  stockMove.getCompany().getAddress();
+		if(toAddress == null)
+			toAddress =  stockMove.getCompany().getAddress();
+		if(fromAddress == null || toAddress == null)
+			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_11),
+					IException.MISSING_FIELD);
+		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM) {
+			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_12),
+					IException.CONFIGURATION_ERROR);
+		}
+			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
+			String aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
+			BigDecimal dLat = fromAddress.getLatit();
+			BigDecimal dLon = fromAddress.getLongit();
+			BigDecimal aLat = toAddress.getLatit();
+			BigDecimal aLon =  toAddress.getLongit();
+			Map<String, Object> result = Beans.get(MapService.class)
+					.getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+			if(result == null){
+			    throw new AxelorException(
+			    		String.format(I18n.get(IExceptionMessage.STOCK_MOVE_13)
+								,dString ,aString
+						),
+						IException.FUNCTIONNAL
+				);
+			}
+			return result;
 	}
 
 	@Override
