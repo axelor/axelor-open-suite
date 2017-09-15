@@ -73,7 +73,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 
 		} catch (AxelorException e) {
 
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
+			TraceBackService.trace(new AxelorException("", e, e.getCategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -110,7 +110,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 
 			} catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format("%s", e), e, e.getcategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format("%s", e), e, e.getCategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {

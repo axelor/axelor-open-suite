@@ -129,7 +129,7 @@ public class AxelorException extends Exception {
 	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 */
-	public int getcategory(){
+	public int getCategory(){
 		
 		return this.category;
 		

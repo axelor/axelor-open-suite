@@ -109,7 +109,7 @@ public class TraceBackService {
 				
 				if (e instanceof AxelorException){
 					
-					LOG.trace(_create(e, origin, 1, ((AxelorException) e).getcategory(), 0).getTrace());
+					LOG.trace(_create(e, origin, 1, ((AxelorException) e).getCategory(), 0).getTrace());
 					
 				}
 				else {
@@ -137,7 +137,7 @@ public class TraceBackService {
 			@Override
 			public void run() {
 				
-				LOG.trace(_create(e, origin, 1, e.getcategory(), batchId).getTrace());
+				LOG.trace(_create(e, origin, 1, e.getCategory(), batchId).getTrace());
 	
 			}
 		});
