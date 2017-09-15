@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.base.service.AddressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,8 +74,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Inject
 	private SequenceService sequenceService;
 
-	protected LocalDate today;
-
 	@Inject
 	private  StockMoveLineRepository stockMoveLineRepo;
 
@@ -87,13 +86,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Inject
 	protected PartnerProductQualityRatingServiceImpl partnerProductQualityRatingService;
 
-	@Inject
-	public StockMoveServiceImpl() {
-
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
-
-	}
-	
 	
 	@Override
 	public BigDecimal compute(StockMove stockMove){
@@ -185,6 +177,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
+		this.computeAddressStr(stockMove);
 		stockMove.setCompany(company);
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
@@ -277,7 +270,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				false);
 
 		if(stockMove.getEstimatedDate() == null)  {
-			stockMove.setEstimatedDate(this.today);
+			stockMove.setEstimatedDate(appBaseService.getTodayDate());
 		}
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
@@ -317,7 +310,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
-		stockMove.setRealDate(this.today);
+		stockMove.setRealDate(appBaseService.getTodayDate());
 		resetWeights(stockMove);
 
 		try {
@@ -562,7 +555,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				false);
 
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
-		stockMove.setRealDate(this.today);
+		stockMove.setRealDate(appBaseService.getTodayDate());
 
 		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
 			partnerProductQualityRatingService.undoCalculation(stockMove);
@@ -792,4 +785,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return stockMoveConformitySelect;
 	}
 
+	@Override
+	public void computeAddressStr(StockMove stockMove) {
+		AddressService addressService = Beans.get(AddressService.class);
+	    stockMove.setFromAddressStr(
+	    		addressService.computeAddressStr(stockMove.getFromAddress())
+		);
+		stockMove.setToAddressStr(
+				addressService.computeAddressStr(stockMove.getToAddress())
+		);
+	}
 }

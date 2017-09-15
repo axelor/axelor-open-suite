@@ -22,6 +22,10 @@
 		</panel>
 		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
 					   grid-view="configurator-formula-grid"/>
+		<panel title="Authorizations">
+			<field name="authorizedUserList" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
+            <field name="authorizedGroupList" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
+		</panel>
         <panel>
 			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"
 					title="Create configurator" onClick="action-configurator-creator-group-create-configurator"/>

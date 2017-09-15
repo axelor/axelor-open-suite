@@ -22,11 +22,9 @@ import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.JsonContext;
 import com.axelor.script.ScriptBindings;
 import com.google.inject.Inject;
 
@@ -77,5 +75,18 @@ public class ConfiguratorCreatorController {
         } catch (AxelorException e) {
             response.setAlert(e.getMessage());
         }
+    }
+
+    /**
+     * Called from the sale order generate configurator wizard form.
+     * @param request
+     * @param response
+     */
+    public void createWizardDomain(ActionRequest request, ActionResponse response) {
+        response.setAttr(
+                "configuratorCreator",
+                "domain",
+                configuratorCreatorService.getConfiguratorCreatorDomain()
+        );
     }
 }

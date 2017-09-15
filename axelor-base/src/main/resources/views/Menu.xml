@@ -505,13 +505,6 @@
 		<view type="grid" name="import-configuration-grid" />
 		<view type="form" name="import-configuration-form" />
 	</action-view>
-	
-	<menuitem title="Advanced exports" name="menu-advanced-export" parent="admin-root-maintenance" action="menu.advanced.export" />
-  
-	<action-view name="menu.advanced.export" title="Advanced export" model="com.axelor.apps.base.db.AdvancedExport">
-		<view type="grid" name="advanced-export-grid"/>
-		<view type="form" name="advanced-export-form"/>
-	</action-view>
 
 	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
 		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
@@ -560,6 +553,5 @@
 		<view type="grid" name="calendar-configuration-grid"/>
 		<view type="form" name="calendar-configuration-form"/>
 	</action-view>
-	
 	
 </object-views>

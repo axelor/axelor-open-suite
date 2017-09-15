@@ -11,6 +11,7 @@
     <form name="configurator-bom-line-form" title="Configurator BOM"
           model="com.axelor.apps.production.db.ConfiguratorBOM">
         <panel>
+            <field name="company"/>
             <panel title="Label">
                 <field name="defNameAsFormula" colSpan="6"/>
                 <field name="name" colSpan="12" showIf="!defNameAsFormula"/>

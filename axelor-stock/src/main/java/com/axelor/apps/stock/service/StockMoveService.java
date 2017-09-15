@@ -131,4 +131,10 @@ public interface StockMoveService {
 	 */
 	Integer changeConformityStockMoveLine(StockMove stockMove);
 
+	/**
+	 * Fill {@link StockMove#fromAddressStr}
+	 * and {@link StockMove#toAddressStr}
+	 * @param stockMove
+	 */
+	void computeAddressStr(StockMove stockMove);
 }

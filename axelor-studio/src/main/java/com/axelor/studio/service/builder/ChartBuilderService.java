@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -92,7 +94,12 @@ public class ChartBuilderService {
 	 * @throws JAXBException
 	 * @throws AxelorException 
 	 */
-	public MetaView build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
+	public void build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
+		
+		if (chartBuilder.getName().contains(" ")) {
+			throw new AxelorException(
+					I18n.get("Name must not contains space"), 1);
+		}
 		
 		searchFields = new ArrayList<String>();
 		onNewFields = new ArrayList<RecordField>();
@@ -107,7 +114,11 @@ public class ChartBuilderService {
 
 		ObjectViews chartView = XMLViews.fromXML(xml);
 		
-		return metaService.generateMetaView(chartView.getViews().get(0));
+		MetaView metaView = metaService.generateMetaView(chartView.getViews().get(0));
+		
+		if (metaView != null) {
+			chartBuilder.setMetaViewGenerated(metaView);
+		}
 	}
 
 	private String createXml(ChartBuilder chartBuilder, String[] queryString) {

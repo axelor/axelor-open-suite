@@ -25,6 +25,10 @@ import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -39,6 +43,7 @@ import com.google.inject.persist.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -281,4 +286,27 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
     }
 
+    public String getConfiguratorCreatorDomain() {
+        User user = AuthUtils.getUser();
+        Group group = user.getGroup();
+
+        List<ConfiguratorCreator> configuratorCreatorList =
+                configuratorCreatorRepo.all()
+                .filter("self.isActive = true")
+                .fetch();
+
+        if (configuratorCreatorList == null
+                || configuratorCreatorList.isEmpty()) {
+            return "self.id in (0)";
+        }
+
+        configuratorCreatorList.removeIf(creator ->
+                !creator.getAuthorizedUserList().contains(user)
+                    && !creator.getAuthorizedGroupList().contains(group)
+        );
+
+        return "self.id in ("
+                + StringTool.getIdFromCollection(configuratorCreatorList)
+                + ")";
+    }
 }

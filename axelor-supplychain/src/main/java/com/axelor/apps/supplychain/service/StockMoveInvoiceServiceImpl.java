@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -38,6 +30,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -58,6 +51,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
@@ -95,7 +96,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		if (invoice != null) {
 			saleOrderInvoiceService.fillInLines(invoice);
 			this.extendInternalReference(stockMove, invoice);
-
+			invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -122,7 +123,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		if (invoice != null) {
 
 			this.extendInternalReference(stockMove, invoice);
-
+			invoice.setAddressStr(
+					Beans.get(AddressService.class)
+							.computeAddressStr(invoice.getAddress()
+							)
+			);
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -168,7 +173,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		if (invoice != null) {
 			saleOrderInvoiceService.fillInLines(invoice);
 			this.extendInternalReference(stockMove, invoice);
-
+			invoice.setAddressStr(
+					Beans.get(AddressService.class)
+							.computeAddressStr(invoice.getAddress()
+							)
+			);
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -189,6 +198,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		PaymentCondition invoicePaymentCondition = null;
 		PaymentMode invoicePaymentMode = null;
 		Address invoiceMainInvoicingAddress = null;
+		String invoiceMainInvoicingAddressStr = null;
 		Partner invoiceContactPartner = null;
 		PriceList invoicePriceList = null;
 		Boolean invoiceInAti = null;
@@ -218,6 +228,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				invoicePaymentCondition = saleOrder.getPaymentCondition();
 				invoicePaymentMode = saleOrder.getPaymentMode();
 				invoiceMainInvoicingAddress = saleOrder.getMainInvoicingAddress();
+				invoiceMainInvoicingAddressStr = saleOrder.getMainInvoicingAddressStr();
 				invoiceContactPartner = saleOrder.getContactPartner();
 				invoicePriceList = saleOrder.getPriceList();
 				invoiceInAti = saleOrder.getInAti();
@@ -252,6 +263,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				if (invoiceMainInvoicingAddress != null
 						&& !invoiceMainInvoicingAddress.equals(saleOrder.getMainInvoicingAddress())){
 					invoiceMainInvoicingAddress = null;
+					invoiceMainInvoicingAddressStr = null;
 				}
 
 				if (invoiceContactPartner != null
@@ -350,6 +362,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		if (invoiceMainInvoicingAddress == null){
 			invoiceMainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(invoiceClientPartner);
+			invoiceMainInvoicingAddressStr = Beans.get(AddressService.class)
+					.computeAddressStr(invoiceMainInvoicingAddress);
 		}
 
 		if (invoicePriceList == null){
@@ -394,6 +408,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		};
 
 		Invoice invoice = invoiceGenerator.generate();
+		invoice.setAddressStr(invoiceMainInvoicingAddressStr);
 		invoice.setInternalReference(internalRef);
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
@@ -566,7 +581,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		invoiceGenerator.populate(invoice, invoiceLineList);
 
 		if (invoice != null) {
-
+			invoice.setAddressStr(
+					Beans.get(AddressService.class)
+							.computeAddressStr(invoice.getAddress()
+							)
+			);
 			invoiceRepository.save(invoice);
 			//Save the link to the invoice for all stockMove
 			JPA.all(StockMove.class).filter("self.id IN (:idStockMoveList)").bind("idStockMoveList", stockMoveIdList).update("invoice", invoice);

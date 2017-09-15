@@ -23,7 +23,9 @@
 	
 	<input file="stock_inventoryLine.csv" separator=";" type="com.axelor.apps.stock.db.InventoryLine" call="com.axelor.csv.script.ImportInventoryLine:importInventoryLine"/>
 	
-	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory" search="self.importId = :importId" call="com.axelor.csv.script.ImportInventory:validateInventory"/>
+	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory" search="self.importId = :importId" call="com.axelor.csv.script.ImportInventory:validateInventory">
+		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
+	</input>
 	
 <!-- 	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"> -->
 <!-- 		<bind to="stockMoveSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.OUTGOING)" /> -->

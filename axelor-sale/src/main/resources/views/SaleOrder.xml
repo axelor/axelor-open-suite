@@ -96,10 +96,10 @@
     <form name="sale-quotation-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge quotations" width="large">
 		<panel-related field="$saleQuotationToMerge" form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-quotation-grid"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>			
+			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>
 	  	</panel>
     </form>
-    
+
     <form name="sale-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
 		<panel colSpan="6" colOffset="3">
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
@@ -155,8 +155,8 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 				  </div>
 				</div>
@@ -187,8 +187,28 @@
 	  <panel name="customerInformation" title="Customer information">
 	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field name="mainInvoicingAddress" canNew="true" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
-	      <field name="deliveryAddress" canNew="true" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+		  <panel stacked="true">
+			  <field name="mainInvoicingAddress" canNew="true"
+					 hideIf="$readonly() || statusSelect &gt; 1"
+					 onChange="action-sale-order-method-address-str"
+					 onSelect="action-sale-order-attrs-domain-main-invoicing-address"
+					 form-view="address-partner-address-form"
+					 grid-view="address-grid"/>
+			  <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
+				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
+			  </field>
+		  </panel>
+		  <panel stacked="true">
+			  <field name="deliveryAddress" canNew="true"
+					 hideIf="$readonly() || statusSelect &gt; 1"
+					 onChange="action-sale-order-method-address-str"
+					 onSelect="action-sale-order-attrs-domain-delivery-address"
+					 form-view="address-partner-address-form"
+					 grid-view="address-grid"/>
+			  <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
+				  <viewer>{{record.deliveryAddressStr}}</viewer>
+			  </field>
+		  </panel>
 	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
@@ -355,10 +375,30 @@
 	  </panel>
 	  
 	  <panel name="customerInformation" title="Customer information">
-	      <field name="clientPartner" onChange="action-sale-order-record-partner,action-partner-attrs-hide-contact-partner,action-sale-order-validate-information" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
+	      <field name="clientPartner" onChange="action-sale-order-group-partner-change" domain="self.isContact = false and (self.isCustomer = true OR self.isProspect = true)" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field name="mainInvoicingAddress" canNew="true" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
-	      <field name="deliveryAddress" canNew="true" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+          <panel stacked="true">
+              <field name="mainInvoicingAddress" canNew="true"
+					 hideIf="$readonly() || statusSelect &gt; 1"
+					 onChange="action-sale-order-method-address-str"
+                     onSelect="action-sale-order-attrs-domain-main-invoicing-address"
+                     form-view="address-partner-address-form"
+                     grid-view="address-grid"/>
+			  <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
+				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
+			  </field>
+          </panel>
+          <panel stacked="true">
+              <field name="deliveryAddress" canNew="true"
+					 hideIf="$readonly() || statusSelect &gt; 1"
+					 onChange="action-sale-order-method-address-str"
+                     onSelect="action-sale-order-attrs-domain-delivery-address"
+                     form-view="address-partner-address-form"
+                     grid-view="address-grid"/>
+			  <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
+				  <viewer>{{record.deliveryAddressStr}}</viewer>
+			  </field>
+          </panel>
 	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
@@ -459,12 +499,33 @@
 	    <field name="externalReference"/>
 	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  </panel>
-	  <panel-tabs readonly="true">
-	    <panel name="customerInformation" title="Customer information" showTitle="false">
-	      <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" canView="false"/>
-	      <field name="mainInvoicingAddress"/>
+		<panel-tabs readonly="true">
+			<panel name="customerInformation" title="Customer information" showTitle="false">
+				<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" canView="false"/>
+				<panel stacked="true">
+					<field name="mainInvoicingAddress" canNew="true"
+						   hideIf="$readonly() || statusSelect &gt; 1"
+						   onChange="action-sale-order-method-address-str"
+						   onSelect="action-sale-order-attrs-domain-main-invoicing-address"
+						   form-view="address-partner-address-form"
+						   grid-view="address-grid"/>
+					<field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
+						<viewer>{{record.mainInvoicingAddressStr}}</viewer>
+					</field>
+				</panel>
+
 	      <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" canView="false"/>
-	      <field name="deliveryAddress"/>
+				<panel stacked="true">
+					<field name="deliveryAddress" canNew="true"
+						   hideIf="$readonly() || statusSelect &gt; 1"
+						   onChange="action-sale-order-method-address-str"
+						   onSelect="action-sale-order-attrs-domain-delivery-address"
+						   form-view="address-partner-address-form"
+						   grid-view="address-grid"/>
+					<field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
+						<viewer>{{record.deliveryAddressStr}}</viewer>
+					</field>
+				</panel>
 	      <panel colSpan="8">
 	        <field name="confirmationDate"/>
 	        <field name="creationDate"/>
@@ -541,8 +602,8 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -599,8 +660,8 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -696,12 +757,13 @@
 		<action name="action-sale-order-record-partner"/>
         <action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-validate-information"/>
+        <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-attrs-interco"
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-sale-order-record-interco"
 				if="__config__.app.isApp('supplychain')"/>
 	</action-group>
-    
+
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
@@ -763,11 +825,11 @@
     <action-view name="action-open-sale-order-merge-form" title="Merge sale orders" model="com.axelor.apps.base.db.Wizard">
 	    <view type="form" name="sale-order-merge-form"/>
 	</action-view>
-	
+
 	<action-view name="action-open-sale-quotation-merge-form" title="Merge sale quotation" model="com.axelor.apps.base.db.Wizard">
 	    <view type="form" name="sale-quotation-merge-form"/>
 	</action-view>
-    
+
     <action-view name="action-sale-order-view-cancel" title="Cancellation" model="com.axelor.apps.sale.db.SaleOrder">
 	  	<view type="form" name="sale-order-cancel-wizard-form"/>
 	  	<view-param name="popup" value="reload"/>
@@ -988,6 +1050,10 @@
 	
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-address-str">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeAddressStr"/>
 	</action-method>
 
 </object-views>

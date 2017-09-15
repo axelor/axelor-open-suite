@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.sale.db.CancelReason;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
@@ -304,7 +306,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setCompany(company);
 		saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
 		saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
-		
+
+		this.computeAddressStr(saleOrder);
+
+
 		if(priceList == null)  {
 			priceList = clientPartner.getSalePriceList();
 		}
@@ -535,7 +540,22 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			}
 		}
 	}
-	
+
+	@Override
+	public void computeAddressStr(SaleOrder saleOrder) {
+		AddressService addressService = Beans.get(AddressService.class);
+		saleOrder.setMainInvoicingAddressStr(
+				addressService.computeAddressStr(
+						saleOrder.getMainInvoicingAddress()
+				)
+		);
+		saleOrder.setDeliveryAddressStr(
+				addressService.computeAddressStr(
+						saleOrder.getDeliveryAddress()
+				)
+		);
+	}
+
 	@Override
 	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder) {
 		BigDecimal price = BigDecimal.ZERO;

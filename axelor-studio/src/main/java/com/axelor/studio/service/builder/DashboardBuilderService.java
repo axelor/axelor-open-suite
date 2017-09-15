@@ -60,6 +60,11 @@ public class DashboardBuilderService {
 	public MetaView build(DashboardBuilder dashboardBuilder) {
 
 		log.debug("Processing dashboard: {}", dashboardBuilder.getName());
+		
+		if (dashboardBuilder.getDashletBuilderList() == null
+				|| dashboardBuilder.getDashletBuilderList().isEmpty()) {
+			return null;
+		}
 
 		Dashboard dashboard = new Dashboard();
 		String boardName = dashboardBuilder.getName();

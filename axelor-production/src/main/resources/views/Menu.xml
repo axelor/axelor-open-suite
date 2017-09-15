@@ -87,8 +87,20 @@
 		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
-		title="Reportings" order="45" />
+	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" />
+
+    <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
+
+    <action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
+        <view type="dashboard" name="manufacturing.dashboard.sample" />
+        <context name="_today" expr="eval: __date__"/>
+    </action-view>
+
+    <menuitem name="menu-manufacturing-user-dashboard" parent="manufacturing-root-report" title="User" action="manufacturing.user.dashboard.view" />
+
+    <action-view name="manufacturing.user.dashboard.view" title="User Dashboard" model="com.axelor.auth.db.User">
+        <view type="form" name="manufacturing-dashboard-user"/>
+    </action-view>
 		
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
 
@@ -138,6 +150,8 @@
 		model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
+		<domain>:__user__ IN self.configuratorCreator.authorizedUserList OR :groupId IN self.configuratorCreator.authorizedGroupList</domain>
+		<context name="groupId" expr="eval: __user__.group.id"/>
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators"

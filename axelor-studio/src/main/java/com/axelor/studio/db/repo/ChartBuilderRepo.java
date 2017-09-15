@@ -23,7 +23,6 @@ import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ChartBuilder;
@@ -41,20 +40,11 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
 
 	@Override
 	public ChartBuilder save(ChartBuilder chartBuilder) throws ValidationException {
-
-		if (chartBuilder.getName().contains(" ")) {
-			throw new ValidationException(
-					I18n.get("Name must not contains space"));
-		}
-		
-		chartBuilder = super.save(chartBuilder);
 		
 		try {
-			MetaView metaView = chartBuilderService.build(chartBuilder);
-			if (metaView != null) {
-				chartBuilder.setMetaViewGenerated(metaView);
-			}
+			chartBuilderService.build(chartBuilder);
 		} catch (AxelorException | JAXBException e) {
+			refresh(chartBuilder);
 			throw new ValidationException(e.getMessage());
 		}
 

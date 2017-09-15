@@ -9,11 +9,18 @@
                    type="MANY_TO_ONE" target="com.axelor.apps.sale.db.ConfiguratorCreator"
                    canView="false"
                    target-name="name" form-view="configurator-creator-form"
-                   grid-view="configurator-creator-grid" domain="isActive = true"/>
+                   grid-view="configurator-creator-grid"
+                   onSelect="action-generate-configurator-creator-method-domain"/>
             <spacer/>
             <button name="generate" title="Generate" onClick="action-generate-configurator-creator-view-show-configurator,close"/>
         </panel>
     </form>
+
+    <action-method name="action-generate-configurator-creator-method-domain">
+        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+              method="createWizardDomain"/>
+    </action-method>
+
 
     <action-view name="action-generate-configurator-creator-view-show-configurator"
                  model="com.axelor.apps.sale.db.Configurator"

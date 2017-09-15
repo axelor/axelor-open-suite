@@ -454,7 +454,6 @@
 		<option value="3">No Discount</option>
 	</selection>
 	
-	
 	<selection name="day.month.select">
 		<option value="0">00</option>
 		<option value="1">01</option>
