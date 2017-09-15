@@ -77,7 +77,8 @@
 
 	<action-view name="dashlet.invoiced.turnover.ytd.vs.lastyear" title="Invoiced Turnover This year vs Last year" model="com.axelor.apps.account.db.Invoice">
 	    <view type="chart" name="chart.invoiced.turnover.ytd.vs.lastyear"/>        
-	    <domain>self.company = :__user__.activeCompany</domain>
+	    <domain>self.company = :active_company</domain>
+	    <context name="active_company" expr="eval:__user__.activeCompany" />
 	</action-view>	
 
 	<action-view name="dashlet.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" model="com.axelor.apps.account.db.Invoice">
