@@ -25,13 +25,11 @@
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
 	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
-	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
 	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
-	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 
 <!-- 	Stock Dashboard -->
@@ -93,8 +91,7 @@
 	<action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.late.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
-		  <context name="active_company" expr="eval:__user__.activeCompany" />
+		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:__user__.activeCompany</domain>
 	</action-view>
 
 	<action-view title="Product soon out of stock by location" model="com.axelor.apps.stock.db.LocationLine" name="dashlet.location.line.product.out.stock.bylocation">
