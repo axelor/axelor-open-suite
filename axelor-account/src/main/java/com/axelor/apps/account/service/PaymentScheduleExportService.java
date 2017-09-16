@@ -26,8 +26,6 @@ import java.util.List;
 import javax.persistence.Query;
 
 import java.time.LocalDate;
-
-import com.axelor.inject.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -360,7 +358,7 @@ public class PaymentScheduleExportService{
 
 	public boolean isDebitBlocking(PaymentScheduleLine paymentScheduleLine)  {
 
-		PaymentSchedule paymentSchedule = Beans.get(PaymentScheduleRepository.class).find(paymentScheduleLine.getPaymentSchedule().getId());
+		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 
 		return blockingService.isDebitBlockingBlocking(paymentSchedule.getPartner(), paymentSchedule.getCompany());
 
