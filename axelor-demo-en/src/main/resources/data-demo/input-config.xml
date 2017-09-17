@@ -275,6 +275,8 @@
  	<input file="project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
  	
  	<input file="business_project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
+	
+	<input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
  	
 <!--  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/> -->
  	
