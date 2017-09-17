@@ -87,6 +87,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		if (paymentVoucher != null) {
 			invoicePayment.setBankDetails(paymentVoucher.getCompanyBankDetails());
 		}
+		computeAdvancePaymentImputation(invoicePayment, paymentMove);
 		invoice.addInvoicePaymentListItem(invoicePayment);
 		invoicePaymentToolService.updateAmountPaid(invoice);
 		invoicePaymentRepository.save(invoicePayment);
@@ -109,27 +110,65 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		else if (move.getPaymentVoucher() != null)  {
 			return InvoicePaymentRepository.TYPE_PAYMENT;
 		}
-		else if (determineIfReconcileFromInvoice(move)) {
-			return InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION;
-		}
 		else  {
 			return InvoicePaymentRepository.TYPE_OTHER;
 		}
 	
 	}
 
+	protected void computeAdvancePaymentImputation(InvoicePayment invoicePayment,
+												   Move paymentMove) {
+
+		// check if the payment is an advance payment imputation
+		Invoice advanceInvoice = determineIfReconcileFromInvoice(paymentMove);
+		if (advanceInvoice != null) {
+			List<InvoicePayment> invoicePaymentList = advanceInvoice.getInvoicePaymentList();
+			if (invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
+				//set right type
+				invoicePayment.setTypeSelect(InvoicePaymentRepository
+						.TYPE_ADV_PAYMENT_IMPUTATION);
+
+				// create link between advance payment and its imputation
+				InvoicePayment advancePayment = advanceInvoice
+						.getInvoicePaymentList().get(0);
+				advancePayment.setImputedBy(invoicePayment);
+				invoicePaymentRepository.save(advancePayment);
+
+				// set the imputed payment currency
+				invoicePayment.setCurrency(advancePayment.getCurrency());
+
+				BigDecimal currentImputedAmount = invoicePayment.getAmount();
+
+				// we force the payment amount to be equal to the advance
+				// invoice amount, so we get the right amount in the
+				// right currency.
+				BigDecimal totalAmountInAdvanceInvoice =
+						advancePayment.getInvoice().getCompanyInTaxTotal();
+
+				BigDecimal convertedImputedAmount =
+						currentImputedAmount.divide(
+								totalAmountInAdvanceInvoice,
+								2,
+								BigDecimal.ROUND_HALF_EVEN
+						).multiply(advancePayment.getAmount());
+
+				invoicePayment.setAmount(convertedImputedAmount);
+			}
+		}
+	}
+
 	/**
 	 * We try to get to the status of the invoice from the reconcile to see
 	 * if this move was created from a payment for an advance payment invoice.
 	 * @param move
-	 * @return  true if the move is from a payment that comes from
-	 *          an advance payment invoice,
-	 *          false in other cases
+	 * @return  the found advance invoice if the move is from a
+	 *          payment that comes from this invoice.
+	 *          null in other cases
 	 */
-	protected boolean determineIfReconcileFromInvoice(Move move) {
+	protected Invoice determineIfReconcileFromInvoice(Move move) {
 		List<MoveLine> moveLineList = move.getMoveLineList();
 		if (moveLineList == null || moveLineList.size() != 2) {
-			return false;
+			return null;
 		}
 		InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
 		for (MoveLine moveLine : moveLineList) {
@@ -139,7 +178,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 						.filter("self.debitMoveLine = ?", moveLine)
 						.fetchOne();
 				if (reconcile == null) {
-					return false;
+					return null;
 				}
 				//in the reconcile, search for the credit line to get the
 				//associated payment
@@ -160,11 +199,11 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 						&& invoicePayment.getInvoice() != null
 						&& invoicePayment.getInvoice().getOperationSubTypeSelect()
 						== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-					return true;
+					return invoicePayment.getInvoice();
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 	
 }

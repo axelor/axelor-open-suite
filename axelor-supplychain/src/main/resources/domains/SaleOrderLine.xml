@@ -26,6 +26,8 @@
   	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines" mappedBy="saleOrderLine"/>
   	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	<boolean name="invoiced" readonly="true"/>
+
+	<string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
   	
   	<extra-code>
   		<![CDATA[

@@ -90,6 +90,7 @@ public class ImportInventoryLine {
 						inventoryLine.getInventory(),
 						inventoryLine.getProduct(),
 						inventoryLine.getCurrentQty(),
+						inventoryLine.getRack(),
 						trackingNumber
 						);
 				

@@ -121,6 +121,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         }
 
         BillOfMaterial billOfMaterial = new BillOfMaterial();
+        billOfMaterial.setCompany(configuratorBOM.getCompany());
         billOfMaterial.setName(name);
         billOfMaterial.setProduct(product);
         billOfMaterial.setQty(qty);

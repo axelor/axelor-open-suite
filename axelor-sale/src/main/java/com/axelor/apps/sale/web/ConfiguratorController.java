@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -119,5 +120,20 @@ public class ConfiguratorController {
             TraceBackService.trace(e);
             response.setError(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * Called from configurator view on selecting
+     * {@link Configurator#configuratorCreator}.
+     * @param request
+     * @param response
+     */
+    public void createDomainForCreator(ActionRequest request, ActionResponse response) {
+        response.setAttr(
+                "configuratorCreator",
+                "domain",
+                Beans.get(ConfiguratorCreatorService.class).getConfiguratorCreatorDomain()
+
+        );
     }
 }

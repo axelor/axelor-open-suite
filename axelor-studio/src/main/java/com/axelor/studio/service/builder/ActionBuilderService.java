@@ -71,7 +71,7 @@ public class ActionBuilderService {
 	@Transactional
 	public MetaAction build(ActionBuilder builder) {
 		
-		if (builder.getTypeSelect() < 2 &&  builder.getLines() != null && builder.getLines().isEmpty()) {
+		if (builder.getTypeSelect() < 2 &&  (builder.getLines() == null || builder.getLines().isEmpty())) {
 			return null;
 		}
 		

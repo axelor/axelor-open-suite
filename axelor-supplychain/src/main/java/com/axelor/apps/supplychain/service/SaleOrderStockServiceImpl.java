@@ -130,6 +130,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				saleOrder.getShipmentMode(),
 				saleOrder.getFreightCarrierMode());
 
+		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
 		stockMove.setSaleOrder(saleOrder);
 		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 		return stockMove;

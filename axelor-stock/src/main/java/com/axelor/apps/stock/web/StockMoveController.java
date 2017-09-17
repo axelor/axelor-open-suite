@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.stock.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
@@ -52,11 +38,19 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import org.eclipse.birt.core.exception.BirtException;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StockMoveController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
 	@Inject
 	private StockMoveService stockMoveService;
 	
@@ -116,67 +110,41 @@ public class StockMoveController {
 
 
 	/**
-	 * Method to generate stock move as a pdf
-	 *
+	 * Method called from stock move form and grid view.
+	 * Print one or more stock move as PDF
 	 * @param request
 	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
 	 */
 	public void printStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
-
-
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		String stockMoveIds = "";
-
 		@SuppressWarnings("unchecked")
 		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedMove != null){
-			for(Integer it : lstSelectedMove) {
-				stockMoveIds+= it.toString()+",";
-			}
-		}
 
-		if(!stockMoveIds.equals("")){
-			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
-			stockMove = stockMoveRepo.find(new Long(lstSelectedMove.get(0)));
-		}else if(stockMove.getId() != null){
-			stockMoveIds = stockMove.getId().toString();
-		}
+		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
 
-		if(!stockMoveIds.equals("")){
-
-			String language="";
-			try{
-				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-			}catch (NullPointerException e) {
-				language = "en";
-			}
-			language = language.equals("")? "en": language;
-
-			String title = I18n.get("Stock move");
-			if(stockMove.getStockMoveSeq() != null)  {
-				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
-			}
-
-			String fileLink = ReportFactory.createReport(IReport.STOCK_MOVE, title+"-${date}")
-					.addParam("StockMoveId", stockMoveIds)
-					.addParam("Locale", language)
-					.generate()
-					.getFileLink();
-
-			logger.debug("Printing "+title);
-		
-			response.setView(ActionView
-					.define(title)
-					.add("html", fileLink).map());
-				
-		}else{
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_10));
-		}
+		response.setView(ActionView
+				.define(I18n.get("Stock move"))
+				.add("html", fileLink).map());
 	}
 
+	/**
+	 * Method called from stock move form and grid view.
+	 * Print one or more stock move as PDF
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	public void printPickingStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+
+		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
+
+		response.setView(ActionView
+				.define(I18n.get("Stock move"))
+				.add("html", fileLink).map());
+	}
 
 
 
@@ -341,6 +309,12 @@ public class StockMoveController {
 			.map());
 		
 	}
-	
+
+	public void fillAddressesStr(ActionRequest request, ActionResponse response) {
+	    StockMove stockMove = request.getContext().asType(StockMove.class);
+	    stockMoveService.computeAddressStr(stockMove);
+
+	    response.setValues(stockMove);
+	}
 
 }
