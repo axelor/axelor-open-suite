@@ -52,5 +52,10 @@ public interface ITranslation {
 	public static final String PURCHASE_ORDER_VALIDATED = /*$$(*/ "PurchaseOrder.validated"; /*)*/
 	public static final String PURCHASE_ORDER_FINISHED = /*$$(*/ "PurchaseOrder.finished"; /*)*/
 	public static final String PURCHASE_ORDER_CANCELED = /*$$(*/ "PurchaseOrder.canceled"; /*)*/
+	public static final String PURCHASE_ORDER_STATUS_DRAFT = /*$$(*/ "PurchaseOrder.statusDraft"; /*)*/
+	public static final String PURCHASE_ORDER_STATUS_REQUESTED = /*$$(*/ "PurchaseOrder.statusRequested"; /*)*/
+	public static final String PURCHASE_ORDER_STATUS_VALIDATED = /*$$(*/ "PurchaseOrder.statusValidated"; /*)*/
+	public static final String PURCHASE_ORDER_STATUS_FINISHED = /*$$(*/ "PurchaseOrder.statusFinished"; /*)*/
+	public static final String PURCHASE_ORDER_STATUS_CANCELED = /*$$(*/ "PurchaseOrder.statusCanceled"; /*)*/
 
 }
