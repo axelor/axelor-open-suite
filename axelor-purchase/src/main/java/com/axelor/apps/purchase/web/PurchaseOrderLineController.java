@@ -50,7 +50,7 @@ public class PurchaseOrderLineController {
 		Product product = purchaseOrderLine.getProduct();
 
 		try{
-			if(purchaseOrder == null || product == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return;  }
+			if(purchaseOrder == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return;  }
 
 			BigDecimal exTaxTotal = BigDecimal.ZERO;
 			BigDecimal companyExTaxTotal = BigDecimal.ZERO;
@@ -75,9 +75,11 @@ public class PurchaseOrderLineController {
 				companyInTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
 				companyExTaxTotal = companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 			}
-			
-			response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-			response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, product, purchaseOrderLine.getPrice()));
+
+			if (product != null) {
+				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
+				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, product, purchaseOrderLine.getPrice()));
+			}
 			response.setValue("exTaxTotal", exTaxTotal);
 			response.setValue("inTaxTotal", inTaxTotal);
 			response.setValue("companyExTaxTotal", companyExTaxTotal);
