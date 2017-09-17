@@ -136,6 +136,10 @@ public class AccountModule extends AxelorModule {
 
         bind(WorkflowValidationService.class).to(WorkflowValidationServiceImpl.class);
 
+        bind(SubrogationReleaseService.class).to(SubrogationReleaseServiceImpl.class);
+
+        bind(NotificationService.class).to(NotificationServiceImpl.class);
+
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
     
