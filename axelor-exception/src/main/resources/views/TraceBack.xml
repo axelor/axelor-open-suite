@@ -12,6 +12,7 @@
 		    <button name="copy" title="" hidden="true"/>
 		    <button name="cancel" title="" hidden="true"/>
 		</toolbar>
+		<hilite color="danger" if="typeSelect == 0" />
         <field name="id"/>
         <field name="date"/>
         <field name="internalUser"/>
@@ -30,26 +31,35 @@
 		    <button name="copy" title="" hidden="true"/>
 		    <button name="cancel" title="" hidden="true"/>
 		</toolbar>
-		<panel name="main" >
+		<panel name="main" sidebar="true">
 	        <field name="date"/>
 	        <field name="internalUser"/>
 	        <field name="origin" />
 	        <field name="typeSelect"/>
 	        <field name="categorySelect"/>
         </panel>
-        <panel name="exceptionGroup" title="Anomaly">
+        <panel name="reference" title="Reference" showIf="ref" sidebar="true">
+        	<field name="ref" colSpan="10" />
+        	<field name="refId" title="ID" showIf="refId" colSpan="2" />
+        	<button name="showReference" title="Show the reference" icon="fa-share" css="btn-primary" onClick="action-traceback-show-reference" />
+        </panel>
+		<panel title="Batch" showIf="batchId" sidebar="true" if="__config__.app.isApp('base')">
+			<field name="batchId" colSpan="4" />
+     		<button name="showBatch" title="Show the batch" icon="fa-share" css="btn-primary" onClick="action-batch-show-batch" colSpan="8" />
+		</panel>
+        <panel name="exceptionGroup" title="Anomaly" canCollapse="true">
         	<field name="exception" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="errorGroup" title="Error">
+        <panel name="errorGroup" title="Error" canCollapse="true">
             <field name="error" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="causeGroup" title="Cause">
+        <panel name="causeGroup" title="Cause" canCollapse="true">
             <field name="cause" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="messageGroup" title="Message">
+        <panel name="messageGroup" title="Message" canCollapse="true">
             <field name="message" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="traceGroup" title="Trace" >
+        <panel name="traceGroup" title="Trace" canCollapse="true">
             <field name="trace" showTitle="false" colSpan="12"/>
         </panel>
     </form>
@@ -61,5 +71,10 @@
     	<attribute name="hidden" for="messageGroup" expr="eval: !message"/>
     	<attribute name="hidden" for="traceGroup" expr="eval: !trace"/>
     </action-attrs>
-    
+
+	<action-method name="action-traceback-show-reference">
+		<call class="com.axelor.exception.web.TraceBackController"
+			method="showReference" />
+	</action-method>
+
 </object-views>
