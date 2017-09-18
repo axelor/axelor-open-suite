@@ -12,4 +12,4 @@
 "AX_IMP_IPO";15;1;;"EUR";;;;;;;1;"false";"false";"false";;;;"Import des paiements par TIP et TIP chèque."
 "AX_IMP_IPO_REJ";15;1;;"EUR";;;;;;;2;"false";"false";"false";;;;"Permet d'importer les rejets de paiements par TIP et TIP chèque."
 "AX_IMP_REIMB_REJ";11;1;;"EUR";2;;;;;;;"false";"false";"false";;;;"Permet d'importer les rejets de virement (remboursement)"
-"AX_REM";14;1;;;;;1;;;;;"true";"true";"true";;;;"Permet de relancer toutes les créances impayés selon la méthode de relance"
+"AX_REM";14;1;;;;;1;;;;;"true";"true";"true";;;;"Permet de relancer toutes les créances impayées selon la méthode de relance"
