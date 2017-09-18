@@ -17,9 +17,9 @@
  */
 package com.axelor.exception;
 
-import org.hibernate.proxy.HibernateProxy;
-
 import com.axelor.db.Model;
+import com.axelor.exception.service.AppService;
+import com.axelor.inject.Beans;
 
 /**
  * Exception specific to Axelor.
@@ -149,17 +149,8 @@ public class AxelorException extends Exception {
 	}
 
 	private void setRef(Model model) {
-		refClass = getPersistentClass(model);
+		refClass = Beans.get(AppService.class).getPersistentClass(model);
 		refId = model.getId();
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Class<? extends Model> getPersistentClass(Model model) {
-		if (model instanceof HibernateProxy) {
-			return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
-		} else {
-			return model.getClass();
-		}
 	}
 
 }
