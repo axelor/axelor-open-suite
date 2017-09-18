@@ -17,6 +17,10 @@
  */
 package com.axelor.exception;
 
+import org.hibernate.proxy.HibernateProxy;
+
+import com.axelor.db.Model;
+
 /**
  * Exception specific to Axelor.
  */
@@ -25,6 +29,8 @@ public class AxelorException extends Exception {
 	private static final long serialVersionUID = 1028105628735355226L;
 	
 	private int category;
+	private Class<? extends Model> refClass;
+	private long refId;
 
 	/**
 	 * Default constructor
@@ -47,30 +53,9 @@ public class AxelorException extends Exception {
 	 * </ul>
 	 */
 	public AxelorException(String message, int category, Object... messageArgs) {
-		super(formatMessage(message, messageArgs));
-		
+		super(String.format(message, messageArgs));
 		this.category = category;
 	}
-
-	
-	/**
-	 * Format the message with the arguments passed in parameters
-	 * 
-	 * @param message
-	 * 			The message to format
-	 * @param messageArgs
-	 * 			The arguments
-	 * @return
-	 */
-	public static String formatMessage(String message, Object... messageArgs)  {
-		
-		if(messageArgs.length > 0)  {
-			return String.format(message, messageArgs);
-		}
-		
-		return message;
-	}
-	
 	
 	/**
 	 *  Create an exception with his cause and his type.	
@@ -113,10 +98,32 @@ public class AxelorException extends Exception {
 	 * @see Throwable
 	 */
 	public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
-		super( String.format(message, messageArgs), cause);
+		super(String.format(message, messageArgs), cause);
 		this.category = category;
 	}
-	
+
+	public AxelorException(Class<? extends Model> refClass, int category) {
+		this.refClass = refClass;
+		this.category = category;
+	}
+
+	public AxelorException(Class<? extends Model> refClass, int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs));
+		this.refClass = refClass;
+		this.category = category;
+	}
+
+	public AxelorException(Model model, int category) {
+		setRef(model);
+		this.category = category;
+	}
+
+	public AxelorException(Model model, int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs));
+		setRef(model);
+		this.category = category;
+	}
+
 	/**
 	 * Get the category of exception
 	 * 
@@ -129,10 +136,30 @@ public class AxelorException extends Exception {
 	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 */
-	public int getCategory(){
-		
-		return this.category;
-		
+	public int getCategory() {
+		return category;
+	}
+
+	public Class<? extends Model> getRefClass() {
+		return refClass;
+	}
+
+	public long getRefId() {
+		return refId;
+	}
+
+	private void setRef(Model model) {
+		refClass = getPersistentClass(model);
+		refId = model.getId();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Class<? extends Model> getPersistentClass(Model model) {
+		if (model instanceof HibernateProxy) {
+			return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
+		} else {
+			return model.getClass();
+		}
 	}
 
 }
