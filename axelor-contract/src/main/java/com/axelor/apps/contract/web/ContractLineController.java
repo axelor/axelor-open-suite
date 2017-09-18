@@ -23,7 +23,7 @@ public class ContractLineController {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
 		Contract contract = getContract(request.getContext());
 		Product product = contractLine.getProduct();
-
+		
 		if(contractLine == null || product == null) {
 			this.resetProductInformation(response);
 			return;
@@ -51,14 +51,16 @@ public class ContractLineController {
 	}
 
 	private Contract getContract(Context context) {
-		Context versionContext = context.getParentContext();
-		ContractVersion contractVersion = versionContext.asType(ContractVersion.class);
+		Context contractContext = context.getParentContext();
+		//ContractVersion contractVersion = versionContext.asType(ContractVersion.class);
+		
+		return contractContext.asType(Contract.class);
 
-		if(versionContext.getParentContext() != null && versionContext.getParentContext().getContextClass().toString().equals(Contract.class.toString())){
+		/*if(versionContext.getParentContext() != null && versionContext.getParentContext().getContextClass().toString().equals(Contract.class.toString())){
 			return EntityHelper.getEntity(versionContext.getParentContext().asType(Contract.class));
 		}
 
-		return contractVersion.getContractNext() != null ? contractVersion.getContractNext() : contractVersion.getContract();
+		return contractVersion.getContractNext() != null ? contractVersion.getContractNext() : contractVersion.getContract();*/
 	}
 
 	private void resetProductInformation(ActionResponse response) {
