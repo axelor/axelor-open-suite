@@ -20,13 +20,13 @@
 			<field name="statusSelect"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="createDateTime"/>
-			<field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
-			<field name="cashRegisterDate"/>
+			<field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid" readonlyIf="statusSelect == 1"/>
+			<field name="cashRegisterDate" readonlyIf="statusSelect == 1"/>
 		</panel> 
 		
 		<panel name="amountsToRegister" title="Amounts to register"  readonlyIf="emailSentOk">
-			<field name="cashRegisterAmount"/>
-			<field name="depositedAmount"/>
+			<field name="cashRegisterAmount" readonlyIf="statusSelect == 1"/>
+			<field name="depositedAmount" readonlyIf="statusSelect == 1"/>
 		</panel>
 		
 		<panel name="followUp" title="Follow-up" >
@@ -34,18 +34,18 @@
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" showIf="!emailSentOk">
-			<button name="closeCashRegister" title="Close cashier" onClick="save,action-group-account-cash-registerline-close,save" showIf="statusSelect != 1" colSpan="12"/>
+			<button name="closeCashRegister" title="Close cashier" onClick="save,action-method-account-cash-registerline-close,save" showIf="statusSelect != 1" colSpan="12"/>
 			<button name="openCashRegister" title="Open cashier" onClick="save,action-method-account-cash-registerline-open,save" showIf="statusSelect != 0" colSpan="12"/>
 		</panel>
 		
 	</form>
     
     <action-method name="action-method-account-cash-registerline-close">
-    	<call class="com.axelor.apps.account.web.CashRegisterController" method="closeCashRegister"/>
+    	<call class="com.axelor.apps.account.web.CashRegisterLineController" method="closeCashRegister"/>
     </action-method>
     
     <action-method name="action-method-account-cash-registerline-open">
-    	<call class="com.axelor.apps.account.web.CashRegisterController" method="openCashRegister"/>
+    	<call class="com.axelor.apps.account.web.CashRegisterLineController" method="openCashRegister"/>
     </action-method>
 
     <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">
