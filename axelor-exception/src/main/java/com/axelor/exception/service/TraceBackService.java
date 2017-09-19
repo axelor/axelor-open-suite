@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,9 +79,18 @@ public class TraceBackService {
 
 	}
 
+	private static TraceBack _create(Exception e, String origin, int categorySelect, long batchId) {
+		return _create(e, origin, IException.TECHNICAL, categorySelect, batchId);
+	}
+
 	private static TraceBack _create(AxelorException e, String origin, long batchId) {
 		TraceBack traceBack = _create(e, origin, IException.FUNCTIONNAL, e.getCategory(), batchId);
-		
+
+		if (e.getRefClass() != null) {
+			traceBack.setRef(e.getRefClass().getName());
+			traceBack.setRefId(e.getRefId());
+		}
+
 		return traceBack;
 	}
 
@@ -116,13 +125,12 @@ public class TraceBackService {
 				
 				if (e instanceof AxelorException){
 
-					AxelorException ex = (AxelorException) e;
-					LOG.trace(_create(ex, origin, IException.FUNCTIONNAL, ex.getCategory(), 0).getTrace());
+					LOG.trace(_create((AxelorException) e, origin, 0).getTrace());
 					
 				}
 				else {
 					
-					LOG.error(_create(e, origin, IException.TECHNICAL, 0, 0).getTrace());
+					LOG.error(_create(e, origin, 0, 0).getTrace());
 					
 				}
 				
@@ -145,7 +153,7 @@ public class TraceBackService {
 			@Override
 			public void run() {
 				
-				LOG.trace(_create(e, origin, 1, e.getCategory(), batchId).getTrace());
+				LOG.trace(_create(e, origin, batchId).getTrace());
 	
 			}
 		});
@@ -165,7 +173,7 @@ public class TraceBackService {
 			@Override
 			public void run() {
 				
-				LOG.error(_create(e, origin, 1, 0, batchId).getTrace());
+				LOG.error(_create(e, origin, 0, batchId).getTrace());
 	
 			}
 		});
