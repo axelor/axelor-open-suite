@@ -12,7 +12,7 @@
   
   <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
       <panel>
-      	  <field name="$existingMenu" title="Exsting menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
+      	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
 	      <spacer hideIf="id"/>
 	      <field name="title" />
 	      <field name="parentMenu" />
