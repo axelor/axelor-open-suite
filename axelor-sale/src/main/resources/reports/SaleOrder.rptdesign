@@ -29,24 +29,16 @@
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
+            <property name="name">queryText</property>
+            <property name="id">4330</property>
         </structure>
         <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
+            <property name="name">queryTimeOut</property>
+            <property name="id">4330</property>
         </structure>
         <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
+            <property name="name">rowFetchSize</property>
+            <property name="id">4330</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -1640,6 +1632,69 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AppBaseDS" id="4330">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">nb_decimal_digit_for_unit_price</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
+                    <text-property name="heading">nb_decimal_digit_for_unit_price</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">nb_decimal_digit_for_unit_price</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">nb_decimal_digit_for_unit_price</property>
+                    <property name="nativeName">nb_decimal_digit_for_unit_price</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price
+from base_app_base]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nb_decimal_digit_for_unit_price</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nb_decimal_digit_for_unit_price</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nb_decimal_digit_for_unit_price</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="4">
@@ -2056,6 +2111,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
+            <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
+  function(n) {
+    if (n < 0) throw new RangeError("Invalid count value");
+    return new Array(n + 1).join(this.toString());
+  };]]></method>
             <column id="3343">
                 <property name="width">1.15in</property>
             </column>
@@ -3853,14 +3913,23 @@ else 'Subscriptions'</value>
                                         <text id="3460">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
+                                            <property name="dataSet">AppBaseDS</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
                                                 </structure>
                                             </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">nb_decimal_digit_for_unit_price</property>
+                                                    <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_unit_price"]</expression>
+                                                    <property name="dataType">integer</property>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["unit_price"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4152">
