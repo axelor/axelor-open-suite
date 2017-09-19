@@ -158,6 +158,7 @@
 "Inventory.rack","Casier",,
 "Inventory.realQty","Quantité réelle",,
 "Inventory.title","INVENTAIRE",,
+"Inventory.trackingNumber","Numéro de Suivi",,
 "Inventory.unit","Quantité supposée",,
 "Last Future Stock Move","Date dernier Mvt Future",,
 "Last inventory","Dernier inventaire",,
