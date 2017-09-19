@@ -35,6 +35,12 @@ import com.google.common.base.Strings;
 public class TraceBackController {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+	/**
+	 * Show reference view.
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	public void showReference(ActionRequest request, ActionResponse response) {
 		TraceBack traceBack = request.getContext().asType(TraceBack.class);
 

@@ -59,6 +59,13 @@ public class AxelorException extends Exception {
 		this.category = category;
 	}
 
+	/**
+	 * Create an exception with a category and a message.
+	 * 
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
 	public AxelorException(int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs));
 		this.category = category;
@@ -110,23 +117,55 @@ public class AxelorException extends Exception {
 		this.category = category;
 	}
 
+	/**
+	 * Create an exception with a cause, a category, and a message.
+	 * 
+	 * @param cause
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
 	public AxelorException(Throwable cause, int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs), cause);
 		this.category = category;
 	}
 
+	/**
+	 * Create an exception with a reference class, a category, and a message.
+	 * 
+	 * @param refClass
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
 	public AxelorException(Class<? extends Model> refClass, int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs));
 		this.refClass = refClass;
 		this.category = category;
 	}
 
+	/**
+	 * Create an exception with a cause, a reference class, and a category.
+	 * 
+	 * @param cause
+	 * @param refClass
+	 * @param category
+	 */
 	public AxelorException(Throwable cause, Class<? extends Model> refClass, int category) {
 		super(cause);
 		this.refClass = refClass;
 		this.category = category;
 	}
 
+	/**
+	 * Create an exception with a cause, a reference class, a category, and a message.
+	 * 
+	 * @param cause
+	 * @param refClass
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
 	public AxelorException(Throwable cause, Class<? extends Model> refClass, int category, String message,
 			Object... messageArgs) {
 		super(String.format(message, messageArgs), cause);
@@ -134,21 +173,45 @@ public class AxelorException extends Exception {
 		this.category = category;
 	}
 
-	public AxelorException(Model model, int category, String message, Object... messageArgs) {
+	/**
+	 * Create an exception with a reference, a category, and a message.
+	 * 
+	 * @param ref
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Model ref, int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs));
-		setRef(model);
+		setRef(ref);
 		this.category = category;
 	}
 
-	public AxelorException(Throwable cause, Model model, int category) {
+	/**
+	 * Create an exception with a cause, a reference, and a category.
+	 * 
+	 * @param cause
+	 * @param ref
+	 * @param category
+	 */
+	public AxelorException(Throwable cause, Model ref, int category) {
 		super(cause);
-		setRef(model);
+		setRef(ref);
 		this.category = category;
 	}
 
-	public AxelorException(Throwable cause, Model model, int category, String message, Object... messageArgs) {
+	/**
+	 * Create an exception with a cause, a reference, a category, and a message.
+	 * 
+	 * @param cause
+	 * @param ref
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Throwable cause, Model ref, int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs), cause);
-		setRef(model);
+		setRef(ref);
 		this.category = category;
 	}
 
@@ -168,17 +231,32 @@ public class AxelorException extends Exception {
 		return category;
 	}
 
+	/**
+	 * Get reference class.
+	 * 
+	 * @return
+	 */
 	public Class<? extends Model> getRefClass() {
 		return refClass;
 	}
 
+	/**
+	 * Get reference ID.
+	 * 
+	 * @return
+	 */
 	public long getRefId() {
 		return refId;
 	}
 
-	private final void setRef(Model model) {
-		refClass = Beans.get(AppService.class).getPersistentClass(model);
-		refId = model.getId();
+	/**
+	 * Set reference class and ID.
+	 * 
+	 * @param ref
+	 */
+	private final void setRef(Model ref) {
+		refClass = Beans.get(AppService.class).getPersistentClass(ref);
+		refId = ref.getId();
 	}
 
 }
