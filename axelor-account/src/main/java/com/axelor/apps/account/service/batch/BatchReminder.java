@@ -54,7 +54,7 @@ public class BatchReminder extends BatchStrategy {
 
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+	protected void start() throws IllegalAccessException, AxelorException {
 		
 		super.start();
 		
@@ -82,8 +82,7 @@ public class BatchReminder extends BatchStrategy {
 		if(!stop)  {
 			
 			this.reminderPartner();
-		
-			this.generateMail();
+
 		}
 	}
 	
@@ -91,15 +90,16 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = (List<Partner>) partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		Company company = batch.getAccountingBatch().getCompany();
+		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", company).fetch();
 		
 		for (Partner partner : partnerList) {
 
 			try {
+				partner = partnerRepository.find(partner.getId());
+				boolean remindedOk = reminderService.reminderGenerate(partner, company);
 				
-				boolean remindedOk = reminderService.reminderGenerate(partnerRepository.find(partner.getId()), batch.getAccountingBatch().getCompany());
-				
-				if(remindedOk == true)  {  updatePartner(partner); i++; }
+				if(remindedOk)  {  updatePartner(partner); i++; }
 
 				log.debug("Tiers traité : {}", partner.getName());	
 
@@ -124,40 +124,6 @@ public class BatchReminder extends BatchStrategy {
 		}
 	}
 	
-	
-	
-	public void generateMail()  {
-		
-//		List<Mail> mailList = (List<Mail>) mailService.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
-//		
-//		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
-//		for(Mail mail : mailList)  {
-//			try {
-//				
-//				mailService.generatePdfMail(mailService.find(mail.getId()));
-//				mailDone++;
-//				
-//			} catch (AxelorException e) {
-//				
-//				TraceBackService.trace(new AxelorException(String.format("Courrier/Email %s", mail.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
-//				mailAnomaly++;
-//				
-//			} catch (Exception e) {
-//				
-//				TraceBackService.trace(new Exception(String.format("Courrier/Mail %s", mail.getName()), e), IException.REMINDER, batch.getId());
-//				
-//				mailAnomaly++;
-//				
-//				LOG.error("Bug(Anomalie) généré(e) pour l'email/courrier {}", mail.getName());
-//				
-//			}
-//		}
-		
-	}
-	
-	
-	
-
 	/**
 	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
 	 * Warning : {@code batch} entity have to be saved before.
@@ -169,8 +135,6 @@ public class BatchReminder extends BatchStrategy {
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REMINDER_2)+"\n", batch.getDone());
 		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
-//		comment += String.format("\t* %s email(s) traité(s)\n", mailDone);
-//		comment += String.format("\t* %s anomalie(s)", mailAnomaly);
 
 		super.stop();
 		addComment(comment);
