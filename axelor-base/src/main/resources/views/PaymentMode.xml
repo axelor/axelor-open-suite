@@ -35,13 +35,6 @@
 	
 	<action-record name="action-payment-mode-set-default" model="com.axelor.apps.account.db.PaymentMode">
 	    <field name="accountManagementList" expr="eval:__repo__.of(Company).all().fetch().collect{__repo__.of(AccountManagement).create([company:it])}"/> 
-	</action-record> 
-	
-	<action-record name="action-payment-mode-record-empty" model="com.axelor.apps.account.db.PaymentMode">
-	    <field name="orderTypeSelect" expr=""/>
-	    <field name="generateBankOrder" expr="false" />
-	    <field name="automaticTransmission" expr="false"/>
-	    <field name="bankOrderExportFolderPath" expr=""/>     
-	</action-record>    
+	</action-record>   
 	
 </object-views>
