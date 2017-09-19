@@ -17,23 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.stock.report.IReport;
-import com.axelor.meta.schema.actions.ActionView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
@@ -61,11 +45,13 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
@@ -815,25 +801,39 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Override
 	public Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException {
 
-		Address fromAddress = stockMove.getFromAddress();
-		Address toAddress = stockMove.getToAddress();
-		if(fromAddress == null)
-			fromAddress =  stockMove.getCompany().getAddress();
-		if(toAddress == null)
-			toAddress =  stockMove.getCompany().getAddress();
-		if(fromAddress == null || toAddress == null)
+		String fromAddressStr = stockMove.getFromAddressStr();
+		String toAddressStr = stockMove.getToAddressStr();
+
+		String dString;
+		String aString;
+		BigDecimal dLat = BigDecimal.ZERO;
+		BigDecimal dLon = BigDecimal.ZERO;
+		BigDecimal aLat = BigDecimal.ZERO;
+		BigDecimal aLon = BigDecimal.ZERO;
+		if(Strings.isNullOrEmpty(fromAddressStr)) {
+			Address fromAddress = stockMove.getCompany().getAddress();
+			dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
+			dLat = fromAddress.getLatit();
+			dLon = fromAddress.getLongit();
+		} else {
+			dString = fromAddressStr.replace('\n',' ');
+		}
+		if(toAddressStr == null) {
+			Address toAddress = stockMove.getCompany().getAddress();
+			aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
+			aLat = toAddress.getLatit();
+			aLon =  toAddress.getLongit();
+		} else {
+			aString = toAddressStr.replace('\n',' ');
+		}
+		if(Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
 			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_11),
 					IException.MISSING_FIELD);
+		}
 		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM) {
 			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_12),
 					IException.CONFIGURATION_ERROR);
 		}
-			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
-			String aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
-			BigDecimal dLat = fromAddress.getLatit();
-			BigDecimal dLon = fromAddress.getLongit();
-			BigDecimal aLat = toAddress.getLatit();
-			BigDecimal aLon =  toAddress.getLongit();
 			Map<String, Object> result = Beans.get(MapService.class)
 					.getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 			if(result == null){
