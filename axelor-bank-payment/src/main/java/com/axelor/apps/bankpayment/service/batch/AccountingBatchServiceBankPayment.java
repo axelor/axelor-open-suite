@@ -26,12 +26,13 @@ public class AccountingBatchServiceBankPayment extends AccountingBatchService {
 		return batch;
 	}
 
+	@Override
 	public Batch directDebit(AccountingBatch accountingBatch) {
 		Class<? extends BatchDirectDebit> batchClass;
 
 		switch (accountingBatch.getDirectDebitDataTypeSelect()) {
-		case AccountingBatchRepository.DIRECT_DEBIT_DATA_CLIENT_INVOICE:
-			batchClass = BatchDirectDebitInvoice.class;
+		case AccountingBatchRepository.DIRECT_DEBIT_DATA_CUSTOMER_INVOICE:
+			batchClass = BatchDirectDebitCustomerInvoice.class;
 			break;
 		case AccountingBatchRepository.DIRECT_DEBIT_DATA_PAYMENT_SCHEDULE:
 			batchClass = BatchDirectDebitPaymentSchedule.class;
