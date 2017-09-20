@@ -15,7 +15,7 @@
 			public static final int ACTION_DIRECT_DEBIT = 12;
 
 			// DIRECT DEBIT DATA TYPE
-			public static final int DIRECT_DEBIT_DATA_INVOICE = 1;
+			public static final int DIRECT_DEBIT_DATA_CLIENT_INVOICE = 1;
 			public static final int DIRECT_DEBIT_DATA_PAYMENT_SCHEDULE = 2;
 			public static final int DIRECT_DEBIT_DATA_MONTHLY_PAYMENT_SCHEDULE = 3;
 		]]></extra-code>
