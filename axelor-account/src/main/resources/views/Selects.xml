@@ -178,12 +178,6 @@
 		<option value="1">Export direct debits</option>
 		<option value="2">Import direct debit rejects</option>
 	</selection>
-
-	<selection name="iaccount.account.batch.direct.debit.data.type.select">
-		<option value="1">Invoices</option>
-		<option value="2">Payment schedules</option>
-		<option value="3">Monthly payment schedules</option>
-	</selection>
 	
 	<selection name="ireminder.batch.type.select">
 		<option value="1">Classic reminder</option>
