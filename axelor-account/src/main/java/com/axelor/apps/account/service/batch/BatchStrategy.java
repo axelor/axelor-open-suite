@@ -17,13 +17,20 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -42,6 +49,8 @@ import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -51,6 +60,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
@@ -88,6 +98,12 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected ReimbursementService reimbursementService;
+	
+	@Inject
+	protected InvoicePaymentCreateService invoicePaymentCreateService;
+	
+	@Inject
+	protected InvoicePaymentRepository invoicePaymentRepository;
 
 	protected BatchStrategy() {
 	}
@@ -202,6 +218,32 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());
 
+	}
+
+	/**
+	 * Create an invoice payment for the specified invoice.
+	 * 
+	 * @param invoice
+	 * @param bankDetails
+	 * @return
+	 * @throws AxelorException
+	 * @throws JAXBException
+	 * @throws IOException
+	 * @throws DatatypeConfigurationException
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected InvoicePayment addPayment(Invoice invoice, BankDetails bankDetails)
+			throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+
+		InvoicePayment invoicePayment = invoicePaymentCreateService.createInvoicePayment(
+				invoice,
+				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
+				generalService.getTodayDate(),
+				invoice.getCurrency(),
+				invoice.getPaymentMode(),
+				InvoicePaymentRepository.TYPE_PAYMENT);
+		invoicePayment.setBankDetails(bankDetails);
+		return invoicePaymentRepository.save(invoicePayment);
 	}
 
 }
