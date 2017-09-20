@@ -106,6 +106,7 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 			Beans.get(AccountCustomerService.class).updateCustomerCreditLines(invoicePayment.getInvoice().getPartner());
 		}
 		if(paymentMode.getGenerateBankOrder())  {
+			invoicePayment = invoicePaymentRepository.save(invoicePayment);
 			this.createBankOrder(invoicePayment);
 		}
 		
