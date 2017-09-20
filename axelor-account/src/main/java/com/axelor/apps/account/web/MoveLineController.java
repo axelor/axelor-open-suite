@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,9 +113,27 @@ public class MoveLineController {
 	
 	public void accountingReconcile(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		List<MoveLine> moveLineList = moveLineRepo.all().fetch();
+		List<MoveLine> moveLineList = new ArrayList<>();
 		
-		moveLineService.reconcileMoveLines(moveLineList);
+		@SuppressWarnings("unchecked")
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+		if (idList != null) {
+			for (Integer it : idList) {
+				moveLineList.add(moveLineRepo.find(it.longValue()));
+			}
+		}
+		
+		List<MoveLine> moveLineListOk = new ArrayList<>();
+		
+		for (MoveLine moveLine : moveLineList) {
+			if (moveLine.getMove().getStatusSelect() == 3 && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+				moveLineListOk.add(moveLine);
+			}
+		}
+		
+		if (!moveLineListOk.isEmpty()) {
+			moveLineService.reconcileMoveLines(moveLineList);			
+		}
 		
 	}
 }
