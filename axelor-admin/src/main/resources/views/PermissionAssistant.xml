@@ -12,9 +12,13 @@
     
    <form name="permission-assistant-form" title="Permission Assistant" model="com.axelor.auth.db.PermissionAssistant">
     <panel name="main" >
-      <panel-related field="groupSet"/>
-      <panel-related field="objectSet"/>
-      <field name="metaFile" colSpan="6" widget="binary-link" />
+      <field name="typeSelect" selection="permission.assistant.type.select" onChange="action-attr-reset-all-set"/>
+      <panel-related field="roleSet" showIf="typeSelect == 2" colSpan="12"/>
+      <panel-related field="groupSet" showIf="typeSelect == 1" colSpan="12"/>
+      <panel-related field="objectSet" colSpan="12"/>
+      <field name="metaField" domain="self.metaModel = 3 and self.relationship != null" onChange="action-permission-assistant-method-fill-objects"/>
+      <field name="fieldPermission" />
+      <field name="metaFile" colSpan="12" widget="binary-link" />
       <field name="language" />
       <button name="createFile" title="Create file" colSpan="3" onClick="save,action-permission-method-create-file"/>
       <button name="importPermissions" title="Import permissions" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-permission-method-import-permissions,save"/>
@@ -34,5 +38,14 @@
    <action-method name="action-permission-method-import-permissions" model="com.axelor.auth.db.PermissionAssistant">
        <call class="com.axelor.auth.web.PermissionAssitantController" method="importPermissions"/>
    </action-method>
+   
+   <action-method name="action-permission-assistant-method-fill-objects">
+   	<call class="com.axelor.auth.web.PermissionAssitantController" method="fillObjects"/>
+   </action-method>
+   
+   <action-attrs name="action-attr-reset-all-set">
+		<attribute name="value" for="groupSet" expr="eval: null" if="typeSelect == 2"/>
+		<attribute name="value" for="roleSet" expr="eval: null" if="typeSelect == 1"/>
+	</action-attrs>
 
 </object-views>
