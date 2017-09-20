@@ -21,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,11 +51,14 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
@@ -585,6 +589,93 @@ public class MoveLineService {
 				invoice.setUsherPassageOk(false);
 			}
 			Beans.get(InvoiceRepository.class).save(invoice);
+		}
+	}
+	
+	/**
+	 * Method used to recover all credit reconciliable move line from a move line list
+	 * 
+	 * @param moveLineList
+	 * @return reconciliableCreditMoveLineList
+	 */
+	public List<MoveLine> getReconciliableCreditMoveLines(List<MoveLine> moveLineList) {
+		
+		List<MoveLine> reconciliableCreditMoveLineList = new ArrayList<>();
+		
+		for (MoveLine moveLine : moveLineList) {
+			if (moveLine.getAccount().getReconcileOk() && 
+					moveLine.getCredit().compareTo(BigDecimal.ZERO)>0 && 
+					moveLine.getDebit().compareTo(BigDecimal.ZERO)==0) {
+				reconciliableCreditMoveLineList.add(moveLine);
+			}
+		}
+		
+		return reconciliableCreditMoveLineList;
+	}
+	
+	/**
+	 * Method used to recover all debit reconciliable move line from a move line list
+	 * 
+	 * @param moveLineList
+	 * @return reconciliableDebitMoveLineList
+	 */
+	public List<MoveLine> getReconciliableDebitMoveLines(List<MoveLine> moveLineList) {
+		
+		List<MoveLine> reconciliableDebitMoveLineList = new ArrayList<>();
+		
+		for (MoveLine moveLine : moveLineList) {
+			if (moveLine.getAccount().getReconcileOk() && 
+					moveLine.getCredit().compareTo(BigDecimal.ZERO)==0 && 
+					moveLine.getDebit().compareTo(BigDecimal.ZERO)>0) {
+				reconciliableDebitMoveLineList.add(moveLine);
+			}
+		}
+		
+		return reconciliableDebitMoveLineList;
+	}
+	
+	/**
+	 * Method used to reconcile the move line list passed as a parameter
+	 * 
+	 * @param creditMoveLineList
+	 * @param debitMoveLineList
+	 * @throws AxelorException 
+	 */
+	public void reconcileMoveLines(List<MoveLine> moveLineList) throws AxelorException {
+
+		List<MoveLine> reconciliableCreditMoveLineList = this.getReconciliableCreditMoveLines(moveLineList);
+		List<MoveLine> reconciliableDebitMoveLineList = this.getReconciliableDebitMoveLines(moveLineList);
+
+		List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
+		List<Partner> partnerList = Beans.get(PartnerRepository.class).all().fetch();
+
+		List<MoveLine> companyPartnerCreditMoveLineList = new ArrayList<>();
+		List<MoveLine> companyPartnerDebitMoveLineList = new ArrayList<>();
+
+		if (companyList != null && partnerList != null) {
+			
+			for (Company company : companyList) {
+				for (Partner partner : partnerList) {
+
+					for (MoveLine creditMoveLine : reconciliableCreditMoveLineList) {
+						if (creditMoveLine.getMove().getCompany().equals(company) && creditMoveLine.getMove().getPartner().equals(partner)) {
+							companyPartnerCreditMoveLineList.add(creditMoveLine);
+						}
+					}
+
+					for (MoveLine debitMoveLine : reconciliableDebitMoveLineList) {
+						if (debitMoveLine.getMove().getCompany().equals(company) && debitMoveLine.getMove().getPartner().equals(partner)) {
+							companyPartnerDebitMoveLineList.add(debitMoveLine);
+						}
+					}
+					
+					Comparator<MoveLine> byDate = (mv1, mv2) -> mv1.getDate().compareTo(mv2.getDate());
+					companyPartnerCreditMoveLineList.sort(byDate);
+					companyPartnerDebitMoveLineList.sort(byDate);
+					
+					Beans.get(PaymentService.class).useExcessPaymentOnMoveLines(companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList, true);
+				}
+			}
 		}
 	}
 }

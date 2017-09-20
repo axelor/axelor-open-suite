@@ -17,12 +17,20 @@
  */
 package com.axelor.apps.account.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,6 +48,12 @@ public class MoveLineController {
 	
 	@Inject
 	private MoveLineRepository moveLineRepo;
+	
+	@Inject
+	private CompanyRepository companyRepo;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 	
 	
 	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response){
@@ -94,5 +108,13 @@ public class MoveLineController {
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
+	public void accountingReconcile(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		List<MoveLine> moveLineList = moveLineRepo.all().fetch();
+		
+		moveLineService.reconcileMoveLines(moveLineList);
+		
 	}
 }
