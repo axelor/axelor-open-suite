@@ -163,4 +163,8 @@
 		<option value="5">5</option>
 	</selection>
 
+	<selection name="iaccounting.batch.action.select" id="bankpayment.iaccounting.batch.action.select">
+		<option value="12">Direct debit</option>
+	</selection>
+
 </object-views>
