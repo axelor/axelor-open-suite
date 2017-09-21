@@ -4,7 +4,8 @@
   <module name="account" package="com.axelor.apps.account.db"/>
   
   <entity name="PaymentSchedule" lang="java">
-  
+
+	<integer name="typeSelect" title="Type" selection="iaccount.payment.schedule.type.select" />
     <string name="scheduleId" title="Ref." unique="false" required="false" namecolumn="true" readonly="true"/>
     <date name="creationDate" title="Creation Date"/>
     <date name="startDate" title="Schedule start Date"/>
@@ -25,7 +26,11 @@
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
 	
 	<extra-code><![CDATA[
-	
+		// TYPE SELECT
+		public static final int TYPE_NONE = 0;
+		public static final int TYPE_TERMS = 1;
+		public static final int TYPE_MONTHLY = 2;
+
 	   	// Status select
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_CONFIRMED = 2;
