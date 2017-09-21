@@ -75,7 +75,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 			try {
 				Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
 			} catch (AxelorException e) {
-				TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
 				LOG.error(e.getMessage());
 			}
 		}
@@ -128,7 +128,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 					incrementAnomaly();
 					anomalyList.add(invoice.getId());
 					query.bind("anomalyList", anomalyList);
-					TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+					TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
 					LOG.error(e.getMessage());
 				}
 			}
