@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import java.time.LocalDate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +58,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
@@ -646,36 +645,52 @@ public class MoveLineService {
 		List<MoveLine> reconciliableCreditMoveLineList = this.getReconciliableCreditMoveLines(moveLineList);
 		List<MoveLine> reconciliableDebitMoveLineList = this.getReconciliableDebitMoveLines(moveLineList);
 
-		List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
-		List<Partner> partnerList = Beans.get(PartnerRepository.class).all().fetch();
+		Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
 
-		if (companyList != null && partnerList != null) {
+		populateCredit(moveLineMap, reconciliableCreditMoveLineList);
+
+		populateDebit(moveLineMap, reconciliableDebitMoveLineList);
+
+		Comparator<MoveLine> byDate = (mv1, mv2) -> mv1.getDate().compareTo(mv2.getDate());
+
+		PaymentService paymentService = Beans.get(PaymentService.class);
+
+		for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
+			List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+			List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+			companyPartnerCreditMoveLineList.sort(byDate);
+			companyPartnerDebitMoveLineList.sort(byDate);
+			paymentService.useExcessPaymentOnMoveLines(companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList, true);
+		}
+	}
+	private void populateCredit(Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap, List<MoveLine> reconciliableMoveLineList) {
+		populateMoveLineMap(moveLineMap, reconciliableMoveLineList, true);
+	}
+	private void populateDebit(Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap, List<MoveLine> reconciliableMoveLineList) {
+		populateMoveLineMap(moveLineMap, reconciliableMoveLineList, false);
+	}
+	private void populateMoveLineMap(Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap, List<MoveLine> reconciliableMoveLineList, boolean isCredit) {
+		for (MoveLine moveLine : reconciliableMoveLineList) {
 			
-			for (Company company : companyList) {
-				for (Partner partner : partnerList) {
-
-					List<MoveLine> companyPartnerCreditMoveLineList = new ArrayList<>();
-					List<MoveLine> companyPartnerDebitMoveLineList = new ArrayList<>();
-					
-					for (MoveLine creditMoveLine : reconciliableCreditMoveLineList) {
-						if (creditMoveLine.getMove().getCompany().equals(company) && creditMoveLine.getMove().getPartner().equals(partner)) {
-							companyPartnerCreditMoveLineList.add(creditMoveLine);
-						}
-					}
-
-					for (MoveLine debitMoveLine : reconciliableDebitMoveLineList) {
-						if (debitMoveLine.getMove().getCompany().equals(company) && debitMoveLine.getMove().getPartner().equals(partner)) {
-							companyPartnerDebitMoveLineList.add(debitMoveLine);
-						}
-					}
-					
-					Comparator<MoveLine> byDate = (mv1, mv2) -> mv1.getDate().compareTo(mv2.getDate());
-					companyPartnerCreditMoveLineList.sort(byDate);
-					companyPartnerDebitMoveLineList.sort(byDate);
-					
-					Beans.get(PaymentService.class).useExcessPaymentOnMoveLines(companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList, true);
-				}
+			Move move = moveLine.getMove();
+			
+			if (move.getCompany() == null || move.getPartner() == null ) {
+				continue;
 			}
+			
+			Pair<Company, Partner> key = Pair.of(move.getCompany(), move.getPartner());
+			
+			Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(key);
+			
+			List<MoveLine> moveLineList;
+			
+			if (moveLineLists == null) {
+				moveLineLists = Pair.of(new ArrayList<>(), new ArrayList<>());
+				moveLineMap.put(key, moveLineLists);
+			}
+			
+			moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
+			moveLineList.add(moveLine);
 		}
 	}
 }
