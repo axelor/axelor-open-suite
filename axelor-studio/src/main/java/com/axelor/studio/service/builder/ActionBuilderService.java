@@ -237,12 +237,16 @@ public class ActionBuilderService {
 			else if (metaField != null && metaField.getRelationship() != null) {
 				value = addRelationalBinding(line, target, false);
 			}
+			else {
+				MetaJsonField valueJson = line.getValueJson();
+				if (valueJson != null && valueJson.getType().contentEquals("many-to-one")) {
+					value = value.replace("$." + valueJson.getName(),"$json.create($json.find($." + valueJson.getName() + ".id))");
+				}
+			}
 			
 			if (value != null && value.contains("*")) {
 				value = "new BigDecimal(" + value + ")";
 			}
-			
-			
 			
 			String condition = line.getConditionText();
 			if (condition != null) {
@@ -560,7 +564,7 @@ public class ActionBuilderService {
 			stb.append(format("if (!val) {", 2));
 			stb.append(format("val = $json.create('" + model + "');", 3));
 			stb.append(format("}",2));
-			stb.append(format("if($){$ = new com.axelor.rpc.JsonContext($)};", 2));
+			stb.append(format("if($ instanceof MetaJsonRecord){$ = $json.create($json.find($.id))};", 2));
 			stb.append(addFieldsBinding("val", lines, 2));
 			stb.append(format("$json.save(val);", 2));
 		}
@@ -653,7 +657,7 @@ public class ActionBuilderService {
 		stb.append(format("var val  = 0", 2));
 		stb.append(format("if (sumOf$ == null){ return val;}", 2));
 		stb.append(format("sumOf$.forEach(function($){", 2));
-		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = new com.axelor.rpc.JsonContext($); }", 3));
+		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = $json.create($json.find($.id)); }", 3));
 		String val = "val += " + expr[1] + ";" ;
 		if (filter != null) {
 			val = "if(filter){" + val + "}";
