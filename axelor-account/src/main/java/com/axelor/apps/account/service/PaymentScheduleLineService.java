@@ -20,51 +20,97 @@ package com.axelor.apps.account.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.DirectDebitManagement;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleLineService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+	@Inject
+	protected PaymentScheduleService paymentScheduleService;
+
+	@Inject
+	protected MoveService moveService;
+
+	@Inject
+	protected MoveLineService moveLineService;
+
+	@Inject
+	protected PaymentModeService paymentModeService;
 	
+	@Inject
+	protected SequenceService sequenceService;
+
+	@Inject
+	protected AppBaseService appBaseService;
+
+	@Inject
+	protected MoveLineRepository moveLineRepo;
 	
+	@Inject
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+
 	/**
 	 * Création d'une ligne d'échéancier
 	 * 
 	 * @param paymentSchedule
-	 * 			L'échéancié attaché.
+	 *            L'échéancié attaché.
 	 * @param invoiceTerm
-	 * 			La facture d'échéance.
+	 *            La facture d'échéance.
 	 * @param scheduleLineSeq
-	 * 			Le numéro d'échéance.
+	 *            Le numéro d'échéance.
 	 * @param scheduleDate
-	 * 			La date d'échéance.
+	 *            La date d'échéance.
 	 * 
 	 * @return
 	 */
-	public PaymentScheduleLine createPaymentScheduleLine(PaymentSchedule paymentSchedule, BigDecimal inTaxAmount, int scheduleLineSeq, LocalDate scheduleDate) {
-		
+	public PaymentScheduleLine createPaymentScheduleLine(PaymentSchedule paymentSchedule, BigDecimal inTaxAmount,
+			int scheduleLineSeq, LocalDate scheduleDate) {
+
 		PaymentScheduleLine paymentScheduleLine = new PaymentScheduleLine();
-		
+
 		paymentScheduleLine.setPaymentSchedule(paymentSchedule);
 		paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
 		paymentScheduleLine.setScheduleDate(scheduleDate);
 		paymentScheduleLine.setInTaxAmount(inTaxAmount);
 		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
-		
-		log.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}", 
-				new Object[] {paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(), paymentScheduleLine.getInTaxAmount()});
-		
+
+		log.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",
+				new Object[] { paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(),
+						paymentScheduleLine.getInTaxAmount() });
+
 		return paymentScheduleLine;
-		
+
 	}
 
 	/**
@@ -73,38 +119,185 @@ public class PaymentScheduleLineService {
 	 * @param paymentSchedule
 	 * 
 	 */
-	public List<PaymentScheduleLine> createPaymentScheduleLines(PaymentSchedule paymentSchedule){
-		
+	public List<PaymentScheduleLine> createPaymentScheduleLines(PaymentSchedule paymentSchedule) {
+
 		List<PaymentScheduleLine> paymentScheduleLines = new ArrayList<PaymentScheduleLine>();
-		
+
 		int nbrTerm = paymentSchedule.getNbrTerm();
-		
+
 		BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
-		
-		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})", new Object[]{paymentSchedule.getScheduleId(), nbrTerm, inTaxAmount});
-		
-		if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1){
-			
+
+		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})",
+				new Object[] { paymentSchedule.getScheduleId(), nbrTerm, inTaxAmount });
+
+		if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1) {
+
 			BigDecimal termAmount = inTaxAmount.divide(new BigDecimal(nbrTerm), 2, RoundingMode.HALF_EVEN);
 			BigDecimal cumul = BigDecimal.ZERO;
-			
-			for (int i = 1; i < nbrTerm + 1; i++){
-				
-				if (i == nbrTerm)  {
+
+			for (int i = 1; i < nbrTerm + 1; i++) {
+
+				if (i == nbrTerm) {
 					termAmount = inTaxAmount.subtract(cumul);
-				}
-				else  {
+				} else {
 					cumul = cumul.add(termAmount);
 				}
-				
-				paymentScheduleLines.add(
-						this.createPaymentScheduleLine(
-								paymentSchedule, termAmount, i, paymentSchedule.getStartDate().plusMonths(i-1)));
-				
+
+				paymentScheduleLines.add(this.createPaymentScheduleLine(paymentSchedule, termAmount, i,
+						paymentSchedule.getStartDate().plusMonths(i - 1)));
+
 			}
-		}		
-		
+		}
+
 		return paymentScheduleLines;
 	}
+
+	/**
+	 * Create payment move.
+	 * 
+	 * @param paymentScheduleLine
+	 * @return
+	 */
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
+		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+		Company company = paymentSchedule.getCompany();
+		Partner partner = paymentSchedule.getPartner();
+		PaymentMode paymentMode = paymentSchedule.getPaymentMode();
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, null);
+		AccountConfig accountConfig = company.getAccountConfig();
+		Account account = accountConfig.getCustomerAccount();
+		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
+		String name = paymentScheduleLine.getName();
+		LocalDate todayDate = appBaseService.getTodayDate();
+
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, paymentMode,
+				MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		setDebitNumber(paymentScheduleLine);
+
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, partner, account, amount, false, todayDate, 1,
+				name);
+		creditMoveLine = moveLineRepo.save(creditMoveLine);
+
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, paymentModeAccount, amount, true,
+				todayDate, 2, null);
+		debitMoveLine = moveLineRepo.save(debitMoveLine);
+
+		moveService.getMoveValidateService().validateMove(move);
+
+		paymentScheduleLine.setDirectDebitAmount(amount);
+		paymentScheduleLine.setInTaxAmountPaid(amount);
+		paymentScheduleLine.setAdvanceOrPaymentMove(move);
+		paymentScheduleLine.setAdvanceMoveLine(creditMoveLine);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_VALIDATED);
+
+		paymentScheduleService.closePaymentScheduleIfAllPaid(paymentSchedule);
+
+		return move;
+	}
+
+	/**		
+	  * Procédure permettant d'assigner un numéro de prélèvement à l'échéance à prélever		
+	  * Si plusieurs échéance d'un même échéancier sont à prélever, alors on utilise un objet de gestion de prélèvement encadrant l'ensemble des échéances en question		
+	  * Sinon on assigne simplement un numéro de prélèvement à l'échéance		
+	  * @param paymentScheduleLineList		
+	  * 			Une liste d'échéance à prélever		
+	  * @param paymentScheduleLine		
+	  * 			L'échéance traité		
+	  * @param company		
+	  * 			Une société		
+	  * @param journal		
+	  * 			Un journal (prélèvement mensu masse ou grand compte)		
+	  * @throws AxelorException		
+	  */		
+	public void setDebitNumber(List<PaymentScheduleLine> paymentScheduleLineList,
+			PaymentScheduleLine paymentScheduleLine, Company company) throws AxelorException {
+
+		if (hasOtherPaymentScheduleLine(paymentScheduleLineList, paymentScheduleLine)) {
+			DirectDebitManagement directDebitManagement = getDirectDebitManagement(paymentScheduleLineList,
+					paymentScheduleLine);
+			if (directDebitManagement == null) {
+				directDebitManagement = createDirectDebitManagement(getDirectDebitSequence(company), company);
+			}
+			paymentScheduleLine.setDirectDebitManagement(directDebitManagement);
+			directDebitManagement.getPaymentScheduleLineList().add(paymentScheduleLine);
+		} else {
+			paymentScheduleLine.setDebitNumber(getDirectDebitSequence(company));
+		}
+	}
+
+	public void setDebitNumber(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
+		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+		List<PaymentScheduleLine> paymentScheduleLineList = paymentSchedule.getPaymentScheduleLineList();
+		Company company = paymentSchedule.getCompany();
+		setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
+	}
+
+	/**		
+	  * Y a-t-il d'autres échéance a exporter pour le même payeur ?		
+	  * @param pslList : une liste d'échéance		
+	  * @param psl		
+	  * @return		
+	  */		
+	public boolean hasOtherPaymentScheduleLine(List<PaymentScheduleLine> pslList, PaymentScheduleLine psl) {
+		int i = 0;
+		for (PaymentScheduleLine paymentScheduleLine : pslList) {
+			paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
+			if (psl.getPaymentSchedule().equals(paymentScheduleLine.getPaymentSchedule())) {
+				i++;
+			}
+		}
+		return i > 1;
+	}
 	
+	/**		
+	  * Procédure permettant de récupérer l'objet de gestion déjà créé lors du prélèvement d'une autre échéance		
+	  * @param pslList		
+	  * 			La liste d'échéance à prélever		
+	  * @param psl		
+	  * 			L'échéance à prélever		
+	  * @return		
+	  * 			L'objet de gestion trouvé		
+	  */		
+	public DirectDebitManagement getDirectDebitManagement(List<PaymentScheduleLine> pslList, PaymentScheduleLine psl) {
+		for (PaymentScheduleLine paymentScheduleLine : pslList) {
+			paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
+			if (psl.getPaymentSchedule().equals(paymentScheduleLine.getPaymentSchedule())) {
+				if (paymentScheduleLine.getDirectDebitManagement() != null) {
+					return paymentScheduleLine.getDirectDebitManagement();
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**		
+	  * Procédure permettant de créer un objet de gestion de prélèvement		
+	  * @param sequence		
+	  * 			La séquence de prélèvement à utiliser		
+	  * @param company		
+	  * 			Une société		
+	  *		
+	  * @return		
+	  */		
+	public DirectDebitManagement createDirectDebitManagement(String sequence, Company company) {
+		DirectDebitManagement directDebitManagement = new DirectDebitManagement();
+		directDebitManagement.setDebitNumber(sequence);
+		directDebitManagement.setInvoiceSet(new HashSet<Invoice>());
+		directDebitManagement.setPaymentScheduleLineList(new ArrayList<PaymentScheduleLine>());
+		directDebitManagement.setCompany(company);
+		return directDebitManagement;
+	}
+
+	public String getDirectDebitSequence(Company company) throws AxelorException {
+
+		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
+
+		// TODO manage multi bank
+
+		return sequenceService
+				.getSequenceNumber(paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company, null));
+
+	}
 }

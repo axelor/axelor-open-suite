@@ -426,6 +426,26 @@ public class PaymentScheduleService {
 
 	}
 
+  	/**
+  	 * Close payment schedule if all paid.
+  	 * 
+  	 * @param paymentSchedule
+  	 * @throws AxelorException
+  	 */
+	public void closePaymentScheduleIfAllPaid(PaymentSchedule paymentSchedule) throws AxelorException {
+		if (paymentSchedule.getPaymentScheduleLineList() == null) {
+			return;
+		}
+
+		for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+			if (paymentScheduleLine.getStatusSelect() < PaymentScheduleLineRepository.STATUS_VALIDATED) {
+				return;
+			}
+		}
+
+		paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CLOSED);
+	}
+  	
   	public LocalDate getMostOldDatePaymentScheduleLine(List<PaymentScheduleLine> paymentScheduleLineList)  {
 		LocalDate minPaymentScheduleLineDate = LocalDate.now();
 
