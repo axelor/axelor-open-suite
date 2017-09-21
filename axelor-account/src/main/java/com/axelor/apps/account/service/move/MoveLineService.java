@@ -649,14 +649,14 @@ public class MoveLineService {
 		List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
 		List<Partner> partnerList = Beans.get(PartnerRepository.class).all().fetch();
 
-		List<MoveLine> companyPartnerCreditMoveLineList = new ArrayList<>();
-		List<MoveLine> companyPartnerDebitMoveLineList = new ArrayList<>();
-
 		if (companyList != null && partnerList != null) {
 			
 			for (Company company : companyList) {
 				for (Partner partner : partnerList) {
 
+					List<MoveLine> companyPartnerCreditMoveLineList = new ArrayList<>();
+					List<MoveLine> companyPartnerDebitMoveLineList = new ArrayList<>();
+					
 					for (MoveLine creditMoveLine : reconciliableCreditMoveLineList) {
 						if (creditMoveLine.getMove().getCompany().equals(company) && creditMoveLine.getMove().getPartner().equals(partner)) {
 							companyPartnerCreditMoveLineList.add(creditMoveLine);

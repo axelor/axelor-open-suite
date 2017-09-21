@@ -24,6 +24,7 @@ import java.util.List;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -119,20 +120,15 @@ public class MoveLineController {
 		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 		if (idList != null) {
 			for (Integer it : idList) {
-				moveLineList.add(moveLineRepo.find(it.longValue()));
+				MoveLine moveLine = moveLineRepo.find(it.longValue());
+				if (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+					moveLineList.add(moveLine);
+				}
 			}
 		}
 		
-		List<MoveLine> moveLineListOk = new ArrayList<>();
-		
-		for (MoveLine moveLine : moveLineList) {
-			if (moveLine.getMove().getStatusSelect() == 3 && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-				moveLineListOk.add(moveLine);
-			}
-		}
-		
-		if (!moveLineListOk.isEmpty()) {
-			moveLineService.reconcileMoveLines(moveLineList);			
+		if (!moveLineList.isEmpty()) {
+			moveLineService.reconcileMoveLines(moveLineList);
 		}
 		
 	}
