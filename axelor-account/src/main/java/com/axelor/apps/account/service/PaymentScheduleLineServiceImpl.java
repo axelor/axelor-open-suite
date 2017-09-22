@@ -187,7 +187,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 				todayDate, 1, name);
 		creditMoveLine = moveLineRepo.save(creditMoveLine);
 
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, null);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails);
 		MoveLine debitMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, paymentModeAccount,
 				amount, true, todayDate, 2, null);
 		debitMoveLine = moveLineRepo.save(debitMoveLine);
