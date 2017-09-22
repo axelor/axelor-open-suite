@@ -36,6 +36,8 @@
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
+    <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account" />
+    <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account" />
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     

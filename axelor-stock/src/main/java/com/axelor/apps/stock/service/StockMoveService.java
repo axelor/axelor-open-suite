@@ -137,4 +137,16 @@ public interface StockMoveService {
 	 * @param stockMove
 	 */
 	void computeAddressStr(StockMove stockMove);
+
+	/**
+	 * Print the given stock move.
+	 * @param stockMove
+	 * @param lstSelectedMove
+	 * @param isPicking  true if we print a picking order
+	 * @return the link to the PDF file
+	 * @throws AxelorException
+	 */
+	String printStockMove(StockMove stockMove,
+						  List<Integer> lstSelectedMove,
+						  boolean isPicking) throws AxelorException;
 }

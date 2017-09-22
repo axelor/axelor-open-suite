@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid model="com.axelor.apps.account.db.Notification" title="Notifications"
+		name="notification-grid" orderBy="-paymentDate,-subrogationRelease">
+		<field name="factor" />
+		<field name="paymentDate" />
+		<field name="subrogationRelease" />
+		<field name="statusSelect" />
+	</grid>
+
+	<form model="com.axelor.apps.account.db.Notification" title="Notification"
+		name="notification-form" onNew="action-notification-onnew">
+
+		<panel readonlyIf="statusSelect > 1">
+			<field name="statusSelect" widget="NavSelect" colSpan="12" />
+			<field name="factor" colSpan="4" domain="self.isFactor = TRUE"
+				onChange="action-notification-factor-onchange" />
+			<field name="paymentDate" colSpan="4" />
+			<field name="subrogationRelease" colSpan="4"
+				domain="self.company.factor = :factor AND self.statusSelect = 3"
+				onChange="action-notification-subrogation-release-onchange" />
+			<panel-related field="notificationItemList" grid-view="notification-item-grid"
+				form-view="notification-item-form" colSpan="12" editable="true"
+				canNew="false" canRemove="false" />
+		</panel>
+
+		<panel sidebar="true">
+			<button name="validate" title="Validate"
+				onClick="save,action-notification-validate" hideIf="statusSelect > 1" />
+		</panel>
+	</form>
+
+	<action-record name="action-notification-onnew"
+		model="com.axelor.apps.account.db.Notification">
+		<field name="factor" expr="eval: __user__.getActiveCompany()?.getFactor()" />
+		<field name="paymentDate" expr="eval: __date__" />
+	</action-record>
+
+	<action-record name="action-notification-factor-onchange"
+		model="com.axelor.apps.account.db.Notification">
+		<field name="subrogationRelease" expr="eval: null" />
+		<field name="notificationItemList" expr="eval: null" />
+	</action-record>
+
+	<action-method name="action-notification-subrogation-release-onchange">
+		<call class="com.axelor.apps.account.web.NotificationController"
+			method="populateNotificationItemList" />
+	</action-method>
+
+	<action-method name="action-notification-validate">
+		<call class="com.axelor.apps.account.web.NotificationController"
+			method="validate" />
+	</action-method>
+
+</object-views>

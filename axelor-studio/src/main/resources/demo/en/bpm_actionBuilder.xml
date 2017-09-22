@@ -56,21 +56,21 @@
   	</lines>
   </action-builder>
   
-  <action-builder name="action-create-book-order-from-category"
+  <action-builder name="action-create-product-order-from-category"
   	isJson="true" 
   	typeSelect="0" 
-  	model="BookCategory"
-  	targetModel="BookOrder">
+  	model="ProductCategory"
+  	targetModel="ProductOrder">
   	<lines>
-	  	<line jsonField="customer" jsonModel="BookOrder"  filter="self.name = 'Axelor'" />
-	  	<line jsonField="status" jsonModel="BookOrder" value="1" />
-	  	<line jsonField="total" jsonModel="BookOrder"  value="$.books.sum($.price)" />
-	  	<line jsonField="lines" jsonModel="BookOrder"  value="$.books" valueJsonModel="BookCategory" valueJsonField="books">
+	  	<line jsonField="customer" jsonModel="ProductOrder"  filter="self.name = 'Axelor'" />
+	  	<line jsonField="status" jsonModel="ProductOrder" value="1" />
+	  	<line jsonField="total" jsonModel="ProductOrder"  value="$.products.sum($.price)" />
+	  	<line jsonField="lines" jsonModel="ProductOrder"  value="$.products" valueJsonModel="ProductCategory" valueJsonField="products">
 	  		<subLines>
-	  			<line jsonField="book" jsonModel="BookOrderLine"  value="$" />
-	  			<line jsonField="price" jsonModel="BookOrderLine"  value="$.price" valueJsonModel="Book" valueJsonField="price" />
-	  			<line jsonField="qty" jsonModel="BookOrderLine"  value="1" />
-	  			<line jsonField="total" jsonModel="BookOrderLine"  value="$.price" valueJsonModel="Book" valueJsonField="price" />
+	  			<line jsonField="product" jsonModel="ProductOrderLine"  value="$" />
+	  			<line jsonField="price" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" valueJsonField="price" />
+	  			<line jsonField="qty" jsonModel="ProductOrderLine"  value="1" />
+	  			<line jsonField="total" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" valueJsonField="price" />
 	  		</subLines>
 	  	</line>
 	</lines>
