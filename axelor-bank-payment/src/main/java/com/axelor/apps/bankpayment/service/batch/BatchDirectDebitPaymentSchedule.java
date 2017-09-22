@@ -179,10 +179,10 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 			PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 
 			BankOrderLine bankOrderLine = bankOrderLineService.createBankOrderLine(
-					accountingBatch.getPaymentMode().getBankOrderFileFormat(), accountingBatch.getCompany(), paymentSchedule.getPartner(),
-					paymentSchedule.getBankDetails(), paymentScheduleLine.getInTaxAmountPaid(),
-					accountingBatch.getCompany().getCurrency(), bankOrderDate, paymentScheduleLine.getDebitNumber(),
-					paymentScheduleLine.getName());
+					accountingBatch.getPaymentMode().getBankOrderFileFormat(), accountingBatch.getCompany(),
+					paymentSchedule.getPartner(), paymentSchedule.getBankDetails(),
+					paymentScheduleLine.getInTaxAmountPaid(), accountingBatch.getCompany().getCurrency(), bankOrderDate,
+					paymentScheduleLine.getDebitNumber(), paymentScheduleLine.getName());
 			bankOrder.addBankOrderLineListItem(bankOrderLine);
 		}
 
