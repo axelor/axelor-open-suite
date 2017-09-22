@@ -141,6 +141,7 @@ public class WkfService {
 		status.setSequence(-102);
 		status.setSelection(getSelectName());
 		status.setWidget(null);
+		status.setIsWkf(true);
 		status.setWidgetAttrs("{\"colSpan\": \"10\",\"readonly\": \"true\"}");
 		if (workflow.getDisplayTypeSelect() == 0) {
 			status.setWidget("NavSelect");
@@ -156,7 +157,7 @@ public class WkfService {
 		trackFlow.setHiddenInGrid(true);
 		saveJsonField(trackFlow);
 		
-		MetaJsonField wkfEnd = getJsonField("wkfEnd", "panel");
+		MetaJsonField wkfEnd = getJsonField("wkfSeparator", "separator");
 		wkfEnd.setSequence(-1);
 		wkfEnd.setHiddenInGrid(true);
 		wkfEnd.setIsWkf(true);
@@ -298,7 +299,7 @@ public class WkfService {
 		List<MetaJsonField> fields = getFields(wkf);
 		
 		for (MetaJsonField field : fields) {
-			if (field.getIsWkf()) {
+			if (field.getIsWkf() && !field.equals(wkf.getStatusField())) {
 				if (field.getOnClick() != null) {
 					actions  += "," + field.getOnClick();
 				}

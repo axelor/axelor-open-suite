@@ -2,41 +2,41 @@
 <json-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <json-model name="ProductCategory" title="Product category">
+  <json-model name="ProductCategory" title="Catégorie de produit">
   	<fields>
-		<field name="name" title="Name" required="true" type="string" sequence="1"/>
+		<field name="name" title="Nom" required="true" type="string" sequence="1"/>
 		<field name="code" title="Code" type="string" sequence="2"/>
   	</fields>
   </json-model> 
   
-  <json-model name="Product" title="Product">
+  <json-model name="Product" title="Produit">
   	<fields>
-		<field name="name" title="Name" required="true" type="string" sequence="1"/>
+		<field name="name" title="Nom" required="true" type="string" sequence="1"/>
 		<field name="code" title="Code" type="string" sequence="2"/>
-		<field name="price" title="Price" type="decimal" sequence="3"/>
-		<field name="launchDate" title="Launch Date" type="date" sequence="4"/>
-		<field name="supplier" title="Supplier" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" sequence="5"/>
-		<field name="category" title="Main Category" type="json-many-to-one" target-json-model="ProductCategory" sequence="6"/>
+		<field name="price" title="Prix" type="decimal" sequence="3"/>
+		<field name="launchDate" title="Date de lancement" type="date" sequence="4"/>
+		<field name="supplier" title="Fournisseur" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" sequence="5"/>
+		<field name="category" title="Catégorie principale" type="json-many-to-one" target-json-model="ProductCategory" sequence="6"/>
   	</fields>
   </json-model>
   
-  <json-model name="ProductOrderLine" title="Product order line">
+  <json-model name="ProductOrderLine" title="Ligne de commande produit">
   	<fields>
-  		<field name="product" title="Product" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total"/>
-  		<field name="price" title="Price" type="decimal" sequence="2" onChange="action-product-order-line-update-total"/>
-  		<field name="qty" title="Qty" type="integer" sequence="3" onChange="action-product-order-line-update-total"/>
+  		<field name="product" title="Produit" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total"/>
+  		<field name="price" title="Prix" type="decimal" sequence="2" onChange="action-product-order-line-update-total"/>
+  		<field name="qty" title="Qté" type="integer" sequence="3" onChange="action-product-order-line-update-total"/>
 		<field name="total" title="Total" type="decimal" sequence="4"/>
   	</fields>
   </json-model> 
   
-  <json-model name="ProductOrder" title="Product order">
+  <json-model name="ProductOrder" title="Commande produit">
   	<fields>
-		<field name="reference" title="Ref" type="string" sequence="1"/>
-		<field name="customer" title="Customer" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2"/>
-		<field name="orderDate" title="Order Date" type="date" sequence="3"/>
+		<field name="reference" title="Réf" type="string" sequence="1"/>
+		<field name="customer" title="Client" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2"/>
+		<field name="orderDate" title="Date de commande" type="date" sequence="3"/>
 		<field name="total" title="Total" type="decimal" sequence="4"/>
-		<field name="lines" title="Lines" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total"/>
-		<field name="status" title="Status" type="integer" sequence="6"/>
+		<field name="lines" title="Lignes" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total"/>
+		<field name="status" title="Statut" type="integer" sequence="6"/>
   	</fields>
   </json-model>
   
@@ -46,8 +46,8 @@
   
   <json-field name="invertToInvoice" type="button" model="com.axelor.apps.hr.db.Timesheet" modelField="timesheetAttrs" onClick="action-timesheet-line-invert-to-invoice" sequence="2"/>
   
-  <json-field name="products"  title="Products" type="json-many-to-many" target-json-model="Product" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="3"/>
+  <json-field name="products"  title="Produit" type="json-many-to-many" target-json-model="Product" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="3"/>
   
-  <json-field name="createProduct" title="Create product order" type="button" onClick="action-create-product-order-from-category" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="4"/>
+  <json-field name="createProduct" title="Créer commande produit" type="button" onClick="action-create-product-order-from-category" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="4"/>
   
 </json-models>
