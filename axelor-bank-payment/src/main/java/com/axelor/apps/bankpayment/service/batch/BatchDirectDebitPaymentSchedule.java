@@ -50,20 +50,23 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 		List<String> filterList = new ArrayList<>();
 		List<Pair<String, Object>> bindingList = new ArrayList<>();
 
-		filterList.add("self.paymentSchedule.typeSelect = :paymentScheduleTypSelect");
-		bindingList.add(Pair.of("paymentScheduleTypSelect", (Object) paymentScheduleType));
+		filterList.add("self.paymentSchedule.statusSelect = :paymentScheduleStatusSelect");
+		bindingList.add(Pair.of("paymentScheduleStatusSelect", PaymentScheduleRepository.STATUS_CONFIRMED));
+
+		filterList.add("self.paymentSchedule.typeSelect = :paymentScheduleTypeSelect");
+		bindingList.add(Pair.of("paymentScheduleTypeSelect", paymentScheduleType));
 
 		filterList.add("self.statusSelect = :statusSelect");
-		bindingList.add(Pair.of("statusSelect", (Object) PaymentScheduleLineRepository.STATUS_IN_PROGRESS));
+		bindingList.add(Pair.of("statusSelect", PaymentScheduleLineRepository.STATUS_IN_PROGRESS));
 
 		if (accountingBatch.getDueDate() != null) {
 			filterList.add("self.scheduleDate <= :dueDate");
-			bindingList.add(Pair.of("dueDate", (Object) accountingBatch.getDueDate()));
+			bindingList.add(Pair.of("dueDate", accountingBatch.getDueDate()));
 		}
 
 		if (accountingBatch.getCompany() != null) {
 			filterList.add("self.company = :company");
-			bindingList.add(Pair.of("company", (Object) accountingBatch.getCompany()));
+			bindingList.add(Pair.of("company", accountingBatch.getCompany()));
 		}
 
 		if (accountingBatch.getBankDetails() != null) {
@@ -74,12 +77,12 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 			}
 
 			filterList.add("self.companyBankDetails IN (:bankDetailsSet)");
-			bindingList.add(Pair.of("bankDetailsSet", (Object) bankDetailsSet));
+			bindingList.add(Pair.of("bankDetailsSet", bankDetailsSet));
 		}
 
 		if (accountingBatch.getPaymentMode() != null) {
 			filterList.add("self.paymentMode = :paymentMode");
-			bindingList.add(Pair.of("paymentMode", (Object) accountingBatch.getPaymentMode()));
+			bindingList.add(Pair.of("paymentMode", accountingBatch.getPaymentMode()));
 		}
 
 		List<PaymentScheduleLine> paymentScheduleLineList = processQuery(filterList, bindingList);
@@ -98,7 +101,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
 		List<Long> anomalyList = Lists.newArrayList(0L);
 		filterList.add("self.id NOT IN (:anomalyList)");
-		bindingList.add(Pair.of("anomalyList", (Object) anomalyList));
+		bindingList.add(Pair.of("anomalyList", anomalyList));
 
 		String filter = Joiner.on(" AND ").join(Lists.transform(filterList, new Function<String, String>() {
 			@Override
