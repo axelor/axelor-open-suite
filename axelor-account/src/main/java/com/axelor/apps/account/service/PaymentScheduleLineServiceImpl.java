@@ -42,6 +42,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -50,6 +51,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -308,6 +311,11 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	protected String getDirectDebitSequence(Company company) throws AxelorException {
 
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
+
+		if (directDebitPaymentMode == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE),
+					IException.MISSING_FIELD);
+		}
 
 		// TODO manage multi bank
 

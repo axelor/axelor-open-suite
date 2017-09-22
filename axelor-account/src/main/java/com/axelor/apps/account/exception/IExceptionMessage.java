@@ -549,6 +549,11 @@ public interface IExceptionMessage {
 	static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/ "Payment entry's type missing from payment entry %s" /*)*/;
 
 	/**
+	 * Payment schedule line service
+	 */
+	String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/ "Missing direct debit payment mode in the company's account configuration" /*)*/;
+
+	/**
 	 * Account chart controller
 	 */
 	static final String ACCOUNT_CHART_1 = /*$$(*/ "The chart of account has been loaded successfully" /*)*/;
@@ -579,6 +584,5 @@ public interface IExceptionMessage {
 
 
 	static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
-	
 	
 }
