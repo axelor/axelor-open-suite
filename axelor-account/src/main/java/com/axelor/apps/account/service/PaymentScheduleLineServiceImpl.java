@@ -43,9 +43,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -63,7 +63,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	protected AppBaseService appBaseService;
 	protected PaymentScheduleService paymentScheduleService;
 	protected MoveService moveService;
-	protected MoveLineService moveLineService;
 	protected PaymentModeService paymentModeService;
 	protected SequenceService sequenceService;
 	protected ReconcileService reconcileService;
@@ -72,13 +71,12 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 	@Inject
 	public PaymentScheduleLineServiceImpl(AppBaseService appBaseService, PaymentScheduleService paymentScheduleService,
-			MoveService moveService, MoveLineService moveLineService, PaymentModeService paymentModeService,
+			MoveService moveService, PaymentModeService paymentModeService,
 			SequenceService sequenceService, ReconcileService reconcileService, MoveLineRepository moveLineRepo,
 			PaymentScheduleLineRepository paymentScheduleLineRepo) {
 		this.appBaseService = appBaseService;
 		this.paymentScheduleService = paymentScheduleService;
 		this.moveService = moveService;
-		this.moveLineService = moveLineService;
 		this.paymentModeService = paymentModeService;
 		this.sequenceService = sequenceService;
 		this.reconcileService = reconcileService;
@@ -172,6 +170,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
 		Partner partner = paymentSchedule.getPartner();
+		BankDetails bankDetails = paymentSchedule.getBankDetails();
 		PaymentMode paymentMode = paymentSchedule.getPaymentMode();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, null);
 		AccountConfig accountConfig = company.getAccountConfig();
@@ -184,13 +183,13 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 				MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		setDebitNumber(paymentScheduleLine);
 
-		MoveLine creditMoveLine = moveLineService.createMoveLine(move, partner, account, amount, false, todayDate, 1,
-				name);
+		MoveLine creditMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, account, amount, false,
+				todayDate, 1, name);
 		creditMoveLine = moveLineRepo.save(creditMoveLine);
 
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, null);
-		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, paymentModeAccount, amount, true,
-				todayDate, 2, null);
+		MoveLine debitMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, paymentModeAccount,
+				amount, true, todayDate, 2, null);
 		debitMoveLine = moveLineRepo.save(debitMoveLine);
 
 		moveService.getMoveValidateService().validateMove(move);
@@ -199,7 +198,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS
 				&& paymentSchedule.getInvoiceSet() != null) {
 			for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-				MoveLine invoiceMoveLine = moveLineService.getDebitCustomerMoveLine(invoice);
+				MoveLine invoiceMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
 				reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, false);
 			}
 		}
