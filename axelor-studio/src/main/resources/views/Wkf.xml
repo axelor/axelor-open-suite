@@ -20,8 +20,9 @@
 	        <field name="model" colSpan="12" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" />
 	    </panel>
 	    <field name="jsonField" colSpan="5" requiredIf="metaModel != null" readonlyIf="metaModel == null" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" x-domain="self.metaModel.fullName = :metaModel and self.json = true"/>
-        <field name="statusField" onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-method-set-default-nodes"/>
-      	<field name="displayTypeSelect" />
+        <field name="statusField" onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-method-set-default-nodes" colSpan="4" />
+      	<field name="displayTypeSelect" colSpan="4" />
+      	<button name="openDashboard" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
       	<field name="$bpmnDefault" hidden="true" type="string" />
       </panel>
@@ -57,6 +58,11 @@
   	<attribute name="value" for="model" expr="eval:null"/>
   </action-attrs>
   
+  
+  <action-view name="open.wkf.dashboard" title="Workflow dashboard">
+    <view type="dashboard" name="dasbhoard-wkf"/>
+    <context name="_wkfId" expr="eval:id"/>	
+  </action-view>
   	
 </object-views>
 

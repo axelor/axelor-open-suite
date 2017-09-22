@@ -123,10 +123,10 @@ public class WkfDesignerService {
 				node.setTitle(node.getName());
 				node.setWkf(instance);
 				while(nodeSequences.contains(nodeCount)) {
-					nodeCount++;
+					nodeCount += 10;
 				}
 				node.setSequence(nodeCount);
-				nodeCount++;
+				nodeCount += 10;
 				if (elementName == "startEvent")
 					node.setStartNode(true);
 				else if (elementName == "endEvent")

@@ -22,9 +22,9 @@
   
   <json-model name="ProductOrderLine" title="Product order line">
   	<fields>
-  		<field name="product" title="Product" type="json-many-to-one" target-json-model="Product"  sequence="1"/>
-  		<field name="price" title="Price" type="decimal" sequence="2"/>
-  		<field name="qty" title="Qty" type="integer" sequence="3"/>
+  		<field name="product" title="Product" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total"/>
+  		<field name="price" title="Price" type="decimal" sequence="2" onChange="action-product-order-line-update-total"/>
+  		<field name="qty" title="Qty" type="integer" sequence="3" onChange="action-product-order-line-update-total"/>
 		<field name="total" title="Total" type="decimal" sequence="4"/>
   	</fields>
   </json-model> 
@@ -35,7 +35,7 @@
 		<field name="customer" title="Customer" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2"/>
 		<field name="orderDate" title="Order Date" type="date" sequence="3"/>
 		<field name="total" title="Total" type="decimal" sequence="4"/>
-		<field name="lines" title="Lines" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5"/>
+		<field name="lines" title="Lines" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total"/>
 		<field name="status" title="Status" type="integer" sequence="6"/>
   	</fields>
   </json-model>
