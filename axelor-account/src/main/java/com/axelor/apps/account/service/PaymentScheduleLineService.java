@@ -41,6 +41,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -73,6 +74,9 @@ public class PaymentScheduleLineService {
 
 	@Inject
 	protected AppBaseService appBaseService;
+
+	@Inject
+	protected ReconcileService reconcileService;
 
 	@Inject
 	protected MoveLineRepository moveLineRepo;
@@ -185,6 +189,15 @@ public class PaymentScheduleLineService {
 		debitMoveLine = moveLineRepo.save(debitMoveLine);
 
 		moveService.getMoveValidateService().validateMove(move);
+
+		// Reconcile
+		if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS
+				&& paymentSchedule.getInvoiceSet() != null) {
+			for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+				MoveLine invoiceMoveLine = moveLineService.getDebitCustomerMoveLine(invoice);
+				reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
+			}
+		}
 
 		paymentScheduleLine.setDirectDebitAmount(amount);
 		paymentScheduleLine.setInTaxAmountPaid(amount);
