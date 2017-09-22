@@ -52,7 +52,7 @@
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" stacked="true">
-			<field name="$excessPaymentOk" hidden="true"></field>
+			<field name="$excessPaymentOk" type="boolean" hidden="true"></field>
 			
 			<panel name="confirmation-panel" title="No pieces are selected, do you want to continue ?" hidden="true">
 				<button name="confirme-payment-yes" title="Yes" onClick="save,action-hide-confirmation-panel,action-group-account-payment-voucher-confirm-click"/>

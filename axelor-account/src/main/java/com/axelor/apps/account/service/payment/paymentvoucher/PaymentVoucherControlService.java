@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
@@ -67,10 +68,29 @@ public class PaymentVoucherControlService  {
 					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
 		}
 
-		// Si on a des lignes à payer (dans le deuxième tableau)
-		if(!paymentVoucher.getAutoImputation() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+		// Si on a des lignes à payer (dans le deuxième tableau) ou si on essaie de confirmer sans avoir selectionné de ligne et avec excessPaymentOk == false
+		
+		List<AccountManagement> accountManagementList = paymentVoucher.getPaymentMode().getAccountManagementList();
+		AccountManagement paymentVoucherAccountManagement = null;
+		
+		for (AccountManagement accountManagement : accountManagementList) {
+			if (accountManagement.getCompany().equals(paymentVoucher.getCompany()) && accountManagement.getPaymentMode().equals(paymentVoucher.getPaymentMode())) {
+				paymentVoucherAccountManagement = accountManagement;
+				break;
+			}
 		}
+		
+		if (paymentVoucherAccountManagement == null) {
+			if(!paymentVoucher.getAutoImputation() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0))  {
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+			}
+		} else {
+			if(!paymentVoucher.getAutoImputation() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0) || !paymentVoucherAccountManagement.getJournal().getExcessPaymentOk() )  {
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+			}
+		}
+		
+		
 
 		if(journal == null || paymentModeAccount == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
