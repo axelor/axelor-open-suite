@@ -38,11 +38,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -199,7 +201,11 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 				&& paymentSchedule.getInvoiceSet() != null) {
 			for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
 				MoveLine invoiceMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
-				reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, false);
+				Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, false);
+				if (reconcile == null) {
+					throw new AxelorException(I18n.get(IExceptionMessage.RECONCILE_2), IException.CONFIGURATION_ERROR,
+							AppAccountServiceImpl.EXCEPTION);
+				}
 			}
 		}
 
