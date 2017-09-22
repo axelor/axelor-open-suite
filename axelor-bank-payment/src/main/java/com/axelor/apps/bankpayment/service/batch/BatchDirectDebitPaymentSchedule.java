@@ -65,7 +65,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 		}
 
 		if (accountingBatch.getCompany() != null) {
-			filterList.add("self.company = :company");
+			filterList.add("self.paymentSchedule.company = :company");
 			bindingList.add(Pair.of("company", accountingBatch.getCompany()));
 		}
 
@@ -76,12 +76,12 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 				bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
 			}
 
-			filterList.add("self.companyBankDetails IN (:bankDetailsSet)");
+			filterList.add("self.paymentSchedule.bankDetails IN (:bankDetailsSet)");
 			bindingList.add(Pair.of("bankDetailsSet", bankDetailsSet));
 		}
 
 		if (accountingBatch.getPaymentMode() != null) {
-			filterList.add("self.paymentMode = :paymentMode");
+			filterList.add("self.paymentSchedule.paymentMode = :paymentMode");
 			bindingList.add(Pair.of("paymentMode", accountingBatch.getPaymentMode()));
 		}
 
