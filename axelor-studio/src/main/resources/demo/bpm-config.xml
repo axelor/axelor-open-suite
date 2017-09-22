@@ -93,11 +93,18 @@
 			<bind node="@show-action" to="showAction" />
 			<bind node="action" to="actionBuilder" if="actionName != null">
 				<bind node="@name" to="name" alias="actionName"  />
+				<bind node="@model" to="model" />
+				<bind node="@isJson" to="isJson" />
 				<bind node="@title" to="title" />
 				<bind to="typeSelect" eval="3"/>
 				<bind node="views/view" to="actionBuilderViews">
 					<bind node="@type" to="viewType" />
 					<bind node="@name" to="viewName" />
+				</bind>
+				<bind node="@domain" to="domainCondition" />
+				<bind node="context/ctx" to="lines">
+					<bind node="@value" to="value" />
+					<bind node="@name" to="name" />
 				</bind>
 			</bind>
 		</bind>

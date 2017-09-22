@@ -1,4 +1,4 @@
-"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.importId"
+"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.importId"
 100;"accountClearance";"Apurement des trop-perçus";1;6;"APURMT%YY";;1;1;1
 101;"chequeReject";"Rejet chèques";1;6;"REJCHQ%YY";;1;1;1
 102;"invoice";"Facture de vente";1;10;"FC%YY";;1;1;1
@@ -78,3 +78,4 @@
 9;"productTrackingNumber";"N° de suivi";1;12;"NS";;1;0;1
 10;"productionOrder";"Ordre de production";1;12;"OP";;1;0;1
 11;"manufOrder";"Ordre de fabrication";1;12;"OF";;1;0;1
+169;"subrogationRelease";"Quittance subrogative";1;4;"QS%YY%FM";;1;1;1

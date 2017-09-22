@@ -23,6 +23,7 @@
      <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+			<button name="printPickingStockMoveGrid" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
         <field name="fromLocation" form-view="location-form" grid-view="location-grid"/>
@@ -61,7 +62,8 @@
 		 
 		 <menubar>
 		 		<menu title="Reports">
-		 			<item title=" Print" action="save,action-print-stock-move" showIf="statusSelect != 1"/>
+		 			<item title="Print" action="save,action-print-stock-move" showIf="statusSelect != 1"/>
+					<item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
 		 		</menu>
 		 		<menu title="Tools">
 		 			<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -332,6 +334,10 @@
 	
 	<action-method name="action-print-stock-move">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="printStockMove"/>
+	</action-method>
+
+	<action-method name="action-print-picking-stock-move">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="printPickingStockMove"/>
 	</action-method>
 	
 	<action-method name="action-stock-move-method-split-into-2">

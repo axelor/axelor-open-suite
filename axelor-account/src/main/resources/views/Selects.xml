@@ -306,4 +306,17 @@
 		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
 	</selection>
 
+	<selection name="account.subrogation.release.status.select">
+		<option value="1">New release</option>
+		<option value="2">Release transmitted</option>
+		<option value="3">Release accounted</option>
+		<option value="4">Release cleared</option>
+		<option value="5">Release canceled</option>
+	</selection>
+
+	<selection name="account.notification.status.select">
+		<option value="1">New notification</option>
+		<option value="2">Notification validated</option>
+	</selection>
+
 </object-views>

@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,9 +40,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
-import com.axelor.apps.account.service.cfonb.CfonbToolService;
 import com.axelor.apps.account.service.config.CfonbConfigService;
-import com.axelor.apps.base.db.BankAddress;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -53,14 +50,12 @@ import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class CfonbExportService {
 
 	protected CfonbConfig cfonbConfig;
 	protected CfonbConfigService cfonbConfigService;
-	protected CfonbToolService cfonbToolService;
 	protected ReimbursementRepository reimbursementRepo;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected InvoiceRepository invoiceRepo;
@@ -68,12 +63,11 @@ public class CfonbExportService {
 	private boolean sepa;
 
 	@Inject
-	public CfonbExportService(CfonbConfigService cfonbConfigService, CfonbToolService cfonbToolService,
+	public CfonbExportService(CfonbConfigService cfonbConfigService,
 			ReimbursementRepository reimbursementRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo,
 			PartnerService partnerService)  {
 
 		this.cfonbConfigService = cfonbConfigService;
-		this.cfonbToolService = cfonbToolService;
 		this.reimbursementRepo = reimbursementRepo;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.invoiceRepo = invoiceRepo;
@@ -171,14 +165,14 @@ public class CfonbExportService {
 
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company,this.getTotalAmountPaymentSchedule(paymentScheduleLineList));
 
-        cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+//		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
 
-		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
+//		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
 
 		// Mise en majuscule des enregistrement
-		cFONB = this.toUpperCase(cFONB);
+//		cFONB = this.toUpperCase(cFONB);
 
-		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), I18n.get("Direct debit"));
+//		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 
 
@@ -313,19 +307,6 @@ public class CfonbExportService {
 //		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 
-    /**
-     * Méthode permettant de mettre en majuscule et sans accent un CFONB
-     * @param cFONB
-     * @return
-     * 		Le CFONB nettoyé
-     */
-    private List<String> toUpperCase(List<String> cFONB)  {
-        List<String> upperCase = new ArrayList<String>();
-        for(String s : cFONB)  {
-            upperCase.add(StringTool.deleteAccent(s.toUpperCase()));
-        }
-        return upperCase;
-    }
 
 	/**
 	 * Fonction permettant de créer un enregistrement 'émetteur' pour un virement des remboursements
@@ -410,7 +391,7 @@ public class CfonbExportService {
 	private String createSenderMonthlyExportCFONB(LocalDate localDate, BankDetails bankDetails) throws AxelorException  {
 
 		DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
-		String date = ddmmFormat.format(Date.valueOf(localDate));
+		String date = ddmmFormat.format(localDate.atTime(LocalTime.now()).toLocalDate());
 		date += String.format("%s", StringTool.truncLeft(String.format("%s",localDate.getYear()), 1));
 
 		// Récupération des valeurs
@@ -772,28 +753,6 @@ public class CfonbExportService {
 		return a+b1+b2+b3+c1+c2+d1+d2+d3+d4+e+f+g1+g2;
 	}
 
-    /**
-     * Fonction permettant de créer le CFONB
-     * @param senderCFONB
-     * 				Un enregistrement 'émetteur'
-     * @param recipientCFONB
-     * 				Un liste d'enregistrement 'destinataire'
-     * @param totalCFONB
-     * 				Un enregistrement 'total'
-     * @return
-     * 				Le CFONB
-     */
-    private List<String> createCFONBExport(String senderCFONB, List<String> recipientCFONB, String totalCFONB)  {
-        // checker meme compte emetteur
-        // checker meme type de virement
-        // checker meme date de règlement
-
-        List<String> cFONB = new ArrayList<String>();
-        cFONB.add(senderCFONB);
-        cFONB.addAll(recipientCFONB);
-        cFONB.add(totalCFONB);
-        return cFONB;
-    }
 
 	/**
 	 * Procédure permettant de créer un fichier CFONB au format .dat
@@ -809,7 +768,7 @@ public class CfonbExportService {
 	 */
 	private void createCFONBFile(List<String> cFONB, ZonedDateTime zonedDateTime, String destinationFolder, String prefix) throws AxelorException  {
 		DateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-		String dateFileName = yyyyMMddHHmmssFormat.format(Date.from(zonedDateTime.toInstant()));
+		String dateFileName = yyyyMMddHHmmssFormat.format(zonedDateTime);
 		String fileName = String.format("%s%s.dat", prefix, dateFileName);
 
 		try {
@@ -945,11 +904,12 @@ public class CfonbExportService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_5),
 					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
-
-		BankAddress bankAddress = bankDetails.getBankAddress();
-		if (bankAddress == null || bankAddress.getAddress().isEmpty()) {
+		String bankAddress = bankDetails.getBankAddress().getAddress();
+		if(bankAddress == null || bankAddress.isEmpty()) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_6),
 					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
+
+
 }

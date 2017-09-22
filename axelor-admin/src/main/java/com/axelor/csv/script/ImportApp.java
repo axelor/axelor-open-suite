@@ -21,9 +21,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
 
-
 import com.axelor.apps.base.db.App;
-import com.axelor.auth.service.PermissionAssistantService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;

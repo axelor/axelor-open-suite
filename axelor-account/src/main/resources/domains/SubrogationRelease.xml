@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="account" package="com.axelor.apps.account.db" />
+
+	<entity name="SubrogationRelease" lang="java">
+
+		<string name="sequenceNumber" namecolumn="true" readonly="true" />
+
+		<integer name="statusSelect" title="Status"
+			selection="account.subrogation.release.status.select" readonly="true"
+			default="1" />
+
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" />
+
+		<many-to-many name="invoiceSet" title="Release details"
+			ref="com.axelor.apps.account.db.Invoice" />
+
+		<extra-code><![CDATA[
+			// STATUS SELECT
+			public static final int STATUS_NEW = 1;
+			public static final int STATUS_TRANSMITTED = 2;
+			public static final int STATUS_ACCOUNTED = 3;
+			public static final int STATUS_CLEARED = 4;
+			public static final int STATUS_CANCELED = 5;
+		]]></extra-code>
+
+	</entity>
+
+</domain-models>

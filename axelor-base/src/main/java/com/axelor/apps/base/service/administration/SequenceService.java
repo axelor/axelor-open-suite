@@ -86,12 +86,12 @@ public class SequenceService {
 	 *
 	 * @return
 	 */
-	public Sequence getSequence(String codeSelect, Company company) {
+	public Sequence getSequence(String code, Company company) {
 
-		if (codeSelect == null)  { return null; }
-		if (company == null)  { return sequenceRepo.findByCodeSelect(codeSelect); }
+		if (code == null)  { return null; }
+		if (company == null)  { return sequenceRepo.findByCode(code); }
 
-		return sequenceRepo.find(codeSelect, company);
+		return sequenceRepo.find(code, company);
 
 	}
 
@@ -197,7 +197,7 @@ public class SequenceService {
 
 		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
 				.replaceAll( PATTERN_FULL_YEAR, Integer.toString( refDate.get(ChronoField.YEAR_OF_ERA) ) )
-				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYear() ) )
+				.replaceAll( PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")) )
 				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthValue() ) )
 				.replaceAll( PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")) )
 				.replaceAll( PATTERN_DAY, Integer.toString( refDate.getDayOfMonth() ) )
@@ -252,7 +252,7 @@ public class SequenceService {
 	public String getDefaultTitle(Sequence sequence) {
 		MetaSelectItem item = Beans.get(MetaSelectItemRepository.class)
 								   .all()
-								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCodeSelect())
+								   .filter("self.select.name = ? AND self.value = ?", "sequence.generic.code.select", sequence.getCode())
 								   .fetchOne();
 
 		return item.getTitle();

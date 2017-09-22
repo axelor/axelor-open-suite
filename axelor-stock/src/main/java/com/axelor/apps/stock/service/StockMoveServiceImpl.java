@@ -27,7 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.stock.report.IReport;
+import com.axelor.meta.schema.actions.ActionView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -794,5 +797,56 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setToAddressStr(
 				addressService.computeAddressStr(stockMove.getToAddress())
 		);
+	}
+
+	@Override
+	public String printStockMove(StockMove stockMove,
+								 List<Integer> lstSelectedMove,
+								 boolean isPicking) throws AxelorException {
+		String stockMoveIds = "";
+
+		if(lstSelectedMove != null){
+		    StringBuilder bld = new StringBuilder();
+			for(Integer it : lstSelectedMove) {
+				bld.append(it.toString()).append(",");
+			}
+			stockMoveIds = bld.toString();
+		}
+
+		if(!stockMoveIds.equals("")){
+			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
+			stockMove = stockMoveRepo.find(Long.valueOf(lstSelectedMove.get(0)));
+		}else if(stockMove.getId() != null){
+			stockMoveIds = stockMove.getId().toString();
+		}
+
+		if(!stockMoveIds.equals("")){
+
+			String language;
+			try{
+				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+			}catch (NullPointerException e) {
+				language = "en";
+			}
+			language = language.equals("")? "en": language;
+
+			String title = I18n.get("Stock move");
+			if(stockMove.getStockMoveSeq() != null)  {
+				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
+			}
+
+			String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
+
+			LOG.debug("Printing "+title);
+
+			return ReportFactory.createReport(report, title+"-${date}")
+					.addParam("StockMoveId", stockMoveIds)
+					.addParam("Locale", language)
+					.generate()
+					.getFileLink();
+		}else{
+			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_10),
+					IException.INCONSISTENCY);
+		}
 	}
 }
