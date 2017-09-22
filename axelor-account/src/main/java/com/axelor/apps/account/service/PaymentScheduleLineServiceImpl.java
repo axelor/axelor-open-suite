@@ -171,12 +171,12 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
-		Partner partner = paymentSchedule.getPartner();
-		BankDetails bankDetails = paymentSchedule.getBankDetails();
-		PaymentMode paymentMode = paymentSchedule.getPaymentMode();
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, null);
 		AccountConfig accountConfig = company.getAccountConfig();
 		Account account = accountConfig.getCustomerAccount();
+		PaymentMode paymentMode = accountConfig.getDirectDebitPaymentMode();
+		Partner partner = paymentSchedule.getPartner();
+		BankDetails bankDetails = paymentSchedule.getBankDetails();
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 		String name = paymentScheduleLine.getName();
 		LocalDate todayDate = appBaseService.getTodayDate();
