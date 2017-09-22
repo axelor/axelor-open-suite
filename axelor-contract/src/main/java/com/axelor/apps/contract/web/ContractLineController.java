@@ -1,27 +1,35 @@
 package com.axelor.apps.contract.web;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 
 public class ContractLineController {
 	
 	public void changeProduct(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
-		Contract contract = getContract(request.getContext());
+		Partner partner = null;
+		Company company = null;
+		if(request.getContext().getParentContext().getContextClass() == Contract.class){
+			Contract contract = request.getContext().getParentContext().asType(Contract.class);
+			partner = contract.getPartner();
+			company = contract.getCompany();
+		}else{
+			return;
+		}
+		
+		
 		Product product = contractLine.getProduct();
 		
 		if(contractLine == null || product == null) {
@@ -31,7 +39,7 @@ public class ContractLineController {
 
 		try  {
 			TaxLine taxLine = Beans.get(AccountManagementService.class).getTaxLine(
-					LocalDate.now(), product, contract.getCompany(), contract.getPartner().getFiscalPosition(), false);
+					LocalDate.now(), product, company, partner.getFiscalPosition(), false);
 			response.setValue("taxLine", taxLine);
 
 			BigDecimal price = product.getSalePrice();
@@ -49,20 +57,7 @@ public class ContractLineController {
 			this.resetProductInformation(response);
 		}
 	}
-
-	private Contract getContract(Context context) {
-		Context contractContext = context.getParentContext();
-		//ContractVersion contractVersion = versionContext.asType(ContractVersion.class);
-		
-		return contractContext.asType(Contract.class);
-
-		/*if(versionContext.getParentContext() != null && versionContext.getParentContext().getContextClass().toString().equals(Contract.class.toString())){
-			return EntityHelper.getEntity(versionContext.getParentContext().asType(Contract.class));
-		}
-
-		return contractVersion.getContractNext() != null ? contractVersion.getContractNext() : contractVersion.getContract();*/
-	}
-
+	
 	private void resetProductInformation(ActionResponse response) {
 		response.setValue("taxLine", null);
 		response.setValue("productName", null);
