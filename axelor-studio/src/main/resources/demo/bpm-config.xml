@@ -18,6 +18,7 @@
 				<bind to="model" eval="'com.axelor.meta.db.MetaJsonRecord'" />
 				<bind to="modelField" eval="'attrs'" />
 				<bind node="@sequence" to="sequence"/>
+				<bind node="@onChange" to="onChange" />
 			</bind>
 		</bind>
 		
@@ -31,6 +32,7 @@
 			<bind node="@target-json-model" alias="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true"/>
 			<bind node="@jsonModel" to="jsonModel" search="self.name = :jsonModel" update="true" />
 			<bind node="@sequence" to="sequence"/>
+			<bind node="@onChange" to="onChange" />
 		</bind>
 	</input>
 	

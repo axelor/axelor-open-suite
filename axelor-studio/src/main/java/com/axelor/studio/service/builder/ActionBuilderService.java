@@ -171,7 +171,7 @@ public class ActionBuilderService {
 	private void addUpdateCode(boolean isJson, StringBuilder stb, int level, String target) {
 		
 		if (isJson) {
-			stb.append(format("var target = $json.create('" + target + "', ctx);", level));
+			stb.append(format("var target = {};", level));
 		}
 		else {
 			stb.append(format("var target = ctx.asType(" + target + ".class)" , level));
@@ -237,12 +237,12 @@ public class ActionBuilderService {
 			else if (metaField != null && metaField.getRelationship() != null) {
 				value = addRelationalBinding(line, target, false);
 			}
-			else {
-				MetaJsonField valueJson = line.getValueJson();
-				if (valueJson != null && valueJson.getType().contentEquals("many-to-one")) {
-					value = value.replace("$." + valueJson.getName(),"$json.create($json.find($." + valueJson.getName() + ".id))");
-				}
-			}
+//			else {
+//				MetaJsonField valueJson = line.getValueJson();
+//				if (valueJson != null && valueJson.getType().contentEquals("many-to-one")) {
+//					value = value.replace("$." + valueJson.getName(),"$json.create($json.find($." + valueJson.getName() + ".id))");
+//				}
+//			}
 			
 			if (value != null && value.contains("*")) {
 				value = "new BigDecimal(" + value + ")";
@@ -264,54 +264,6 @@ public class ActionBuilderService {
 	}
 	
 
-//	private String getValue(String typeName, String value, String filter, String context) {
-//		
-////		if (value.startsWith(":sum(")) {
-////			return context + "." + getSumValue(value.substring(1), filter);
-////		}
-//		
-//		if (value == null) {
-//			return value;
-//		}
-//		
-//		if (value.contains("$:")) {
-//			return value.replaceAll("\\$:", "(" + context + " || {})" + ".");
-//		}
-//		if (value.contains("$ctx.")) {
-//			return value.replaceAll("\\$ctx.", "ctx.");
-//		}
-//		
-//		switch(typeName) {
-//			case "date":
-//				value =  "LocalDate.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "LocalDate":
-//				value =  "LocalDate.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "ZonedDateTime":
-//				value =  "ZonedDateTime.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "LocalTime":
-//				value =  "LocalTime.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "datetime":
-//				value =  "LocalDateTime.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "BigDecimal":
-//				value =  "new BigDecimal(" + StringEscapeUtils.escapeJava(value) + ")";
-//				break;
-//			case "string":
-//				value =  "\"" + StringEscapeUtils.escapeJava(value) + "\"";
-//				break;
-//			case "String":
-//				value =  "\"" + StringEscapeUtils.escapeJava(value) + "\"";
-//				break;
-//		}
-//		
-//		return value;
-//	}
-	
-	
 	private String addRelationalBinding(ActionBuilderLine line, String target,  boolean json) {
 		
 		line = builderLineRepo.find(line.getId());
@@ -564,9 +516,9 @@ public class ActionBuilderService {
 			stb.append(format("if (!val) {", 2));
 			stb.append(format("val = $json.create('" + model + "');", 3));
 			stb.append(format("}",2));
-			stb.append(format("if($ instanceof MetaJsonRecord){$ = $json.create($json.find($.id))};", 2));
+//			stb.append(format("if($ instanceof MetaJsonRecord){$ = $json.create($json.find($.id))};", 2));
 			stb.append(addFieldsBinding("val", lines, 2));
-			stb.append(format("$json.save(val);", 2));
+			stb.append(format("val = $json.save(val);", 2));
 		}
 		stb.append(format("return val;", 2));
 		stb.append(format("}", 1));
@@ -657,7 +609,7 @@ public class ActionBuilderService {
 		stb.append(format("var val  = 0", 2));
 		stb.append(format("if (sumOf$ == null){ return val;}", 2));
 		stb.append(format("sumOf$.forEach(function($){", 2));
-		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = $json.create($json.find($.id)); }", 3));
+//		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = $json.create($json.find($.id)); }", 3));
 		String val = "val += " + expr[1] + ";" ;
 		if (filter != null) {
 			val = "if(filter){" + val + "}";
