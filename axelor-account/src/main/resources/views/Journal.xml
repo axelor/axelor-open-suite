@@ -28,9 +28,9 @@
 		
 		<panel-tabs>
 		
-			<panel-dashlet title="General" action="action-journal-view-move-line" height="400" hideIf="$popup()"/>
+			<panel-dashlet title="General" action="action-journal-view-move-line" height="400"/>
 		
-			<panel name="configurations" title="Configurations" hideIf="$popup()">
+			<panel name="configurations" title="Configurations">
 				<panel name="moveLine" title="MoveLine" colSpan="12">
 					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>

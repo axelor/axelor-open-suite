@@ -68,7 +68,7 @@ public class PaymentVoucherControlService  {
 		}
 
 		// Si on a des lignes à payer (dans le deuxième tableau)
-		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0))  {
+		if(!paymentVoucher.getAutoImputation() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0))  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 

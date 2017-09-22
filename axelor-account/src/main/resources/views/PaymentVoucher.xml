@@ -27,7 +27,7 @@
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-attrs-fill-bank-details"/>
-			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
+			 <field name="autoImputation" colSpan="4" hidden="true"/>
 		</panel>
 		
 		<panel sidebar="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 2">
@@ -52,8 +52,17 @@
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" stacked="true">
-			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
-			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
+			<field name="$excessPaymentOk" hidden="true"></field>
+			
+			<panel name="confirmation-panel" title="No pieces are selected, do you want to continue ?" hidden="true">
+				<button name="confirme-payment-yes" title="Yes" onClick="save,action-hide-confirmation-panel,action-group-account-payment-voucher-confirm-click"/>
+				<button name="confirme-paymeny-no" title="No" onClick="action-hide-confirmation-panel"/>
+			</panel>
+			
+			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="paymentMode != null &amp;&amp; company != null &amp;&amp; statusSelect == 1 &amp;&amp; (!$excessPaymentOk || !autoImputation)"/>
+			<button name="confirmPaymentVoucherWithoutPieces" title="Confirm payment" onClick="action-show-confirmation-panel" showIf="paymentMode != null &amp;&amp; company != null  &amp;&amp; statusSelect == 1 &amp;&amp; $excessPaymentOk &amp;&amp; autoImputation"/>
+			
+			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
 		</panel>
 		
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
@@ -84,6 +93,20 @@
 		
 	</form>
 	
+	<action-attrs name="action-get-value-of-excess-payment-ok">
+		<attribute name="value" for="$excessPaymentOk" expr="eval: __repo__.of(AccountManagement).byCompanyAndPaymentMode(company, paymentMode).getJournal().getExcessPaymentOk()"/>
+	</action-attrs>
+	
+	<action-attrs name="action-show-confirmation-panel">
+		<attribute name="hidden" for="confirmation-panel" expr="eval: false"/>
+		<attribute name="hidden" for="confirmPaymentVoucherWithoutPieces" expr="eval: true"/>
+	</action-attrs>
+	
+	<action-attrs name="action-hide-confirmation-panel">
+		<attribute name="hidden" for="confirmation-panel" expr="eval: true"/>
+		<attribute name="hidden" for="confirmPaymentVoucherWithoutPieces" expr="eval: false"/>
+	</action-attrs>
+	
 	<action-record name="action-pv-record-default-partner-inf" model="com.axelor.apps.account.db.PaymentVoucher">
 		<field name="paymentMode" if="(operationTypeSelect == 2 || operationTypeSelect == 3)" expr="eval: partner?.inPaymentMode"/>
 		<field name="paymentMode" if="(operationTypeSelect == 1 || operationTypeSelect == 4)" expr="eval: partner?.outPaymentMode"/>
@@ -100,6 +123,7 @@
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
+		<action name="action-attrs-auto-imputation"/>
     </action-group>
     
     <action-group name="action-account-payment-voucher-onload-group">
@@ -110,6 +134,8 @@
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
+		<action name="action-attrs-auto-imputation"/>
+		<action name="action-get-value-of-excess-payment-ok"/>
     </action-group>
     
     <action-group name="action-group-account-payment-voucher-confirm-click">
@@ -124,6 +150,7 @@
     	<action name="action-attrs-payment-voucher-hidden-receipt"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
         <action name="action-payment-voucher-attrs-fill-bank-details"/>
+        <action name="action-get-value-of-excess-payment-ok" if="company != null"/>
     </action-group>
     
     <action-group name="action-group-account-payment-voucher-paybox-onclick">
@@ -149,6 +176,11 @@
   	<action-record name="action-record-fill-paidAmount-fromMoveLine" model="com.axelor.apps.account.db.PaymentVoucher">
    		<field name="paidAmount" expr="eval: moveLine?.amountRemaining"/>
 	</action-record>
+	
+	<action-attrs name="action-attrs-auto-imputation">
+		<attribute name="hidden" for="autoImputation" expr="eval: !company.getAccountConfig().getAutoReconcileOnPayment()"/>
+		<attribute name="value" for="autoImputation" expr="eval: company.getAccountConfig().getAutoReconcileOnPayment()"/>
+	</action-attrs>
 	 
 	<action-attrs name="action-pv-moveLine-attrs">
 		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null || payboxPaidOk"/>
@@ -175,7 +207,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-pv-moveLine-domain">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
+		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0 and self.credit &gt; 0.0&quot;"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-payment-voucher-hidden-bank-details">

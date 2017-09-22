@@ -16,6 +16,7 @@
    	
    	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
+    <finder-method name="byCompanyAndPaymentMode" using="company, paymentMode"/>
     
   </entity>
   

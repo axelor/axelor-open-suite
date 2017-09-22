@@ -91,7 +91,7 @@ public class PaymentVoucherCreateService {
 				null,
 				null);
 
-		paymentVoucher.setHasAutoInput(true);
+		paymentVoucher.setAutoImputation(true);
 
 		List<PayVoucherElementToPay> lines = new ArrayList<PayVoucherElementToPay>();
 

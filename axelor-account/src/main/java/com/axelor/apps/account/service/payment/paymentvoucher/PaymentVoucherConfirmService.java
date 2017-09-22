@@ -195,7 +195,7 @@ public class PaymentVoucherConfirmService  {
 				BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
 
 				//TODO rajouter le process d'imputation automatique
-//				if(paymentVoucher.getHasAutoInput())  {
+//				if(paymentVoucher.getAutoImputation())  {
 //
 //					List<MoveLine> debitMoveLines = Lists.newArrayList(pas.getDebitLinesToPay(contractLine, paymentVoucher.getPaymentScheduleToPay()));
 //					pas.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount, move, moveLineNo,
