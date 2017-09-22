@@ -197,7 +197,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 				&& paymentSchedule.getInvoiceSet() != null) {
 			for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
 				MoveLine invoiceMoveLine = moveLineService.getDebitCustomerMoveLine(invoice);
-				reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
+				reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, false);
 			}
 		}
 
