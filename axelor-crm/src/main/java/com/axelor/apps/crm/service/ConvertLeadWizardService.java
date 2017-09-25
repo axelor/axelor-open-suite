@@ -92,7 +92,7 @@ public class ConvertLeadWizardService {
 		if(primaryAddress != null)  {
 			primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
 			if(partner.getIsContact())  {
-				partner.setContactAddress(primaryAddress);
+				partner.setMainAddress(primaryAddress);
 			}
 			else  {
 				partnerService.addPartnerAddress(partner, primaryAddress, true, true, otherAddress == null);

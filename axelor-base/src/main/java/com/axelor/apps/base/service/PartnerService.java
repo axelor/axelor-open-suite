@@ -290,7 +290,7 @@ public class PartnerService {
 	public void convertToIndividualPartner(Partner partner) {
 		partner.setIsContact(false);
 		partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
-		partner.setContactAddress(null);
+		addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
+		partner.setMainAddress(null);
 	}
 }
