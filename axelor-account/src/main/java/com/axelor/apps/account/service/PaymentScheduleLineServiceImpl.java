@@ -22,8 +22,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +40,15 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,6 +57,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -68,13 +71,17 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	protected PaymentModeService paymentModeService;
 	protected SequenceService sequenceService;
 	protected ReconcileService reconcileService;
+	protected AccountingSituationService accountingSituationService;
+	protected MoveToolService moveToolService;
+	protected PaymentService paymentService;
 	protected MoveLineRepository moveLineRepo;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
 	public PaymentScheduleLineServiceImpl(AppBaseService appBaseService, PaymentScheduleService paymentScheduleService,
-			MoveService moveService, PaymentModeService paymentModeService,
-			SequenceService sequenceService, ReconcileService reconcileService, MoveLineRepository moveLineRepo,
+			MoveService moveService, PaymentModeService paymentModeService, SequenceService sequenceService,
+			ReconcileService reconcileService, AccountingSituationService accountingSituationService,
+			MoveToolService moveToolService, PaymentService paymentService, MoveLineRepository moveLineRepo,
 			PaymentScheduleLineRepository paymentScheduleLineRepo) {
 		this.appBaseService = appBaseService;
 		this.paymentScheduleService = paymentScheduleService;
@@ -82,6 +89,9 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		this.paymentModeService = paymentModeService;
 		this.sequenceService = sequenceService;
 		this.reconcileService = reconcileService;
+		this.accountingSituationService = accountingSituationService;
+		this.moveToolService = moveToolService;
+		this.paymentService = paymentService;
 		this.moveLineRepo = moveLineRepo;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 	}
@@ -172,7 +182,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
 		AccountConfig accountConfig = company.getAccountConfig();
-		Account account = accountConfig.getCustomerAccount();
 		PaymentMode paymentMode = accountConfig.getDirectDebitPaymentMode();
 		Partner partner = paymentSchedule.getPartner();
 		BankDetails bankDetails = paymentSchedule.getBankDetails();
@@ -180,6 +189,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 		String name = paymentScheduleLine.getName();
 		LocalDate todayDate = appBaseService.getTodayDate();
+		Account account = accountingSituationService.getCustomerAccount(partner, company);
 
 		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, paymentMode,
 				MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
@@ -199,13 +209,14 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		// Reconcile
 		if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS
 				&& paymentSchedule.getInvoiceSet() != null) {
-			for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-				MoveLine invoiceMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
-				Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
-				if (reconcile == null) {
-					throw new AxelorException(I18n.get(IExceptionMessage.RECONCILE_2), IException.CONFIGURATION_ERROR,
-							AppAccountServiceImpl.EXCEPTION);
-				}
+			List<MoveLine> debitMoveLineList = paymentSchedule.getInvoiceSet().stream()
+					.sorted(Comparator.comparing(Invoice::getDueDate))
+					.map(invoice -> moveService.getMoveLineService().getDebitCustomerMoveLine(invoice))
+					.collect(Collectors.toList());
+
+			if (moveToolService.isSameAccount(debitMoveLineList, account)) {
+				List<MoveLine> creditMoveLineList = Lists.newArrayList(creditMoveLine);
+				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
 			}
 		}
 
