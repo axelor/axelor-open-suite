@@ -102,9 +102,4 @@
 
 	</tree>
 
-    <action-method name="action-configurator-bom-method-generate-bom">
-        <call class="com.axelor.apps.production.web.ConfiguratorController"
-              method="generateBillOfMaterial"/>
-    </action-method>
-
 </object-views>

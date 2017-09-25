@@ -79,7 +79,7 @@ public class ConfiguratorController {
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
         configurator = configuratorRepository.find(configurator.getId());
         try {
-            configuratorService.generateProduct(configurator, jsonAttributes, jsonIndicators);
+            configuratorService.generate(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
             if (configurator.getProductId() != null) {
                 response.setView(ActionView
