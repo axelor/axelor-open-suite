@@ -22,18 +22,23 @@
 		onSave="action-payment-schedule-payment-schedule-id">
 		
 		<panel name="main">
+		    <field name="statusSelect" widget="NavSelect" colSpan="12" />
 			<field name="scheduleId" readonlyIf="statusSelect != 1" />
 			<field name="typeSelect" readonlyIf="statusSelect != 1" />
 			<field name="creationDate" readonlyIf="statusSelect != 1" />
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true" />
 			<field name="nbrTerm" readonlyIf="statusSelect != 1" />
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" />
-			<field name="company" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
-			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" />
+			<panel colSpan="12">
+				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" />
+				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" />
+			</panel>
+			<panel colSpan="12">
+				<field name="company" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
+				<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-company-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()" />
+			</panel>
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 			<field name="currency" canEdit="false" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="inTaxAmount" readonlyIf="statusSelect != 1" />
-			<field name="statusSelect" />
 		</panel>
 		
 		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
@@ -107,6 +112,19 @@
 			expr="eval: irrecoverableStatusSelect == null || irrecoverableStatusSelect == 0" />
 	</action-attrs>
 
+	<action-attrs
+		name="action-payment-schedule-attrs-bank-details-domain">
+		<attribute name="domain" for="bankDetails"
+			expr="eval: &quot;self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')})&quot;"
+			if="partner &amp;&amp; partner.bankDetailsList" />
+	</action-attrs>
+
+	<action-attrs
+		name="action-payment-schedule-attrs-company-bank-details-domain">
+		<attribute name="domain" for="companyBankDetails"
+			expr="eval: &quot;self.id IN (${company.bankDetailsSet.collect{it.id}.join(',')})&quot;"
+			if="company &amp;&amp; company.bankDetailsSet" />
+	</action-attrs>
 
 	<!-- ACTION METHOD -->
 	<action-method name="action-payment-schedule-method-validate">

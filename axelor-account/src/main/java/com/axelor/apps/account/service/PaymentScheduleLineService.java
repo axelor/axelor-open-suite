@@ -16,6 +16,13 @@ public interface PaymentScheduleLineService {
 
 	List<PaymentScheduleLine> createPaymentScheduleLines(PaymentSchedule paymentSchedule);
 
+	/**
+	 * Create a payment move for a payment schedule line.
+	 * 
+	 * @param paymentScheduleLine
+	 * @return
+	 * @throws AxelorException
+	 */
 	Move createPaymentMove(PaymentScheduleLine paymentScheduleLine) throws AxelorException;
 
 }

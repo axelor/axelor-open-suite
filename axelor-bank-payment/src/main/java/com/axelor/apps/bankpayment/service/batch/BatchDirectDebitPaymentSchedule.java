@@ -77,7 +77,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 				bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
 			}
 
-			filterList.add("self.paymentSchedule.bankDetails IN (:bankDetailsSet)");
+			filterList.add("self.paymentSchedule.companyBankDetails IN (:bankDetailsSet)");
 			bindingList.add(Pair.of("bankDetailsSet", bankDetailsSet));
 		}
 
