@@ -201,7 +201,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 				&& paymentSchedule.getInvoiceSet() != null) {
 			for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
 				MoveLine invoiceMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
-				Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, false);
+				Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
 				if (reconcile == null) {
 					throw new AxelorException(I18n.get(IExceptionMessage.RECONCILE_2), IException.CONFIGURATION_ERROR,
 							AppAccountServiceImpl.EXCEPTION);
