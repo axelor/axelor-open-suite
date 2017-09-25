@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.service.app;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.ConfiguratorBomService;
@@ -39,14 +41,16 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     @Override
     @Transactional(rollbackOn = {Exception.class, AxelorException.class})
     public void generate(Configurator configurator,
-                                JsonContext jsonAttributes,
-                                JsonContext jsonIndicators) throws AxelorException {
+                         JsonContext jsonAttributes,
+                         JsonContext jsonIndicators) throws AxelorException {
         super.generate(configurator, jsonAttributes, jsonIndicators);
         ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator()
                 .getConfiguratorBom();
         if (configuratorBOM != null) {
-            Beans.get(ConfiguratorBomService.class)
-                    .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0);
+            Product generatedProduct = Beans.get(ProductRepository.class).find(configurator.getProductId());
+            BillOfMaterial generatedBom = Beans.get(ConfiguratorBomService.class)
+                    .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct);
+            generatedProduct.setDefaultBillOfMaterial(generatedBom);
         }
     }
 }

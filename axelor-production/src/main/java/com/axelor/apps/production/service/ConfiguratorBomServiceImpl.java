@@ -58,7 +58,9 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     @Override
     @Transactional(rollbackOn = {Exception.class, AxelorException.class})
     public BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
-                                                 JsonContext attributes, int level)
+                                                 JsonContext attributes,
+                                                 int level,
+                                                 Product generatedProduct)
             throws AxelorException {
         level++;
         if (level > MAX_LEVEL) {
@@ -81,7 +83,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         } else {
             name = configuratorBOM.getName();
         }
-        if (configuratorBOM.getDefProductAsFormula()) {
+        if (configuratorBOM.getDefProductFromConfigurator()) {
+            product = generatedProduct;
+        }
+        else if (configuratorBOM.getDefProductAsFormula()) {
             product = (Product) configuratorService.computeFormula(
                     configuratorBOM.getProductFormula(),
                     attributes
@@ -132,7 +137,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
             for (ConfiguratorBOM confBomChild : configuratorBOM
                     .getConfiguratorBomList()) {
                  BillOfMaterial childBom = generateBillOfMaterial(
-                         confBomChild, attributes, level);
+                         confBomChild, attributes, level, generatedProduct);
                  billOfMaterial.addBillOfMaterialSetItem(childBom);
             }
         }
