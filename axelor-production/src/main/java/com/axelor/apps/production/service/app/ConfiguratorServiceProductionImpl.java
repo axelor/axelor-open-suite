@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -46,11 +47,23 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         super.generate(configurator, jsonAttributes, jsonIndicators);
         ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator()
                 .getConfiguratorBom();
-        if (configuratorBOM != null) {
+        if (configuratorBOM != null
+                && checkConditions(configuratorBOM, jsonAttributes)) {
             Product generatedProduct = Beans.get(ProductRepository.class).find(configurator.getProductId());
             BillOfMaterial generatedBom = Beans.get(ConfiguratorBomService.class)
                     .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct);
             generatedProduct.setDefaultBillOfMaterial(generatedBom);
         }
+    }
+
+    protected boolean checkConditions(ConfiguratorBOM configuratorBOM,
+                                      JsonContext jsonAttributes) throws AxelorException {
+        String condition = configuratorBOM.getUseCondition();
+        //no condition = we always generate the bill of material
+        if (condition == null) {
+            return true;
+        }
+        return (boolean) Beans.get(ConfiguratorService.class)
+                .computeFormula(condition, jsonAttributes);
     }
 }

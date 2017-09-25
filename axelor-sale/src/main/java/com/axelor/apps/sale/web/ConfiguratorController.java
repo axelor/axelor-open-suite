@@ -92,7 +92,7 @@ public class ConfiguratorController {
             }
         } catch (Exception e) {
             TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            response.setError(e.getMessage());
         }
     }
 
