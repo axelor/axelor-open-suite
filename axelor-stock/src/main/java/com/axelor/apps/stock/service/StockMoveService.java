@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -33,6 +27,12 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface StockMoveService {
 
@@ -137,6 +137,13 @@ public interface StockMoveService {
 	 * @param stockMove
 	 */
 	void computeAddressStr(StockMove stockMove);
+
+	/**
+     * Called from {@link com.axelor.apps.stock.web.StockMoveController#viewDirection}
+	 * @param stockMove
+	 * @return the direction for the google map API
+	 */
+	Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
 	/**
 	 * Print the given stock move.
