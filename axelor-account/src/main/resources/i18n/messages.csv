@@ -1488,6 +1488,7 @@
 "Wire transfer operation code",,,
 "With Payment Rejected",,,
 "Year",,,
+"You can't register a payment if there are no invoice lines.",,,
 "You can't remove this record, because the move has already been validated",,,
 "You have to choose at least one invoice",,,
 "You must configure a RIB for the reimbursement",,,
