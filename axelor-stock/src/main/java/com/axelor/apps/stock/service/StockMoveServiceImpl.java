@@ -422,7 +422,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 			Unit startUnit = product.getWeightUnit();
 			BigDecimal netWeight = product.getNetWeight();
 
-			if (startUnit != null && !netWeight.equals(BigDecimal.ZERO)) {
+			if (startUnit != null && netWeight.compareTo(BigDecimal.ZERO) != 0) {
 				UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 				netWeight = unitConversionService.convert(startUnit, endUnit, netWeight);
 				BigDecimal totalNetWeight = netWeight.multiply(stockMoveLine.getRealQty());

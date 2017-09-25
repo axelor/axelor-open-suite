@@ -86,7 +86,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 						unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
 					}
 				}
-				if (discountAmount.equals(BigDecimal.ZERO)){
+				if (discountAmount.compareTo(BigDecimal.ZERO) == 0){
 					List<SupplierCatalog> supplierCatalogList = stockMoveLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",stockMoveLine.getProduct(),unitPriceUntaxed,stockMove.getPurchaseOrder().getSupplierPartner()).fetchOne();
