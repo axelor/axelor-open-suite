@@ -2,37 +2,37 @@
 <wkfs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <wkf name="Product Order Flow" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0">
+  <wkf name="Commande produit" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0">
   	<xml>
   		<![CDATA[
   		<?xml version="1.0" encoding="UTF-8"?>
 		<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:x="http://axelor.com" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
 		  <process id="Process_1" name="undefined" isExecutable="false" x:id="undefined">
-		    <endEvent id="EndEvent_062urgf" name="Finished">
+		    <endEvent id="EndEvent_062urgf" name="Terminé">
 		      <incoming>SequenceFlow_18u3b2a</incoming>
 		    </endEvent>
-		    <startEvent id="StartEvent_07npy19" name="Draft">
+		    <startEvent id="StartEvent_07npy19" name="Brouillon">
 		      <incoming>SequenceFlow_1yn5orr</incoming>
 		      <outgoing>SequenceFlow_0qljt6y</outgoing>
 		    </startEvent>
-		    <task id="Task_07my1i6" name="Confirmed">
+		    <task id="Task_07my1i6" name="Confirmé">
 		      <incoming>SequenceFlow_0qljt6y</incoming>
 		      <outgoing>SequenceFlow_10bvr21</outgoing>
 		      <outgoing>SequenceFlow_02m6a90</outgoing>
 		    </task>
-		    <sequenceFlow id="SequenceFlow_0qljt6y" name="Confirm" sourceRef="StartEvent_07npy19" targetRef="Task_07my1i6" />
-		    <task id="Task_0k79fbo" name="Validated">
+		    <sequenceFlow id="SequenceFlow_0qljt6y" name="Confirmé" sourceRef="StartEvent_07npy19" targetRef="Task_07my1i6" />
+		    <task id="Task_0k79fbo" name="Validé">
 		      <incoming>SequenceFlow_10bvr21</incoming>
 		      <outgoing>SequenceFlow_18u3b2a</outgoing>
 		    </task>
-		    <sequenceFlow id="SequenceFlow_10bvr21" name="Validate" sourceRef="Task_07my1i6" targetRef="Task_0k79fbo" />
-		    <task id="Task_069h0a2" name="Canceled">
+		    <sequenceFlow id="SequenceFlow_10bvr21" name="Valider" sourceRef="Task_07my1i6" targetRef="Task_0k79fbo" />
+		    <task id="Task_069h0a2" name="Annulé">
 		      <incoming>SequenceFlow_02m6a90</incoming>
 		      <outgoing>SequenceFlow_1yn5orr</outgoing>
 		    </task>
-		    <sequenceFlow id="SequenceFlow_02m6a90" name="Cancel" sourceRef="Task_07my1i6" targetRef="Task_069h0a2" />
-		    <sequenceFlow id="SequenceFlow_18u3b2a" name="Finish" sourceRef="Task_0k79fbo" targetRef="EndEvent_062urgf" />
-		    <sequenceFlow id="SequenceFlow_1yn5orr" name="Reset" sourceRef="Task_069h0a2" targetRef="StartEvent_07npy19" />
+		    <sequenceFlow id="SequenceFlow_02m6a90" name="Annuler" sourceRef="Task_07my1i6" targetRef="Task_069h0a2" />
+		    <sequenceFlow id="SequenceFlow_18u3b2a" name="Terminer" sourceRef="Task_0k79fbo" targetRef="EndEvent_062urgf" />
+		    <sequenceFlow id="SequenceFlow_1yn5orr" name="Réinitialiser" sourceRef="Task_069h0a2" targetRef="StartEvent_07npy19" />
 		  </process>
 		  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
 		    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -102,56 +102,56 @@
   	</xml>
   </wkf>
   
-  <wkfNode wkf="Product Order Flow" name="Draft" title="Brouillon" startNode="1" sequence="1" xmlId="StartEvent_07npy19"/>
-  <wkfNode wkf="Product Order Flow" name="Confirmed" title="Confirmé" sequence="2" xmlId="Task_07my1i6" />
-  <wkfNode wkf="Product Order Flow" name="Validated" title="Validé" sequence="3" xmlId="Task_0k79fbo" />
-  <wkfNode wkf="Product Order Flow" name="Canceled" title="Annulé" sequence="4" xmlId="Task_069h0a2"/>
-  <wkfNode wkf="Product Order Flow" name="Finished" title="Terminé" sequence="5"  endNode="1" xmlId="EndEvent_062urgf"/>
+  <wkfNode wkf="Commande produit" name="Brouillon" title="Brouillon" startNode="1" sequence="1" xmlId="StartEvent_07npy19"/>
+  <wkfNode wkf="Commande produit" name="Confirmé" title="Confirmé" sequence="2" xmlId="Task_07my1i6" />
+  <wkfNode wkf="Commande produit" name="Validé" title="Validé" sequence="3" xmlId="Task_0k79fbo" />
+  <wkfNode wkf="Commande produit" name="Annulé" title="Annulé" sequence="4" xmlId="Task_069h0a2"/>
+  <wkfNode wkf="Commande produit" name="Terminé" title="Terminé" sequence="5"  endNode="1" xmlId="EndEvent_062urgf"/>
   
-  <transition wkf="Product Order Flow" name="Confirm" source="Draft" target="Confirmed" isButton="true" buttonTitle="Confirmé" xmlId="SequenceFlow_0qljt6y"/>
-  <transition wkf="Product Order Flow" name="Validate" source="Confirmed" target="Validated" isButton="true" buttonTitle="Valider" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Are you sure wants to validate." successMsg="Order validated" />
-  <transition wkf="Product Order Flow" name="Cancel" source="Confirmed" target="Canceled" isButton="true" buttonTitle="Annuler" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1" alertMsg="Are you sure wants to cancel ?" />
-  <transition wkf="Product Order Flow" name="Finish" source="Validated" target="Finished" isButton="true" buttonTitle="Terminer" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2" alertMsg="Order will is finished." />
-  <transition wkf="Product Order Flow" name="Reset" source="Canceled" target="Draft" isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr" />
+  <transition wkf="Commande produit" name="Confirmé" source="Brouillon" target="Confirmé" isButton="true" buttonTitle="Confirmé" xmlId="SequenceFlow_0qljt6y"/>
+  <transition wkf="Commande produit" name="Valider" source="Confirmé" target="Validé" isButton="true" buttonTitle="Valider" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Are you sure wants to validate." successMsg="Order validated" />
+  <transition wkf="Commande produit" name="Annuler" source="Confirmé" target="Annulé" isButton="true" buttonTitle="Annuler" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1" alertMsg="Are you sure wants to cancel ?" />
+  <transition wkf="Commande produit" name="Terminer" source="Validé" target="Terminé" isButton="true" buttonTitle="Terminer" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2" alertMsg="Order finished." />
+  <transition wkf="Commande produit" name="Réinitialiser" source="Annulé" target="Brouillon" isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr" />
   
-  <node wkf="Product Order Flow" name="Draft">
+  <node wkf="Commande produit" name="Brouillon">
   		<incommings>
-  			<incomming name="Reset" />
+  			<incomming name="Réinitialiser" />
   		</incommings>
   		<outgoings>
-  			<outgoing name="Confirm" />
+  			<outgoing name="Confirmé" />
   		</outgoings>
   </node>
-  <node wkf="Product Order Flow" name="Confirmed">
+  <node wkf="Commande produit" name="Confirmé">
   		<incommings>
-  			<incomming name="Confirm" />
+  			<incomming name="Confirmé" />
   		</incommings>
   		<outgoings>
-  			<outgoing name="Validate" />
-  			<outgoing name="Cancel" />
+  			<outgoing name="Valider" />
+  			<outgoing name="Annuler" />
   		</outgoings>
   </node>
-  <node wkf="Product Order Flow" name="Validated">
+  <node wkf="Commande produit" name="Validé">
   		<incommings>
-  			<incomming name="Validate" />
+  			<incomming name="Valider" />
   		</incommings>
   		<outgoings>
-  			<outgoing name="Finish" />
+  			<outgoing name="Terminer" />
   		</outgoings>
   </node>
-  <node wkf="Product Order Flow" name="Canceled">
+  <node wkf="Commande produit" name="Annulé">
   		<incommings>
-  			<incomming name="Cancel" />
+  			<incomming name="Annuler" />
   		</incommings>
   		<outgoings>
-  			<outgoing name="Reset" />
+  			<outgoing name="Réinitialiser" />
   		</outgoings>
   </node>
-  <node wkf="Product Order Flow" name="Finished">
+  <node wkf="Commande produit" name="Terminé">
   		<incommings>
-  			<incomming name="Finish" />
+  			<incomming name="Terminer" />
   		</incommings>
   </node>
   
-  <workflow name="Product Order Flow" />
+  <workflow name="Commande produit" />
 </wkfs>
