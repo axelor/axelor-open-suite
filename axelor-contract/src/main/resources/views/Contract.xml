@@ -36,7 +36,7 @@
             </panel>
         </panel>
         
-        <panel sidebar="true" hidden="true" showIf="statusSelect == 1" >
+        <panel sidebar="true" hidden="true" showIf="statusSelect == 1 || currentVersion.statusSelect == 1 || currentVersion.statusSelect == 2" >
         	<field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE" target="com.axelor.apps.contract.db.ContractTemplate" canNew="false" canEdit="false" />
         	<button name="copyFromTemplate" title="Use this template" onClick="com.axelor.apps.contract.web.ContractController:copyFromTemplate"  prompt="Do you really wish to fill your contract based on this template ?"  />
         </panel>

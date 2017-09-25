@@ -3,7 +3,7 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
   
-  <chart-builder name="product-order-chart" title="Product orders per month" 
+  <chart-builder name="product-order-chart" title="Commandes produit par mois" 
   	type="bar" model="ProductOrder" json="true" groupOnJson="orderDate" groupOnTarget="orderDate" groupOnTargetType="Date" groupDateType="month"
   	isJsonGroupOn="true" isJsonAggregateOn="true" isJsonDisplayField="true"
   	aggregateOnJson="customer" aggregateOnTarget="customer.fullName" aggregateOnTargetType="String" displayFieldJson="total">
@@ -13,7 +13,7 @@
   	</filters>
   </chart-builder>
   	
-  <chart-builder name="product-order-per-author-per-category" title="Product orders per supplier per category" 
+  <chart-builder name="product-order-per-author-per-category" title="Commandes produit par fournisseurs et catégorie" 
   	type="pie" model="ProductOrderLine" json="true" groupOnJson="product" 
   	isJsonGroupOn="true" isJsonAggregateOn="true" isJsonDisplayField="true"
   	groupOnTarget="product.supplier.name" groupOnTargetType="String" displayFieldJson="total">
@@ -23,7 +23,7 @@
   </chart-builder>
   
   
-<!--   <chart-builder name="sal" title="Product sale per category" -->
+<!--   <chart-builder name="sal" title="Ventes de produit par catégorie" -->
 <!--   	type="pie" model="com.axelor.apps.sale.db.SaleOrderLine" groupOn="product"  -->
 <!--   	groupOnTarget="product.productCategory.name" displayField="exTaxTotal"> -->
 <!--   	<filters> -->
@@ -32,7 +32,7 @@
 <!--   	</filters> -->
 <!--   </chart-builder> -->
   
-<!--   <chart-builder name="products-order-per-month-per-customer" title="Product sale per month per customer"  -->
+<!--   <chart-builder name="products-order-per-month-per-customer" title="Ventes de produit par mois et par client"  -->
 <!--   	type="bar" model="com.axelor.apps.sale.db.SaleOrderLine"  groupOn="saleOrder" groupOnTarget="saleOrder.orderDate" groupOnTargetType="LocalDate" groupDateType="month" -->
 <!--   	aggregateOn="saleOrder" aggregateOnTarget="saleOrder.clientPartner.fullName" displayField="exTaxTotal"> -->
 <!--   	<filters> -->

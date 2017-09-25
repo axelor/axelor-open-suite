@@ -69,9 +69,11 @@
     
     <selection name="studio.action.builder.type.select">
     	<option value="0">Create</option>
-    	<option value="1">Update</option>
+    	<option value="1">Update </option>
     	<option value="2">Script</option>
     	<option value="3">View</option>
+    	<option value="4">Email</option>
+    	<option value="5">Report</option>
     </selection>
     
     <selection name="app.type.select" id="studio.app.type.select">

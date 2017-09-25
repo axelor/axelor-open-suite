@@ -76,4 +76,34 @@
 	</lines>
   </action-builder>
   
+  <action-builder name="action-product-order-line-update-total"
+  	isJson="true" 
+  	typeSelect="1" 
+  	model="ProductOrderLine"
+  	targetModel="ProductOrderLine">
+  	<lines>
+	  	<line jsonField="total" jsonModel="ProductOrderLine"  value="$.price*$.qty" />
+	</lines>
+  </action-builder>
+  
+  <action-builder name="action-product-order-line-get-product-details"
+  	isJson="true" 
+  	typeSelect="1" 
+  	model="ProductOrderLine"
+  	targetModel="ProductOrderLine">
+  	<lines>
+	  	<line jsonField="price" jsonModel="ProductOrderLine" valueJson="Product" valueJsonModel="ProductOrderLine" valueJsonField="product" value="$.product.price" />
+	</lines>
+  </action-builder>
+  
+  <action-builder name="action-product-order-update-total"
+  	isJson="true" 
+  	typeSelect="1" 
+  	model="ProductOrder"
+  	targetModel="ProductOrder">
+  	<lines>
+	  	<line jsonField="total" jsonModel="ProductOrder" valueJson="Product" valueJsonModel="ProductOrder"  valueJsonField="lines" value="$.lines.sum($.total)" />
+	</lines>
+  </action-builder>
+  
 </action-builders>

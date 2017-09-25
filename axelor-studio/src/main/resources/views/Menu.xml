@@ -68,11 +68,11 @@
     <view type="form" name="wkf-tracking-form"/>
   </action-view>
   
-  <menuitem name="menu-wkf-dashboard" title="Workflow dashboard" parent="menu-studio-wkf" action="menu.wkf.dashboard" order="15"/>
+<!--   <menuitem name="menu-wkf-dashboard" title="Workflow dashboard" parent="menu-studio-wkf" action="menu.wkf.dashboard" order="15"/> -->
   
-  <action-view name="menu.wkf.dashboard" title="Workflow dashboard">
-    <view type="dashboard" name="dasbhoard-wkf"/>
-  </action-view>
+<!--   <action-view name="menu.wkf.dashboard" title="Workflow dashboard"> -->
+<!--     <view type="dashboard" name="dasbhoard-wkf"/> -->
+<!--   </action-view> -->
   
   
 </object-views>

@@ -18,6 +18,7 @@
         WkfTrackingTotal self
     WHERE
         DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
     GROUP BY
         status,
         CONCAT(MONTH(self.createdOn),'-',YEAR(self.createdOn))
@@ -49,6 +50,7 @@
         WkfTrackingTotal self
     WHERE
         DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
     GROUP BY
         status,
         self.createdOn
@@ -80,6 +82,7 @@
         WkfTrackingTime self
     WHERE
         DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
     GROUP BY
         status
     ORDER BY
@@ -111,6 +114,7 @@
         LEFT JOIN self.createdBy AS User
     WHERE
         DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
     GROUP BY
         User.name,
         status
