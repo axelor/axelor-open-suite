@@ -56,8 +56,8 @@
 	      	<field name="transactional" />
 	      	<field name="scriptText" colSpan="12" />
 	      </panel>
-	      <panel showIf="typeSelect == 4 || typeSelect == 5">
-	      	<field name="scriptText" widget="html" title="Template" />
+	      <panel showIf="typeSelect == 4 || typeSelect == 5" colSpan="12">
+	      	<field name="scriptText" widget="html" title="Template" colSpan="12"/>
 	      </panel>
 	  </panel>
   </form>
