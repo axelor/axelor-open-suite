@@ -518,7 +518,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		default:
 
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOW_FORMAT),
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT),
 					IException.INCONSISTENCY);
 		}
 

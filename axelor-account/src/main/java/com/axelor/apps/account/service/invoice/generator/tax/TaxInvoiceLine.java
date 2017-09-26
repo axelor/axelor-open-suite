@@ -109,7 +109,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 				if (!customerSpecificNote) {
                     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
-                    if (taxEquiv != null) {
+                    if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
                         specificNotes.add(taxEquiv.getSpecificNote());
                     }
                 }

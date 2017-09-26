@@ -145,7 +145,6 @@
 	
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
-		<option value="12">Direct debit</option>
 		<option value="14">Reminder</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>

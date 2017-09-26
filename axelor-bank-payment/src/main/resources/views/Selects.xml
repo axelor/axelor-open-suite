@@ -163,4 +163,14 @@
 		<option value="5">5</option>
 	</selection>
 
+	<selection name="iaccounting.batch.action.select" id="bankpayment.iaccounting.batch.action.select">
+		<option value="12">Direct debit</option>
+	</selection>
+
+	<selection name="iaccount.account.batch.direct.debit.data.type.select">
+		<option value="1">Customer invoices</option>
+		<option value="2">Payment schedules</option>
+		<option value="3">Monthly payment schedules</option>
+	</selection>
+
 </object-views>

@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -171,17 +172,45 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 		return bankOrderLineList;
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public BankOrder mergeFromInvoicePayments(List<InvoicePayment> invoicePaymentList) throws AxelorException {
+
+		if (invoicePaymentList == null || invoicePaymentList.isEmpty()) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS),
+					IException.INCONSISTENCY);
+		}
+
+		List<InvoicePayment> invoicePaymentWithBankOrderList = new ArrayList<>();
+		List<BankOrder> bankOrderList = new ArrayList<>();
+
+		for (InvoicePayment invoicePayment : invoicePaymentList) {
+			BankOrder bankOrder = invoicePayment.getBankOrder();
+			if (bankOrder != null) {
+				invoicePaymentWithBankOrderList.add(invoicePayment);
+				bankOrderList.add(bankOrder);
+			}
+		}
+
+		if (bankOrderList.size() > 1) {
+			BankOrder mergedBankOrder = mergeBankOrderList(bankOrderList);
+
+			for (InvoicePayment invoicePayment : invoicePaymentWithBankOrderList) {
+				invoicePayment.setBankOrder(mergedBankOrder);
+			}
+
+			return mergedBankOrder;
+		}
+
+		if (!bankOrderList.isEmpty()) {
+			return bankOrderList.get(0);
+		}
+
+		throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS),
+				IException.INCONSISTENCY);
+	}
+
 }
 
 
