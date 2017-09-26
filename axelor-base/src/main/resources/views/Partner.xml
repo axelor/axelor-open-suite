@@ -71,15 +71,18 @@
     
      <form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload"
+    onSave="action-partner-method-update-main-address" width="large">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
     
     <form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload"
+    onSave="action-partner-method-update-main-address" width="large">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
+    
 	<form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
         <menubar>
 	        <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
@@ -87,6 +90,7 @@
 	        </menu>
 	    </menubar>
     </form>
+    
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"
           onNew="action-group-base-partner-onnew"
           onLoad="action-group-partner-onload"
@@ -175,19 +179,19 @@
                 </panel>
                 <panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
                     <field name="partnerAddressList" colSpan="12">
-                        <editor layout="table" x-show-titles="false" >
+                        <editor layout="table" x-show-titles="false">
                             <label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
                             <field name="address.addressL4" hidden="true" colSpan="12"/>
                             <field name="address" colSpan="3" canNew="true"/>
                             <field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
-                            <field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()" />
-                            <field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
+                            <field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
+                            <field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"/>
                         </editor>
                     </field>
                 </panel>
                 <panel name="generalContactDetails" title="General contact details" colSpan="12">
                     <field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
-                    <field name="fax" colSpan="3" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-record-normalize-fax-phone-number"/>
+                    <field name="fax" colSpan="3" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-method-normalize-fax-phone-number"/>
                     <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
                     <field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
                         <editor x-show-titles="false">
@@ -443,11 +447,12 @@
 	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
 	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
-		<field name="fullName" />
-		<field name="picture" />
+		<field name="fullName"/>
+		<field name="picture"/>
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" />
-		<field name="partnerCategory" />
+		<field name="emailAddress.address"/>
+		<field name="partnerCategory"/>
+		<field name="mainAddress"/>
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
@@ -456,12 +461,13 @@
 			  </div>
 			  <div class="span8">
 			  	<address>
-			  	{{address.fullName}}
+			  	  {{mainAddress.fullName}}
 			  	</address>
 			    <span>
-			    {{fixedPhone}}<br/>
-			    {{emailAddress.address}}<br/>
-			    {{partnerCategory.name}}</span>
+			      {{fixedPhone}}<br/>
+			      {{emailAddress.address}}<br/>
+			      {{partnerCategory.name}}
+		    	</span>
 			  </div>
 			</div>
 		]]>
@@ -729,6 +735,10 @@
 	<action-record name="action-partner-record-payment-condition" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="paymentCondition" expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
 	</action-record>
+	
+	<action-method name="action-partner-method-update-main-address">
+		<call class="com.axelor.apps.base.web.PartnerController" method="updateMainAddress"/>
+	</action-method>
     
     <action-method name="action-print-compnay-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>

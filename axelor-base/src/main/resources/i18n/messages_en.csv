@@ -1345,6 +1345,7 @@
 "Years",,,
 "Yes",,,
 "You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?",,,
+"You can select only one default address",,,
 "ZIMBRA",,,
 "Zip",,,
 "Zip On Right ?",,,

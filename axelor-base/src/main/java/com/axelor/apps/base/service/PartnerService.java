@@ -293,4 +293,24 @@ public class PartnerService {
 		addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
 		partner.setMainAddress(null);
 	}
+
+	/**
+	 * return the default address among the list of PartnerAddress
+	 * 
+	 * @param partner
+	 * @return main address
+	 */
+	public Address searchMainAddress(Partner partner) throws AxelorException {
+		Address address = null;
+		List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+		for (PartnerAddress partnerAddress : partnerAddressList) {
+			if (partnerAddress.getIsDefaultAddr() == true) {
+				if (address != null) {
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.ADDRESS_8)), IException.CONFIGURATION_ERROR);
+				}
+				address = partnerAddress.getAddress();
+			}
+		}
+		return address;
+	}
 }

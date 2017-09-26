@@ -171,6 +171,7 @@ public interface IExceptionMessage {
 	static final public String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
 	static final public String ADDRESS_6 = /*$$(*/ "Feature currently not available with Open Street Maps." /*)*/;
 	static final public String ADDRESS_7 = /*$$(*/ "Current user's partner delivery address not set" /*)*/;
+	static final public String ADDRESS_8 = /*$$(*/ "You can select only one default address" /*)*/;	
 	
 	/**
 	 * Bank details controller

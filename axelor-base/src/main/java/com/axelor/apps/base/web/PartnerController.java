@@ -327,4 +327,13 @@ public class PartnerController {
 			}
 		}
 	}
+	
+	public void updateMainAddress(ActionRequest request, ActionResponse response) throws AxelorException {
+		Partner partner = request.getContext().asType(Partner.class);
+		if (partner != null) {
+			Address address = partnerService.searchMainAddress(partner);
+			response.setValue("mainAddress", address);
+		}
+		
+	}
 }
