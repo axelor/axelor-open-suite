@@ -21,21 +21,21 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
@@ -48,8 +48,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 	@Inject
 	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
 			AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService,
-			BankDetailsRepository bankDetailsRepo) {
-		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService, bankDetailsRepo);
+			InvoiceService invoiceService) {
+		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService, invoiceService);
 	}
 
 	/**

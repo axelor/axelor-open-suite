@@ -75,7 +75,7 @@ public class BankOrderLineService {
 	public BankOrderLine createBankOrderLine(BankOrderFileFormat bankOrderFileFormat, Partner partner, BigDecimal amount, Currency currency, 
 			LocalDate bankOrderDate, String receiverReference,  String receiverLabel) throws AxelorException{
 		
-		BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner, true);
+		BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner);
 		
 		return this.createBankOrderLine(bankOrderFileFormat, null, partner, receiverBankDetails, amount, currency, bankOrderDate, receiverReference, receiverLabel);
 	

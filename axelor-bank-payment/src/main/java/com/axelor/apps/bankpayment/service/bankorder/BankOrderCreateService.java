@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -39,7 +40,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -52,20 +52,20 @@ public class BankOrderCreateService {
     protected BankOrderService bankOrderService;
 	protected AccountConfigService accountConfigService;
 	protected BankOrderLineService bankOrderLineService;
-	protected BankDetailsRepository bankDetailsRepo;
+	protected InvoiceService invoiceService;
 
 	@Inject
 	public BankOrderCreateService(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
 			AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService,
-			BankDetailsRepository bankDetailsRepo) {
-		
+			InvoiceService invoiceService) {
+
 		this.bankOrderRepo = bankOrderRepo;
-        this.bankOrderService = bankOrderService;
+		this.bankOrderService = bankOrderService;
 		this.accountConfigService = accountConfigService;
 		this.bankOrderLineService = bankOrderLineService;
-		this.bankDetailsRepo = bankDetailsRepo;
+		this.invoiceService = invoiceService;
 	}
-	
+
 	/**
 	 * Créer un ordre bancaire avec tous les paramètres
 	 *
@@ -147,29 +147,15 @@ public class BankOrderCreateService {
 								invoice.getInvoiceId(),
 								invoice.getInvoiceId());
 
-		BankDetails receiverBankDetails = null;
-
-		if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
-			receiverBankDetails = invoice.getPaymentSchedule().getBankDetails();
-		}
-
-		if (receiverBankDetails == null) {
-			receiverBankDetails = invoice.getBankDetails();
-		}
-
-		if (receiverBankDetails == null) {
-			receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner, true);
-		}
-
-		bankOrder.addBankOrderLineListItem(
-				bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), null, partner,
-						receiverBankDetails, amount, currency, paymentDate, invoice.getInvoiceId(), null));
+		BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
+		BankOrderLine bankOrderLine = bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(),
+				null, partner, receiverBankDetails, amount, currency, paymentDate, invoice.getInvoiceId(), null);
+		bankOrder.addBankOrderLineListItem(bankOrderLine);
 		bankOrder = bankOrderRepo.save(bankOrder);
 
 		return bankOrder;
-		
+
 	}
-	
 	
 	public int getBankOrderPartnerType(Invoice invoice)  {
 
