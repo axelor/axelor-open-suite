@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.proxy.HibernateProxy;
 
 import com.axelor.apps.base.db.Company;
@@ -46,7 +47,6 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.tool.Pair;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
@@ -117,7 +117,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		PurchaseOrder purchaseOrder = null;
 	
 		if (purchaseOrders != null) {
-			key = new Pair<>(supplierPartner, maturityDate);
+			key = Pair.of(supplierPartner, maturityDate);
 			purchaseOrder = purchaseOrders.get(key);
 		}
 		
