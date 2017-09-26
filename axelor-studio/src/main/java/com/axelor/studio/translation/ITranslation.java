@@ -60,5 +60,7 @@ public interface ITranslation {
 	public static final String EDITOR_TARGET_JSON = /*$$(*/ "Target Json Model"; /*)*/
 	public static final String EDITOR_SELECT_OPT = /*$$(*/ "Select Option"; /*)*/
 	public static final String EDITOR_PROP = /*$$(*/ "Properties"; /*)*/
+	
+	public static final String WKF_TRACK = /*$$(*/ "Track flow"; /*)*/
 
 }
