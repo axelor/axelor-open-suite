@@ -146,23 +146,27 @@
 			</panel>
 			
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
-			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
-			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-				
-				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="6">
+                <panel colSpan="12">
+                    <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
+                    <field name="icsNumber" if-module="axelor-bank-payment"/>
+                    <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                    <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                </panel>
+				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4">
 					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="6">
+				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4">
 					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="6">
+				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4">
 					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                <panel name="other" title="Other" colSpan="12">
+                    <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                </panel>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
