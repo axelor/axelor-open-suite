@@ -28,6 +28,8 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -496,30 +498,40 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File file = null;
 
 		switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT:
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT:
+    			file = new BankOrderFile00100102Service(bankOrder).generateFile();
+	    		break;
 
-			file = new BankOrderFile00100102Service(bankOrder).generateFile();
-			break;
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
+    			file = new BankOrderFile00100103Service(bankOrder).generateFile();
+	    		break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
+    			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
+	    		break;
 
-			file = new BankOrderFile00100103Service(bankOrder).generateFile();
-			break;
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT:
+    			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
+	    		break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
+                file = new BankOrderFile00800101Service(bankOrder, "CORE").generateFile();
+                break;
 
-			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
-			break;
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
+                file = new BankOrderFile00800101Service(bankOrder, "SBB").generateFile();
+                break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT:
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
+                file = new BankOrderFile00800102Service(bankOrder, "CORE").generateFile();
+                break;
 
-			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
-			break;
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
+                file = new BankOrderFile00800102Service(bankOrder, "SBB").generateFile();
+                break;
 
-		default:
-
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT),
-					IException.INCONSISTENCY);
+		    default:
+    			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT), IException.INCONSISTENCY);
 		}
 
 		if (file == null) {

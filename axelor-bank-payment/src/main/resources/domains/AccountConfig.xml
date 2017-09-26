@@ -20,7 +20,10 @@
 	
 	<many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International treasury transfers"/>
 	<many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="National treasury transfer"/>  
-  	<many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types" help="Used for the bank orders not generated on ABS and directly sent"/>  
+  	<many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types" help="Used for the bank orders not generated on ABS and directly sent"/>
+
+      <!-- SEPA Direct Debit -->
+      <string name="icsNumber" title="ICS Number" min="13" max="13"/>
   
   </entity>
   

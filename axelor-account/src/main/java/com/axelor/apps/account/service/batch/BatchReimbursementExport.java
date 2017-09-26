@@ -259,7 +259,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		}
 		
 		if(reimbursementToExport != null && reimbursementToExport.size() != 0)  {
-		
+		    /*
 			try {
 				
 				reimbursementExportService.exportSepa(companyRepo.find(company.getId()), batchRepo.find(batch.getId()).getStartDate(), reimbursementToExport, batchRepo.find(batch.getId()).getAccountingBatch().getBankDetails());
@@ -273,6 +273,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				log.error("Bug(Anomalie) généré(e)e dans l'export SEPA - Batch {}", batch.getId());
 				
 			}
+			*/
 			
 			try {
 				
