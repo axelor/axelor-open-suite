@@ -212,7 +212,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 			if (moveToolService.isSameAccount(debitMoveLineList, account)) {
 				List<MoveLine> creditMoveLineList = Lists.newArrayList(creditMoveLine);
-				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList, bankDetails);
+				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
 			}
 		}
 

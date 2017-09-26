@@ -76,7 +76,7 @@ public class PaymentService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public List<Reconcile> useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, BankDetails bankDetails) throws AxelorException {
+	public List<Reconcile> useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
 
 		List<Reconcile> reconcileList = new ArrayList<>();
 
@@ -135,7 +135,7 @@ public class PaymentService {
 							}
 							// End gestion du passage en 580
 
-							reconcile = reconcileService.confirmReconcile(reconcile, bankDetails);
+							reconcile = reconcileService.confirmReconcile(reconcile);
 							reconcileList.add(reconcile);
 
 							debitTotalRemaining= debitTotalRemaining.subtract(amount);
@@ -150,10 +150,6 @@ public class PaymentService {
 		}
 
 		return reconcileList;
-	}
-
-	public List<Reconcile> useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
-		return useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, null);
 	}
 
 	/**

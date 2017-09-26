@@ -132,7 +132,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	protected Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments, BankDetails bankDetails) throws AxelorException  {
+	public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException  {
 
 		this.reconcilePreconditions(reconcile);
 
@@ -159,20 +159,10 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		this.updatePartnerAccountingSituation(reconcile);
 		this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
 		if(updateInvoicePayments)  {
-			this.updateInvoicePayments(reconcile, bankDetails);
+			this.updateInvoicePayments(reconcile);
 		}
 		
 		return reconcileRepository.save(reconcile);
-	}
-
-	@Override
-	public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException {
-		return confirmReconcile(reconcile, updateInvoicePayments, null);
-	}
-
-	@Override
-	public Reconcile confirmReconcile(Reconcile reconcile, BankDetails bankDetails) throws AxelorException {
-		return confirmReconcile(reconcile, true, bankDetails);
 	}
 
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException  {
@@ -268,7 +258,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	}
 	
 
-	public void updateInvoicePayments(Reconcile reconcile, BankDetails bankDetails) throws AxelorException  {
+	public void updateInvoicePayments(Reconcile reconcile) throws AxelorException  {
 		
 		Move debitMove = reconcile.getDebitMoveLine().getMove();
 		Move creditMove = reconcile.getCreditMoveLine().getMove();
@@ -279,14 +269,18 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		if(debitInvoice != null)  {
 			InvoicePayment debitInvoicePayment = invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
 			debitInvoicePayment.setReconcile(reconcile);
-			if (bankDetails != null && debitInvoicePayment.getBankDetails() == null) {
+			if (debitInvoice.getSchedulePaymentOk() && debitInvoice.getPaymentSchedule() != null
+					&& debitInvoicePayment.getBankDetails() == null) {
+				BankDetails bankDetails = debitInvoice.getPaymentSchedule().getBankDetails();
 				debitInvoicePayment.setBankDetails(bankDetails);
 			}
 		}
 		if(creditInvoice != null)  {
 			InvoicePayment creditInvoicePayment = invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
 			creditInvoicePayment.setReconcile(reconcile);
-			if (bankDetails != null && creditInvoicePayment.getBankDetails() == null) {
+			if (creditInvoice.getSchedulePaymentOk() && creditInvoice.getPaymentSchedule() != null
+					&& creditInvoicePayment.getBankDetails() == null) {
+				BankDetails bankDetails = creditInvoice.getPaymentSchedule().getBankDetails();
 				creditInvoicePayment.setBankDetails(bankDetails);
 			}
 		}

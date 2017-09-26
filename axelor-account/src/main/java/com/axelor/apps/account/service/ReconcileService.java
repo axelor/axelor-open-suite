@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -34,7 +33,6 @@ public interface ReconcileService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException;
-	public Reconcile confirmReconcile(Reconcile reconcile, BankDetails bankDetails) throws AxelorException;
 	
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
 	
