@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class PaymentService {
@@ -63,8 +64,6 @@ public class PaymentService {
 		today = appAccountService.getTodayDate();
 	}
 
-
-
 	/**
 	 * Utiliser le trop perçu entre deux listes de lignes d'écritures (une en débit, une en crédit)
 	 * Si cette methode doit être utilisée, penser à ordonner les listes qui lui sont passées par date croissante
@@ -73,17 +72,30 @@ public class PaymentService {
 	 * @param debitMoveLines = dûs
 	 * @param creditMoveLines = trop-perçu
 	 *
-	 * @return
 	 * @throws AxelorException
 	 */
-	public List<Reconcile> useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
-
-		List<Reconcile> reconcileList = new ArrayList<>();
+	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
+		useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, false);
+	}
+	
+	/**
+	 * Overload of method useExcessPaymentOnMoveLines for the specific use of move lines reconcile (MoveLineController : accountingReconcile)
+	 * 
+	 * @param debitMoveLines
+	 * @param creditMoveLines
+	 * @param dontThrow
+	 * 
+	 * @throws AxelorException
+	 */
+	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow) throws AxelorException {
 
 		if(debitMoveLines != null && creditMoveLines != null){
 
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
+
+			BigDecimal amount = null;
+			Reconcile reconcile = null;
 
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
@@ -108,48 +120,64 @@ public class PaymentService {
 
 					for(MoveLine debitMoveLine : debitMoveLines){
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
-
-							BigDecimal amount;
-							Reconcile reconcile;
-
-							if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
-								amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
-								debitMoveLine.setMaxAmountToReconcile(null);
+							try {
+								createReconcile(debitMoveLine, creditMoveLine, amount, debitTotalRemaining, creditTotalRemaining, reconcile);
+							} catch(AxelorException e) {
+								if(dontThrow) {
+									TraceBackService.trace(e);
+									log.debug(e.getMessage());
+								} else {
+									throw e;
+								}
 							}
-							else  {
-								amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
-							}
-							log.debug("amount : {}",amount);
-							log.debug("debitTotalRemaining : {}",debitTotalRemaining);
-							log.debug("creditTotalRemaining : {}",creditTotalRemaining);
-							BigDecimal nextDebitTotalRemaining = debitTotalRemaining.subtract(amount);
-							BigDecimal nextCreditTotalRemaining = creditTotalRemaining.subtract(amount);
-							// Gestion du passage en 580
-							if(nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
-									|| nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0)  {
-								log.debug("last loop");
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
-							}
-							else  {
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
-							}
-							// End gestion du passage en 580
-
-							reconcile = reconcileService.confirmReconcile(reconcile, true);
-							reconcileList.add(reconcile);
-
-							debitTotalRemaining= debitTotalRemaining.subtract(amount);
-							creditTotalRemaining = creditTotalRemaining.subtract(amount);
-
-							log.debug("Réconciliation : {}", reconcile);
-
 						}
 					}
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Private method called by useExcessPaymentOnMoveLines used to lighten it and to create a reconcile
+	 * 
+	 * @param debitMoveLine
+	 * @param creditMoveLine
+	 * @param amount
+	 * @param debitTotalRemaining
+	 * @param creditTotalRemaining
+	 * @param reconcile
+	 * @throws AxelorException
+	 */
+	private void createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, BigDecimal debitTotalRemaining, BigDecimal creditTotalRemaining, Reconcile reconcile) throws AxelorException {
+		if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
+			amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
+			debitMoveLine.setMaxAmountToReconcile(null);
+		}
+		else  {
+			amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
+		}
+		log.debug("amount : {}",amount);
+		log.debug("debitTotalRemaining : {}",debitTotalRemaining);
+		log.debug("creditTotalRemaining : {}",creditTotalRemaining);
+		BigDecimal nextDebitTotalRemaining = debitTotalRemaining.subtract(amount);
+		BigDecimal nextCreditTotalRemaining = creditTotalRemaining.subtract(amount);
+		// Gestion du passage en 580
+		if(nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
+				|| nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0)  {
+			log.debug("last loop");
+			reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
+		}
+		else  {
+			reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
+		}
+		// End gestion du passage en 580
 
-		return reconcileList;
+		reconcileService.confirmReconcile(reconcile, true);
+
+		debitTotalRemaining= debitTotalRemaining.subtract(amount);
+		creditTotalRemaining = creditTotalRemaining.subtract(amount);
+
+		log.debug("Réconciliation : {}", reconcile);
 	}
 
 	/**
