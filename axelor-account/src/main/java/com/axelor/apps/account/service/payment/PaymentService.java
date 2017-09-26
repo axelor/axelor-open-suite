@@ -135,7 +135,7 @@ public class PaymentService {
 							}
 							// End gestion du passage en 580
 
-							reconcile = reconcileService.confirmReconcile(reconcile);
+							reconcile = reconcileService.confirmReconcile(reconcile, true);
 							reconcileList.add(reconcile);
 
 							debitTotalRemaining= debitTotalRemaining.subtract(amount);

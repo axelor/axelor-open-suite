@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
@@ -43,13 +44,14 @@ import com.google.inject.Inject;
 
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
 	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
-		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService);
+	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
+			AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService,
+			BankDetailsRepository bankDetailsRepo) {
+		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService, bankDetailsRepo);
 	}
 
-	
 	/**
 	 * Method to create a bank order for an expense
 	 * 

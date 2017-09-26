@@ -96,8 +96,8 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		if (paymentVoucher != null) {
 			invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
 		} else if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
-			BankDetails bankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
-			invoicePayment.setCompanyBankDetails(bankDetails);
+			BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
+			invoicePayment.setCompanyBankDetails(companyBankDetails);
 		}
 		computeAdvancePaymentImputation(invoicePayment, paymentMove);
 		invoice.addInvoicePaymentListItem(invoicePayment);

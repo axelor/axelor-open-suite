@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -51,16 +52,18 @@ public class BankOrderCreateService {
     protected BankOrderService bankOrderService;
 	protected AccountConfigService accountConfigService;
 	protected BankOrderLineService bankOrderLineService;
+	protected BankDetailsRepository bankDetailsRepo;
 
-	
 	@Inject
-	public BankOrderCreateService(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService)  {
+	public BankOrderCreateService(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
+			AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService,
+			BankDetailsRepository bankDetailsRepo) {
 		
 		this.bankOrderRepo = bankOrderRepo;
         this.bankOrderService = bankOrderService;
 		this.accountConfigService = accountConfigService;
 		this.bankOrderLineService = bankOrderLineService;
-		
+		this.bankDetailsRepo = bankDetailsRepo;
 	}
 	
 	/**
@@ -131,7 +134,7 @@ public class BankOrderCreateService {
 		BigDecimal amount = invoicePayment.getAmount();
 		Currency currency = invoicePayment.getCurrency();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
-		BankDetails bankDetails = invoicePayment.getCompanyBankDetails() != null ? invoicePayment.getCompanyBankDetails()
+		BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails() != null ? invoicePayment.getCompanyBankDetails()
 				: this.getSenderBankDetails(invoice);
 
 		BankOrder bankOrder = this.createBankOrder(
@@ -139,12 +142,28 @@ public class BankOrderCreateService {
 								this.getBankOrderPartnerType(invoice),
 								paymentDate,
 								company,
-								bankDetails,
+								companyBankDetails,
 								currency,
 								invoice.getInvoiceId(),
 								invoice.getInvoiceId());
 
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, invoice.getInvoiceId(), null));
+		BankDetails receiverBankDetails = null;
+
+		if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+			receiverBankDetails = invoice.getPaymentSchedule().getBankDetails();
+		}
+
+		if (receiverBankDetails == null) {
+			receiverBankDetails = invoice.getBankDetails();
+		}
+
+		if (receiverBankDetails == null) {
+			receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner, true);
+		}
+
+		bankOrder.addBankOrderLineListItem(
+				bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), null, partner,
+						receiverBankDetails, amount, currency, paymentDate, invoice.getInvoiceId(), null));
 		bankOrder = bankOrderRepo.save(bankOrder);
 
 		return bankOrder;
