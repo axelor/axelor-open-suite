@@ -49,6 +49,12 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 	protected AnalyticMoveLineService analyticMoveLineService;
 
 	@Override
+	public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+	    super.computeProductInformation(saleOrderLine, saleOrder);
+		saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
+    }
+
+	@Override
 	public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
 
 		BigDecimal price = this.computeDiscount(saleOrderLine);
