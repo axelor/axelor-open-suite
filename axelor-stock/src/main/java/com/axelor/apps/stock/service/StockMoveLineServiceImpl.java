@@ -309,7 +309,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		BigDecimal newPrice = stockMoveLine.getUnitPriceUntaxed();
 		BigDecimal newQty = stockMoveLine.getRealQty();
 		BigDecimal newAvgPrice;
-		if (oldAvgPrice == null || oldQty == null || oldAvgPrice.equals(BigDecimal.ZERO) || oldQty.equals(BigDecimal.ZERO)) {
+		if (oldAvgPrice == null || oldQty == null || oldAvgPrice.compareTo(BigDecimal.ZERO) == 0 || oldQty.compareTo(BigDecimal.ZERO) == 0) {
 		    oldAvgPrice = BigDecimal.ZERO;
 			oldQty = BigDecimal.ZERO;
 		}
