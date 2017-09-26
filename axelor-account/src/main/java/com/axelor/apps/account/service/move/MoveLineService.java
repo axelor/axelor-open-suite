@@ -640,7 +640,7 @@ public class MoveLineService {
 	 * @param debitMoveLineList
 	 * @throws AxelorException 
 	 */
-	public void reconcileMoveLines(List<MoveLine> moveLineList) throws AxelorException {
+	public void reconcileMoveLines(List<MoveLine> moveLineList) {
 
 		List<MoveLine> reconciliableCreditMoveLineList = this.getReconciliableCreditMoveLines(moveLineList);
 		List<MoveLine> reconciliableDebitMoveLineList = this.getReconciliableDebitMoveLines(moveLineList);
@@ -660,7 +660,7 @@ public class MoveLineService {
 			List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
 			companyPartnerCreditMoveLineList.sort(byDate);
 			companyPartnerDebitMoveLineList.sort(byDate);
-			paymentService.useExcessPaymentOnMoveLines(companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList, true);
+			paymentService.useExcessPaymentOnMoveLinesDontThrow(companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
 		}
 	}
 	private void populateCredit(Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap, List<MoveLine> reconciliableMoveLineList) {

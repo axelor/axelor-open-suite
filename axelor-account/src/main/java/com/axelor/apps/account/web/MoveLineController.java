@@ -110,7 +110,7 @@ public class MoveLineController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
-	public void accountingReconcile(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void accountingReconcile(ActionRequest request, ActionResponse response) {
 		
 		List<MoveLine> moveLineList = new ArrayList<>();
 		

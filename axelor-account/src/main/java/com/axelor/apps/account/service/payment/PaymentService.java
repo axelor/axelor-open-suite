@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
@@ -65,9 +64,8 @@ public class PaymentService {
 	}
 
 	/**
-	 * Utiliser le trop perçu entre deux listes de lignes d'écritures (une en débit, une en crédit)
-	 * Si cette methode doit être utilisée, penser à ordonner les listes qui lui sont passées par date croissante
-	 * Ceci permet de payer les facture de manière chronologique.
+	 * Use excess payment between a list of debit move lines and a list of credit move lines.
+	 * The lists needs to be ordered by date in order to pay the invoices chronologically.
 	 *
 	 * @param debitMoveLines = dûs
 	 * @param creditMoveLines = trop-perçu
@@ -79,7 +77,25 @@ public class PaymentService {
 	}
 	
 	/**
-	 * Overload of method useExcessPaymentOnMoveLines for the specific use of move lines reconcile (MoveLineController : accountingReconcile)
+	 * Use excess payment between a list of debit move lines and a list of credit move lines.
+	 * The lists needs to be ordered by date in order to pay the invoices chronologically.
+	 * This method doesn't throw any exception if a reconciliation fails.
+	 * 
+	 * @param debitMoveLines
+	 * @param creditMoveLines
+	 */
+	public void useExcessPaymentOnMoveLinesDontThrow(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
+		try {
+			useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			log.debug(e.getMessage());
+		}
+	}
+
+	/**
+	 * Use excess payment between a list of debit move lines and a list of credit move lines.
+	 * The lists needs to be ordered by date in order to pay the invoices chronologically.
 	 * 
 	 * @param debitMoveLines
 	 * @param creditMoveLines
@@ -87,7 +103,7 @@ public class PaymentService {
 	 * 
 	 * @throws AxelorException
 	 */
-	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow) throws AxelorException {
+	protected void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow) throws AxelorException {
 
 		if(debitMoveLines != null && creditMoveLines != null){
 
