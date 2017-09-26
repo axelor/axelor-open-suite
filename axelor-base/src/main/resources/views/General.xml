@@ -53,6 +53,7 @@
 				<field name="manageCustomerCredit" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="allowTimetableInvoicing" if-module="axelor-business-project" widget="Boolean-switch"/>
 				<field name="printReportOnVentilation" if-module="axelor-account" widget="Boolean-switch"/>
+				<field name="manageDirectDebitPayment" if-module="axelor-account" widget="Boolean-switch"/>
 				<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12" if-module="axelor-account">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
