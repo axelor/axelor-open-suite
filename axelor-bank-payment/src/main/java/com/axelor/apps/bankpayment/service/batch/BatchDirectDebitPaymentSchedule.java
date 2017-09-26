@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -122,8 +123,15 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 		Set<Long> treatedSet = new HashSet<>();
 		List<PaymentScheduleLine> paymentScheduleLineList;
 		PaymentScheduleLineService paymentScheduleLineService = Beans.get(PaymentScheduleLineService.class);
+		BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
+
+		BankDetails companyBankDetails = batch.getAccountingBatch().getBankDetails();
 
 		while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+			if (!JPA.em().contains(companyBankDetails)) {
+				companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
+			}
+
 			for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
 				if (treatedSet.contains(paymentScheduleLine.getId())) {
 					throw new IllegalArgumentException("Payment generation error");
@@ -132,7 +140,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 				treatedSet.add(paymentScheduleLine.getId());
 
 				try {
-					paymentScheduleLineService.createPaymentMove(paymentScheduleLine);
+					paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails);
 					doneList.add(paymentScheduleLine);
 					incrementDone();
 				} catch (Exception e) {
@@ -176,11 +184,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 					continue;
 				}
 
-				InvoicePayment invoicePayment = invoicePaymentRepo.findByReconcile(reconcile);
-
-				if (invoicePayment != null) {
-					invoicePaymentList.add(invoicePayment);
-				}
+				invoicePaymentList.addAll(invoicePaymentRepo.findByReconcile(reconcile).fetch());
 			}
 		}
 

@@ -27,7 +27,7 @@
   	
   	<string name="invoicePaymentRef" title="Reference"/>
 
-	<finder-method name="findByReconcile" using="reconcile" />
+	<finder-method name="findByReconcile" using="reconcile" all="true"/>
 
   	<extra-code>
    		<![CDATA[

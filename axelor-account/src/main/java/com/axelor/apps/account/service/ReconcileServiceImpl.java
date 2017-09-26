@@ -20,9 +20,9 @@ package com.axelor.apps.account.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
@@ -131,7 +132,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public int confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException  {
+	protected Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments, BankDetails bankDetails) throws AxelorException  {
 
 		this.reconcilePreconditions(reconcile);
 
@@ -158,15 +159,21 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		this.updatePartnerAccountingSituation(reconcile);
 		this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
 		if(updateInvoicePayments)  {
-			this.updateInvoicePayments(reconcile);
+			this.updateInvoicePayments(reconcile, bankDetails);
 		}
 		
-		reconcileRepository.save(reconcile);
-
-		return reconcile.getStatusSelect();
+		return reconcileRepository.save(reconcile);
 	}
 
+	@Override
+	public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException {
+		return confirmReconcile(reconcile, updateInvoicePayments, null);
+	}
 
+	@Override
+	public Reconcile confirmReconcile(Reconcile reconcile, BankDetails bankDetails) throws AxelorException {
+		return confirmReconcile(reconcile, true, bankDetails);
+	}
 
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException  {
 
@@ -261,7 +268,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	}
 	
 
-	public void updateInvoicePayments(Reconcile reconcile) throws AxelorException  {
+	public void updateInvoicePayments(Reconcile reconcile, BankDetails bankDetails) throws AxelorException  {
 		
 		Move debitMove = reconcile.getDebitMoveLine().getMove();
 		Move creditMove = reconcile.getCreditMoveLine().getMove();
@@ -272,10 +279,16 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		if(debitInvoice != null)  {
 			InvoicePayment debitInvoicePayment = invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
 			debitInvoicePayment.setReconcile(reconcile);
+			if (bankDetails != null && debitInvoicePayment.getBankDetails() == null) {
+				debitInvoicePayment.setBankDetails(bankDetails);
+			}
 		}
 		if(creditInvoice != null)  {
 			InvoicePayment creditInvoicePayment = invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
 			creditInvoicePayment.setReconcile(reconcile);
+			if (bankDetails != null && creditInvoicePayment.getBankDetails() == null) {
+				creditInvoicePayment.setBankDetails(bankDetails);
+			}
 		}
 		
 	}

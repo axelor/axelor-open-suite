@@ -19,13 +19,13 @@ package com.axelor.apps.account.service.payment;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
@@ -75,15 +76,14 @@ public class PaymentService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
+	public List<Reconcile> useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, BankDetails bankDetails) throws AxelorException {
+
+		List<Reconcile> reconcileList = new ArrayList<>();
 
 		if(debitMoveLines != null && creditMoveLines != null){
 
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
-
-			BigDecimal amount = null;
-			Reconcile reconcile = null;
 
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
@@ -109,6 +109,9 @@ public class PaymentService {
 					for(MoveLine debitMoveLine : debitMoveLines){
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
 
+							BigDecimal amount;
+							Reconcile reconcile;
+
 							if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
 								amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
 								debitMoveLine.setMaxAmountToReconcile(null);
@@ -132,7 +135,8 @@ public class PaymentService {
 							}
 							// End gestion du passage en 580
 
-							reconcileService.confirmReconcile(reconcile, true);
+							reconcile = reconcileService.confirmReconcile(reconcile, bankDetails);
+							reconcileList.add(reconcile);
 
 							debitTotalRemaining= debitTotalRemaining.subtract(amount);
 							creditTotalRemaining = creditTotalRemaining.subtract(amount);
@@ -144,8 +148,13 @@ public class PaymentService {
 				}
 			}
 		}
+
+		return reconcileList;
 	}
 
+	public List<Reconcile> useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
+		return useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, null);
+	}
 
 	/**
 	 * Il crée des écritures de trop percu avec des montants exacts pour chaque débitMoveLines

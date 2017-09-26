@@ -170,22 +170,18 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		return paymentScheduleLines;
 	}
 
-	/**
-	 * Create payment move.
-	 * 
-	 * @param paymentScheduleLine
-	 * @return
-	 */
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
+	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine, BankDetails companyBankDetails)
+			throws AxelorException {
+
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
 		AccountConfig accountConfig = company.getAccountConfig();
 		PaymentMode paymentMode = accountConfig.getDirectDebitPaymentMode();
 		Partner partner = paymentSchedule.getPartner();
 		BankDetails bankDetails = paymentSchedule.getBankDetails();
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
+		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 		String name = paymentScheduleLine.getName();
 		LocalDate todayDate = appBaseService.getTodayDate();
@@ -199,7 +195,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 				todayDate, 1, name);
 		creditMoveLine = moveLineRepo.save(creditMoveLine);
 
-		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
 		MoveLine debitMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, paymentModeAccount,
 				amount, true, todayDate, 2, null);
 		debitMoveLine = moveLineRepo.save(debitMoveLine);
@@ -216,7 +212,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 			if (moveToolService.isSameAccount(debitMoveLineList, account)) {
 				List<MoveLine> creditMoveLineList = Lists.newArrayList(creditMoveLine);
-				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
+				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList, bankDetails);
 			}
 		}
 
@@ -229,6 +225,11 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		paymentScheduleService.closePaymentScheduleIfAllPaid(paymentSchedule);
 
 		return move;
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
+		return createPaymentMove(paymentScheduleLine, paymentScheduleLine.getPaymentSchedule().getCompanyBankDetails());
 	}
 
 	/**		

@@ -30,7 +30,7 @@
 			<field name="nbrTerm" readonlyIf="statusSelect != 1" />
 			<panel colSpan="12">
 				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" />
-				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" />
+<!-- 				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" /> -->
 			</panel>
 			<panel colSpan="12">
 				<field name="company" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
