@@ -67,7 +67,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 			
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.DEBT_RECOVERY, batch.getId());
+			TraceBackService.trace(new AxelorException("", e, e.getCategory()), IException.DEBT_RECOVERY, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -106,7 +106,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Partner")+" %s", partner.getName()), e, e.getcategory()), IException.DEBT_RECOVERY, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Partner")+" %s", partner.getName()), e, e.getCategory()), IException.DEBT_RECOVERY, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {

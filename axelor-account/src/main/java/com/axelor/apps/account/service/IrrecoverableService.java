@@ -382,7 +382,7 @@ public class IrrecoverableService{
 
 				} catch (AxelorException e) {
 					anomaly++;
-					TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
+					TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getCategory()), IException.IRRECOVERABLE, irrecoverable.getId());
 					log.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
 
 				} catch (Exception e) {
@@ -419,7 +419,7 @@ public class IrrecoverableService{
 
 				} catch (AxelorException e) {
 					anomaly++;
-					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
+					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()), e, e.getCategory()), IException.IRRECOVERABLE, irrecoverable.getId());
 					log.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
 
 				} catch (Exception e) {

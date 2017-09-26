@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,10 @@
  */
 package com.axelor.exception;
 
+import com.axelor.db.Model;
+import com.axelor.exception.service.AppService;
+import com.axelor.inject.Beans;
+
 /**
  * Exception specific to Axelor.
  */
@@ -25,10 +29,13 @@ public class AxelorException extends Exception {
 	private static final long serialVersionUID = 1028105628735355226L;
 	
 	private int category;
+	private Class<? extends Model> refClass;
+	private long refId;
 
 	/**
 	 * Default constructor
 	 */
+	@Deprecated
 	public AxelorException() {
 	}
 
@@ -46,31 +53,23 @@ public class AxelorException extends Exception {
 	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 */
+	@Deprecated
 	public AxelorException(String message, int category, Object... messageArgs) {
-		super(formatMessage(message, messageArgs));
-		
+		super(String.format(message, messageArgs));
 		this.category = category;
 	}
 
-	
 	/**
-	 * Format the message with the arguments passed in parameters
+	 * Create an exception with a category and a message.
 	 * 
+	 * @param category
 	 * @param message
-	 * 			The message to format
 	 * @param messageArgs
-	 * 			The arguments
-	 * @return
 	 */
-	public static String formatMessage(String message, Object... messageArgs)  {
-		
-		if(messageArgs.length > 0)  {
-			return String.format(message, messageArgs);
-		}
-		
-		return message;
+	public AxelorException(int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs));
+		this.category = category;
 	}
-	
 	
 	/**
 	 *  Create an exception with his cause and his type.	
@@ -112,11 +111,110 @@ public class AxelorException extends Exception {
 	 * 
 	 * @see Throwable
 	 */
+	@Deprecated
 	public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
-		super( String.format(message, messageArgs), cause);
+		super(String.format(message, messageArgs), cause);
 		this.category = category;
 	}
-	
+
+	/**
+	 * Create an exception with a cause, a category, and a message.
+	 * 
+	 * @param cause
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Throwable cause, int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs), cause);
+		this.category = category;
+	}
+
+	/**
+	 * Create an exception with a reference class, a category, and a message.
+	 * 
+	 * @param refClass
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Class<? extends Model> refClass, int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs));
+		this.refClass = refClass;
+		this.category = category;
+	}
+
+	/**
+	 * Create an exception with a cause, a reference class, and a category.
+	 * 
+	 * @param cause
+	 * @param refClass
+	 * @param category
+	 */
+	public AxelorException(Throwable cause, Class<? extends Model> refClass, int category) {
+		super(cause);
+		this.refClass = refClass;
+		this.category = category;
+	}
+
+	/**
+	 * Create an exception with a cause, a reference class, a category, and a message.
+	 * 
+	 * @param cause
+	 * @param refClass
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Throwable cause, Class<? extends Model> refClass, int category, String message,
+			Object... messageArgs) {
+		super(String.format(message, messageArgs), cause);
+		this.refClass = refClass;
+		this.category = category;
+	}
+
+	/**
+	 * Create an exception with a reference, a category, and a message.
+	 * 
+	 * @param ref
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Model ref, int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs));
+		setRef(ref);
+		this.category = category;
+	}
+
+	/**
+	 * Create an exception with a cause, a reference, and a category.
+	 * 
+	 * @param cause
+	 * @param ref
+	 * @param category
+	 */
+	public AxelorException(Throwable cause, Model ref, int category) {
+		super(cause);
+		setRef(ref);
+		this.category = category;
+	}
+
+	/**
+	 * Create an exception with a cause, a reference, a category, and a message.
+	 * 
+	 * @param cause
+	 * @param ref
+	 * @param category
+	 * @param message
+	 * @param messageArgs
+	 */
+	public AxelorException(Throwable cause, Model ref, int category, String message, Object... messageArgs) {
+		super(String.format(message, messageArgs), cause);
+		setRef(ref);
+		this.category = category;
+	}
+
 	/**
 	 * Get the category of exception
 	 * 
@@ -129,10 +227,36 @@ public class AxelorException extends Exception {
 	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 */
-	public int getcategory(){
-		
-		return this.category;
-		
+	public int getCategory() {
+		return category;
+	}
+
+	/**
+	 * Get reference class.
+	 * 
+	 * @return
+	 */
+	public Class<? extends Model> getRefClass() {
+		return refClass;
+	}
+
+	/**
+	 * Get reference ID.
+	 * 
+	 * @return
+	 */
+	public long getRefId() {
+		return refId;
+	}
+
+	/**
+	 * Set reference class and ID.
+	 * 
+	 * @param ref
+	 */
+	private final void setRef(Model ref) {
+		refClass = Beans.get(AppService.class).getPersistentClass(ref);
+		refId = ref.getId();
 	}
 
 }

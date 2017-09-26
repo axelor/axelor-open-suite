@@ -219,6 +219,7 @@
 "Period Beginning",,,
 "Period Ending",,,
 "Periodicity",,,
+"Picking Order Info",,,
 "Please configure the advance payment account for the company %s",,,
 "Please configure the advance payment product",,,
 "Please configure the sale order invoicing product",,,

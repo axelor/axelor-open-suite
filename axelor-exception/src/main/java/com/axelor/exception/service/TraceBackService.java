@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,14 +20,15 @@ package com.axelor.exception.service;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
-
 import java.time.ZonedDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
@@ -78,6 +79,21 @@ public class TraceBackService {
 
 	}
 
+	private static TraceBack _create(Exception e, String origin, int categorySelect, long batchId) {
+		return _create(e, origin, IException.TECHNICAL, categorySelect, batchId);
+	}
+
+	private static TraceBack _create(AxelorException e, String origin, long batchId) {
+		TraceBack traceBack = _create(e, origin, IException.FUNCTIONNAL, e.getCategory(), batchId);
+
+		if (e.getRefClass() != null) {
+			traceBack.setRef(e.getRefClass().getName());
+			traceBack.setRefId(e.getRefId());
+		}
+
+		return traceBack;
+	}
+
 	/**
 	 * Affiche à l'écran par l'intermédiaire d'une popup le message d'une exception.
 	 * 
@@ -108,13 +124,13 @@ public class TraceBackService {
 			public void run() {
 				
 				if (e instanceof AxelorException){
-					
-					LOG.trace(_create(e, origin, 1, ((AxelorException) e).getcategory(), 0).getTrace());
+
+					LOG.trace(_create((AxelorException) e, origin, 0).getTrace());
 					
 				}
 				else {
 					
-					LOG.error(_create(e, origin, 0, 0, 0).getTrace());
+					LOG.error(_create(e, origin, 0, 0).getTrace());
 					
 				}
 				
@@ -137,7 +153,7 @@ public class TraceBackService {
 			@Override
 			public void run() {
 				
-				LOG.trace(_create(e, origin, 1, e.getcategory(), batchId).getTrace());
+				LOG.trace(_create(e, origin, batchId).getTrace());
 	
 			}
 		});
@@ -157,7 +173,7 @@ public class TraceBackService {
 			@Override
 			public void run() {
 				
-				LOG.error(_create(e, origin, 1, 0, batchId).getTrace());
+				LOG.error(_create(e, origin, 0, batchId).getTrace());
 	
 			}
 		});

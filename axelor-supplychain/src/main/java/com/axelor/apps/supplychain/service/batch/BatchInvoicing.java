@@ -74,7 +74,7 @@ public class BatchInvoicing extends BatchStrategy {
 
 			} catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getCategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {
