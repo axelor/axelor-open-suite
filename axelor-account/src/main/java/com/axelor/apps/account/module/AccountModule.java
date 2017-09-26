@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -30,8 +32,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
-import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
-import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -40,7 +40,28 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.*;
+import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.apps.account.service.AccountingReportServiceImpl;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AccountingSituationServiceImpl;
+import com.axelor.apps.account.service.AddressServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
+import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.service.MoveLineExportServiceImpl;
+import com.axelor.apps.account.service.NotificationService;
+import com.axelor.apps.account.service.NotificationServiceImpl;
+import com.axelor.apps.account.service.PaymentScheduleLineService;
+import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
+import com.axelor.apps.account.service.PaymentScheduleService;
+import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.SubrogationReleaseService;
+import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -139,6 +160,10 @@ public class AccountModule extends AxelorModule {
         bind(SubrogationReleaseService.class).to(SubrogationReleaseServiceImpl.class);
 
         bind(NotificationService.class).to(NotificationServiceImpl.class);
+
+        bind(PaymentScheduleService.class).to(PaymentScheduleServiceImpl.class);
+
+        bind(PaymentScheduleLineService.class).to(PaymentScheduleLineServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

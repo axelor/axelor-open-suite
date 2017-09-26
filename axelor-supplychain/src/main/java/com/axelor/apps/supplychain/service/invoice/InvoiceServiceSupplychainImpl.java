@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -34,18 +37,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
 	@Inject
-	public InvoiceServiceSupplychainImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
-							  AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, AppAccountService appAccountService) {
-		super(validateFactory, ventilateFactory, cancelFactory,
-				alarmEngineService, invoiceRepo, appAccountService);
+	public InvoiceServiceSupplychainImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
+			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
+			AppAccountService appAccountService) {
+		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, appAccountService);
 	}
-
 
 	@Override
 	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {

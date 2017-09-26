@@ -59,7 +59,6 @@
 	</action-view>	
 		
 		
-	<!--
 	<menuitem name="account-root-payment-schedule" parent="invoice-root"
         title="Payment Schedule" />
 
@@ -84,7 +83,6 @@
         <view type="form" name="payment-schedule-line-form"/>
         <view-param name="search-filters" value="payment-schedule-line-filters"/>
     </action-view>
-    -->
 	
 	
 	<menuitem name="invoice-root-report" parent="invoice-root" order="50"

@@ -90,7 +90,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
                                 InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION
                         );
                 advancePayment.setImputedBy(imputationPayment);
-                imputationPayment.setBankDetails(advancePayment.getBankDetails());
+                imputationPayment.setCompanyBankDetails(advancePayment.getCompanyBankDetails());
                 invoice.addInvoicePaymentListItem(imputationPayment);
                 invoicePaymentRepo.save(imputationPayment);
             }

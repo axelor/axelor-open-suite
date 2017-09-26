@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -38,12 +50,13 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -58,17 +71,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -88,10 +90,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	protected AlarmEngineService<Invoice> alarmEngineService;
 	protected InvoiceRepository invoiceRepo;
 	protected AppAccountService appAccountService;
-	
+
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
-			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, AppAccountService appAccountService) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
+			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
+			AppAccountService appAccountService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
@@ -100,7 +103,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		this.invoiceRepo = invoiceRepo;
 		this.appAccountService = appAccountService;
 	}
-	
 	
 // WKF
 	
@@ -613,6 +615,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return "self.statusSelect = :_status"
 				+ " AND self.operationSubTypeSelect = :_operationSubType";
 	}
+
+	@Override
+	public BankDetails getBankDetails(Invoice invoice) {
+		BankDetails bankDetails = null;
+
+		if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+			bankDetails = invoice.getPaymentSchedule().getBankDetails();
+		}
+
+		if (bankDetails == null) {
+			bankDetails = invoice.getBankDetails();
+		}
+
+		if (bankDetails == null) {
+			bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(invoice.getPartner());
+		}
+
+		return bankDetails;
+	}
+
 }
 
 

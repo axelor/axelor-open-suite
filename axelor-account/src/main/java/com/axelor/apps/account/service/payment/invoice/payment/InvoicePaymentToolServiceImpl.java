@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
@@ -35,13 +43,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolService {
 	
@@ -110,18 +111,23 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	}
 
 	/**
-	 * Check whether there are any pending payments.
+	 * Check whether the sum of pending payments equals or exceeds the remaining amount of the invoice.
 	 * 
 	 * @param invoice
 	 * @return
 	 */
 	protected boolean checkPendingPayments(Invoice invoice) {
-		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
-			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
-				return true;
+		BigDecimal pendingAmount = BigDecimal.ZERO;
+
+		if (invoice.getInvoicePaymentList() != null) {
+			for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+				if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+					pendingAmount = pendingAmount.add(invoicePayment.getAmount());
+				}
 			}
 		}
-		return false;
+
+		return invoice.getAmountRemaining().compareTo(pendingAmount) <= 0;
 	}
 
 	/**

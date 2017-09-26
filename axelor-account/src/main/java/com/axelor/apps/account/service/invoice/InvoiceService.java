@@ -17,13 +17,17 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -31,10 +35,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -215,4 +215,13 @@ public interface InvoiceService {
 	 */
 	void filterAdvancePaymentInvoice(Invoice invoice,
 									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
+
+	/**
+	 * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
+	 * 
+	 * @param invoice
+	 * @return
+	 */
+	BankDetails getBankDetails(Invoice invoice);
+
 }
