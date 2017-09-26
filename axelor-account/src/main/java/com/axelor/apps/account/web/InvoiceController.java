@@ -136,6 +136,28 @@ public class InvoiceController {
 	}
 
 	/**
+	 * Called by the validate button, if the ventilation is skipped in invoice config
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws AxelorException
+	 */
+	public void validateAndVentilate(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		invoice = invoiceRepo.find(invoice.getId());
+
+		try {
+            invoiceService.validate(invoice, true);
+			invoiceService.ventilate(invoice);
+			response.setReload(true);
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	/**
 	 * Passe l'état de la facture à "annulée"
 	 * @param request
 	 * @param response
