@@ -69,6 +69,20 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         }
     }
 
+    /**
+     * Here we only generate a product.
+     * @param configurator
+     * @param jsonAttributes
+     * @param jsonIndicators
+     */
+    @Override
+    @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+    public void generate(Configurator configurator,
+                                JsonContext jsonAttributes,
+                                JsonContext jsonIndicators) throws AxelorException {
+        generateProduct(configurator, jsonAttributes, jsonIndicators);
+    }
+
     @Override
     @Transactional(rollbackOn = {Exception.class, AxelorException.class})
     public void generateProduct(Configurator configurator,

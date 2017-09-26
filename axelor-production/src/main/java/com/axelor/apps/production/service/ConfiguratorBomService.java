@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.exception.AxelorException;
@@ -30,8 +31,9 @@ public interface ConfiguratorBomService {
      * @param configuratorBOM
      * @param attributes
      * @param level
+     * @param generatedProduct
      */
     BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
-                                          JsonContext attributes, int level)
+                                          JsonContext attributes, int level, Product generatedProduct)
             throws AxelorException;
 }
