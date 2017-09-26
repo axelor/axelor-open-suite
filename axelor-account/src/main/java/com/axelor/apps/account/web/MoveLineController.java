@@ -17,12 +17,20 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,6 +48,12 @@ public class MoveLineController {
 	
 	@Inject
 	private MoveLineRepository moveLineRepo;
+	
+	@Inject
+	private CompanyRepository companyRepo;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 	
 	
 	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response){
@@ -94,5 +108,26 @@ public class MoveLineController {
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
+	public void accountingReconcile(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		List<MoveLine> moveLineList = new ArrayList<>();
+		
+		@SuppressWarnings("unchecked")
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+		if (idList != null) {
+			for (Integer it : idList) {
+				MoveLine moveLine = moveLineRepo.find(it.longValue());
+				if (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+					moveLineList.add(moveLine);
+				}
+			}
+		}
+		
+		if (!moveLineList.isEmpty()) {
+			moveLineService.reconcileMoveLines(moveLineList);
+		}
+		
 	}
 }
