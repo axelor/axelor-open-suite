@@ -269,20 +269,10 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		if(debitInvoice != null)  {
 			InvoicePayment debitInvoicePayment = invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
 			debitInvoicePayment.setReconcile(reconcile);
-			if (debitInvoice.getSchedulePaymentOk() && debitInvoice.getPaymentSchedule() != null
-					&& debitInvoicePayment.getBankDetails() == null) {
-				BankDetails bankDetails = debitInvoice.getPaymentSchedule().getBankDetails();
-				debitInvoicePayment.setBankDetails(bankDetails);
-			}
 		}
 		if(creditInvoice != null)  {
 			InvoicePayment creditInvoicePayment = invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
 			creditInvoicePayment.setReconcile(reconcile);
-			if (creditInvoice.getSchedulePaymentOk() && creditInvoice.getPaymentSchedule() != null
-					&& creditInvoicePayment.getBankDetails() == null) {
-				BankDetails bankDetails = creditInvoice.getPaymentSchedule().getBankDetails();
-				creditInvoicePayment.setBankDetails(bankDetails);
-			}
 		}
 		
 	}

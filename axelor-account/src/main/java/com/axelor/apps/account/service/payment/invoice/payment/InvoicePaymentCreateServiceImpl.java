@@ -94,7 +94,10 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 		PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
 		if (paymentVoucher != null) {
-			invoicePayment.setBankDetails(paymentVoucher.getCompanyBankDetails());
+			invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
+		} else if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+			BankDetails bankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
+			invoicePayment.setCompanyBankDetails(bankDetails);
 		}
 		computeAdvancePaymentImputation(invoicePayment, paymentMove);
 		invoice.addInvoicePaymentListItem(invoicePayment);
@@ -221,7 +224,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		InvoicePayment invoicePayment = createInvoicePayment(invoice,
 				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()), appBaseService.getTodayDate(),
 				invoice.getCurrency(), invoice.getPaymentMode(), InvoicePaymentRepository.TYPE_PAYMENT);
-		invoicePayment.setBankDetails(bankDetails);
+		invoicePayment.setCompanyBankDetails(bankDetails);
 		return invoicePaymentRepository.save(invoicePayment);
 	}
 
