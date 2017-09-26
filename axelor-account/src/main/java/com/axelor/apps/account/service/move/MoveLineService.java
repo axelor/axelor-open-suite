@@ -642,8 +642,8 @@ public class MoveLineService {
 	 */
 	public void reconcileMoveLines(List<MoveLine> moveLineList) {
 
-		List<MoveLine> reconciliableCreditMoveLineList = this.getReconciliableCreditMoveLines(moveLineList);
-		List<MoveLine> reconciliableDebitMoveLineList = this.getReconciliableDebitMoveLines(moveLineList);
+		List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
+		List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
 
 		Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
 
@@ -651,7 +651,7 @@ public class MoveLineService {
 
 		populateDebit(moveLineMap, reconciliableDebitMoveLineList);
 
-		Comparator<MoveLine> byDate = (mv1, mv2) -> mv1.getDate().compareTo(mv2.getDate());
+		Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
 		PaymentService paymentService = Beans.get(PaymentService.class);
 
@@ -681,15 +681,13 @@ public class MoveLineService {
 			Pair<Company, Partner> key = Pair.of(move.getCompany(), move.getPartner());
 			
 			Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(key);
-			
-			List<MoveLine> moveLineList;
-			
+
 			if (moveLineLists == null) {
 				moveLineLists = Pair.of(new ArrayList<>(), new ArrayList<>());
 				moveLineMap.put(key, moveLineLists);
 			}
 			
-			moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
+			List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
 			moveLineList.add(moveLine);
 		}
 	}
