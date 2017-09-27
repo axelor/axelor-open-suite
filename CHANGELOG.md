@@ -6,6 +6,7 @@
 
 ### Bug Fixes
 - Bank statement: fix status update for bank statement imports.
+- Move various fields and actions to convenient modules.
 
 ## [4.2.5] - 2018-10-06
 ### Improvements
