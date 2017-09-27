@@ -113,9 +113,13 @@ public class PurchaseOrderLineController {
 			response.setValue("taxLine", taxLine);
 			
 			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
+			String productName = purchaseOrderLineService.getProductSupplierName(purchaseOrder, purchaseOrderLine);
+			String productCode = purchaseOrderLineService.getProductSupplierCode(purchaseOrder, purchaseOrderLine);
 
-			if (price == null) {
+			if (price == null || productName == null || productCode == null) {
 				price = BigDecimal.ZERO;
+				productName = "";
+				productCode = "";
 				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
 			}
 
@@ -125,7 +129,7 @@ public class PurchaseOrderLineController {
 
 			response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
 			response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),price));
-			
+
 			Map<String,Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 			
 			if(discounts != null)  {
@@ -136,6 +140,8 @@ public class PurchaseOrderLineController {
 				}
 			}
 			response.setValue("price", price);
+			response.setValue("productName", productName);
+			response.setValue("productCode", productCode);
 		}
 		catch(Exception e) {
 			response.setFlash(e.getMessage());

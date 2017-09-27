@@ -31,6 +31,7 @@
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="productName"/>
+    	<field name="productCode"/>
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
         <field name="qty" aggregate="sum"/>
@@ -65,6 +66,7 @@
 			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				   domain="self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			<field name="productName"/>
+			<field name="productCode"/>
 			<panel>
 				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12"/>
 				<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
