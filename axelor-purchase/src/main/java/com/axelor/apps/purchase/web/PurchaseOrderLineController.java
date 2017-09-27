@@ -107,14 +107,14 @@ public class PurchaseOrderLineController {
 			return;
 		}
 		
-		try  {
+		try {
 			
 			TaxLine taxLine = purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine);
 			response.setValue("taxLine", taxLine);
 			
 			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
-			String productName = purchaseOrderLineService.getProductSupplierName(purchaseOrder, purchaseOrderLine);
-			String productCode = purchaseOrderLineService.getProductSupplierCode(purchaseOrder, purchaseOrderLine);
+			String productName = purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[0];
+			String productCode = purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
 
 			if (price == null || productName == null || productCode == null) {
 				price = BigDecimal.ZERO;
@@ -123,7 +123,6 @@ public class PurchaseOrderLineController {
 				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
 			}
 
-			response.setValue("productName", purchaseOrderLine.getProduct().getName());
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
 			response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
 
@@ -132,10 +131,10 @@ public class PurchaseOrderLineController {
 
 			Map<String,Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 			
-			if(discounts != null)  {
+			if(discounts != null) {
 				response.setValue("discountAmount", discounts.get("discountAmount"));
 				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-				if(discounts.get("price") != null)  {
+				if(discounts.get("price") != null) {
 					price = (BigDecimal) discounts.get("price");
 				}
 			}

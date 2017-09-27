@@ -36,7 +36,7 @@
     	<field name="estimatedDelivDate"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="price"  x-scale="2"/>
+        <field name="price" x-scale="2"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
         <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
