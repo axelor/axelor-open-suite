@@ -11,6 +11,7 @@
 - SALE ORDER : Fix NPE while changing contactPartner
 - EMPLOYEE : Fixed timesheet dashlet domain
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
+- Move various fields and actions to convenient modules.
 
 ## [5.0.9] - 2019-06-19
 ## Improvements
@@ -764,7 +765,6 @@ Also, improve the sale order line grid and form views.
 - Fix timesheet and project planning editor according to changes in related models and fields. 
 - Fix custom model form view with latest from adk.
 - Fix resource management from project, removed unwanted menus and views related to it. 
-
 
 ## [4.2.5] - 2018-10-06
 ### Improvements

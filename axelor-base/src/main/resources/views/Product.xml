@@ -83,7 +83,7 @@
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
 			        <field name="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" hideIf="isShippingCostsProduct"/>
-			        <field name="expense" hidden="true"/>
+			        <field name="expense" hidden="true" if-module="axelor-human-resource"/>
       			</panel>
       			<panel name="Barcode" readonlyIf="barCode != null" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" title="Barcode" colSpan="12">
       				<field name="serialNumber" />
@@ -313,7 +313,7 @@
    	 	<action name="action-product-attrs-scale-and-precision"/>
    	 	<action name="action-product-attrs-scale-and-precision-production"/>
 		<action name="action-product-attrs-scale-and-precision-stock"/>
-    	<action name="action-product-record-default-new"/>
+    	<action name="action-product-group-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
     	<action name="action-product-attrs-in-ati"/>
@@ -422,9 +422,13 @@
         <attribute for="costTypeSelect" name="hidden" expr="eval: true"
 				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
-    
+	
+	<action-group name="action-product-group-default-new">
+		<action name="action-product-record-default-new"/>
+		<action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
+	</action-group>
+	
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
-    	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
