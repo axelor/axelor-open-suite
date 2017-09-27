@@ -29,7 +29,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import com.axelor.meta.MetaFiles;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
@@ -40,6 +39,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
@@ -51,6 +51,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Strings;
@@ -61,8 +62,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	public TemplateMessageServiceBaseImpl(MessageService messageService, EmailAddressRepository emailAddressRepo) {
-		super(messageService, emailAddressRepo);
+	public TemplateMessageServiceBaseImpl(AppBaseService appBaseService, MessageService messageService, EmailAddressRepository emailAddressRepo) {
+		super(appBaseService, messageService, emailAddressRepo);
 	}
 
 	public Set<MetaFile> getMetaFiles(Template template, Message message) throws AxelorException, IOException {

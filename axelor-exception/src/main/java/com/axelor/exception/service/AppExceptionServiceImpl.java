@@ -23,7 +23,7 @@ import com.axelor.db.Model;
 import com.google.inject.Singleton;
 
 @Singleton
-public class AppServiceImpl implements AppService {
+public class AppExceptionServiceImpl implements AppExceptionService {
 	
 	@SuppressWarnings("unchecked")
 	public Class<? extends Model> getPersistentClass(Model model) {

@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +43,7 @@ import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.AppExceptionService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -62,13 +62,17 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected TemplateMaker maker;
-	
+
+	protected AppExceptionService coreAppService;
+
 	protected MessageService messageService;
-	
+
 	protected EmailAddressRepository emailAddressRepo;
 
 	@Inject
-	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){
+	public TemplateMessageServiceImpl(AppExceptionService coreAppService, MessageService messageService,
+			EmailAddressRepository emailAddressRepo) {
+		this.coreAppService = coreAppService;
 		this.messageService = messageService;
 		this.emailAddressRepo = emailAddressRepo;
 	}
@@ -76,8 +80,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Override
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		Class<?> klass = model.getClass();
-		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		Class<?> klass = coreAppService.getPersistentClass(model);
 		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
 		
 	}

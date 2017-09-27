@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.hibernate.proxy.HibernateProxy;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -60,6 +59,7 @@ import com.google.inject.persist.Transactional;
 
 public class MrpLineServiceImpl implements MrpLineService  {
 	
+	protected AppBaseService appBaseService;
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	protected PurchaseOrderLineService purchaseOrderLineService;
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -71,7 +71,8 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	@Inject
 	public MrpLineServiceImpl(AppBaseService appBaseService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, StockRulesService stockRulesService)  {
-		
+
+		this.appBaseService = appBaseService;
 		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
 		this.purchaseOrderLineService = purchaseOrderLineService;
 		this.purchaseOrderRepo = purchaseOrderRepo;
@@ -219,8 +220,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	
 	public MrpLineOrigin createMrpLineOrigin(Model model)  {
 		
-		Class<?> klass = model.getClass();
-		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		Class<?> klass = appBaseService.getPersistentClass(model);
 		
 		MrpLineOrigin mrpLineOrigin = new MrpLineOrigin();
 		mrpLineOrigin.setRelatedToSelect(klass.getCanonicalName());

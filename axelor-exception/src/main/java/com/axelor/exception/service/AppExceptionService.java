@@ -19,7 +19,7 @@ package com.axelor.exception.service;
 
 import com.axelor.db.Model;
 
-public interface AppService {
+public interface AppExceptionService {
 
 	/**
 	 * Get persistent class.

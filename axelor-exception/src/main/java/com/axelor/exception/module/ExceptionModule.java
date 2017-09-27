@@ -18,14 +18,14 @@
 package com.axelor.exception.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.exception.service.AppService;
-import com.axelor.exception.service.AppServiceImpl;
+import com.axelor.exception.service.AppExceptionService;
+import com.axelor.exception.service.AppExceptionServiceImpl;
 
 public class ExceptionModule extends AxelorModule {
 
 	@Override
 	protected void configure() {
-		bind(AppService.class).to(AppServiceImpl.class);
+		bind(AppExceptionService.class).to(AppExceptionServiceImpl.class);
 	}
 
 }
