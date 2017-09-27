@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;

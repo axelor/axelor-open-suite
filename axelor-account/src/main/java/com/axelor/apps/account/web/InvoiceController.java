@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.axelor.apps.base.service.BankDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -515,12 +516,14 @@ public class InvoiceController {
 		PaymentMode paymentMode = invoice.getPaymentMode();
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
-		if(paymentMode == null || company == null || partner == null) {
+		if (company == null) {
 			return;
 		}
-		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
+		if (partner != null){
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 

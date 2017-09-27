@@ -103,7 +103,7 @@
 			<field name="versionNumber"
 				if="__config__.general.getManagePurchaseOrderVersion()" />
 			<field name="companyBankDetails" widget="SuggestBox"
-				onSelect="action-invoice-attrs-domain-company-bank-details"
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
 				form-view="bank-details-form" grid-view="bank-details-grid"
 				if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management" />
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati" />

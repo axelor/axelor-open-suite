@@ -17,20 +17,14 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BankRepository;
-import com.axelor.apps.tool.StringTool;
-import com.google.inject.Inject;
 
-import java.util.Collection;
+public interface BankDetailsService {
 
-public class BankDetailsService {
-	
-	@Inject
-	private BankRepository bankRepo;
-	
 	/**
 	 * This method allows to extract information from iban
 	 * Update following fields :
@@ -41,23 +35,13 @@ public class BankDetailsService {
      *      	<li>BbanKey</li>
      *      	<li>Bank</li>
 	 * 		</ul>
-	 * 
+	 *
 	 * @param bankDetails
 	 * @return BankDetails
 	 */
-	public BankDetails detailsIban(BankDetails bankDetails){
-		
-		if(bankDetails.getIban()!=null){
-			
-			bankDetails.setBankCode(StringTool.extractStringFromRight(bankDetails.getIban(),23,5));
-			bankDetails.setSortCode(StringTool.extractStringFromRight(bankDetails.getIban(),18,5));
-			bankDetails.setAccountNbr(StringTool.extractStringFromRight(bankDetails.getIban(),13,11));
-			bankDetails.setBbanKey(StringTool.extractStringFromRight(bankDetails.getIban(),2,2));
-		}
-		return bankDetails;
-	}
-	
-	
+	BankDetails detailsIban(BankDetails bankDetails);
+
+
 	/**
      * Method allowing to create a bank details
 	 *
@@ -68,20 +52,28 @@ public class BankDetailsService {
 	 * @param ownerName
 	 * @param partner
 	 * @param sortCode
-	 * 
+	 *
 	 * @return
 	 */
-	public BankDetails createBankDetails(String accountNbr, String bankCode, String bbanKey, Bank bank, String ownerName, Partner partner, String sortCode) {
-		BankDetails bankDetails = new BankDetails();
-		
-		bankDetails.setAccountNbr(accountNbr);
-		bankDetails.setBankCode(bankCode);
-		bankDetails.setBbanKey(bbanKey);
-		bankDetails.setBank(bank);
-		bankDetails.setOwnerName(ownerName);
-		bankDetails.setPartner(partner);
-		bankDetails.setSortCode(sortCode);
-		
-		return bankDetails;
-	}
+	BankDetails createBankDetails(String accountNbr, String bankCode,
+								  String bbanKey, Bank bank, String ownerName,
+								  Partner partner, String sortCode);
+
+
+	/**
+	 * Create domain for the field companyBankDetails.
+	 * @param company
+	 * @param paymentMode
+	 * @return
+	 */
+	String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode);
+
+	/**
+	 * @param company
+	 * @param paymentMode
+	 * @param partner
+	 * @return default value for the field companyBankDetails
+	 */
+	BankDetails getDefaultCompanyBankDetails(Company company, PaymentMode paymentMode, Partner partner);
+
 }

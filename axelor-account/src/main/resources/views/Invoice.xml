@@ -173,7 +173,7 @@
 				onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency"
 				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null" />
 			<field name="companyBankDetails" widget="SuggestBox"
-				onSelect="action-invoice-attrs-domain-company-bank-details"
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
 				form-view="bank-details-form" grid-view="bank-details-grid" />
 			<field name="currency" canEdit="false"
 				onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency"
@@ -747,11 +747,6 @@
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address"
 			expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
-	</action-attrs>
-
-	<action-attrs name="action-invoice-attrs-domain-company-bank-details">
-		<attribute for="companyBankDetails" name="domain"
-			expr="eval: &quot;self.id IN (${(paymentMode?.accountManagementList?.findAll{it.company == company &amp;&amp; it.bankDetails}.collect{it.bankDetails.id}+[null]).join(',')}) AND self.active = true&quot;" />
 	</action-attrs>
 
 	<!-- ACTION VALIDATE -->

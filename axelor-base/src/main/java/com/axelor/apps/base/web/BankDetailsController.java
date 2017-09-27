@@ -20,7 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,7 +33,7 @@ import org.iban4j.UnsupportedCountryException;
 public class BankDetailsController {
 
 	@Inject
-	private BankDetailsService bds;
+	private BankDetailsServiceImpl bds;
 	
 	public void validateIban(ActionRequest request,ActionResponse response) {
 		response.setAttr("invalidIbanText", "hidden", true);

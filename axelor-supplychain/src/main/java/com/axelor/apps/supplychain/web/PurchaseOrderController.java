@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -300,8 +301,8 @@ public class PurchaseOrderController {
 			return;
 		}
 		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
