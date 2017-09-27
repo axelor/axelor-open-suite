@@ -107,35 +107,40 @@ public class PurchaseOrderLineController {
 			return;
 		}
 		
-		try  {
+		try {
 			
 			TaxLine taxLine = purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine);
 			response.setValue("taxLine", taxLine);
 			
 			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
+			String productName = purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[0];
+			String productCode = purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
 
-			if (price == null) {
+			if (price == null || productName == null || productCode == null) {
 				price = BigDecimal.ZERO;
+				productName = "";
+				productCode = "";
 				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
 			}
 
-			response.setValue("productName", purchaseOrderLine.getProduct().getName());
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
 			response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
 
 			response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
 			response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),price));
-			
+
 			Map<String,Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 			
-			if(discounts != null)  {
+			if(discounts != null) {
 				response.setValue("discountAmount", discounts.get("discountAmount"));
 				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-				if(discounts.get("price") != null)  {
+				if(discounts.get("price") != null) {
 					price = (BigDecimal) discounts.get("price");
 				}
 			}
 			response.setValue("price", price);
+			response.setValue("productName", productName);
+			response.setValue("productCode", productCode);
 		}
 		catch(Exception e) {
 			response.setFlash(e.getMessage());
