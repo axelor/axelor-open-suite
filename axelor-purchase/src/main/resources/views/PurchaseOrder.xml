@@ -536,6 +536,10 @@
 			expr="eval: !__config__.general.getManageMultiBanks()" />
 	</action-attrs>
 
+	<action-method name="action-purchase-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
+
 	<search-filters name="purchase-order-filters"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
