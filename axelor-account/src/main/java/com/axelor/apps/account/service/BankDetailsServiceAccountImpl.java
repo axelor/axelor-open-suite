@@ -85,25 +85,29 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
                                                     PaymentMode paymentMode,
                                                     Partner partner) {
 
-        if (paymentMode == null) {
-            return null;
-        }
-
-        BankDetails candidateBankDetails = getDefaultCompanyBankDetailsFromPartner(company, paymentMode, partner);
-
-        List<BankDetails>authorizedBankDetails = Beans.get(PaymentModeService.class).
-                getCompatibleBankDetailsList(paymentMode, company);
-        if (candidateBankDetails != null
-                && authorizedBankDetails.contains(candidateBankDetails)
-                && candidateBankDetails.getActive()) {
-            return candidateBankDetails;
-        }
-        //we did not find a bank details in accounting situation
-        else {
-            if (authorizedBankDetails.size() == 1) {
-                return authorizedBankDetails.get(0);
-            } else {
+        if (!Beans.get(GeneralService.class).getGeneral().getManageMultiBanks()) {
+            return super.getDefaultCompanyBankDetails(company, paymentMode, partner);
+        } else {
+            if (paymentMode == null) {
                 return null;
+            }
+
+            BankDetails candidateBankDetails = getDefaultCompanyBankDetailsFromPartner(company, paymentMode, partner);
+
+            List<BankDetails> authorizedBankDetails = Beans.get(PaymentModeService.class).
+                    getCompatibleBankDetailsList(paymentMode, company);
+            if (candidateBankDetails != null
+                    && authorizedBankDetails.contains(candidateBankDetails)
+                    && candidateBankDetails.getActive()) {
+                return candidateBankDetails;
+            }
+            //we did not find a bank details in accounting situation
+            else {
+                if (authorizedBankDetails.size() == 1) {
+                    return authorizedBankDetails.get(0);
+                } else {
+                    return null;
+                }
             }
         }
     }
