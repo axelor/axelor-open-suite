@@ -13,7 +13,7 @@
         	<field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="invoiceLabel" />
-	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-record-empty"/>
+	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-group-empty"/>
 			<field name="inOutSelect" colSpan="3"/>
 			<field name="generateBankOrder" if-module="axelor-bank-payment" showIf="typeSelect == 2 || typeSelect == 9"/>
   			<field name="automaticTransmission" showIf="generateBankOrder" if-module="axelor-bank-payment"/>
@@ -26,6 +26,10 @@
         <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
 	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account"/>
     </form>
+    
+    <action-group name="action-payment-mode-group-empty" if-module="axelor-bank-payment">
+    	<action name="action-payment-mode-record-empty"/>
+    </action-group>
     
     <action-record name="action-payment-mode-record-cheque"
     	model="com.axelor.apps.account.db.PaymentMode" 
@@ -40,12 +44,5 @@
 	<action-record name="action-payment-mode-record-empty-file-format" model="com.axelor.apps.account.db.PaymentMode">
 	    <field name="bankOrderFileFormat" expr=""/> 
 	</action-record> 
-	
-	<action-record name="action-payment-mode-record-empty" model="com.axelor.apps.account.db.PaymentMode">
-	    <field name="orderTypeSelect" expr=""/>
-	    <field name="generateBankOrder" expr="false" />
-	    <field name="automaticTransmission" expr="false"/>
-	    <field name="bankOrderExportFolderPath" expr=""/>    
-	</action-record>    
 	
 </object-views>
