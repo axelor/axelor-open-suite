@@ -519,7 +519,7 @@ public class InvoiceController {
 		if (company == null) {
 			return;
 		}
-		if (partner != null){
+		if (partner != null) {
 			partner = Beans.get(PartnerRepository.class).find(partner.getId());
 		}
 		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
