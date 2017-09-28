@@ -111,11 +111,11 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 		List<Invoice> invoiceList;
 		InvoicePaymentCreateService invoicePaymentCreateService = Beans.get(InvoicePaymentCreateService.class);
 		BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
-		BankDetails bankDetails = batch.getAccountingBatch().getBankDetails();
+		BankDetails companyBankDetails = batch.getAccountingBatch().getBankDetails();
 
 		while (!(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty()) {
-			if (!JPA.em().contains(bankDetails)) {
-				bankDetails = bankDetailsRepo.find(bankDetails.getId());
+			if (!JPA.em().contains(companyBankDetails)) {
+				companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
 			}
 
 			for (Invoice invoice : invoiceList) {
@@ -126,7 +126,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 				treatedSet.add(invoice.getId());
 
 				try {
-					doneList.add(invoicePaymentCreateService.createInvoicePayment(invoice, bankDetails));
+					doneList.add(invoicePaymentCreateService.createInvoicePayment(invoice, companyBankDetails));
 					incrementDone();
 				} catch (Exception e) {
 					incrementAnomaly();

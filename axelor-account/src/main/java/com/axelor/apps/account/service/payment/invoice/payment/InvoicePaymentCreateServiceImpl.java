@@ -220,11 +220,11 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails bankDetails) {
+	public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
 		InvoicePayment invoicePayment = createInvoicePayment(invoice,
 				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()), appBaseService.getTodayDate(),
 				invoice.getCurrency(), invoice.getPaymentMode(), InvoicePaymentRepository.TYPE_PAYMENT);
-		invoicePayment.setCompanyBankDetails(bankDetails);
+		invoicePayment.setCompanyBankDetails(companyBankDetails);
 		return invoicePaymentRepository.save(invoicePayment);
 	}
 

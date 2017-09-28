@@ -18,6 +18,9 @@
 package com.axelor.apps.account.web;
 
 
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -27,16 +30,12 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-
-import java.util.List;
-import java.util.Map;
 
 public class InvoicePaymentController  {
 
@@ -76,7 +75,7 @@ public class InvoicePaymentController  {
 	}
 
 	/**
-	 * Create the domain for bankDetails field.
+	 * Create the domain for companyBankDetails field.
 	 * @param request
 	 * @param response
 	 */
@@ -91,11 +90,11 @@ public class InvoicePaymentController  {
 		List<BankDetails> bankDetailsList = Beans.get(InvoicePaymentToolService.class)
 				.findCompatibleBankDetails(company, invoicePayment);
 		if (bankDetailsList.isEmpty()) {
-			response.setAttr("bankDetails", "domain", "self.id IN (0)");
+			response.setAttr("companyBankDetails", "domain", "self.id IN (0)");
 		}
 		else {
 		    String idList = StringTool.getIdFromCollection(bankDetailsList);
-			response.setAttr("bankDetails", "domain", "self.id IN (" + idList + ")");
+			response.setAttr("companyBankDetails", "domain", "self.id IN (" + idList + ")");
 		}
 	}
 
@@ -116,10 +115,10 @@ public class InvoicePaymentController  {
 		List<BankDetails> bankDetailsList = Beans.get(InvoicePaymentToolService.class)
 				.findCompatibleBankDetails(company, invoicePayment);
 		if (bankDetailsList.size() == 1) {
-			response.setValue("bankDetails", bankDetailsList.get(0));
+			response.setValue("companyBankDetails", bankDetailsList.get(0));
 		}
 		else {
-			response.setValue("bankDetails", null);
+			response.setValue("companyBankDetails", null);
 		}
 	}
 

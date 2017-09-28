@@ -38,9 +38,9 @@ public interface InvoicePaymentCreateService   {
 	 * Create an invoice payment for the specified invoice and with the specified bank details.
 	 * 
 	 * @param invoice
-	 * @param bankDetails
+	 * @param companyBankDetails
 	 * @return
 	 */
-	public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails bankDetails);
+	public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails);
 
 }
