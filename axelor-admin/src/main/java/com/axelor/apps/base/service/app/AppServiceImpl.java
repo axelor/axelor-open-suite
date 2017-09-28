@@ -61,7 +61,7 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 @Singleton
-public class AppServiceImpl extends com.axelor.exception.service.AppServiceImpl implements AppService {
+public class AppServiceImpl implements AppService {
 
 	private final Logger log = LoggerFactory.getLogger(AppService.class);
 

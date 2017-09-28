@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.axelor.apps.base.db.App;
 
-public interface AppService extends com.axelor.exception.service.AppService {
+public interface AppService {
 	
 	public String importDataDemo(App app);
 	
