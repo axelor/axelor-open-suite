@@ -48,6 +48,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -220,7 +221,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	
 	public MrpLineOrigin createMrpLineOrigin(Model model)  {
 		
-		Class<?> klass = appBaseService.getPersistentClass(model);
+		Class<?> klass = EntityHelper.getEntityClass(model);
 		
 		MrpLineOrigin mrpLineOrigin = new MrpLineOrigin();
 		mrpLineOrigin.setRelatedToSelect(klass.getCanonicalName());

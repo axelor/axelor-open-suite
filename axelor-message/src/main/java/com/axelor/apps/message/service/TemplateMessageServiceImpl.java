@@ -43,7 +43,6 @@ import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.exception.service.AppExceptionService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -63,16 +62,13 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	protected TemplateMaker maker;
 
-	protected AppExceptionService coreAppService;
-
 	protected MessageService messageService;
 
 	protected EmailAddressRepository emailAddressRepo;
 
 	@Inject
-	public TemplateMessageServiceImpl(AppExceptionService coreAppService, MessageService messageService,
+	public TemplateMessageServiceImpl(MessageService messageService,
 			EmailAddressRepository emailAddressRepo) {
-		this.coreAppService = coreAppService;
 		this.messageService = messageService;
 		this.emailAddressRepo = emailAddressRepo;
 	}
@@ -80,7 +76,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Override
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		Class<?> klass = coreAppService.getPersistentClass(model);
+		Class<?> klass = EntityHelper.getEntityClass(model);
 		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
 		
 	}

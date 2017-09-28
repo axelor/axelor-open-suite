@@ -39,7 +39,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
@@ -62,8 +61,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	public TemplateMessageServiceBaseImpl(AppBaseService appBaseService, MessageService messageService, EmailAddressRepository emailAddressRepo) {
-		super(appBaseService, messageService, emailAddressRepo);
+	public TemplateMessageServiceBaseImpl(MessageService messageService, EmailAddressRepository emailAddressRepo) {
+		super(messageService, emailAddressRepo);
 	}
 
 	public Set<MetaFile> getMetaFiles(Template template, Message message) throws AxelorException, IOException {

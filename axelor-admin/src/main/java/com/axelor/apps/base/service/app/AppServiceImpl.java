@@ -47,7 +47,6 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
-import com.axelor.exception.service.AppExceptionServiceImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaScanner;
@@ -62,7 +61,7 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 @Singleton
-public class AppServiceImpl extends AppExceptionServiceImpl implements AppService {
+public class AppServiceImpl implements AppService {
 
 	private final Logger log = LoggerFactory.getLogger(AppService.class);
 

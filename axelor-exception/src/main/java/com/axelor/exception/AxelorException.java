@@ -17,9 +17,8 @@
  */
 package com.axelor.exception;
 
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
-import com.axelor.exception.service.AppExceptionService;
-import com.axelor.inject.Beans;
 
 /**
  * Exception specific to Axelor.
@@ -199,7 +198,7 @@ public class AxelorException extends Exception {
 	 */
 	public AxelorException(Model ref, int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs));
-		this.refClass = Beans.get(AppExceptionService.class).getPersistentClass(ref);
+		this.refClass = EntityHelper.getEntityClass(ref);
 		this.refId = ref.getId();
 		this.category = category;
 	}
@@ -213,7 +212,7 @@ public class AxelorException extends Exception {
 	 */
 	public AxelorException(Throwable cause, Model ref, int category) {
 		super(cause);
-		this.refClass = Beans.get(AppExceptionService.class).getPersistentClass(ref);
+		this.refClass = EntityHelper.getEntityClass(ref);
 		this.refId = ref.getId();
 		this.category = category;
 	}
@@ -229,7 +228,7 @@ public class AxelorException extends Exception {
 	 */
 	public AxelorException(Throwable cause, Model ref, int category, String message, Object... messageArgs) {
 		super(String.format(message, messageArgs), cause);
-		this.refClass = Beans.get(AppExceptionService.class).getPersistentClass(ref);
+		this.refClass = EntityHelper.getEntityClass(ref);
 		this.refId = ref.getId();
 		this.category = category;
 	}

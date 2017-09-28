@@ -22,9 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 import com.axelor.apps.base.db.App;
-import com.axelor.exception.service.AppExceptionService;
 
-public interface AppService extends AppExceptionService {
+public interface AppService {
 	
 	public String importDataDemo(App app);
 	

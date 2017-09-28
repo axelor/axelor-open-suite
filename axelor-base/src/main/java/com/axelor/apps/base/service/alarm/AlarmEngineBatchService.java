@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
@@ -130,7 +131,7 @@ public class AlarmEngineBatchService extends AbstractBatch {
 	
 	private <T extends Model> boolean isAssociable(Field field, T t){
 		
-		return field.getType().equals( appBaseService.getPersistentClass(t) );
+		return field.getType().equals( EntityHelper.getEntityClass(t) );
 		
 	}
 
