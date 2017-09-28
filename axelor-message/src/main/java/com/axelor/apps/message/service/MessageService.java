@@ -52,6 +52,6 @@ public interface MessageService {
 	@Transactional(rollbackOn = Exception.class)
 	public Message sendByMail(Message message);
 	
-	public String printMessage(Message message) throws AxelorException;
+	public String printMessage(Message message, boolean toAttach) throws AxelorException;
 	
 }

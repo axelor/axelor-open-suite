@@ -17,10 +17,17 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import com.axelor.apps.account.db.Reminder;
+import com.axelor.apps.account.db.ReminderHistory;
+import com.axelor.apps.account.service.debtrecovery.ReminderActionService;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.service.MessageService;
+import com.axelor.inject.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +46,9 @@ public class BatchReminder extends BatchStrategy {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	protected int mailDone = 0;
-	protected int mailAnomaly = 0;
-	
-	protected boolean stop = false;
+	private List<Reminder> changedReminders = new ArrayList<>();
+
+	protected boolean stopping = false;
 	protected PartnerRepository partnerRepository;
 	
 	@Inject
@@ -68,7 +74,7 @@ public class BatchReminder extends BatchStrategy {
 			
 			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REMINDER, batch.getId());
 			incrementAnomaly();
-			stop = true;
+			stopping = true;
 		}
 		
 		checkPoint();
@@ -79,10 +85,10 @@ public class BatchReminder extends BatchStrategy {
 	@Override
 	protected void process() {
 		
-		if(!stop)  {
+		if(!stopping)  {
 			
 			this.reminderPartner();
-
+			this.generateMail();
 		}
 	}
 	
@@ -99,7 +105,13 @@ public class BatchReminder extends BatchStrategy {
 				partner = partnerRepository.find(partner.getId());
 				boolean remindedOk = reminderService.reminderGenerate(partner, company);
 				
-				if(remindedOk)  {  updatePartner(partner); i++; }
+				if(remindedOk)  {
+					updatePartner(partner);
+					changedReminders.add(
+							reminderService.getReminder( partner, company)
+					);
+					i++;
+				}
 
 				log.debug("Tiers traité : {}", partner.getName());	
 
@@ -120,6 +132,26 @@ public class BatchReminder extends BatchStrategy {
 				
 				if (i % 10 == 0) { JPA.clear(); }
 	
+			}
+		}
+	}
+
+	void generateMail() {
+		for (Reminder reminder : changedReminders) {
+			try {
+				if (reminder == null) {
+					continue;
+				}
+				ReminderHistory reminderHistory = Beans.get(ReminderActionService.class).getReminderHistory(reminder);
+				if (reminderHistory == null) {
+					continue;
+				}
+				Message message = reminderHistory.getReminderMessage();
+				if (message != null) {
+					Beans.get(MessageService.class).printMessage(message, true);
+				}
+			} catch (Exception e) {
+				TraceBackService.trace(e);
 			}
 		}
 	}
