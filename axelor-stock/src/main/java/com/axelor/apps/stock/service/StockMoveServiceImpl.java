@@ -22,6 +22,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -478,61 +479,36 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	@Override
-	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines){
+    /**
+     * Splits selected stock move lines of given {@link StockMove} and returns
+     * the id of the new created {@link StockMove}.
+     *
+     * @param originalStockMove the given stock move
+     * @param selectedStockMoveLines the list of selected stock move lines
+     * @return id of the new {@link StockMove}
+     * @throws AxelorException
+     */
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    @Override
+	public Long splitIntoTwo(StockMove originalStockMove, List<StockMoveLine> selectedStockMoveLines) throws AxelorException {
+        // Copy the original stock move
+        StockMove newStockMove = Beans.get(StockMoveManagementRepository.class).copy(originalStockMove, true);
+        newStockMove.clearStockMoveLineList();
 
-		//Get original stock move
-		StockMove originalStockMove = stockMoveRepo.find(originalStockMoveId);
+        for (StockMoveLine line : selectedStockMoveLines) {
+            newStockMove.addStockMoveLineListItem(stockMoveLineService.splitStockMoveLine(line, line.getQty().divide(new BigDecimal("2"), 0, RoundingMode.UP), null));
+        }
 
-		//Copy this stock move
-		StockMove newStockMove = Beans.get(StockMoveManagementRepository.class).copy(originalStockMove, true);
+		if (!newStockMove.getStockMoveLineList().isEmpty()) {
+			copyQtyToRealQty(originalStockMove);
+            // Save new stock move
+            stockMoveRepo.save(newStockMove);
 
-		List<StockMoveLine> newStockMoveLineToRemove = new ArrayList<StockMoveLine>();
-		List<StockMoveLine> originalStockMoveLineToRemove = new ArrayList<StockMoveLine>();
-		int lineNumber = 0;
-		for(StockMoveLine moveLine : stockMoveLines){
-			if (BigDecimal.ZERO.compareTo(moveLine.getQty()) == 0){
-				//Remove stock move line from new stock move
-				newStockMoveLineToRemove.add(newStockMove.getStockMoveLineList().get(lineNumber));
-			}else{
-				//Set quantity in new stock move
-				newStockMove.getStockMoveLineList().get(lineNumber).setQty(moveLine.getQty());
-				newStockMove.getStockMoveLineList().get(lineNumber).setRealQty(moveLine.getQty());
-
-				//Update quantity in original stock move.
-				//If the remaining quantity is 0, remove the stock move line
-				StockMoveLine currentOriginalStockMoveLine = originalStockMove.getStockMoveLineList().get(lineNumber);
-				BigDecimal remainingQty = currentOriginalStockMoveLine.getQty().subtract(moveLine.getQty());
-				if (BigDecimal.ZERO.compareTo(remainingQty) == 0){
-					//Remove the stock move line
-					originalStockMoveLineToRemove.add(currentOriginalStockMoveLine);
-				}else{
-					currentOriginalStockMoveLine.setQty(remainingQty);
-					currentOriginalStockMoveLine.setRealQty(remainingQty);
-				}
-			}
-
-			lineNumber++;
-		}
-
-		for (StockMoveLine stockMoveLineToRemove : newStockMoveLineToRemove) {
-			newStockMove.getStockMoveLineList().remove(stockMoveLineToRemove);
-		}
-
-		if (!newStockMove.getStockMoveLineList().isEmpty()){
-			//Update original stock move
-			for (StockMoveLine stockMoveLineToRemove : originalStockMoveLineToRemove) {
-				originalStockMove.getStockMoveLineList().remove(stockMoveLineToRemove);
-			}
-			stockMoveRepo.save(originalStockMove);
-
-			//Save new stock move
-			return stockMoveRepo.save(newStockMove).getId();
-		}else{
-			return null;
-		}
-	}
+			return newStockMove.getId();
+        } else {
+            return null;
+        }
+    }
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

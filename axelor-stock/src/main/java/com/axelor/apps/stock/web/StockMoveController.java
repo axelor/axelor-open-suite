@@ -19,10 +19,13 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.exception.db.IException;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -263,25 +266,37 @@ public class StockMoveController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	public void  splitInto2(ActionRequest request, ActionResponse response) {
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		Long newStockMoveId = stockMoveService.splitInto2(stockMove.getId(), stockMove.getStockMoveLineList());
+    @SuppressWarnings("unchecked")
+    public void splitIntoTwo(ActionRequest request, ActionResponse response) throws AxelorException {
+        StockMove originalStockMove = stockMoveRepo.find(request.getContext().asType(StockMove.class).getId());
 
-		if (newStockMoveId == null){
+        List<StockMoveLine> stockMoveLines = (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
+        List<StockMoveLine> selectedStockMoveLines = new ArrayList<StockMoveLine>();
+        for (StockMoveLine stockMoveLine : stockMoveLines) {
+            if (stockMoveLine.isSelected()) {
+                selectedStockMoveLines.add(Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId()));
+            }
+        }
+
+        if (selectedStockMoveLines.isEmpty()) {
+            throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_15), IException.MISSING_FIELD);
+        }
+
+        Long newStockMoveId = stockMoveService.splitIntoTwo(originalStockMove, selectedStockMoveLines);
+
+        if (newStockMoveId == null) {
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
-		}else{
-			response.setCanClose(true);
-
+        } else {
+            response.setReload(true);
 			response.setView(ActionView
 					.define("Stock move")
 					.model(StockMove.class.getName())
 					.add("grid", "stock-move-grid")
 					.add("form", "stock-move-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(newStockMoveId)).map());
-
+                    .context("_showRecord", String.valueOf(newStockMoveId))
+                    .map());
 		}
-
 	}
 	
 	public void  compute(ActionRequest request, ActionResponse response) {
