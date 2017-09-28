@@ -5,7 +5,7 @@
 	<grid name="expense-line-grid" 
 		  title="Expense lines" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-expense-line-default, action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate" orderBy="expenseDate">
+		  onNew="action-expense-line-default, action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate" orderBy="-expenseDate">
 		<field name="projectTask" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox"/>
 		<field name="expenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/> 
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
