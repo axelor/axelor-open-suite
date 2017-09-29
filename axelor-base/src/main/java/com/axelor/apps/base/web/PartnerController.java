@@ -47,7 +47,9 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -81,11 +83,11 @@ public class PartnerController {
 		partner = partnerRepo.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
-			if (seq == null)
-				throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-						IException.CONFIGURATION_ERROR);
-			else
+			if (seq == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
+			} else {
 				response.setValue("partnerSeq", seq);
+			}
 		}
 	}
 
@@ -308,8 +310,7 @@ public class PartnerController {
 	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
 		if (partner.getId() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_3));
 		}
 		partner = partnerRepo.find(partner.getId());
 		partnerService.convertToIndividualPartner(partner);
@@ -328,12 +329,13 @@ public class PartnerController {
 		}
 	}
 	
-	public void updateMainAddress(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void updateMainAddress(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);
-		if (partner != null) {
+		try {
 			Address address = partnerService.searchMainAddress(partner);
 			response.setValue("mainAddress", address);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e, ResponseMessageType.ERROR);
 		}
-		
 	}
 }

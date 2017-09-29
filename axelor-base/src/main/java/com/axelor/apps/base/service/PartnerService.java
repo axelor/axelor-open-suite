@@ -103,7 +103,7 @@ public class PartnerService {
 
 	public Map<String,String> getSocialNetworkUrl(String name,String firstName, Integer typeSelect){
 
-		Map<String,String> urlMap = new HashMap<String,String>();
+		Map<String,String> urlMap = new HashMap<>();
 		if(typeSelect == 2){
 			name = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;
 		}
@@ -121,7 +121,7 @@ public class PartnerService {
 	}
 
 	public List<Long> findPartnerMails(Partner partner){
-		List<Long> idList = new ArrayList<Long>();
+		List<Long> idList = new ArrayList<>();
 
 		idList.addAll(this.findMailsFromPartner(partner));
 
@@ -135,7 +135,7 @@ public class PartnerService {
 	}
 
 	public List<Long> findContactMails(Partner partner){
-		List<Long> idList = new ArrayList<Long>();
+		List<Long> idList = new ArrayList<>();
 
 		idList.addAll(this.findMailsFromPartner(partner));
 
@@ -272,18 +272,15 @@ public class PartnerService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String getSIRENNumber(Partner partner)throws AxelorException{
-		char[] Str = new char[9];
-		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty() ){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PARTNER_2),
-					AppBaseServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
-		}
-		else {
+		char[] str = new char[9];
+		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
+			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_2), AppBaseServiceImpl.EXCEPTION, partner.getName());
+		} else {
             String registrationCode = partner.getRegistrationCode();
 			//remove whitespace in the registration code before using it
-            registrationCode.replaceAll("\\s","").getChars(0, 9, Str, 0);
+            registrationCode.replaceAll("\\s","").getChars(0, 9, str, 0);
 		}
-		
-		return new String(Str);
+		return new String(str);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -295,22 +292,51 @@ public class PartnerService {
 	}
 
 	/**
-	 * return the default address among the list of PartnerAddress
+	 * Return the default address among the list of PartnerAddress.
 	 * 
 	 * @param partner
 	 * @return main address
 	 */
 	public Address searchMainAddress(Partner partner) throws AxelorException {
-		Address address = null;
 		List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+		checkAddressListOk(partnerAddressList);
 		for (PartnerAddress partnerAddress : partnerAddressList) {
-			if (partnerAddress.getIsDefaultAddr() == true) {
-				if (address != null) {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.ADDRESS_8)), IException.CONFIGURATION_ERROR);
-				}
-				address = partnerAddress.getAddress();
+			if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
+				return partnerAddress.getAddress();
 			}
 		}
-		return address;
+		return null;
+	}
+
+	
+	/**
+	 * Check whether there is exactly one default invoicing address and no more than one default delivery address.
+	 * 
+	 * @param partnerAddressList
+	 * @throws AxelorException
+	 */
+	private void checkAddressListOk(List<PartnerAddress> partnerAddressList) throws AxelorException {
+		if (partnerAddressList == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ADDRESS_10));
+		}
+		Address defaultInvoicingAddress = null;
+		Address defaultDeliveryAddress = null;
+		for (PartnerAddress partnerAddress : partnerAddressList) {
+			if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
+				if (defaultInvoicingAddress != null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ADDRESS_8));
+				}
+				defaultInvoicingAddress = partnerAddress.getAddress();
+			}
+			if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
+				if (defaultDeliveryAddress != null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ADDRESS_9));
+				}
+				defaultDeliveryAddress = partnerAddress.getAddress();
+			}
+		}
+		if (defaultInvoicingAddress == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ADDRESS_10));
+		}
 	}
 }
