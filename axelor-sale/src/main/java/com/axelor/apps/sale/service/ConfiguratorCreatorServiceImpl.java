@@ -315,8 +315,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
 
         configuratorCreatorList.removeIf(creator ->
-                !creator.getAuthorizedUserList().contains(user)
-                    && !creator.getAuthorizedGroupList().contains(group)
+                !creator.getAuthorizedUserSet().contains(user)
+                    && !creator.getAuthorizedGroupSet().contains(group)
         );
 
         return "self.id in ("

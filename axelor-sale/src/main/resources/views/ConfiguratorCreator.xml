@@ -23,8 +23,8 @@
 		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
 					   grid-view="configurator-formula-grid"/>
 		<panel title="Authorizations">
-			<field name="authorizedUserList" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
-            <field name="authorizedGroupList" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
+			<field name="authorizedUserSet" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
+            <field name="authorizedGroupSet" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
 		</panel>
 		<panel title="Configurator BoM" if-module="axelor-production" colSpan="12">
             <field name="configuratorBom" if-module="axelor-production" colSpan="12">
