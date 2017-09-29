@@ -60,5 +60,10 @@
 		<option value="1">Title</option>
 		<option value="2">Pack</option>
 	</selection>
+
+	<selection name="configurator.update.sale.order.line">
+		<option value="0">Update from product</option>
+		<option value="1">Update from configurator</option>
+	</selection>
 	
 </object-views>
