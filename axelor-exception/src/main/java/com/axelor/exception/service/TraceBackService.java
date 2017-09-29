@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -101,13 +102,10 @@ public class TraceBackService {
 	 * @param e
 	 * 		L'exception cible.
 	 */
-	private static void _response(ActionResponse response, Exception e) {
+	private static void _response(ActionResponse response, Exception e, ResponseMessageType responseMessageType) {
 
-		String flash = e.toString();
-		if (e.getMessage() != null) { flash = e.getMessage(); }
-
-		response.setFlash(flash);
-
+		String message = e.getMessage() != null ? e.getMessage() : e.toString();
+		responseMessageType.setMessage(response, message);
 	}
 
 	/**
@@ -220,22 +218,7 @@ public class TraceBackService {
 	public static void trace(ActionResponse response, Exception e, String origin) {
 
 		trace(e, origin);
-		_response(response, e);
-
-	}
-	
-	/**
-	 * Tracer une exception dans Traceback correspondant à une anomalie et affiche à l'écran par l'intermédiaire
-	 * d'une popup le message de l'exception.
-	 * 
-	 * @param response
-	 * @param e
-	 * 		L'exception cible.
-	 */
-	public static void trace(ActionResponse response, AxelorException e, String origin) {
-	
-		trace(e, origin);
-		_response(response, e);
+		_response(response, e, ResponseMessageType.INFORMATION);
 
 	}
 
@@ -249,21 +232,36 @@ public class TraceBackService {
 	 */
 	public static void trace(ActionResponse response, Exception e) {
 
-		trace(response, e, null);
+		trace(response, e, (String) null);
 
 	}
-	
+
 	/**
-	 * Tracer une exception dans Traceback correspondant à une anomalie et affiche à l'écran par l'intermédiaire
-	 * d'une popup le message de l'exception.
+	 * Trace an exception into the traceback and show it to the client with the specified response message type.
 	 * 
 	 * @param response
 	 * @param e
-	 * 		L'exception cible.
+	 * @param origin
+	 * @param responseMessageType
 	 */
-	public static void trace(ActionResponse response, AxelorException e) {
+	public static void trace(ActionResponse response, Exception e, String origin,
+			ResponseMessageType responseMessageType) {
 
-		trace(response, e, null);
+		trace(e, origin);
+		_response(response, e, responseMessageType);
+
+	}
+
+	/**
+	 * Trace an exception into the traceback and show it to the client with the specified response message type.
+	 * 
+	 * @param response
+	 * @param e
+	 * @param responseMessageType
+	 */
+	public static void trace(ActionResponse response, Exception e, ResponseMessageType responseMessageType) {
+
+		trace(response, e, null, responseMessageType);
 
 	}
 	
