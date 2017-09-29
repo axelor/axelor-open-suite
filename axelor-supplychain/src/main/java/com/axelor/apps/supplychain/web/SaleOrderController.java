@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -362,26 +363,6 @@ public class SaleOrderController{
 		
 		saleOrderRepo.save(so);
 		
-	}
-
-	/**
-	 * Called on partner, company or payment change.
-	 * Fill the bank details with a default value.
-	 * @param request
-	 * @param response
-	 */
-	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		PaymentMode paymentMode = saleOrder.getPaymentMode();
-		Company company = saleOrder.getCompany();
-		Partner partner = saleOrder.getClientPartner();
-		if(paymentMode == null || company == null || partner == null) {
-			return;
-		}
-		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
-		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {

@@ -20,11 +20,8 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.db.Model;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
