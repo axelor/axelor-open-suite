@@ -79,7 +79,7 @@ public class EbicsCertificateService {
 			 return cert.getCertificate();
 		 }
 		
-		 if (bank.getUrl() != null && type.equals("ssl")) {
+		 if (bank.getUrl() != null && type.equals(EbicsCertificateRepository.TYPE_SSL)) {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
@@ -193,14 +193,9 @@ public class EbicsCertificateService {
 	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
 		
 		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
-		log.debug("sha 1 : {}", sha);
-		log.debug("certificat 1 : {}", new String(certificate.getEncoded()));
-		log.debug("certificat 1 size : {}", certificate.getEncoded().length);
-		
-		String sha2 = DigestUtils.sha256Hex(cert.getCertificate());
-		log.debug("sha 2 : {}", sha2);
-		log.debug("certificat 2 : {}", new String(cert.getCertificate()));
-		log.debug("certificat 2 size : {}", cert.getCertificate().length);
+		log.debug("sha256 HEX : {}", sha);
+		log.debug("certificat : {}", new String(certificate.getEncoded()));
+		log.debug("certificat size : {}", certificate.getEncoded().length);
 		
 		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
 		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
