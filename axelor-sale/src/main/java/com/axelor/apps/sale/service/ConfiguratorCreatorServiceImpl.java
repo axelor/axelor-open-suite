@@ -65,7 +65,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     @Override
     @Transactional
     public void generateConfigurator(ConfiguratorCreator creator) {
-        updateAttributes(creator);
         updateIndicators(creator);
         Configurator configurator = new Configurator();
         configurator.setConfiguratorCreator(creator);
@@ -74,6 +73,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
 
     @Override
+    @Transactional
     public void updateAttributes(ConfiguratorCreator creator) {
 
         if (creator == null) {
@@ -88,8 +88,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 if (!showIf.contains(condition)) {
                     field.setShowIf(condition + " && (" + showIf + ")");
                 }
-            }
-            else {
+            } else {
                 field.setShowIf(condition);
             }
 
@@ -106,6 +105,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 field.setOnChange(modifiedOnChange);
             }
         }
+        configuratorCreatorRepo.save(creator);
     }
 
     public void updateIndicators(ConfiguratorCreator creator) {
