@@ -89,4 +89,16 @@ public class ConfiguratorCreatorController {
                 configuratorCreatorService.getConfiguratorCreatorDomain()
         );
     }
+
+    /**
+     * Called from the configurator creator form on attributes changes
+     * @param request
+     * @param response
+     */
+    public void updateAttributes(ActionRequest request, ActionResponse response) {
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+        creator = configuratorCreatorRepo.find(creator.getId());
+        configuratorCreatorService.updateAttributes(creator);
+        response.setReload(true);
+    }
 }

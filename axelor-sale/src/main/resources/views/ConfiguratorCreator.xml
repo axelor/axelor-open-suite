@@ -11,7 +11,7 @@
     <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.sale.db.ConfiguratorCreator">
     	<panel>
     		<field name="name"/>
-    		<panel-related field="attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
+    		<panel-related field="attributes" onChange="save,action-configurator-creator-method-update-attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
     	</panel>
 		<panel sidebar="true" title="Actions">
 			<button name="activate" title="Activate" readonlyIf="isActive"
@@ -94,6 +94,11 @@
 	<action-method name="action-configurator-creator-method-test">
 		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
 			  method="testCreator"/>
+	</action-method>
+
+	<action-method name="action-configurator-creator-method-update-attributes">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="updateAttributes"/>
 	</action-method>
 
 	<action-record name="action-configurator-creator-record-activate"
