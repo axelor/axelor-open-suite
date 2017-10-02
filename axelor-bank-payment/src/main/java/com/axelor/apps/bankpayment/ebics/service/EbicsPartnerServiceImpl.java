@@ -53,9 +53,9 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 	@Transactional
 	public void getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException  {
 		
-		EbicsUser ebicsUser = ebicsPartner.getBankStatementEbicsUser();
+		EbicsUser transportEbicsUser = ebicsPartner.getTransportEbicsUser();
 		
-		if(ebicsPartner.getBankStatementFileFormatSet() == null || ebicsPartner.getBankStatementFileFormatSet().isEmpty() || ebicsUser == null)  {  return;  }
+		if(ebicsPartner.getBankStatementFileFormatSet() == null || ebicsPartner.getBankStatementFileFormatSet().isEmpty() || transportEbicsUser == null)  {  return;  }
 		
 		LocalDateTime executionDateTime = LocalDateTime.now();
 		
@@ -81,13 +81,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 		
 		for(BankStatementFileFormat bankStatementFileFormat : ebicsPartner.getBankStatementFileFormatSet())  {
 			
-			File file = ebicsService.sendFDLRequest(ebicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
+			File file = ebicsService.sendFDLRequest(transportEbicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
 			
 			bankStatementRepository.save(bankStatementService.createBankStatement(file, bankStatementStartDate, bankStatementToDate, bankStatementFileFormat, ebicsPartner, executionDateTime));
 			
 		}
-		
-		//TODO LIER LES RIB AU EBICS PARTNER ??
 		
 		ebicsPartner.setBankStatementLastExeDateT(executionDateTime);
 		

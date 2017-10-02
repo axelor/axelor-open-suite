@@ -27,6 +27,7 @@
 			<field name="password" requiredIf="ebicsTypeSelect == 0"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
+			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="associatedUser"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
@@ -37,6 +38,7 @@
 			<field name="ebicsPartner.testMode"/>
 			<field name="testDataFile" widget="binary-link"/>
 			<field name="testSignatureFile" widget="binary-link"/>
+			<field name="testSignatoryEbicsUser" domain="self.ebicsPartner = :ebicsPartner"/>
 			<field name="testBankStatementFileFormat"/>
 			<field name="testBankOrderFileFormat"/>
 		</panel>
@@ -66,7 +68,7 @@
 			<button name="printCertificates" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-method-print-certificates" showIf="statusSelect >= 3"/>
 			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3" prompt="Are you sure you want get the server certificates ?"/>
 			<button name="sendSPR" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3" prompt="Are you sure you want suspend the user ? The whole initialisation process will have to be done again."/>
-			<button name="sendFUL" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3" prompt="You will send a file, are you sure the test mode is enabled ?"/>
+			<button name="sendFUL" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3 &amp;&amp; userTypeSelect == 0" prompt="You will send a file, are you sure the test mode is enabled ?"/>
 			<button name="sendFDL" title="Send file download request (FDL)" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
 			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
 			<button name="sendPTK" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>

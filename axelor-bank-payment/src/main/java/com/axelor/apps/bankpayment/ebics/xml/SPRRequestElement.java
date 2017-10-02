@@ -88,7 +88,8 @@ public class SPRRequestElement extends InitializationRequestElement {
     userSignature = new UserSignature(ebicsUser,
 				      generateName("SIG"),
 	                              "A005",
-	                              " ".getBytes());
+	                              " ".getBytes(), " ".getBytes());
+    //TODO Manage the ebics ts case, with an eletronic signature of the user
     userSignature.build();
     userSignature.validate();
 

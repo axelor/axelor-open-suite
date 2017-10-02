@@ -28,8 +28,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
-import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -52,6 +50,8 @@ import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
@@ -317,7 +317,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, dataFileToSend,
+		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
+		
+		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
 				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
 
 	}
@@ -515,19 +517,19 @@ public class BankOrderServiceImpl implements BankOrderService {
 	    		break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
-                file = new BankOrderFile00800101Service(bankOrder, "CORE").generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
-                file = new BankOrderFile00800101Service(bankOrder, "SBB").generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
-                file = new BankOrderFile00800102Service(bankOrder, "CORE").generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
-                file = new BankOrderFile00800102Service(bankOrder, "SBB").generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
 		    default:

@@ -64,6 +64,8 @@ public class BankOrderFile00800101Service extends BankOrderFileService {
 
     private ObjectFactory factory;
     private String sepaType;
+    public static String SEPA_TYPE_CORE = "CORE";
+    public static String SEPA_TYPE_SBB = "SBB";
 
 	@Inject
 	public BankOrderFile00800101Service(BankOrder bankOrder, String sepaType) {

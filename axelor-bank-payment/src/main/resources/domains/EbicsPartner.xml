@@ -16,7 +16,7 @@
 	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bankpayment.ebics.bank.bank.statement.period.mode.select" default="1"/>
 	<date name="bankStatementStartDate" title="Start date"/>
 	<date name="bankStatementEndDate" title="End date"/>
-	<many-to-one name="bankStatementEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics user for get the bank statements"/>
+	<many-to-one name="transportEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics user for transport"/>
 	
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 	

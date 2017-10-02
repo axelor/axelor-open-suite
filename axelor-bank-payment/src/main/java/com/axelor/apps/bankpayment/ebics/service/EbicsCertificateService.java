@@ -192,6 +192,16 @@ public class EbicsCertificateService {
 	
 	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
 		
+		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		log.debug("sha 1 : {}", sha);
+		log.debug("certificat 1 : {}", new String(certificate.getEncoded()));
+		log.debug("certificat 1 size : {}", certificate.getEncoded().length);
+		
+		String sha2 = DigestUtils.sha256Hex(cert.getCertificate());
+		log.debug("sha 2 : {}", sha2);
+		log.debug("certificat 2 : {}", new String(cert.getCertificate()));
+		log.debug("certificat 2 size : {}", cert.getCertificate().length);
+		
 		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
 		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
 		cert.setIssuer(certificate.getIssuerDN().getName());
@@ -203,7 +213,9 @@ public class EbicsCertificateService {
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
 		cert.setPrivateKey(null);
-		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		
+		
+		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
 		computeFullName(cert);

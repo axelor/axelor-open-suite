@@ -135,6 +135,11 @@
 		<option value="1">Ebics TS</option>
 	</selection>
 
+	<selection name="bankpayment.ebics.user.user.type.select">
+		<option value="0">Transport</option>
+		<option value="1">Signatory</option>
+	</selection>
+
 	<selection name="bankpayment.account.ebics.user.status.select">
 		<option value="0">Waiting for the certificate configuration</option>
 		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
