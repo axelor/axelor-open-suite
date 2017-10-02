@@ -76,7 +76,7 @@ public class UserSignature extends DefaultEbicsRootElement {
 
 	    try {
 
-			if (user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
+			if (user.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
 		
 				log.debug("Signature (base64) : {}", new String(signature));
 				log.debug("Signature (base64) length : {}", signature.length);

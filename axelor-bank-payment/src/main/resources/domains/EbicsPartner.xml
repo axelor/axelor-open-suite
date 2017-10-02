@@ -7,6 +7,8 @@
   
   <entity name="EbicsPartner" lang="java">
   
+  	<integer name="ebicsTypeSelect" title="Mode" selection="bankpayment.ebics.partner.ebics.type.select"/>
+  
     <many-to-one name="ebicsBank" ref="com.axelor.apps.bankpayment.db.EbicsBank" title="Ebics bank" required="true"/>
     <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
     <many-to-one name="defaultSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Default signatory"/>

@@ -130,7 +130,7 @@
 		<option value="2">Period</option>
 	</selection>
 	
-	<selection name="bankpayment.ebics.user.ebics.type.select">
+	<selection name="bankpayment.ebics.partner.ebics.type.select">
 		<option value="0">Ebics T</option>
 		<option value="1">Ebics TS</option>
 	</selection>

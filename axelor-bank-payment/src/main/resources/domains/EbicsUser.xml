@@ -14,7 +14,6 @@
 	 
 	 <string name="password" title="Password" password="true" />
 	 
-	 <integer name="ebicsTypeSelect" title="Mode" selection="bankpayment.ebics.user.ebics.type.select"/>
 	 <integer name="userTypeSelect" title="User type" selection="bankpayment.ebics.user.user.type.select"/>
 	 <integer name="statusSelect" title="Status" selection="bankpayment.account.ebics.user.status.select" readonly="true"/>
 	 

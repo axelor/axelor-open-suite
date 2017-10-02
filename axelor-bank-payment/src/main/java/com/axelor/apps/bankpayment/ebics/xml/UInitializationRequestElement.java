@@ -49,6 +49,7 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
@@ -114,8 +115,9 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     List<Parameter>			parameters;
     
     EbicsUser ebicsUser = session.getUser();
+	EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
     
-    if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+    if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
     	
         EbicsUser signatoryUser = session.getSignatoryUser();
 
@@ -181,7 +183,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
       fULOrderParams.setParameterArray(parameters.toArray(new Parameter[parameters.size()]));
     }
     
-    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsUser.getEbicsTypeSelect());
+    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsPartner.getEbicsTypeSelect());
     orderAttribute.build();
     
     orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(ebicsUser.getNextOrderId(),
@@ -191,7 +193,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 	                                             nonce,
 	                                             splitter.getSegmentNumber(),
-	                                             ebicsUser.getEbicsPartner().getPartnerId(),
+	                                             ebicsPartner.getPartnerId(),
 	                                             product,
 	                                             ebicsUser.getSecurityMedium(),
 	                                             ebicsUser.getUserId(),

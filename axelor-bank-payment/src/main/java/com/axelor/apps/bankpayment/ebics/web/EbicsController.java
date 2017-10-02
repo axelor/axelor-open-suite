@@ -215,7 +215,7 @@ public class EbicsController {
 
 				File testSignatureFile = null;
 				
-				if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
+				if(ebicsUser.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
 					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
 				}
 				

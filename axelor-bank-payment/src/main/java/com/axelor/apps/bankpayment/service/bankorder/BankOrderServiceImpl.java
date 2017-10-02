@@ -296,7 +296,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File signatureFileToSend = null;
 
 		
-		if(bankOrder.getSignatoryEbicsUser().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();

@@ -282,7 +282,10 @@ public class EbicsService {
 	    if (file == null) {
 	    	throw new AxelorException("File is required to send FUL request", IException.CONFIGURATION_ERROR);
 	    }
-	    if (transportUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+	    
+	    EbicsPartner ebicsPartner = transportUser.getEbicsPartner();
+	    
+	    if (ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 	    	if(signature == null)  {
 	    		throw new AxelorException("Signature file is required to send FUL request", IException.CONFIGURATION_ERROR);
 	    	}
@@ -301,7 +304,7 @@ public class EbicsService {
 	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
-			if(transportUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+			if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, IOUtils.getFileContent(signature.getAbsolutePath()));
 			}
 			else  {
@@ -312,8 +315,6 @@ public class EbicsService {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e,IException.TECHNICAL);
 	    }
-	    
-	    EbicsPartner ebicsPartner = transportUser.getEbicsPartner();
 	    
 	    if(ebicsPartner.getUsePSR())  {
 	    	

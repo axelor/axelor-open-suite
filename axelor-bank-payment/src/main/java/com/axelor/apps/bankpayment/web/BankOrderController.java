@@ -108,7 +108,7 @@ public class BankOrderController {
 				response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
 			}  
 			else  {
-			    if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
+			    if(ebicsUser.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
 			    	bankOrderService.validate(bankOrder);
 				}
 				else {
