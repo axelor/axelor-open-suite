@@ -79,7 +79,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	@Override
 	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
 		
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName());
 	
 	}
 	

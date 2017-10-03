@@ -82,8 +82,7 @@ public class PartnerController {
 		if(partner.getPartnerSeq() ==  null) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 			if (seq == null)
-				throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-						IException.CONFIGURATION_ERROR);
+				throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 			else
 				response.setValue("partnerSeq", seq);
 		}
@@ -308,8 +307,7 @@ public class PartnerController {
 	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
 		if (partner.getId() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_3));
 		}
 		partner = partnerRepo.find(partner.getId());
 		partnerService.convertToIndividualPartner(partner);

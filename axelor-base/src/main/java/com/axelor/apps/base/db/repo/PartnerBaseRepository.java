@@ -47,8 +47,7 @@ public class PartnerBaseRepository extends PartnerRepository {
 			if (partner.getPartnerSeq() == null){
 				String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
 				if (seq == null)
-					throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-							IException.CONFIGURATION_ERROR);
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 				partner.setPartnerSeq(seq);
 			}
 

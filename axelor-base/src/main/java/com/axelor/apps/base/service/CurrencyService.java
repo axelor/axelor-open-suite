@@ -75,14 +75,14 @@ public class CurrencyService {
 				currencyConversionLine = this.getCurrencyConversionLine(endCurrency, startCurrency, dateToConvert);
 			}
 	
-			if(currencyConversionLine == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_1), startCurrency.getName(), endCurrency.getName(), dateToConvert), IException.CONFIGURATION_ERROR);
+			if (currencyConversionLine == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_1), startCurrency.getName(), endCurrency.getName(), dateToConvert);
 			}
 			
 			BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
 			
-			if(exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_2), startCurrency.getName(), endCurrency.getName(), dateToConvert), IException.CONFIGURATION_ERROR);
+			if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_2), startCurrency.getName(), endCurrency.getName(), dateToConvert);
 			}
 	
 			return BigDecimal.ONE.divide(currencyConversionLine.getExchangeRate(), 10, RoundingMode.HALF_EVEN);

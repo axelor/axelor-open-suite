@@ -138,7 +138,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		StockMove stockMove = stockMoveLine.getStockMove();
 
 		if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
-			throw new AxelorException(I18n.get("The tracking number configuration sale quantity is equal to zero, it must be at least one"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("The tracking number configuration sale quantity is equal to zero, it must be at least one"));
 		}
 		while (stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1) {
 
@@ -361,12 +361,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		//check the conformity
 		if (stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
-		    throw new AxelorException(
-					String.format(
-		    			I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
-						product.getName()
-					),
-					IException.CONFIGURATION_ERROR);
+		    throw new AxelorException(stockMoveLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY), product.getName());
 		}
 	}
 
@@ -387,14 +382,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			}
 		}
 		if (!productsWithErrors.isEmpty()) {
-			String productsWithErrorStr = productsWithErrors.stream()
-					.collect(Collectors.joining(", "));
-			throw new AxelorException(
-					String.format(
-		    			I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
-						productsWithErrorStr
-					),
-					IException.CONFIGURATION_ERROR);
+			String productsWithErrorStr = productsWithErrors.stream().collect(Collectors.joining(", "));
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY), productsWithErrorStr);
 		}
     }
 
@@ -425,9 +414,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		if (!errorList.isEmpty()) {
 			String errorStr = errorList.stream().collect(Collectors.joining(", "));
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS), errorStr),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS), errorStr);
 		}
 	}
 

@@ -28,7 +28,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.common.base.Joiner;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;

@@ -23,10 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.lang.invoke.MethodHandles;
 
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.i18n.I18n;
 
-import com.axelor.inject.Beans;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

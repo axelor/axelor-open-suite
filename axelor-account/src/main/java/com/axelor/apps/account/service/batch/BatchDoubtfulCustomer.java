@@ -75,7 +75,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException("", e, e.getCategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), IException.DOUBTFUL_CUSTOMER, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -146,7 +146,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", move.getInvoice().getInvoiceId()), e, e.getCategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", move.getInvoice().getInvoiceId()), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
@@ -191,7 +191,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", moveLine.getInvoiceReject().getInvoiceId()), e, e.getCategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", moveLine.getInvoiceReject().getInvoiceId()), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {

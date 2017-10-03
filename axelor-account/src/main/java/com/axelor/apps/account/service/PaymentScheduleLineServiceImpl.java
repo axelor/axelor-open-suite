@@ -330,8 +330,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 
 		if (directDebitPaymentMode == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE),
-					IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE));
 		}
 
 		// TODO manage multi bank

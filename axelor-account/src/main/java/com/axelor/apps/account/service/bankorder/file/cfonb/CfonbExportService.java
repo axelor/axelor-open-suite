@@ -456,9 +456,8 @@ public class CfonbExportService {
 	private String createRecipientCFONB(Reimbursement reimbursement) throws AxelorException  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
 
-		if(bankDetails == null)  {
-			throw new AxelorException(String.format("%s :\n "+I18n.get(IExceptionMessage.CFONB_EXPORT_1)+" %s",
-					AppAccountServiceImpl.EXCEPTION,reimbursement.getRef()), IException.CONFIGURATION_ERROR);
+		if (bankDetails == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, "%s :\n "+I18n.get(IExceptionMessage.CFONB_EXPORT_1)+" %s", AppAccountServiceImpl.EXCEPTION, reimbursement.getRef());
 		}
 
 		BigDecimal amount = reimbursement.getAmountReimbursed();
@@ -484,13 +483,12 @@ public class CfonbExportService {
 	private String createRecipientCFONB(PaymentScheduleLine paymentScheduleLine, boolean mensu) throws AxelorException  {
 		Partner partner = paymentScheduleLine.getPaymentSchedule().getPartner();
 		BankDetails bankDetails = paymentScheduleLine.getPaymentSchedule().getBankDetails();
-		if(bankDetails == null)  {
+		if (bankDetails == null) {
 			bankDetails = partnerService.getDefaultBankDetails(partner);
 		}
 
-		if(bankDetails == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					AppAccountServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
+		if (bankDetails == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2), AppAccountServiceImpl.EXCEPTION, partner.getName());
 		}
 
 		BigDecimal amount = paymentScheduleLine.getDirectDebitAmount();
@@ -517,28 +515,25 @@ public class CfonbExportService {
 	private String createRecipientCFONB(DirectDebitManagement directDebitManagement, boolean isForInvoice) throws AxelorException  {
 		BankDetails bankDetails = null;
 		String partnerName = "";
-		if(isForInvoice)  {
+		if (isForInvoice) {
 			Invoice invoice = (Invoice) directDebitManagement.getInvoiceSet().toArray()[0];
 			Partner partner = invoice.getPartner();
 			bankDetails = partnerService.getDefaultBankDetails(partner);
 			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
-			if(bankDetails == null) {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-						AppAccountServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
+			if (bankDetails == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2), AppAccountServiceImpl.EXCEPTION, partner.getName());
 			}
-		}
-		else  {
+		} else {
 			PaymentSchedule paymentSchedule = directDebitManagement.getPaymentScheduleLineList().get(0).getPaymentSchedule();
 			Partner partner = paymentSchedule.getPartner();
 			partnerName = this.getPayeurPartnerName(partner);						// Nom/Raison sociale du débiteur
 
 			bankDetails = paymentSchedule.getBankDetails();
-			if(bankDetails == null)  {
+			if (bankDetails == null) {
 				bankDetails = partnerService.getDefaultBankDetails(partner);
-			}
-			if(bankDetails == null) {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-						AppAccountServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
+				if (bankDetails == null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2), AppAccountServiceImpl.EXCEPTION, partner.getName());
+				}
 			}
 		}
 
@@ -583,9 +578,8 @@ public class CfonbExportService {
 	private String createRecipientCFONB(Company company, Invoice invoice) throws AxelorException  {
 		Partner partner = invoice.getPartner();
 		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
-		if(bankDetails == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					AppAccountServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
+		if (bankDetails == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2), AppAccountServiceImpl.EXCEPTION, partner.getName());
 		}
 
 		BigDecimal amount = invoice.getDirectDebitAmount();
@@ -774,8 +768,7 @@ public class CfonbExportService {
 		try {
 			FileTool.writer(destinationFolder, fileName, cFONB);
 		} catch (IOException e) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_2),
-					AppAccountServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_EXPORT_2), AppAccountServiceImpl.EXCEPTION, e);
 		}
 
 
@@ -891,23 +884,19 @@ public class CfonbExportService {
 	 * 			Le RIB
 	 * @throws AxelorException
 	 */
-	public void testBankDetailsField(BankDetails bankDetails) throws AxelorException  {
-		if(bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_3),
-					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+	public void testBankDetailsField(BankDetails bankDetails) throws AxelorException {
+		if (bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_EXPORT_3), AppAccountServiceImpl.EXCEPTION, bankDetails.getIban(), bankDetails.getPartner().getName());
 		}
-		if(bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_4),
-					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+		if (bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_EXPORT_4), AppAccountServiceImpl.EXCEPTION, bankDetails.getIban(), bankDetails.getPartner().getName());
 		}
-		if(bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_5),
-					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+		if (bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_EXPORT_5), AppAccountServiceImpl.EXCEPTION, bankDetails.getIban(), bankDetails.getPartner().getName());
 		}
 		String bankAddress = bankDetails.getBankAddress().getAddress();
-		if(bankAddress == null || bankAddress.isEmpty()) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_6),
-					AppAccountServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+		if (bankAddress == null || bankAddress.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_EXPORT_6), AppAccountServiceImpl.EXCEPTION, bankDetails.getIban(), bankDetails.getPartner().getName());
 		}
 	}
 

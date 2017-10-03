@@ -247,21 +247,21 @@ public class TimesheetServiceImpl implements TimesheetService{
 		User user = timesheet.getUser();
 		Employee employee = user.getEmployee();
 		
-		if(fromGenerationDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.MISSING_FIELD);
+		if (fromGenerationDate == null) {
+			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE));
 		}
-		if(toGenerationDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.MISSING_FIELD);
+		if (toGenerationDate == null) {
+			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_TO_DATE));
 		}
-		if(product == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.MISSING_FIELD);
+		if (product == null) {
+			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
 		}
-		if(employee == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
+		if (employee == null) {
+			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName());
 		}
 		WeeklyPlanning planning = user.getEmployee().getPlanning();
-		if(planning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING), user.getName()), IException.CONFIGURATION_ERROR);
+		if (planning == null) {
+			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),user.getName());
 		}
 		List<DayPlanning> dayPlanningList = planning.getWeekDays();
 
@@ -454,7 +454,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		int discountTypeSelect = 1;
 		if(product == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
 		}
 		BigDecimal price = product.getSalePrice();
 		BigDecimal discountAmount = product.getCostPrice();
@@ -636,34 +636,31 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<Integer> listId = new ArrayList<Integer>();
 		int count = 0;
 		
-		if(timesheet.getFromDate() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE)), IException.MISSING_FIELD);
-		}
-		else if(timesheet.getToDate() != null){
-			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
+		if (timesheet.getFromDate() == null) {
+			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
+		} else if (timesheet.getToDate() != null) {
+			if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
 				for (TimesheetLine timesheetLine : timesheetLineList) {
 					count++;
-					if(timesheetLine.getDate().isAfter(timesheet.getToDate())){
+					if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
+						listId.add(count);
+					} else if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
 						listId.add(count);
 					}
-					else if(timesheetLine.getDate().isBefore(timesheet.getFromDate())){
+				}
+			}
+		} else {
+			if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
+				for (TimesheetLine timesheetLine : timesheetLineList) {
+					count++;
+					if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
 						listId.add(count);
 					}
 				}
 			}
 		}
-		else{
-			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
-				for (TimesheetLine timesheetLine : timesheetLineList) {
-					count++;
-					if(timesheetLine.getDate().isBefore(timesheet.getFromDate())){
-						listId.add(count);
-					}
-				}
-			}
-		}
-		if(!listId.isEmpty()){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT), Joiner.on(",").join(listId)), IException.FUNCTIONNAL);
+		if (!listId.isEmpty()) {
+			throw new AxelorException(timesheet, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT), Joiner.on(",").join(listId));
 
 		}
 	}

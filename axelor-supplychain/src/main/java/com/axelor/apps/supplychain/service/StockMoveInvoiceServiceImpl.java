@@ -85,7 +85,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		if (stockMove.getInvoice() != null
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 		}
 		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder);
 
@@ -112,7 +112,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		if (stockMove.getInvoice() != null
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 		}
 		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder);
 
@@ -148,12 +148,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		else if(stockMoveType == StockMoveRepository.TYPE_OUTGOING)  {  invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;  }
 		else  {  return null;  }
 		
-		if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			if(stockMoveType == StockMoveRepository.TYPE_INCOMING)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
-			}
-			else  { 
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+		if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+			if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
+				throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
+			} else { 
+				throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 			}
 		}
 		
@@ -318,7 +317,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		}
 
 		if (fieldErrors.length() > 0){
-			throw new AxelorException(fieldErrors.toString(), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, fieldErrors.toString());
 		}
 
 		/***
@@ -510,7 +509,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		}
 
 		if (fieldErrors.length() > 0){
-			throw new AxelorException(fieldErrors.toString(), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, fieldErrors.toString());
 		}
 
 		/***
@@ -649,7 +648,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 			return null;
 		}
 		if (product == null && !isTitleLine) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq());
 		}
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, stockMoveLine.getProductName(),

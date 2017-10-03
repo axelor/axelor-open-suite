@@ -37,7 +37,6 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -122,9 +121,8 @@ public class LocationLineServiceImpl implements LocationLineService {
 		}
 
 		if (baseQty.add(qty).compareTo(stockRules.getMaxQty()) > 0) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_3),
-					locationLine.getProduct().getName(), locationLine.getProduct().getCode()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_3),
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode());
 		}
 	}
 
@@ -147,21 +145,19 @@ public class LocationLineServiceImpl implements LocationLineService {
 	
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
-		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1), 
-					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
-		}
-		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 
+		if (!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), locationLine.getProduct().getName(), locationLine.getProduct().getCode());
+		
+		} else if (isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 
 				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)
-				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL)))  {
+				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL))) {
 
 			String trackingNumber = "";
-			if(locationLine.getTrackingNumber() != null)  {
+			if (locationLine.getTrackingNumber() != null) {
 				trackingNumber = locationLine.getTrackingNumber().getTrackingNumberSeq();
 			}
 			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_2), 
-					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber);
 		}
 	}
 
@@ -170,19 +166,17 @@ public class LocationLineServiceImpl implements LocationLineService {
 	    LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
 
 	    if(locationLine != null && locationLine.getCurrentQty().compareTo(qty) < 0) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1),
-					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), locationLine.getProduct().getName(), locationLine.getProduct().getCode());
 		}
 	}
 
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate)  {
+			LocalDate lastFutureStockMoveDate) {
 		
 		if(current)  {
 			if(isIncrement)  {
 				locationLine.setCurrentQty(locationLine.getCurrentQty().add(qty));
-			}
-			else  {
+			} else {
 				locationLine.setCurrentQty(locationLine.getCurrentQty().subtract(qty));
 			}
 			
@@ -190,8 +184,7 @@ public class LocationLineServiceImpl implements LocationLineService {
 		if(future)  {
 			if(isIncrement)  {
 				locationLine.setFutureQty(locationLine.getFutureQty().add(qty));
-			}
-			else  {
+			} else {
 				locationLine.setFutureQty(locationLine.getFutureQty().subtract(qty));
 			}
 			locationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);

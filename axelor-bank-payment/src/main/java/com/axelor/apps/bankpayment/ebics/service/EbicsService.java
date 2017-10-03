@@ -280,10 +280,10 @@ public class EbicsService {
 	    	session.addSessionParam("TEST", "true");
 	    }
 	    if (file == null) {
-	    	throw new AxelorException("File is required to send FUL request", IException.CONFIGURATION_ERROR);
+	    	throw new AxelorException(IException.CONFIGURATION_ERROR, "File is required to send FUL request");
 	    }
 	    if (user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && signature == null)  {
-	    	throw new AxelorException("Signature file is required to send FUL request", IException.CONFIGURATION_ERROR);
+	    	throw new AxelorException(IException.CONFIGURATION_ERROR, "Signature file is required to send FUL request");
 	    }
 	    
 	    session.addSessionParam("EBCDIC", "false");

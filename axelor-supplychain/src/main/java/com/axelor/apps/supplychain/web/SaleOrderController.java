@@ -293,8 +293,8 @@ public class SaleOrderController{
 		for (Subscription subscription : subscriptionList) {
 			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
 		}
-		if(listId.isEmpty()){
-			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+		if (listId.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
 		}
 		if(listId.size() == 1){
 			response.setView(ActionView
@@ -327,8 +327,8 @@ public class SaleOrderController{
 					listInvoiceId.add(invoice.getId());
 				}
 			}
-			if(listInvoiceId.isEmpty()){
-				throw new AxelorException(I18n.get("No sale order selected or no subscription to invoice"), IException.CONFIGURATION_ERROR);
+			if (listInvoiceId.isEmpty()) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No sale order selected or no subscription to invoice"));
 			}
 			response.setReload(true);
 			if(listInvoiceId.size() == 1){
@@ -354,8 +354,8 @@ public class SaleOrderController{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-		if(invoice == null){
-			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+		if (invoice == null) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
 		}
 		response.setReload(true);
 		response.setView(ActionView

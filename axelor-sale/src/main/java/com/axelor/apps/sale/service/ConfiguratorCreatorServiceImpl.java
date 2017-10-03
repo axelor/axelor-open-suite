@@ -43,7 +43,6 @@ import com.google.inject.persist.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -157,12 +156,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         if (attributes != null) {
             for (MetaJsonField attribute : attributes) {
                 if (attribute.getDefaultValue() == null) {
-                    throw new AxelorException(
-                            I18n.get(
-                                    IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES
-                            ),
-                            IException.CONFIGURATION_ERROR
-                    );
+                    throw new AxelorException(creator, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES));
                 }
                 attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }

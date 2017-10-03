@@ -241,8 +241,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		Currency companyCurrency = company.getCurrency();
 
-		if(companyCurrency == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),  company.getName()), IException.CONFIGURATION_ERROR);
+		if (companyCurrency == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2), company.getName());
 		}
 		
 		invoiceLine.setCompanyExTaxTotal(

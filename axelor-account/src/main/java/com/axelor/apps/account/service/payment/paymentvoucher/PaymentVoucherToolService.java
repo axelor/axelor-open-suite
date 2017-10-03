@@ -56,7 +56,7 @@ public class PaymentVoucherToolService  {
 			break;
 		
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef()), IException.MISSING_FIELD);
+			throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
 		}	
 		
 		return isDebitToPay;
@@ -95,7 +95,7 @@ public class PaymentVoucherToolService  {
 			break;
 		
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef()), IException.MISSING_FIELD);
+			throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
 		}	
 		
 		return isPurchase;

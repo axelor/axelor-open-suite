@@ -338,7 +338,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return senderRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD), bankOrderSeq), e, IException.MISSING_FIELD);
+			throw new AxelorException(e, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD), bankOrderSeq);
 		}
 	}
 	
@@ -403,7 +403,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return detailRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD), bankOrderLine.getSequence()), e, IException.MISSING_FIELD);
+			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD), bankOrderLine.getSequence());
 		}
 	}
 	
@@ -468,9 +468,8 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD), bankOrderLine.getSequence()), e, IException.MISSING_FIELD);
+			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD), bankOrderLine.getSequence());
 		}
-		
 		
 	}
 	
@@ -534,7 +533,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return totalRecord;
 			
 		} catch (AxelorException e) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD), bankOrderSeq), e, IException.MISSING_FIELD);
+			throw new AxelorException(e, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD), bankOrderSeq);
 		}
 	}
 }

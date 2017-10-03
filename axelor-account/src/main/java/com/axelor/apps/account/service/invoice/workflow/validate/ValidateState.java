@@ -49,7 +49,7 @@ public class ValidateState extends WorkflowInvoice {
 
 		if ((InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
 		 || (!InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
-			throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_VALIDATE_1), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
 		}
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);

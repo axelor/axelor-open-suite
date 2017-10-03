@@ -156,7 +156,7 @@ public class PaymentVoucherLoadService {
 		if (paymentVoucherContext.getPayVoucherElementToPayList() != null)  {  
 
 			if (paymentVoucherContext.getPaidAmount() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+				throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), AppAccountServiceImpl.EXCEPTION);
 			}
 			
 			paymentVoucher.setPaidAmount(paymentVoucherContext.getPaidAmount());

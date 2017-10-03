@@ -104,7 +104,7 @@ public class InvoicingProjectService {
 		Partner customer = project.getClientPartner();
 		Company company = this.getRootCompany(project);
 		if(company == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_COMPANY)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_COMPANY));
 		}
 		project.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
@@ -254,7 +254,7 @@ public class InvoicingProjectService {
 		Product product = project.getProduct();
 
 		if(product == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PRODUCT), project.getFullName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PRODUCT), project.getFullName());
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, project.getName(), project.getPrice(),

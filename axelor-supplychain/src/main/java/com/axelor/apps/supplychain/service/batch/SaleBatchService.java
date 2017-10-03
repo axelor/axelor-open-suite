@@ -47,11 +47,10 @@ public class SaleBatchService {
 			switch (saleBatch.getActionSelect()) {
 
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), saleBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), saleBatch.getActionSelect(), batchCode);
 			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), batchCode), IException.INCONSISTENCY);
+		} else {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), batchCode);
 		}
 
 	}

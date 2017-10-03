@@ -156,7 +156,7 @@ public class IOUtils {
       input.close();
       return content;
     } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -183,7 +183,7 @@ public class IOUtils {
       out.close();
       return out.toByteArray();
     } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 }

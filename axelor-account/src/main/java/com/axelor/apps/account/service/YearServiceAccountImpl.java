@@ -93,9 +93,8 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 			period.setClosureDateTime(LocalDateTime.now());
 		}
 		Company company = year.getCompany();
-		if(company == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.YEAR_1),
-					AppAccountServiceImpl.EXCEPTION,year.getName()), IException.CONFIGURATION_ERROR);
+		if (company == null)  {
+			throw new AxelorException(year, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.YEAR_1), AppAccountServiceImpl.EXCEPTION, year.getName());
 		}
 
 		Query q;

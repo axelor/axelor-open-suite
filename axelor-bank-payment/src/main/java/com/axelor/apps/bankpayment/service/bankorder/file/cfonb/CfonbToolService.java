@@ -39,10 +39,9 @@ public class CfonbToolService {
 	 * 			Une société
 	 * @throws AxelorException
 	 */
-	public void testDigital(String value, String zone) throws AxelorException  {
-		if(!StringTool.isDigital(value))  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT),
-							zone, value), IException.CONFIGURATION_ERROR);
+	public void testDigital(String value, String zone) throws AxelorException {
+		if(!StringTool.isDigital(value)) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT), zone, value);
 		}
 	}
 
@@ -68,10 +67,9 @@ public class CfonbToolService {
 	 * 			La longueur de l'enregistrement
 	 * @throws AxelorException
 	 */
-	public void testLength(String s, int size) throws AxelorException  {
-		if(s.length() != size)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE),
-					size), IException.CONFIGURATION_ERROR);
+	public void testLength(String s, int size) throws AxelorException {
+		if(s.length() != size) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE), size);
 		}
 	}
 	
@@ -107,7 +105,7 @@ public class CfonbToolService {
 	public void checkFilled(String value, String numZone) throws AxelorException  {
 		
 		if(Strings.isNullOrEmpty(value))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_EMPTY_ZONE), numZone), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_EMPTY_ZONE), numZone);
 		}
 		
 		

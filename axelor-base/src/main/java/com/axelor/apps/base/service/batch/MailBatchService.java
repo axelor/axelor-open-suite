@@ -49,7 +49,7 @@ public class MailBatchService extends AbstractBatchService {
 			batch = null;
 			break;
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), mailBatch.getActionSelect(), mailBatch.getCode()), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), mailBatch.getActionSelect(), mailBatch.getCode());
 		}
 		
 		return batch;

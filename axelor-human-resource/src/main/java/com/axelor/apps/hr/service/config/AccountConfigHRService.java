@@ -29,32 +29,23 @@ import com.axelor.i18n.I18n;
 public class AccountConfigHRService extends AccountConfigBankPaymentService  {
 	
 	public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException  {
-		
-		if(accountConfig.getExpenseJournal() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_JOURNAL),  
-					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (accountConfig.getExpenseJournal() == null) {
+			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EXPENSE_JOURNAL), accountConfig.getCompany().getName());
 		}
-		
 		return accountConfig.getExpenseJournal();
 	}
 	
 	public Account getExpenseEmployeeAccount(AccountConfig accountConfig) throws AxelorException  {
-		
-		if(accountConfig.getEmployeeAccount() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
-					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (accountConfig.getEmployeeAccount() == null) {
+			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EXPENSE_ACCOUNT), accountConfig.getCompany().getName());
 		}
-		
 		return accountConfig.getEmployeeAccount();
 	}
 	
 	public Account getExpenseTaxAccount(AccountConfig accountConfig) throws AxelorException  {
-		
-		if(accountConfig.getExpenseTaxAccount() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT_TAX),  
-					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (accountConfig.getExpenseTaxAccount() == null) {
+			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EXPENSE_ACCOUNT_TAX), accountConfig.getCompany().getName());
 		}
-		
 		return accountConfig.getExpenseTaxAccount();
 	}
 

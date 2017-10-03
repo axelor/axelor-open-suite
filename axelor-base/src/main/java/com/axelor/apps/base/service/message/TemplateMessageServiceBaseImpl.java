@@ -114,7 +114,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		try {
 			return reportSettings.generate().getFile();
 		} catch (AxelorException e) {
-			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2), e, IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
 		}
 
 	}
@@ -161,8 +161,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if ( !model.equals( template.getMetaModel().getFullName() ) ){
-			throw new AxelorException( I18n.get(com.axelor.apps.message.exception.IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		if (!model.equals(template.getMetaModel().getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(com.axelor.apps.message.exception.IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
 		}
 		
 		logger.debug("model : {}", model);

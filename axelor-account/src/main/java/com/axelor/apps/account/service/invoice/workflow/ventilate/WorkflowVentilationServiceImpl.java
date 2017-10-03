@@ -108,10 +108,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
                 .reduce(BigDecimal::add)
                 .get();
         if (totalPayments.compareTo(invoice.getInTaxTotal()) > 0) {
-            throw new AxelorException(
-                    I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH),
-                    IException.FUNCTIONNAL
-            );
+            throw new AxelorException(invoice, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
         }
     }
 }

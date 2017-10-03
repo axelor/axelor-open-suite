@@ -193,8 +193,7 @@ public class EventService {
 		Template changedDateTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingDateChangeTemplate();
 
 		if(deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES),event.getUser().getActiveCompany()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(event, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
 		}
 		if(!event.getEndDateTime().isEqual(previousEvent.getEndDateTime())){
 			for (Partner partner : contactSet) {
@@ -282,9 +281,8 @@ public class EventService {
 
 	public void sendMails(Event event) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MessagingException{
 		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
-		if(guestAddedTemplate == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES),event.getUser().getActiveCompany()),
-					IException.CONFIGURATION_ERROR);
+		if (guestAddedTemplate == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
 		}
 		if(event.getExternalGuestSet() != null){
 			for (Partner partner : event.getExternalGuestSet()) {

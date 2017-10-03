@@ -46,14 +46,14 @@ public class TemplateService {
 			return;
 		}
 		if(metaModel == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1), IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1));
 		}
 		
 		try {
 			this.validTarget(target, metaModel);
 		}
-		catch(Exception ex) {
-			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2), IException.INCONSISTENCY);
+		catch (Exception e) {
+			throw new AxelorException(e.getCause(), IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2));
 		}
 	}
 
