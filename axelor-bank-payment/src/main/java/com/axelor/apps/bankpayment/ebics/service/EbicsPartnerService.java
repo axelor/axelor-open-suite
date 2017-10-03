@@ -24,6 +24,6 @@ import com.axelor.exception.AxelorException;
 
 public interface EbicsPartnerService {
 
-	public void getBankStatements(EbicsPartner ebicsPartner)  throws AxelorException, IOException ;
+	public int getBankStatements(EbicsPartner ebicsPartner)  throws AxelorException, IOException ;
 	
 }

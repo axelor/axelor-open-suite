@@ -316,10 +316,12 @@ public class EbicsService {
 	    	throw new AxelorException(e,IException.TECHNICAL);
 	    }
 	    
-	    if(ebicsPartner.getUsePSR())  {
-	    	
-	    	sendFDLRequest(transportUser, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
-	    	
+	    try {
+		    if(ebicsPartner.getUsePSR())  {
+		    	sendFDLRequest(transportUser, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
+		    }
+	    } catch (AxelorException e) {
+	    	TraceBackService.trace(e);
 	    }
 	}
 

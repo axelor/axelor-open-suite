@@ -287,15 +287,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 	
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
-		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+		sendBankOrderFile(bankOrder);
+		realizeBankOrder(bankOrder);
 
+	}
+	
+	protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException  {
+		
 		File dataFileToSend = null;
 		File signatureFileToSend = null;
 
-		
 		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
@@ -303,13 +306,20 @@ public class BankOrderServiceImpl implements BankOrderService {
 		
 		sendFile(bankOrder, dataFileToSend, signatureFileToSend);
 
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected void realizeBankOrder(BankOrder bankOrder)  throws AxelorException {
+		
+		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
 		bankOrderRepo.save(bankOrder);
-
 	}
+	
 
-	public void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
+	protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
 
 		PaymentMode paymentMode = bankOrder.getPaymentMode();
 
