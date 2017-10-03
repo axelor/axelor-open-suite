@@ -18,6 +18,11 @@
 
 package com.axelor.apps.sale.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -39,11 +44,6 @@ import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -305,4 +305,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 + StringTool.getIdFromCollection(configuratorCreatorList)
                 + ")";
     }
+
+	@Override
+	@Transactional
+	public void authorizeUser(ConfiguratorCreator creator, User user) {
+		creator.addAuthorizedUserSetItem(user);
+	}
+	
 }

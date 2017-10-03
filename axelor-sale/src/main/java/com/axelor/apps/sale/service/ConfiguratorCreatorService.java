@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.script.ScriptBindings;
 
@@ -62,4 +63,10 @@ public interface ConfiguratorCreatorService {
      * @return the domain
      */
     String getConfiguratorCreatorDomain();
+
+	/**
+	 * Add the current user to the authorized user list
+	 * @param creator
+	 */
+	void authorizeUser(ConfiguratorCreator creator, User user);
 }
