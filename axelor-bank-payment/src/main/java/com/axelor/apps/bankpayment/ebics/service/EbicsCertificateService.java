@@ -209,8 +209,6 @@ public class EbicsCertificateService {
 		cert.setPemString(convertToPEMString(certificate));
 		cert.setPrivateKey(null);
 		
-		
-		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
 		computeFullName(cert);
