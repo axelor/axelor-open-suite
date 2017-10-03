@@ -250,10 +250,10 @@ public class MoveLineService {
 		int moveLineId = 1;
 
 		if (partner == null) {
-			throw new AxelorException(move, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId());
+			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId());
 		}
 		if (account2 == null) {
-			throw new AxelorException(move, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId());
+			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId());
 		}
 		
 		MoveLine moveLine1 = this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), invoice.getCompanyInTaxTotal(), null,
