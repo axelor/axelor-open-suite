@@ -19,8 +19,7 @@ package com.axelor.apps.bankpayment.ebics.xml;
 
 import java.math.BigInteger;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +98,8 @@ public class UserSignatureVerify  {
 
 		String sha = DigestUtils.sha256Hex(bankOrderContent);
 
+		log.debug("Digest (SHA256) of bank order content : {}", sha);
+
 		return sha;
 	}
 
@@ -110,18 +111,18 @@ public class UserSignatureVerify  {
 
 		String result = new BigInteger(hexSignature, 16).modPow(new BigInteger(exponent, 16), new BigInteger(modulus, 16)).toString(16);
 
-		log.debug("Orignal digest (with padding) : {}", result);
+		log.debug("Orignal digest from signature (with padding) : {}", result);
 
 		result = result.substring(result.length() - 64, result.length());
 
-		log.debug("Orignal digest : {}", result);
+		log.debug("Orignal digest from signature : {}", result);
 
 		return result;
 	}
 	
 	public String getHexSignature()  {
 		
-		 return new String(DatatypeConverter.parseHexBinary(new String(signature)));
-
+		return Hex.encodeHexString(signature);
+		
 	}
 }
