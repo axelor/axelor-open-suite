@@ -336,7 +336,7 @@ public class EbicsController {
 		
 		if (certs != null && certs.length > 0) {
 			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
-			cert = certificateService.updateCertificate(certificate, cert);
+			cert = certificateService.updateCertificate(certificate, cert, true);
 			response.setValue("validFrom", cert.getValidFrom());
 			response.setValue("validTo", cert.getValidTo());
 			response.setValue("issuer", cert.getIssuer());

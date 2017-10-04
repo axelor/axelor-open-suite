@@ -107,7 +107,7 @@ public class CertificateManager {
 	  
 	  EbicsCertificateService certificateService = Beans.get(EbicsCertificateService.class);
 	  
-	  cert = certificateService.updateCertificate(certificate, cert);
+	  cert = certificateService.updateCertificate(certificate, cert, true);
 	  
 	  cert.setPrivateKey(privateKey);
 	  

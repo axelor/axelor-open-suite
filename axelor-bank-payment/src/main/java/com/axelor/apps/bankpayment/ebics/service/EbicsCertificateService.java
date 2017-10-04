@@ -190,7 +190,7 @@ public class EbicsCertificateService {
 	}
 	
 	
-	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert, boolean cleanPrivateKey) throws CertificateEncodingException, IOException {
 		
 		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
 		log.debug("sha256 HEX : {}", sha);
@@ -207,7 +207,10 @@ public class EbicsCertificateService {
 		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
-		cert.setPrivateKey(null);
+		
+		if (cleanPrivateKey) {
+			cert.setPrivateKey(null);
+		}
 		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
@@ -228,7 +231,7 @@ public class EbicsCertificateService {
 			cert.setTypeSelect(type);
 		}
 		
-		cert =  updateCertificate(certificate, cert);
+		cert =  updateCertificate(certificate, cert, true);
 		
 		return certRepo.save(cert);
 	}
