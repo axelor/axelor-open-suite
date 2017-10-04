@@ -40,24 +40,7 @@ public class ConfiguratorCreatorController {
         this.configuratorCreatorService = configuratorCreatorService;
     }
 
-    /**
-     * Called from configurator creator form.
-     * Call {@link ConfiguratorCreatorService#generateConfigurator}
-     * @param request
-     * @param response
-     */
-    public void createConfigurator(ActionRequest request, ActionResponse response) {
-
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-
-        creator = configuratorCreatorRepo.find(creator.getId());
-
-        configuratorCreatorService.generateConfigurator(creator);
-        response.setSignal("refresh-app", true);
-        response.setFlash(I18n.get(IExceptionMessage.CONFIGURATOR_GENERATED));
-    }
-
-    public void testCreator(ActionRequest request, ActionResponse response) {
+    /*    public void testCreator(ActionRequest request, ActionResponse response) {
         ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
 
         creator = configuratorCreatorRepo.find(creator.getId());
@@ -75,7 +58,7 @@ public class ConfiguratorCreatorController {
         } catch (AxelorException e) {
             response.setAlert(e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Called from the sale order generate configurator wizard form.
@@ -99,6 +82,18 @@ public class ConfiguratorCreatorController {
         ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
         creator = configuratorCreatorRepo.find(creator.getId());
         configuratorCreatorService.updateAttributes(creator);
-        response.setReload(true);
+        response.setSignal("refresh-app", true);
+    }
+
+    /**
+     * Called from the configurator creator form on formula changes
+     * @param request
+     * @param response
+     */
+    public void updateIndicators(ActionRequest request, ActionResponse response) {
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+        creator = configuratorCreatorRepo.find(creator.getId());
+        configuratorCreatorService.updateIndicators(creator);
+        response.setSignal("refresh-app", true);
     }
 }

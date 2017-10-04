@@ -9,7 +9,7 @@
 
     <form name="configurator-form" title="Configurator"
           model="com.axelor.apps.sale.db.Configurator"
-          onNew="action-configurator-record-on-new"
+          onNew="action-configurator-group-on-new"
           onLoad="action-configurator-update-indicators,save">
         <panel readonlyIf="productId">
             <field name="productId" readonly="true" showTitle="false"
@@ -72,10 +72,19 @@
         <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
     </action-method>
 
+    <action-group name="action-configurator-group-on-new">
+        <action name="action-configurator-record-on-new"/>
+        <action name="action-configurator-attrs-on-new"/>
+    </action-group>
+
     <action-record name="action-configurator-record-on-new"
                    model="com.axelor.apps.sale.db.Configurator">
         <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
     </action-record>
+
+    <action-attrs name="action-configurator-attrs-on-new">
+        <attribute for="configuratorCreator" name="readonly" expr="eval: _configuratorCreator != null"/>
+    </action-attrs>
 
     <action-method name="action-configurator-method-creator-domain">
         <call class="com.axelor.apps.sale.web.ConfiguratorController"
