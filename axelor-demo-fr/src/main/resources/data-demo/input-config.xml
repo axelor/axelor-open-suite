@@ -492,7 +492,9 @@
 	
 	<input file="hr_employeeBonusType.csv" separator=";" type="com.axelor.apps.hr.db.EmployeeBonusType" />
 	
-	<input file="bankpayment_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" />
+	<input file="bankpayment_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason">
+		<bind to="name" eval="label ? code + ' - ' + label : code"/>
+	</input>
 	
 	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
 	
