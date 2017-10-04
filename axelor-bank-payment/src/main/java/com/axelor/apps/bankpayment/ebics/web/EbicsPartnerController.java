@@ -45,6 +45,7 @@ public class EbicsPartnerController {
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
+		response.setReload(true);
 		
 	}
 	
