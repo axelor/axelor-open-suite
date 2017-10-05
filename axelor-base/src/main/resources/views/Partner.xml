@@ -192,7 +192,7 @@
 						<editor layout="table" x-show-titles="false" >
 							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
 							<field name="address.addressL4" hidden="true" colSpan="12"/>
-							<field name="address" colSpan="3" canNew="true"/>
+							<field name="address" form-view="address-partner-address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()" />
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
@@ -707,7 +707,7 @@
 		<field name="fullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
 		<field name="fullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>
 	</action-record>
-	
+
 	<action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
 		<field name="currency" expr="#{__user__.activeCompany.currency}" if="#{!isContact}"/>
 		<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
@@ -719,7 +719,7 @@
 		<field name="isSupplier" expr="true" if="_isSupplier"/>
 		<field name="isCarrier" expr="true" if="_isCarrier"/>
 	</action-record>
-	
+
 	<action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{true}"/>
@@ -731,7 +731,7 @@
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
-	
+
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{false}"/>
@@ -744,7 +744,7 @@
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
-    
+
 	<action-record name="action-partner-record-normalize-fixed-phone-number" model="com.axelor.apps.base.db.Partner">
 		<field name="fixedPhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fixedPhone)"/>
 	</action-record>
