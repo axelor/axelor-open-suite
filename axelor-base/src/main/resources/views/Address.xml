@@ -77,7 +77,7 @@
 	</action-record>
 	
 	<action-record name="action-address-change-city" model="com.axelor.apps.base.db.Address">
-		<field name="addressL6" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name" if="addressL6 == null"/>
+		<field name="addressL6" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
 <!--   		<field name="addressL7Country" expr="eval:city.department==null?addressL7Country:city.department.region!=null?city.department.region.country:addressL7Country"/> -->
   		<field name="addressL7Country" expr="eval:city?.country"/>
 	</action-record>

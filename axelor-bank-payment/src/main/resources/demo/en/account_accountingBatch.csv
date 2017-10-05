@@ -1,0 +1,3 @@
+"code";"actionSelect";"company.importId";"bankDetails.importId";"currency.code";"reimbursementTypeSelect";"reimbursementExportTypeSelect";"debtRecoveryTypeSelect ";"directDebitDataTypeSelect";"dueDate";"interbankPaymentOrderTypeSelect";"updateCustAccountOk";"updateDueCustAccountOk";"updateDueDebtRecoveryCustAccountOk";"moveLineExportTypeSelect";"startDate";"endDate";"description"
+"AX_DD_INV";12;1;90000;"EUR";;;;1;"TODAY[20d]";;"false";"false";"false";;;;"Permet de prélever les factures ventilées en fonction de la date d'échéance."
+"AX_DD_SCH";12;1;90000;"EUR";;;;3;"TODAY[10d]";;"false";"false";"false";;;;"Permet de prélever les échéanciers en fonction de la date d'échéance"

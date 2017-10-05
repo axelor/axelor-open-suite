@@ -148,8 +148,8 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 				catch(AxelorException e){
 					TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 					incrementAnomaly();
-					if (e.getcategory() == IException.NO_VALUE ){ noValueAnomaly ++; }
-					if (e.getcategory() == IException.CONFIGURATION_ERROR ){ confAnomaly ++; }
+					if (e.getCategory() == IException.NO_VALUE ){ noValueAnomaly ++; }
+					if (e.getCategory() == IException.CONFIGURATION_ERROR ){ confAnomaly ++; }
 				}
 				finally {
 					total ++;

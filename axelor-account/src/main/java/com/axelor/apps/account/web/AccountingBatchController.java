@@ -109,18 +109,10 @@ public class AccountingBatchController {
 	public void actionDirectDebit(ActionRequest request, ActionResponse response){
 
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Batch batch = accountingBatchService.directDebit(accountingBatch);
 
-		Batch batch = null;
-
-		if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_EXPORT)  {
-			batch = accountingBatchService.paymentScheduleExport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-		else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_IMPORT)  {
-			batch = accountingBatchService.paymentScheduleImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-
-		if(batch != null)
-			response.setFlash(batch.getComments());
+		response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
 

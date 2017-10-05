@@ -217,7 +217,7 @@ public class AppServiceImpl implements AppService {
 	
 	private File extract(String module, String dirName, String lang, String type) {
 		
-		String dirPath = dirName + File.separator;
+		String dirPath = dirName + "/";
 		List<URL> files = new ArrayList<URL>();
 		files.addAll(MetaScanner.findAll(module, dirName, type + CONFIG_PATTERN));
 		if (files.isEmpty()) {
@@ -235,7 +235,7 @@ public class AppServiceImpl implements AppService {
 		for (URL file : files) {
 			String name = file.toString();
 			name = name.substring(name.lastIndexOf(dirName));
-			name = name.replace(dirName + File.separator + lang, dirName);
+			name = name.replace(dirName + "/" + lang, dirName);
 			try {
 				copy(file.openStream(), tmp, name);
 			} catch (IOException e) {

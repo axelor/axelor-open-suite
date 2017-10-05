@@ -500,6 +500,11 @@ public interface IExceptionMessage {
 	String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH =  /*$$(*/ "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
 	/**
+	 * Payment registration
+	 */
+	String NO_INVOICE_LINE =  /*$$(*/ "You can't register a payment if there are no invoice lines." /*)*/;
+
+	/**
 	 * Paybox service and controller
 	 */
 	static final String PAYBOX_1 = /*$$(*/ "%s : You must configure an amount paid for the payment entry %s." /*)*/;
@@ -544,6 +549,11 @@ public interface IExceptionMessage {
 	static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/ "Payment entry's type missing from payment entry %s" /*)*/;
 
 	/**
+	 * Payment schedule line service
+	 */
+	String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/ "Missing direct debit payment mode in the company's account configuration" /*)*/;
+
+	/**
 	 * Account chart controller
 	 */
 	static final String ACCOUNT_CHART_1 = /*$$(*/ "The chart of account has been loaded successfully" /*)*/;
@@ -574,6 +584,5 @@ public interface IExceptionMessage {
 
 
 	static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
-	
 	
 }

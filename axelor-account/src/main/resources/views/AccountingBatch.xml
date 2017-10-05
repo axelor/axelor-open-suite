@@ -26,15 +26,13 @@
 			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
 		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
-			<field name="directDebitTypeSelect"/>
-			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
-			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  colSpan="12">
-				<field name="directDebitExportTypeSelect"/>
-				<field name="debitDate"/>
-				<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
-				<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id" form-view="batch-form" grid-view="batch-grid"/>
-				<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			</panel>
+			<field name="directDebitDataTypeSelect" />
+			<field name="paymentMode"
+				domain="self.typeSelect = 2 AND self.inOutSelect = 1 AND self.generateBankOrder = TRUE"
+				grid-view="payment-mode-grid" form-view="payment-mode-form" />
+			<field name="dueDate" />
+			<field name="currency" />
+			<field name="includeOtherBankAccounts" if="__config__.app.getApp('base').getManageMultiBanks()" /> 
 		</panel>
 		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
 			<field name="creditTransferTypeSelect"/>

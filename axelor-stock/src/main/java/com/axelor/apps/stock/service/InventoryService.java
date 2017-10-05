@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -47,7 +48,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.tool.Pair;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -254,7 +254,7 @@ public class InventoryService {
 				Product product = inventoryLine.getProduct();
 				TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
 
-				realQties.put(new Pair<>(product, trackingNumber), inventoryLine.getRealQty());
+				realQties.put(Pair.of(product, trackingNumber), inventoryLine.getRealQty());
 
 				BigDecimal realQty = consolidatedRealQties.getOrDefault(product, BigDecimal.ZERO);
 				realQty = realQty.add(inventoryLine.getRealQty());
@@ -288,7 +288,7 @@ public class InventoryService {
 			for (LocationLine detailsLocationLine : detailsLocationLineList) {
 				Product product = detailsLocationLine.getProduct();
 				TrackingNumber trackingNumber = detailsLocationLine.getTrackingNumber();
-				BigDecimal realQty = realQties.get(new Pair<>(product, trackingNumber));
+				BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
 				if (realQty != null) {
 					detailsLocationLine.setLastInventoryRealQty(realQty);
 					detailsLocationLine.setLastInventoryDateT(inventory.getDateT());

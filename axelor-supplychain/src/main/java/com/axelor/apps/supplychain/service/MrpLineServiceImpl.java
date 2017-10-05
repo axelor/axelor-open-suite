@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.hibernate.proxy.HibernateProxy;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -46,9 +46,9 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.tool.Pair;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -60,6 +60,7 @@ import com.google.inject.persist.Transactional;
 
 public class MrpLineServiceImpl implements MrpLineService  {
 	
+	protected AppBaseService appBaseService;
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	protected PurchaseOrderLineService purchaseOrderLineService;
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -71,7 +72,8 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	@Inject
 	public MrpLineServiceImpl(AppBaseService appBaseService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, StockRulesService stockRulesService)  {
-		
+
+		this.appBaseService = appBaseService;
 		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
 		this.purchaseOrderLineService = purchaseOrderLineService;
 		this.purchaseOrderRepo = purchaseOrderRepo;
@@ -117,7 +119,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		PurchaseOrder purchaseOrder = null;
 	
 		if (purchaseOrders != null) {
-			key = new Pair<>(supplierPartner, maturityDate);
+			key = Pair.of(supplierPartner, maturityDate);
 			purchaseOrder = purchaseOrders.get(key);
 		}
 		
@@ -219,8 +221,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	
 	public MrpLineOrigin createMrpLineOrigin(Model model)  {
 		
-		Class<?> klass = model.getClass();
-		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		Class<?> klass = EntityHelper.getEntityClass(model);
 		
 		MrpLineOrigin mrpLineOrigin = new MrpLineOrigin();
 		mrpLineOrigin.setRelatedToSelect(klass.getCanonicalName());

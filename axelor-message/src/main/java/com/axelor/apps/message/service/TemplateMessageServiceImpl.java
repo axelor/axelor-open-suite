@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,13 +61,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected TemplateMaker maker;
-	
+
 	protected MessageService messageService;
-	
+
 	protected EmailAddressRepository emailAddressRepo;
 
 	@Inject
-	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){
+	public TemplateMessageServiceImpl(MessageService messageService,
+			EmailAddressRepository emailAddressRepo) {
 		this.messageService = messageService;
 		this.emailAddressRepo = emailAddressRepo;
 	}
@@ -76,8 +76,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Override
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		Class<?> klass = model.getClass();
-		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		Class<?> klass = EntityHelper.getEntityClass(model);
 		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
 		
 	}

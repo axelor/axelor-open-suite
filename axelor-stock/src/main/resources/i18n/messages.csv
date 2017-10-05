@@ -158,6 +158,7 @@
 "Inventory.rack",,,
 "Inventory.realQty",,,
 "Inventory.title",,,
+"Inventory.trackingNumber",,,
 "Inventory.unit",,,
 "Last Future Stock Move",,,
 "Last inventory",,,

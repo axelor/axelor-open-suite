@@ -147,8 +147,8 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 			catch(AxelorException e){
 				TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				incrementAnomaly();
-				if (e.getcategory() == IException.NO_UNIQUE_KEY) { duplicateAnomaly ++; }
-				else if (e.getcategory() == IException.CONFIGURATION_ERROR) { configurationAnomaly ++; }
+				if (e.getCategory() == IException.NO_UNIQUE_KEY) { duplicateAnomaly ++; }
+				else if (e.getCategory() == IException.CONFIGURATION_ERROR) { configurationAnomaly ++; }
 			}
 			finally {
 				total ++;

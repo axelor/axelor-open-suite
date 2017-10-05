@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
+    	<toolbar>
+    		<button name="accountingReconcile" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
+    	</toolbar>
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
@@ -154,6 +157,9 @@
 		</panel-tabs>
 	</form>
     
+    <action-method name="action-method-accounting-reconcile">
+    	<call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile"/>
+    </action-method>
     
     <action-attrs name="action-move-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>

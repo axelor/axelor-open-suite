@@ -20,11 +20,8 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import java.time.LocalDate;
-import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.db.Model;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +38,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -77,7 +75,7 @@ public class BankOrderLineService {
 	public BankOrderLine createBankOrderLine(BankOrderFileFormat bankOrderFileFormat, Partner partner, BigDecimal amount, Currency currency, 
 			LocalDate bankOrderDate, String receiverReference,  String receiverLabel) throws AxelorException{
 		
-		BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner, true);
+		BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner);
 		
 		return this.createBankOrderLine(bankOrderFileFormat, null, partner, receiverBankDetails, amount, currency, bankOrderDate, receiverReference, receiverLabel);
 	

@@ -18,10 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -151,36 +148,17 @@ public class StockMoveController {
 	public void  viewDirection(ActionRequest request, ActionResponse response) {
 
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-
-		Address fromAddress = stockMove.getFromAddress();
-		Address toAddress = stockMove.getToAddress();
-		String msg = "";
-		if(fromAddress == null)
-			fromAddress =  stockMove.getCompany().getAddress();
-		if(toAddress == null)
-			toAddress =  stockMove.getCompany().getAddress();
-		if(fromAddress == null || toAddress == null)
-			msg = I18n.get(IExceptionMessage.STOCK_MOVE_11);
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM)
-			msg = I18n.get(IExceptionMessage.STOCK_MOVE_12);
-		if(msg.isEmpty()){
-			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
-			String aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
-			BigDecimal dLat = fromAddress.getLatit();
-			BigDecimal dLon = fromAddress.getLongit();
-			BigDecimal aLat = toAddress.getLatit();
-			BigDecimal aLon =  toAddress.getLongit();
-			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
-			if(result != null){
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", I18n.get("Map"));
-				mapView.put("resource", result.get("url"));
-				mapView.put("viewType", "html");
-			    response.setView(mapView);
-			}
-			else response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_13),dString,aString));
-		}else response.setFlash(msg);
-
+		try {
+			Map<String, Object> result = Beans.get(StockMoveService.class)
+					.viewDirection(stockMove);
+			Map<String,Object> mapView = new HashMap<>();
+			mapView.put("title", I18n.get("Map"));
+			mapView.put("resource", result.get("url"));
+			mapView.put("viewType", "html");
+			response.setView(mapView);
+		} catch (Exception e) {
+		    response.setFlash(e.getLocalizedMessage());
+		}
 	}
 
 	@SuppressWarnings("unchecked")

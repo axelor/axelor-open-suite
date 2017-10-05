@@ -20,6 +20,8 @@ package com.axelor.apps.production.service;
 import java.time.LocalDate;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
@@ -35,7 +37,6 @@ import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
-import com.axelor.apps.tool.Pair;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;

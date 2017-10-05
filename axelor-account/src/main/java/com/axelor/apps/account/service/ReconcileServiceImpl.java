@@ -20,9 +20,9 @@ package com.axelor.apps.account.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
@@ -131,7 +132,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public int confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException  {
+	public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException  {
 
 		this.reconcilePreconditions(reconcile);
 
@@ -161,12 +162,8 @@ public class ReconcileServiceImpl  implements ReconcileService {
 			this.updateInvoicePayments(reconcile);
 		}
 		
-		reconcileRepository.save(reconcile);
-
-		return reconcile.getStatusSelect();
+		return reconcileRepository.save(reconcile);
 	}
-
-
 
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException  {
 

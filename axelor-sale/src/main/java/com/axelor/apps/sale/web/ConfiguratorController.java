@@ -62,8 +62,7 @@ public class ConfiguratorController {
             configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
             response.setValue("indicators", request.getContext().get("indicators"));
         } catch (AxelorException e) {
-            TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            TraceBackService.trace(response, e);
         }
     }
 
@@ -79,7 +78,7 @@ public class ConfiguratorController {
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
         configurator = configuratorRepository.find(configurator.getId());
         try {
-            configuratorService.generateProduct(configurator, jsonAttributes, jsonIndicators);
+            configuratorService.generate(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
             if (configurator.getProductId() != null) {
                 response.setView(ActionView
@@ -92,13 +91,13 @@ public class ConfiguratorController {
             }
         } catch (Exception e) {
             TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            response.setError(e.getMessage());
         }
     }
 
     /**
      * Called from configurator wizard form view,
-     * call {@link ConfiguratorService#addLineToSaleOrder(Configurator, SaleOrder, JsonContext, JsonContext)}
+     * call {@link ConfiguratorService#addLineToSaleOrder(Configurator, SaleOrder, JsonContext, JsonContext, int)}
      * @param request
      * @param response
      */
@@ -106,6 +105,7 @@ public class ConfiguratorController {
                                       ActionResponse response) {
         Configurator configurator = request.getContext().asType(Configurator.class);
         long saleOrderId = ((Integer) request.getContext().get("_saleOrderId")).longValue();
+        int updateFromSelect = Integer.parseInt(request.getContext().get("updateFromSelect").toString());
 
         JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
@@ -114,11 +114,10 @@ public class ConfiguratorController {
         SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
         try {
             configuratorService.addLineToSaleOrder(configurator, saleOrder,
-                    jsonAttributes, jsonIndicators);
+                    jsonAttributes, jsonIndicators, updateFromSelect);
             response.setSignal("refresh-app",true);
         } catch (Exception e) {
-            TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            TraceBackService.trace(response, e);
         }
     }
 

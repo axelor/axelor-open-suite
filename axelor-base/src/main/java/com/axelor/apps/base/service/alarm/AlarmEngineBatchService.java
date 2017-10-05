@@ -23,7 +23,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +31,7 @@ import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
@@ -44,15 +44,12 @@ public class AlarmEngineBatchService extends AbstractBatch {
 			.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected AlarmEngineService<Model> alarmEngineService;
+	protected AlarmRepository alarmRepo;
 	
 	@Inject
-	private AlarmRepository alarmRepo;
-	
-	@Inject
-	public AlarmEngineBatchService (AlarmEngineService<Model> alarmEngineService) {
-		
-		this.alarmEngineService = alarmEngineService; 
-		
+	public AlarmEngineBatchService(AlarmEngineService<Model> alarmEngineService, AlarmRepository alarmRepo) {
+		this.alarmEngineService = alarmEngineService;
+		this.alarmRepo = alarmRepo;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,16 +131,7 @@ public class AlarmEngineBatchService extends AbstractBatch {
 	
 	private <T extends Model> boolean isAssociable(Field field, T t){
 		
-		return field.getType().equals( persistentClass(t) );
-		
-	}
-	
-	private <T extends Model> Class<?> persistentClass(T t){
-		
-		if (t instanceof HibernateProxy) {
-		      return ((HibernateProxy) t).getHibernateLazyInitializer().getPersistentClass();
-		}
-		else { return t.getClass(); }
+		return field.getType().equals( EntityHelper.getEntityClass(t) );
 		
 	}
 

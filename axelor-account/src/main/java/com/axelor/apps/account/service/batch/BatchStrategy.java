@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
@@ -31,8 +31,6 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.account.service.PaymentScheduleExportService;
-import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.ReimbursementService;
@@ -40,8 +38,8 @@ import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
+import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -63,8 +61,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected RejectImportService rejectImportService;
 	protected CfonbExportService cfonbExportService;
 	protected CfonbImportService cfonbImportService;
-	protected PaymentScheduleExportService paymentScheduleExportService;
-	protected PaymentScheduleImportService paymentScheduleImportService;
 	protected PaymentModeService paymentModeService;
 	protected InterbankPaymentOrderImportService interbankPaymentOrderImportService;
 	protected InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService;
@@ -117,23 +113,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected BatchStrategy(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.reimbursementImportService = reimbursementImportService;
-		this.rejectImportService = rejectImportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-
-
-	protected BatchStrategy(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.paymentScheduleExportService = paymentScheduleExportService;
-		this.cfonbExportService = cfonbExportService;
-		this.paymentModeService = paymentModeService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-	protected BatchStrategy(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.paymentScheduleImportService = paymentScheduleImportService;
 		this.rejectImportService = rejectImportService;
 		this.batchAccountCustomer = batchAccountCustomer;
 	}

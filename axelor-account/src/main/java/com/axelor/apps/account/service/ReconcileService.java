@@ -32,7 +32,7 @@ public interface ReconcileService {
 	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, boolean canBeZeroBalanceOk);
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public int confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException;
+	public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException;
 	
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
 	
@@ -52,7 +52,10 @@ public interface ReconcileService {
 	
 	public List<Reconcile> getReconciles(MoveLine moveLine);
 
-    public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
-        return acc1.getAccount().getReconcileOk() && acc2.getAccount().getReconcileOk() && acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount());
-    }
+	public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
+		return acc1.getAccount().getReconcileOk() && acc2.getAccount().getReconcileOk()
+				&& (acc1.getAccount() == acc2.getAccount()
+						|| acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
+	}
+
 }

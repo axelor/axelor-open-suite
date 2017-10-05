@@ -137,6 +137,14 @@ public class DashboardBuilderService {
 		String actionName = "action-"
 				+ (dashboard + "-" + name).replace(".", "-");
 		
+		boolean isJson = model != null && model.contentEquals(MetaJsonRecord.class.getName());
+		
+		String otherView = "form";
+		String view = dashletBuilder.getViewType();
+		if (view == "form") {
+			otherView = "grid";
+		}
+		
 		String xmlId = StudioMetaService.XML_ID_PREFIX + actionName;
 		StringBuilder xml = new StringBuilder();
 		xml.append("<action-view name=\"" + actionName + "\" ");
@@ -146,13 +154,20 @@ public class DashboardBuilderService {
 			xml.append("model=\"" + model + "\"");
 		}
 		xml.append(">");
-		xml.append("\n\t<view type=\"" + dashletBuilder.getViewType() + "\" ");
+		xml.append("\n\t<view type=\"" + view + "\" ");
 		xml.append("name=\"" +  name + "\" />");
+		if (isJson) {
+			xml.append("\n\t<view type=\"" + otherView + "\" ");
+			xml.append("name=\"" +  name.replace("-" + view, "-" + otherView) + "\" />");
+		}
+		else {
+			xml.append("\n\t<view type=\"" + otherView  + "\" />");
+		}
 		if (dashletBuilder.getPaginationLimit() > 0) {
 			xml.append("\n\t<view-param name=\"limit\" value=\"" + dashletBuilder.getPaginationLimit().toString() + "\"/>");
 		}
 		
-		if (model != null && model.contentEquals(MetaJsonRecord.class.getName())) {
+		if (isJson) {
 			String[] models = name.split("-");
 			xml.append("\n\t<domain>self.jsonModel = '" + models[models.length - 2] + "'</domain>");
 		}

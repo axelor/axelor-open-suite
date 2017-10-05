@@ -13,6 +13,7 @@
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
         <string name="productFormula" title="Product"/>
         <boolean name="defProductAsFormula" title="Define with a script" default="false"/>
+        <boolean name="defProductFromConfigurator" title="Use generated product" default="true"/>
         <decimal name="qty" title="Qty"/>
         <string name="qtyFormula" title="Qty"/>
         <boolean name="defQtyAsFormula" title="Define with a script" default="false"/>

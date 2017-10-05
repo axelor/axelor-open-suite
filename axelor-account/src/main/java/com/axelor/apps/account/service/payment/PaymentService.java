@@ -19,13 +19,13 @@ package com.axelor.apps.account.service.payment;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class PaymentService {
@@ -62,20 +63,47 @@ public class PaymentService {
 		today = appAccountService.getTodayDate();
 	}
 
-
-
 	/**
-	 * Utiliser le trop perçu entre deux listes de lignes d'écritures (une en débit, une en crédit)
-	 * Si cette methode doit être utilisée, penser à ordonner les listes qui lui sont passées par date croissante
-	 * Ceci permet de payer les facture de manière chronologique.
+	 * Use excess payment between a list of debit move lines and a list of credit move lines.
+	 * The lists needs to be ordered by date in order to pay the invoices chronologically.
 	 *
 	 * @param debitMoveLines = dûs
 	 * @param creditMoveLines = trop-perçu
 	 *
-	 * @return
 	 * @throws AxelorException
 	 */
 	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
+		useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, false);
+	}
+	
+	/**
+	 * Use excess payment between a list of debit move lines and a list of credit move lines.
+	 * The lists needs to be ordered by date in order to pay the invoices chronologically.
+	 * This method doesn't throw any exception if a reconciliation fails.
+	 * 
+	 * @param debitMoveLines
+	 * @param creditMoveLines
+	 */
+	public void useExcessPaymentOnMoveLinesDontThrow(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
+		try {
+			useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			log.debug(e.getMessage());
+		}
+	}
+
+	/**
+	 * Use excess payment between a list of debit move lines and a list of credit move lines.
+	 * The lists needs to be ordered by date in order to pay the invoices chronologically.
+	 * 
+	 * @param debitMoveLines
+	 * @param creditMoveLines
+	 * @param dontThrow
+	 * 
+	 * @throws AxelorException
+	 */
+	protected void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow) throws AxelorException {
 
 		if(debitMoveLines != null && creditMoveLines != null){
 
@@ -108,44 +136,65 @@ public class PaymentService {
 
 					for(MoveLine debitMoveLine : debitMoveLines){
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
-
-							if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
-								amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
-								debitMoveLine.setMaxAmountToReconcile(null);
+							try {
+								createReconcile(debitMoveLine, creditMoveLine, amount, debitTotalRemaining, creditTotalRemaining, reconcile);
+							} catch(AxelorException e) {
+								if(dontThrow) {
+									TraceBackService.trace(e);
+									log.debug(e.getMessage());
+								} else {
+									throw e;
+								}
 							}
-							else  {
-								amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
-							}
-							log.debug("amount : {}",amount);
-							log.debug("debitTotalRemaining : {}",debitTotalRemaining);
-							log.debug("creditTotalRemaining : {}",creditTotalRemaining);
-							BigDecimal nextDebitTotalRemaining = debitTotalRemaining.subtract(amount);
-							BigDecimal nextCreditTotalRemaining = creditTotalRemaining.subtract(amount);
-							// Gestion du passage en 580
-							if(nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
-									|| nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0)  {
-								log.debug("last loop");
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
-							}
-							else  {
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
-							}
-							// End gestion du passage en 580
-
-							reconcileService.confirmReconcile(reconcile, true);
-
-							debitTotalRemaining= debitTotalRemaining.subtract(amount);
-							creditTotalRemaining = creditTotalRemaining.subtract(amount);
-
-							log.debug("Réconciliation : {}", reconcile);
-
 						}
 					}
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Private method called by useExcessPaymentOnMoveLines used to lighten it and to create a reconcile
+	 * 
+	 * @param debitMoveLine
+	 * @param creditMoveLine
+	 * @param amount
+	 * @param debitTotalRemaining
+	 * @param creditTotalRemaining
+	 * @param reconcile
+	 * @throws AxelorException
+	 */
+	private void createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, BigDecimal debitTotalRemaining, BigDecimal creditTotalRemaining, Reconcile reconcile) throws AxelorException {
+		if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
+			amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
+			debitMoveLine.setMaxAmountToReconcile(null);
+		}
+		else  {
+			amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
+		}
+		log.debug("amount : {}",amount);
+		log.debug("debitTotalRemaining : {}",debitTotalRemaining);
+		log.debug("creditTotalRemaining : {}",creditTotalRemaining);
+		BigDecimal nextDebitTotalRemaining = debitTotalRemaining.subtract(amount);
+		BigDecimal nextCreditTotalRemaining = creditTotalRemaining.subtract(amount);
+		// Gestion du passage en 580
+		if(nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
+				|| nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0)  {
+			log.debug("last loop");
+			reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
+		}
+		else  {
+			reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
+		}
+		// End gestion du passage en 580
 
+		reconcileService.confirmReconcile(reconcile, true);
+
+		debitTotalRemaining= debitTotalRemaining.subtract(amount);
+		creditTotalRemaining = creditTotalRemaining.subtract(amount);
+
+		log.debug("Réconciliation : {}", reconcile);
+	}
 
 	/**
 	 * Il crée des écritures de trop percu avec des montants exacts pour chaque débitMoveLines

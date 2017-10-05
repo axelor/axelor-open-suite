@@ -89,7 +89,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		return amount;
 	}
 
+	@Override
+	public String[] getProductSupplierInfos(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
 
+		Product product = purchaseOrderLine.getProduct();
+		SupplierCatalog supplierCatalog = getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+
+		if (supplierCatalog != null) {
+			String productName = supplierCatalog.getProductSupplierName();
+			String productCode = supplierCatalog.getProductSupplierCode();
+			return new String[]{ productName, productCode };
+		}
+		return null;
+	}
+	
 	@Override
 	public BigDecimal getUnitPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine) throws AxelorException  {
 

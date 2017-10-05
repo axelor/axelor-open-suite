@@ -16,7 +16,9 @@
     <string title="Message" name="message" large="true"/>
     <string title="Trace" name="trace" large="true"/>
     <long name="batchId" title="Batch" />
-    
+    <string name="ref" title="Reference" />
+    <long name="refId" title="Reference ID" nullable="true" />
+
     <string search="id,date" name="name" namecolumn="true">
 		
 			return this.id + " : " + this.date;  

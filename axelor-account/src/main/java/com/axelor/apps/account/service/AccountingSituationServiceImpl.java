@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.account.service;
 
+import java.util.List;
+import java.util.Set;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 //import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
@@ -32,9 +37,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.util.List;
-import java.util.Set;
 
 
 public class AccountingSituationServiceImpl implements AccountingSituationService {
@@ -182,6 +184,57 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 	@Override
 	public void updateCustomerCredit(Partner partner) throws AxelorException {
 		// Nothing to do if the supplychain module is not loaded.
+	}
+
+	@Override
+	public Account getCustomerAccount(Partner partner, Company company) throws AxelorException {
+		Account account = null;
+		AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+		if (accountingSituation != null) {
+			account = accountingSituation.getCustomerAccount();
+		}
+
+		if (account == null) {
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			account = accountConfigService.getCustomerAccount(accountConfig);
+		}
+
+		return account;
+	}
+
+	@Override
+	public Account getSupplierAccount(Partner partner, Company company) throws AxelorException {
+		Account account = null;
+		AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+		if (accountingSituation != null) {
+			account = accountingSituation.getSupplierAccount();
+		}
+
+		if (account == null) {
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			account = accountConfigService.getSupplierAccount(accountConfig);
+		}
+
+		return account;
+	}
+
+	@Override
+	public Account getEmployeeAccount(Partner partner, Company company) throws AxelorException {
+		Account account = null;
+		AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+		if (accountingSituation != null) {
+			account = accountingSituation.getEmployeeAccount();
+		}
+
+		if (account == null) {
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			account = accountConfigService.getEmployeeAccount(accountConfig);
+		}
+
+		return account;
 	}
 
 }
