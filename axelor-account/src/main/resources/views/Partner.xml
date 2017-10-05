@@ -33,7 +33,7 @@
 			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
-					<field name="bank" canNew="true"></field>
+					<field name="bank" onChange="action-group-account-bankdetails-iban-onchange" canNew="true"/>
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
 					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
