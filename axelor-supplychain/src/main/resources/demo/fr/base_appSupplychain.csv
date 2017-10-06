@@ -1,2 +1,2 @@
-"typeSelect";"allowSusbcriptionSaleOrder";"manageInvoicedAmountByLine";"generateInvoiceFromSaleOrder";"customerStockMoveManagement";"custStockMoveMgtOnSO";"terminateSaleOrderOnDelivery";"supplierStockMoveManagement";"terminatePurchaseOrderOnReceipt";"allowTimetableInvoicing";"generateInvoiceFromStockMove"
+"code";"allowSusbcriptionSaleOrder";"manageInvoicedAmountByLine";"generateInvoiceFromSaleOrder";"customerStockMoveManagement";"custStockMoveMgtOnSO";"terminateSaleOrderOnDelivery";"supplierStockMoveManagement";"terminatePurchaseOrderOnReceipt";"allowTimetableInvoicing";"generateInvoiceFromStockMove"
 "supplychain";"true";"true";"true";"true";"true";"true";"true";"true";"true";"true"

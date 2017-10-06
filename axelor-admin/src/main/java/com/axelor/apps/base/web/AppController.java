@@ -70,9 +70,9 @@ public class AppController {
 		
 		App app = request.getContext().asType(App.class);
 		
-		String type = app.getTypeSelect();
-		String appName = Inflector.getInstance().camelize(type);
-		String viewName = "app-" + type + "-config-form";
+		String code = app.getCode();
+		String appName = Inflector.getInstance().camelize(code);
+		String viewName = "app-" + code + "-config-form";
 		
 		if (metaViewRepo.findByName(viewName) == null) {
 			response.setFlash(I18n.get("No configuration required"));

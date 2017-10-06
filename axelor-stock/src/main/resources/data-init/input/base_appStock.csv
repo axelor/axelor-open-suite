@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-Stock;STOCK;Stock configuration;stock;app-stock.png;axelor-stock;base;20
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Stock";"stock";5;"Stock configuration";"app-stock.png";"axelor-stock";"base";20

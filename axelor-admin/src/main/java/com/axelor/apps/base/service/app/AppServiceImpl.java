@@ -50,10 +50,8 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaScanner;
-import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.schema.views.Selection.Option;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -69,8 +67,6 @@ public class AppServiceImpl implements AppService {
 
 	private static final String DIR_INIT = "data-init" + File.separator + "app";
 
-	private static final String APP_TYPE_SELECT = "app.type.select";
-	
 	private static final String CONFIG_PATTERN = "-config.xml";
 	
 	private static final String IMG_DIR = "img";
@@ -113,19 +109,19 @@ public class AppServiceImpl implements AppService {
 	private void importData(App app, String dataDir) {
 		
 		String modules = app.getModules();
-		String type = app.getTypeSelect();
+		String code = app.getCode();
 		String lang = getLanguage(app);
 		
-		log.debug("Data import: App type: {}, App lang: {}", type, lang);
+		log.debug("Data import: App code: {}, App lang: {}", code, lang);
 		
 		for (String module : modules.split(",")) {
 			log.debug("Importing module: {}", module);
-			File tmp = extract(module, dataDir, lang, type);
+			File tmp = extract(module, dataDir, lang, code);
 			if (tmp == null) {
 				continue;
 			}
 			try {
-				File config = FileUtils.getFile(tmp, dataDir, type + CONFIG_PATTERN);
+				File config = FileUtils.getFile(tmp, dataDir, code + CONFIG_PATTERN);
 				File data = FileUtils.getFile(tmp, dataDir);
 				if (config != null && config.exists()) {
 					runImport(config, data);
@@ -215,11 +211,11 @@ public class AppServiceImpl implements AppService {
 
 	}
 	
-	private File extract(String module, String dirName, String lang, String type) {
+	private File extract(String module, String dirName, String lang, String code) {
 		
 		String dirPath = dirName + "/";
 		List<URL> files = new ArrayList<URL>();
-		files.addAll(MetaScanner.findAll(module, dirName, type + CONFIG_PATTERN));
+		files.addAll(MetaScanner.findAll(module, dirName, code + CONFIG_PATTERN));
 		if (files.isEmpty()) {
 			return null;
 		}
@@ -275,16 +271,13 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public App getApp(String type) {
-		if (type == null) {
-			return null;
-		}
-		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).cacheable().fetchOne();
+	public App getApp(String code) {
+		return Beans.get(AppRepository.class).findByCode(code);
 	}
 
 	@Override
-	public boolean isApp(String type) {
-		App app = getApp(type);
+	public boolean isApp(String code) {
+		App app = getApp(code);
 		if (app == null) {
 			return false;
 		}
@@ -295,19 +288,14 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public List<App> getDepends(App app, Boolean active) {
 
-		String dependsOn = app.getDependsOn();
-		if (dependsOn == null) {
-			return new ArrayList<App>();
+		List<App> apps = new ArrayList<App>();
+		
+		for (App depend : app.getDependsOnSet()) {
+			if (depend.getActive() == active) {
+				apps.add(depend);
+			}
 		}
-
-		String query = "self.typeSelect in (?1)";
-
-		if (active != null) {
-			query += " AND self.active = " + active;	
-		}
-
-		List<App> apps = appRepo.all().filter(query, Arrays.asList(dependsOn.split(","))).fetch();
-		log.debug("App: {}, DependsOn: {}, Parent active: {}, Total parent founds: {}", app.getName(), dependsOn, active, apps.size());
+		
 		return sortApps(apps);
 	}
 
@@ -326,17 +314,14 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public List<App> getChildren(App app, Boolean active) {
 
-		String type = app.getTypeSelect();
+		String code = app.getCode();
 
-		String query = "self.dependsOn = ?1 "
-				+ "OR self.dependsOn like ?2 "
-				+ "OR self.dependsOn like ?3 "
-				+ "OR self.dependsOn like ?4 ";
+		String query = "self.dependsOnSet.code = ?1";
 
 		if (active != null) {
 			query = "(" + query + ") AND self.active = " + active;
 		}
-		List<App> apps = appRepo.all().filter(query, type, type + ",%", "%," + type + ",%",  "%," + type).fetch();
+		List<App> apps = appRepo.all().filter(query, code).fetch();
 
 		log.debug("Parent app: {}, Total children: {}", app.getName(), apps.size());
 
@@ -354,7 +339,7 @@ public class AppServiceImpl implements AppService {
 
 		app = appRepo.find(app.getId());
 		
-		log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getTypeSelect());
+		log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getCode());
 		if (!app.getInitDataLoaded()) {
 			importDataInit(app);
 		}
@@ -383,15 +368,8 @@ public class AppServiceImpl implements AppService {
 			@Override
 			public int compare(App app1, App app2) {
 
-				Option option1 = MetaStore.getSelectionItem(APP_TYPE_SELECT, app1.getTypeSelect());
-				Option option2 = MetaStore.getSelectionItem(APP_TYPE_SELECT, app2.getTypeSelect());
-
-				if (option1 == null || option2 == null) {
-					return 0;
-				}
-
-				Integer order1 = option1.getOrder();
-				Integer order2 = option2.getOrder();
+				Integer order1 = app1.getInstallOrder();
+				Integer order2 = app2.getInstallOrder();
 
 				if (order1 < order2) {
 					return -1;
@@ -446,7 +424,7 @@ public class AppServiceImpl implements AppService {
 			input.setFileName(csvName);
 			input.setTypeName(klass.getName());
 			input.setCallable("com.axelor.csv.script.ImportApp:importApp");
-			input.setSearch("self.typeSelect =:typeSelect");
+			input.setSearch("self.code =:code");
 			input.setSeparator(';');
 			csvConfig.getInputs().add(input);
 			InputStream stream = klass.getResourceAsStream("/data-init/input/" +  csvName);

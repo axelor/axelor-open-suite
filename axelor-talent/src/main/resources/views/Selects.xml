@@ -3,12 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<selection name="app.type.select" id="talent.app.type.select">
-		<option order="20" value="training">Training</option>
-		<option order="21" value="recruitment">Recruitment</option>
-		<option order="22" value="appraisal">Appraisal</option>
-	</selection>
-
 	<selection name="training.register.rating.select">
 		<option value="0">0 %</option>
 		<option value="10">10 %</option>
