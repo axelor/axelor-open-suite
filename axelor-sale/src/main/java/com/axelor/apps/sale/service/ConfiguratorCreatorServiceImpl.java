@@ -65,7 +65,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     @Override
     @Transactional
     public void generateConfigurator(ConfiguratorCreator creator) {
-        updateAttributes(creator);
         updateIndicators(creator);
         Configurator configurator = new Configurator();
         configurator.setConfiguratorCreator(creator);
@@ -74,6 +73,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
 
     @Override
+    @Transactional
     public void updateAttributes(ConfiguratorCreator creator) {
 
         if (creator == null) {
@@ -88,8 +88,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 if (!showIf.contains(condition)) {
                     field.setShowIf(condition + " && (" + showIf + ")");
                 }
-            }
-            else {
+            } else {
                 field.setShowIf(condition);
             }
 
@@ -106,6 +105,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 field.setOnChange(modifiedOnChange);
             }
         }
+        configuratorCreatorRepo.save(creator);
     }
 
     public void updateIndicators(ConfiguratorCreator creator) {
@@ -194,13 +194,19 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         MetaJsonField newField = new MetaJsonField();
         newField.setModel(Configurator.class.getName());
         newField.setModelField("indicators");
-        String typeName = Beans.get(MetaFieldRepository.class).all()
-                .filter("self.metaModel.name = '" + metaModelName + "' AND " +
-                        "self.name = ?", formulaMetaField.getName())
-                .fetchOne().getTypeName();
+        MetaField metaField = Beans.get(MetaFieldRepository.class).all()
+                .filter("self.metaModel.name = :metaModelName AND self.name = :name")
+                .bind("metaModelName", metaModelName)
+                .bind("name", formulaMetaField.getName())
+                .fetchOne();
+        String typeName;
+        if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
+            typeName = metaField.getRelationship();
+        } else {
+            typeName = metaField.getTypeName();
+        }
         newField.setType(typeToJsonType(typeName));
-        newField.setName(formulaMetaField.getName()
-                + "_" + creator.getId());
+        newField.setName(formulaMetaField.getName() + "_" + creator.getId());
         newField.setTitle(formulaMetaField.getLabel());
         creator.addIndicator(newField);
     }
@@ -233,6 +239,14 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     protected String typeToJsonType(String nameType) {
         if (nameType.equals("BigDecimal")) {
             return "decimal";
+        } else if(nameType.equals("ManyToOne")) {
+            return "many-to-one";
+        } else if(nameType.equals("OneToMany")) {
+            return "one-to-many";
+        } else if(nameType.equals("OneToOne")) {
+            return "one-to-one";
+        } else if(nameType.equals("ManyToMany")) {
+            return "many-to-many";
         } else {
             return nameType.toLowerCase();
         }
@@ -301,8 +315,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
 
         configuratorCreatorList.removeIf(creator ->
-                !creator.getAuthorizedUserList().contains(user)
-                    && !creator.getAuthorizedGroupList().contains(group)
+                !creator.getAuthorizedUserSet().contains(user)
+                    && !creator.getAuthorizedGroupSet().contains(group)
         );
 
         return "self.id in ("

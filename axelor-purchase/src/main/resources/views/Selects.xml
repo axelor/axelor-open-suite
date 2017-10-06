@@ -27,11 +27,6 @@
 		<option value="3">Per order</option>
 	</selection>
 	
-	<selection name="app.type.select" id="purchase.app.type.select">
-		<option order="6" value="purchase">Purchase</option>
-		<option order="7" value="purchase-request">Purchase Request</option>
-	</selection>
-	
 	<selection name="purchase.request.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Requested</option>

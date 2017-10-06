@@ -80,6 +80,6 @@
 		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
 	</input> 
  	
- 	<input file="base_appAccount.csv" separator=";" search="self.typeSelect = :typeSelect" update="true" type="com.axelor.apps.base.db.AppAccount" />
+ 	<input file="base_appAccount.csv" separator=";" search="self.code = :code" update="true" type="com.axelor.apps.base.db.AppAccount" />
   	
 </csv-inputs>

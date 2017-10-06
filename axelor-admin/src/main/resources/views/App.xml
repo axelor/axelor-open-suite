@@ -5,7 +5,6 @@
 	
 	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
 		<field name="name" />
-		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="active" />
 		<field name="demoDataLoaded" />
 	</grid>
@@ -15,20 +14,22 @@
 		onLoad="action-app-on-load-attrs">
 		<panel>
 			<field name="image" widget="Image" colSpan="2"/>
-			<panel colSpan="8">
-				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" readonly="true" />
-				<field name="name" colSpan="8" readonly="true" />
-				<field name="dependsOn" colSpan="12" widget="multi-select" readonly="true" hideIf="dependsOnAll" />
-				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="2"/>
-				<field name="languageSelect" colSpan="3" />
+			<panel colSpan="5">
+				<field name="name" readonly="true" colSpan="12" />
+				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="3"/>
+				<field name="languageSelect" colSpan="4" />
 				<field name="demoDataLoaded" readonly="true" colSpan="4"/>
 				<spacer colSpan="12"/>
 				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3" />
 				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" />
 			</panel>
+			<panel-related colSpan="5" field="dependsOnSet" readonly="true" canSelect="false" canView="false" >
+				<field name="name" />
+				<field name="active"/>
+			</panel-related>
 			<field name="description" colSpan="12" readonly="true"/>
-			<field name="typeSelect" hidden="true" />
 			<field name="initDataLoaded" hidden="true" />
+			<field name="code" hidden="true" />
 		</panel>
 	</form> 
 	
@@ -51,7 +52,6 @@
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="image" />
 		<field name="description"/>
-		<field name="typeSelect"/>
 		<field name="active"/>
 		<field name="sequence"/>
 		<template><![CDATA[

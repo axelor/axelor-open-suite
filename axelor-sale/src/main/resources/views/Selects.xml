@@ -51,14 +51,15 @@
 		<option value="2">Canceled</option>
 	</selection>
 	
-	<selection name="app.type.select" id="sale.app.type.select">
-		<option order="9" value="sale">Sale</option>
-	</selection>
-	
 	<selection name="sale.order.line.type.select">
 		<option value="0">Normal</option>
 		<option value="1">Title</option>
 		<option value="2">Pack</option>
+	</selection>
+
+	<selection name="configurator.update.sale.order.line">
+		<option value="0">Update from product</option>
+		<option value="1">Update from configurator</option>
 	</selection>
 	
 </object-views>

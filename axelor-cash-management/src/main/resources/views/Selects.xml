@@ -23,8 +23,4 @@
 		<option value="3">Both</option>
 	</selection>
 	
-	<selection name="app.type.select" id="cash.management.app.type.select">
-		<option order="19" value="cash-management">Cash management</option>
-	</selection>
-	
 </object-views>

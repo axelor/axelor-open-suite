@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-Supplychain;SCH;Supplychain management;supplychain;app-supplychain.png;axelor-supplychain;account,invoice,sale,purchase,stock;22
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Supplychain";"supplychain";12;"Supplychain management";"app-supplychain.png";"axelor-supplychain";"account,invoice,sale,purchase,stock";22

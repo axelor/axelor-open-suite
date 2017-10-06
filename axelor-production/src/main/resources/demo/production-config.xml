@@ -32,6 +32,6 @@
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 	</input>
 	
-	<input file="base_appProduction.csv" separator=";" type="com.axelor.apps.base.db.AppProduction" search="self.typeSelect = :typeSelect" update="true" />
+	<input file="base_appProduction.csv" separator=";" type="com.axelor.apps.base.db.AppProduction" search="self.code = :code" update="true" />
 	
 </csv-inputs>

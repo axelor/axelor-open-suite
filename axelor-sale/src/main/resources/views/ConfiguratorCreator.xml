@@ -11,7 +11,7 @@
     <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.sale.db.ConfiguratorCreator">
     	<panel>
     		<field name="name"/>
-    		<panel-related field="attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
+    		<panel-related field="attributes" onChange="save,action-configurator-creator-method-update-attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
     	</panel>
 		<panel sidebar="true" title="Actions">
 			<button name="activate" title="Activate" readonlyIf="isActive"
@@ -23,8 +23,8 @@
 		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
 					   grid-view="configurator-formula-grid"/>
 		<panel title="Authorizations">
-			<field name="authorizedUserList" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
-            <field name="authorizedGroupList" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
+			<field name="authorizedUserSet" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
+            <field name="authorizedGroupSet" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
 		</panel>
 		<panel title="Configurator BoM" if-module="axelor-production" colSpan="12">
             <field name="configuratorBom" if-module="axelor-production" colSpan="12">
@@ -94,6 +94,11 @@
 	<action-method name="action-configurator-creator-method-test">
 		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
 			  method="testCreator"/>
+	</action-method>
+
+	<action-method name="action-configurator-creator-method-update-attributes">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="updateAttributes"/>
 	</action-method>
 
 	<action-record name="action-configurator-creator-record-activate"

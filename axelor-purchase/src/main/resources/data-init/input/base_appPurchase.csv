@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-Purchase;PUR;Purchase configuration;purchase;app-purchase.png;axelor-purchase;base;4
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Purchase";"purchase";6;"Purchase configuration";"app-purchase.png";"axelor-purchase";"base";4

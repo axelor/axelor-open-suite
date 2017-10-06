@@ -18,10 +18,6 @@
 		<option value="2">Both</option>
 	</selection>
 	
-	<selection name="app.type.select" id="marketing.app.type.select">
-		<option order="22" value="marketing">Marketing</option>
-	</selection>
-	
 	<selection name="campaign.attendee.related.to.select">
 		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
 		<option value="com.axelor.apps.base.db.Partner">Partner</option>

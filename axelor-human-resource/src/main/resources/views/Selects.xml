@@ -158,14 +158,6 @@
 		<option value="4">Forecast (expense)</option>
 	</selection>
 	
-	<selection name="app.type.select" id="human.resource.app.type.select">
-		<option order="12" value="employee">Employee management</option>
-		<option order="13" value="leave">Leave management</option>
-		<option order="14" value="timesheet">Timesheet management</option>
-		<option order="15" value="expense">Expense management</option>
-		<option order="16" value="exthrs">Extra hours</option>
-	</selection>
-	
 	<selection name="hr.batch.payroll.preparation.export.type.select">
 		<option value="1">Standard</option>
 		<option value="2">MeilleureGestion</option>
