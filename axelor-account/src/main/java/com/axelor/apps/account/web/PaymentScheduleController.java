@@ -70,7 +70,7 @@ public class PaymentScheduleController {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
 		
-		if (paymentSchedule.getScheduleId() == null) {
+		if (paymentSchedule.getPaymentScheduleSeq() == null) {
 		
 			String num = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
 		
@@ -79,7 +79,7 @@ public class PaymentScheduleController {
 				response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" "+paymentSchedule.getCompany().getName()); 
 			}
 			else {
-				response.setValue("scheduleId", num);			
+				response.setValue("paymentScheduleSeq", num);			
 			}
 		}
 	}

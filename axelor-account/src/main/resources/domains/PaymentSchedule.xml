@@ -5,10 +5,9 @@
   
   <entity name="PaymentSchedule" lang="java">
   
-    <string name="scheduleId" title="Ref." unique="false" required="false" namecolumn="true" readonly="true"/>
+    <string name="paymentScheduleSeq" title="Ref." required="false" namecolumn="true" readonly="true"/>
     <date name="creationDate" title="Creation Date"/>
     <date name="startDate" title="Schedule start Date"/>
-    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="nbrTerm" title="Nbr. of terms"/>
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
@@ -23,6 +22,8 @@
     
    	<integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
+	
+	<unique-constraint columns="paymentScheduleSeq,company"/>
 	
 	<extra-code><![CDATA[
 	
