@@ -6,14 +6,15 @@
   <grid name="wkf-grid" title="Workflows" model="com.axelor.studio.db.Wkf">
       <field name="name"/>
       <field name="model"/>
-      <field name="displayTypeSelect" />
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
     
   <form name="wkf-form" title="Workflow" model="com.axelor.studio.db.Wkf" width="large" 
   	onSave="action-wkf-validate-bpmn-xml,save,action-wfk-method-process-xml,action-wfk-method-process-wkf"
   	onNew="action-wkf-set-default">
      <panel>
-        <field name="name" colSpan="12"/>
+        <field name="name"/>
+        <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
         <panel colSpan="6">
 	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name"/>

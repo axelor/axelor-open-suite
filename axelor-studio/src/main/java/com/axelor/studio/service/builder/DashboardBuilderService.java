@@ -61,6 +61,8 @@ public class DashboardBuilderService {
 
 		log.debug("Processing dashboard: {}", dashboardBuilder.getName());
 		
+		log.debug("Dashlet list: {}", dashboardBuilder.getDashletBuilderList());
+		
 		if (dashboardBuilder.getDashletBuilderList() == null
 				|| dashboardBuilder.getDashletBuilderList().isEmpty()) {
 			return null;

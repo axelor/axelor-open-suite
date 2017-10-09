@@ -8,6 +8,8 @@
     	<button name="openWorkflow" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
     </toolbar>
     <panel title="Overview">
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      <spacer/>
       <field name="name" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
       <field name="title" />
       <field name="onNew" />
@@ -16,6 +18,7 @@
     <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true">
       <field name="name" />
       <field name="type" />
+      <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
     </panel-related>
   </form>
   

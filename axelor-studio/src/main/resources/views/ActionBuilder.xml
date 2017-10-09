@@ -7,11 +7,13 @@
   	  <field name="name" />	
       <field name="model" />
       <field name="typeSelect" />
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
   
   <form name="action-builder-form" title="Action builder" model="com.axelor.studio.db.ActionBuilder"  width="large">
       <panel>
-      	  <field name="isJson" colSpan="12" onChange="action-action-builder-method-set-views,action-action-builder-type-select-change"/>
+      	  <field name="isJson" onChange="action-action-builder-method-set-views,action-action-builder-type-select-change" colSpan="2"/>
+	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	      <field name="name" colSpan="9" required="true"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <panel colSpan="6" itemSpan="12">

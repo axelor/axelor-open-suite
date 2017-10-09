@@ -8,12 +8,13 @@
       <field name="title" />	
       <field name="actionBuilder.model" title="Model" />
       <field name="order" />
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
   
   <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
       <panel>
+      	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
       	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
-	      <spacer hideIf="id"/>
 	      <field name="title" />
 	      <field name="parentMenu" />
 	      <field name="icon" />

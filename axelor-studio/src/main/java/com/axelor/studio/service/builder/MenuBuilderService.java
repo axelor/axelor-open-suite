@@ -47,6 +47,7 @@ public class MenuBuilderService {
 				actionBuilder.setName(menu.getName().replace("-", "."));
 			}
 			actionBuilder.setTitle(menu.getTitle());
+			actionBuilder.setAppBuilder(builder.getAppBuilder());
 			menu.setAction(actionBuilderService.build(actionBuilder));
 		}
 		

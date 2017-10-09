@@ -224,7 +224,16 @@ public class StudioMetaService {
 			menu.setRoles(roles);
 		}
 		
-		menu.setConditionToCheck(builder.getConditionToCheck());
+		String condition = builder.getConditionToCheck();
+		if (builder.getAppBuilder() != null) {
+			if (condition != null) {
+				condition = "__config__.app.isApp('" + builder.getAppBuilder().getCode() + "') && (" + condition +  ")"; 
+			}
+			else {
+				condition = "__config__.app.isApp('" + builder.getAppBuilder().getCode() + "')";
+			}
+		}
+		menu.setConditionToCheck(condition);
 		menu.setModuleToCheck(builder.getModuleToCheck());
 		menu.setLeft(builder.getLeft());
 		menu.setTop(builder.getTop());

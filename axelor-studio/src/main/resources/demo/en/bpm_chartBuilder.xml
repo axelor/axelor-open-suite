@@ -3,7 +3,7 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
   
-  <chart-builder name="product-order-chart" title="Product orders per month" 
+  <chart-builder name="product-order-chart" title="Product orders per month" appBuilder="PRD"
   	type="bar" model="ProductOrder" json="true" groupOnJson="orderDate" groupOnTarget="orderDate" groupOnTargetType="Date" groupDateType="month"
   	isJsonGroupOn="true" isJsonAggregateOn="true" isJsonDisplayField="true"
   	aggregateOnJson="customer" aggregateOnTarget="customer.fullName" aggregateOnTargetType="String" displayFieldJson="total">
@@ -13,7 +13,7 @@
   	</filters>
   </chart-builder>
   	
-  <chart-builder name="product-order-per-author-per-category" title="Product orders per supplier per category" 
+  <chart-builder name="product-order-per-author-per-category" title="Product orders per supplier per category" appBuilder="PRD"
   	type="pie" model="ProductOrderLine" json="true" groupOnJson="product" 
   	isJsonGroupOn="true" isJsonAggregateOn="true" isJsonDisplayField="true"
   	groupOnTarget="product.supplier.name" groupOnTargetType="String" displayFieldJson="total">

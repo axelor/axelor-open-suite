@@ -17,6 +17,8 @@
   	<string name="viewType" title="Type" selection="view.type.selection" />
   	<integer name="colspan" title="Colspan" />
   	<integer name="paginationLimit" title="Pagination limit" />
+  	<many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
+  	<unique-constraint columns="name,dashboardBuilder"/>
   </entity>
     
  </domain-models>
