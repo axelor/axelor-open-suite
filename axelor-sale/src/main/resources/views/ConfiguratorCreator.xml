@@ -17,11 +17,11 @@
 			<button name="activate" title="Activate" readonlyIf="isActive"
 					onClick="action-configurator-creator-record-activate,save"/>
 			<button name="test" title="Test this creator"
-					onClick="action-configurator-creator-method-test"/>
+					onClick="action-configurator-creator-view-test"/>
 			<field name="generateProduct" widget="boolean-switch"/>
 		</panel>
 		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
-					   grid-view="configurator-formula-grid"/>
+					   grid-view="configurator-formula-grid" onChange="save,action-configurator-creator-method-update-indicators"/>
 		<panel title="Authorizations">
 			<field name="authorizedUserSet" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
             <field name="authorizedGroupSet" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
@@ -75,35 +75,27 @@
                 </editor>
             </field>
         </panel>
-        <panel>
-			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"
-					title="Create configurator" onClick="action-configurator-creator-group-create-configurator"/>
-		</panel>
     </form>
 	
-	<action-group name="action-configurator-creator-group-create-configurator">
-        <action name="save"/>
-		<action name="action-configurator-creator-create-configurator"/>
-	</action-group>
-    
-    <action-method name="action-configurator-creator-create-configurator">
-    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-			  method="createConfigurator"/>
-    </action-method>
-
-	<action-method name="action-configurator-creator-method-test">
-		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-			  method="testCreator"/>
-	</action-method>
-
 	<action-method name="action-configurator-creator-method-update-attributes">
 		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
 			  method="updateAttributes"/>
 	</action-method>
 
+    <action-method name="action-configurator-creator-method-update-indicators">
+        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+              method="updateIndicators"/>
+    </action-method>
+
 	<action-record name="action-configurator-creator-record-activate"
 				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
 		<field name="isActive" expr="eval: true"/>
 	</action-record>
+
+    <action-view name="action-configurator-creator-view-test"
+                 title="Configurator" model="com.axelor.apps.sale.db.Configurator">
+        <view type="form" name="configurator-form"/>
+        <context name="_configuratorCreator" expr="eval: __self__"/>
+    </action-view>
 
 </object-views>

@@ -26,14 +26,6 @@ import com.axelor.script.ScriptBindings;
 public interface ConfiguratorCreatorService {
 
     /**
-     * Call {@link #updateAttributes} and {@link #updateIndicators}
-     * then create a new {@link Configurator}.
-     * Finally save the creator given in param.
-     * @param creator
-     */
-    void generateConfigurator(ConfiguratorCreator creator);
-
-    /**
      * Add default view attrs for configurator attributes
      * @param creator
      * @return
