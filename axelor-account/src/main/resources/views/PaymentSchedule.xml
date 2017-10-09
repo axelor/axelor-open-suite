@@ -5,7 +5,7 @@
 
 	<grid name="payment-schedule-grid" title="Payment schedule"
 		model="com.axelor.apps.account.db.PaymentSchedule">
-		<field name="scheduleId" />
+		<field name="paymentScheduleSeq" />
 		<field name="creationDate" />
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -22,7 +22,7 @@
 		onSave="action-payment-schedule-payment-schedule-id">
 		
 		<panel name="main">
-			<field name="scheduleId" readonlyIf="statusSelect != 1" />
+			<field name="paymentScheduleSeq" readonlyIf="statusSelect != 1" />
 			<field name="creationDate" readonlyIf="statusSelect != 1" />
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true" />
 			<field name="nbrTerm" readonlyIf="statusSelect != 1" />
