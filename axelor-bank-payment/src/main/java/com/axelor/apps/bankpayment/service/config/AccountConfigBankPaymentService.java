@@ -44,7 +44,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	
 	public Account getInternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
 
-		if(accountConfig.getExternalBankToBankAccount() == null)   {
+		if (accountConfig.getInternalBankToBankAccount() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
 					AppBaseServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
