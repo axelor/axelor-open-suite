@@ -75,13 +75,13 @@ public class ProjectService {
 		if (project.getProject() == null){
 			//it is a root project, can get the client partner
 			if(project.getClientPartner() == null){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER)), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER));
 			}else{
 				return project.getClientPartner();
 			}
 		}else{
 			if (counter > MAX_LEVEL_OF_PROJECT){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH)), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH));
 			}else{
 				return this.getClientPartnerFromProject(project.getProject(), counter++);
 			}

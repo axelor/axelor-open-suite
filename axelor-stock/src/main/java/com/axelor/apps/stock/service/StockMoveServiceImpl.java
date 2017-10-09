@@ -115,35 +115,30 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		String ref = "";
 
-		switch(stockMoveType)  {
+		switch (stockMoveType) {
 			case StockMoveRepository.TYPE_INTERNAL:
 				ref = sequenceService.getSequenceNumber(IAdministration.INTERNAL, company);
-				if (ref == null)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_1),
-							company.getName()), IException.CONFIGURATION_ERROR);
+				if (ref == null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_1), company.getName());
 				}
 				break;
 
 			case StockMoveRepository.TYPE_INCOMING:
 				ref = sequenceService.getSequenceNumber(IAdministration.INCOMING, company);
-				if (ref == null)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_2),
-							company.getName()), IException.CONFIGURATION_ERROR);
+				if (ref == null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_2), company.getName());
 				}
 				break;
 
 			case StockMoveRepository.TYPE_OUTGOING:
 				ref = sequenceService.getSequenceNumber(IAdministration.OUTGOING, company);
-				if (ref == null)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_3),
-							company.getName()), IException.CONFIGURATION_ERROR);
+				if (ref == null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_3), company.getName());
 				}
 				break;
 
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_4),
-						company.getName()), IException.CONFIGURATION_ERROR);
-
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_4), company.getName());
 		}
 
 		return ref;
@@ -234,13 +229,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 		Location fromLocation = stockMove.getFromLocation();
 		Location toLocation = stockMove.getToLocation();
 
-		if(fromLocation == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_5),
-					stockMove.getName()), IException.CONFIGURATION_ERROR);
+		if (fromLocation == null) {
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_5), stockMove.getName());
 		}
-		if(toLocation == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_6),
-					stockMove.getName()), IException.CONFIGURATION_ERROR);
+		if (toLocation == null) {
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_6), stockMove.getName());
+
 		}
 
 		// Set the type select
@@ -379,8 +373,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				.bind("productList", productList).fetchOne();
 
 		if (inventoryLine != null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_19),
-					inventoryLine.getInventory().getInventorySeq()), IException.INCONSISTENCY);
+			throw new AxelorException(inventoryLine, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_19), inventoryLine.getInventory().getInventorySeq());
 		}
 	}
 
@@ -403,7 +396,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		Unit endUnit = stockConfig != null ? stockConfig.getCustomsWeightUnit() : null;
 
 		if (weightsRequired && endUnit == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_17), IException.NO_VALUE);
+			throw new AxelorException(stockMove, IException.NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_17));
 		}
 		
 		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
@@ -430,7 +423,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				stockMoveLine.setNetWeight(netWeight);
 				stockMoveLine.setTotalNetWeight(totalNetWeight);
 			} else if (weightsRequired) {
-				throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_18), IException.NO_VALUE);
+				throw new AxelorException(stockMove, IException.NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_18));
 			}
 		}
 	}
@@ -826,23 +819,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 		} else {
 			aString = toAddressStr.replace('\n',' ');
 		}
-		if(Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
-			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_11),
-					IException.MISSING_FIELD);
+		if (Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
+			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.STOCK_MOVE_11));
 		}
 		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM) {
-			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_12),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_12));
 		}
-			Map<String, Object> result = Beans.get(MapService.class)
-					.getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
-			if(result == null){
-			    throw new AxelorException(
-			    		String.format(I18n.get(IExceptionMessage.STOCK_MOVE_13)
-								,dString ,aString
-						),
-						IException.FUNCTIONNAL
-				);
+			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+			if (result == null) {
+			    throw new AxelorException(stockMove, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.STOCK_MOVE_13), dString, aString);
 			}
 			return result;
 	}
@@ -853,7 +838,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 								 boolean isPicking) throws AxelorException {
 		String stockMoveIds = "";
 
-		if(lstSelectedMove != null){
+		if (lstSelectedMove != null) {
 		    StringBuilder bld = new StringBuilder();
 			for(Integer it : lstSelectedMove) {
 				bld.append(it.toString()).append(",");
@@ -861,19 +846,19 @@ public class StockMoveServiceImpl implements StockMoveService {
 			stockMoveIds = bld.toString();
 		}
 
-		if(!stockMoveIds.equals("")){
+		if (!stockMoveIds.equals("")) {
 			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
 			stockMove = stockMoveRepo.find(Long.valueOf(lstSelectedMove.get(0)));
-		}else if(stockMove.getId() != null){
+		} else if (stockMove.getId() != null) {
 			stockMoveIds = stockMove.getId().toString();
 		}
 
-		if(!stockMoveIds.equals("")){
+		if (!stockMoveIds.equals("")) {
 
 			String language;
 			try{
 				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-			}catch (NullPointerException e) {
+			} catch (NullPointerException e) {
 				language = "en";
 			}
 			language = language.equals("")? "en": language;
@@ -892,9 +877,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 					.addParam("Locale", language)
 					.generate()
 					.getFileLink();
-		}else{
-			throw new AxelorException(I18n.get(IExceptionMessage.STOCK_MOVE_10),
-					IException.INCONSISTENCY);
+		} else {
+			throw new AxelorException(stockMove, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
 	}
 }

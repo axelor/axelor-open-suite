@@ -133,9 +133,9 @@ public class MailAccountServiceImpl implements MailAccountService {
 			}
 			
 		} catch ( AuthenticationFailedException e ) {
-			throw new AxelorException(I18n.get(IExceptionMessage.MAIL_ACCOUNT_1), e, IException.CONFIGURATION_ERROR) ;
+			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
 		} catch ( NoSuchProviderException e ) {
-			throw new AxelorException(I18n.get(IExceptionMessage.MAIL_ACCOUNT_2), e, IException.CONFIGURATION_ERROR) ;
+			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
 		}
 
 	}

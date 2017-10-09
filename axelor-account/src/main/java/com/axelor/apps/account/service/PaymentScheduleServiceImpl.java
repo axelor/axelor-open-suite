@@ -180,9 +180,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 	public String getPaymentScheduleSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, company);
 		if(seq == null)  {
-			throw new AxelorException(String.format("%s :\n"+
-							I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" %s",
-							AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" %s", AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 		return seq;
 	}
@@ -325,8 +323,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 		log.debug("Validation de l'échéancier {}", paymentSchedule.getScheduleId());
 
 		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
-					AppAccountServiceImpl.EXCEPTION, paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
+			throw new AxelorException(paymentSchedule, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6), AppAccountServiceImpl.EXCEPTION, paymentSchedule.getScheduleId());
 		}
 
 //		this.updateInvoices(paymentSchedule); //TODO

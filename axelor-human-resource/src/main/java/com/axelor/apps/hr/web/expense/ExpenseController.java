@@ -96,9 +96,8 @@ public class ExpenseController {
 		if(expenseLine.getAnalyticDistributionTemplate() != null){
 			expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
 			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 	
@@ -127,16 +126,14 @@ public class ExpenseController {
 									.model(Expense.class.getName())
 									.add("form", "expense-form")
 									.map());
-		}
-		else if(expenseList.size() == 1){
+		} else if (expenseList.size() == 1) {
 			response.setView(ActionView
 					.define(I18n.get("Expense"))
 					.model(Expense.class.getName())
 					.add("form", "expense-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(expenseList.get(0).getId())).map());
-		}
-		else{
+		} else {
 			response.setView(ActionView
 					.define(I18n.get("Expense"))
 					.model(Wizard.class.getName())
@@ -256,7 +253,7 @@ public class ExpenseController {
 			}
 			if(!expenseLineId.isEmpty()){
 				String ids =  Joiner.on(",").join(expenseLineId);
-				throw new AxelorException(String.format(I18n.get("Date problem for line(s) : "+ids)), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("Date problem for line(s) : "+ids));
 			}
 		}
 	}
@@ -479,8 +476,8 @@ public class ExpenseController {
 		}
 		Employee employee = Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
 		
-		if (employee == null){
-			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName)  , IException.CONFIGURATION_ERROR);
+		if (employee == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName);
 		}
 		
 		BigDecimal amount = BigDecimal.ZERO;
@@ -585,9 +582,7 @@ public class ExpenseController {
 		Employee employee = expense.getUser().getEmployee();
 
 		if (employee == null) {
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName());
 		}
 
 		BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);

@@ -85,7 +85,7 @@ public class EbicsCertificateService {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
-		 throw new AxelorException(I18n.get("No bank certificate of type %s found"), IException.CONFIGURATION_ERROR, type);
+		 throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No bank certificate of type %s found"), type);
 	}
 	
 	public static X509Certificate getCertificate(byte[] certificate, String type) throws AxelorException {
@@ -95,7 +95,7 @@ public class EbicsCertificateService {
 		try {
 			cert = (X509Certificate) CertificateFactory.getInstance("X.509", "BC").generateCertificate(instream);
 		} catch (CertificateException | NoSuchProviderException e) {
-			throw new AxelorException(I18n.get("Error in bank certificate of type %s"), IException.CONFIGURATION_ERROR, type);
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get("Error in bank certificate of type %s"), type);
 		}
 		
 		return cert;

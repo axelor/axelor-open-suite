@@ -200,9 +200,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             throws AxelorException {
        ScriptHelper scriptHelper = new GroovyScriptHelper(values);
        if (scriptHelper.eval(groovyFormula) == null) {
-           throw new AxelorException(I18n.get(
-                        IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR
-                ), IException.CONFIGURATION_ERROR);
+           throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
        }
    }
 

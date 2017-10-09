@@ -55,7 +55,7 @@ public class UnitConversionService {
 
 	/**
 	 * Obtenir le coefficient entre deux unités dans une liste de conversion. Si l'unité de départ et l'unité
-	 * d'arrivée ne se trouve pas dans la liste alors on inverse l'unité de départ avec l'unité d'arrivée.
+	 * d'arrivée ne se trouvent pas dans la liste alors on inverse l'unité de départ avec l'unité d'arrivée.
 	 * Si il n'y a toujours pas de résultat alors on déclenche une exception.
 	 *
 	 * @param unitConversionList
@@ -84,8 +84,7 @@ public class UnitConversionService {
 
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.UNIT_CONVERSION_1),
-				startUnit.getName(), endUnit.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
 
 	}
 
@@ -110,7 +109,7 @@ public class UnitConversionService {
 	public BigDecimal convert(List<UnitConversion> unitConversionList, Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException(I18n.get(IExceptionMessage.UNIT_CONVERSION_2), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
 
 		if (startUnit.equals(endUnit))
 			return value;
@@ -140,7 +139,7 @@ public class UnitConversionService {
 	public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException(I18n.get(IExceptionMessage.UNIT_CONVERSION_2), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
 
 		if (startUnit.equals(endUnit))
 			return value;
@@ -155,7 +154,7 @@ public class UnitConversionService {
 	public BigDecimal convertWithProduct(Unit startUnit, Unit endUnit, BigDecimal value, Product product) throws AxelorException {
 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException(I18n.get(IExceptionMessage.UNIT_CONVERSION_2), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
 
 		if (startUnit.equals(endUnit))
 			return value;
@@ -185,8 +184,7 @@ public class UnitConversionService {
 			if (unitConversion.getStartUnit().equals(startUnit) && unitConversion.getEndUnit().equals(endUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF){
 					return unitConversion.getCoef(); 
-				}
-				else{
+				} else {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
 					CompilerConfiguration conf = new CompilerConfiguration();
@@ -206,8 +204,7 @@ public class UnitConversionService {
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
 					return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
-				}
-				else{
+				} else {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
 					CompilerConfiguration conf = new CompilerConfiguration();
@@ -225,8 +222,7 @@ public class UnitConversionService {
 
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.UNIT_CONVERSION_1),
-				startUnit.getName(), endUnit.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
 
 	}
 	

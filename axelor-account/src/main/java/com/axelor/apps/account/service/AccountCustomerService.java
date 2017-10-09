@@ -332,27 +332,19 @@ public class AccountCustomerService {
 	protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
 
 		Account customerAccount = null;
-
 		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 
 		if(accountingSituation != null)   {
-
 			customerAccount = accountingSituation.getCustomerAccount();
 		}
 
 		if(customerAccount == null)  {
-
 			AccountConfigService accountConfigService = new AccountConfigService();
-
 			customerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
-
 		}
 
-		if(customerAccount == null)  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1),
-					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
-
+		if (customerAccount == null) {
+			throw new AxelorException(partner, IException.MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return customerAccount;
@@ -363,27 +355,19 @@ public class AccountCustomerService {
 	protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
 
 		Account supplierAccount = null;
-
 		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 
-		if(accountingSituation != null)   {
-
+		if (accountingSituation != null) {
 			supplierAccount = accountingSituation.getSupplierAccount();
 		}
 
 		if(supplierAccount == null)  {
-
 			AccountConfigService accountConfigService = new AccountConfigService();
-
 			supplierAccount = accountConfigService.getSupplierAccount(accountConfigService.getAccountConfig(company));
-
 		}
 
-		if(supplierAccount == null)  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2),
-					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
-
+		if (supplierAccount == null) {
+			throw new AxelorException(partner, IException.MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return supplierAccount;

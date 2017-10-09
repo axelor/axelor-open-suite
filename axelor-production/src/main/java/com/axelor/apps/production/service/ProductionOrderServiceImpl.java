@@ -20,7 +20,6 @@ package com.axelor.apps.production.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
-import java.time.ZonedDateTime;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +65,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 		
 		String seq = sequenceService.getSequenceNumber(IAdministration.PRODUCTION_ORDER);
 		
-		if(seq == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SEQ), IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_SEQ));
 		}
 		
 		return seq;

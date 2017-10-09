@@ -51,7 +51,7 @@ public class ReturnCode  {
    */
   
   public void throwException() throws AxelorException {
-    throw new AxelorException(I18n.get(text), IException.FUNCTIONNAL);
+    throw new AxelorException(IException.FUNCTIONNAL, I18n.get(text));
   }
 
   /**

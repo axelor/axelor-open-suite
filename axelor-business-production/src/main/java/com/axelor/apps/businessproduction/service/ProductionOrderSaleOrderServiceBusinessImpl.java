@@ -90,25 +90,18 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 
 			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
-			if(billOfMaterial == null)  {
-
+			if (billOfMaterial == null) {
 				billOfMaterial = product.getDefaultBillOfMaterial();
-
 			}
 
-			if(billOfMaterial == null && product.getParentProduct() != null)  {
-
+			if (billOfMaterial == null && product.getParentProduct() != null) {
 				billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-
 			}
 
-			if(billOfMaterial == null)  {
-
-				throw new AxelorException(
-						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
-						IException.CONFIGURATION_ERROR);
-
+			if (billOfMaterial == null) {
+				throw new AxelorException(saleOrderLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode());
 			}
+			
 			Unit unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal qty = saleOrderLine.getQty();
 			if(!unit.equals(saleOrderLine.getUnit())){

@@ -76,7 +76,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 		try {
 			interbankPaymentOrderImportService.testCompanyField(company);
 		} catch (AxelorException e) {
-			TraceBackService.trace(new AxelorException("", e, e.getCategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -109,7 +109,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_1), batch.getId()), e, e.getCategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_1), batch.getId()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -143,7 +143,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_2), payment[1]), e, e.getCategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_2), payment[1]), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				

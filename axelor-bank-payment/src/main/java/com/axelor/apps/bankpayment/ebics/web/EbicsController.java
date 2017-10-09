@@ -320,7 +320,7 @@ public class EbicsController {
 			
 		} catch (CertificateException | IOException e) {
 			e.printStackTrace();
-			throw new AxelorException(I18n.get("Error in adding bank certificate"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e, IException.CONFIGURATION_ERROR, I18n.get("Error in adding bank certificate"));
 		}
 		
 		response.setCanClose(true);
@@ -428,7 +428,7 @@ public class EbicsController {
 		}
 		
 		if (certIds.isEmpty()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES), 1);
+			throw new AxelorException(ebicsUser, IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES));
 		}
 		
 		String title = I18n.get("EbicsCertificate");

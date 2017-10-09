@@ -101,8 +101,8 @@ public class BankReconciliationService {
 	public void checkBalance(BankReconciliation bankReconciliation) throws AxelorException  {
 
 		if(bankReconciliation.getComputedBalance().compareTo(bankReconciliation.getEndingBalance()) != 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(bankReconciliation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_1),
+					AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}
@@ -154,17 +154,15 @@ public class BankReconciliationService {
 
 		MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
-		if(bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0 )  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-					AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference()), IException.CONFIGURATION_ERROR);
+		if (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+			throw new AxelorException(bankReconciliationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_3),
+				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
 		}
-
-		if((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0 )
-				|| (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0 ) )  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-					AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference()), IException.CONFIGURATION_ERROR);
+		
+		if ((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0)
+				|| (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0)) {
+			throw new AxelorException(bankReconciliationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_2),
+				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
 		}
 
 	}

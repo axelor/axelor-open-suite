@@ -237,7 +237,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			if (invoiceLine.getAccount() == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_6), IException.MISSING_FIELD, invoiceLine.getProductName());
+				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}
 

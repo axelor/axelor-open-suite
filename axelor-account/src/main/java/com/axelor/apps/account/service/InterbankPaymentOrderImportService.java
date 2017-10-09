@@ -22,7 +22,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,9 +142,8 @@ public class InterbankPaymentOrderImportService {
 
 	public Invoice getInvoice(String ref, Company company) throws AxelorException  {
 		Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
-		if(invoice == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_IMPORT_1),
-					AppAccountServiceImpl.EXCEPTION, ref, company.getName()), IException.INCONSISTENCY);
+		if (invoice == null) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INTER_BANK_PO_IMPORT_1), AppAccountServiceImpl.EXCEPTION, ref, company.getName());
 		}
 		return invoice;
 	}

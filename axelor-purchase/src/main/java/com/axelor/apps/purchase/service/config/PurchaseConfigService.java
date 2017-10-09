@@ -31,8 +31,7 @@ public class PurchaseConfigService {
 		PurchaseConfig purchaseConfig = company.getPurchaseConfig();
 		
 		if(purchaseConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_CONFIG_1),
-					company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_CONFIG_1), company.getName());
 		}
 		
 		return purchaseConfig;

@@ -115,18 +115,18 @@ public class MoveValidateService {
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_2)),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
 		}
 		if(company == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_3)),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
 		}
 
 		if(move.getPeriod() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_4)),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
 		}
 
 		if (journal.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_5), journal.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_5), journal.getName());
 		}
 
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
@@ -164,9 +164,8 @@ public class MoveValidateService {
 
 			for (MoveLine moveLine : move.getMoveLineList()){
 
-				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_6),
-							moveLine.getName()), IException.INCONSISTENCY);
+				if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+					throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_6), moveLine.getName());
 				}
 
 				totalDebit = totalDebit.add(moveLine.getDebit());
@@ -174,8 +173,7 @@ public class MoveValidateService {
 			}
 
 			if (totalDebit.compareTo(totalCredit) != 0){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_7),
-						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
+				throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_7), move.getReference(), totalDebit, totalCredit);
 			}
 			move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
 		}

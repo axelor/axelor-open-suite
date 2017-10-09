@@ -112,10 +112,10 @@ public class PayrollPreparationService {
 		Employee employee = payrollPreparation.getEmployee();
 		
 		if(employee.getPublicHolidayPlanning() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName());
 		}
 		if(employee.getPlanning()== null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName());
 		}
 		
 		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",toDate, fromDate,employee, LeaveRequestRepository.STATUS_VALIDATED).fetch();

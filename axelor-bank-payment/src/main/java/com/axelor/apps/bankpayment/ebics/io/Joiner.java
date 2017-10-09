@@ -52,7 +52,7 @@ public class Joiner {
       buffer.write(data);
       buffer.flush();
     } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
+    	throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
     }
   }
 
@@ -62,21 +62,19 @@ public class Joiner {
    * @param transactionKey the transaction key
    * @throws EbicsException
    */
-  public void writeTo(OutputStream output, byte[] transactionKey)
-    throws AxelorException
-  {
-    try {
-      byte[]		decrypted;
+  public void writeTo(OutputStream output, byte[] transactionKey) throws AxelorException {
+	  try {
+		  byte[]		decrypted;
 
-      buffer.close();
-      decrypted = Beans.get(EbicsUserService.class).decrypt(user, buffer.toByteArray(), transactionKey);
-      output.write(EbicsUtils.unzip(decrypted));
-      output.close();
-    } catch (GeneralSecurityException e) {
-      throw new AxelorException(e.getMessage(), IException.INCONSISTENCY);
-    } catch (IOException e) {
-    	throw new AxelorException(e.getMessage(), IException.TECHNICAL);
-    }
+		  buffer.close();
+		  decrypted = Beans.get(EbicsUserService.class).decrypt(user, buffer.toByteArray(), transactionKey);
+		  output.write(EbicsUtils.unzip(decrypted));
+		  output.close();
+	  } catch (GeneralSecurityException e) {
+		  throw new AxelorException(e.getCause(), IException.INCONSISTENCY, e.getMessage());
+	  } catch (IOException e) {
+		  throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
+	  }
   }
 
   // --------------------------------------------------------------------

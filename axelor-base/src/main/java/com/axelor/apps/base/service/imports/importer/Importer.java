@@ -96,10 +96,10 @@ public abstract class Importer {
 			data = MetaFiles.getPath( configuration.getDataMetaFile() ).toFile();
 
 		if (!bind.exists()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_1), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_1));
 		}
 		if (!data.exists()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_2), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_2));
 		}
 
 		File workspace = createFinalWorkspace(configuration.getDataMetaFile());

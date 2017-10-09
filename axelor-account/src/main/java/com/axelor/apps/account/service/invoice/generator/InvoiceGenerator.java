@@ -136,7 +136,7 @@ public abstract class InvoiceGenerator  {
 			case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 				return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}
@@ -153,49 +153,49 @@ public abstract class InvoiceGenerator  {
 
 		invoice.setOperationTypeSelect(operationType);
 
-		if(partner == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		if (partner == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setPartner(partner);
 
-		if(paymentCondition == null)  {
+		if (paymentCondition == null) {
 			paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		}
-		if(paymentCondition == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		if (paymentCondition == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setPaymentCondition(paymentCondition);
 
-		if(paymentMode == null)  {
+		if (paymentMode == null) {
 			paymentMode = InvoiceToolService.getPaymentMode(invoice);
 		}
-		if(paymentMode == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		if (paymentMode == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setPaymentMode(paymentMode);
 
-		if(mainInvoicingAddress == null)  {
+		if (mainInvoicingAddress == null) {
 			mainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);
 		}
-		if(mainInvoicingAddress == null && partner.getIsCustomer())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		if (mainInvoicingAddress == null && partner.getIsCustomer()) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		invoice.setAddress(mainInvoicingAddress);
 
 		invoice.setContactPartner(contactPartner);
 
-		if(currency == null)  {
+		if (currency == null) {
 			currency = partner.getCurrency();
 		}
-		if(currency == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), AppAccountServiceImpl.EXCEPTION), IException.MISSING_FIELD);
+		if (currency == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setCurrency(currency);
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 
-		if(priceList == null)  {
+		if (priceList == null) {
 			if(InvoiceToolService.isPurchase(invoice))  {
 				priceList = partner.getPurchasePriceList();
 			}
@@ -216,16 +216,13 @@ public abstract class InvoiceGenerator  {
 		
 		int atiChoice = accountConfig.getInvoiceInAtiSelect();
 		
-		if(inAti == null)  {  
+		if (inAti == null) {
 			invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
-		}
-		else if(atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT)  {
+		} else if (atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
 			invoice.setInAti(inAti);
-		}
-		else if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS)  {
+		} else if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS) {
 			invoice.setInAti(true);
-		}
-		else {
+		} else {
 			invoice.setInAti(false);
 		}
 		

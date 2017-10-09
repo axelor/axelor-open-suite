@@ -85,14 +85,12 @@ public class InvoicePaymentCancelServiceBankPayImpl  extends InvoicePaymentCance
 		
 		if(paymentBankOrder != null){
 			if(paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED){
-				throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL), IException.FUNCTIONNAL);
-			}
-			else{
+				throw new AxelorException(invoicePayment, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
+			} else {
 				bankOrderService.cancelBankOrder(paymentBankOrder);
 				this.updateCancelStatus(invoicePayment);
 			}
-		}
-		else {
+		} else {
 			
 			log.debug("cancel : reconcile : {}", reconcile);
 			
@@ -107,8 +105,7 @@ public class InvoicePaymentCancelServiceBankPayImpl  extends InvoicePaymentCance
 			if(paymentMove != null && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT)  {
 				invoicePayment.setMove(null);
 				moveCancelService.cancel(paymentMove);
-			}
-			else  {
+			} else {
 				this.updateCancelStatus(invoicePayment);
 			}
 

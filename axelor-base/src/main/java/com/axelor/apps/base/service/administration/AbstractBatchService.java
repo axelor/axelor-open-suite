@@ -54,8 +54,7 @@ public abstract class AbstractBatchService {
 		Model model = findModelByCode(code);
 
 		if (model == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), code),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), code);
 		}
 
 		return run(model);

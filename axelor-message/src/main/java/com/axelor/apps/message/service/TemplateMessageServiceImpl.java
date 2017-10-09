@@ -85,8 +85,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if ( !model.equals( template.getMetaModel().getFullName() ) ){
-			throw new AxelorException( I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		if (!model.equals(template.getMetaModel().getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
 		}
 		
 		log.debug("model : {}", model);

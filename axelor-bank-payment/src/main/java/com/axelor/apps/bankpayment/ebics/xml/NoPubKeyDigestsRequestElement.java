@@ -22,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Calendar;
 
-import javax.xml.XMLConstants;
-
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest.Body;
@@ -67,11 +65,9 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
 
     try {
-      return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
-    } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
-    } catch (NoSuchProviderException e) {
-      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
+    	return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
+    } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+    	throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
     }
   }
 

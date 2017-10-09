@@ -103,7 +103,7 @@ public class EventManagementRepository extends EventRepository {
 			User user = AuthUtils.getUser();
 			List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
 			if(calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendar().getId())){
-				throw new AxelorException(I18n.get("You don't have the rights to delete this event"), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(entity, IException.CONFIGURATION_ERROR, I18n.get("You don't have the rights to delete this event"));
 			}
 		
 			calendarService.removeEventFromIcal(entity);

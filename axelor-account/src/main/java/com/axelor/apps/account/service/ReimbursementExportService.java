@@ -269,8 +269,7 @@ public class ReimbursementExportService {
 		accountConfigService.getReimbursementExportFolderPath(accountConfig);
 
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_1),
-					AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.REIMBURSEMENT_1), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 
 	}
@@ -359,9 +358,8 @@ public class ReimbursementExportService {
 
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 
-		if (exportFolderPath == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_2),
-					company.getName()), IException.MISSING_FIELD);
+		if (exportFolderPath == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.REIMBURSEMENT_2), company.getName());
 		}
 
 

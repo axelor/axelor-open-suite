@@ -63,10 +63,7 @@ public class ImporterListener implements Listener {
 	public void handle(Model bean, Exception e) {
 		anomaly++;
 		importLog += "\n"+e;
-		TraceBackService.trace( new AxelorException (
-				String.format(I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4), name ), 
-				e, IException.FUNCTIONNAL )
-		, IException.IMPORT );
+		TraceBackService.trace( new AxelorException(e, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4), name), IException.IMPORT);
 	}
 
 }
