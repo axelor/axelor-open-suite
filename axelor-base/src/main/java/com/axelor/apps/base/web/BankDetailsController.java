@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -43,16 +44,22 @@ public class BankDetailsController {
 		}
 	
 		BankDetails bankDetails = request.getContext().asType(BankDetails.class);
+		Bank bank = bankDetails.getBank();
 
-		if(bankDetails.getIban() != null && bankDetails.getBank().getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+		if(bankDetails.getIban() != null && bank != null
+				&& bank.getBankDetailsTypeSelect()
+				== BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
 			try {
 				IbanUtil.validate(bankDetails.getIban());
 
 				bankDetails = bds.detailsIban(bankDetails);
-				response.setValue("bankCode", bankDetails.getBankCode());
-				response.setValue("sortCode", bankDetails.getSortCode());
-				response.setValue("accountNbr", bankDetails.getAccountNbr());
-				response.setValue("bbanKey", bankDetails.getBbanKey());
+				if (bank.getCountry() != null
+						&& bank.getCountry().getAlpha2Code().equals("FR")) {
+					response.setValue("bankCode", bankDetails.getBankCode());
+					response.setValue("sortCode", bankDetails.getSortCode());
+					response.setValue("accountNbr", bankDetails.getAccountNbr());
+					response.setValue("bbanKey", bankDetails.getBbanKey());
+				}
 			} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
 				if (request.getAction().endsWith("onchange")) {
 					response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
