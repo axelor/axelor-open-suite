@@ -56,10 +56,6 @@
 		<option value="3">Non compliant</option>
 	</selection>
 	
-	<selection name="app.type.select" id="stock.app.type.select">
-		<option order="5" value="stock">Stock</option>
-	</selection>
-
 	<selection name="rating.icon.select">
 		<option value="0.00" icon="img/rating/rating-0.00.png">0.00</option>
 		<option value="0.50" icon="img/rating/rating-0.50.png">0.50</option>

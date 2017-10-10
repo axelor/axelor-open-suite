@@ -288,12 +288,6 @@
 		<option value="3">Real (accounting)</option>
 	</selection>
 
-	<selection name="app.type.select" id="account.app.type.select">
-		<option order="2" value="account">Account</option>
-		<option order="3" value="invoice">Invoice</option>
-		<option order="4" value="budget">Budget</option>
-	</selection>
-
     <selection name="base.blocking.select" id="account.blocking.select">
         <option value="1">Reminder blocking</option>
         <option value="2">Invoicing blocking</option>

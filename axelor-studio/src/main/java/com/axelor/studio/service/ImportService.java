@@ -17,19 +17,30 @@
  */
 package com.axelor.studio.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.codec.binary.Base64;
+
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.Wkf;
-import com.axelor.studio.db.repo.ActionBuilderRepo;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
+import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
@@ -51,16 +62,25 @@ public class ImportService {
 	private MenuBuilderRepository menuBuilderRepo;
 	
 	@Inject
-	private ActionBuilderRepo actionBuilderRepo;
+	private ActionBuilderRepository actionBuilderRepo;
+	
+	@Inject
+	private AppBuilderRepository appBuilderRepo;
 	
 	@Inject
 	private WkfService wkfService;
+	
+	@Inject
+	private MetaFiles metaFiles;
+	
+	@Inject
+	private MetaFileRepository metaFileRepo;
 	
 	public Object importMetaJsonModel(Object bean, Map<String,Object> values) {
 		
 		assert bean instanceof MetaJsonModel;
 		
-		return metaJsonModelRepo.save((MetaJsonModel) bean);
+		return metaJsonModelRepo.save((MetaJsonModel) bean) ;
 	}
 	
 	public Object importChartBuilder(Object bean, Map<String,Object> values) throws JAXBException, AxelorException {
@@ -96,6 +116,116 @@ public class ImportService {
 		assert bean instanceof Wkf;
 		
 		Wkf wkf = (Wkf) bean;
+		
+		wkfService.process(wkf);
+		
+		return wkf;
+	}
+	
+	public Object importAppBuilder(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof AppBuilder;
+		
+		AppBuilder appBuilder = (AppBuilder) bean;
+		String fileName = (String) values.get("fileName");
+		String imageData = (String)values.get("imageData");
+		
+		if (fileName != null && imageData != null) {
+			appBuilder.setImage(importImg(fileName, imageData));
+		}
+		
+		return appBuilderRepo.save(appBuilder);
+	}
+	
+	// Import methods specific for import from AppBuilder
+	private MetaFile importImg(String name, String data) {
+		
+		if (data == null) {
+			return null;
+		}
+		
+		byte[] img = Base64.decodeBase64(data);
+		
+		ByteArrayInputStream inImg = new ByteArrayInputStream(img);
+		
+		MetaFile metaFile =  metaFileRepo.all().filter("self.fileName = ?1", name).fetchOne();
+		
+		try {
+			if (metaFile != null) {
+				return metaFiles.upload(inImg, metaFile);
+			}
+			else {
+				return metaFiles.upload(inImg, name);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public MetaJsonField importJsonModelField(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof MetaJsonField;
+		
+		MetaJsonField field = (MetaJsonField) bean;
+		
+		if (field.getJsonModel() == null) {
+			return null;
+		}
+		
+		return field;
+	}
+	
+	public MetaJsonField importJsonField(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof MetaJsonField;
+		
+		MetaJsonField field = (MetaJsonField) bean;
+		
+		if (field.getJsonModel() != null) {
+			return null;
+		}
+		
+		return field;
+	}
+	
+	public Object importAppMetaJsonModel(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof MetaJsonModel;
+		
+		MetaJsonModel model = (MetaJsonModel) bean;
+		
+		JPA.flush();
+		
+		JPA.refresh(model);
+		
+		return metaJsonModelRepo.save(model) ;
+	}
+	
+	public Object importAppDashboardBuilder(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof DashboardBuilder;
+		
+		DashboardBuilder dashboard = (DashboardBuilder) bean;
+		
+		JPA.flush();
+		
+		JPA.refresh(dashboard);
+		
+		return dashboardBuilderRepo.save(dashboard);
+	}
+	
+	public Object importAppWkf(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof Wkf;
+		
+		Wkf wkf = (Wkf) bean;
+		
+		JPA.flush();
+		
+		JPA.refresh(wkf);
+		
 		wkfService.process(wkf);
 		
 		return wkf;

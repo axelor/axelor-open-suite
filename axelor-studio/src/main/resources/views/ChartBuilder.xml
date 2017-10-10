@@ -8,11 +8,14 @@
   	<field name="title" />
   	<field name="model" />
   	<field name="chartType" />
+  	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
   
   <form name="chart-builder-form" title="Chart builder" model="com.axelor.studio.db.ChartBuilder" width="large"
       onNew="action-view-builder-record-default" onLoad="action-chart-builder-on-load">
-      <panel title="Overview">
+      <panel>
+      	<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      	<spacer/>
         <field name="name"/>
         <field name="title"/>
         <field name="chartType" required="true"/>

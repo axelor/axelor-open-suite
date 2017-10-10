@@ -2,7 +2,7 @@
 <dashboard-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <dashboard-builder name="product-dashboard" title="Tableau de bord produit">
+  <dashboard-builder name="product-dashboard" title="Tableau de bord produit" appBuilder="PRD">
   	<dashlets>
 		<dashlet name="Commande produit" sequence="0" viewType="grid" colspan="12" view="custom-model-ProductOrder-grid" />  	
   		<dashlet name="Commandes produit par mois" sequence="1" viewType="chart" colspan="6" view="product-order-chart" />

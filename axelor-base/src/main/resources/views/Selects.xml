@@ -658,10 +658,6 @@
 		<option value="3">Time unit</option>
 	</selection>
 	
-	<selection name="app.type.select">
-		<option order="1" value="base">Base</option>
-	</selection>
-	
 	<selection name="iaccount.payment.mode.type.select">
 		<option value="1">Other</option>
 		<option value="2">Direct debit</option>

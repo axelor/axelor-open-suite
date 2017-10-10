@@ -22,10 +22,6 @@
 		<option value="com.axelor.apps.project.db.Project">Project/Business (Project)</option>
 	</selection>
 	
-	<selection name="app.type.select" id="project.app.type.select">
-		<option order="10" value="project">Project</option>
-	</selection>
-	
 	<selection name="task.status.select">
 		<option value="1">New</option>
 		<option value="2">In Progress</option>

@@ -2,14 +2,14 @@
 <json-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <json-model name="ProductCategory" title="Catégorie de produit">
+  <json-model name="ProductCategory" title="Catégorie de produit" appBuilder="PRD">
   	<fields>
 		<field name="name" title="Nom" required="true" type="string" sequence="1"/>
 		<field name="code" title="Code" type="string" sequence="2"/>
   	</fields>
   </json-model> 
   
-  <json-model name="Product" title="Produit">
+  <json-model name="Product" title="Produit" appBuilder="PRD">
   	<fields>
 		<field name="name" title="Nom" required="true" type="string" sequence="1"/>
 		<field name="code" title="Code" type="string" sequence="2"/>
@@ -20,7 +20,7 @@
   	</fields>
   </json-model>
   
-  <json-model name="ProductOrderLine" title="Ligne de commande produit">
+  <json-model name="ProductOrderLine" title="Ligne de commande produit" appBuilder="PRD">
   	<fields>
   		<field name="product" title="Produit" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total"/>
   		<field name="price" title="Prix" type="decimal" sequence="2" onChange="action-product-order-line-update-total"/>
@@ -29,7 +29,7 @@
   	</fields>
   </json-model> 
   
-  <json-model name="ProductOrder" title="Commande produit">
+  <json-model name="ProductOrder" title="Commande produit" appBuilder="PRD">
   	<fields>
 		<field name="reference" title="Réf" type="string" sequence="1"/>
 		<field name="customer" title="Client" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2"/>
@@ -40,14 +40,14 @@
   	</fields>
   </json-model>
   
-  <json-field name="createInvoice" type="button" model="com.axelor.apps.hr.db.Timesheet" modelField="timesheetAttrs" onClick="action-create-invoice-from-timesheet" sequence="1"/>
+  <json-field name="createInvoice" type="button" model="com.axelor.apps.hr.db.Timesheet" modelField="timesheetAttrs" onClick="action-create-invoice-from-timesheet" sequence="1" appBuilder="PRD"/>
   
-  <json-field name="createPlanning" type="button" model="com.axelor.apps.project.db.Project" modelField="projectAttrs" onClick="action-create-project-planning" sequence="1"/>
+  <json-field name="createPlanning" type="button" model="com.axelor.apps.project.db.Project" modelField="projectAttrs" onClick="action-create-project-planning" sequence="1" appBuilder="PRD"/>
   
-  <json-field name="invertToInvoice" type="button" model="com.axelor.apps.hr.db.Timesheet" modelField="timesheetAttrs" onClick="action-timesheet-line-invert-to-invoice" sequence="2"/>
+  <json-field name="invertToInvoice" type="button" model="com.axelor.apps.hr.db.Timesheet" modelField="timesheetAttrs" onClick="action-timesheet-line-invert-to-invoice" sequence="2" appBuilder="PRD"/>
   
-  <json-field name="products"  title="Produit" type="json-many-to-many" target-json-model="Product" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="3"/>
+  <json-field name="products"  title="Produit" type="json-many-to-many" target-json-model="Product" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="3" appBuilder="PRD"/>
   
-  <json-field name="createProduct" title="Créer commande produit" type="button" onClick="action-create-product-order-from-category" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="4"/>
+  <json-field name="createProduct" title="Créer commande produit" type="button" onClick="action-create-product-order-from-category" model="com.axelor.meta.db.MetaJsonRecord" modelField="attrs" jsonModel="ProductCategory" sequence="4" appBuilder="PRD"/>
   
 </json-models>

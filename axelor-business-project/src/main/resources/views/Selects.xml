@@ -30,10 +30,6 @@
 		<option value="3">Expense</option>
 	</selection>
 	
-	<selection name="app.type.select" id="business.project.app.type.select">
-		<option order="17" value="business-project">Business Project</option>
-	</selection>
-	
 	<selection name="invoicing.project.status.select">
 		<option value="0">Draft</option>
 		<option value="1">Waiting approval</option>

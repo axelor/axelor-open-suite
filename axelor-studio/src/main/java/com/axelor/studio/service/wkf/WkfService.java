@@ -94,7 +94,7 @@ public class WkfService {
 	 * @return Exception string if any issue in processing else null.
 	 */
 	public String process(Wkf wkf) {
-
+		
 		try {
 			workflow = wkf;
 			inflector = Inflector.getInstance();

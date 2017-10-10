@@ -7,6 +7,13 @@
   
   <!-- Model menus -->
   
+  <menuitem name="menu-app-builder" title="App builder" parent="menu-studio-root" action="menu.app.builder" order="1"/>
+  
+  <action-view name="menu.app.builder" title="App builder" model="com.axelor.studio.db.AppBuilder">
+    <view type="grid" name="app-builder-grid"/>
+    <view type="form" name="app-builder-form"/>
+  </action-view>
+  
   <menuitem name="menu-custom-model-editor" title="Custom model editor" parent="menu-studio-root" action="action.custom.model.editor" order="5"/>
   
   <action-view name="action.custom.model.editor" title="Custom model editor">
@@ -44,7 +51,7 @@
     <domain>self.menuAction = false</domain>
   </action-view>
   
-  <menuitem name="menu-menu-builder" title="Menu builders" parent="menu-studio-view" action="menu.menu.builder" order="23"/>
+  <menuitem name="menu-menu-builder" title="Menu builders" parent="menu-studio-view" action="menu.menu.builder" order="25"/>
   
   <action-view name="menu.menu.builder" title="Menu builders" model="com.axelor.studio.db.MenuBuilder">
     <view type="grid" name="menu-builder-grid"/>
@@ -68,11 +75,6 @@
     <view type="form" name="wkf-tracking-form"/>
   </action-view>
   
-<!--   <menuitem name="menu-wkf-dashboard" title="Workflow dashboard" parent="menu-studio-wkf" action="menu.wkf.dashboard" order="15"/> -->
-  
-<!--   <action-view name="menu.wkf.dashboard" title="Workflow dashboard"> -->
-<!--     <view type="dashboard" name="dasbhoard-wkf"/> -->
-<!--   </action-view> -->
   
   
 </object-views>

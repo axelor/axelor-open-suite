@@ -76,10 +76,6 @@
     	<option value="5">Report</option>
     </selection>
     
-    <selection name="app.type.select" id="studio.app.type.select">
-		<option order="21" value="bpm">Bpm</option>
-	</selection>
-	
 	<selection name="studio.action.builder.script.type.select">
 		<option value="0">Javascript</option>
     	<option value="1">Groovy</option>

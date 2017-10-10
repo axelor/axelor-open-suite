@@ -155,10 +155,10 @@
     </action-view>
     
     <action-export name="action-export-ebics-user" output="${date}${time}" download="true">
-	  <export name="EbicsExport-${__datetime__.toString('ddMMyyyyHHmmSS')}.xml"
+	  <export name="EbicsExport-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
 	    	  template="data-export/export-ebics-user.txt"
 	          engine="groovy"/>
 	</action-export>
-
+	
     
 </object-views>

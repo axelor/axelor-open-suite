@@ -51,10 +51,6 @@
 		<option value="2">Canceled</option>
 	</selection>
 	
-	<selection name="app.type.select" id="sale.app.type.select">
-		<option order="9" value="sale">Sale</option>
-	</selection>
-	
 	<selection name="sale.order.line.type.select">
 		<option value="0">Normal</option>
 		<option value="1">Title</option>

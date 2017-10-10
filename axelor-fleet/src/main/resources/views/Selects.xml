@@ -3,10 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<selection name="app.type.select" id="fleet.app.type.select">
-		<option order="25" value="fleet">Fleet</option>
-	</selection>
-	
 	<selection name="fleet.vehicle.transimission.select">
 		<option value="0">Manual</option>
 		<option value="1">Automatic</option>
