@@ -11,6 +11,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -25,8 +26,11 @@ public class ContractLineController {
 			Contract contract = request.getContext().getParentContext().asType(Contract.class);
 			partner = contract.getPartner();
 			company = contract.getCompany();
-		}else{
-			return;
+		}else if (request.getContext().getParentContext().getContextClass() == ContractVersion.class){
+			ContractVersion contractVersion = request.getContext().getParentContext().asType(ContractVersion.class);
+			Contract contract = contractVersion.getContract();
+			partner = contract.getPartner();
+			company = contract.getCompany();
 		}
 		
 		
@@ -38,14 +42,18 @@ public class ContractLineController {
 		}
 
 		try  {
-			TaxLine taxLine = Beans.get(AccountManagementService.class).getTaxLine(
-					LocalDate.now(), product, company, partner.getFiscalPosition(), false);
-			response.setValue("taxLine", taxLine);
-
 			BigDecimal price = product.getSalePrice();
-			if(taxLine != null && product.getInAti()) {
-				price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+			if (partner != null && company != null){
+				TaxLine taxLine = Beans.get(AccountManagementService.class).getTaxLine(
+						LocalDate.now(), product, company, partner.getFiscalPosition(), false);
+				response.setValue("taxLine", taxLine);
+
+				
+				if(taxLine != null && product.getInAti()) {
+					price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+				}
 			}
+			
 
 			response.setValue("productName", product.getName());
 			response.setValue("unit", product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());

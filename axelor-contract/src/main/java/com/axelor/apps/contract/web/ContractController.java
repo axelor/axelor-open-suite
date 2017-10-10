@@ -208,6 +208,7 @@ public class ContractController {
 			copy.setPartner(Beans.get(PartnerRepository.class).find( request.getContext().asType(Contract.class).getPartner().getId() ) );
 			Beans.get(ContractRepository.class).save(copy);
 		}
+		response.setCanClose(true);
 		
 		response.setView ( ActionView.define( I18n.get("Contract") ) 
 				.model(Contract.class.getName())
@@ -216,7 +217,5 @@ public class ContractController {
 				.param("forceTitle", "true")
 				.context("_showRecord", copy.getId().toString())
 				.map() );
-		
-		
 	}
 }
