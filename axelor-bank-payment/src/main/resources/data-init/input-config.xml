@@ -7,9 +7,9 @@
   	
   	<input file="bankpayment_bankStatementFileFormat.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementFileFormat" search="self.importId = :importId" />
   	
-  	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
-		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
-	</input>
+<!--   	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
+<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
+<!-- 	</input> -->
 
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code">
 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>

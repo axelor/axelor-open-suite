@@ -1,2 +1,2 @@
-name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-Subscription;SBC;Subscription;subscription;app-subscription.png;axelor-supplychain;supplychain;23
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Subscription";"subscription";24;"Subscription";"app-subscription.png";"axelor-supplychain";"supplychain";23

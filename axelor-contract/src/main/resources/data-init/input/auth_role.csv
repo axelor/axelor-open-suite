@@ -1,3 +1,2 @@
 "name";"description";"permissions"
 "role.admin";"Access to all objects for all modules";"perm.contract.all"
-"role.user";"Access to all objects for all modules except admin";"perm.contract.all"
