@@ -495,10 +495,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public File generateFile(BankOrder bankOrder)
 			throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 
-		if (bankOrder.getGeneratedMetaFile() != null) {
-			return MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-		}
-
 		if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
 			return null;
 		}
