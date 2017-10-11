@@ -165,6 +165,8 @@ public interface IExceptionMessage {
 	static final String RECONCILE_4 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/ ;
 	static final String RECONCILE_6 = /*$$(*/ "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/ ;
+	static final String RECONCILE_7 = /*$$(*/ "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/ ;
+
 
 	/**
 	 * Reimbursement service and controller
