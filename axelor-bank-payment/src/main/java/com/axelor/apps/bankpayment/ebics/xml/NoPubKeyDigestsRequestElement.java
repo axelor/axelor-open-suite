@@ -31,6 +31,7 @@ import com.axelor.apps.account.ebics.schema.h003.NoPubKeyDigestsRequestStaticHea
 import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
@@ -99,8 +100,9 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     
 
 	EbicsUser ebicsUser = session.getUser();
+	EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
 
-	OrderAttribute orderAttribute = new OrderAttribute(OrderType.HPB, ebicsUser.getEbicsTypeSelect());
+	OrderAttribute orderAttribute = new OrderAttribute(OrderType.HPB, ebicsPartner.getEbicsTypeSelect());
     orderAttribute.build();
 	
     
@@ -109,7 +111,7 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     xstatic = EbicsXmlFactory.createNoPubKeyDigestsRequestStaticHeaderType(session.getBankID(),
     																   EbicsUtils.generateNonce(),
 	                                                                   Calendar.getInstance(),
-	                                                                   ebicsUser.getEbicsPartner().getPartnerId(),
+	                                                                   ebicsPartner.getPartnerId(),
 	                                                                   ebicsUser.getUserId(),
 	                                                                   product,
 	                                                                   orderDetails,

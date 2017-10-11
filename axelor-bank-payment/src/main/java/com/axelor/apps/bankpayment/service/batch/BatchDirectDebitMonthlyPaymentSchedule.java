@@ -1,12 +1,12 @@
 package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
+import com.axelor.i18n.I18n;
 
-public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaymentSchedule {
+public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebit {
 
 	@Override
 	protected void process() {
-		processPaymentScheduleLines(PaymentScheduleRepository.TYPE_MONTHLY);
+		throw new UnsupportedOperationException(I18n.get("Not implemented"));
 	}
 
 }

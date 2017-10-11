@@ -50,6 +50,8 @@ import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
@@ -278,29 +280,39 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 	
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
-		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+		sendBankOrderFile(bankOrder);
+		realizeBankOrder(bankOrder);
 
+	}
+	
+	protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException  {
+		
 		File dataFileToSend = null;
 		File signatureFileToSend = null;
 
-		
-		if(bankOrder.getSignatoryEbicsUser().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 		
 		sendFile(bankOrder, dataFileToSend, signatureFileToSend);
 
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected void realizeBankOrder(BankOrder bankOrder)  throws AxelorException {
+		
+		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
 		bankOrderRepo.save(bankOrder);
-
 	}
+	
 
-	public void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
+	protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
 
 		PaymentMode paymentMode = bankOrder.getPaymentMode();
 
@@ -308,7 +320,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, dataFileToSend,
+		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
+		
+		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
 				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
 
 	}
@@ -485,29 +499,40 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File file = null;
 
 		switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT:
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT:
+    			file = new BankOrderFile00100102Service(bankOrder).generateFile();
+	    		break;
 
-			file = new BankOrderFile00100102Service(bankOrder).generateFile();
-			break;
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
+    			file = new BankOrderFile00100103Service(bankOrder).generateFile();
+	    		break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
+    			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
+	    		break;
 
-			file = new BankOrderFile00100103Service(bankOrder).generateFile();
-			break;
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT:
+    			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
+	    		break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                break;
 
-			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
-			break;
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT:
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                break;
 
-			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
-			break;
-
-		default:
-
-			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                break;
+                
+            default:
+            	throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
 		}
 
 		if (file == null) {

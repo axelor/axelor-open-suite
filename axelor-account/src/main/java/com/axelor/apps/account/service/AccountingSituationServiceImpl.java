@@ -22,11 +22,9 @@ import java.util.Set;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-//import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -150,35 +148,6 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 			domain = "self.id IN (" + idList + ") AND self.active = true";
 		}
 		return domain;
-	}
-
-	/**
-	 * Find a default bank details.
-	 * @param company
-	 * @param paymentMode
-	 * @param partner
-	 * @return  the default bank details in accounting situation if it is active
-	 *          and allowed by the payment mode.
-	 */
-	public BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner) {
-		AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
-		if (accountingSituation == null) { return null;}
-		BankDetails candidateBankDetails = null;
-		if (paymentMode.getInOutSelect() == PaymentModeRepository.IN) {
-			candidateBankDetails = accountingSituation.getCompanyInBankDetails();
-		}
-		else if (paymentMode.getInOutSelect() == PaymentModeRepository.OUT) {
-			candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
-		}
-		List<BankDetails>authorizedBankDetails = Beans.get(PaymentModeService.class).
-				getCompatibleBankDetailsList(paymentMode, company);
-		if (authorizedBankDetails.contains(candidateBankDetails) &&
-				candidateBankDetails.getActive()) {
-			return candidateBankDetails;
-		}
-		else {
-			return null;
-		}
 	}
 
 	@Override

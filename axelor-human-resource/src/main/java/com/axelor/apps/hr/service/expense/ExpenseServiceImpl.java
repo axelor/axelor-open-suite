@@ -37,6 +37,8 @@ import java.time.format.DateTimeFormatter;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.common.base.Strings;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -461,16 +463,24 @@ public class ExpenseServiceImpl implements ExpenseService {
 		addPayment(expense, expense.getCompany().getDefaultBankDetails());
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancelPayment(Expense expense) throws AxelorException {
-		expense.setPaymentDate(null);
-		expense.setBankOrder(null);
-		expense.setPaymentAmount(BigDecimal.ZERO);
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    public void cancelPayment(Expense expense) throws AxelorException {
+        BankOrder bankOrder = expense.getBankOrder();
 
-		expense.setPaymentMode(null);
-		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-		expenseRepository.save(expense);
-	}
+        if (bankOrder != null) {
+            if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
+                throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL));
+            } else {
+                Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+
+                expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+                expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
+                expense.setPaymentDate(null);
+                expense.setPaymentAmount(BigDecimal.ZERO);
+                expenseRepository.save(expense);
+            }
+        }
+    }
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
 

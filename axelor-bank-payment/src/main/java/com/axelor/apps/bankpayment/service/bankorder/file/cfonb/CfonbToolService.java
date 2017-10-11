@@ -194,7 +194,6 @@ public class CfonbToolService {
 			break;
 
 		case FORMAT_ALPHA:
-			this.testDigital(zone, numOfZone);
 			zone = StringTool.deleteAccent(zone);
 			zone = StringTool.fillStringRight(zone, ' ', length);
 			break;

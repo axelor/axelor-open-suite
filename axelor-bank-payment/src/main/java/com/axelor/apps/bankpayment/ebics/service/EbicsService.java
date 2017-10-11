@@ -272,18 +272,25 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file, String format, File signature) throws AxelorException {
+	public void sendFULRequest(EbicsUser transportUser, EbicsUser signatoryUser, EbicsProduct product, File file, String format, File signature) throws AxelorException {
 		  
-		EbicsSession session = new EbicsSession(user);
-	    boolean test = isTest(user);
+		EbicsSession session = new EbicsSession(transportUser, signatoryUser);
+	    boolean test = isTest(transportUser);
 	    if (test) {
 	    	session.addSessionParam("TEST", "true");
 	    }
 	    if (file == null) {
 	    	throw new AxelorException(IException.CONFIGURATION_ERROR, "File is required to send FUL request");
 	    }
-	    if (user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && signature == null)  {
-	    	throw new AxelorException(IException.CONFIGURATION_ERROR, "Signature file is required to send FUL request");
+	    EbicsPartner ebicsPartner = transportUser.getEbicsPartner();
+	    
+	    if (ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+	    	if(signature == null)  {
+	    		throw new AxelorException(IException.CONFIGURATION_ERROR, "Signature file is required to send FUL request");
+	    	}
+	    	if(signatoryUser == null)  {
+	    		throw new AxelorException(IException.CONFIGURATION_ERROR, "Signatory user is required to send FUL request");
+	    	}
 	    }
 	    
 	    session.addSessionParam("EBCDIC", "false");
@@ -296,24 +303,24 @@ public class EbicsService {
 	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
-			if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+			if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, IOUtils.getFileContent(signature.getAbsolutePath()));
 			}
 			else  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, null);
 			}
-			userService.getNextOrderId(user);
+			userService.getNextOrderId(transportUser);
 	    } catch (IOException | AxelorException e) {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e,IException.TECHNICAL);
 	    }
 	    
-	    EbicsPartner ebicsPartner = user.getEbicsPartner();
-	    
-	    if(ebicsPartner.getUsePSR())  {
-	    	
-	    	sendFDLRequest(user, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
-	    	
+	    try {
+		    if(ebicsPartner.getUsePSR())  {
+		    	sendFDLRequest(transportUser, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
+		    }
+	    } catch (AxelorException e) {
+	    	TraceBackService.trace(e);
 	    }
 	}
 

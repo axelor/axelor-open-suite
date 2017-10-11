@@ -38,6 +38,7 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
@@ -100,8 +101,9 @@ public class DInitializationRequestElement extends InitializationRequestElement 
 		
 		
 		EbicsUser ebicsUser = session.getUser();
-
-		OrderAttribute orderAttribute = new OrderAttribute(type, ebicsUser.getEbicsTypeSelect());
+		EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
+		
+		OrderAttribute orderAttribute = new OrderAttribute(type, ebicsPartner.getEbicsTypeSelect());
 	    orderAttribute.build();
 		
 		if (type.equals(com.axelor.apps.bankpayment.ebics.client.OrderType.FDL)) {
@@ -142,7 +144,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
 		}
 		xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 				nonce,
-				ebicsUser.getEbicsPartner().getPartnerId(),
+				ebicsPartner.getPartnerId(),
 				product,
 				ebicsUser.getSecurityMedium(),
 				ebicsUser.getUserId(),

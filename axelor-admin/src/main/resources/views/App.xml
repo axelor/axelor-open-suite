@@ -20,8 +20,8 @@
 				<field name="languageSelect" colSpan="4" />
 				<field name="demoDataLoaded" readonly="true" colSpan="4"/>
 				<spacer colSpan="12"/>
-				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3" />
-				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" />
+				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="6" />
+				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="6" />
 			</panel>
 			<panel-related colSpan="5" field="dependsOnSet" readonly="true" canSelect="false" canView="false" >
 				<field name="name" />

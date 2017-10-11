@@ -42,7 +42,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -56,7 +56,7 @@ public class InterbankPaymentOrderImportService {
 	protected PaymentVoucherCreateService paymentVoucherCreateService;
 	protected CfonbImportService cfonbImportService;
 	protected RejectImportService rejectImportService;
-	protected BankDetailsService bankDetailsService;
+	protected BankDetailsServiceImpl bankDetailsService;
 	protected AccountConfigService accountConfigService;
 	protected PartnerRepository partnerRepo;
 	protected InvoiceRepository invoiceRepo;
@@ -65,7 +65,7 @@ public class InterbankPaymentOrderImportService {
 
 	@Inject
 	public InterbankPaymentOrderImportService(AppAccountService appAccountService, PaymentVoucherCreateService paymentVoucherCreateService, CfonbImportService cfonbImportService,
-			RejectImportService rejectImportService, BankDetailsService bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
+			RejectImportService rejectImportService,  BankDetailsServiceImpl bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
 			InvoiceRepository invoiceRepo) {
 
 		this.paymentVoucherCreateService = paymentVoucherCreateService;

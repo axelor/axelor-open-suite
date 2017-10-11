@@ -88,7 +88,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected ReimbursementService reimbursementService;
-
+	
 	protected BatchStrategy() {
 	}
 

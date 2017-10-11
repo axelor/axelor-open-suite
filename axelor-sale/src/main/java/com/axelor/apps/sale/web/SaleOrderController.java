@@ -25,13 +25,18 @@ import java.lang.invoke.MethodHandles;
 
 import com.axelor.i18n.I18n;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.inject.Beans;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -423,5 +428,27 @@ public class SaleOrderController {
 		saleOrderService.computeAddressStr(saleOrder);
 
 		response.setValues(saleOrder);
+	}
+
+	/**
+	 * Called on partner, company or payment change.
+	 * Fill the bank details with a default value.
+	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+		Company company = saleOrder.getCompany();
+		Partner partner = saleOrder.getClientPartner();
+		if(company == null) {
+			return;
+		}
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 }
