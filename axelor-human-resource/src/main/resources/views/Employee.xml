@@ -8,6 +8,7 @@
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
 		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.payCompany"/>
 	</grid>
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
