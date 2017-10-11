@@ -101,10 +101,10 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, boolean canBeZeroBalanceOk)  {
 
-		log.debug("Create Reconcile (Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} ",
-				new Object[]{debitMoveLine.getName(), creditMoveLine.getName(), amount, canBeZeroBalanceOk});
+		log.debug("Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
+				debitMoveLine.getMove().getCompany(), debitMoveLine.getName(), creditMoveLine.getName(), amount, canBeZeroBalanceOk);
 
-		Reconcile reconcile =  new Reconcile(
+		Reconcile reconcile =  new Reconcile(debitMoveLine.getMove().getCompany(), 
 				amount.setScale(2, RoundingMode.HALF_EVEN),
 				debitMoveLine, creditMoveLine,
 				ReconcileRepository.STATUS_DRAFT,
@@ -177,6 +177,14 @@ public class ReconcileServiceImpl  implements ReconcileService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_1),
 					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
+		
+		// Check if move lines companies are the same as the reconcile company
+		if (!debitMoveLine.getMove().getCompany().equals(reconcile.getCompany())
+				&& !creditMoveLine.getMove().getCompany().equals(reconcile.getCompany())){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_7), GeneralServiceImpl.EXCEPTION,
+					debitMoveLine.getMove().getCompany(), creditMoveLine.getMove().getCompany(), reconcile.getCompany()),
+					IException.CONFIGURATION_ERROR);
+		}
 
 		// Check if move lines accounts are the same (debit and credit)
 		if (!creditMoveLine.getAccount().equals(debitMoveLine.getAccount())){
@@ -195,8 +203,8 @@ public class ReconcileServiceImpl  implements ReconcileService {
 
 		}
 
-		if ((reconcile.getAmount().compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())) > 0
-				|| (reconcile.getAmount().compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())) > 0))){
+		if (reconcile.getAmount().compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())) > 0
+				|| reconcile.getAmount().compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())) > 0){
 			throw new AxelorException(
 					String.format(I18n.get(IExceptionMessage.RECONCILE_5)+" " +
 							I18n.get(IExceptionMessage.RECONCILE_3),
