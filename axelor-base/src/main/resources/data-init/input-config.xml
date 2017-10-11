@@ -65,7 +65,7 @@
 	
     <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
     
-    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
+    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser" />
     
     <input file="base_industrySector.csv" separator=";" type="com.axelor.apps.base.db.IndustrySector"  search="self.importId = :importId"/>
     
