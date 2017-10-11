@@ -55,6 +55,7 @@
 		</decimal>
 		
 		<unique-constraint columns="ref,company"/>
+		<unique-constraint columns="receiptNo,company"/>
 		
 		<extra-code><![CDATA[
 		

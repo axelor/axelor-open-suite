@@ -55,6 +55,7 @@
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     
+    <unique-constraint columns="manufOrderSeq,company"/>
     
   </entity>
 </domain-models>
