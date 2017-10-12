@@ -172,8 +172,8 @@
                             <field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
                             <field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
                             <field name="city" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
-                            <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-                            <field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
+                            <field name="addressL6" x-bind="{{addressL6|uppercase}}"/>
+                            <field name="addressL7Country" form-view="country-form" grid-view="country-grid"/>
                         </editor>
                     </field>
                 </panel>

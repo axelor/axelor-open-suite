@@ -12,8 +12,8 @@
     <string name="addressL3" title="Address precisions" />
     <string name="addressL4" title="N° and Street label" required="true"/>
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
-    <string name="addressL6" title="Zip/City"/>
-    <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <string name="addressL6" title="Zip/City" required="true"/>
+    <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country" required="true"/>
     <many-to-one name="city" ref="City" title="City"/>
     <decimal name="latit" title="Latitude" precision="38" scale="18" />
     <decimal name="longit" title="Longitude" precision="38" scale="18" />
