@@ -278,6 +278,6 @@ public class MessageServiceImpl implements MessageService {
 
 
 	@Override
-	public String printMessage(Message message)  throws AxelorException  { return null; }
+	public String printMessage(Message message, boolean toAttach)  throws AxelorException  { return null; }
 
 }

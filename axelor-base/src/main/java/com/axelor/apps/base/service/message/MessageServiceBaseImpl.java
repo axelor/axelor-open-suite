@@ -81,7 +81,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	}
 
 	@Override
-	public String printMessage(Message message) throws AxelorException  {
+	public String printMessage(Message message, boolean toAttach) throws AxelorException  {
 
 		Company company = message.getCompany();
 		if(company == null){ return null; }
@@ -101,8 +101,11 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		String name = "Message " + message.getSubject();
 		
 		ReportSettings reportSettings = ReportFactory.createReport(birtTemplate.getTemplateLink(), name+"-${date}")
-				.addFormat(birtTemplate.getFormat())
-				.addParam("Locale", language);
+				.addFormat(birtTemplate.getFormat());
+		if (toAttach) {
+				reportSettings.toAttach(message);
+		}
+		reportSettings.addParam("Locale", language);
 				
 		for ( BirtTemplateParameter birtTemplateParameter : birtTemplate.getBirtTemplateParameterList() )  {
 			maker.setTemplate(birtTemplateParameter.getValue());

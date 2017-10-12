@@ -49,7 +49,7 @@ public class AccountingBatchController {
 
 		Batch batch = null;
 
-		if(accountingBatch.getReminderTypeSelect() == AccountingBatchRepository.ACTION_REMINDER)  {
+		if(accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_REMINDER)  {
 			batch = accountingBatchService.reminder(accountingBatchRepo.find(accountingBatch.getId()));
 		}
 		if(batch != null)
