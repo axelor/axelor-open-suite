@@ -57,8 +57,10 @@ public class AppBuilderService {
 		app.setImage(appBuilder.getImage());
 		app.setDescription(appBuilder.getDescription());
 		Set<App> depends = new HashSet<App>();
-		depends.addAll(appBuilder.getDependsOnSet());
-		app.setDependsOnSet(depends);
+		if (appBuilder.getDependsOnSet() != null) {
+			depends.addAll(appBuilder.getDependsOnSet());
+			app.setDependsOnSet(depends);
+		}
 		app.setInitDataLoaded(true);
 		app.setDemoDataLoaded(true);
 

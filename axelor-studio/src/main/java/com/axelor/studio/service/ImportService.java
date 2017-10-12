@@ -25,8 +25,11 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
@@ -122,7 +125,7 @@ public class ImportService {
 		return wkf;
 	}
 	
-	public Object importAppBuilder(Object bean, Map<String,Object> values) {
+	public Object importAppBuilderImg(Object bean, Map<String,Object> values) {
 		
 		assert bean instanceof AppBuilder;
 		
@@ -133,6 +136,17 @@ public class ImportService {
 		if (fileName != null && imageData != null) {
 			appBuilder.setImage(importImg(fileName, imageData));
 		}
+		
+		appBuilder = appBuilderRepo.save(appBuilder);
+		
+		return appBuilder;
+	}
+	
+	public Object importAppBuilder(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof AppBuilder;
+		
+		AppBuilder appBuilder = (AppBuilder) bean;
 		
 		return appBuilderRepo.save(appBuilder);
 	}

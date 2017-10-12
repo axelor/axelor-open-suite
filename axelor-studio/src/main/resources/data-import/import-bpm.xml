@@ -4,15 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
  	
  	<input file="bpm.xml" root="bpm" >
- 		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" update="true" call="com.axelor.studio.service.ImportService:importAppBuilder">
+ 		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" update="true" call="com.axelor.studio.service.ImportService:importAppBuilderImg">
  			<bind node="name" to="name" />
  			<bind node="code" to="code" />
  			<bind node="description" to="description" />
  			<bind node="sequence" to="sequence" />
  			<bind node="image/@name" alias="fileName"/>
  			<bind node="image" alias="imageData" />
+ 		</bind>
+ 		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" update="true" call="com.axelor.studio.service.ImportService:importAppBuilder">
+ 			<bind node="code" to="code" />
 			<bind node="depends" alias="depends" />
-			<bind to="dependsOnSet" alias="deps"  search="self.code in :deps"  eval="depends.split(',') as List" update="true"  />
+			<bind to="dependsOnSet" alias="deps"  search="self.code in :deps"  eval="depends != null ? depends.split(',') as List : []"  />
  		</bind>
  		<bind node="models/model" type="com.axelor.meta.db.MetaJsonModel" search="self.name = :name" update="true">
  			<bind node="name" to="name" />
