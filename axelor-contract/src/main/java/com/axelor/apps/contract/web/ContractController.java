@@ -184,7 +184,21 @@ public class ContractController {
 		final ContractVersion version = JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
 		if(version.getContractNext() != null) { return; }
 
-		final Long contractId = Long.valueOf(request.getContext().get("_xContractId").toString());
+		Object xContractId = request.getContext().get("_xContractId");
+		Long contractId;
+
+		if (xContractId != null) {
+			contractId = Long.valueOf(xContractId.toString());
+		} else if (version.getContract() != null) {
+			contractId = version.getContract().getId();
+		} else {
+			contractId = null;
+		}
+
+		if (contractId == null) {
+			return;
+		}
+
 		JPA.runInTransaction(new Runnable() {
 			@Override
 			public void run() {
