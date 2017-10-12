@@ -43,7 +43,10 @@ public class ReminderController {
         reminder = reminderRepository.find(reminder.getId());
         try {
             reminder.setReminderMethodLine(reminder.getWaitReminderMethodLine());
-            reminderService.runAction(reminder);
+            reminderService.runManualAction(reminder);
+            //find the updated reminder
+            reminder = reminderRepository.find(reminder.getId());
+            reminderService.runMessage(reminder);
             response.setReload(true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);

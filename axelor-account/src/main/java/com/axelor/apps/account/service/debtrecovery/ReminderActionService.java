@@ -102,12 +102,6 @@ public class ReminderActionService {
 
 			this.saveReminder(reminder);
 
-			Message message = this.runStandardMessage(reminder);
-
-			Beans.get(MessageRepository.class).save(message);
-
-			this.updateReminderHistory(reminder, message);
-
 		}
 
 	}
@@ -191,12 +185,24 @@ public class ReminderActionService {
 
 			this.saveReminder(reminder);
 
-			Message message = this.runStandardMessage(reminder);
-
-			this.updateReminderHistory(reminder, message);
-
 		}
 		log.debug("End runManualAction service");
+	}
+
+	/**
+	 * Generates a message from a reminder and saves it
+	 * @param reminder
+	 * @throws AxelorException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void runMessage(Reminder reminder) throws AxelorException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+		Message message = this.runStandardMessage(reminder);
+		Beans.get(MessageRepository.class).save(message);
+		this.updateReminderHistory(reminder, message);
 	}
 
 

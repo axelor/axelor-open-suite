@@ -17,22 +17,11 @@
  */
 package com.axelor.apps.account.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
-import com.axelor.apps.account.service.debtrecovery.ReminderActionService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.inject.Beans;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.debtrecovery.ReminderActionService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -42,6 +31,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BatchReminder extends BatchStrategy {
 
@@ -140,19 +137,18 @@ public class BatchReminder extends BatchStrategy {
 	void generateMail() {
 		for (Reminder reminder : changedReminders) {
 			try {
-				if (reminder == null) {
-					continue;
-				}
+				reminder = Beans.get(ReminderRepository.class).find(reminder.getId());
 				ReminderHistory reminderHistory = Beans.get(ReminderActionService.class).getReminderHistory(reminder);
 				if (reminderHistory == null) {
 					continue;
 				}
-				Message message = reminderHistory.getReminderMessage();
-				if (message != null) {
-					Beans.get(MessageService.class).printMessage(message, true);
+				if (reminderHistory.getReminderMessage() == null) {
+					Beans.get(ReminderActionService.class).runMessage(reminder);
 				}
 			} catch (Exception e) {
-				TraceBackService.trace(e);
+				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", reminder.getAccountingSituation().getPartner().getName()), e), IException.REMINDER, batch.getId());
+
+				incrementAnomaly();
 			}
 		}
 	}
