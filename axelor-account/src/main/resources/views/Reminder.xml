@@ -25,11 +25,11 @@
         <panel>
             <field name="reminderDate"/>
             <field name="waitReminderMethodLine"
-                   onSelect="action-reminder-attrs-set-wait-reminder-line-domain"
+                   onSelect="action-reminder-attrs-set-reminder-line-domain"
                    grid-view="reminder-method-line-grid"
                    form-view="reminder-method-line-form"/>
             <button name="validateReminder" title="Validate Reminder"
-                    onClick="action-reminder-method-validate-reminder"/>
+                    onClick="save,action-reminder-method-validate-reminder"/>
         </panel>
         <panel-tabs>
             <panel-related field="reminderHistoryList"
@@ -45,9 +45,9 @@
 
     <action-attrs name="action-reminder-attrs-set-reminder-line-domain">
         <attribute for="reminderMethodLine" name="domain"
-                   expr="eval: 'self.reminderMethod.id = ${reminderMethod.id}'"/>
+                   expr="eval: &quot;self.reminderMethod.id = ${reminderMethod.id}&quot;"/>
         <attribute for="waitReminderMethodLine" name="domain"
-                   expr="eval: 'self.reminderMethod.id = ${reminderMethod.id}'"/>
+                   expr="eval: &quot;self.reminderMethod.id = ${reminderMethod.id}&quot;"/>
     </action-attrs>
 
     <action-method name="action-reminder-method-validate-reminder">
