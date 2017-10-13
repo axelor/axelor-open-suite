@@ -69,8 +69,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 						batch.getDone()) + " ",
 				batch.getDone()));
 		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL, batch.getAnomaly()),
+				I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+				        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL, batch.getAnomaly()),
 				batch.getAnomaly()));
 		addComment(sb.toString());
 		super.stop();
