@@ -126,7 +126,6 @@ public interface IExceptionMessage {
 	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
 	static final String EBICS_MISSING_CERTIFICATES = /*$$(*/  "Please add certificates to print" /*)*/;
 	static final String EBICS_INVALID_BANK_URL = /*$$(*/  "Invalid bank url. It must be start with http:// or https://" /*)*/;
-	
-	
+	static final String EBICS_MISSING_USER_TRANSPORT = /*$$(*/ "Please insert a EBICS user for transport in the EBICS partner" /*)*/;
 	
 }
