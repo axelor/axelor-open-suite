@@ -166,9 +166,9 @@ public class BatchReminder extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1);
+		String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1) + "\n";
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REMINDER_2)+"\n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 //		comment += String.format("\t* %s email(s) traité(s)\n", mailDone);
 //		comment += String.format("\t* %s anomalie(s)", mailAnomaly);

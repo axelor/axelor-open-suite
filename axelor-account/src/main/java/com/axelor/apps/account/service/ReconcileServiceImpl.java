@@ -194,7 +194,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		Account debitMoveLineAccount = debitMoveLine.getAccount();
 		if (!creditMoveLineAccount.equals(debitMoveLineAccount)){
 			log.debug("Compte ligne de credit : {} , Compte ligne de debit : {}", creditMoveLineAccount, debitMoveLineAccount);
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_2)+" "+I18n.get(IExceptionMessage.RECONCILE_3),
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_2)+" \n "+I18n.get(IExceptionMessage.RECONCILE_3),
 					GeneralServiceImpl.EXCEPTION, debitMoveLine.getName(), debitMoveLineAccount.getLabel(),
 					creditMoveLine.getName(), creditMoveLineAccount.getLabel()), IException.CONFIGURATION_ERROR);
 		}
@@ -211,7 +211,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 
 		if (reconcileAmount.compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())) > 0
 				|| reconcileAmount.compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())) > 0){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_5)+" "+I18n.get(IExceptionMessage.RECONCILE_3),
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_5)+" \n "+I18n.get(IExceptionMessage.RECONCILE_3),
 					GeneralServiceImpl.EXCEPTION, reconcileSeq, debitMoveLine.getName(), debitMoveLineAccount.getLabel(),
 					creditMoveLine.getName(), creditMoveLineAccount.getLabel()), IException.INCONSISTENCY);
 
