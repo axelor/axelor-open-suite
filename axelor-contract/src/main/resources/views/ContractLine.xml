@@ -68,7 +68,7 @@
        <field name="inTaxTotal"/>
     </grid>
 
-    <form name="additional-contract-line-form" title="Additional benefit line" model="com.axelor.apps.contract.db.ContractLine">
+    <form name="additional-contract-line-form" title="Additional benefit" model="com.axelor.apps.contract.db.ContractLine">
         <panel>
             <field name="product" canEdit="false" onChange="action-method-contract-line-change-product,action-method-contract-line-compute"/>
             <field name="productName"/>
