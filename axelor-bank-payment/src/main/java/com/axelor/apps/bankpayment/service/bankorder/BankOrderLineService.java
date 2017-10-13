@@ -224,27 +224,34 @@ public class BankOrderLineService {
 		return domain;
 	}
 
+	/**
+	 * Search the default bank detail in receiver company if partner type select is company.
+	 * If not company, search default in partner of bank order line. If no default bank detail,
+	 * return the alone bank detail present if is active in the partner of bank order line.
+	 * @param bankOrderLine The bank order line
+	 * @param bankOrder The bank order
+	 * @return default bank detail if present otherwise the unique bank detail if active
+	 */
 	public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
 		BankDetails candidateBankDetails = null;
-		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY &&
+				bankOrderLine.getReceiverCompany() != null) {
 			//fill using the default in company
-			if (bankOrderLine.getReceiverCompany() == null) {return null;}
 			candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
 		}
-		else {
+		else if (bankOrderLine.getPartner() != null){
 			//fill using the default in partner
-			if (bankOrderLine.getPartner() == null) {return null;}
-			for (BankDetails bankDetails : bankOrderLine.getPartner().getBankDetailsList()) {
-				if (bankDetails.getIsDefault()) {
-					candidateBankDetails = bankDetails;
-					break;
-				}
-			}
+			candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner(), true);
 		}
+
+		if (candidateBankDetails == null && bankOrderLine.getPartner().getBankDetailsList().size() == 1) {
+			candidateBankDetails = bankDetailsRepo.findActiveByPartner(bankOrderLine.getPartner(), true);
+		}
+
 		try {
 			checkBankDetails(candidateBankDetails, bankOrder);
 		} catch (AxelorException e) {
-			return null;
+			candidateBankDetails = null;
 		}
 
 		return candidateBankDetails;
