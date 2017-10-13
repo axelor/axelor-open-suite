@@ -8,7 +8,7 @@
             <field name="name"/>
             <field name="company"/>
             <field name="location" form-view="location-form" grid-view="location-grid"/>
-            <field name="configuratorProdProcessLine" colSpan="12"
+            <field name="configuratorProdProcessLineList" colSpan="12"
                    form-view="configurator-prod-process-line-form"
                    grid-view="configurator-prod-process-line-grid"/>
         </panel>

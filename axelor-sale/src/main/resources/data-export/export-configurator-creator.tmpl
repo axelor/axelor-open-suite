@@ -1,0 +1,220 @@
+<%
+	configuratorCreatorRepository = 'com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository'
+	def cc = { com.axelor.inject.Beans.get(configuratorCreatorRepository as Class).find(it) }
+	
+	attribute = ""
+	def attributeMethod = {
+		cc(it).attributes?.each( { att ->
+			attribute += """<attribute>
+				<name>${att.name}</name>
+				<title>${att.title}</title>
+				<type>${att.type}</type>
+				<defaultValue>${att.defaultValue}</defaultValue>
+				<defaultValue>${att.defaultValue}</defaultValue>
+				<model>${att.model}</model>
+				<modelField>${att.modelField}</modelField>
+				<jsonModelCode>${att.jsonModel?.code}</jsonModelCode>
+				<selection>${att.selection}</selection>
+				<widget>${att.widget}</widget>
+				<help>${att.help}</help>
+				<showIf>${att.showIf}</showIf>
+				<hideIf>${att.hideIf}</hideIf>
+				<requiredIf>${att.requiredIf}</requiredIf>
+				<hidden>${att.hidden}</hidden>
+				<required>${att.required}</required>
+				<nameField>${att.nameField}</nameField>
+				<hiddenInGrid>${att.hiddenInGrid}</hiddenInGrid>
+				<minSize>${att.minSize}</minSize>
+				<maxSize>${att.maxSize}</maxSize>
+				<precision>${att.precision}</precision>
+				<scale>${att.scale}</scale>
+				<regex>${att.regex}</regex>
+				<targetModel>${att.targetModel}</targetModel>
+				<enumType>${att.enumType}</enumType>
+				<formView>${att.formView}</formView>
+				<gridView>${att.gridView}</gridView>
+				<domain>${att.domain}</domain>
+				<targetJsonModelCode>${att.targetJsonModel?.code}</targetJsonModelCode>
+				<sequence>${att.sequence}</sequence>
+				<onChange>${att.onChange}</onChange>
+				<onClick>${att.onClick}</onClick>
+				<widgetAttrs>${att.widgetAttrs}</widgetAttrs>
+				</attribute>"""
+		})
+		return attribute
+	} 	
+	configuratorFormula = "" 
+	def configuratorFormulaMethod = {
+		cc(it).configuratorFormulaList?.each( { cf ->
+			configuratorFormula += """<configuratorFormula>
+				<formula>${cf.formula}</formula>
+				<showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
+				</configuratorFormula>"""
+		})
+		return configuratorFormula
+	}
+	
+	authorizedUser = ""
+	def authorizedUserMethod = {
+		cc(it).authorizedUserSet?.each( { au ->
+			authorizedUser += """<authorizedUser>
+				<authorizedUserCode>${au.code}</authorizedUserCode>
+				</authorizedUser>"""
+		})
+		return authorizedUser
+	}
+	
+	authorizedGroup = ""
+	def authorizedGroupMethod = {
+		cc(it).authorizedGroupSet?.each( { ag ->
+			authorizedGroup += """<authorizedGroup>
+				<authorizedGroupCode>${ag.code}</authorizedGroupCode>
+				</authorizedGroup>"""
+		})
+		return authorizedGroup
+	}
+	
+	def retrieveConfiguratorProdProcessLine = { cppl ->
+		return """<configuratorProdProcessLine>
+			<name>${cppl.name}</name>
+			<priority>${cppl.priority}</priority>
+			<workCenterCode>${cppl.workCenter?.code}</workCenterCode>
+			<outsourcing>${cppl.outsourcing}</outsourcing>
+			<locationCode>${cppl.location?.code}</locationCode>
+			<description>${cppl.description}</description>
+			<minCapacityPerCycle>${cppl.minCapacityPerCycle}</minCapacityPerCycle>
+			<minCapacityPerCycleFormula>${cppl.minCapacityPerCycleFormula}</minCapacityPerCycleFormula>
+			<defMinCapacityFormula>${cppl.defMinCapacityFormula}</defMinCapacityFormula>
+			<maxCapacityPerCycle>${cppl.maxCapacityPerCycle}</maxCapacityPerCycle>
+			<maxCapacityPerCycleFormula>${cppl.maxCapacityPerCycleFormula}</maxCapacityPerCycleFormula>
+			<defMaxCapacityFormula>${cppl.defMaxCapacityFormula}</defMaxCapacityFormula>
+			<durationPerCycle>${cppl.durationPerCycle}</durationPerCycle>
+			<durationPerCycleFormula>${cppl.durationPerCycleFormula}</durationPerCycleFormula>
+			<defDurationFormula>${cppl.defDurationFormula}</defDurationFormula>
+			</configuratorProdProcessLine>"""
+	}
+	
+	configuratorProdProcessLine = ""
+	def configuratorProdProcessLineMethod = {
+		cc(it).configuratorBom?.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
+			configuratorProdProcessLine = retrieveConfiguratorProdProcessLine(cppl)
+		})
+		return configuratorProdProcessLine
+	}
+	
+	def retrieveConfiguratorBomWithChildren
+	
+	def retrieveConfiguratorBomWithChildren2 = { index, childCb ->
+		return retrieveConfiguratorBomWithChildren( index, childCb )
+	}
+	
+	configBom = ""
+	retrieveConfiguratorBomWithChildren = { index, cb ->
+		if (index < 20) {
+			configBom += """<configuratorBom>
+				<companyCode>${cb.company?.code}</companyCode>
+				<name>${cb.name}</name>
+				<nameFormula>${cb.nameFormula}</nameFormula>
+				<defNameAsFormula>${cb.defNameAsFormula}</defNameAsFormula>
+				<productCode>${cb.product?.code}</productCode>
+				<productFormula>${cb.productFormula}</productFormula>
+				<defProductAsFormula>${cb.defProductAsFormula}</defProductAsFormula>
+				<defProductFromConfigurator>${cb.defProductFromConfigurator}</defProductFromConfigurator>
+				<qty>${cb.qty}</qty>
+				<qtyFormula>${cb.qtyFormula}</qtyFormula>
+				<defQtyAsFormula>${cb.defQtyAsFormula}</defQtyAsFormula>
+				<unitId>${cb.unit?.id}</unitId>
+				<unitFormula>${cb.unitFormula}</unitFormula>
+				<defUnitAsFormula>${cb.defUnitAsFormula}</defUnitAsFormula>
+				<prodProcessCode>${cb.prodProcess?.code}</prodProcessCode>
+
+				<configuratorProdProcess>
+				<name>${cb.configuratorProdProcess?.name}</name>
+				<companyCode>${cb.configuratorProdProcess?.company?.code}</companyCode>
+				<configuratorProdProcessLineList>"""			
+			cb.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
+				configBom += retrieveConfiguratorProdProcessLine(cppl)
+			})			
+			configBom += """</configuratorProdProcessLineList>
+				</configuratorProdProcess>
+			
+				<prodProcessFormula>${cb.prodProcessFormula}</prodProcessFormula>
+				<defProdProcessAsFormula>${cb.defProdProcessAsFormula}</defProdProcessAsFormula>
+				<defProdProcessAsConfigurator>${cb.defProdProcessAsConfigurator}</defProdProcessAsConfigurator>
+				
+				<configuratorBomList>"""
+			cb.configuratorBomList?.each( { childCb ->
+				configBom = retrieveConfiguratorBomWithChildren2( index+1, childCb )
+			})
+			configBom += """</configuratorBomList>
+				<parentConfiguratorBOMId>${cb.parentConfiguratorBOM?.id}</parentConfiguratorBOMId>	
+				
+				<useCondition>${cb.useCondition}</useCondition>
+				<billOfMaterialId>${cb.billOfMaterialId}</billOfMaterialId>
+				</configuratorBom>"""
+		} else {
+			configBom += "Some others ConfiguratorBOM"
+		}
+		return configBom
+	}
+	
+	def configBomMethod = {
+		cc(it).configuratorBom?.configuratorBomList?.each( { cb ->
+			configBom = retrieveConfiguratorBomWithChildren( 1, cb )
+		})
+		return configBom
+	} 
+
+
+%><?xml version="1.0" encoding="utf-8"?>
+
+<configurator-creators><% __ids__.each( { it -> %>
+
+	<configurator-creator>
+		
+		<name><% out << cc(it).name %></name>
+		<attributes><% out << attributeMethod(it) %></attributes>
+		<configuratorFormulaList><% out << configuratorFormulaMethod(it) %></configuratorFormulaList>
+		<authorizedUserSet><% out << authorizedUserMethod(it) %></authorizedUserSet>
+		<authorizedGroupSet><% out << authorizedGroupMethod(it) %></authorizedGroupSet>
+		<generateProduct><% out << cc(it).generateProduct %></generateProduct>
+		<isActive><% out << cc(it).isActive %></isActive>
+		
+		<configuratorBom>
+			<companyCode><% out << cc(it).configuratorBom?.company?.code %></companyCode>
+			<name><% out << cc(it).configuratorBom?.name %></name>
+			<nameFormula><% out << cc(it).configuratorBom?.nameFormula %></nameFormula>
+			<defNameAsFormula><% out << cc(it).configuratorBom?.defNameAsFormula %></defNameAsFormula>
+			<productCode><% out << cc(it).configuratorBom?.product?.code %></productCode>
+			<productFormula><% out << cc(it).configuratorBom?.productFormula %></productFormula>
+			<defProductAsFormula><% out << cc(it).configuratorBom?.defProductAsFormula %></defProductAsFormula>
+			<defProductFromConfigurator><% out << cc(it).configuratorBom?.defProductFromConfigurator %></defProductFromConfigurator>
+			<qty><% out << cc(it).configuratorBom?.qty %></qty>
+			<qtyFormula><% out << cc(it).configuratorBom?.qtyFormula %></qtyFormula>
+			<defQtyAsFormula><% out << cc(it).configuratorBom?.defQtyAsFormula %></defQtyAsFormula>
+			<unitId><% out << cc(it).configuratorBom?.unit?.id %></unitId>
+			<unitFormula><% out << cc(it).configuratorBom?.unitFormula %></unitFormula>
+			<defUnitAsFormula><% out << cc(it).configuratorBom?.defUnitAsFormula %></defUnitAsFormula>
+			<prodProcessCode><% out << cc(it).configuratorBom?.prodProcess?.code %></prodProcessCode>
+			
+			<configuratorProdProcess>
+				<name><% out << cc(it).configuratorBom?.configuratorProdProcess?.name %></name>
+				<companyCode><% out << cc(it).configuratorBom?.configuratorProdProcess?.company?.code %></companyCode>
+				<locationId><% out << cc(it).configuratorBom?.configuratorProdProcess?.location?.id %></locationId>
+				<configuratorProdProcessLineList><% out << configuratorProdProcessLineMethod(it) %></configuratorProdProcessLineList>
+			</configuratorProdProcess>
+			
+			<prodProcessFormula><% out << cc(it).configuratorBom?.prodProcessFormula %></prodProcessFormula>
+			<defProdProcessAsFormula><% out << cc(it).configuratorBom?.defProdProcessAsFormula %></defProdProcessAsFormula>
+			<defProdProcessAsConfigurator><% out << cc(it).configuratorBom?.defProdProcessAsConfigurator %></defProdProcessAsConfigurator>
+			
+			<configuratorBomList><% out << configBomMethod(it) %></configuratorBomList>
+			<parentConfiguratorBOMId><% out << cc(it).configuratorBom?.parentConfiguratorBOM?.id %></parentConfiguratorBOMId>
+			
+			<useCondition><% out << cc(it).configuratorBom?.useCondition %></useCondition>
+			<billOfMaterialId><% out << cc(it).configuratorBom?.billOfMaterialId %></billOfMaterialId>	
+		</configuratorBom>	
+	
+	</configurator-creator><%})%>
+
+</configurator-creators>
