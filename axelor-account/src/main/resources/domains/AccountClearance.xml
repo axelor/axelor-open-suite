@@ -16,6 +16,7 @@
 	<date name="dateThreshold" title="Overpayment before" required="true"/>
 	<many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Overpayments collected"/>
 	 
+	<unique-constraint columns="name,company"/>
 	
     <extra-code><![CDATA[
 	
