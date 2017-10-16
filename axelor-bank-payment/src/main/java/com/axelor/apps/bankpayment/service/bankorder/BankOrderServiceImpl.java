@@ -289,6 +289,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 	
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
+		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
+		}
 		sendBankOrderFile(bankOrder);
 		realizeBankOrder(bankOrder);
 
