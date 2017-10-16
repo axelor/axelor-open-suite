@@ -69,4 +69,10 @@ public interface ConfiguratorCreatorService {
 	 * @param creator
 	 */
 	void authorizeUser(ConfiguratorCreator creator, User user);
+
+    /**
+     * Activates the creator and saves it.
+     * @param creator
+     */
+	void activate(ConfiguratorCreator creator);
 }

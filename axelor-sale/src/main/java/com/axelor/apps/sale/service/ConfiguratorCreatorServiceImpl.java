@@ -311,5 +311,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 	public void authorizeUser(ConfiguratorCreator creator, User user) {
 		creator.addAuthorizedUserSetItem(user);
 	}
-	
+
+	@Override
+    @Transactional
+    public void activate(ConfiguratorCreator creator) {
+        creator.setIsActive(true);
+    }
+
 }

@@ -83,7 +83,6 @@ public class ConfiguratorCreatorController {
     public void updateAttributes(ActionRequest request, ActionResponse response) {
         ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
         creator = configuratorCreatorRepo.find(creator.getId());
-        configuratorCreatorService.updateAttributes(creator);
         response.setSignal("refresh-app", true);
     }
 
@@ -92,10 +91,12 @@ public class ConfiguratorCreatorController {
      * @param request
      * @param response
      */
-    public void updateIndicators(ActionRequest request, ActionResponse response) {
+    public void updateAndActivate(ActionRequest request, ActionResponse response) {
         ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
         creator = configuratorCreatorRepo.find(creator.getId());
+        configuratorCreatorService.updateAttributes(creator);
         configuratorCreatorService.updateIndicators(creator);
+        configuratorCreatorService.activate(creator);
         response.setSignal("refresh-app", true);
     }
     
