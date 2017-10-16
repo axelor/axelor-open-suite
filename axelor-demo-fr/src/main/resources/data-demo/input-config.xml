@@ -175,7 +175,7 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+	<input file="account_interBankCodeReject.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
         <bind column="libelle_rejet" to="name" />
         <bind column="description_rejet" to="description" />
@@ -190,9 +190,27 @@
             <bind column="nom_fichier" to="name"/>
             <bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
             <bind column="description_fichier" to="description"/>
+			<bind to="typeSelect" eval="2"/>
         </bind>
     </input>
-	
+	<input file="account_interBankCodeOperation.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+		<bind column="code_operation" to="code" />
+		<bind column="libelle_operation" to="name" />
+		<bind column="description_operation" to="description" />
+		<bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+		<bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+		<bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+		<bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+		<bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+		<bind column="operation_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+		<bind to="interbankCode" search="self.code = :code_fichier">
+			<bind column="code_fichier" to="code"/>
+			<bind column="nom_fichier" to="name"/>
+			<bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+			<bind column="description_fichier" to="description"/>
+			<bind to="typeSelect" eval="1"/>
+		</bind>
+	</input>
 	<input file="account_reminderLevel.csv" separator=";" type="com.axelor.apps.account.db.ReminderLevel" search="self.name = :name"/>
 	
 	<input file="account_reminderMethod.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethod" search="self.code = :code"/>
