@@ -303,7 +303,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		batch = batchRepo.find(batch.getId());
 		switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
 		case AccountingBatchRepository.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
-			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2);
+			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
 			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_3)+"\n", batch.getDone());
 			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
 
@@ -311,7 +311,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 		case AccountingBatchRepository.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
 			
-			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4);
+			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
 			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_5)+"\n", batch.getDone());
 			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
 

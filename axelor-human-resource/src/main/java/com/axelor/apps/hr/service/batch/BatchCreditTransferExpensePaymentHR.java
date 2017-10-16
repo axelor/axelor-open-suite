@@ -62,11 +62,11 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 	@Override
 	protected void stop() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
+		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
 		sb.append(String.format(
 				I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
 						com.axelor.apps.hr.exception.IExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
-						batch.getDone()),
+						batch.getDone()) + " ",
 				batch.getDone()));
 		sb.append(String.format(
 				I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,

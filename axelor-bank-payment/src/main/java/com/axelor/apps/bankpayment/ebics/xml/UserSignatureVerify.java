@@ -73,9 +73,9 @@ public class UserSignatureVerify  {
 		String comptedSha256Digest = computeSha256Digest();
 		String originalDigestFromSignature = getOriginalDigestFromSignature();
 		if(!comptedSha256Digest.equals(originalDigestFromSignature))  {
-			String message = I18n.get("Computed digest (SHA256) of the bank order file doesn't match with the digest extract from the signature ") + "\n";
-			message += I18n.get("Computed digest (SHA256) of the bank order file : ") + comptedSha256Digest + "\n";
-			message += I18n.get("Original digest extracted from the signature : ") + originalDigestFromSignature;
+			String message = I18n.get("Computed digest (SHA256) of the bank order file doesn't match with the digest extract from the signature") + " \n";
+			message += I18n.get("Computed digest (SHA256) of the bank order file :") + " " + comptedSha256Digest + "\n";
+			message += I18n.get("Original digest extracted from the signature :") + " " + originalDigestFromSignature;
 			throw new AxelorException(message, IException.INCONSISTENCY);
 
 		}

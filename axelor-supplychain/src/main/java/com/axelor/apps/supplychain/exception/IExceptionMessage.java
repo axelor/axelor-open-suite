@@ -66,7 +66,7 @@ public interface IExceptionMessage {
 	/**
 	 * Batch Invoicing
 	 */
-	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report : " /*)*/;
+	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report :" /*)*/;
 	static final String BATCH_INVOICING_2 = /*$$(*/ "Order(s) processed" /*)*/;
 
 	

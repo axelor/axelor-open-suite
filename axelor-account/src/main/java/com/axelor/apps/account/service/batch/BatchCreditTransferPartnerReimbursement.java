@@ -74,10 +74,10 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 	@Override
 	protected void stop() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
+		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
 		sb.append(String.format(
 				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL, batch.getDone()),
+						IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL, batch.getDone()) + " ",
 				batch.getDone()));
 		sb.append(String.format(
 				I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
