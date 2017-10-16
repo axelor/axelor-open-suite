@@ -78,7 +78,9 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in bank order." /*)*/;
 
-	
+	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/ "Please fill the bank address in the receiver bank details." /*)*/;
+	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/ "Please fill the bank in the receiver bank details." /*)*/;
+
 	/**
 	 *  BankOrder lines
 	 */
