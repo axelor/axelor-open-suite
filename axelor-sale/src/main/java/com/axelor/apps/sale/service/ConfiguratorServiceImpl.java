@@ -110,13 +110,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         Beans.get(ConfiguratorRepository.class).save(configurator);
     }
 
+    @Override
     public Configurator getConfiguratorFromProduct(Product product) {
-        Configurator configurator = Beans.get(ConfiguratorRepository.class)
+        return Beans.get(ConfiguratorRepository.class)
                 .all()
                 .filter("self.productId = :_id")
                 .bind("_id", product.getId())
                 .fetchOne();
-        return configurator;
     }
 
     @Transactional
@@ -242,7 +242,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     /**
-     * Fix relational fields
+     * Fix relational fields of a product generated from configurator.
+     * This method may become useless on a future ADK update.
      * @param product
      */
     protected void fixRelationalFields(Product product) throws AxelorException {
@@ -266,7 +267,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                             manyToOneValue.getClass());
                     setter.invoke(product, manyToOneDbValue);
                 } catch (Exception e) {
-                    throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
+                    throw new AxelorException(Configurator.class, IException.CONFIGURATION_ERROR, e.getMessage());
                 }
             }
         }
