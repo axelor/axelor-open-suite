@@ -257,12 +257,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Sequence sequence = getSequence(bankOrder);
 		setBankOrderSeq(bankOrder, sequence);
 
-		setSequenceOnBankOrderLines(bankOrder);
 
 		setNbOfLines(bankOrder);
 
 		generateFile(bankOrder);
 
+		setSequenceOnBankOrderLines(bankOrder);
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 
 		bankOrderRepo.save(bankOrder);
@@ -334,7 +334,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	protected void setSequenceOnBankOrderLines(BankOrder bankOrder) {
+	@Override
+	public void setSequenceOnBankOrderLines(BankOrder bankOrder) {
 
 		if (bankOrder.getBankOrderLineList() == null) {
 			return;
