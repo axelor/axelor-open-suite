@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import com.axelor.apps.tool.StringTool;
 import org.joda.time.LocalDate;
@@ -242,9 +243,13 @@ public class BankOrderLineService {
 		else {
 			if (bankOrderLine.getPartner() != null) {
 				candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner(), true);
-				if (candidateBankDetails == null) {
-					candidateBankDetails = bankDetailsRepo.findActiveByPartner(bankOrderLine.getPartner(), true);
-				}
+			}
+		}
+
+		if (candidateBankDetails == null && bankOrderLine.getPartner() != null) {
+			List<BankDetails> bankDetailsList = bankDetailsRepo.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
+			if (bankDetailsList.size() == 1) {
+				candidateBankDetails = bankDetailsList.get(0);
 			}
 		}
 

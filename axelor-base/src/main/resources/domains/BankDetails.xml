@@ -46,7 +46,7 @@
     <boolean name="active" title="Active" default="true"/>
 
 	<finder-method name="findDefaultByPartner" using="partner,isDefault"/>
-    <finder-method name="findActiveByPartner" using="partner,active"/>
+    <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
 
   </entity>
 
