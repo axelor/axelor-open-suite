@@ -234,18 +234,18 @@ public class BankOrderLineService {
 	 */
 	public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
 		BankDetails candidateBankDetails = null;
-		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY &&
-				bankOrderLine.getReceiverCompany() != null) {
-			//fill using the default in company
-			candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
+		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+			if (bankOrderLine.getReceiverCompany() != null) {
+				candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
+			}
 		}
-		else if (bankOrderLine.getPartner() != null){
-			//fill using the default in partner
-			candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner(), true);
-		}
-
-		if (candidateBankDetails == null && bankOrderLine.getPartner().getBankDetailsList().size() == 1) {
-			candidateBankDetails = bankDetailsRepo.findActiveByPartner(bankOrderLine.getPartner(), true);
+		else {
+			if (bankOrderLine.getPartner() != null) {
+				candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner(), true);
+				if (candidateBankDetails == null) {
+					candidateBankDetails = bankDetailsRepo.findActiveByPartner(bankOrderLine.getPartner(), true);
+				}
+			}
 		}
 
 		try {
