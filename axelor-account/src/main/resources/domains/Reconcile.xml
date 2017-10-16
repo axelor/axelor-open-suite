@@ -19,6 +19,7 @@
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
     
     <unique-constraint columns="reconcileSeq,company"/>
+
     <finder-method name="findByMoveLines" using="debitMoveLine,creditMoveLine"/>
     
     <extra-code><![CDATA[

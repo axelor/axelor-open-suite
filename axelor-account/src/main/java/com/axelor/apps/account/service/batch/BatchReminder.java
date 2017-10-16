@@ -17,15 +17,11 @@
  */
 package com.axelor.apps.account.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.axelor.apps.account.db.Reminder;
+import com.axelor.apps.account.db.ReminderHistory;
+import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.debtrecovery.ReminderActionService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -35,15 +31,22 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BatchReminder extends BatchStrategy {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected int mailDone = 0;
-	protected int mailAnomaly = 0;
-	
-	protected boolean stop = false;
+	private List<Reminder> changedReminders = new ArrayList<>();
+
+	protected boolean stopping = false;
 	protected PartnerRepository partnerRepository;
 	
 	@Inject
@@ -55,7 +58,7 @@ public class BatchReminder extends BatchStrategy {
 
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+	protected void start() throws IllegalAccessException, AxelorException {
 		
 		super.start();
 		
@@ -69,7 +72,7 @@ public class BatchReminder extends BatchStrategy {
 			
 			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REMINDER, batch.getId());
 			incrementAnomaly();
-			stop = true;
+			stopping = true;
 		}
 		
 		checkPoint();
@@ -80,10 +83,9 @@ public class BatchReminder extends BatchStrategy {
 	@Override
 	protected void process() {
 		
-		if(!stop)  {
+		if(!stopping)  {
 			
 			this.reminderPartner();
-		
 			this.generateMail();
 		}
 	}
@@ -92,15 +94,22 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = (List<Partner>) partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		Company company = batch.getAccountingBatch().getCompany();
+		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", company).fetch();
 		
 		for (Partner partner : partnerList) {
 
 			try {
+				partner = partnerRepository.find(partner.getId());
+				boolean remindedOk = reminderService.reminderGenerate(partner, company);
 				
-				boolean remindedOk = reminderService.reminderGenerate(partnerRepository.find(partner.getId()), batch.getAccountingBatch().getCompany());
-				
-				if(remindedOk == true)  {  updatePartner(partner); i++; }
+				if(remindedOk)  {
+					updatePartner(partner);
+					changedReminders.add(
+							reminderService.getReminder( partner, company)
+					);
+					i++;
+				}
 
 				log.debug("Tiers traité : {}", partner.getName());	
 
@@ -124,40 +133,25 @@ public class BatchReminder extends BatchStrategy {
 			}
 		}
 	}
-	
-	
-	
-	public void generateMail()  {
-		
-//		List<Mail> mailList = (List<Mail>) mailService.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
-//		
-//		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
-//		for(Mail mail : mailList)  {
-//			try {
-//				
-//				mailService.generatePdfMail(mailService.find(mail.getId()));
-//				mailDone++;
-//				
-//			} catch (AxelorException e) {
-//				
-//				TraceBackService.trace(new AxelorException(String.format("Courrier/Email %s", mail.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
-//				mailAnomaly++;
-//				
-//			} catch (Exception e) {
-//				
-//				TraceBackService.trace(new Exception(String.format("Courrier/Mail %s", mail.getName()), e), IException.REMINDER, batch.getId());
-//				
-//				mailAnomaly++;
-//				
-//				LOG.error("Bug(Anomalie) généré(e) pour l'email/courrier {}", mail.getName());
-//				
-//			}
-//		}
-		
+
+	void generateMail() {
+		for (Reminder reminder : changedReminders) {
+			try {
+				reminder = Beans.get(ReminderRepository.class).find(reminder.getId());
+				ReminderHistory reminderHistory = Beans.get(ReminderActionService.class).getReminderHistory(reminder);
+				if (reminderHistory == null) {
+					continue;
+				}
+				if (reminderHistory.getReminderMessage() == null) {
+					Beans.get(ReminderActionService.class).runMessage(reminder);
+				}
+			} catch (Exception e) {
+				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", reminder.getAccountingSituation().getPartner().getName()), e), IException.REMINDER, batch.getId());
+
+				incrementAnomaly();
+			}
+		}
 	}
-	
-	
-	
 
 	/**
 	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
@@ -166,12 +160,10 @@ public class BatchReminder extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1);
+		String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1) + "\n";
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REMINDER_2)+"\n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
-//		comment += String.format("\t* %s email(s) traité(s)\n", mailDone);
-//		comment += String.format("\t* %s anomalie(s)", mailAnomaly);
 
 		super.stop();
 		addComment(comment);

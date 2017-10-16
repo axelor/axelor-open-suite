@@ -289,6 +289,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 	
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
+		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
+		}
 		sendBankOrderFile(bankOrder);
 		realizeBankOrder(bankOrder);
 
@@ -494,10 +497,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	public File generateFile(BankOrder bankOrder)
 			throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
-
-		if (bankOrder.getGeneratedMetaFile() != null) {
-			return MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-		}
 
 		if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
 			return null;
