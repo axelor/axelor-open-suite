@@ -57,6 +57,7 @@ public class ReminderSessionService {
 	public ReminderSessionService(ReminderRepository reminderRepo, GeneralService generalService) {
 
 		this.today = generalService.getTodayDate();
+		this.reminderRepo = reminderRepo;
 
 	}
 
