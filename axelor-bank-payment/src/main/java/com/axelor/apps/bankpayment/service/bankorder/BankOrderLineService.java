@@ -235,21 +235,26 @@ public class BankOrderLineService {
 	 */
 	public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
 		BankDetails candidateBankDetails = null;
-		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY && bankOrderLine.getReceiverCompany() != null && (candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails()) == null) {
-			for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsSet()) {
-				if (candidateBankDetails != null && bankDetails.getActive()) {
-					candidateBankDetails = null;
-					break;
-				}
-				else if (bankDetails.getActive()) {
-					candidateBankDetails = bankDetails;
+		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY && bankOrderLine.getReceiverCompany() != null) {
+			candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
+			if (candidateBankDetails == null) {
+				for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsSet()) {
+					if (candidateBankDetails != null && bankDetails.getActive()) {
+						candidateBankDetails = null;
+						break;
+					} else if (bankDetails.getActive()) {
+						candidateBankDetails = bankDetails;
+					}
 				}
 			}
 		}
-		else if (bankOrder.getPartnerTypeSelect() != BankOrderRepository.PARTNER_TYPE_COMPANY && bankOrderLine.getPartner() != null && (candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner(), true)) == null){
-			List<BankDetails> bankDetailsList = bankDetailsRepo.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
-			if (bankDetailsList.size() == 1) {
-				candidateBankDetails = bankDetailsList.get(0);
+		else if (bankOrder.getPartnerTypeSelect() != BankOrderRepository.PARTNER_TYPE_COMPANY && bankOrderLine.getPartner() != null){
+			candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner(), true);
+			if (candidateBankDetails == null) {
+				List<BankDetails> bankDetailsList = bankDetailsRepo.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
+				if (bankDetailsList.size() == 1) {
+					candidateBankDetails = bankDetailsList.get(0);
+				}
 			}
 		}
 
