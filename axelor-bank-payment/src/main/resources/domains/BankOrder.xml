@@ -42,8 +42,10 @@
 	<many-to-one name="signatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory"/>
 	<many-to-one name="generatedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Generated file" />
 	<many-to-one name="signedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Signed file" />
-	
-	 <extra-code><![CDATA[
+
+	  <finder-method name="findAllByStatus" all="true" using="statusSelect"/>
+
+	  <extra-code><![CDATA[
 	
 	   	// BANK ORDER TYPE SELECT
 		public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 1;
@@ -75,8 +77,8 @@
 		public static final int REJECT_STATUS_TOTALLY_REJECTED = 2;
 	
 	]]></extra-code>
-    
-    
+
+
   </entity>
 
 </domain-models>

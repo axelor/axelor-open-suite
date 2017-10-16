@@ -227,4 +227,8 @@ public class BankOrderController {
 		response.setValue("senderBankDetails", bankDetails);
 	}
 
+	public String bankOrderAwaitingForSignatureMenuTag() {
+		return String.valueOf(bankOrderRepo.findAllByStatus(BankOrderRepository.STATUS_AWAITING_SIGNATURE).count());
+	}
+
 }

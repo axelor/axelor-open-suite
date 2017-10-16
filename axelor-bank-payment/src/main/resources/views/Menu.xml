@@ -102,7 +102,9 @@
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-		action="account.bank.order.awaiting.for.signature" />
+		action="account.bank.order.awaiting.for.signature"
+		tag-get="com.axelor.apps.bankpayment.web.BankOrderController:bankOrderAwaitingForSignatureMenuTag()"
+		tag-style="default"/>
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
