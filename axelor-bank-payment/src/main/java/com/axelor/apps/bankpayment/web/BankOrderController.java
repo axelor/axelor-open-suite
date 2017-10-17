@@ -22,6 +22,8 @@ import java.util.List;
 
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Querie;
+import com.axelor.db.JPA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,7 +230,8 @@ public class BankOrderController {
 	}
 
 	public String bankOrderAwaitingForSignatureMenuTag() {
-		return String.valueOf(bankOrderRepo.findAllByStatus(BankOrderRepository.STATUS_AWAITING_SIGNATURE).count());
+		return Long.toString(JPA.em().createQuery("SELECT COUNT(self) FROM BankOrder as self WHERE self.statusSelect = :statusSelect", Long.class)
+				.setParameter("statusSelect", BankOrderRepository.STATUS_AWAITING_SIGNATURE).getSingleResult());
 	}
 
 }

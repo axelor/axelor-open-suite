@@ -43,8 +43,6 @@
 	<many-to-one name="generatedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Generated file" />
 	<many-to-one name="signedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Signed file" />
 
-	  <finder-method name="findAllByStatus" all="true" using="statusSelect"/>
-
 	  <extra-code><![CDATA[
 	
 	   	// BANK ORDER TYPE SELECT
