@@ -27,7 +27,7 @@
     		<field name="name"/>
     		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-authorize-current-user"/>
     		<panel-related field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
-    				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
+    				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
 
 		<panel sidebar="true" title="Actions" hideIf="id == null">
