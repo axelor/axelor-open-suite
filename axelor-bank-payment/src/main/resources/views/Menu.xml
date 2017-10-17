@@ -102,7 +102,8 @@
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-		action="account.bank.order.awaiting.for.signature" />
+		action="account.bank.order.awaiting.for.signature"
+		if="eval: __config__.app.getApp('account').enableModuleEBICS" />
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
@@ -170,7 +171,8 @@
 	</action-view>
 	
 	
-	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics" />
+	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics"
+			  if="eval: __config__.app.getApp('account').enableModuleEBICS" />
 
 	<menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
 		title="Ebics users" action="account.conf.ebics.ebics.user" />

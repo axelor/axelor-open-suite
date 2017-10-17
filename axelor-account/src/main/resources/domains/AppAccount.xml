@@ -22,6 +22,8 @@
 		<boolean name="manageFactors" />
 
 		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
+		
+		<boolean name="enableModuleEBICS" title="Enable module EBICS"/>
 
 		<extra-code><![CDATA[
 	
