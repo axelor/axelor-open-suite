@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
 	
 	<input file="bpm_appBuilder.xml" root="app-builders">
-		<bind node="app-builder" type="com.axelor.studio.db.AppBuilder"  call="com.axelor.studio.service.ImportService:importAppBuilder">
+		<bind node="app-builder" type="com.axelor.studio.db.AppBuilder"  call="com.axelor.studio.service.ImportService:importAppBuilderImg">
  			<bind node="name" to="name" />
  			<bind node="code" to="code" />
  			<bind node="description" to="description" />

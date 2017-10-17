@@ -32,8 +32,7 @@ public class SaleConfigServiceImpl implements SaleConfigService {
 		SaleConfig saleConfig = company.getSaleConfig();
 		
 		if(saleConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_CONFIG_1),
-					company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_CONFIG_1), company.getName());
 		}
 		
 		return saleConfig;

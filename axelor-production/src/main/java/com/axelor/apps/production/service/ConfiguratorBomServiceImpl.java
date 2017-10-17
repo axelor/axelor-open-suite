@@ -60,14 +60,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     public BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
                                                  JsonContext attributes,
                                                  int level,
-                                                 Product generatedProduct)
-            throws AxelorException {
+                                                 Product generatedProduct) throws AxelorException {
         level++;
         if (level > MAX_LEVEL) {
-            throw new AxelorException(I18n.get(
-                    IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS),
-                    IException.CONFIGURATION_ERROR
-            );
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
         }
         String name;
         Product product;

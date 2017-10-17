@@ -453,6 +453,12 @@
                     <text-property name="heading">specific_notes</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">versionNumber</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">versionNumber</text-property>
+                    <text-property name="heading">versionNumber</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">logoPosition</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logoPosition</text-property>
@@ -708,6 +714,11 @@
                         <property name="position">46</property>
                         <property name="name">salesperson_signature_path</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">47</property>
+                        <property name="name">versionNumber</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -989,6 +1000,13 @@
                     <property name="nativeName">salesperson_signature_path</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">47</property>
+                    <property name="name">versionNumber</property>
+                    <property name="nativeName">versionNumber</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 SalemanPartner.full_name as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
@@ -1010,6 +1028,7 @@ Duration.name as "durationName", SaleOrder.delivery_date as "deliveryDate", Sale
 SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
 SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
 SaleOrder.subscription,SaleOrder.status_select, SaleOrder.specific_notes,
+SaleOrder.version_number as "versionNumber",
 PrintingSettings.logo_position_select as "logoPosition",
 SignatureFile.file_path as "salesperson_signature_path"
 from sale_sale_order as SaleOrder
@@ -2105,6 +2124,13 @@ from base_app_base]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">versionNumber</property>
+                    <text-property name="displayName">Version Number</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["versionNumber"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
                     <property name="name">salesperson_signature_path</property>
                     <text-property name="displayName">salesperson_signature_path</text-property>
                     <expression name="expression" type="javascript">dataSetRow["salesperson_signature_path"]</expression>
@@ -2216,8 +2242,10 @@ from base_app_base]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["saleOrderSeq"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["saleOrderSeq"]</VALUE-OF> <VALUE-OF>if(row._outer["versionNumber"] > 1) {
+	"-"+row._outer["versionNumber"]
+}</VALUE-OF>]]></text-property>
+					</text>
                 </cell>
                 <cell id="3367"/>
                 <cell id="4065"/>

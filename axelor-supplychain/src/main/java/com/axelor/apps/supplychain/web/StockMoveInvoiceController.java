@@ -53,17 +53,15 @@ public class StockMoveInvoiceController {
 		try {
 			stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-			if(stockMove.getSaleOrder() != null) {
+			if (stockMove.getSaleOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
-			}
-			else if(stockMove.getPurchaseOrder() != null) {
+			} else if(stockMove.getPurchaseOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
-			}
-			else  {
+			} else {
 				invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
 			}
 
-			if(invoice != null)  {
+			if (invoice != null) {
 				//refresh stockMove context
 				response.setReload(true);
 				//Open the generated invoice in a new tab

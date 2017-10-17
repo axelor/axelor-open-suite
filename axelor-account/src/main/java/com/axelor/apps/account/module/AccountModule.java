@@ -49,6 +49,7 @@ import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
+import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
@@ -85,6 +86,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -146,6 +148,8 @@ public class AccountModule extends AxelorModule {
         bind(AccountingSituationService.class).to(AccountingSituationServiceImpl.class);
 
         bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+
+        bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
 
         bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 

@@ -54,8 +54,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 			return accountManagement.getCashAccount();
 		}
 
-		throw new AxelorException(String.format(I18n.get("Company")+" : %s, "+I18n.get("Payment mode")+" : %s: "+I18n.get(IExceptionMessage.PAYMENT_MODE_1),
-				company.getName(),paymentMode.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(paymentMode, IException.CONFIGURATION_ERROR, I18n.get("Company")+" : %s, "+I18n.get("Payment mode")+" : %s: "+I18n.get(IExceptionMessage.PAYMENT_MODE_1), company.getName(), paymentMode.getName());
 
 	}
 
@@ -96,9 +95,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
 		
 		if(accountManagement == null || accountManagement.getSequence() == null)  {
-			throw new AxelorException(String.format(
-							I18n.get(IExceptionMessage.PAYMENT_MODE_2),
-							AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(paymentMode, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_MODE_2), AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName());
 		}
 
 		return accountManagement.getSequence();
@@ -110,9 +107,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
 		
 		if(accountManagement == null || accountManagement.getJournal() == null)  {
-			throw new AxelorException(String.format(
-							I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-							AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(paymentMode, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_MODE_3), AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName());
 		}
 
 		return accountManagement.getJournal();

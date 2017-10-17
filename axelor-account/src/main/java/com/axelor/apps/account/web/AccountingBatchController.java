@@ -107,11 +107,9 @@ public class AccountingBatchController {
 	 * @param response
 	 */
 	public void actionDirectDebit(ActionRequest request, ActionResponse response){
-
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
 		Batch batch = accountingBatchService.directDebit(accountingBatch);
-
 		response.setFlash(batch.getComments());
 		response.setReload(true);
 	}

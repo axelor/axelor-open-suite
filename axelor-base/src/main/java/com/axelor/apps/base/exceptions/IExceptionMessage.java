@@ -80,7 +80,6 @@ public interface IExceptionMessage {
 	String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully, " /*)*/;
 	String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
 	String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
-
 	/**
 	 * Indicator generator grouping service
 	 */

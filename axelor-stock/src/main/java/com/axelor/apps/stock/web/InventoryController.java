@@ -124,12 +124,10 @@ public class InventoryController {
 			Boolean succeed = inventoryService.fillInventoryLineList(inventory);
 			if(succeed == null)  {
 				response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
-			}
-			else {
+			} else {
 				if(succeed) {
 					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
-				}
-				else  {
+				} else {
 					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
 				}
 			}

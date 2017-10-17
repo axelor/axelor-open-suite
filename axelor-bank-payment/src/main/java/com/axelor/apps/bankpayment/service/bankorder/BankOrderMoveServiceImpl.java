@@ -209,14 +209,12 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 		case BankOrderRepository.PARTNER_TYPE_COMPANY :
 			if(receiverCompany.equals(senderCompany))  {
 				return accountConfigBankPaymentService.getInternalBankToBankAccount(accountConfigBankPaymentService.getAccountConfig(moveCompany));
-			}
-			else  {
+			} else {
 				return accountConfigBankPaymentService.getExternalBankToBankAccount(accountConfigBankPaymentService.getAccountConfig(moveCompany));
 			}
 
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
-					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(accountingSituation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), AppAccountServiceImpl.EXCEPTION);
 		}
 		
 	}

@@ -96,7 +96,7 @@ public class JournalService {
 				}
 			
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
+				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
 			}	
 		}
 		

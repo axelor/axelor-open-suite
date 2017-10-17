@@ -215,11 +215,11 @@ public class EbicsController {
 
 				File testSignatureFile = null;
 				
-				if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
+				if(ebicsUser.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
 					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
 				}
 				
-				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
+				ebicsService.sendFULRequest(ebicsUser, ebicsUser.getTestSignatoryEbicsUser(), null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
@@ -320,7 +320,7 @@ public class EbicsController {
 			
 		} catch (CertificateException | IOException e) {
 			e.printStackTrace();
-			throw new AxelorException(I18n.get("Error in adding bank certificate"), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e, IException.CONFIGURATION_ERROR, I18n.get("Error in adding bank certificate"));
 		}
 		
 		response.setCanClose(true);
@@ -336,7 +336,7 @@ public class EbicsController {
 		
 		if (certs != null && certs.length > 0) {
 			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
-			cert = certificateService.updateCertificate(certificate, cert);
+			cert = certificateService.updateCertificate(certificate, cert, true);
 			response.setValue("validFrom", cert.getValidFrom());
 			response.setValue("validTo", cert.getValidTo());
 			response.setValue("issuer", cert.getIssuer());
@@ -428,7 +428,7 @@ public class EbicsController {
 		}
 		
 		if (certIds.isEmpty()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES), 1);
+			throw new AxelorException(ebicsUser, IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES));
 		}
 		
 		String title = I18n.get("EbicsCertificate");

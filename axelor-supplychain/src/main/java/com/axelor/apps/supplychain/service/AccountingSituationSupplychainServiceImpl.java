@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -132,7 +131,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 						if (Strings.isNullOrEmpty(message)) {
 							message = I18n.get("Client bloqued");
 						}
-						throw new AxelorException(message, IException.CONFIGURATION_ERROR);
+						throw new AxelorException(accountingSituation, IException.CONFIGURATION_ERROR, message);
 					}
 				}
 			}

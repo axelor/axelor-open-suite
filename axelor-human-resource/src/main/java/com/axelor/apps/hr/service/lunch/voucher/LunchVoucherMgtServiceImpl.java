@@ -68,10 +68,10 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		Company company = lunchVoucherMgt.getCompany();
 		
 		if(company == null) {
-			throw new AxelorException(I18n.get("Please fill a company."), IException.MISSING_FIELD);
+			throw new AxelorException(lunchVoucherMgt, IException.MISSING_FIELD, I18n.get("Please fill a company."));
 		}
 		if(lunchVoucherMgt.getLeavePeriod() == null) {
-			throw new AxelorException(I18n.get("Please fill a leave period."), IException.MISSING_FIELD);
+			throw new AxelorException(lunchVoucherMgt, IException.MISSING_FIELD, I18n.get("Please fill a leave period."));
 		}
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(company);

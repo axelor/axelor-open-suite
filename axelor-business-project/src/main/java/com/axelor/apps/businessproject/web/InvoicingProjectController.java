@@ -45,17 +45,17 @@ public class InvoicingProjectController {
 		if(invoicingProject.getSaleOrderLineSet().isEmpty() && invoicingProject.getPurchaseOrderLineSet().isEmpty()
 				&& invoicingProject.getLogTimesSet().isEmpty() && invoicingProject.getExpenseLineSet().isEmpty() && invoicingProject.getElementsToInvoiceSet().isEmpty()
 				&& invoicingProject.getProjectSet().isEmpty()){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY));
 		}
 		if(invoicingProject.getProject() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
 		}
 		if(invoicingProject.getProject().getClientPartner() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
 		}
 
 		if(invoicingProject.getProject().getAssignedTo() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_USER)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_USER));
 		}
 		Invoice invoice = invoicingProjectService.generateInvoice(invoicingProject);
 
@@ -72,7 +72,7 @@ public class InvoicingProjectController {
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
 		Project project = invoicingProject.getProject();
 		if(project == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
 		}
 		invoicingProjectService.clearLines(invoicingProject);
 		invoicingProjectService.setLines(invoicingProject,project,0);

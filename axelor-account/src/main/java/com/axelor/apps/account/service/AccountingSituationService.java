@@ -21,8 +21,6 @@ import java.util.List;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -35,7 +33,6 @@ public interface AccountingSituationService	{
 	AccountingSituation getAccountingSituation(Partner partner, Company company);
 	AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException;
 	String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails);
-	BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner);
 	void updateCustomerCredit(Partner partner) throws AxelorException;
 
 	/**

@@ -271,13 +271,11 @@ public class PartnerService {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String getSIRENNumber(Partner partner)throws AxelorException{
+	public String getSIRENNumber(Partner partner) throws AxelorException {
 		char[] Str = new char[9];
-		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty() ){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PARTNER_2),
-					AppBaseServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
-		}
-		else {
+		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
+			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_2), AppBaseServiceImpl.EXCEPTION,partner.getName());
+		} else {
             String registrationCode = partner.getRegistrationCode();
 			//remove whitespace in the registration code before using it
             registrationCode.replaceAll("\\s","").getChars(0, 9, Str, 0);

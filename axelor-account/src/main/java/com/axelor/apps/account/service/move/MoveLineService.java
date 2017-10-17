@@ -147,7 +147,7 @@ public class MoveLineService {
 			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
 		}
 
-		return this.createMoveLine(move, partner, account, amountInSpecificMoveCurrency, amountConvertedInCompanyCurrency, currencyRate, isDebit, date, dueDate, counter, origin);
+		return this.createMoveLine(move, partner, account, amountInSpecificMoveCurrency, amountConvertedInCompanyCurrency, currencyRate, isDebit, date, dueDate, counter, origin, null);
 		
 	}
 	
@@ -170,7 +170,7 @@ public class MoveLineService {
 	 * @throws AxelorException
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amountInSpecificMoveCurrency, BigDecimal amountInCompanyCurrency, 
-			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin) throws AxelorException  {
+			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin, String invoiceLineName) throws AxelorException  {
 		
 		amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
 		
@@ -201,7 +201,7 @@ public class MoveLineService {
 		}
 
 		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, 
-				this.determineDescriptionMoveLine(move.getJournal(), origin), origin, 
+				this.determineDescriptionMoveLine(move.getJournal(), origin, invoiceLineName), origin,
 				currencyRate.setScale(5, RoundingMode.HALF_EVEN), amountInSpecificMoveCurrency);
 		
 	}
@@ -249,15 +249,15 @@ public class MoveLineService {
 
 		int moveLineId = 1;
 
-		if (partner == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_1), IException.MISSING_FIELD, invoice.getInvoiceId());
+		if (partner == null) {
+			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId());
 		}
-		if (account2 == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_2), IException.MISSING_FIELD, invoice.getInvoiceId());
+		if (account2 == null) {
+			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId());
 		}
 		
 		MoveLine moveLine1 = this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), invoice.getCompanyInTaxTotal(), null,
-				isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId());
+				isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId(), null);
 		moveLines.add(moveLine1);
 		
 		// Traitement des lignes de facture
@@ -272,18 +272,16 @@ public class MoveLineService {
 		
 					Product product = invoiceLine.getProduct();
 		
-					if(product == null)  {
-						throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_3),
-								IException.CONFIGURATION_ERROR, invoice.getInvoiceId(), company.getName());
+					if (product == null) {
+						throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_3), invoice.getInvoiceId(), company.getName());
 					}
 		
 					accountManagement = accountManagementService.getAccountManagement(product, company);
 		
 					account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
 		
-					if(account2 == null)  {
-						throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_4),
-								IException.CONFIGURATION_ERROR, invoiceLine.getName(), company.getName());
+					if (account2 == null) {
+						throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_4), invoiceLine.getName(), company.getName());
 					}
 		
 					companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
@@ -291,7 +289,7 @@ public class MoveLineService {
 					log.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), companyExTaxTotal});
 				
 					MoveLine moveLine = this.createMoveLine(move, partner, account2, invoiceLine.getExTaxTotal(), companyExTaxTotal, null, 
-							!isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+							!isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), invoiceLine.getProductName());
 					
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
 						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
@@ -322,12 +320,11 @@ public class MoveLineService {
 	
 				account2 = taxAccountService.getAccount(tax, company);
 	
-				if (account2 == null)  {
-					throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_6),
-							IException.CONFIGURATION_ERROR, tax.getName(), company.getName() );
+				if (account2 == null) {
+					throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_6), tax.getName(), company.getName());
 				}
 
-				MoveLine moveLine = this.createMoveLine(move, partner, account2, invoiceLineTax.getTaxTotal(), companyTaxTotal, null, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+				MoveLine moveLine = this.createMoveLine(move, partner, account2, invoiceLineTax.getTaxTotal(), companyTaxTotal, null, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), null);
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine());
 				moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
 				moveLine.setTaxCode(tax.getCode());
@@ -556,7 +553,7 @@ public class MoveLineService {
 	 * 			Le n° pièce réglée, facture, avoir ou de l'opération rejetée
 	 * @return
 	 */
-	public String determineDescriptionMoveLine(Journal journal, String origin)  {
+    public String determineDescriptionMoveLine(Journal journal, String origin, String invoiceLineName) {
 		String description = "";
 		if(journal != null)  {
 			if(journal.getDescriptionModel() != null)  {
@@ -566,6 +563,10 @@ public class MoveLineService {
 			if(journal.getDescriptionIdentificationOk() && origin != null)  {
 				description += String.format(" %s", origin);
 			}
+
+            if (!journal.getIsInvoiceMoveConsolidated() && invoiceLineName != null) {
+                description += String.format(" - %s", invoiceLineName);
+            }
 		}
 		return description;
 	}

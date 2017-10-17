@@ -64,9 +64,8 @@ public class CancelState extends WorkflowInvoice {
 
 	protected void cancelMove() throws AxelorException{
 
-		if(invoice.getOldMove() != null)  {
-
-			throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_CANCEL_1), IException.CONFIGURATION_ERROR);
+		if (invoice.getOldMove() != null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICE_CANCEL_1));
 		}
 		
 		Move move = invoice.getMove();

@@ -249,8 +249,8 @@ public class OperationOrderController {
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
 		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		
-		if(Duration.between(fromDateTime,toDateTime).toDays() > 20){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 20) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 		
 		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
@@ -323,8 +323,8 @@ public class OperationOrderController {
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
 		toDateTime = toDateTime.withHour(23).withMinute(59);
 		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
-		if(Duration.between(fromDateTime,toDateTime).toDays() > 500){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 500) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 		
 		

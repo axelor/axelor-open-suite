@@ -213,9 +213,8 @@ public class MessageServiceImpl implements MessageService {
 			if(!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
 				log.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
 				mailBuilder.from( message.getFromEmailAddress().getAddress() );
-			}
-			else{
-				throw new AxelorException(IExceptionMessage.MESSAGE_7, IException.CONFIGURATION_ERROR);
+			} else {
+				throw new AxelorException(message, IException.CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
 			}
 		}
 		if ( replytoRecipients != null && !replytoRecipients.isEmpty() ) { mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients)); }

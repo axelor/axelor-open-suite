@@ -157,7 +157,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
 		if (invoiceMoveLine == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.NO_INVOICE_LINE),IException.MISSING_FIELD);
+			throw new AxelorException(invoicePayment, IException.MISSING_FIELD, I18n.get(IExceptionMessage.NO_INVOICE_LINE));
 		}
 		
 		if (invoice.getOperationSubTypeSelect()

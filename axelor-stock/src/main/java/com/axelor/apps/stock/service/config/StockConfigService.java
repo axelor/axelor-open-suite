@@ -32,9 +32,8 @@ public class StockConfigService
 		
 		StockConfig stockConfig = company.getStockConfig();
 		
-		if(stockConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_1),
-					company.getName()), IException.CONFIGURATION_ERROR);
+		if (stockConfig == null) {
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_1), company.getName());
 		}
 		
 		return stockConfig;
@@ -47,9 +46,8 @@ public class StockConfigService
 	
 	public Location getInventoryVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if(stockConfig.getInventoryVirtualLocation() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_2),
-					stockConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (stockConfig.getInventoryVirtualLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_2), stockConfig.getCompany().getName());
 		}
 		
 		return stockConfig.getInventoryVirtualLocation();
@@ -58,9 +56,8 @@ public class StockConfigService
 	
 	public Location getSupplierVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if(stockConfig.getSupplierVirtualLocation() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_3),
-					stockConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (stockConfig.getSupplierVirtualLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_3), stockConfig.getCompany().getName());
 		}
 		
 		return stockConfig.getSupplierVirtualLocation();
@@ -69,9 +66,8 @@ public class StockConfigService
 	
 	public Location getCustomerVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if(stockConfig.getCustomerVirtualLocation() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_CONFIG_4),
-					stockConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (stockConfig.getCustomerVirtualLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_4), stockConfig.getCompany().getName());
 		}
 		
 		return stockConfig.getCustomerVirtualLocation();

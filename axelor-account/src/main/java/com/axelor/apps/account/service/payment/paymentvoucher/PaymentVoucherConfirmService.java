@@ -120,12 +120,11 @@ public class PaymentVoucherConfirmService  {
 
 		paymentVoucherControlService.checkPaymentVoucherField(paymentVoucher, company, paymentModeAccount, journal);
 
-		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 && !journal.getExcessPaymentOk())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3),
-					AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+		if (paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 && !journal.getExcessPaymentOk()) {
+			throw new AxelorException(paymentVoucher, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYBOX_3), AppAccountServiceImpl.EXCEPTION);
 		}
 
-		if(paymentVoucher.getPayboxPaidOk())  {
+		if (paymentVoucher.getPayboxPaidOk()) {
 			paymentVoucherControlService.checkPayboxAmount(paymentVoucher);
 		}
 

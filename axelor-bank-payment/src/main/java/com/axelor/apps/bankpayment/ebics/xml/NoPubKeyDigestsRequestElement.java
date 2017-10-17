@@ -22,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Calendar;
 
-import javax.xml.XMLConstants;
-
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest.Body;
@@ -33,6 +31,7 @@ import com.axelor.apps.account.ebics.schema.h003.NoPubKeyDigestsRequestStaticHea
 import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
@@ -67,11 +66,9 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");
 
     try {
-      return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
-    } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
-    } catch (NoSuchProviderException e) {
-      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
+    	return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
+    } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+    	throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
     }
   }
 
@@ -103,8 +100,9 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     
 
 	EbicsUser ebicsUser = session.getUser();
+	EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
 
-	OrderAttribute orderAttribute = new OrderAttribute(OrderType.HPB, ebicsUser.getEbicsTypeSelect());
+	OrderAttribute orderAttribute = new OrderAttribute(OrderType.HPB, ebicsPartner.getEbicsTypeSelect());
     orderAttribute.build();
 	
     
@@ -113,7 +111,7 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     xstatic = EbicsXmlFactory.createNoPubKeyDigestsRequestStaticHeaderType(session.getBankID(),
     																   EbicsUtils.generateNonce(),
 	                                                                   Calendar.getInstance(),
-	                                                                   ebicsUser.getEbicsPartner().getPartnerId(),
+	                                                                   ebicsPartner.getPartnerId(),
 	                                                                   ebicsUser.getUserId(),
 	                                                                   product,
 	                                                                   orderDetails,

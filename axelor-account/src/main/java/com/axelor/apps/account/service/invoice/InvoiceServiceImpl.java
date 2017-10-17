@@ -74,7 +74,7 @@ import com.google.inject.persist.Transactional;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
- * facturations.
+ * facturation.
  * 
  */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
@@ -150,7 +150,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice compute(final Invoice invoice) throws AxelorException {
 
-		log.debug("Calcule de la facture");
+		log.debug("Calcul de la facture");
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
@@ -237,7 +237,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			if (invoiceLine.getAccount() == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_6), IException.MISSING_FIELD, invoiceLine.getProductName());
+				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}
 

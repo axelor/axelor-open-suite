@@ -85,8 +85,7 @@ public class PaymentVoucherSequenceService  {
 		Company company = paymentVoucher.getCompany();
 
 		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1),
-					AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(paymentVoucher, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 
 	}

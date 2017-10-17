@@ -84,12 +84,12 @@ public class SubscriptionController {
 
 		saleOrderLine = saleOrderLineRepo.find(saleOrderLine.getId());
 
-		if (saleOrderLine != null){
+		if (saleOrderLine != null) {
 
 			Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubcriptionInvoiceForSaleOrderLine(saleOrderLine);
 
-			if(invoice == null){
-				throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+			if (invoice == null) {
+				throw new AxelorException(saleOrderLine, IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
 			}
 			response.setCanClose(true);
 			response.setView(ActionView

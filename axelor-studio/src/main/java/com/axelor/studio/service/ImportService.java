@@ -122,7 +122,7 @@ public class ImportService {
 		return wkf;
 	}
 	
-	public Object importAppBuilder(Object bean, Map<String,Object> values) {
+	public Object importAppBuilderImg(Object bean, Map<String,Object> values) {
 		
 		assert bean instanceof AppBuilder;
 		
@@ -133,6 +133,17 @@ public class ImportService {
 		if (fileName != null && imageData != null) {
 			appBuilder.setImage(importImg(fileName, imageData));
 		}
+		
+		appBuilder = appBuilderRepo.save(appBuilder);
+		
+		return appBuilder;
+	}
+	
+	public Object importAppBuilder(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof AppBuilder;
+		
+		AppBuilder appBuilder = (AppBuilder) bean;
 		
 		return appBuilderRepo.save(appBuilder);
 	}

@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.PRODUCT);
 
 		if (seq == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE));
 		}
 
 		return seq;

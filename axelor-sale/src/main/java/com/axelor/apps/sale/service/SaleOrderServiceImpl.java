@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.sale.db.CancelReason;
 import com.google.common.base.Strings;
@@ -245,14 +244,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 
-
 	@Override
 	public String getSequence(Company company) throws AxelorException  {
 
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
-		if (seq == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName()),
-							IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName());
 		}
 		return seq;
 	}

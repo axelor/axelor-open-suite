@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -48,7 +47,6 @@ import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -272,7 +270,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public App getApp(String code) {
-		return Beans.get(AppRepository.class).findByCode(code);
+		return appRepo.findByCode(code);
 	}
 
 	@Override

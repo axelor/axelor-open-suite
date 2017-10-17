@@ -44,6 +44,7 @@ import org.w3c.dom.Node;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 
@@ -76,7 +77,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
     SignedInfoType		signedInfo;
 
     if (digest == null) {
-      throw new AxelorException("digest value cannot be null", IException.CONFIGURATION_ERROR);
+    	throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("digest value cannot be null"));
     }
 
     transform = EbicsXmlFactory.createTransformType(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);

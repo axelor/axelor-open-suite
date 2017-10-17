@@ -49,7 +49,6 @@ public interface BankOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void realize(BankOrder bankOrder) throws AxelorException;
 	
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;

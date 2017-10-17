@@ -57,9 +57,8 @@ public class PurchaseOrderLineController {
 		if(purchaseOrderLine.getAnalyticDistributionTemplate() != null){
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(purchaseOrderLine);
 			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 }

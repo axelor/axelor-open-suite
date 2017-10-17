@@ -230,8 +230,7 @@ public class DebtRecoverySessionService {
 		if(debtRecovery.getDebtRecoveryMethod() == null
 				|| debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList() == null
 				|| debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s: +"+I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1), AppAccountServiceImpl.EXCEPTION,
-					debtRecovery.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
+			throw new AxelorException(debtRecovery, IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: +"+I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
 		}
 		for(DebtRecoveryMethodLine debtRecoveryMethodLine : debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList())  {
 			if(debtRecoveryMethodLine.getDebtRecoveryLevel().getName().equals(debtRecoveryLevel))  {

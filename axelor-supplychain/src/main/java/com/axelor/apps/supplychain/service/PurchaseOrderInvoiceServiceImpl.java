@@ -94,8 +94,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	@Override
 	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException  {
 
-		if(purchaseOrder.getCurrency() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
+		if (purchaseOrder.getCurrency() == null) {
+			throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
 		}
 
 		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {

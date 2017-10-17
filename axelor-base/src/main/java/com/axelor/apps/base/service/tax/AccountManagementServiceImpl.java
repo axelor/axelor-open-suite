@@ -71,7 +71,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 	
 	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
 		
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1), product.getCode(), company.getName());
 	
 	}
 	
@@ -139,7 +139,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 		
 		if(tax != null)  {  return tax;  }
 		
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3), product.getCode(), company.getName());
 			
 	}
 	
@@ -176,7 +176,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 			return taxLine;
 		}
 
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
 		
 	}
 	

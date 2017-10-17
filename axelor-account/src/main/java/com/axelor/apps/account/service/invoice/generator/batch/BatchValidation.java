@@ -56,7 +56,7 @@ public class BatchValidation extends BatchWkf {
 
 			}  catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getCategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", invoice.getInvoiceId()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {

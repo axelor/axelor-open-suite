@@ -46,7 +46,7 @@ public abstract class AbstractBatch {
 	@Inject
 	protected AppBaseService appBaseService;
 
-	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	protected static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected Batch batch;
 	protected Model model;

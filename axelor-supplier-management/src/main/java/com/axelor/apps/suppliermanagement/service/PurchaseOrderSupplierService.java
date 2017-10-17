@@ -127,15 +127,14 @@ public class PurchaseOrderSupplierService {
 
 	public Map<Partner,List<PurchaseOrderLine>> splitBySupplierPartner(List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
 
-		Map<Partner,List<PurchaseOrderLine>> purchaseOrderLinesBySupplierPartner = new HashMap<Partner,List<PurchaseOrderLine>>();
+		Map<Partner,List<PurchaseOrderLine>> purchaseOrderLinesBySupplierPartner = new HashMap<>();
 
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList)  {
 
 			Partner supplierPartner = purchaseOrderLine.getSupplierPartner();
 
-			if(supplierPartner == null)  {
-
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_PURCHASE_1), purchaseOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
+			if (supplierPartner == null) {
+				throw new AxelorException(purchaseOrderLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), purchaseOrderLine.getProductName());
 			}
 
 			if(!purchaseOrderLinesBySupplierPartner.containsKey(supplierPartner))  {

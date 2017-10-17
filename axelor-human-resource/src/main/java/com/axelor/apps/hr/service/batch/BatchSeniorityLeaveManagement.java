@@ -107,7 +107,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 			super.start();
 			
 			if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO || batch.getHrBatch().getLeaveReason() == null)
-				TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.BATCH_MISSING_FIELD), IException.CONFIGURATION_ERROR), IException.LEAVE_MANAGEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
 			total = 0;
 			noValueAnomaly = 0;
 			confAnomaly = 0;
@@ -178,10 +178,13 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 				}
 			}
 			
-			if (count == 0){ throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason() ), IException.NO_VALUE ); }
-			if(count > 1 ){ throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason() ), IException.CONFIGURATION_ERROR ); }
-			
-			if (count == 1){
+			if (count == 0) {
+				throw new AxelorException(employee, IException.NO_VALUE, I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason());
+			}
+			if (count > 1) {
+				throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason());
+			}
+			if (count == 1) {
 				
 				for (LeaveManagementBatchRule rule : Beans.get(HRConfigRepository.class).all().filter("self.company.id = ?1", batch.getHrBatch().getCompany().getId()).fetchOne().getLeaveManagementBatchRuleList() ) {
 					

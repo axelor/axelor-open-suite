@@ -84,9 +84,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		Product product = billOfMaterial.getProduct();
 
 		if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
-		    throw new AxelorException(I18n.get(
-		    		IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED),
-					IException.CONFIGURATION_ERROR);
+		    throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
 		}
 
 		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty()).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));

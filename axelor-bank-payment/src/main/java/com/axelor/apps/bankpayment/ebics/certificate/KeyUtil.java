@@ -110,10 +110,8 @@ public class KeyUtil {
     
     try {
       digest = MessageDigest.getInstance("SHA-256", "BC").digest(hash.getBytes("US-ASCII"));
-    } catch (GeneralSecurityException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
-    } catch (UnsupportedEncodingException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+    } catch (GeneralSecurityException | UnsupportedEncodingException e) {
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
 
     return new String(Hex.encodeHex(digest, false)).getBytes();

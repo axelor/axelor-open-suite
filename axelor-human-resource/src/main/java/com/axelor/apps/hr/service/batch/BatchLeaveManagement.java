@@ -75,12 +75,12 @@ public class BatchLeaveManagement extends BatchStrategy {
 	}
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+	protected void start() throws IllegalAccessException, AxelorException {
 		
 		super.start();
 		
 		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO || batch.getHrBatch().getLeaveReason() == null)
-			TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.BATCH_MISSING_FIELD), IException.CONFIGURATION_ERROR), IException.LEAVE_MANAGEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
 		total = 0;
 		noValueAnomaly = 0;
 		confAnomaly = 0;
