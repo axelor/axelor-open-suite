@@ -229,9 +229,4 @@ public class BankOrderController {
 		response.setValue("senderBankDetails", bankDetails);
 	}
 
-	public String bankOrderAwaitingForSignatureMenuTag() {
-		return Long.toString(JPA.em().createQuery("SELECT COUNT(self) FROM BankOrder as self WHERE self.statusSelect = :statusSelect", Long.class)
-				.setParameter("statusSelect", BankOrderRepository.STATUS_AWAITING_SIGNATURE).getSingleResult());
-	}
-
 }
