@@ -77,8 +77,19 @@
 		public static final int REJECT_STATUS_TOTALLY_REJECTED = 2;
 	
 	]]></extra-code>
-    
-    
+
+	  <track>
+		  <field name="bankOrderDate" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="signatoryEbicsUser" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="senderCompany" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="senderBankDetails" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="bankOrderTotalAmount" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="bankOrderCurrency" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="senderReference" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="statusSelect" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <message if="statusSelect == 2" tag="info">Awaiting signature</message>
+	  </track>
+
   </entity>
 
 </domain-models>
