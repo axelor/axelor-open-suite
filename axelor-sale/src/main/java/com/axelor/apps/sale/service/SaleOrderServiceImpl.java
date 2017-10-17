@@ -56,6 +56,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -212,6 +213,19 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 							IException.CONFIGURATION_ERROR);
 		}
 		return seq;
+	}
+
+	protected String getDraftSequence(SaleOrder saleOrder)  {
+		return "*" + saleOrder.getId();
+	}
+
+	@Override
+	public void setDraftSequence(SaleOrder saleOrder)  {
+		if(Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()){
+			if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
+				saleOrder.setSaleOrderSeq(getDraftSequence(saleOrder));
+			}
+		}
 	}
 
 

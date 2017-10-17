@@ -54,9 +54,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
-			computeSeq(saleOrder);
+			saleOrder = super.save(saleOrder);
+			Beans.get(SaleOrderService.class).setDraftSequence(saleOrder);
 			computeFullName(saleOrder);
-			return super.save(saleOrder);
+			return saleOrder;
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
