@@ -35,7 +35,7 @@ public interface IExceptionMessage {
 	 * Batch event reminder
 	 */
 	static final String BATCH_EVENT_REMINDER_1 = /*$$(*/ "Event reminder %s" /*)*/;
-	static final String BATCH_EVENT_REMINDER_2 = /*$$(*/ "Event's reminder's generation's reporting :\n" /*)*/;
+	static final String BATCH_EVENT_REMINDER_2 = /*$$(*/ "Event's reminder's generation's reporting :" /*)*/;
 	static final String BATCH_EVENT_REMINDER_3 = /*$$(*/ "Reminder(s) treated" /*)*/;
 
 	/**
@@ -47,7 +47,7 @@ public interface IExceptionMessage {
 	 * Batch target
 	 */
 	static final String BATCH_TARGET_1 = /*$$(*/ "Event reminder %s" /*)*/;
-	static final String BATCH_TARGET_2 = /*$$(*/ "Objectives' generation's reporting :\n" /*)*/;
+	static final String BATCH_TARGET_2 = /*$$(*/ "Objectives' generation's reporting :" /*)*/;
 	static final String BATCH_TARGET_3 = /*$$(*/ "Treated objectives reporting" /*)*/;
 
 	/**

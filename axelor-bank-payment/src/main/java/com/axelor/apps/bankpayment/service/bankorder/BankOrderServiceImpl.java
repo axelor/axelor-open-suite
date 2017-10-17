@@ -17,22 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -62,13 +46,29 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -257,13 +257,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Sequence sequence = getSequence(bankOrder);
 		setBankOrderSeq(bankOrder, sequence);
 
-		setSequenceOnBankOrderLines(bankOrder);
 
 		setNbOfLines(bankOrder);
 
 		generateFile(bankOrder);
 
+		setSequenceOnBankOrderLines(bankOrder);
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+		makeEbicsUserFollow(bankOrder);
 
 		bankOrderRepo.save(bankOrder);
 	}
@@ -289,6 +290,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 	
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
+		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
+		}
 		sendBankOrderFile(bankOrder);
 		realizeBankOrder(bankOrder);
 
@@ -334,7 +338,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	protected void setSequenceOnBankOrderLines(BankOrder bankOrder) {
+	@Override
+	public void setSequenceOnBankOrderLines(BankOrder bankOrder) {
 
 		if (bankOrder.getBankOrderLineList() == null) {
 			return;
@@ -595,5 +600,17 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE),
 				bankOrder.getSenderCompany().getName()), IException.CONFIGURATION_ERROR);
+	}
+
+	/**
+	 * The signatory ebics user will follow the bank order record
+	 * @param bankOrder
+	 */
+	protected void makeEbicsUserFollow(BankOrder bankOrder) {
+		EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
+		if (ebicsUser != null) {
+			User signatoryUser = ebicsUser.getAssociatedUser();
+			Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
+		}
 	}
 }

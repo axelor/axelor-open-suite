@@ -77,7 +77,7 @@
 	      <field name="realDate" colSpan="6"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-	      <field name="isWithReturnSurplus" colSpan="6"/>
+	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
 	      <field name="isWithBackorder" colSpan="6"/>
 	      <field name="shipmentMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	      <field name="freightCarrierMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>

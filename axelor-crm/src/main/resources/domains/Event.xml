@@ -49,7 +49,7 @@
     
 <!-- Ticket -->
     <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
-    <string name="ticketNumberSeq" title="Ticket N°" help="true"/>
+    <string name="ticketNumberSeq" title="Ticket N°" help="true" unique="true"/>
     <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
     <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 <!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
