@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -54,9 +53,12 @@ public class PaymentVoucherController {
 	private PaymentVoucherRepository paymentVoucherRepo;
 	
 	@Inject
-	private PaymentVoucherLoadService paymentVoucherLoadService; 
-	
-	
+	private PaymentVoucherLoadService paymentVoucherLoadService;
+
+	@Inject
+	private PaymentModeService paymentModeService;
+
+
 	//Called on onSave event
 	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response) throws AxelorException{
 
@@ -108,7 +110,24 @@ public class PaymentVoucherController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
+
+	public void askPaymentVoucher(ActionRequest request, ActionResponse response) {
+		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+
+		if (paymentVoucher.getHasAutoInput()) {
+			PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+			Company company = paymentVoucher.getCompany();
+			BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+			try {
+				Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+				if (journal.getExcessPaymentOk()) {
+					response.setAlert(I18n.get("No items has been selected, do you want to continue ?"));
+				}
+			} catch (AxelorException e) {
+				TraceBackService.trace(response, e);
+			}
+		}
+	}
 	
 	// Confirm the payment voucher
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {
