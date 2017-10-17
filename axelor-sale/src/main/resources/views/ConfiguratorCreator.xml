@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+    <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator" canMove="true" orderBy="sequence">
     	<field name="name"/>
 		<field name="isActive"/>
     </grid>
