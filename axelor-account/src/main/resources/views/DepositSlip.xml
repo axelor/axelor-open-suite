@@ -19,9 +19,13 @@
         <toolbar>
             <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list" onClick="action-deposit-slip-load-payments"
                 hideIf="publicationDate" />
-            <button name="publishBtn" title="Print" icon="fa-print" onClick="save,action-deposit-slip-publish"
+            <button name="publishBtn" title="Publish deposit slip" icon="fa-print" onClick="save,action-deposit-slip-publish"
                 hideIf="publicationDate" readonlyIf="!paymentVoucherList" />
         </toolbar>
+
+        <panel colSpan="12" if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">
+            <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
+        </panel>
 
         <panel title="Period" readonlyIf="publicationDate">
             <field name="fromDate" />
