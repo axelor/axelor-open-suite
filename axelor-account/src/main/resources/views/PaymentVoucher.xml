@@ -60,6 +60,16 @@
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
 			<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
+
+            <field name="paymentMode.typeSelect" colSpan="12" hidden="true" />
+            <panel colSpan="12" title="Cheque" showIf="paymentMode.typeSelect == 7">
+                <field name="chequeNumber" />
+                <field name="chequeBank" />
+                <field name="chequeOwner" />
+                <field name="chequeDate" />
+            </panel>
+
+            <field name="depositSlip" showIf="depositSlip" colSpan="12" />
 		</panel>
 		
 		<panel colSpan="12" showIf="statusSelect == 1">
@@ -212,6 +222,9 @@
 		<filter title="Draft Customer payments">
 			<domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
 		</filter>
+        <filter title="Customer payments waiting for deposit slip" if="__config__.app.getApp('account').paymentVouchersOnInvoice">
+            <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
+        </filter>
 		<filter title="Confirmed Customer payments">
 			<domain>self.operationTypeSelect = 3 AND self.statusSelect = 3</domain>
 		</filter>

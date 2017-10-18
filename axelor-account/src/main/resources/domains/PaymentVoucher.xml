@@ -58,6 +58,7 @@
         <string name="chequeBank" />
         <string name="chequeOwner" />
         <date name="chequeDate" />
+        <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip" />
 
 		<extra-code><![CDATA[
 		

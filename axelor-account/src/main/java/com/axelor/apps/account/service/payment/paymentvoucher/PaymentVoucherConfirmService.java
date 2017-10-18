@@ -19,10 +19,10 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -108,12 +109,10 @@ public class PaymentVoucherConfirmService  {
 		log.debug("In confirmPaymentVoucherService ....");
 		paymentVoucherSequenceService.setReference(paymentVoucher);
 
-		Partner payerPartner = paymentVoucher.getPartner();
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
 		BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
-		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
 		boolean scheduleToBePaid = false;
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
@@ -133,89 +132,15 @@ public class PaymentVoucherConfirmService  {
 		// TODO RECUPERER DEVISE DE LA PREMIERE DETTE
 //		Currency currencyToPay = null;
 
-		// If paid by a moveline check if all the lines selected have the same account + company
-		// Excess payment
-		boolean allRight = paymentVoucherControlService.checkIfSameAccount(paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine());
-		//Check if allright=true (means companies and accounts in lines are all the same and same as in move line selected for paying
-		log.debug("allRight : {}", allRight);
+		AppAccountService appAccountService = Beans.get(AppAccountService.class);
 
-		if (allRight){	scheduleToBePaid = this.toPayWithExcessPayment(paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine(), scheduleToBePaid, paymentDate); }
-
-		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
-
-			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.getMoveCreateService().createMoveWithPaymentVoucher(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-
-			move.setPaymentVoucher(paymentVoucher);
-
-			paymentVoucher.setGeneratedMove(move);
-			// Create move lines for payment lines
-			BigDecimal paidLineTotal = BigDecimal.ZERO;
-			int moveLineNo=1;
-
-			boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
-
-			for (PayVoucherElementToPay payVoucherElementToPay : this.getPayVoucherElementToPayList(paymentVoucher))  {
-				MoveLine moveLineToPay = payVoucherElementToPay.getMoveLine();
-				log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
-				log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
-
-				BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
-
-				if (amountToPay.compareTo(BigDecimal.ZERO) > 0)  {
-
-					paidLineTotal = paidLineTotal.add(amountToPay);
-
-					this.payMoveLine(move, moveLineNo++, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
-
-				}
-			}
-			// Create move line for the payment amount
-			MoveLine moveLine = null;
-
-			// cancelling the moveLine (excess payment) by creating the balance of all the payments
-			// on the same account as the moveLine (excess payment)
-			// in the else case we create a classical balance on the bank account of the payment mode
-			if (paymentVoucher.getMoveLine() != null){
-				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(),
-						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
-
-				Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
-				reconcileService.confirmReconcile(reconcile, true);
-			}
-			else{
-
-				moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
-			}
-			move.getMoveLineList().add(moveLine);
-			// Check if the paid amount is > paid lines total
-			// Then Use Excess payment on old invoices / moveLines
-			if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0){
-				BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
-
-				//TODO rajouter le process d'imputation automatique
-//				if(paymentVoucher.getHasAutoInput())  {
-//
-//					List<MoveLine> debitMoveLines = Lists.newArrayList(pas.getDebitLinesToPay(contractLine, paymentVoucher.getPaymentScheduleToPay()));
-//					pas.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount, move, moveLineNo,
-//							paymentVoucher.getPayerPartner(), company, contractLine, null, paymentDate, updateCustomerAccount);
-//				}
-//				else  {
-
-				Account partnerAccount = Beans.get(AccountCustomerService.class).getPartnerAccount(payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
-
-				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, paymentDate, moveLineNo++, null);
-				move.getMoveLineList().add(moveLine);
-
-				if(isDebitToPay)  {
-					reconcileService.balanceCredit(moveLine);
-				}
-
-			}
-			moveService.getMoveValidateService().validateMove(move);
-			paymentVoucher.setGeneratedMove(move);
+		if (appAccountService.getAppAccount().getPaymentVouchersOnInvoice()
+                && paymentVoucher.getPaymentMode().getValidatePaymentByDepositSlipPublication()) {
+	        paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
+		} else {
+		    createMoveAndConfirm(paymentVoucher);
 		}
-		paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
+
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
 		
 		this.deleteUnPaidLines(paymentVoucher);
@@ -223,6 +148,107 @@ public class PaymentVoucherConfirmService  {
 		paymentVoucherRepository.save(paymentVoucher);
 	}
 
+    /**
+     * Confirm payment voucher and create move.
+     * 
+     * @param paymentVoucher
+     * @throws AxelorException
+     */
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    public void createMoveAndConfirm(PaymentVoucher paymentVoucher) throws AxelorException {
+        Partner payerPartner = paymentVoucher.getPartner();
+        PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+        Company company = paymentVoucher.getCompany();
+        BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+        Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+        LocalDate paymentDate = paymentVoucher.getPaymentDate();
+        boolean scheduleToBePaid = false;
+        Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
+
+        // If paid by a moveline check if all the lines selected have the same account + company
+        // Excess payment
+        boolean allRight = paymentVoucherControlService.checkIfSameAccount(paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine());
+        //Check if allright=true (means companies and accounts in lines are all the same and same as in move line selected for paying
+        log.debug("allRight : {}", allRight);
+
+        if (allRight){  scheduleToBePaid = this.toPayWithExcessPayment(paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine(), scheduleToBePaid, paymentDate); }
+        
+        if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
+
+            //Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
+            Move move = moveService.getMoveCreateService().createMoveWithPaymentVoucher(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+            move.setPaymentVoucher(paymentVoucher);
+
+            paymentVoucher.setGeneratedMove(move);
+            // Create move lines for payment lines
+            BigDecimal paidLineTotal = BigDecimal.ZERO;
+            int moveLineNo=1;
+
+            boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
+
+            for (PayVoucherElementToPay payVoucherElementToPay : this.getPayVoucherElementToPayList(paymentVoucher))  {
+                MoveLine moveLineToPay = payVoucherElementToPay.getMoveLine();
+                log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
+                log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
+
+                BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
+
+                if (amountToPay.compareTo(BigDecimal.ZERO) > 0)  {
+
+                    paidLineTotal = paidLineTotal.add(amountToPay);
+
+                    this.payMoveLine(move, moveLineNo++, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
+
+                }
+            }
+            // Create move line for the payment amount
+            MoveLine moveLine = null;
+
+            // cancelling the moveLine (excess payment) by creating the balance of all the payments
+            // on the same account as the moveLine (excess payment)
+            // in the else case we create a classical balance on the bank account of the payment mode
+            if (paymentVoucher.getMoveLine() != null){
+                moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(),
+                        paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
+
+                Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
+                reconcileService.confirmReconcile(reconcile, true);
+            }
+            else{
+
+                moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
+            }
+            move.getMoveLineList().add(moveLine);
+            // Check if the paid amount is > paid lines total
+            // Then Use Excess payment on old invoices / moveLines
+            if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0){
+                BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
+
+                //TODO rajouter le process d'imputation automatique
+//              if(paymentVoucher.getHasAutoInput())  {
+//
+//                  List<MoveLine> debitMoveLines = Lists.newArrayList(pas.getDebitLinesToPay(contractLine, paymentVoucher.getPaymentScheduleToPay()));
+//                  pas.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount, move, moveLineNo,
+//                          paymentVoucher.getPayerPartner(), company, contractLine, null, paymentDate, updateCustomerAccount);
+//              }
+//              else  {
+
+                Account partnerAccount = Beans.get(AccountCustomerService.class).getPartnerAccount(payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
+
+                moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, paymentDate, moveLineNo++, null);
+                move.getMoveLineList().add(moveLine);
+
+                if(isDebitToPay)  {
+                    reconcileService.balanceCredit(moveLine);
+                }
+
+            }
+            moveService.getMoveValidateService().validateMove(move);
+            paymentVoucher.setGeneratedMove(move);
+        }
+        paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
+    }
 
 	public void deleteUnPaidLines(PaymentVoucher paymentVoucher)  {
 		

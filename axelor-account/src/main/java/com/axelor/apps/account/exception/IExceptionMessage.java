@@ -584,5 +584,13 @@ public interface IExceptionMessage {
 
 
 	static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
-	
+
+	/*
+	 * Deposit slip
+	 */
+	static final String DEPOSIT_SLIP_MISSING_SEQUENCE = /*$$(*/ "Missing deposit slip sequence for company %s" /*)*/;
+	static final String DEPOSIT_SLIP_CANNOT_DELETE = /*$$(*/ "You cannot delete this deposit slip." /*)*/;
+	static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/ "The deposit slip has already been generated." /*)*/;
+	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
+
 }
