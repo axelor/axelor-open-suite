@@ -40,7 +40,8 @@ public interface IExceptionMessage {
 	 */
 	
 	static final String ACCOUNT_CONFIG_41 = /*$$(*/ "%s : Please, configure a default signer for the company %s" /*)*/;
-	
+
+	static final String ACCOUNT_CONFIG_1 = /*$$(*/ "%s : You must configure bank payment's information for the company %s"/*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/ "%s : Please, configure a sequence for the SEPA Credit Transfers and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_6 = /*$$(*/ "%s : Please, configure a sequence for the SEPA Direct Debits and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_7 = /*$$(*/ "%s : Please, configure a sequence for the International Credit Transfers and the company %s" /*)*/;

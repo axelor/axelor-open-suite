@@ -542,7 +542,7 @@ public class BankOrderFile00800102Service extends BankOrderFileService {
             party6Choice.setPrvtId(personIdentification5);
             GenericPersonIdentification1 genericPersonIdentification1 = factory.createGenericPersonIdentification1();
             personIdentification5.getOthr().add(genericPersonIdentification1);
-            genericPersonIdentification1.setId(senderCompany.getAccountConfig().getIcsNumber());
+            genericPersonIdentification1.setId(senderCompany.getBankPaymentConfig().getIcsNumber());
             PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = factory.createPersonIdentificationSchemeName1Choice();
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
             personIdentificationSchemeName1Choice.setPrtry("SEPA");

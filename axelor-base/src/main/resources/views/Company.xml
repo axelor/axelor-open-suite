@@ -27,7 +27,8 @@
 	  
 	  	<panel sidebar="true" name="modulesConfigurations" title="Modules configurations" hideIf="$popup()">
 	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+			<button name="bankPaymentConfigButton" title="Bank payment config" width="100%" colSpan="6" onClick="action-company-view-bank-payment-config" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+			<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
 	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production" if="__config__.app.isApp('production')"/>
@@ -66,6 +67,12 @@
     	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
+
+	<action-view name="action-company-view-bank-payment-config" title="Bank payment config (${ name })" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">
+		<view type="form" name="bank-payment-config-form"/>
+		<context name="_showRecord" expr="eval: __self__.bankPaymentConfig?.id"/>
+		<context name="_company" expr="eval: __this__"/>
+	</action-view>
     
     <action-view name="action-company-view-purchase-config" title="Purchase config (${ name })" model="com.axelor.apps.purchase.db.PurchaseConfig">
     	<view type="form" name="purchase-config-form"/>

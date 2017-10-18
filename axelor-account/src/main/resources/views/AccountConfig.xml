@@ -149,31 +149,6 @@
 			<panel name="paybox" title="Paybox">
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
-			
-			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
-                <panel colSpan="12">
-                    <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
-                    <field name="icsNumber" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()" if-module="axelor-bank-payment"/>
-                    <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-                    <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-                </panel>
-				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getManageCreditTransferPayment()">
-					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4"  if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getManageDirectDebitPayment()">
-					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4"  if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getManageBankToBankTransferPayment()">
-					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-                <panel name="other" title="Other" colSpan="12">
-                    <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-                </panel>
-			</panel>
-		
 			<panel name="reimbursement" title="Reimbursement">
 				<panel name="reimbursements" title="Reimbursements" colSpan="12">
 					<field name="reimbursementExportFolderPath" />

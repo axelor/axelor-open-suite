@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+    <entity name="BankPaymentConfig" cachable="true">
+        <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+
+        <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
+        <boolean name="generateMoveOnBankOrderValidation" title="Generate move when validating a bank order"/>
+        <many-to-one name="internalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for internal order (unique company)"/>
+        <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (multiple company)"/>
+
+        <many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA credit transfers"/>
+        <many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA direct debits"/>
+        <many-to-one name="intCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International credit transfers"/>
+        <many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="International direct debits"/>
+
+        <many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International treasury transfers"/>
+        <many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="National treasury transfer"/>
+        <many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types"/>
+
+        <!-- SEPA Direct Debit -->
+        <string name="icsNumber" title="ICS Number" min="13" max="13"/>
+    </entity>
+
+</domain-models>
