@@ -61,7 +61,8 @@
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-bank-to-bank-transfer"
-		parent="account-root-bank-orders" title="Bank to Bank Transfers"/>
+		parent="account-root-bank-orders" title="Bank to Bank Transfers"
+		if="__config__.app.getApp('bank-payment').getManageBankToBankTransferPayment()" />
 	
 	<menuitem name="account-root-bank-order-sepa-bank-to-bank-transfer"
 		parent="account-root-bank-order-bank-to-bank-transfer" title="National Bank to Bank Transfers"
