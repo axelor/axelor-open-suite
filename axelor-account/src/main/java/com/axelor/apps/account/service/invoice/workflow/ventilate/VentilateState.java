@@ -21,16 +21,19 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.account.db.*;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
-import com.axelor.inject.Beans;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -41,6 +44,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -217,8 +221,7 @@ public class VentilateState extends WorkflowInvoice {
 	 * @throws AxelorException
 	 */
 	protected void setInvoiceId( Sequence sequence ) throws AxelorException {
-
-		if ( !Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*") ) { return; }
+		if( !Strings.isNullOrEmpty(invoice.getInvoiceId()) && invoice.getStatusSelect() != InvoiceRepository.STATUS_DRAFT && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED ) { return; }
 
 		invoice.setInvoiceId( sequenceService.setRefDate( invoice.getInvoiceDate() ).getSequenceNumber(sequence) );
 

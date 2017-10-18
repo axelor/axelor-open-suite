@@ -63,27 +63,13 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		}
 	}
 	
-	public void computeSeq(SaleOrder saleOrder){
-		try{
-			
-			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
-				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
-					saleOrder.setSaleOrderSeq("*" + saleOrder.getId().toString());
-				}
-			}
-				
-		}
-		catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
 	public void computeFullName(SaleOrder saleOrder){
 		try{
-			if(!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
+			if(!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) {
 				saleOrder.setFullName(saleOrder.getSaleOrderSeq()+"-"+saleOrder.getClientPartner().getName());
-			else
+			} else {
 				saleOrder.setFullName(saleOrder.getClientPartner().getName());
+		}
 		}
 		catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());

@@ -108,8 +108,7 @@ public interface SaleOrderService {
 	
 	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException;
 
-
-	public void setDraftSequence(SaleOrder saleOrder);
+	public void setDraftSequence(SaleOrder saleOrder) throws AxelorException;
 }
 
 

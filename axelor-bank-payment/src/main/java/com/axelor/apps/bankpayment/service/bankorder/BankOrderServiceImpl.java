@@ -28,12 +28,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import com.axelor.apps.bankpayment.db.*;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.BankDetailsService;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -44,8 +38,15 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
@@ -53,9 +54,13 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -177,11 +182,20 @@ public class BankOrderServiceImpl implements BankOrderService {
 		bankOrder.setCompanyCurrencyTotalAmount(this.computeCompanyCurrencyTotalAmount(bankOrder));
 	}
 
+	protected String getDraftSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequenceNumber(IAdministration.DOCUMENT_DRAFT, company);
+		if (seq == null)  {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.DRAFT_SEQUENCE_1),company.getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+		return seq;
+	}
+
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public BankOrder generateSequence(BankOrder bankOrder) {
+	public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException {
 		if (bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null) {
-			bankOrder.setBankOrderSeq("*" + StringTool.fillStringLeft(Long.toString(bankOrder.getId()), '0', 6));
+			bankOrder.setBankOrderSeq(getDraftSequence(bankOrder.getSenderCompany()));
 			bankOrderRepo.save(bankOrder);
 		}
 		return bankOrder;

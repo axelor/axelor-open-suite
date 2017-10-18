@@ -198,4 +198,9 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+
+	/**
+	 * Draft sequence handling
+	 */
+	static final public String DRAFT_SEQUENCE_1 = /*$$(*/ "There is no sequence set for document drafts" /*)*/;
 }

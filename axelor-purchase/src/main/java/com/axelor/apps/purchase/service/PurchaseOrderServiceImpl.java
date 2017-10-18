@@ -210,8 +210,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public String getDraftSequence(Long purchaseOrderId){
-		return "*"+purchaseOrderId.toString();
+	public String getDraftSequence(Company company) throws AxelorException{
+		String seq = sequenceService.getSequenceNumber(IAdministration.DOCUMENT_DRAFT, company);
+		if (seq == null)  {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.DRAFT_SEQUENCE_1),company.getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+		return seq;
 	}
 
 	@Override
@@ -337,10 +342,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public void setDraftSequence(PurchaseOrder purchaseOrder) {
+	public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
 		
 		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
-			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getId()));
+			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getCompany()));
 		}
 	}
 	

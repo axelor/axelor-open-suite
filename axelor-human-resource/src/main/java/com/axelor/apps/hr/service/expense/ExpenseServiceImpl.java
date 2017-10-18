@@ -17,7 +17,30 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.db.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -26,6 +49,8 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -60,13 +85,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
 
 public class ExpenseServiceImpl implements ExpenseService  {
 
@@ -79,12 +97,13 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
+	protected SequenceService sequenceService;
 	
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
 			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
 			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
+			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService, SequenceService sequenceService)  {
 		
 		this.moveService = moveService;
 		this.expenseRepository = expenseRepository;
@@ -95,6 +114,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		this.analyticMoveLineService = analyticMoveLineService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
+		this.sequenceService = sequenceService;
 		
 	}
 	
@@ -536,18 +556,24 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		return advanceAmount;
 	}
 
-	public void setDraftSequence(Expense expense)  {
+	@Override
+	public void setDraftSequence(Expense expense) throws AxelorException  {
 		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq()))  {
-			expense.setExpenseSeq(getDraftSequence(expense));
+			expense.setExpenseSeq(getDraftSequence(expense.getCompany()));
 		}
 	}
 
-	private String getDraftSequence(Expense expense)  {
-		return "*" + expense.getId();
+	protected String getDraftSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequenceNumber(IAdministration.DOCUMENT_DRAFT, company);
+		if (seq == null)  {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.DRAFT_SEQUENCE_1),company.getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+		return seq;
 	}
 
 	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
-		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) { return; }
+		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && expense.getVentilated() == Boolean.TRUE) { return; }
 
 		expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
 

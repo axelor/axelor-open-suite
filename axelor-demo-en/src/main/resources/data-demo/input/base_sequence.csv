@@ -78,3 +78,4 @@
 9;"productTrackingNumber";"Tracking N°";1;5;"TN";;1;0;1
 10;"productionOrder";"Production Order N°";1;5;"PDO";;1;0;1
 11;"manufOrder";"Manufacturing Order N°";1;5;"MO";;1;0;1
+12;"documentDraft";"Draft";1;8;"DRFT";;1;0;1

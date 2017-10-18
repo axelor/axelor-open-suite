@@ -151,7 +151,6 @@ public class MoveCreateService {
 		move.setPaymentMode(paymentMode);
 		move.setTechnicalOriginSelect(technicalOriginSelect);
 		moveRepository.save(move);
-		move.setReference("*"+move.getId());
 
 		return move;
 

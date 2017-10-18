@@ -215,19 +215,24 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		return seq;
 	}
 
-	protected String getDraftSequence(SaleOrder saleOrder)  {
-		return "*" + saleOrder.getId();
+	protected String getDraftSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequenceNumber(IAdministration.DOCUMENT_DRAFT, company);
+		if (seq == null)  {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.DRAFT_SEQUENCE_1),company.getName()),
+							IException.CONFIGURATION_ERROR);
+		}
+		return seq;
 	}
 
+
 	@Override
-	public void setDraftSequence(SaleOrder saleOrder)  {
+	public void setDraftSequence(SaleOrder saleOrder) throws AxelorException {
 		if(Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()){
 			if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
-				saleOrder.setSaleOrderSeq(getDraftSequence(saleOrder));
+				saleOrder.setSaleOrderSeq(getDraftSequence(saleOrder.getCompany()));
 			}
 		}
 	}
-
 
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{

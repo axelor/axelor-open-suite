@@ -82,9 +82,9 @@ public interface PurchaseOrderService {
 
 	String getSequence(Company company) throws AxelorException ;
 
-	public String getDraftSequence(Long purchaseOrderId);
+	public String getDraftSequence(Company company) throws AxelorException;
 	
-	public void setDraftSequence(PurchaseOrder purchaseOrder);
+	public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder);

@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -57,17 +58,22 @@ public class ReconcileSequenceService {
 		return seq;
 	}
 
-	public void setDraftSequence(Reconcile reconcile)  {		
+	public void setDraftSequence(Reconcile reconcile) throws AxelorException  {
 			
 		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
 			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT)  {		
-			reconcile.setReconcileSeq(this.getDraftSequence(reconcile));		
+			reconcile.setReconcileSeq(this.getDraftSequence(reconcile.getDebitMoveLine().getMove().getCompany()));
 		}		
 		
 	}	
 	
-	protected String getDraftSequence(Reconcile reconcile)  {		
-		return "*" + reconcile.getId();		
+	protected String getDraftSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequenceNumber(IAdministration.DOCUMENT_DRAFT, company);
+		if (seq == null)  {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.DRAFT_SEQUENCE_1),company.getName()),
+							IException.CONFIGURATION_ERROR);
+		}
+		return seq;
 	}		
 	
 }
