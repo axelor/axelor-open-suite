@@ -29,7 +29,7 @@
 			<button name="createInvoice" title="Generate the invoice"
 					onClick="action-method-sale-order-invoicing-wizard-generate"/>
 		</panel>
-        <panel>
+        <panel hidden="true">
 			<field name="amountInvoiced" hidden="true"/>
 			<field name="exTaxTotal" hidden="true"/>
 		</panel>
