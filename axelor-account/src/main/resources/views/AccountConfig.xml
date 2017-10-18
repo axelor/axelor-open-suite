@@ -99,7 +99,7 @@
 				</panel>
 			</panel>
 
-			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('account').getManageDirectDebitPayment()">
+			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('bank-payment').getManageDirectDebitPayment()">
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
 					<editor itemSpan="6">
 						<field name="name" colSpan="8"/>
@@ -194,7 +194,7 @@
 				<field name="sixMonthDebtPassReason"/>
 				<field name="threeMonthDebtPassReason"/>
 			</panel>
-			<panel name="directDebit" title="Direct debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()" >
+			<panel name="directDebit" title="Direct debit" if="__config__.app.getApp('bank-payment').getManageDirectDebitPayment()" >
 				<panel name="directDebits" title="Direct debits" colSpan="12">
 					<field name="paymentScheduleExportFolderPathCFONB"/>
 					<field name="directDebitPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>

@@ -6,7 +6,7 @@
 	<menuitem name="account-root-bank-orders" parent="account-root"
 		title="Bank Orders" order="26"/>
 		
-	<menuitem name="account-root-bank-order-direct-debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()"
+	<menuitem name="account-root-bank-order-direct-debit" if="__config__.app.getApp('bank-payment').getManageDirectDebitPayment()"
 		parent="account-root-bank-orders" title="Direct Debits"/>
 		
 	<menuitem name="account-root-bank-order-sepa-direct-debit"
@@ -33,7 +33,7 @@
 		<context name="_orderTypeSelect" expr="4"/>
 	</action-view>
 	
-	<menuitem name="account-root-bank-order-credit-transfer"
+	<menuitem name="account-root-bank-order-credit-transfer"  if="__config__.app.getApp('bank-payment').getManageCreditTransferPayment()"
 		parent="account-root-bank-orders" title="Credit Transfers"/>
 		
 	<menuitem name="account.bank.order.sepa.credit.transfert"
@@ -103,7 +103,7 @@
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
 		action="account.bank.order.awaiting.for.signature"
-		if="eval: __config__.app.getApp('account').enableModuleEBICS" />
+		if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()" />
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
@@ -172,7 +172,7 @@
 	
 	
 	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics"
-			  if="eval: __config__.app.getApp('account').enableModuleEBICS" />
+			  if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()" />
 
 	<menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
 		title="Ebics users" action="account.conf.ebics.ebics.user" />
