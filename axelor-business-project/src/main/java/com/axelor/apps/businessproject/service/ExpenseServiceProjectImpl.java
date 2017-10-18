@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -42,9 +43,10 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl  {
 	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
 			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
 			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
+			HRConfigService hrConfigService, TemplateMessageService templateMessageService,
+			SequenceService sequenceService) {
 		
-		super(moveService, expenseRepository, moveLineService, accountManagementService, generalService, accountConfigService, analyticMoveLineService, hrConfigService, templateMessageService);
+		super(moveService, expenseRepository, moveLineService, accountManagementService, generalService, accountConfigService, analyticMoveLineService, hrConfigService, templateMessageService, sequenceService);
 	
 	}
 

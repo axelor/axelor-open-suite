@@ -44,15 +44,18 @@ import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
@@ -78,17 +81,19 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	protected AlarmEngineService<Invoice> alarmEngineService;
 	protected InvoiceRepository invoiceRepo;
 	protected GeneralService generalService;
+	protected SequenceService sequenceService;
 	
 	@Inject
 	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
-			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, GeneralService generalService) {
-
+			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, GeneralService generalService,
+			SequenceService sequenceService) {
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
 		this.alarmEngineService = alarmEngineService;
 		this.invoiceRepo = invoiceRepo;
 		this.generalService = generalService;
+		this.sequenceService = sequenceService;
 	}
 	
 	
@@ -292,14 +297,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	protected String getDraftSequence(Invoice invoice)  {
-		return "*" + invoice.getId();
+	protected String getDraftSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequenceNumber(IAdministration.DOCUMENT_DRAFT, company);
+		if (seq == null)  {
+			throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.DRAFT_SEQUENCE_1),company.getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+		return seq;
 	}
 	
-	public void setDraftSequence(Invoice invoice)  {
+	@Override
+	public void setDraftSequence(Invoice invoice) throws AxelorException  {
 		
 		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
-			invoice.setInvoiceId(this.getDraftSequence(invoice));
+			invoice.setInvoiceId(this.getDraftSequence(invoice.getCompany()));
 		}
 		
 	}

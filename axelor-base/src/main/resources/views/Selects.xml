@@ -355,6 +355,7 @@
 		<option value="bankOrder">Bank order</option>
 		<option value="reconcile">Reconcile</option>
 		<option value="expense">Expense</option>
+		<option value="documentDraft">Document draft</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -41,8 +42,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceImpl {
 	@Inject
 	public InvoiceServiceProjectImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
 			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
-			GeneralService generalService) {
-		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, generalService);
+			GeneralService generalService, SequenceService sequenceService) {
+		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, generalService, sequenceService);
 	}
 	
 	
