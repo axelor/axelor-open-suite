@@ -67,7 +67,7 @@ public class MoveExcessPaymentService {
 		AccountConfig accountConfig = Beans.get(AccountConfigService.class)
 				.getAccountConfig(company);
 
-		//get advance payments from M2M
+		//get advance payments
 		List<MoveLine> advancePaymentMoveLines = Beans.get(InvoiceService.class)
 				.getMoveLinesFromAdvancePayments(invoice);
 

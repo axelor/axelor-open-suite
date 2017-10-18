@@ -257,7 +257,7 @@
 			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 		</panel>
 		
-		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
+		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
         <panel name="printing" title="Printing">
             <field name="specificNotes" colSpan="12" readonly="true"/>
         </panel>
@@ -277,7 +277,11 @@
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getProductionOrderManagement() &amp;&amp; !__config__.app.getApp('production').getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
-	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
+	  	<button name="addAdvancePayment" title="Register a deposit"
+                showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0"
+				colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"
+				if-module="axelor-supplychain"
+				if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
 	  	<field name="message" hidden="true" type="string"/>
 		<button name="addLineFromConfigurator" title="Add Line from Configurator"
 				onClick="save,action-sale-order-view-generate-line"

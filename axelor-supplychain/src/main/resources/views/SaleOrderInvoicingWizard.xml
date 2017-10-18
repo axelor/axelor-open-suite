@@ -5,16 +5,26 @@
 
 	<form name="sale-order-invoicing-wizard-form" title="Invoicing"
 		  model="com.axelor.apps.sale.db.SaleOrder"
-		  onLoad="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
+		  onLoad="action-group-sale-order-invoicing-wizard-onload">
 		<panel>
             <field name="operationSelect" title="Operation choice"
+				   showIf="$manageAdvanceInvoice &amp;&amp; (!amountInvoiced || amountInvoiced == 0)"
 				   type="selection" required="true"
-				   showIf="!amountInvoiced || amountInvoiced == 0"
 				   selection="supplychain.sale.order.invoicing.wizard.select"/>
 
 			<field name="operationSelect" title="Operation choice"
-				   showIf="amountInvoiced &amp;&amp; amountInvoiced > 0"
+				   showIf="!$manageAdvanceInvoice &amp;&amp; (!amountInvoiced || amountInvoiced == 0)"
+				   type="selection" required="true" selection-in="[1,2,3]"
+				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+
+			<field name="operationSelect" title="Operation choice"
+				   showIf="$manageAdvanceInvoice &amp;&amp; amountInvoiced &amp;&amp; amountInvoiced > 0"
 				   type="selection" required="true" selection-in="[2,3,4]"
+				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+
+			<field name="operationSelect" title="Operation choice"
+				   showIf="!$manageAdvanceInvoice &amp;&amp; amountInvoiced &amp;&amp; amountInvoiced > 0"
+				   type="selection" required="true" selection-in="[2,3]"
 				   selection="supplychain.sale.order.invoicing.wizard.select"/>
 
             <field name="amountToInvoice" title="Amount to invoice" type="decimal"
@@ -32,6 +42,7 @@
         <panel hidden="true">
 			<field name="amountInvoiced" hidden="true"/>
 			<field name="exTaxTotal" hidden="true"/>
+            <field name="$manageAdvanceInvoice" type="boolean" hidden="true"/>
 		</panel>
 	</form>
 
@@ -50,9 +61,19 @@
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
 	</grid>
 
+	<action-group name="action-group-sale-order-invoicing-wizard-onload">
+		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
+		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
+	</action-group>
+
 	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
 		<attribute for="qtyToInvoice" name="value" if="invoiceAll"
 				   expr="eval: qty"/>
+	</action-attrs>
+
+	<action-attrs name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment">
+		<attribute for="$manageAdvanceInvoice" name="value"
+				   expr="eval: __config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">

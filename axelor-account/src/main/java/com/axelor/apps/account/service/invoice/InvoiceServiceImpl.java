@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.account.db.AccountConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -592,7 +593,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	@Override
-	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) {
+	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
+		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+			return getMoveLinesFromInvoiceAdvancePayments(invoice);
+		} else {
+			return getMoveLinesFromSOAdvancePayments(invoice);
+		}
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
 		List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
 
 		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
@@ -609,6 +619,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			advancePaymentMoveLines.addAll(creditMoveLines);
 		}
 		return advancePaymentMoveLines;
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+		return new ArrayList<>();
 	}
 
 	protected String writeGeneralFilterForAdvancePayment() {
