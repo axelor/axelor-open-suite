@@ -500,11 +500,6 @@ public interface IExceptionMessage {
 	String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH =  /*$$(*/ "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
 	/**
-	 * Payment registration
-	 */
-	String NO_INVOICE_LINE =  /*$$(*/ "You can't register a payment if there are no invoice lines." /*)*/;
-
-	/**
 	 * Paybox service and controller
 	 */
 	static final String PAYBOX_1 = /*$$(*/ "%s : You must configure an amount paid for the payment entry %s." /*)*/;
