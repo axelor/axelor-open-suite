@@ -30,6 +30,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.axelor.apps.base.db.AppBankPayment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -255,11 +257,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		setNbOfLines(bankOrder);
 
-		generateFile(bankOrder);
-
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-
-		bankOrderRepo.save(bankOrder);
+		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
+			generateFile(bankOrder);
+			bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+			bankOrderRepo.save(bankOrder);
+		}
+		else {
+			validate(bankOrder);
+		}
 	}
 
 	@Override
@@ -282,7 +287,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 	
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
-		sendBankOrderFile(bankOrder);
+		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
+			sendBankOrderFile(bankOrder);
+		}
 		realizeBankOrder(bankOrder);
 
 	}
