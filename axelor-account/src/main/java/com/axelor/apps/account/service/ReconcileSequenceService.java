@@ -67,7 +67,7 @@ public class ReconcileSequenceService {
 	}	
 	
 	protected String getDraftSequence(Reconcile reconcile)  {		
-		return "*" + reconcile.getId();		
+		return "#" + reconcile.getId();
 	}		
 	
 }

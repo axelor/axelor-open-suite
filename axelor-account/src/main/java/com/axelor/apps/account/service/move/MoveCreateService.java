@@ -141,7 +141,7 @@ public class MoveCreateService {
 		move.setPaymentMode(paymentMode);
 
 		moveRepository.save(move);
-		move.setReference("*"+move.getId());
+		move.setReference("#"+move.getId());
 
 		return move;
 

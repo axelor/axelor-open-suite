@@ -210,7 +210,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	@Override
 	public String getDraftSequence(Long purchaseOrderId){
-		return "*"+purchaseOrderId.toString();
+		return "#"+purchaseOrderId.toString();
 	}
 
 	@Override

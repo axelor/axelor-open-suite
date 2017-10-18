@@ -37,7 +37,7 @@ public class MoveSequenceService {
 
 	
 	protected String getDraftSequence(Move move)  {		
-		return "*" + move.getId();		
+		return "#" + move.getId();
 	}		
 			
 	public void setDraftSequence(Move move)  {		
