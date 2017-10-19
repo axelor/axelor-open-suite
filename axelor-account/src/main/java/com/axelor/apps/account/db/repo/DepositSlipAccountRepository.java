@@ -54,7 +54,7 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
 
         if (Strings.isNullOrEmpty(depositNumber)) {
             throw new AxelorException(Sequence.class, IException.NO_VALUE,
-                    I18n.get(IExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE), entity.getCompany());
+                    I18n.get(IExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE), entity.getCompany().getName());
         }
 
         entity.setDepositNumber(depositNumber);
