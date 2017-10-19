@@ -2,7 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips">
+    <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
+        orderBy="-depositDate,-depositNumber">
         <field name="depositNumber" />
         <field name="company" />
         <field name="companyBankDetails" />
@@ -13,8 +14,8 @@
     </grid>
 
     <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip"
-        onNew="action-cheque-deposit-slip-defaults,action-deposit-slip-defaults,action-deposit-slip-company-bank-details"
-        width="large">
+        onNew="action-deposit-slip-company-bank-details-visibility,action-cheque-deposit-slip-defaults,action-deposit-slip-defaults,action-deposit-slip-company-bank-details"
+        onLoad="action-deposit-slip-company-bank-details-visibility" width="large">
 
         <toolbar>
             <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list" onClick="action-deposit-slip-load-payments"
@@ -35,11 +36,13 @@
         <panel readonlyIf="publicationDate">
             <field name="company" onChange="action-deposit-slip-company-bank-details" canEdit="false" />
             <field name="depositDate" />
-            <field name="companyBankDetails" canEdit="false" canNew="false"
-                onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="6" />
-            <panel showIf="companyBankDetails" colSpan="6">
-                <field name="companyBankDetails.bank.bankName" title="Bank name" />
-                <field name="companyBankDetails.accountNbr" />
+            <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
+                <field name="companyBankDetails" canEdit="false" canNew="false"
+                    onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="6" />
+                <panel showIf="companyBankDetails" colSpan="6">
+                    <field name="companyBankDetails.bank.bankName" title="Bank name" />
+                    <field name="companyBankDetails.accountNbr" />
+                </panel>
             </panel>
         </panel>
 
@@ -61,6 +64,10 @@
     <action-record name="action-cheque-deposit-slip-defaults" model="com.axelor.apps.account.db.DepositSlip">
         <field name="paymentModeTypeSelect" expr="eval: __repo__(PaymentMode).TYPE_CHEQUE" />
     </action-record>
+
+    <action-attrs name="action-deposit-slip-company-bank-details-visibility">
+        <attribute for="companyBankDetailsPanel" name="hidden" expr="eval: !__config__.app.getApp('base').manageMultiBanks" />
+    </action-attrs>
 
     <action-record name="action-deposit-slip-defaults" model="com.axelor.apps.account.db.DepositSlip">
         <field name="company" expr="eval: __user__.activeCompany" />

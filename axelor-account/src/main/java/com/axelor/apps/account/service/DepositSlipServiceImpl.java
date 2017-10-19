@@ -123,7 +123,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
             queryBuilder.bind("company", depositSlip.getCompany());
         }
 
-        if (depositSlip.getCompanyBankDetails() != null) {
+        if (depositSlip.getCompanyBankDetails() != null
+                && Beans.get(AppBaseService.class).getAppBase().getManageMultiBanks()) {
             queryBuilder.add("self.companyBankDetails = :companyBankDetails");
             queryBuilder.bind("companyBankDetails", depositSlip.getCompanyBankDetails());
         }
