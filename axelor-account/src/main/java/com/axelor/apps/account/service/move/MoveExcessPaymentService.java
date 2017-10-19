@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -57,20 +56,18 @@ public class MoveExcessPaymentService {
 	
 	
 	/**
-	 * Méthode permettant de récupérer les trop-perçus pour un compte donné (411) et une facture
+	 * Méthode permettant de récupérer les trop-perçus et une facture
 	 * @param invoice
 	 * 			Une facture
-	 * @param account
-	 * 			Un compte
 	 * @return
 	 * @throws AxelorException
 	 */
-	public List<MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
+	public List<MoveLine> getExcessPayment(Invoice invoice) throws AxelorException {
 		Company company = invoice.getCompany();
 		AccountConfig accountConfig = Beans.get(AccountConfigService.class)
 				.getAccountConfig(company);
 
-		//get advance payments from M2M
+		//get advance payments
 		List<MoveLine> advancePaymentMoveLines = Beans.get(InvoiceService.class)
 				.getMoveLinesFromAdvancePayments(invoice);
 
@@ -78,8 +75,8 @@ public class MoveExcessPaymentService {
 			List<MoveLine> creditMoveLines = moveLineRepository.all()
 					.filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 									" AND self.account.useForPartnerBalance = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
-									" AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-							company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
+									" AND self.partner = ?4 ORDER BY self.date ASC",
+							company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner()).fetch();
 
 			log.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 			advancePaymentMoveLines.addAll(creditMoveLines);
