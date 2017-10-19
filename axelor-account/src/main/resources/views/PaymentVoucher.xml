@@ -112,6 +112,7 @@
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
+        <action name="action-payment-voucher-from-invoice" if="_invoice"/>
     </action-group>
     
     <action-group name="action-account-payment-voucher-onload-group">
@@ -268,5 +269,8 @@
 		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="fillCompanyBankDetails"/>
 	</action-method>
 
-	
+    <action-method name="action-payment-voucher-from-invoice" model="com.axelor.apps.account.db.PaymentVoucher">
+        <call class="com.axelor.apps.account.web.PaymentVoucherController" method="initFromInvoice"/>
+    </action-method>
+
 </object-views>

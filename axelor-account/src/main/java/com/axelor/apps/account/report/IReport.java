@@ -27,7 +27,7 @@ public interface IReport {
 	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
 	public static final String ACCOUNT_MOVE = "AccountMove.rptdesign";
 	public static final String SUBROGATION_RELEASE = "SubrogationRelease.rptdesign";
-	public static final String CHEQUE_DEPOSIT_SLIP = "CheckDepositSlip.rptdesign";
+	public static final String CHEQUE_DEPOSIT_SLIP = "ChequeDepositSlip.rptdesign";
     public static final String CASH_DEPOSIT_SLIP = "CashDepositSlip.rptdesign";
 
 }
