@@ -17,7 +17,30 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.db.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -60,13 +83,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
 
 public class ExpenseServiceImpl implements ExpenseService  {
 
@@ -549,7 +565,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
 		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) { return; }
 
-		expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
+		expense.setExpenseSeq(Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
 
 		if (expense.getExpenseSeq() != null) { return; }
 
