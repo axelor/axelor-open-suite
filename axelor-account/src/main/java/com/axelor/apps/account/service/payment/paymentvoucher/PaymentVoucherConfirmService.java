@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -136,13 +137,23 @@ public class PaymentVoucherConfirmService  {
 
 		if (appAccountService.getAppAccount().getPaymentVouchersOnInvoice()
                 && paymentVoucher.getPaymentMode().getValidatePaymentByDepositSlipPublication()) {
-	        paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
+		    waitForDepositSlip(paymentVoucher);
 		} else {
 		    createMoveAndConfirm(paymentVoucher);
 		}
 
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
 		paymentVoucherRepository.save(paymentVoucher);
+	}
+
+	private void waitForDepositSlip(PaymentVoucher paymentVoucher) {
+	    for (PayVoucherElementToPay payVoucherElementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
+	        Invoice invoice = payVoucherElementToPay.getMoveLine().getMove().getInvoice();
+	        boolean hasPendingPayments = payVoucherElementToPay.getRemainingAmountAfterPayment().signum() <= 0;
+	        invoice.setHasPendingPayments(hasPendingPayments);
+	    }
+
+        paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
 	}
 
     /**
