@@ -20,6 +20,7 @@
             <field name="saleOrderLineMetaField" domain="self.metaModel.name = 'SaleOrderLine' "/>
             <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
             <field name="showOnConfigurator"/>
+            <field name="updateFromSelect"/>
         </panel>
     </form>
 
@@ -27,5 +28,6 @@
         <attribute for="productMetaField" name="hidden"
                    expr="!__parent__.generateProduct"/>
         <attribute for="saleOrderLineMetaField" name="hidden" expr="__parent__.generateProduct"/>
+        <attribute for="updateFromSelect" name="hidden" expr="__parent__.generateProduct"/>
     </action-attrs>
 </object-views>
