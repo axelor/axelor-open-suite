@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <!-- VUE GENERALE -->
-    
+
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
     		<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
@@ -22,20 +22,20 @@
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="operationTypeSelect" />
-		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-        <field name="invoiceDate"/>
-        <field name="dueDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="currency"/>
-        <field name="statusSelect"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+		<field name="operationTypeSelect" width="200"/>
+		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" width="160"/>
+        <field name="invoiceDate" width="120"/>
+        <field name="dueDate" width="120"/>
+        <field name="exTaxTotal" aggregate="sum" width="120"/>
+        <field name="inTaxTotal" aggregate="sum" width="120"/>
+        <field name="amountRemaining" aggregate="sum" width="120"/>
+        <field name="currency" width="60"/>
+        <field name="statusSelect" width="100"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
-    
+
     <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
     		<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
