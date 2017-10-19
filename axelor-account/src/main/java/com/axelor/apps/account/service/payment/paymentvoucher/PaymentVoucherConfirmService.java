@@ -142,9 +142,6 @@ public class PaymentVoucherConfirmService  {
 		}
 
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
-		
-		this.deleteUnPaidLines(paymentVoucher);
-		
 		paymentVoucherRepository.save(paymentVoucher);
 	}
 
@@ -248,6 +245,8 @@ public class PaymentVoucherConfirmService  {
             paymentVoucher.setGeneratedMove(move);
         }
         paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
+
+        deleteUnPaidLines(paymentVoucher);
     }
 
 	public void deleteUnPaidLines(PaymentVoucher paymentVoucher)  {

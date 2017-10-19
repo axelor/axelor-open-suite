@@ -42,6 +42,7 @@ import com.google.inject.persist.Transactional;
 public class DepositSlipServiceImpl implements DepositSlipService {
 
     @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
     public void loadPayments(DepositSlip depositSlip) throws AxelorException {
         if (depositSlip.getPublicationDate() != null) {
             throw new AxelorException(depositSlip, IException.CONFIGURATION_ERROR,

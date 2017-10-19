@@ -18,7 +18,7 @@
         onLoad="action-deposit-slip-company-bank-details-visibility" width="large">
 
         <toolbar>
-            <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list" onClick="action-deposit-slip-load-payments"
+            <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list" onClick="save,action-deposit-slip-load-payments"
                 hideIf="publicationDate" />
             <button name="publishBtn" title="Publish deposit slip" icon="fa-print" onClick="save,action-deposit-slip-publish"
                 hideIf="publicationDate" readonlyIf="!paymentVoucherList" />

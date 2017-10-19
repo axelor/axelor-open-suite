@@ -38,7 +38,9 @@ import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -341,8 +343,32 @@ public class PaymentVoucherLoadService {
         paymentVoucher.setPaymentMode(invoice.getPaymentMode());
         paymentVoucher.clearPayVoucherDueElementList();
         paymentVoucher.clearPayVoucherElementToPayList();
+        BankDetails companyBankDetails;
 
-        for (MoveLine moveLine : getMoveLines(paymentVoucher)) {
+        if (invoice.getCompanyBankDetails() != null) {
+            companyBankDetails = invoice.getCompanyBankDetails();
+        } else {
+            companyBankDetails = Beans.get(BankDetailsService.class).getDefaultCompanyBankDetails(invoice.getCompany(),
+                    invoice.getPaymentMode(), invoice.getPartner());
+        }
+
+        paymentVoucher.setCompanyBankDetails(companyBankDetails);
+        BigDecimal amount = BigDecimal.ZERO;
+        List<MoveLine> moveLineList = getMoveLines(paymentVoucher);
+
+        for (MoveLine moveLine : moveLineList) {
+            PayVoucherDueElement payVoucherDueElement = createPayVoucherDueElement(moveLine);
+            paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
+
+            if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
+                amount = amount.add(payVoucherDueElement.getAmountRemaining());
+            }
+        }
+
+        paymentVoucher.setPaidAmount(amount);
+        paymentVoucher.clearPayVoucherDueElementList();
+
+        for (MoveLine moveLine : moveLineList) {
             paymentVoucher.addPayVoucherDueElementListItem(createPayVoucherDueElement(moveLine));
         }
 
@@ -351,7 +377,6 @@ public class PaymentVoucherLoadService {
         }
 
         int sequence = 0;
-        BigDecimal amount = BigDecimal.ZERO;
 
         for (Iterator<PayVoucherDueElement> it = paymentVoucher.getPayVoucherDueElementList().iterator(); it
                 .hasNext();) {
@@ -360,12 +385,10 @@ public class PaymentVoucherLoadService {
             if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
                 paymentVoucher.addPayVoucherElementToPayListItem(
                         createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
-                amount = amount.add(payVoucherDueElement.getAmountRemaining());
                 it.remove();
             }
         }
 
-        paymentVoucher.setPaidAmount(amount);
     }
 
 }

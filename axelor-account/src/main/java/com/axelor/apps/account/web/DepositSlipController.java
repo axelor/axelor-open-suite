@@ -31,13 +31,12 @@ public class DepositSlipController {
 
     public void loadPayments(ActionRequest request, ActionResponse response) {
         DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+        depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());
         DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
 
         try {
             depositSlipService.loadPayments(depositSlip);
-            response.setValue("paymentVoucherList", depositSlip.getPaymentVoucherList());
-            response.setValue("totalAmount", depositSlip.getTotalAmount());
-            response.setValue("chequeCount", depositSlip.getChequeCount());
+            response.setReload(true);
         } catch (AxelorException e) {
             TraceBackService.trace(response, e);
         }
