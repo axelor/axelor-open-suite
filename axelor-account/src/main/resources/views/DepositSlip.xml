@@ -48,7 +48,8 @@
             <field name="publicationDate" />
         </panel>
 
-        <panel-related field="paymentVoucherList" grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form" />
+        <panel-related field="paymentVoucherList" grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
+            readonlyIf="publicationDate" canNew="false" canRemove="false" />
 
         <panel showIf="paymentVoucherList">
             <field name="totalAmount" />
@@ -90,6 +91,7 @@
     <grid title="Payment vouchers" name="payment-voucher-deposit-slip-grid" model="com.axelor.apps.account.db.PaymentVoucher"
         orderBy="paymentDate">
 
+        <field name="ref" />
         <field name="partner" />
         <field name="paymentDate" />
         <field name="paidAmount" />
@@ -98,7 +100,7 @@
     </grid>
 
     <form title="Payment voucher" name="payment-voucher-deposit-slip-form" model="com.axelor.apps.account.db.PaymentVoucher">
-        <panel colSpan="12">
+        <panel colSpan="12" readonly="true">
             <field name="partner" />
             <field name="paymentDate" />
             <field name="paidAmount" />

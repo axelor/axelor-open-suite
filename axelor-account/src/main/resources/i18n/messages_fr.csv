@@ -941,6 +941,7 @@
 "Method name","Nom",,
 "Min. amount (€)","Montant min. (€)",,
 "Misc. Moves","O.D.",,
+"Missing cheque information on payment %s","Informations de chèque incomplètes sur le paiement %s",,
 "Missing deposit slip sequence for company %s","Séquence de bordereau de remise manquante pour la société %s",,
 "Missing direct debit payment mode in the company's account configuration","Mode de paiement pour les virements manquant dans la configuration comptable de la société",,
 "Month","Mois",,

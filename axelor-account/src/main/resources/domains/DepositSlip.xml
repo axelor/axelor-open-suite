@@ -18,7 +18,7 @@
         <date name="publicationDate" readonly="true" copy="false" />
 
         <one-to-many name="paymentVoucherList" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payments vouchers"
-            orphanRemoval="false" mappedBy="depositSlip" copy="false" readonly="true" />
+            orphanRemoval="false" mappedBy="depositSlip" copy="false" />
 
         <decimal name="totalAmount" scale="2" precision="20" readonly="true" copy="false" />
 

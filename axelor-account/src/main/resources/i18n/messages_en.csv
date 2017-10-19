@@ -941,6 +941,7 @@
 "Method name",,,
 "Min. amount (€)",,,
 "Misc. Moves",,,
+"Missing cheque information on payment %s",,,
 "Missing deposit slip sequence for company %s",,,
 "Missing direct debit payment mode in the company's account configuration",,,
 "Month",,,
