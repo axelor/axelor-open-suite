@@ -103,6 +103,10 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 			}
 		}
 
+		AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+		accountingSituation.setInvoiceAutomaticMail(accountConfig.getInvoiceAutomaticMail());
+		accountingSituation.setMessageTemplate(accountConfig.getMessageTemplate());
+
 		partner.addAccountingSituationListItem(accountingSituation);
 		return accountingSituationRepo.save(accountingSituation);
 	}

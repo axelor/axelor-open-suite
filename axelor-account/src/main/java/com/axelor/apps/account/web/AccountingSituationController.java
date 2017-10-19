@@ -17,10 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -80,5 +84,22 @@ public class AccountingSituationController {
 		else {
 			response.setAttr("companyOutBankDetails","domain", "self.id in (0)");
 		}
+	}
+
+	/**
+	 * set default value for automatic invoice printing
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
+		AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
+		Company company = accountingSituation.getCompany();
+		if (company != null) {
+			AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+			response.setValue("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
+			response.setValue("messageTemplate", accountConfig.getMessageTemplate());
+		}
+
 	}
 }

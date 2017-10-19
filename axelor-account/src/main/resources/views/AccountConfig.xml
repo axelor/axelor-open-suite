@@ -24,6 +24,8 @@
   	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
 			<field name="accountingDaybook"/>
+			<field name="invoiceAutomaticMail"/>
+			<field name="messageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
     
 		</panel>
 		
