@@ -32,7 +32,7 @@
 
 		<panel sidebar="true" title="Actions" hideIf="id == null">
 			<button name="activate" title="Activate" readonlyIf="isActive || !(attributes.length &gt; 0) || !(configuratorFormulaList.length &gt; 0)" onClick="action-configurator-creator-group-activate"/>
-			<button name="test" title="Test this creator" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
+			<button name="test" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
 			<field name="generateProduct" widget="boolean-switch"/>
 			<field name="isActive" hidden="true"/>
 		</panel>
