@@ -693,7 +693,7 @@
 "Timesheet editor",,,
 "Timesheet lines","Lignes de feuille de temps",,
 "Timesheet management",,,
-"Timesheet reminder","Soumis à la saisie des temps",,
+"Timesheet reminder","Rappel validation feuilles de temps",,
 "Timesheet.timesheetOf","Feuille de temps de ",,
 "Timesheet.totalDuration","Durée totale",,
 "TimesheetLine.duration","Durée (heures)",,

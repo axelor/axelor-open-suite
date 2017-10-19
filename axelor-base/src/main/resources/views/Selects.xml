@@ -727,5 +727,10 @@
 		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
 		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
 	</selection>
+	
+	<selection name="base.mail.batch.code.select">
+		<option value="M_TS_REM">Email time sheet</option>
+		<option value="M_A_TS_REM">Email all time sheet</option>
+	</selection>
 
 </object-views>
