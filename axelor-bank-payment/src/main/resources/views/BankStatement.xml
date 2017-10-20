@@ -11,6 +11,11 @@
 	</grid>
 
 	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 2">
+        <toolbar>
+            <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
+                onClick="action-bank-statement-print" />
+        </toolbar>
+
 		<panel colSpan="12">
 			<panel name="main" colSpan="8">
 				<field name="name"/>
@@ -52,6 +57,9 @@
  		<domain>self.bankStatement.id = :_id</domain>
  		<context name="_id" expr="eval: id"/>
  	</action-view>
-    
-    
+
+    <action-method name="action-bank-statement-print">
+        <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>
+    </action-method>
+
 </object-views>

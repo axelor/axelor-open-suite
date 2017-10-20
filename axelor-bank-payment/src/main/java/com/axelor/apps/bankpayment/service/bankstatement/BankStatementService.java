@@ -19,12 +19,15 @@ package com.axelor.apps.bankpayment.service.bankstatement;
 
 import java.io.IOException;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -77,6 +80,33 @@ public class BankStatementService {
 		bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
 		bankStatementRepository.save(bankStatement);
 	}
-	
+
+    /**
+     * Print bank statement.
+     * 
+     * @param bankStatement
+     * @return
+     * @throws AxelorException
+     */
+    public String print(BankStatement bankStatement) throws AxelorException {
+        String reportName;
+
+        switch (bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect()) {
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
+            reportName = IReport.BANK_STATEMENT_AFB120;
+            break;
+        default:
+            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
+                    IException.INCONSISTENCY);
+        }
+
+        return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
+                .addParam("BankStatementId", bankStatement.getId())
+                .addParam("Locale", AuthUtils.getUser().getLanguage()).addFormat("pdf").toAttach(bankStatement)
+                .generate().getFileLink();
+    }
 
 }
