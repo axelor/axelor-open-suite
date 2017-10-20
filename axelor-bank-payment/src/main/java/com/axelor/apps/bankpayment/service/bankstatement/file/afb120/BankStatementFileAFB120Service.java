@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
-import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
@@ -68,12 +67,12 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 	protected static final String COMPLEMENT_MOVEMENT_OPERATION_CODE = "05";
 	protected static final String NEW_BALANCE_OPERATION_CODE = "07";
 
-	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("ddMMYY");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("ddMMYY");
 	
 	@Inject
-	public BankStatementFileAFB120Service(BankStatement bankStatement, BankStatementRepository bankStatementRepository)  {
+	public BankStatementFileAFB120Service(BankStatementRepository bankStatementRepository)  {
 		
-		super(bankStatement, bankStatementRepository);
+		super(bankStatementRepository);
 		
 		this.cfonbToolService = Beans.get(CfonbToolService.class);
 		this.currencyRepository = Beans.get(CurrencyRepository.class);
@@ -84,17 +83,15 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		this.bankStatementLineAFB120Repository = Beans.get(BankStatementLineAFB120Repository.class);
 		
 	}
-	
-	public void setBankStatement(BankStatement bankStatement)  {
-		this.bankStatement = bankStatement;
-	}
-	
-	
+
+    @Override
 	public void process() throws IOException, AxelorException  {
-		
+        super.process();
+
 		List<Map<String, Object>> structuredContentFile = readFile();
-		
+
 		int sequence = 0;
+        bankStatement = bankStatementRepository.find(bankStatement.getId());
 
 		for(Map<String, Object> structuredContentLine : structuredContentFile)  {
 			
@@ -106,6 +103,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 			finally {
 				if(sequence % 10 == 0)  {
 					JPA.clear();
+					bankStatement = bankStatementRepository.find(bankStatement.getId());
 				}
 			}
 			

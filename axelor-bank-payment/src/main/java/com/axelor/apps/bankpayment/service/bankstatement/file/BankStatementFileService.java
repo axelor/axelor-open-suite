@@ -18,36 +18,46 @@
 package com.axelor.apps.bankpayment.service.bankstatement.file;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 
-public class BankStatementFileService {
+public abstract class BankStatementFileService {
 
-	protected File file;
-	protected String bankStatementFileFormat;
-	protected BankStatement bankStatement;
+    protected BankStatement bankStatement;
+    protected File file;
+    protected String bankStatementFileFormat;
+
 	protected BankStatementRepository bankStatementRepository;
-	
+
 	@Inject
-	public BankStatementFileService(BankStatement bankStatement, BankStatementRepository bankStatementRepository)  {
-		this.bankStatement = bankStatement;
-		this.file = getFile(bankStatement);
-		this.bankStatementFileFormat = bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect();
+	public BankStatementFileService(BankStatementRepository bankStatementRepository)  {
 		this.bankStatementRepository = bankStatementRepository;
 	}
 
-	
-	
+	public void setBankStatement(BankStatement bankStatement) {
+        this.bankStatement = bankStatement;
+        this.file = getFile(bankStatement);
+        this.bankStatementFileFormat = bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect();
+	}
+
 	protected File getFile(BankStatement bankStatement)  {
-		
 		return MetaFiles.getPath(bankStatement.getBankStatementFile()).toFile();
-		
 	}
 	
-	
-	
+    public void process(BankStatement bankStatement) throws IOException, AxelorException  {
+        setBankStatement(bankStatement);
+        process();
+    }
+
+    public void process() throws IOException, AxelorException {
+        if (bankStatement == null) {
+            throw new IllegalStateException("Bank statement is not set.");
+        }
+    }
 
 }

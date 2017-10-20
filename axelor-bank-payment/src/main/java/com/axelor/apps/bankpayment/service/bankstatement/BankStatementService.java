@@ -55,18 +55,19 @@ public class BankStatementService {
 
 		BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
 
-		switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
-	    	case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
-		    case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-		    case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-		    case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
-    			new BankStatementFileAFB120Service(bankStatement, bankStatementRepository).process();
-	    		updateStatus(bankStatement);
-    			break;
+        switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
+        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
+            Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
+            updateStatus(bankStatement);
+            break;
 
-		    default:
-    			throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT), IException.INCONSISTENCY);
-		}
+        default:
+            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
+                    IException.INCONSISTENCY);
+        }
 
 	}
 	
