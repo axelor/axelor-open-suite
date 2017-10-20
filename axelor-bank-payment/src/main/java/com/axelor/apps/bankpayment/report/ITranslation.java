@@ -35,5 +35,8 @@ public interface ITranslation {
 	public static final String EBICS_CERTIFICATE_AUTHENTICATION_VERSION = /*$$(*/ "EbicsCertificateReport.authenticationVersion"; /*)*/
 	public static final String EBICS_CERTIFICATE_ENCRYPTION_VERSION = /*$$(*/ "EbicsCertificateReport.encryptionVersion"; /*)*/
 	
-
+	public static final String BANK_STATEMENT_YES= /*$$(*/ "BankStatement.yes"; /*)*/
+    public static final String BANK_STATEMENT_INITIAL_BALANCE = /*$$(*/ "BankStatement.initialBalance"; /*)*/;
+    public static final String BANK_STATEMENT_MOVEMENT = /*$$(*/ "BankStatement.movement"; /*)*/;
+    public static final String BANK_STATEMENT_FINAL_BALANCE = /*$$(*/ "BankStatement.finalBalance"; /*)*/;
 }
