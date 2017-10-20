@@ -318,6 +318,8 @@
                         <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
                         <dt x-translate>Amount invoiced W.T.</dt>
                         <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        <dt x-translate>Advance payment total</dt>
+                        <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -865,6 +867,7 @@
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="amountInvoiced" expr="eval: 0"/>
+        <field name="advanceTotal" expr="eval: 0"/>
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

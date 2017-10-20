@@ -26,6 +26,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.CancelReason;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
@@ -211,12 +212,23 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		
 		saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
-
+		saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
 		logger.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });
 
 	}
 
+	protected BigDecimal computeTotalAdvancePayment(SaleOrder saleOrder) {
+	    List<AdvancePayment> advancePaymentList = saleOrder.getAdvancePaymentList();
+	    BigDecimal total = BigDecimal.ZERO;
+	    if (advancePaymentList == null || advancePaymentList.isEmpty()) {
+	    	return total;
+		}
+		for (AdvancePayment advancePayment : advancePaymentList) {
+	        total = total.add(advancePayment.getAmount());
+		}
+		return total;
+	}
 
 	/**
 	 * Permet de réinitialiser la liste des lignes de TVA
