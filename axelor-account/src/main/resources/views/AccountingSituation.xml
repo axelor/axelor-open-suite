@@ -33,7 +33,7 @@
 		</panel>
 		<panel title="Automatic mail">
 			<field name="invoiceAutomaticMail"/>
-			<field name="messageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
 		</panel>
 		<panel name="debtRecoveryProcess" title="Debt recovery process">
 			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>

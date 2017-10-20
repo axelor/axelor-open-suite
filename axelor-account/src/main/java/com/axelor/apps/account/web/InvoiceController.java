@@ -616,7 +616,7 @@ public class InvoiceController {
 					.getAccountingSituation(partner, company);
 			if (accountingSituation != null) {
 				response.setValue("invoiceAutomaticMail", accountingSituation.getInvoiceAutomaticMail());
-				response.setValue("messageTemplate", accountingSituation.getMessageTemplate());
+				response.setValue("invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
 			}
 		}
 	}

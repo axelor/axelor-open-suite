@@ -230,9 +230,9 @@
 					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
-			<panel title="Automatic mail">
+			<panel title="Automatic mail" readonlyIf="statusSelect == 3">
 				<field name="invoiceAutomaticMail"/>
-				<field name="messageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
+				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
 			</panel>
 			<panel title="Impression" name="impression" colSpan="12">
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>

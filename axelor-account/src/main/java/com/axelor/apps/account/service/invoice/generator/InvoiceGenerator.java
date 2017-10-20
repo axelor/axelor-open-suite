@@ -163,7 +163,7 @@ public abstract class InvoiceGenerator  {
 				.getAccountingSituation(partner, company);
 		if (accountingSituation != null) {
 		    invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
-		    invoice.setMessageTemplate(accountingSituation.getMessageTemplate());
+		    invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
 		}
 
 		if (paymentCondition == null) {

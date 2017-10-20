@@ -98,7 +98,7 @@ public class AccountingSituationController {
 		if (company != null) {
 			AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
 			response.setValue("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
-			response.setValue("messageTemplate", accountConfig.getMessageTemplate());
+			response.setValue("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
 		}
 
 	}

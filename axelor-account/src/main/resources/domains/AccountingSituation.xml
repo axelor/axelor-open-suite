@@ -31,7 +31,7 @@
 
 		<!-- Invoice mail -->
 		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
-		<many-to-one name="messageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 
 		<!-- Reported Balance -->
 		<one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation" title="Reported balance lines"/>

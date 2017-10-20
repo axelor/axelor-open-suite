@@ -150,7 +150,7 @@
 
 	<!-- Invoice mail -->
       <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
-	  <many-to-one name="messageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+	  <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
   	
   	<finder-method name="findByCompany" using="company" />
   	
