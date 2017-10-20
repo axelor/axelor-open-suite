@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStateme
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -42,9 +43,15 @@ public class BankStatementService {
 
 	public void runImport(BankStatement bankStatement) throws IOException, AxelorException  {
 
-		if (bankStatement.getBankStatementFile() == null || bankStatement.getBankStatementFileFormat() == null) {
-			return;
-		}
+        if (bankStatement.getBankStatementFile() == null) {
+            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
+                    IException.MISSING_FIELD);
+        }
+
+        if (bankStatement.getBankStatementFileFormat() == null) {
+            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT),
+                    IException.MISSING_FIELD);
+        }
 
 		BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
 

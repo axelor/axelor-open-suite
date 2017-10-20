@@ -25,7 +25,7 @@
 			<panel colSpan="4">
 				<field name="createdBy"/>
 				<field name="statusSelect" title="Status"/>
-				<button name="runImport" title="Import" onClick="save,action-bank-statement-method-run-import"/>
+				<button name="runImport" title="Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
 			</panel>
 		</panel>
 		<panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
