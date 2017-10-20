@@ -10,22 +10,48 @@
 		<field name="statusSelect"/>
 	</grid>
 
-	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 1 || statusSelect == 2">
-		<panel name="main" colSpan="12">
-			<field name="name"/>
-			<field name="bankStatementFile" widget="binary-link" canNew="true"/>
-			<field name="fromDate"/>
-			<field name="toDate"/>
-			<field name="ebicsPartner"/>
-			<field name="ebicsPartner.ebicsBank"/>
-			<field name="bankStatementFileFormat"/>
+	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 2">
+		<panel colSpan="12">
+			<panel name="main" colSpan="8">
+				<field name="name"/>
+				<field name="bankStatementFile" widget="binary-link" canNew="true"/>
+				<field name="fromDate"/>
+				<field name="toDate"/>
+				<field name="ebicsPartner"/>
+				<field name="ebicsPartner.ebicsBank"/>
+				<field name="bankStatementFileFormat"/>
+				<field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
+			</panel>
+			<panel colSpan="4">
+				<field name="createdBy"/>
+				<field name="statusSelect" title="Status"/>
+				<button name="runImport" title="Import" onClick="save,action-bank-statement-method-run-import"/>
+			</panel>
 		</panel>
-		<panel sidebar="true">
-			<field name="createdBy"/>
-			<field name="statusSelect" title="Status"/>
-		</panel>
+		<panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
+		<panel-dashlet action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
 	</form>
 
+
+	<action-method name="action-bank-statement-method-run-import">
+		<call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport"/>
+	</action-method>
  
+ 	<action-view name="action-bank-statement-view-bank-statement-lines" title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine">
+ 		<view type="grid" name="bank-statement-line-grid"/>
+ 		<view type="form" name="bank-statement-line-form"/>
+		<view-param name="limit" value="200"/>
+ 		<domain>self.bankStatement.id = :_id</domain>
+		<context name="_id" expr="eval: id"/>
+ 	</action-view>
+    
+    <action-view name="action-bank-statement-view-bank-statement-lines-afb-120" title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+ 		<view type="grid" name="bank-statement-line-afb-120-grid"/>
+ 		<view type="form" name="bank-statement-line-afb-120-form"/>
+		<view-param name="limit" value="200"/>
+ 		<domain>self.bankStatement.id = :_id</domain>
+ 		<context name="_id" expr="eval: id"/>
+ 	</action-view>
+    
     
 </object-views>

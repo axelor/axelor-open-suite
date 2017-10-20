@@ -29,7 +29,7 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.service.BankStatementService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -38,14 +38,14 @@ import com.google.inject.persist.Transactional;
 
 public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 	
-	protected BankStatementService bankStatementService;
+	protected BankStatementCreateService bankStatementCreateService;
 	protected EbicsService ebicsService;
 	protected BankStatementRepository bankStatementRepository;
 	
 	@Inject
-	public EbicsPartnerServiceImpl(BankStatementService bankStatementService, EbicsService ebicsService, BankStatementRepository bankStatementRepository)  {
+	public EbicsPartnerServiceImpl(BankStatementCreateService bankStatementCreateService, EbicsService ebicsService, BankStatementRepository bankStatementRepository)  {
 		
-		this.bankStatementService = bankStatementService;
+		this.bankStatementCreateService = bankStatementCreateService;
 		this.ebicsService = ebicsService;
 		this.bankStatementRepository = bankStatementRepository;
 		
@@ -85,7 +85,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 			try  {
 				File file = ebicsService.sendFDLRequest(transportEbicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
 				
-				bankStatementRepository.save(bankStatementService.createBankStatement(file, bankStatementStartDate, bankStatementToDate, bankStatementFileFormat, ebicsPartner, executionDateTime));
+				bankStatementRepository.save(bankStatementCreateService.createBankStatement(file, bankStatementStartDate, bankStatementToDate, bankStatementFileFormat, ebicsPartner, executionDateTime));
 				
 				statementNb++;
 			}
