@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
@@ -31,7 +34,6 @@ import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
@@ -262,6 +264,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		saleOrder.setStandardDelay(maxDelay);
 
+		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+			saleOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(saleOrder));
+		}
+	}
+
+    protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {
+		BigDecimal total = BigDecimal.ZERO;
+		List<Invoice> advancePaymentInvoiceList =
+				Beans.get(InvoiceRepository.class).all()
+						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
+						.bind("saleOrder", saleOrder)
+						.fetch();
+		if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
+			return total;
+		}
+		for (Invoice advance : advancePaymentInvoiceList) {
+			total = total.add(advance.getAmountPaid());
+		}
+		return total;
 	}
 
 }
