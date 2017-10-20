@@ -25,6 +25,7 @@
         <boolean name="interco" title="Interco"/>
         <boolean name="createdByInterco" default="false"/>
         <date name="expectedRealisationDate" title="Expected realisation date"/>
+        <integer name="standardDelay" title="Standard delay (days)" default="0"  />
         <extra-code>
             <![CDATA[
                 public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;

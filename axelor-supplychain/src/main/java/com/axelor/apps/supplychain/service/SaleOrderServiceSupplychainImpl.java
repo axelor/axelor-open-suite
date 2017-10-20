@@ -30,6 +30,9 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
@@ -239,6 +242,26 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
+	}
+	
+	@Override
+	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+
+		super._computeSaleOrder(saleOrder);
+		
+		int maxDelay = 0;
+		
+		if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()){
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				
+				if (saleOrderLine.getProduct() != null && (saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE || saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PURCHASE)){
+					maxDelay = Integer.max(maxDelay, saleOrderLine.getProduct().getStandardDelay() == null ? 0 :saleOrderLine.getProduct().getStandardDelay());
+				}
+				
+			}
+		}
+		saleOrder.setStandardDelay(maxDelay);
+
 	}
 
 }
