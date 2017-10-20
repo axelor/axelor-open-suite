@@ -230,6 +230,10 @@
 					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
+			<panel title="Automatic mail" readonlyIf="statusSelect == 3">
+				<field name="invoiceAutomaticMail"/>
+				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
+			</panel>
 			<panel title="Impression" name="impression" colSpan="12">
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
@@ -643,8 +647,6 @@
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
-		<action name="action-invoice-attrs-interco-supplychain"/>
-		<action name="action-invoice-record-interco-supplychain"/>
         <action name="action-invoice-attrs-show-validate-button"/>
     </action-group>
     
@@ -656,7 +658,6 @@
 	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-attrs-ventilate"/>
-		<action name="action-invoice-attrs-interco-supplychain"/>
         <action name="action-invoice-attrs-show-validate-button"/>
     </action-group>
     
@@ -678,8 +679,7 @@
     	<action name="action-invoice-record-estimated-payment-date"/>
 		<action name="action-invoice-method-fill-company-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
-		<action name="action-invoice-attrs-interco-supplychain"/>
-		<action name="action-invoice-record-interco-supplychain"/>
+		<action name="action-invoice-method-set-default-mail"/>
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -775,7 +775,7 @@
 		<field name="interco"
 			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
 	</action-record>
-	
+
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
@@ -929,6 +929,11 @@
 	<action-method name="action-invoice-method-fill-advance-payment-set">
 		<call class="com.axelor.apps.account.web.InvoiceController"
 			  method="fillAdvancePaymentInvoiceSet"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-set-default-mail">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="setDefaultMail"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
