@@ -5,8 +5,8 @@
 	
 	<form name="convert-opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
 		<panel colSpan="12">
-			<button name="generateSaleOrder" title="Convert into order" onClick="action-sale-group-generate-sale-order"/>
-			<field name="saleOrder" title="Sale Order" hideIf="saleOrder == null" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<button name="generateSaleOrder" title="Convert into order" showIf="saleOrder == null" onClick="action-sale-group-generate-sale-order" colSpan="12"/>
+			<field name="saleOrder" title="Sale Order" readonly="true" showIf="saleOrder != null" form-view="sale-order-form" grid-view="sale-order-grid" colSpan="12"/>
 		</panel>
 	</form>
 	
