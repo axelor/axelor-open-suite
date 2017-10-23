@@ -1212,6 +1212,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
+            <property name="orientation">landscape</property>
             <page-header>
                 <grid id="14">
                     <property name="width">7.958333333333333in</property>
