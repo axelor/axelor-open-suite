@@ -13,7 +13,8 @@
 	
 	<selection name='iaccount.payment.voucher.status.select'>
 		<option value='1'>Draft</option>
-		<option value='2'>Confirmed</option>
+        <option value='2'>Waiting for deposit slip</option>
+		<option value='3'>Confirmed</option>
 	</selection>
 	
 	<selection name='account.account.technical.type.select'>
@@ -294,6 +295,11 @@
         <option value="3">Reimbursement blocking</option>
         <option value="4">Debit blocking</option>
     </selection>
+    
+	<selection name="account.interbankcode.type.select">
+		<option value="1">Operation code</option>
+		<option value="2">Reject/Return code</option>
+	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>

@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
@@ -30,6 +33,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
@@ -239,6 +244,45 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
+	}
+	
+	@Override
+	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+
+		super._computeSaleOrder(saleOrder);
+		
+		int maxDelay = 0;
+		
+		if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()){
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				
+				if (saleOrderLine.getProduct() != null && (saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE || saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PURCHASE)){
+					maxDelay = Integer.max(maxDelay, saleOrderLine.getProduct().getStandardDelay() == null ? 0 :saleOrderLine.getProduct().getStandardDelay());
+				}
+				
+			}
+		}
+		saleOrder.setStandardDelay(maxDelay);
+
+		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+			saleOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(saleOrder));
+		}
+	}
+
+    protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {
+		BigDecimal total = BigDecimal.ZERO;
+		List<Invoice> advancePaymentInvoiceList =
+				Beans.get(InvoiceRepository.class).all()
+						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
+						.bind("saleOrder", saleOrder)
+						.fetch();
+		if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
+			return total;
+		}
+		for (Invoice advance : advancePaymentInvoiceList) {
+			total = total.add(advance.getAmountPaid());
+		}
+		return total;
 	}
 
 }

@@ -233,6 +233,15 @@
 		<view-param name="search-filters" value="reimbursement-filters"/>
 	</action-view>
 
+    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Cheque deposit slips"
+        action="account.root.accounting.cheque.deposit.slip.all" />
+
+    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Cheque deposit slips"
+        model="com.axelor.apps.account.db.DepositSlip">
+        <view type="grid" name="cheque-deposit-slip-grid" />
+        <view type="form" name="cheque-deposit-slip-form" />
+    </action-view>
+
 	<menuitem name="account-root-accounting-accounting-reports" parent="account-root-accounting"
 		title="Accounting reports" action="account.root.accounting.accounting.reports" />
 
@@ -471,10 +480,10 @@
 		title="Reportings/Exports" />
 
 	<menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
-		title="Reject/Return reason codes" action="account.conf.reporting.interbank.code" />
+		title="Interbank codes" action="account.conf.reporting.interbank.code" />
 
 	<action-view name="account.conf.reporting.interbank.code"
-		title="Reject/Return reason codes" model="com.axelor.apps.account.db.InterbankCode" >
+		title="Interbank codes" model="com.axelor.apps.account.db.InterbankCode" >
 		<view type="grid" name="interbank-code-grid"/>
 		<view type="form" name="interbank-code-form"/>
 	</action-view>

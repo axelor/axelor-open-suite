@@ -92,8 +92,8 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 
 			records.add(this.createDetailRecord(bankOrderLine));
 			
-			if(this.useOptionnalFurtherInformationRecord(bankOrderLine))  {
-				records.add(this.createOptionnalFurtherInformationRecord(bankOrderLine));
+			if(this.useOptionalFurtherInformationRecord(bankOrderLine))  {
+				records.add(this.createOptionalFurtherInformationRecord(bankOrderLine));
 			}
 		}
 		
@@ -105,7 +105,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	}
 
 	
-	protected boolean useOptionnalFurtherInformationRecord(BankOrderLine bankOrderLine)  {
+	protected boolean useOptionalFurtherInformationRecord(BankOrderLine bankOrderLine)  {
 		
 		if(Strings.isNullOrEmpty(bankOrderLine.getPaymentReasonLine1()))  {
 				return false;
@@ -199,8 +199,11 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
  	 * 	  D2-4. (1 caractère) position 86, zone réservée
 	 * @return
 	 */
-	protected String getDetailD1Area(BankOrderLine bankOrderLine)  {
-		
+	protected String getDetailD1Area(BankOrderLine bankOrderLine) throws AxelorException {
+
+	    if (bankOrderLine.getReceiverBankDetails().getBankAddress() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), IException.MISSING_FIELD);
+		}
 		return bankOrderLine.getReceiverBankDetails().getBankAddress().getAddress();
 		
 	}
@@ -296,10 +299,10 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("C1-3", getSenderC13Area(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone C2 : Nom/Raison sociale du donneur d'ordre 
-			senderRecord += cfonbToolService.createZone("C2", senderCompany.getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
+			senderRecord += cfonbToolService.createZone(I18n.get("C2 - Company name"), senderCompany.getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D1-1 : Référence de la remise (à blanc ou a zéro si non utilisée)
-			senderRecord += cfonbToolService.createZone("D1-1", bankOrderSeq, cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 7);
+			senderRecord += cfonbToolService.createZone(I18n.get("D1-1 - Bank order sequence"), bankOrderSeq, cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 7);
 			
 			// Zone D1-2 : Zone réservée 
 			senderRecord += cfonbToolService.createZone("D1-2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 17);
@@ -314,10 +317,10 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("D2-3", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 5); 
 			
 			// Zone D3 : Code guichet de la banque du donneur d'ordre
-			senderRecord += cfonbToolService.createZone("D3", senderBankDetails.getSortCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5); 
+			senderRecord += cfonbToolService.createZone(I18n.get("D3 - Sort code"), senderBankDetails.getSortCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone D4 : Numéro de compte du donneur d'ordre
-			senderRecord += cfonbToolService.createZone("D4", senderBankDetails.getAccountNbr(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
+			senderRecord += cfonbToolService.createZone(I18n.get("D4 - Account number"), senderBankDetails.getAccountNbr(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone E : Identifiant du donneur d'ordre 
 			senderRecord += cfonbToolService.createZone("E", getSenderEArea(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);
@@ -326,7 +329,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("F", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
 			
 			// Zone G1 : Code établissement de la banque du donneur d'ordre
-			senderRecord += cfonbToolService.createZone("G1", senderBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
+			senderRecord += cfonbToolService.createZone(I18n.get("G1 - Bank code"), senderBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone G2 : Zone réservée 
 			senderRecord += cfonbToolService.createZone("G2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 6);
@@ -338,7 +341,8 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return senderRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(e, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD), bankOrderSeq);
+			throw new AxelorException(e, IException.MISSING_FIELD, 
+					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD) + ": " + e.getMessage(), bankOrderSeq);
 		}
 	}
 	
@@ -367,28 +371,28 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("B3", getB3Area(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 6);
 			
 			// Zone C1 : Référence 
-			detailRecord += cfonbToolService.createZone("C1", bankOrderLine.getSequence(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 12); 
+			detailRecord += cfonbToolService.createZone(I18n.get("C1 - Sequence"), bankOrderLine.getSequence(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 12);
 		
 			// Zone C2 : Nom/Raison sociale du bénéficiaire 
-			detailRecord += cfonbToolService.createZone("C2", bankOrderLine.getReceiverCompany().getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
+			detailRecord += cfonbToolService.createZone(I18n.get("C2 - Receiver company name"), bankOrderLine.getReceiverCompany().getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D1 : Domiciliation
-			detailRecord += cfonbToolService.createZone("D1", getDetailD1Area(bankOrderLine), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
+			detailRecord += cfonbToolService.createZone(I18n.get("D1 - Bank address"), getDetailD1Area(bankOrderLine), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D2 : Déclaration à la balance des paiements
 			detailRecord += cfonbToolService.createZone("D2", getDetailD2Area(bankOrderLine), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);
 			
 			// Zone D3 : Code guichet de la banque qui tient le compte du bénéficiaire 
-			detailRecord += cfonbToolService.createZone("D3", receiverBankDetails.getSortCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5); 
+			detailRecord += cfonbToolService.createZone(I18n.get("D3 - Sort code"), receiverBankDetails.getSortCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone D4 : Numéro de compte du bénéficiaire 
-			detailRecord += cfonbToolService.createZone("D4", receiverBankDetails.getAccountNbr(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
+			detailRecord += cfonbToolService.createZone(I18n.get("D4 - Account number"), receiverBankDetails.getAccountNbr(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone E : Montant du virement 
-			detailRecord += cfonbToolService.createZone("E", getDetailEAreaAmount(bankOrderLine), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 16);
+			detailRecord += cfonbToolService.createZone(I18n.get("E - Bank order amount"), getDetailEAreaAmount(bankOrderLine), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 16);
 			
 			// Zone F :  Libellé 
-			detailRecord += cfonbToolService.createZone("F", getDetailFArea(bankOrderLine), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
+			detailRecord += cfonbToolService.createZone(I18n.get("F - Receiver label"), getDetailFArea(bankOrderLine), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
 			
 			// Zone G1 : Code établissement de la banque qui tient le compte du bénéficiaire 
 			detailRecord += cfonbToolService.createZone("G1", receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
@@ -403,7 +407,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return detailRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD), bankOrderLine.getSequence());
+			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, 
+					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD)
+					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
 	}
 	
@@ -414,7 +420,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	protected String createOptionnalFurtherInformationRecord(BankOrderLine bankOrderLine) throws AxelorException  {
+	protected String createOptionalFurtherInformationRecord(BankOrderLine bankOrderLine) throws AxelorException  {
 
 		try {
 			BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
@@ -432,31 +438,34 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("B3", getB3Area(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 6);
 			
 			// Zone C1 : Référence 
-			totalRecord += cfonbToolService.createZone("C1", bankOrderLine.getSequence(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 12); 
+			totalRecord += cfonbToolService.createZone(I18n.get("C1 - Sequence"), bankOrderLine.getSequence(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 12);
 		
 			// Zone C2 : Nom/Raison sociale du bénéficiaire 
-			totalRecord += cfonbToolService.createZone("C2", bankOrderLine.getReceiverCompany().getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
+			totalRecord += cfonbToolService.createZone(I18n.get("C2 - Receiver company name"), bankOrderLine.getReceiverCompany().getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D1 : Domiciliation
-			totalRecord += cfonbToolService.createZone("D1", receiverBankDetails.getBankAddress().getAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
+			if (bankOrderLine.getReceiverBankDetails().getBankAddress() == null) {
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), IException.MISSING_FIELD);
+			}
+			totalRecord += cfonbToolService.createZone(I18n.get("D1 - Bank address"), receiverBankDetails.getBankAddress().getAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D2 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("D2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);
 			
 			// Zone D3 : Code guichet de la banque qui tient le compte du bénéficiaire 
-			totalRecord += cfonbToolService.createZone("D3", receiverBankDetails.getSortCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5); 
+			totalRecord += cfonbToolService.createZone(I18n.get("D3 - Sort code"), receiverBankDetails.getSortCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone D4 : Numéro de compte du bénéficiaire 
-			totalRecord += cfonbToolService.createZone("D4", receiverBankDetails.getAccountNbr(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
+			totalRecord += cfonbToolService.createZone(I18n.get("D4 - Account number"), receiverBankDetails.getAccountNbr(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone E : Montant du virement 
-			totalRecord += cfonbToolService.createZone("E", bankOrderLine.getBankOrderAmount(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 16);
+			totalRecord += cfonbToolService.createZone(I18n.get("E - Bank order amount"), bankOrderLine.getBankOrderAmount(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 16);
 			
 			// Zone F :  Libellé complémentaire
-			totalRecord += cfonbToolService.createZone("F", bankOrderLine.getPaymentReasonLine1(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
+			totalRecord += cfonbToolService.createZone(I18n.get("F - Receiver label"), bankOrderLine.getPaymentReasonLine1(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
 			
 			// Zone G1 : Code établissement de la banque qui tient le compte du bénéficiaire 
-			totalRecord += cfonbToolService.createZone("G1", receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
+			totalRecord += cfonbToolService.createZone(I18n.get("G1 - Code établissement de la banque"), receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone G2 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("G2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 6);
@@ -468,7 +477,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD), bankOrderLine.getSequence());
+			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, 
+					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD)
+					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
 		
 	}
@@ -533,7 +544,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return totalRecord;
 			
 		} catch (AxelorException e) {
-			throw new AxelorException(e, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD), bankOrderSeq);
+			throw new AxelorException(e, IException.MISSING_FIELD,
+					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD)
+					+ ": " + e.getMessage(), bankOrderSeq);
 		}
 	}
 }

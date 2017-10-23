@@ -47,7 +47,7 @@
 		public static final int STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE = 1;
 		public static final int STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES = 2;
 		public static final int STATUS_ACTIVE_CONNECTION = 3;
-		public static final int STATUS_CERTIFICATES_SHOULD_BE_RENEW = 4;
+		public static final int STATUS_CERTIFICATES_SHOULD_BE_RENEWED = 4;
 	
 	]]></extra-code>
 	 

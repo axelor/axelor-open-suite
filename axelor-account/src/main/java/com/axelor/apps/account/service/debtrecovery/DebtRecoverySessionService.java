@@ -57,6 +57,7 @@ public class DebtRecoverySessionService {
 	public DebtRecoverySessionService(DebtRecoveryRepository debtRecoveryRepo, AppAccountService appAccountService) {
 
 		this.today = appAccountService.getTodayDate();
+		this.debtRecoveryRepo = debtRecoveryRepo;
 
 	}
 

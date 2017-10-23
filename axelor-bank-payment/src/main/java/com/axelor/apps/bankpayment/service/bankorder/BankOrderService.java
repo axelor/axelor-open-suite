@@ -55,7 +55,9 @@ public interface BankOrderService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public BankOrder generateSequence(BankOrder bankOrder);
-	
+
+	public void setSequenceOnBankOrderLines(BankOrder bankOrder);
+
 	public void checkLines(BankOrder bankOrder)throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

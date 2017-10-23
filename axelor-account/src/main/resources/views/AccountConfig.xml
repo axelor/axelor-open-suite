@@ -24,6 +24,8 @@
   	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
 			<field name="accountingDaybook"/>
+			<field name="invoiceAutomaticMail"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
     
 		</panel>
 		
@@ -153,7 +155,7 @@
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
                 <panel colSpan="12">
                     <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
-                    <field name="icsNumber" if="__config__.general.getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
+                    <field name="icsNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
                     <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                     <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                 </panel>

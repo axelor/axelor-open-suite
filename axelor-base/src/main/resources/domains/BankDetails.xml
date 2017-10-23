@@ -47,6 +47,7 @@
 
 	<finder-method name="findDefaultByPartner" using="partner"
 		filter="self.partner = :partner AND self.isDefault = TRUE" />
+    <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
 
   </entity>
 

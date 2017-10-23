@@ -93,7 +93,7 @@
 	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
-	      <field name="isWithReturnSurplus" colSpan="6"/>
+	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
 	      <field name="isWithBackorder" colSpan="6"/>
 	      <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str"  readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
             <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
@@ -103,8 +103,6 @@
 			<field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
 				<viewer>{{record.toAddressStr}}</viewer>
 			</field>
-	      <field name="isWithReturnSurplus" colSpan="3"/>
-	      <field name="isWithBackorder" colSpan="3"/>
 	    </panel>
 	  </panel>
 	  <panel-tabs>
