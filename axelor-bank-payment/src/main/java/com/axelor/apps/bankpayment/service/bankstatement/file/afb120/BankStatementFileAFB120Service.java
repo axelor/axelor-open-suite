@@ -224,7 +224,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		structuredLineContent.put("currency", getCurrency(currencyCode));
 		
 		// Zone 1-F : Nombre de décimales du montant de l'ancien solde
-		structuredLineContent.put("1-F", cfonbToolService.readZone("1-F : decimal number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 20, 1));
+		int decimalDigitNumber = Integer.parseInt(cfonbToolService.readZone("1-F : decimal number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 20, 1));
 		
 		// Zone 1-H : Numéro de compte 
 		String accountNumber = cfonbToolService.readZone("1-H : account number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 22, 11);
@@ -238,7 +238,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		// Zone 1-L : Montant de l'ancien solde 
 		String amountStr = cfonbToolService.readZone("1-L : amount", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 91, 14);
 		
-		BigDecimal amount = getAmount(amountStr); //TODO Take into account the decimal digit number
+		BigDecimal amount = getAmount(amountStr, decimalDigitNumber); 
 		
 		if(amount.signum() == 1)  {
 			structuredLineContent.put("debit", BigDecimal.ZERO);
@@ -270,7 +270,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		structuredLineContent.put("currency", getCurrency(currencyCode));
 		
 		// Zone 2-F : Nombre de décimales du montant du mouvement
-		structuredLineContent.put("2-F", cfonbToolService.readZone("2-F : decimal number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 20, 1));
+		int decimalDigitNumber = Integer.parseInt(cfonbToolService.readZone("2-F : decimal number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 20, 1));
 		
 		// Zone 2-H : Numéro de compte 
 		String accountNumber = cfonbToolService.readZone("2-H : account number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 22, 11);
@@ -307,7 +307,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		
 		// Zone 2-R : Montant du mouvement 
 		String amountStr = cfonbToolService.readZone("2-R : amount", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 91, 14);
-		BigDecimal amount = getAmount(amountStr);
+		BigDecimal amount = getAmount(amountStr, decimalDigitNumber);
 		
 		if(amount.signum() == 1)  {
 			structuredLineContent.put("debit", BigDecimal.ZERO);
@@ -366,11 +366,14 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 			break;
 		case "MMO":
 			// Zone 2b-M : Informations complémentaires  
+			//2b-M-1 : Code devise ISO (norme ISO4217 (NF K 10 020)) du montant d'origine
 			String origineCurrencyCode = cfonbToolService.readZone("2b-M-1 : currency code", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 49, 3);
-			String digitNumber = cfonbToolService.readZone("2b-M-2 : decimal digit number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 52, 1);
-			String amountInCurrency = cfonbToolService.readZone("2b-M-3 : additional informations", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 53, 14);
-			String integerPartOfAmount = amountInCurrency.substring(0, amountInCurrency.length()-Integer.parseInt(digitNumber));
-			String decimalPartOfAmount = amountInCurrency.substring(amountInCurrency.length()-Integer.parseInt(digitNumber));
+			//2b-M-2 : nombre de décimales du montant d'origine 
+			int decimalDigitNumber = Integer.parseInt(cfonbToolService.readZone("2b-M-2 : decimal digit number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 52, 1));
+			//2b-M-3 : Montant d'origine (non signé) 
+			String amountInCurrency = cfonbToolService.readZone("2b-M-3 : original amount", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 53, 14);
+			String integerPartOfAmount = amountInCurrency.substring(0, amountInCurrency.length()-decimalDigitNumber);
+			String decimalPartOfAmount = amountInCurrency.substring(amountInCurrency.length()-decimalDigitNumber);
 			String correctAmount = integerPartOfAmount + "." + decimalPartOfAmount;
 			structuredLineContent.put("additionalInformation", correctAmount + " " + origineCurrencyCode);
 			break;
@@ -402,7 +405,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		structuredLineContent.put("currency", getCurrency(currencyCode));
 		
 		// Zone 1-F : Nombre de décimales du montant du nouveau solde
-		structuredLineContent.put("3-F", cfonbToolService.readZone("3-F : decimal number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 20, 1));
+		int nbDecimalDigit = Integer.parseInt(cfonbToolService.readZone("3-F : decimal number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 20, 1));
 		
 		// Zone 1-H : Numéro de compte 
 		String accountNumber = cfonbToolService.readZone("3-H : account number", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 22, 11);
@@ -416,7 +419,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		// Zone 1-L : Montant du nouveau solde 
 		String amountStr = cfonbToolService.readZone("3-L : amount", lineContent, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 91, 14);
 		
-		BigDecimal amount = getAmount(amountStr);
+		BigDecimal amount = getAmount(amountStr, nbDecimalDigit);
 		
 		if(amount.signum() == 1)  {
 			structuredLineContent.put("debit", BigDecimal.ZERO);
@@ -462,7 +465,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 	 * @param amount
 	 * @return the correct amount
 	 */
-	protected BigDecimal getAmount(String amount)  {
+	protected BigDecimal getAmount(String amount, int decimalDigitNumber)  {
 		
 		String signHex = amount.substring(amount.length()-1);
 		String lastDigit = "";
@@ -556,7 +559,11 @@ public class BankStatementFileAFB120Service extends BankStatementFileService  {
 		
 		String completeAmount = sign + amount.substring(0, amount.length()-1) + lastDigit;
 		
-		return new BigDecimal(completeAmount);
+		String integerPartOfAmount = completeAmount.substring(0, completeAmount.length()-decimalDigitNumber);
+		String decimalPartOfAmount = completeAmount.substring(completeAmount.length()-decimalDigitNumber);
+		String correctAmount = integerPartOfAmount + "." + decimalPartOfAmount;
+		
+		return new BigDecimal(correctAmount);
 		
 	}
 	

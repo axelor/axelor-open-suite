@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.bankpayment.ebics.web;
 
+import java.util.List;
+
+import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
@@ -39,8 +42,8 @@ public class EbicsPartnerController {
 		try {
 			EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
 		
-			int statementNb = ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
-			response.setFlash(String.format(I18n.get("%s bank statements get."), statementNb));
+			List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+			response.setFlash(String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);

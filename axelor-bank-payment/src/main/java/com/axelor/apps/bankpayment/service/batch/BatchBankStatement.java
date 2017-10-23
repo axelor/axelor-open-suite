@@ -20,25 +20,42 @@ package com.axelor.apps.bankpayment.service.batch;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class BatchBankStatement extends AbstractBatch {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private int bankStatementCount;
+    
+    @Inject
+    protected EbicsPartnerRepository EbicsPartnerRepository;
+    
+    @Inject
+    protected EbicsPartnerService ebicsPartnerService;
+    
+    @Inject
+    protected BankStatementService bankStatementService;
+    
+    @Inject
+    protected BankStatementRepository bankStatementRepository;
 
     @Override
     protected void process() {
@@ -51,12 +68,19 @@ public class BatchBankStatement extends AbstractBatch {
             ebicsPartners = getAllActiveEbicsPartners();
         }
 
-        EbicsPartnerService ebicsPartnerService = Beans.get(EbicsPartnerService.class);
-
         for (EbicsPartner ebicsPartner : ebicsPartners) {
             try {
-                bankStatementCount += ebicsPartnerService.getBankStatements(ebicsPartner);
+                List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(EbicsPartnerRepository.find(ebicsPartner.getId()));
+                
+                bankStatementCount += bankStatementList.size();
+                
+                for(BankStatement bankStatement : bankStatementList)  {
+                	
+                	bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()));
+                }
+                
                 incrementDone();
+                
             } catch (AxelorException | IOException e) {
                 incrementAnomaly();
                 log.error(e.getMessage());
