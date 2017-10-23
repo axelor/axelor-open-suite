@@ -61,7 +61,7 @@
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
-    <property name="layoutPreference">fixed layout</property>
+    <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
@@ -1462,10 +1462,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <column id="3993">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="3994">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="3995"/>
             <column id="3996">
@@ -1480,13 +1480,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="width">8%</property>
             </column>
             <column id="3999">
-                <property name="width">10%</property>
+                <property name="width">9%</property>
             </column>
             <column id="4000">
-                <property name="width">10%</property>
+                <property name="width">11%</property>
             </column>
             <column id="4001">
-                <property name="width">10%</property>
+                <property name="width">11%</property>
             </column>
             <header>
                 <row id="3945">
@@ -1649,15 +1649,26 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </header>
                 <footer>
                     <row id="4015">
-                        <cell id="4016"/>
+                        <cell id="4016">
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                        </cell>
                         <cell id="4017"/>
                         <cell id="4018"/>
                         <cell id="4019"/>
                         <cell id="4020"/>
                         <cell id="4021"/>
                         <cell id="4022"/>
-                        <cell id="4023"/>
-                        <cell id="4024"/>
+                        <cell id="4023">
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                        </cell>
+                        <cell id="4024">
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                        </cell>
                     </row>
                 </footer>
             </group>
@@ -1669,11 +1680,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="borderRightWidth">thin</property>
                     <cell id="3965">
                         <data id="3966">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
                             <property name="resultSetColumn">operation_date</property>
                         </data>
                     </cell>
                     <cell id="3967">
                         <data id="3968">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
                             <property name="resultSetColumn">value_date</property>
                         </data>
                     </cell>
@@ -1773,7 +1792,7 @@ default:
                         <data id="3980">
                             <structure name="numberFormat">
                                 <property name="category">Currency</property>
-                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">debit</property>
@@ -1783,7 +1802,7 @@ default:
                         <data id="3982">
                             <structure name="numberFormat">
                                 <property name="category">Currency</property>
-                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">credit</property>
