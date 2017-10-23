@@ -108,11 +108,11 @@
 
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
-        		<item title="Print" action="save,action-invoice-method-show-invoice"/>
-        		<item title="Print annex" action="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
+        		<item title="Print" action="save,action-invoice-method-show-invoice" hideIf="partner == null"/>
+        		<item title="Print annex" action="action-invoice-business-project-method-print-annex" if-module="axelor-business-project" hideIf="partner == null"/>
         	</menu>
         	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-        		<item title="Send email" action="save,action-send-by-email-with-template"/>
+        		<item title="Send email" action="save,action-send-by-email-with-template" hideIf="partner == null"/>
         	</menu>
 		</menubar>
 		<panel title="Status">
@@ -124,7 +124,8 @@
 		<panel name="main" >
 			<field name="invoiceId"/>
 			<panel itemSpan="12" colSpan="6">
-				<field name="operationTypeSelect" selection="iinvoice.operation.type.select" readonlyIf="statusSelect &gt; 1 || partner != null" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange">
+				<field name="operationTypeSelect" selection="iinvoice.operation.type.select" readonlyIf="statusSelect &gt; 1 || partner != null" showTitle="true" onChange="action-group-account-invoice-operationtype-onchange" showIf="!$readonly()"/>
+				<field name="operationTypeSelect" selection="iinvoice.operation.type.select" readonlyIf="statusSelect &gt; 1 || partner != null" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange" showIf="$readonly()">
 					<viewer>
 						<![CDATA[
 			
@@ -138,9 +139,20 @@
 					]]>
 					</viewer>
 				</field>
-                <field name="operationSubTypeSelect"
-					   readonlyIf="statusSelect > 1"
-					   showIf="operationTypeSelect == 1 || operationTypeSelect == 3"/>
+				<field name="operationSubTypeSelect" readonlyIf="statusSelect > 1" showTitle="true" showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; !$readonly()"/>
+				<field name="operationSubTypeSelect" readonlyIf="statusSelect > 1" showTitle="false" showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; $readonly()">
+					   <viewer>
+					   		<![CDATA[
+			
+			 			<h3>
+			             <span class="label label-default" ng-if="operationSubTypeSelect = 1" x-translate ng-show="record.operationSubTypeSelect == 1">Default</span>
+			             <span class="label label-default" ng-if="operationSubTypeSelect = 2" x-translate ng-show="record.operationSubTypeSelect == 2">Advance payment invoice</span>
+			             <span class="label label-default" ng-if="operationSubTypeSelect = 3" x-translate ng-show="record.operationSubTypeSelect == 3">Balance invoice</span>
+			           </h3>
+			
+					]]>
+					   </viewer>
+				</field>
 			</panel>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>

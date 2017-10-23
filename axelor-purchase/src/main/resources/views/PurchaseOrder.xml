@@ -68,14 +68,14 @@
 	  onNew="action-group-purchase-order-on-new-actions,action-attrs-po-change-tab-otherInformation-to-invoicing" >
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
-			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order"/>
+			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
 			</menu>
 			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-			  <item title="Send email" action="save,action-send-by-email-with-template"/>
+			  <item title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
 <!-- 			  <item title="New version" showIf="statusSelect == 2" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" action="save,action-purchase-record-newVersion,save"/> -->
-			  <item title="New version" showIf="statusSelect == 2" action="save,action-purchase-record-newVersion,save"/>
-			  <item title="Generate control invoice" showIf="statusSelect == 3"   action="save,action-purchase-order-method-generate-control-invoice"/>
-			  <item title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt"/>
+			  <item title="New version" showIf="statusSelect == 2" action="save,action-purchase-record-newVersion,save" hideIf="supplierPartner == null"/>
+			  <item title="Generate control invoice" showIf="statusSelect == 3"   action="save,action-purchase-order-method-generate-control-invoice" hideIf="supplierPartner == null"/>
+			  <item title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
 			</menu>
 		</menubar>
 		<panel title="Status">
@@ -138,7 +138,7 @@
         			<field name="priceDisplay" colSpan="12"/>
         			<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
       			</panel>
-				<panel-dashlet action="action-view-show-invoices-from-purchase-order" title="Invoices" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" colSpan="12"/>
+				<panel-dashlet action="action-view-show-invoices-from-purchase-order" title="Invoices" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect >= 3" colSpan="12"/>
 			</panel>		
 		</panel-tabs>
 	  	
