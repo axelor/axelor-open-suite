@@ -10,31 +10,33 @@
 		<field name="statusSelect"/>
 	</grid>
 
-	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 2">
+	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large">
         <toolbar>
             <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
                 onClick="action-bank-statement-print" />
         </toolbar>
 
-		<panel colSpan="12">
-			<panel name="main" colSpan="8">
-				<field name="name"/>
-				<field name="bankStatementFile" widget="binary-link" canNew="true"/>
-				<field name="fromDate"/>
-				<field name="toDate"/>
-				<field name="ebicsPartner"/>
-				<field name="ebicsPartner.ebicsBank"/>
-				<field name="bankStatementFileFormat"/>
-				<field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
-			</panel>
-			<panel colSpan="4">
-				<field name="createdBy"/>
-				<field name="statusSelect" title="Status"/>
-				<button name="runImport" title="Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
-			</panel>
-		</panel>
-		<panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
-		<panel-dashlet action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
+        <panel colSpan="12" readonlyIf="statusSelect == 2">
+            <panel colSpan="12">
+                <panel name="main" colSpan="8">
+                    <field name="name"/>
+                    <field name="bankStatementFile" widget="binary-link" canNew="true"/>
+                    <field name="fromDate"/>
+                    <field name="toDate"/>
+                    <field name="ebicsPartner"/>
+                    <field name="ebicsPartner.ebicsBank"/>
+                    <field name="bankStatementFileFormat"/>
+                    <field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
+                </panel>
+                <panel colSpan="4">
+                    <field name="createdBy"/>
+                    <field name="statusSelect" title="Status"/>
+                    <button name="runImport" title="Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
+                </panel>
+            </panel>
+            <panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
+            <panel-dashlet action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
+        </panel>
 	</form>
 
 
