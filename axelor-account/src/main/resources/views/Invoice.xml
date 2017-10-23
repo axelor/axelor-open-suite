@@ -82,10 +82,7 @@
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
-<<<<<<< HEAD
 		<field name="operationSubTypeSelect"/>
-=======
->>>>>>> 3e639359cef230084da4c6ee0d2ba22204b2f2f4
 		<field name="exTaxTotal" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
         <field name="currency"/>
