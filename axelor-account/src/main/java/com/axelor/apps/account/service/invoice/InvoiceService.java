@@ -197,13 +197,26 @@ public interface InvoiceService {
 	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
 
 	/**
-     * Return the move lines from the advance payments
-	 * from the previous invoice
+	 * Return the move lines from the advance payments on sale orders
 	 * @param invoice
 	 * @return
 	 */
-	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice);
+	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException;
 
+	/**
+	 * Return the move lines from the advance payments from previous invoices
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+
+	/**
+	 * Return the move line from the advance payment from related sale order
+	 * lines.
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
 	/**
 	 * Filter a set of advance payment invoice. If the amount of
 	 * the payment is greater than the total of the invoice, we filter it.

@@ -158,6 +158,14 @@ public abstract class InvoiceGenerator  {
 		}
 		invoice.setPartner(partner);
 
+		AccountingSituation accountingSituation = Beans
+				.get(AccountingSituationService.class)
+				.getAccountingSituation(partner, company);
+		if (accountingSituation != null) {
+		    invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
+		    invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+		}
+
 		if (paymentCondition == null) {
 			paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		}
@@ -228,7 +236,6 @@ public abstract class InvoiceGenerator  {
 		
 		// Set Company bank details
 		if(companyBankDetails == null)  {
-			AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
 			if(accountingSituation != null)  {
 				if(partner.getOutPaymentMode().equals(paymentMode)) {
 					companyBankDetails = accountingSituation.getCompanyOutBankDetails();

@@ -8,7 +8,8 @@
   <entity name="PaymentMode" lang="java" cachable="true">
   
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode" title="Accounting settings"/>
-	
+	<boolean name="validatePaymentByDepositSlipPublication" />
+
   </entity>
 
 </domain-models>

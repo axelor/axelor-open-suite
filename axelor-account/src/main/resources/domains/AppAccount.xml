@@ -23,6 +23,9 @@
 
 		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
 
+
+		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
+        <boolean name="paymentVouchersOnInvoice" />
 		<extra-code><![CDATA[
 	
 	   

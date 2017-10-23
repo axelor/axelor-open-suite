@@ -13,7 +13,8 @@
 	
 	<selection name='iaccount.payment.voucher.status.select'>
 		<option value='1'>Draft</option>
-		<option value='2'>Confirmed</option>
+        <option value='2'>Waiting for deposit slip</option>
+		<option value='3'>Confirmed</option>
 	</selection>
 	
 	<selection name='account.account.technical.type.select'>
