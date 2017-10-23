@@ -187,7 +187,7 @@
     </selection>
     
 	<selection name="bankpayment.bank.statement.line.afb.120.unavailability.index.select">
-        <option value="0">available</option>
+        <option value="0">Available</option>
         <option value="1">Unavailable</option>
     </selection>
     

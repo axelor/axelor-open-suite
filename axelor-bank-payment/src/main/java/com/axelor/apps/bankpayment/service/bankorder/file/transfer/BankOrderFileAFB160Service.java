@@ -467,7 +467,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone(I18n.get("F - Receiver label"), bankOrderLine.getPaymentReasonLine1(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
 			
 			// Zone G1 : Code établissement de la banque qui tient le compte du bénéficiaire 
-			totalRecord += cfonbToolService.createZone(I18n.get("G1 - Code établissement de la banque"), receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
+			totalRecord += cfonbToolService.createZone(I18n.get("G1 - Bank establisment code"), receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone G2 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("G2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 6);

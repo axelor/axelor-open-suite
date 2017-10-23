@@ -12,7 +12,7 @@
 	<decimal name="credit" title="Credit"/>
 
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BankDetails"/>
+	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
 
     <many-to-one name="operationInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejects/Return Reason Code"/>
     <many-to-one name="rejectInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code"/>

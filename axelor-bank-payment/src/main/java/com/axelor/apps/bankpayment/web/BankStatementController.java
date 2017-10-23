@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -48,5 +49,21 @@ public class BankStatementController {
 		response.setReload(true);
 	}
 	
+    public void print(ActionRequest request, ActionResponse response ) {
+        try {
+            BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+            bankStatement = bankStatementRepository.find(bankStatement.getId());
+            String name = bankStatement.getName();
+            String fileLink = bankStatementService.print(bankStatement);
+            response.setView(ActionView
+                    .define(name)
+                    .add("html", fileLink).map());
+
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+
+        response.setReload(true);
+    }
 
 }
