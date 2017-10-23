@@ -43,7 +43,6 @@
 	<many-to-many name="externalGuestSet" ref="com.axelor.apps.base.db.Partner" title="External Guests"/>
 
 <!-- Task -->
-    
   	<boolean name="isRecurrent" title="Recurrent"/>
   	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
   	

@@ -82,8 +82,8 @@ public interface IExceptionMessage {
 	static final String BATCH_PAYROLL_PREPARATION_CONFIGURATION_RECAP = /*$$(*/ "Payroll preparations failed to be generated due to missing data : %s"/*)*/ ;
 	static final String BATCH_PAYROLL_PREPARATION_EXPORT_RECAP = /*$$(*/ "Payroll preparations exported : %s"/*)*/ ;
 
-	static final String BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR = /*$$(*/ "%d expense treated successfully, " /*)*/;
-	static final String BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL = /*$$(*/ "%d expenses treated successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR = /*$$(*/ "%d expense treated successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL = /*$$(*/ "%d expenses treated successfully," /*)*/;
 
 	static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/ "Minimum stock of lunch vouchers will be reached for the company %s. Minimum Stock allowed : %s. Available Stock : %s" /*)*/ ;
 	

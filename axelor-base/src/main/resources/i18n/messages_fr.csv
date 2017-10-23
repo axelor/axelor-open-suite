@@ -1105,6 +1105,8 @@
 "Sale config (${ name })","Config. Module Ventes (${ name })",,
 "Sale currency","Devise de vente",,
 "Sale interface","Interface vente",,
+"Sale order",,,
+"Sale order configuration","Configuration commande client",,
 "Sale price","Prix Vente H.T.",,
 "Sale price W.T.","Prix de vente HT",,
 "Sale supply default method","Méthode d'appro. par défaut",,

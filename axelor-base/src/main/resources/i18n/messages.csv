@@ -1105,6 +1105,8 @@
 "Sale config (${ name })",,,
 "Sale currency",,,
 "Sale interface",,,
+"Sale order",,,
+"Sale order configuration",,,
 "Sale price",,,
 "Sale price W.T.",,,
 "Sale supply default method",,,

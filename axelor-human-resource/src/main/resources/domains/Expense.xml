@@ -61,7 +61,9 @@
       </string>
 
       <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
-
+      
+      <unique-constraint columns="expenseSeq,company"/>
+	
       <extra-code>
       	<![CDATA[
       		//STATUS SELECT
