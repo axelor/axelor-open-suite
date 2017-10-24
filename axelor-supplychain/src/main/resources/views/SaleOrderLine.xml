@@ -15,7 +15,7 @@
 			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid" onChange="action-sale-order-line-method-compute"/>
 		</panel>
 	</form>
-	
+
 	<action-group name="action-supplychain-group-button-generate-subscriptions">
 		<action name="save" if="__this__.id &gt; 0"/>
 		<action name="com.axelor.apps.supplychain.web.SubscriptionController:generateSubscriptions"/>
@@ -33,5 +33,9 @@
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">
 		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
 	</action-validate>
-	
+
+	<action-method name="action-method-sale-order-available-stock"
+				   model="com.axelor.apps.sale.db.SaleOrderLine">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="fillAvailableStock"/>
+	</action-method>
 </object-views>	

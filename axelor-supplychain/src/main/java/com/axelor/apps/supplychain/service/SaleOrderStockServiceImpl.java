@@ -168,7 +168,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
-
+			stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
 			if(stockMoveLine != null) {
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}

@@ -28,7 +28,8 @@
 	<boolean name="invoiced" readonly="true"/>
 
 	<string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
-  	
+
+	<decimal name="reservedQty" title="Reserved Qty"/>
   	<extra-code>
   		<![CDATA[
   		// SALE SUPPLY SELECT

@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import com.axelor.db.JPA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +39,15 @@ import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
+import javax.persistence.Query;
+
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl  {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected AppAccountService appAccountService;
-	
+
 	@Inject
 	protected AnalyticMoveLineService analyticMoveLineService;
 
@@ -76,12 +79,12 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
 		return amount;
 	}
-	
-	
+
+
 	public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) throws AxelorException{
-		
+
 		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return saleOrderLine;  }
-		
+
 		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 		List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
 		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
@@ -95,16 +98,16 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 		}
 		return saleOrderLine;
 	}
-	
+
 	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, SaleOrderLine saleOrderLine)  {
-		
+
 		analyticMoveLine.setSaleOrderLine(saleOrderLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
 		analyticMoveLine.setDate(appAccountService.getTodayDate());
 		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
-		
+
 	}
-	
+
 	public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) throws AxelorException{
 		List<AnalyticMoveLine> analyticMoveLineList = null;
 		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(saleOrderLine.getAnalyticDistributionTemplate(), saleOrderLine.getExTaxTotal());
@@ -117,4 +120,18 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 		return saleOrderLine;
 	}
 
+	@Override
+	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
+		String query = "SELECT sum(self.currentQty) - sum(self.reservedQty) "
+				+ "FROM LocationLine self "
+				+ "WHERE self.location = :location "
+				+ "AND self.product = :product";
+		Query availableStockQuery = JPA.em().createQuery(query);
+		availableStockQuery.setParameter("location", saleOrderLine.getSaleOrder().getLocation());
+		availableStockQuery.setParameter("product", saleOrderLine.getProduct());
+		if (availableStockQuery.getSingleResult() == null) {
+			return BigDecimal.ZERO;
+		}
+		return new BigDecimal(availableStockQuery.getSingleResult().toString());
+	}
 }

@@ -17,17 +17,8 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
@@ -40,12 +31,20 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Map;
 
 public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
@@ -350,5 +349,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 			saleOrderLine.setSubTotalGrossMargin(subTotalGrossMargin);
 			saleOrderLine.setSubMarginRate(subMarginRate);
 		}
+	}
+
+	@Override
+	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
+		//defined in supplychain
+		return BigDecimal.ZERO;
 	}
 }

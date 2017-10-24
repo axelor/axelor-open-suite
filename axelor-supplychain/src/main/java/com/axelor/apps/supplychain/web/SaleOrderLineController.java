@@ -93,4 +93,12 @@ public class SaleOrderLineController {
 			response.setAlert(e.getLocalizedMessage());
 		}
 	}
+
+	public void fillAvailableStock(ActionRequest request, ActionResponse response) {
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getLocation() != null) {
+			response.setValue("$availableStock", saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrderLine));
+		}
+	}
+
 }
