@@ -113,10 +113,10 @@
                 <field name="fullName" colSpan="9" showTitle="false">
                     <hilite strong="true" if="true" color="primary"/>
                     <editor x-show-titles="false">
-                        <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url, action-partner-record-employee" colSpan="4"/>
+                        <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
                         <spacer colSpan="8"/>
-                        <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-                        <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
+                        <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+                        <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
                         <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
                     </editor>
                 </field>
@@ -594,7 +594,11 @@
 	</action-group>
 
 	<action-method name="action-partner-method-check-same-name">
-		<call class="com.axelor.apps.base.web.PartnerController" method="checkOtherPartnerName"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkContactName"/>
+	</action-method>
+
+	<action-method name="action-partner-method-check-name">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerName"/>
 	</action-method>
 
     <action-method name="action-partner-method-show-partner-info">

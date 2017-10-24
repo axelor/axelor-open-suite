@@ -53,8 +53,8 @@
 			<panel x-span="9" >
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
 					<editor x-show-titles="false">
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12" onChange="action-lead-method-set-social-network-url"/>
-						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="12" onChange="action-lead-method-set-social-network-url"/>            
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="12" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
 						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>
 					</editor>
 				</field>
@@ -195,6 +195,10 @@
 	
 	<action-method name="action-crm-lead-method-print">
 		<call method="print" class="com.axelor.apps.crm.web.LeadController"/>
+	</action-method>
+
+	<action-method name="action-crm-lead-method-check-name">
+		<call class="com.axelor.apps.crm.web.LeadController" method="checkLeadName"/>
 	</action-method>
     
     <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
