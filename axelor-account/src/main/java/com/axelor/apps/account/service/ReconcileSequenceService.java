@@ -57,17 +57,13 @@ public class ReconcileSequenceService {
 		return seq;
 	}
 
-	public void setDraftSequence(Reconcile reconcile)  {		
+	public void setDraftSequence(Reconcile reconcile) throws AxelorException {
 			
 		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
-			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT)  {		
-			reconcile.setReconcileSeq(this.getDraftSequence(reconcile));		
+			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT) {
+			reconcile.setReconcileSeq(sequenceService.getDraftSequenceNumber(reconcile));
 		}		
 		
 	}	
-	
-	protected String getDraftSequence(Reconcile reconcile)  {		
-		return "*" + reconcile.getId();		
-	}		
 	
 }

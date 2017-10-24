@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
@@ -30,11 +36,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
 
 public interface ExpenseService  {
 
@@ -98,7 +99,7 @@ public interface ExpenseService  {
 	public BigDecimal computePersonalExpenseAmount(Expense expense);
 	public BigDecimal computeAdvanceAmount(Expense expense);
 
-	public void setDraftSequence(Expense expense);
+	public void setDraftSequence(Expense expense) throws AxelorException;
 
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
 }

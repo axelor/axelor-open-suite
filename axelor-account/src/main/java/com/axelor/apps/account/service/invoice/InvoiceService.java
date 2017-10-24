@@ -137,7 +137,7 @@ public interface InvoiceService {
 	public Invoice createRefund(Invoice invoice) throws AxelorException;
 	
 	
-	public void setDraftSequence(Invoice invoice);
+	public void setDraftSequence(Invoice invoice) throws AxelorException;
 	
 	
 	public void generateBudgetDistribution(Invoice invoice);

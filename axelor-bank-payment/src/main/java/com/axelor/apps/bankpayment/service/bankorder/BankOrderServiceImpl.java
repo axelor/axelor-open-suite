@@ -17,6 +17,22 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -55,20 +71,6 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 

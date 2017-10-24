@@ -156,7 +156,12 @@ public interface IExceptionMessage {
 	 * Template rule service
 	 */
 	static final public String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
-	
+
+	/**
+	 * Sequence service
+	 */
+    static final public String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
+
 	/**
 	 * Address controller
 	 */
