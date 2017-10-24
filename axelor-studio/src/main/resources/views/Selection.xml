@@ -62,11 +62,6 @@
     	<option value="2">Alert</option>
     </selection>
     
-    <selection name="studio.view.calculation.line.type.select">
-    	<option value="0">Arithmetic</option>
-    	<option value="1">Groovy</option>
-    </selection>
-    
     <selection name="studio.action.builder.type.select">
     	<option value="0">Create</option>
     	<option value="1">Update</option>

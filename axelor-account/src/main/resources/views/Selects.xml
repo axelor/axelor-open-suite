@@ -6,11 +6,6 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="account.account.schedule.type">
-		<option value='type'>Type</option>
-		<option value='subtype'>Subtype</option>
-	</selection>
-	
 	<selection name='iaccount.payment.voucher.status.select'>
 		<option value='1'>Draft</option>
         <option value='2'>Waiting for deposit slip</option>
@@ -39,12 +34,6 @@
 		<option value='email'>Email</option>
 		<option value='paper'>Paper</option>
 		<option value='emailpaper'>Email and paper</option>
-	</selection>
-	
-	<selection name='move.line.reimbursement.status.select'>
-		<option value='0'></option>
-		<option value='1'>Reimbursement ongoing</option>
-		<option value='2'>Reimbursed</option>
 	</selection>
 	
 	<selection name='account.reconcile.status.select'>
@@ -127,12 +116,12 @@
 		<option value="3">Balance invoice</option>
 	</selection>
 
-	<selection name='ipayment.operation.type.select'>
+	<!-- <selection name='ipayment.operation.type.select'>
 		<option value='1'>Supplier purchase</option>
 		<option value='2'>Supplier refund</option>
 		<option value='3'>Customer sale</option>
 		<option value='4'>Customer refund</option>
-	</selection>
+	</selection> -->
 	
 	<selection name='iaccount.account.schedule.export.type.select'>
 		<option value='0'>Payment smoothing(DD)</option>
@@ -194,11 +183,6 @@
 	<selection name="iinterbank.account.order.batch.type.select">
 		<option value="1">Import payments by IPO and IPO cheque</option>
 		<option value="2">Import payment rejects by IPO and IPO cheque</option>
-	</selection>
-	
-	<selection name="iinvoice.batch.to.status.select">
-		<option value="tov">Validate</option>
-		<option value="val">Ventilate</option>
 	</selection>
 	
 	<selection name="account.payment.condition.type.select">

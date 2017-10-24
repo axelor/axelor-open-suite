@@ -32,11 +32,6 @@
 		<option value="12">Yearly</option>
 	</selection>
 	
-	<selection name="sale.order.line.discount.amount.type.select">
-		<option value="1">Discount</option>
-		<option value="2">Addition</option>
-	</selection>
-	
 	<selection name="message.related.to.select" id="sale.message.related.to.select">
 	    <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
 	</selection>
