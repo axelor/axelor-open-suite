@@ -594,7 +594,7 @@
 	</action-group>
 
 	<action-method name="action-partner-method-check-same-name">
-		<call class="com.axelor.apps.base.web.PartnerController" method="checkClientName"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkContactName"/>
 	</action-method>
 
 	<action-method name="action-partner-method-check-name">
