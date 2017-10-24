@@ -326,7 +326,7 @@ public class PartnerController {
 		}
 	}
 
-	public void checkOtherPartnerName(ActionRequest request, ActionResponse response) {
+	public void checkClientName(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);
 
 		if (partner.getName() != null && partner.getFirstName() != null) {
