@@ -23,7 +23,8 @@
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
-		<field name="operationTypeSelect" width="200"/>
+		<field name="operationTypeSelect" width="160"/>
+		<field name="operationSubTypeSelect" widget="160"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" width="160"/>
         <field name="invoiceDate" width="120"/>
         <field name="dueDate" width="120"/>
@@ -53,7 +54,8 @@
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="externalReference"/>
-        <field name="operationTypeSelect" />
+		<field name="operationTypeSelect"/>
+		<field name="operationSubTypeSelect"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
         <field name="invoiceDate"/>
@@ -80,6 +82,7 @@
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
+		<field name="operationSubTypeSelect"/>
 		<field name="exTaxTotal" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
         <field name="currency"/>
@@ -564,6 +567,7 @@
 		<field name="invoiceId"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="operationTypeSelect"/>
+		<field name="operationSubTypeSelect"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
@@ -578,6 +582,7 @@
 		<field name="invoiceId"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="operationTypeSelect"/>
+		<field name="operationSubTypeSelect"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
@@ -598,6 +603,7 @@
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect"/>
+		<field name="operationSubTypeSelect"/>
 		<field name="statusSelect"/>
     </grid>
 
