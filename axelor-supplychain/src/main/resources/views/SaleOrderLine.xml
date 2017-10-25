@@ -16,10 +16,11 @@
 		</panel>
 	</form>
 
-	<form name="reserved-qty-sale-order-line-form" title="Change the reserved qty"
-		  model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-supplychain-attrs-reserved-qty-max">
+	<form name="reserved-qty-sale-order-line-form" title="Change reserved qty"
+		  model="com.axelor.apps.sale.db.SaleOrderLine">
         <panel>
-			<field name="reservedQty"/>
+			<field name="reservedQty"
+				   onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
 			<button name="confirmNewReservation" title="OK"
 					onClick="action-method-sale-order-line-change-reserved-qty,close"/>
 			<field name="qty" hidden="true"/>
@@ -53,12 +54,12 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeReservedQty"/>
 	</action-method>
 
-	<action-attrs name="action-supplychain-attrs-reserved-qty-max">
-		<attribute for="reservedQty" name="max" expr="eval: qty"/>
-	</action-attrs>
-
 	<action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
 		<attribute for="updateReservedQty" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
+	</action-attrs>
+
+	<action-attrs name="action-supplychain-attrs-sale-order-line-max-reserved-qty">
+		<attribute for="reservedQty" name="value" expr="eval: qty" if="reservedQty &gt; qty"/>
 	</action-attrs>
 
 	<action-view name="action-view-sale-order-line-reserved-qty-wizard" title="Change reserved qty"
