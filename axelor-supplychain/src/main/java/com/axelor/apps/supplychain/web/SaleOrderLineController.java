@@ -110,7 +110,7 @@ public class SaleOrderLineController {
 
 	public void changeReservedQty(ActionRequest request, ActionResponse response) {
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		BigDecimal newReservedQty = (BigDecimal) request.getContext().get("$newReservedQty");
+		BigDecimal newReservedQty = saleOrderLine.getReservedQty();
 		try {
 			saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
 			StockMoveLine stockMoveLine = Beans.get(StockMoveLineRepository.class)
@@ -121,7 +121,6 @@ public class SaleOrderLineController {
 			if (stockMoveLine != null) {
 				Beans.get(StockMoveLineSupplychainServiceImpl.class).updateReservedQty(stockMoveLine, newReservedQty);
 			}
-			response.setReload(true);
 		} catch (AxelorException e) {
 			TraceBackService.trace(response, e);
 		}
