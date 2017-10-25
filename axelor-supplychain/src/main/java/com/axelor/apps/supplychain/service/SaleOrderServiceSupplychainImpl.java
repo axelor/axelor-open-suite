@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -36,6 +44,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
@@ -50,13 +59,6 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
@@ -232,7 +234,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 	
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = {
+            BlockedSaleOrderException.class })
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 		super.finalizeSaleOrder(saleOrder);
