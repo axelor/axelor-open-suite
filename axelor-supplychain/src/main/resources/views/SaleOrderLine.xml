@@ -15,7 +15,15 @@
 			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid" onChange="action-sale-order-line-method-compute"/>
 		</panel>
 	</form>
-	
+
+	<form name="reserved-qty-sale-order-line-form" title="Change the reserved qty" model="com.axelor.apps.sale.db.SaleOrderLine">
+        <panel>
+			<field name="reservedQty" type="decimal"/>
+			<button name="confirmNewReservation" title="OK"
+					onClick="action-method-sale-order-line-change-reserved-qty"/>
+		</panel>
+	</form>
+
 	<action-group name="action-supplychain-group-button-generate-subscriptions">
 		<action name="save" if="__this__.id &gt; 0"/>
 		<action name="com.axelor.apps.supplychain.web.SubscriptionController:generateSubscriptions"/>
@@ -33,5 +41,23 @@
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">
 		<alert message="Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?" if="!__repo__(Subscription).all().filter('self.saleOrderLine != null AND self.saleOrderLine.saleOrder.id = ?1',id).fetch().isEmpty()"/>
 	</action-validate>
-	
+
+	<action-method name="action-method-sale-order-line-available-stock"
+				   model="com.axelor.apps.sale.db.SaleOrderLine">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="fillAvailableStock"/>
+	</action-method>
+
+	<action-method name="action-method-sale-order-line-change-reserved-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeReservedQty"/>
+	</action-method>
+
+	<action-view name="action-view-sale-order-line-reserved-qty-wizard" title="Change the reserved qty"
+				 model="com.axelor.apps.sale.db.SaleOrderLine">
+		<view type="form" name="reserved-qty-sale-order-line-form"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
 </object-views>	

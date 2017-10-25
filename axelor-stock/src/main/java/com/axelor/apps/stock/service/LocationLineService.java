@@ -32,29 +32,29 @@ import com.google.inject.persist.Transactional;
 public interface LocationLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+                               LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate) throws AxelorException;
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+							   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) throws AxelorException;
 	
 	
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
+	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+                                     LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 	
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException;
 
 	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException;
 
-	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate);
+	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+									   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty);
 	
 	public LocationLine getLocationLine(Location location, Product product);
 	
