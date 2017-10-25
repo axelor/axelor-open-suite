@@ -271,6 +271,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
     protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {
 		BigDecimal total = BigDecimal.ZERO;
+		
+		if (saleOrder.getId() == null) {
+			return total;
+		}
+		
 		List<Invoice> advancePaymentInvoiceList =
 				Beans.get(InvoiceRepository.class).all()
 						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
