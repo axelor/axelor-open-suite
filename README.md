@@ -14,7 +14,7 @@ Axelor Business Suite includes the following modules :
 * Production Management
 * Multi-company, multi-currency and multi-lingual
 
-Axelor Business Suite is built on top of [Axelor SDK](https://github.com/axelor/axelor-sdk)
+Axelor Business Suite is built on top of [Axelor Development Kit](https://github.com/axelor/axelor-development-kit)
 
 Download
 -------------------------
