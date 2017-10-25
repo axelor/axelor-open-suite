@@ -44,7 +44,7 @@
 			<field name="productName" showIf="typeSelect == 1" title="Title"/>
 		</panel>
 		<panel hideIf="typeSelect == 1">
-		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
+		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 		   	<field name="productName"/>
 		   	<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"/>
 			<field name="reservedQty" hideIf="typeSelect == 2" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
@@ -182,7 +182,7 @@
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
-		<action name="action-method-sale-order-available-stock"/>
+		<action name="action-method-sale-order-line-available-stock"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-title-subscription"/>
     	<action name="action-sale-order-line-attrs-type-select"/>

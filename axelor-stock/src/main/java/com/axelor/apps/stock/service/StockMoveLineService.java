@@ -22,7 +22,6 @@ import java.util.List;
 
 import java.time.LocalDate;
 
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
@@ -94,7 +93,7 @@ public interface StockMoveLineService {
 
 
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
-			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
+			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 
 	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
 
