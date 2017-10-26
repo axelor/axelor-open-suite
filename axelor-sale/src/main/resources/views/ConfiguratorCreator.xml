@@ -44,8 +44,7 @@
             <field name="authorizedGroupSet" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
 		</panel>
 
-		<panel>
-			<field name="$hideBOMConfigurator" type="boolean" title="Hide BOM Configurator"/>
+		<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
 			<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
 	            <field name="configuratorBom" if-module="axelor-production" colSpan="12">
 	                <editor>

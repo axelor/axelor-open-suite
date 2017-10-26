@@ -132,27 +132,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
-		title="Configurators"/>
-	
-	<menuitem name="manufacturing-conf-configurators-creator" parent="manufacturing-conf-configurators"
-		title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
-	
-	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
-		model="com.axelor.apps.sale.db.ConfiguratorCreator" >
-		<view type="grid" name="configurator-creator-grid" />
-		<view type="form" name="configurator-creator-form" />
-	</action-view>
-	
-	<menuitem name="manufacturing-conf-configurators-configurators" parent="manufacturing-conf-configurators"
-		title="Configurators" action="manufacturing.conf.configurator.configurators"/>
-	
-	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
-		model="com.axelor.apps.sale.db.Configurator" >
-		<view type="grid" name="configurator-grid" />
-		<view type="form" name="configurator-form" />
-		<domain>:__user__ IN self.configuratorCreator.authorizedUserSet OR :groupId IN self.configuratorCreator.authorizedGroupSet</domain>
-		<context name="groupId" expr="eval: __user__.group.id"/>
-	</action-view>
+		title="Configurators" if="__config__.app.getApp('production').getEnableConfigurator()"/>
 
 	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators"
 			  title="Configurator BOM" action="manufacturing.conf.configurator.bom"/>
