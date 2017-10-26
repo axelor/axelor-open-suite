@@ -30,6 +30,8 @@
 	<string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
 
 	<decimal name="reservedQty" title="Reserved Qty"/>
+	
+	<integer name="standardDelay" title="Standard delay (days)" default="0"  />
   	<extra-code>
   		<![CDATA[
   		// SALE SUPPLY SELECT
