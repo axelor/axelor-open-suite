@@ -235,7 +235,7 @@
 			</panel>
 			<panel title="Automatic mail" readonlyIf="statusSelect == 3">
 				<field name="invoiceAutomaticMail"/>
-				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail"/>
+				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 			</panel>
 			<panel title="Impression" name="impression" colSpan="12">
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
