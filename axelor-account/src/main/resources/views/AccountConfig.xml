@@ -25,7 +25,7 @@
 	   	  <field name="invoiceInAtiSelect"/>
 			<field name="accountingDaybook"/>
 			<field name="invoiceAutomaticMail"/>
-			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.packageName = 'com.axelor.apps.account.db' and self.metaModel.name = 'Invoice'"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
     
 		</panel>
 		
