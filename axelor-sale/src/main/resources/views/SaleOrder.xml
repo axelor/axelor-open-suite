@@ -150,7 +150,7 @@
 		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="$invoicingState" title="Invoicing State" readonly="true" css="label-bold bold" showIf="statusSelect >= 3">
-	    	<viewer><![CDATA[
+	    	<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
 	    		<div>
 				  <div class="span7">
 				  	<h5>
@@ -307,7 +307,7 @@
 
         <panel sidebar="true" readonly="true"  colSpan="4"  hideIf="clientPartner == null">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-                <viewer>
+                <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
@@ -316,30 +316,15 @@
                         <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
                         <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
+                        <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                        <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
             </field>
-            <field name="amountInvoiced" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 3">
-                <viewer>
-                    <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
-                    </dl>
-                    ]]>
-                </viewer>
-            </field>
-            <field name="advanceTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 2">
-                <viewer>
-                    <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Advance payment total</dt>
-                        <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
-                    </dl>
-                    ]]>
-                </viewer>
-            </field>
+
         </panel>
       
       <panel sidebar="true" itemSpan="6" title="Margin"  hideIf="clientPartner == null">
@@ -477,7 +462,7 @@
 
         <panel sidebar="true" readonly="true"  colSpan="4">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-                <viewer>
+                <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
@@ -486,26 +471,10 @@
                         <dd>{{record.taxTotal}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
                         <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
-                    </dl>
-                    ]]>
-                </viewer>
-            </field>
-            <field name="amountInvoiced" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 3">
-                <viewer>
-                    <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
-                    </dl>
-                    ]]>
-                </viewer>
-            </field>
-            <field name="advanceTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 2">
-                <viewer>
-                    <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Advance payment total</dt>
-                        <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
+                        <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                        <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -581,7 +550,7 @@
 	      </panel>
             <panel readonly="true"  css="order-subtotal" colSpan="4">
                 <field name="inTaxTotal" showTitle="false" colSpan="12">
-                    <viewer>
+                    <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
                         <dl class="dl-horizontal">
                             <dt x-translate>Total W.T.</dt>
@@ -590,26 +559,10 @@
                             <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
                             <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
                             <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
-                        </dl>
-                        ]]>
-                    </viewer>
-                </field>
-                <field name="amountInvoiced" showTitle="false" colSpan="12" showIf="statusSelect >= 3">
-                    <viewer>
-                        <![CDATA[
-                        <dl class="dl-horizontal">
-                            <dt x-translate>Amount invoiced W.T.</dt>
-                            <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
-                        </dl>
-                        ]]>
-                    </viewer>
-                </field>
-                <field name="advanceTotal" showTitle="false" colSpan="12" showIf="statusSelect >= 2">
-                    <viewer>
-                        <![CDATA[
-                        <dl class="dl-horizontal">
-                            <dt x-translate>Advance payment total</dt>
-                            <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
+                            <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
+                            <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                            <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                         </dl>
                         ]]>
                     </viewer>
