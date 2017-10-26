@@ -316,8 +316,24 @@
                         <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
                         <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+            <field name="amountInvoiced" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 3">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
                         <dt x-translate>Amount invoiced W.T.</dt>
                         <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+            <field name="advanceTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 2">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
                         <dt x-translate>Advance payment total</dt>
                         <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
@@ -470,8 +486,26 @@
                         <dd>{{record.taxTotal}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
                         <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+            <field name="amountInvoiced" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 3">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
                         <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{record.amountInvoiced}}</dd>
+                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+            <field name="advanceTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect >= 2">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
+                        <dt x-translate>Advance payment total</dt>
+                        <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -556,8 +590,26 @@
                             <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
                             <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
                             <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
+                        </dl>
+                        ]]>
+                    </viewer>
+                </field>
+                <field name="amountInvoiced" showTitle="false" colSpan="12" showIf="statusSelect >= 3">
+                    <viewer>
+                        <![CDATA[
+                        <dl class="dl-horizontal">
                             <dt x-translate>Amount invoiced W.T.</dt>
-                            <dd>{{record.amountInvoiced}} {{record.currency.symbol}}</dd>
+                            <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        </dl>
+                        ]]>
+                    </viewer>
+                </field>
+                <field name="advanceTotal" showTitle="false" colSpan="12" showIf="statusSelect >= 2">
+                    <viewer>
+                        <![CDATA[
+                        <dl class="dl-horizontal">
+                            <dt x-translate>Advance payment total</dt>
+                            <dd>{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                         </dl>
                         ]]>
                     </viewer>
