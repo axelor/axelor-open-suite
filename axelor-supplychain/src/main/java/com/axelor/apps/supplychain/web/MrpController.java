@@ -32,6 +32,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
+import java.time.temporal.WeekFields;
+
 public class MrpController {
 	
 	@Inject
@@ -71,13 +73,12 @@ public class MrpController {
 	public void printWeeks(ActionRequest request, ActionResponse response) {
 		Mrp mrp = request.getContext().asType(Mrp.class);
 		String name = I18n.get("MRP") + "-" + mrp.getId();
-		System.out.println("date : " + mrpService.findMrpEndDate(mrp).toString());
 
 		try {
 			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
 					.addParam("mrpId", mrp.getId())
 					.addParam("Locale", AuthUtils.getUser().getLanguage())
-					.addParam("endDate", mrpService.findMrpEndDate(mrp).toString())
+					.addParam("endDate", mrpService.findMrpEndDate(mrp).get(WeekFields.ISO.weekOfWeekBasedYear()) + 1)
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();
