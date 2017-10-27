@@ -154,27 +154,6 @@
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
 		title="Configuration"  order="45"/>
 
-	<menuitem name="sc-root-sale-conf-creator" parent="sc-root-sale-conf"
-			  title="Configurator creators" action="sale.conf.configurator.creator" if="__config__.app.getApp('sale').getEnableConfigurator()"/>
-
-	<action-view name="sale.conf.configurator.creator" title="Configurator creators"
-				 model="com.axelor.apps.sale.db.ConfiguratorCreator" >
-		<view type="grid" name="configurator-creator-grid" />
-		<view type="form" name="configurator-creator-form" />
-	</action-view>
-
-	<menuitem name="sc-root-sale-conf-configurators" parent="sc-root-sale-conf"
-			  title="Configurators" action="sale.conf.configurator.configurators" if="__config__.app.getApp('sale').getEnableConfigurator()"/>
-
-	<action-view name="sale.conf.configurator.configurators" title="Configurators"
-				 model="com.axelor.apps.sale.db.Configurator" >
-		<view type="grid" name="configurator-grid" />
-		<view type="form" name="configurator-form" />
-		<domain>:__user__ IN self.configuratorCreator.authorizedUserSet OR :groupId IN self.configuratorCreator.authorizedGroupSet</domain>
-		<context name="groupId" expr="eval: __user__.group.id"/>
-	</action-view>
-
-
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
 
