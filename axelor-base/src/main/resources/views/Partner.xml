@@ -130,7 +130,7 @@
                     <field name="isSupplier" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
                     <field name="isFactor" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
                     <field name="$viewerPartnerType" showTitle="false" hideIf="!$readonly()" colSpan="12">
-                        <viewer>
+                        <viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor">
                             <![CDATA[
                                 <h4 style="text-align: right;">
                                     <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>

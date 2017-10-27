@@ -22,10 +22,10 @@
 	    </panel>
 	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
-                <viewer><![CDATA[
+                <viewer depends="isDefault,fullName"><![CDATA[
                     <dl>
-                        <dd ng-if="!record.isDefault"> {{record.fullName}} </dd>
-                        <dd ng-if="record.isDefault"> <b>{{record.fullName}}</b> </dd>
+                        <dd ng-if="!record.isDefault"> {{fullName}} </dd>
+                        <dd ng-if="record.isDefault"> <b>{{fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
 			    <editor onNew="action-set-default-partner" x-show-on-new="false">
