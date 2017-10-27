@@ -30,13 +30,17 @@ import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
 import com.axelor.apps.base.service.AdvancedExportService;
+import com.axelor.common.Inflector;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.itextpdf.text.DocumentException;
 
 public class AdvancedExportController {
@@ -50,22 +54,56 @@ public class AdvancedExportController {
 	@Inject
 	private AdvancedExportLineRepository advancedExportLineRepo;
 	
-	public void getModelAllFields(ActionRequest request, ActionResponse response) {
+	@Inject
+	private MetaFieldRepository metaFieldRepo;
+	
+	private Inflector inflector;
+	
+	public void getModelAllFields(ActionRequest request, ActionResponse response) throws ClassNotFoundException {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
+		inflector = Inflector.getInstance();
 
 		if (advancedExport.getMetaModel() != null) {
 			
 			List<Map<String, Object>> allFieldList = new ArrayList<>();
 			
-			advancedExport.getMetaModel().getMetaFields().forEach(fields -> {
+			for (MetaField fields : advancedExport.getMetaModel().getMetaFields()) {
+				
 				Map<String, Object> allFieldMap = new HashMap<>();
-				allFieldMap.put("targetField", fields.getName());
+				allFieldMap.put("currentDomain", advancedExport.getMetaModel().getName());
+				
+				if (!Strings.isNullOrEmpty(fields.getRelationship())) {
+					
+					MetaModel metaModel = metaModelRepo.all().filter("self.name = ?", fields.getTypeName()).fetchOne();
+					
+					Class<?> klass = Class.forName(metaModel.getFullName());
+					Mapper mapper = Mapper.of(klass);
+					
+					String fieldName = mapper.getNameField() == null ? "id" : mapper.getNameField().getName();
+					MetaField metaField = metaFieldRepo.all().filter("self.name = ?1 AND self.metaModel = ?2", fieldName, metaModel).fetchOne();
+					
+					allFieldMap.put("metaField", metaField);
+					allFieldMap.put("targetField", fields.getName() + "." + metaField.getName());
+					
+				} else {
+					allFieldMap.put("metaField", fields);
+					allFieldMap.put("targetField", fields.getName());
+				}
+				
+				if (Strings.isNullOrEmpty(fields.getLabel())) {
+					allFieldMap.put("title", this.getFieldTitle(inflector, fields.getName()));
+				} else {
+					allFieldMap.put("title", fields.getLabel());
+				}
 				allFieldList.add(allFieldMap);
-			});
-			
+			}
 			response.setAttr("advancedExportLineList", "value", allFieldList);
 		}
+	}
+	
+	private String getFieldTitle(Inflector inflector, String fieldName) {
+		return inflector.humanize(fieldName);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -91,7 +129,13 @@ public class AdvancedExportController {
 				response.setValue("currentDomain", metaField.getTypeName());
 				response.setValue("metaField", "");
 			}
-			response.setValue("title", metaField.getLabel());
+			
+			if (Strings.isNullOrEmpty(metaField.getLabel())) {
+				inflector = Inflector.getInstance();
+				response.setValue("title", this.getFieldTitle(inflector, metaField.getName()));
+			} else {
+				response.setValue("title", metaField.getLabel());
+			}
 		}
 	}
 	

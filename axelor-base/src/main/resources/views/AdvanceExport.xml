@@ -11,13 +11,13 @@
   		onLoad="action-attr-view-data-button-change-title">
   		<panel>
       		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid" colSpan="4" onChange="action-attr-reset-advanced-export-line"/>
-    		<button name="selectAll" title="Select all fields" colSpan="2" onClick="action-method-get-model-all-fields" hideIf="!isViewData"/>
+    		<button name="selectAll" title="Select all fields" colSpan="2" onClick="save,action-method-get-model-all-fields" hideIf="!isViewData"/>
     		<field name="isViewData" hidden="true" colSpan="1"/>
     	</panel>
      	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null || !isViewData" editable="true" onNew="fill-default-current-domain" canMove="true" orderBy="sequence">
+     		<field name="metaField" title="Select target field" required="true" onChange="action-method-change-domain-on-relational-field" onSelect="action-attr-change-domain" colSpan="3"/>
      		<field name="title" colSpan="3" required="true"/>
      		<field name="targetField" colSpan="4"/>
-	        <field name="metaField" title="Select target field" required="true" onChange="action-method-change-domain-on-relational-field" onSelect="action-attr-change-domain" colSpan="3"/>
 	        <field name="orderBy" colSpan="2"/>
 	        <field name="currentDomain" hidden="true"/>
      	</panel-related>

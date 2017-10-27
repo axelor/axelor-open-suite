@@ -271,7 +271,16 @@ public class AdvancedExportService {
 						+ metaModel.getName() + " self " + "LEFT JOIN " + joinField + " " + selectionJoinField
 						+ " ORDER BY " + orderByCol, Map.class);
 
-			} else if (selectField.equals("") && !joinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
+			} else if (selectField.equals("") && selectJoinField.equals("") && !joinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
+
+				log.debug("query : {}", "SELECT " + selectionField + " from " + metaModel.getName() + " self "
+						+ "LEFT JOIN " + joinField + " " + selectionJoinField + " " + selectionRelationalJoinField + " ORDER BY " + orderByCol);
+				
+				query = em.createQuery("SELECT NEW Map(" + selectionField + ") from "
+						+ metaModel.getName() + " self " + "LEFT JOIN " + joinField + " " + selectionJoinField + " "
+						+ selectionRelationalJoinField + " ORDER BY " + orderByCol, Map.class);
+				
+			} else if (selectField.equals("") && !selectJoinField.equals("") && !joinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
 
 				log.debug("query : {}", "SELECT " + selectJoinField + "," + selectionField + " from " + metaModel.getName() + " self "
 						+ "LEFT JOIN " + joinField + " " + selectionJoinField + " " + selectionRelationalJoinField + " ORDER BY " + orderByCol);
@@ -364,7 +373,16 @@ public class AdvancedExportService {
 						+ metaModel.getName() + " self " + "LEFT JOIN " + joinField + " " + selectionJoinField,
 						Map.class);
 
-			} else if (selectField.equals("") && !joinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
+			} else if (selectField.equals("") && selectJoinField.equals("") && !joinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
+
+				log.debug("query : {}", "SELECT " + selectionField + " from " + metaModel.getName() + " self "
+						+ "LEFT JOIN " + joinField + " " + selectionJoinField + " " + selectionRelationalJoinField);
+				
+				query = em.createQuery("SELECT NEW Map(" + selectionField + ") from "
+						+ metaModel.getName() + " self " + "LEFT JOIN " + joinField + " " + selectionJoinField + " "
+						+ selectionRelationalJoinField, Map.class);
+				
+			} else if (selectField.equals("") && !selectJoinField.equals("") && !joinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
 
 				log.debug("query : {}", "SELECT " + selectJoinField + "," + selectionField + " from " + metaModel.getName() + " self "
 						+ "LEFT JOIN " + joinField + " " + selectionJoinField + " " + selectionRelationalJoinField);
@@ -437,8 +455,6 @@ public class AdvancedExportService {
 			}
 		}
 
-		log.debug("data : {}",query.getResultList());
-		
 		return query.getResultList();
 	}
 	
@@ -449,37 +465,73 @@ public class AdvancedExportService {
 		MetaSelect metaSelect = metaSelectRepo.findByName(mapper.getProperty(fieldName[i]).getSelection());
 		
 		if (metaSelect != null) {
+			MetaField metaField = metaFieldRepo.all().filter("self.name = ?1 AND self.metaModel = ?2", fieldName[i], metaModel).fetchOne();
 			isSelectionField = true;
 			msi++;
 			mt++;
+			
 			if (counter > 0 && i != 0) {
-				if (language.equals("fr")) {
-					
-					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-							+ "." + fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-							+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-							+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-							+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					
-				} else {
-					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-							+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-							+ ".select = " + metaSelect.getId());
-				}
-			} else {
 				
 				if (language.equals("fr")) {
 					
-					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-							+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-							+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-							+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-							+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					
+					if (metaField.getTypeName().equals("String")) {
+						
+						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
+								+ "." + fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
+								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
+								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
+						
+					} else {
+						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
+								+ "." + fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
+								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
+								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
+					}
 				} else {
-					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-							+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-							+ ".select = " + metaSelect.getId());
+					if (metaField.getTypeName().equals("String")) {
+						
+						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
+								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
+								+ ".select = " + metaSelect.getId());
+						
+					} else {
+						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
+								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
+								+ ".select = " + metaSelect.getId());
+					}
+				}
+			} else {
+				if (language.equals("fr")) {
+					
+					if (metaField.getTypeName().equals("String")) {
+						
+						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
+								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
+								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
+								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
+						
+					} else {
+						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
+								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
+								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
+								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
+					}
+				} else {
+					if (metaField.getTypeName().equals("String")) {
+						
+						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
+								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
+								+ ".select = " + metaSelect.getId());
+						
+					} else {
+						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
+								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
+								+ ".select = " + metaSelect.getId());
+					}
 				}
 			}
 		}
@@ -497,7 +549,7 @@ public class AdvancedExportService {
 			
 			if (!relationalField.getPackageName().startsWith("java")) {
 				
-				if (relationalField.getRelationship().equals("OneToMany") || relationalField.getRelationship().equals("ManyToMany")) {
+				if (relationalField.getRelationship().equals("OneToMany") || relationalField.getRelationship().equals("ManyToMany") || relationalField.getRelationship().equals("ManyToOne")) {
 					
 					counter++;
 					if (counter2 != 0 || counter3 != 0) {
@@ -534,7 +586,7 @@ public class AdvancedExportService {
 						}
 					}
 					
-				} else if (relationalField.getRelationship().equals("ManyToOne") || relationalField.getRelationship().equals("OneToOne")) {
+				} else if (relationalField.getRelationship().equals("OneToOne")) {
 					
 					if (counter != 0 && joinFieldSet.size() > 1 && counter2 > 1) {
 						joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[i] + " " + splitField[i]);
@@ -634,8 +686,16 @@ public class AdvancedExportService {
 		
 		for (Map<String, Object> field : allFieldDataList) {
 			String[] allCols = field.keySet().toArray(new String[field.size()]);
-			Arrays.sort(allCols);
-			for(String colName: allCols) {
+			Integer[] allColIndices = new Integer[allCols.length];
+			
+			for (int j = 0; j < allCols.length; j++) {
+				String col = allCols[j];
+				allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
+			}
+			Arrays.sort(allColIndices);
+			
+			for(Integer colIndex: allColIndices) {
+				String colName = "Col_" + String.valueOf(colIndex);
 				Object value = field.get(colName);
 				if (value == null) {
 					cell = new PdfPCell(new Phrase(null, font));
@@ -700,14 +760,23 @@ public class AdvancedExportService {
 		
 		for (Map<String, Object> field : allFieldDataList) {
 			String[] allCols = field.keySet().toArray(new String[field.size()]);
-			Arrays.sort(allCols);
+			Integer[] allColIndices = new Integer[allCols.length];
+			
+			for (int j = 0; j < allCols.length; j++) {
+				String col = allCols[j];
+				allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
+			}
+			Arrays.sort(allColIndices);
+			
 			Row row = sheet.createRow(rowNum++);
 			int colNum = 0;
-			
-			for(String colName: allCols) {
+
+			for (Integer colIndex : allColIndices) {
+				String colName = "Col_" + String.valueOf(colIndex);
 				Object value = field.get(colName);
 				Cell cell = row.createCell(colNum++);
-				if (value == null) continue;
+				if (value == null)
+					continue;
 				cell.setCellValue(value.toString());
 			}
 		}
