@@ -106,6 +106,7 @@
 "Incorrect product in the stock move %s","Produit incorrect dans le mouvement de stock %s",,
 "Information",,,
 "Interco",,,
+"Interco from invoice","Interco depuis une facture",,
 "Interco from purchase","Interco depuis une commande fournisseur",,
 "Interco from sale","Interco depuis une commande client",,
 "Invoice","Facture",,
