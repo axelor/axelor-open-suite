@@ -43,10 +43,10 @@
                 
         <panel sidebar="true">
             <field name="statusSelect" readonly="true" showTitle="false">
-                <viewer>
+                <viewer depends="contractId,versionNumber">
                     <![CDATA[
 			 			<h3>
-			             <span>{{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span>
+			             <span>{{ contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ versionNumber }}</span></span>
 			             <span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
 			             <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
 			             <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
@@ -134,8 +134,8 @@
 					
 			</panel>
 			<panel colSpan="12" title="Termination" showIf="statusSelect != 1">
-	            <field name="engagementStartDate" readonly="true" showIf="isWithEngagement" />
-	            <field name="terminationDemandDate" hideIf="!isWithEngagement" requiredIf="isWithEngagement" />
+	            <field name="engagementStartDate" readonly="true" showIf="currentVersion.isWithEngagement" />
+	            <field name="terminationDemandDate" hideIf="!currentVersion.isWithEngagement" requiredIf="currentVersion.isWithEngagement" />
 	            <field name="terminatedDate" />
 	            <field name="terminatedBy" hideIf="!terminatedManually" readonly="true" />
 	            	<button name="terminatedBtn" title="Terminate" onClick="save,com.axelor.apps.contract.web.ContractController:terminated" showIf="id &amp;&amp; statusSelect == 2"/>
