@@ -134,7 +134,7 @@
 	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
 		title="Configurators" if="__config__.app.getApp('production').getEnableConfigurator()"/>
 
-	<menuitem name="manufacturing-conf-creator" parent="manufacturing-conf-configurators" order="10"
+	<menuitem name="manufacturing-conf-configurators-creator" parent="manufacturing-conf-configurators" order="10"
 			  title="Configurator creators" action="manufacturing.conf.configurator.creator"
 			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
 
@@ -144,7 +144,7 @@
 		<view type="form" name="configurator-creator-form" />
 	</action-view>
 
-	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf-configurators" order="20"
+	<menuitem name="manufacturing-conf-configurators-configurators" parent="manufacturing-conf-configurators" order="20"
 			  title="Configurators" action="manufacturing.conf.configurator.configurators"
 			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
 
