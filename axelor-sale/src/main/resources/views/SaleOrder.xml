@@ -299,6 +299,7 @@
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
+        <field name="cancelReason" hidden="true"/>
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
 			<viewer><![CDATA[{{cancelReasonStr}}]]></viewer>
 		</field>
