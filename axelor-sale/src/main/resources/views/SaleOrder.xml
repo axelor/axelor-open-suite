@@ -264,7 +264,7 @@
 	  </panel-tabs>
 	  
 	  <panel>
-			<field name="soAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 	  </panel>
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">

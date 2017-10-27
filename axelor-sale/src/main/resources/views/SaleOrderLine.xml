@@ -112,7 +112,7 @@
 			</panel>
 		</panel-tabs>
 		<panel>
-			<field name="solAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 	  	</panel>
 	</form>
 	

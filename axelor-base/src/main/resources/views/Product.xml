@@ -224,7 +224,7 @@
   			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
   		</panel-tabs>
   		<panel>
-  			<field name="productAttrs" colSpan="12" />
+  			<field name="attrs" colSpan="12" />
   		</panel>
   		
   		<panel-mail>

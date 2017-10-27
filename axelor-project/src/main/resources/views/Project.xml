@@ -115,7 +115,7 @@
 			</panel>
 		</panel-tabs>
 		<panel>
-			<field name="projectAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		<panel-mail>
 		  <mail-messages limit="4" />
@@ -181,7 +181,7 @@
 			</panel>
 		</panel-tabs>
 		<panel>
-			<field name="projectAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 	</form>
 	

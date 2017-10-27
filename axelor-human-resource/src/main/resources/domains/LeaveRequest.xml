@@ -26,9 +26,6 @@
       <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent" title="Event" />
       <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
       <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
-      
-      <!-- -Json fields -->
-	  <string name="leaveRequestAttrs" title="Fields" json="true" />
 	
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

@@ -20,9 +20,6 @@
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true" />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"></string>
-      
-      <!-- -Json fields -->
-	  <string name="timesheetAttrs" title="Fields" json="true" />
 	  
 	  <boolean name="showEditor" title="Show editor" />
 
