@@ -102,6 +102,9 @@
 
     <form name="sale-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
 		<panel colSpan="6" colOffset="3">
+            <field name="priceListToCheck" hidden="true" colSpan="12" />
+            <field name="locationToCheck" hidden="true" colSpan="12" />
+            <field name="contactPartnerToCheck" hidden="true" colSpan="12" />
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="$location" title="Stock Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.Location" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if="__config__.app.isApp('supplychain')" />
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -283,6 +286,7 @@
 				if-module="axelor-supplychain"
 				if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
 	  	<field name="message" hidden="true" type="string"/>
+        <field name="amountInvoiced" hidden="true" />
 		<button name="addLineFromConfigurator" title="Add Line from Configurator"
 				onClick="save,action-sale-order-view-generate-line"
 				showIf="statusSelect == 1"/>
@@ -375,6 +379,7 @@
 		onLoad="action-group-sale-saleorder-onload">
 	  
 	  <panel>
+        <field name="statusSelect" colSpan="12" hidden="true" />
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
