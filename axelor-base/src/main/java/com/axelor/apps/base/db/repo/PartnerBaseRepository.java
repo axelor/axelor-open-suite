@@ -49,14 +49,12 @@ public class PartnerBaseRepository extends PartnerRepository {
 	public Partner save(Partner partner) {
 		try {
 
-			if (partner.getPartnerSeq() == null){
+			if (partner.getPartnerSeq() == null && appBaseService.getAppBase().getGeneratePartnerSequence()){
 				String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
 				if (seq == null) {
 					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 				}
-				if (Strings.isNullOrEmpty(partner.getPartnerSeq()) && appBaseService.getAppBase().getGeneratePartnerSequence()) {
-					partner.setPartnerSeq(seq);
-				}
+				partner.setPartnerSeq(seq);
 			}
 
 			return super.save(partner);

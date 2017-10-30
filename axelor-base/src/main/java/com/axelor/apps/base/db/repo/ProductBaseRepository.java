@@ -50,9 +50,7 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		product = super.save(product);
 		
-		if((product.getBarCode() == null)&&
-           (appBaseService.getAppBase().getActivateBarCodeGeneration())) {
-			    	
+		if((product.getBarCode() == null) && (appBaseService.getAppBase().getActivateBarCodeGeneration())) {
 			try {
 				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());
 				if (inStream != null) {
