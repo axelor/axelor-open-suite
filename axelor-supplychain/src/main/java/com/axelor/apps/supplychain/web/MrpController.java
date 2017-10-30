@@ -72,13 +72,14 @@ public class MrpController {
 	 */
 	public void printWeeks(ActionRequest request, ActionResponse response) {
 		Mrp mrp = request.getContext().asType(Mrp.class);
+		mrp = mrpRepository.find(mrp.getId());
 		String name = I18n.get("MRP") + "-" + mrp.getId();
 
 		try {
 			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
 					.addParam("mrpId", mrp.getId())
 					.addParam("Locale", AuthUtils.getUser().getLanguage())
-					.addParam("endDate", mrpService.findMrpEndDate(mrp).get(WeekFields.ISO.weekOfWeekBasedYear()) + 1)
+					.addParam("endDate", mrpService.findMrpEndDate(mrp).get(WeekFields.ISO.weekOfWeekBasedYear()))
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();
