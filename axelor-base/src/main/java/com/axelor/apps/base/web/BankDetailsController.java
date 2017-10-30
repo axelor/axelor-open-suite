@@ -26,6 +26,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.iban4j.InvalidCheckDigitException;
@@ -50,7 +51,13 @@ public class BankDetailsController {
 				&& bank.getBankDetailsTypeSelect()
 				== BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
 			try {
-				IbanUtil.validate(bankDetails.getIban());
+				CountryCode countryCode = CountryCode.getByCode(IbanUtil.getCountryCode(bankDetails.getIban()));
+				if (countryCode == null) {
+					throw new UnsupportedCountryException("Country code is not supported.");
+				}
+			    if (IbanUtil.isSupportedCountry(countryCode)) {
+					IbanUtil.validate(bankDetails.getIban());
+				}
 
 				bankDetails = bds.detailsIban(bankDetails);
 				if (bank.getCountry() != null
