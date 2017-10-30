@@ -265,11 +265,6 @@
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
             </panel>
-			<panel name="socialNetwork" title="Social network" if-module="axelor-social-network">
-				<button name="search" onClick="action-partner-view-search-profile" title="Search Profile" />
-				<spacer/>
-				<field name="snProfileList" colSpan="12"/>
-			</panel>
         </panel-tabs>
         <panel>
             <field name="partnerAttrs" colSpan="12" />
