@@ -253,6 +253,10 @@
                 <field name="purchaseOrderInformation"/>
                 <field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
                 <field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
+                <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
+				<field name="supplierArrivalProductQty" colSpan="3"/>
+				<spacer/>
+				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
             </panel>
             <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
                 <field name="deliveryDelay" showIf="isSupplier"/>
@@ -261,18 +265,11 @@
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
             </panel>
-			<panel name="quality" title="Supplier quality rating" if-module="axelor-stock" showIf="isSupplier" readonly="true">
-				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
-				<field name="supplierArrivalProductQty" colSpan="3"/>
-				<spacer/>
-				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
-			</panel>
 			<panel name="socialNetwork" title="Social network" if-module="axelor-social-network">
 				<button name="search" onClick="action-partner-view-search-profile" title="Search Profile" />
 				<spacer/>
 				<field name="snProfileList" colSpan="12"/>
 			</panel>
-			<panel-related field="supplierCatalogList" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
         </panel-tabs>
         <panel>
             <field name="partnerAttrs" colSpan="12" />
