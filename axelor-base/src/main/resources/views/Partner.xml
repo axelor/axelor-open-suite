@@ -580,6 +580,7 @@
 		<action name="action-partner-account-attrs-hide-employee-account"/>
         <action name="action-partner-record-set-balance"/>
         <action name="action-partner-attrs-name-balance"/>
+		<action name="action-partner-attrs-partner-seq-editable"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
@@ -587,6 +588,7 @@
 		<action name="action-partner-record-set-default"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
+		<action name="action-partner-attrs-partner-seq-editable"/>
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -616,6 +618,10 @@
      <action-method name="action-partner-method-set-user-partner">
 		<call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
 	</action-method>
+	
+	<action-attrs name="action-partner-attrs-partner-seq-editable">
+		<attribute name="canEdit" for="partnerSeq" expr="!__config__.app.getApp('base').getGeneratePartnerSequence()"/>
+	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
