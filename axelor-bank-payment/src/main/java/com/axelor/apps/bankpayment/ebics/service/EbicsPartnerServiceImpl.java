@@ -80,8 +80,10 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 				endDate = bankStatementToDate.toDate();
 			}
 		}
-		else if(ebicsPartner.getBankStatementLastExeDateT() != null) {
-			bankStatementStartDate = ebicsPartner.getBankStatementLastExeDateT().toLocalDate();
+		else  {
+			if(ebicsPartner.getBankStatementLastExeDateT() != null) {
+				bankStatementStartDate = ebicsPartner.getBankStatementLastExeDateT().toLocalDate();
+			}
 			bankStatementToDate = executionDateTime.toLocalDate();
 		}
 		
