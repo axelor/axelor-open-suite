@@ -620,7 +620,7 @@
 	</action-method>
 	
 	<action-attrs name="action-partner-attrs-partner-seq-editable">
-		<attribute name="canEdit" for="partnerSeq" expr="!__config__.app.getApp('base').getGeneratePartnerSequence()"/>
+		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-change-name">
