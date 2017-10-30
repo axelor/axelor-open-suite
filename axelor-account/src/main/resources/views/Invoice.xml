@@ -368,7 +368,7 @@
 				</viewer>
 			</field>
 		</panel>
-		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true"  hideIf="partner == null">
+		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true"  hideIf="partner == null || currency.symbol == company.currency.symbol">
 			<field name="company.currency.symbol" hidden="true"/>
 			<field name="companyInTaxTotalRemaining" hidden="true"/>
 			<field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal" >
