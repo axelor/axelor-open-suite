@@ -18,12 +18,14 @@
 package com.axelor.apps.bankpayment.ebics.service;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.exception.AxelorException;
 
 public interface EbicsPartnerService {
 
-	public int getBankStatements(EbicsPartner ebicsPartner)  throws AxelorException, IOException ;
+	public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner)  throws AxelorException, IOException ;
 	
 }

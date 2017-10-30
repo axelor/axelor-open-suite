@@ -52,4 +52,9 @@ public interface ITranslation {
     public static final String BANK_STATEMENT_INITIAL_BALANCE = /*$$(*/ "BankStatement.initialBalance"; /*)*/;
     public static final String BANK_STATEMENT_MOVEMENT = /*$$(*/ "BankStatement.movement"; /*)*/;
     public static final String BANK_STATEMENT_FINAL_BALANCE = /*$$(*/ "BankStatement.finalBalance"; /*)*/;
+    public static final String BANK_STATEMENT_TOTAL_OF_OPERATIONS = /*$$(*/ "BankStatement.totalOfOperations"; /*)*/;
+    public static final String BANK_STATEMENT_BANK_ACCOUNT = /*$$(*/ "BankStatement.bankAccount"; /*)*/;
+    public static final String BANK_STATEMENT_IBAN = /*$$(*/ "BankStatement.iban"; /*)*/;
+    public static final String BANK_STATEMENT_ACCOUNT_CURRENCY = /*$$(*/ "BankStatement.accountCurrency"; /*)*/;
+
 }

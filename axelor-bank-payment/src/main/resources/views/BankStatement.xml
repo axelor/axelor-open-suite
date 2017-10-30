@@ -4,10 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
 	<grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name">
-		<field name="name" />
-		<field name="fromDate" />
-		<field name="toDate" />
-		<field name="statusSelect"/>
+	  	<field name="ebicsPartner.ebicsBank" width="250"/>
+	  	<field name="ebicsPartner" width="150"/>
+	  	<field name="bankStatementFileFormat" />
+	  	<field name="fromDate" width="120"/>
+	  	<field name="toDate" width="120"/>
+	  	<field name="statusSelect" title="Status" width="120"/>
 	</grid>
 
 	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large">
