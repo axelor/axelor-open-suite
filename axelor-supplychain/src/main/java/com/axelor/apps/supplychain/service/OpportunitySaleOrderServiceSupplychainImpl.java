@@ -35,9 +35,6 @@ public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleO
 	@Inject
 	protected GeneralService generalService;
 
-	@Inject
-	protected OpportunityRepository opportunityRepository;
-
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException{
