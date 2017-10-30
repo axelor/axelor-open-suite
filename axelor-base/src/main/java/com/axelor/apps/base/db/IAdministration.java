@@ -77,18 +77,17 @@ public interface IAdministration {
 	static final String TREASURY_INTERFACE = "treasuryInterface";
 	static final String PURCHASE_INTERFACE = "purchaseInterface";
 	static final String MOVE_LINE_EXPORT = "moveLineExport";
-	static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
 	static final String SALES_ORDER = "saleOrder";
 	static final String PURCHASE_ORDER = "purchaseOrder";
 	static final String INTERNAL = "intStockMove";
 	static final String OUTGOING = "outStockMove";
 	static final String INCOMING = "inStockMove";
 	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
-	static final String PRO_TRAINING = "proTraining";
 	static final String PRODUCTION_ORDER = "productionOrder";
 	static final String MANUF_ORDER = "manufOrder";
 	static final String RECONCILE = "reconcile";
 	static final String PRODUCT = "product";
+	static final String DEPOSIT_SLIP = "depositSlip";
 
 	
 	/**

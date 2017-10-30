@@ -29,9 +29,6 @@
         <decimal name="distance" title="KM number" min="0"/>
         <string name="fromCity" title="Starting city with Zip" />
         <string name="toCity" title="Arriving city with Zip" />
-  		
-  		<!-- -Json fields -->
-	    <string name="expenseLineAttrs" title="Fields" json="true" />
 
 		<extra-code>
 		<![CDATA[

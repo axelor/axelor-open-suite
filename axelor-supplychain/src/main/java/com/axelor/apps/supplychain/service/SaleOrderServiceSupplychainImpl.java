@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
@@ -30,7 +41,10 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
@@ -45,13 +59,6 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
@@ -227,7 +234,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 	
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = {
+            BlockedSaleOrderException.class })
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 		super.finalizeSaleOrder(saleOrder);
@@ -239,6 +247,50 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
+	}
+	
+	@Override
+	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+
+		super._computeSaleOrder(saleOrder);
+		
+		int maxDelay = 0;
+		
+		if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()){
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				
+				if ((saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE || saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PURCHASE)){
+					maxDelay = Integer.max(maxDelay, saleOrderLine.getStandardDelay() == null ? 0 :saleOrderLine.getStandardDelay());
+				}
+				
+			}
+		}
+		saleOrder.setStandardDelay(maxDelay);
+
+		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+			saleOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(saleOrder));
+		}
+	}
+
+    protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {
+		BigDecimal total = BigDecimal.ZERO;
+		
+		if (saleOrder.getId() == null) {
+			return total;
+		}
+		
+		List<Invoice> advancePaymentInvoiceList =
+				Beans.get(InvoiceRepository.class).all()
+						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
+						.bind("saleOrder", saleOrder)
+						.fetch();
+		if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
+			return total;
+		}
+		for (Invoice advance : advancePaymentInvoiceList) {
+			total = total.add(advance.getAmountPaid());
+		}
+		return total;
 	}
 
 }

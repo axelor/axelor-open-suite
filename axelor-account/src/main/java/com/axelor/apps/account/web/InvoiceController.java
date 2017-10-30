@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
@@ -599,4 +600,24 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 * set default value for automatic invoice printing
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		Company company = invoice.getCompany();
+		Partner partner = invoice.getPartner();
+		if (company != null && partner != null) {
+			AccountingSituation accountingSituation = Beans
+					.get(AccountingSituationService.class)
+					.getAccountingSituation(partner, company);
+			if (accountingSituation != null) {
+				response.setValue("invoiceAutomaticMail", accountingSituation.getInvoiceAutomaticMail());
+				response.setValue("invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
+			}
+		}
+	}
 }

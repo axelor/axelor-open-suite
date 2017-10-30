@@ -181,14 +181,6 @@
 	<view type="form" name="configurator-prod-process-line-form" />
 	</action-view>
 
-	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report"
-		title="Manufacturing"  action="manufacturing.dashboard.view" />	
-
-	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
-		<view type="dashboard" name="manufacturing.dashboard.sample" />
-	    <context name="_today" expr="eval: __date__"/>
-	</action-view>
-	
 	<!-- TOP MENU -->
 	
 	<menuitem name="top-manufacturing" title="Manufacturing" order="6" left="false" top="true"  if="__config__.app.isApp('production')"/>

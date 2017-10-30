@@ -102,8 +102,11 @@
 
     <form name="sale-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
 		<panel colSpan="6" colOffset="3">
+            <field name="priceListToCheck" hidden="true" colSpan="12" />
+            <field name="locationToCheck" hidden="true" colSpan="12" />
+            <field name="contactPartnerToCheck" hidden="true" colSpan="12" />
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="$location" title="Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.Location" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if="__config__.app.isApp('supplychain')" />
+			<field name="$location" title="Stock Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.Location" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if="__config__.app.isApp('supplychain')" />
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<button name="confirm" title="Confirmer" onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
 		</panel>
@@ -150,7 +153,7 @@
 		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="$invoicingState" title="Invoicing State" readonly="true" css="label-bold bold" showIf="statusSelect >= 3">
-	    	<viewer><![CDATA[
+	    	<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
 	    		<div>
 				  <div class="span7">
 				  	<h5>
@@ -195,7 +198,7 @@
 					 form-view="address-partner-address-form"
 					 grid-view="address-grid"/>
 			  <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
+				  <viewer>{{mainInvoicingAddressStr}}</viewer>
 			  </field>
 		  </panel>
 		  <panel stacked="true">
@@ -206,7 +209,7 @@
 					 form-view="address-partner-address-form"
 					 grid-view="address-grid"/>
 			  <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{record.deliveryAddressStr}}</viewer>
+				  <viewer>{{deliveryAddressStr}}</viewer>
 			  </field>
 		  </panel>
 	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
@@ -257,14 +260,14 @@
 			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 		</panel>
 		
-		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
+		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
         <panel name="printing" title="Printing">
             <field name="specificNotes" colSpan="12" readonly="true"/>
         </panel>
 	  </panel-tabs>
 	  
 	  <panel>
-			<field name="soAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 	  </panel>
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
@@ -274,11 +277,16 @@
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
 	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getProductionOrderManagement() &amp;&amp; !__config__.app.getApp('production').getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
-	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
+	  	<button name="addAdvancePayment" title="Register a deposit"
+                showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0"
+				colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"
+				if-module="axelor-supplychain"
+				if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
 	  	<field name="message" hidden="true" type="string"/>
+        <field name="amountInvoiced" hidden="true" />
 		<button name="addLineFromConfigurator" title="Add Line from Configurator"
 				onClick="save,action-sale-order-view-generate-line"
 				showIf="statusSelect == 1"/>
@@ -295,28 +303,33 @@
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
+        <field name="cancelReason" hidden="true"/>
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
-			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+			<viewer><![CDATA[{{cancelReasonStr}}]]></viewer>
 		</field>
+		<field name="standardDelay" readonly="true" if-module="axelor-supplychain" hidden="true" showIf="standardDelay &gt; 0" />
 	  </panel>
 
         <panel sidebar="true" readonly="true"  colSpan="4"  hideIf="clientPartner == null">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-                <viewer>
+                <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dd>{{exTaxTotal}}  {{currency.symbol}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
+                        <dd>{{taxTotal}}  {{currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
-                        <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        <dd class="order-subtotal-total">{{inTaxTotal}}  {{currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
+                        <dd ng-show="record.statusSelect >= 3">{{amountInvoiced}}  {{currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                        <dd ng-show="record.statusSelect >= 2">{{advanceTotal}}  {{currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
             </field>
+
         </panel>
       
       <panel sidebar="true" itemSpan="6" title="Margin"  hideIf="clientPartner == null">
@@ -366,6 +379,7 @@
 		onLoad="action-group-sale-saleorder-onload">
 	  
 	  <panel>
+        <field name="statusSelect" colSpan="12" hidden="true" />
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
@@ -385,7 +399,7 @@
                      form-view="address-partner-address-form"
                      grid-view="address-grid"/>
 			  <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
+				  <viewer>{{mainInvoicingAddressStr}}</viewer>
 			  </field>
           </panel>
           <panel stacked="true">
@@ -396,7 +410,7 @@
                      form-view="address-partner-address-form"
                      grid-view="address-grid"/>
 			  <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{record.deliveryAddressStr}}</viewer>
+				  <viewer>{{deliveryAddressStr}}</viewer>
 			  </field>
           </panel>
 	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
@@ -454,17 +468,19 @@
 
         <panel sidebar="true" readonly="true"  colSpan="4">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-                <viewer>
+                <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{record.exTaxTotal}}</dd>
+                        <dd>{{exTaxTotal}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{record.taxTotal}}</dd>
+                        <dd>{{taxTotal}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
-                        <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{record.amountInvoiced}}</dd>
+                        <dd class="order-subtotal-total">{{inTaxTotal}}</dd>
+                        <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
+                        <dd ng-show="record.statusSelect >= 3">{{amountInvoiced}}  {{currency.symbol}}</dd>
+                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                        <dd ng-show="record.statusSelect >= 2">{{advanceTotal}}  {{currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -510,7 +526,7 @@
 						   form-view="address-partner-address-form"
 						   grid-view="address-grid"/>
 					<field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-						<viewer>{{record.mainInvoicingAddressStr}}</viewer>
+						<viewer>{{mainInvoicingAddressStr}}</viewer>
 					</field>
 				</panel>
 
@@ -523,7 +539,7 @@
 						   form-view="address-partner-address-form"
 						   grid-view="address-grid"/>
 					<field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-						<viewer>{{record.deliveryAddressStr}}</viewer>
+						<viewer>{{deliveryAddressStr}}</viewer>
 					</field>
 				</panel>
 	      <panel colSpan="8">
@@ -540,17 +556,19 @@
 	      </panel>
             <panel readonly="true"  css="order-subtotal" colSpan="4">
                 <field name="inTaxTotal" showTitle="false" colSpan="12">
-                    <viewer>
+                    <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
                         <dl class="dl-horizontal">
                             <dt x-translate>Total W.T.</dt>
-                            <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
+                            <dd>{{exTaxTotal}} {{currency.symbol}}</dd>
                             <dt x-translate>Total V.A.T.</dt>
-                            <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
+                            <dd>{{taxTotal}} {{currency.symbol}}</dd>
                             <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                            <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
-                            <dt x-translate>Amount invoiced W.T.</dt>
-                            <dd>{{record.amountInvoiced}} {{record.currency.symbol}}</dd>
+                            <dd class="order-subtotal-total">{{inTaxTotal}} {{currency.symbol}}</dd>
+                            <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
+                            <dd ng-show="record.statusSelect >= 3">{{amountInvoiced}}  {{currency.symbol}}</dd>
+                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                            <dd ng-show="record.statusSelect >= 2">{{advanceTotal}}  {{currency.symbol}}</dd>
                         </dl>
                         ]]>
                     </viewer>
@@ -860,6 +878,7 @@
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="amountInvoiced" expr="eval: 0"/>
+        <field name="advanceTotal" expr="eval: 0"/>
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

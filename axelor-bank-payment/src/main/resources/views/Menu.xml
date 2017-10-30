@@ -103,8 +103,10 @@
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-		action="account.bank.order.awaiting.for.signature"
-		if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()" />
+		if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"
+		action="account.bank.order.awaiting.for.signature" tag-count="true"
+		tag-style="default"/>
+
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >

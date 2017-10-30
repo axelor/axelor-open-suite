@@ -31,6 +31,7 @@
 		<integer name="intercoSaleCreatingStatusSelect"
 				 title="Create purchase counterpart on this status"
 				 selection="sale.order.status.select"/>
+		<boolean name="manageStockReservation" title="Manage stock reservation"/>
 	</entity>
 
 </domain-models>

@@ -28,13 +28,6 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="hrs.extra.hours.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Waiting validation</option>
-		<option value="3">Validated</option>
-		<option value="4">Refused</option>
-		<option value="5">Canceled</option>
-	</selection>
 	
 	<selection name="hr.time.logging.preference.select">
 		<option value="days">Days</option>
@@ -65,11 +58,6 @@
 	<selection name="hrs.timesheet.line.invoicing.type.select">
 		<option value="1">Use line's Activity</option>
 		<option value="2">Use employee's Activity</option>
-	</selection>
-	
-	<selection name="hrs.payroll.leave.unit.select">
-		<option value="1">Hours</option>
-		<option value="2">Days</option>
 	</selection>
 	
 	<selection name="hr.employment.contract.amendment.type.select">

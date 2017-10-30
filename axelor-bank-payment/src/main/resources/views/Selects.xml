@@ -146,7 +146,7 @@
 		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
 		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
 		<option value="3">Active connection</option>
-		<option value="4">Certificates should be renew</option>
+		<option value="4">Certificates should be renewed</option>
 	</selection>
 	
 	<selection name="bankpayment.ebics.certificate.type.select">
@@ -171,6 +171,7 @@
 
 	<selection name="iaccounting.batch.action.select" id="bankpayment.iaccounting.batch.action.select">
 		<option value="12">Direct debit</option>
+		<option value="20">Bank statement</option>
 	</selection>
 
 	<selection name="iaccount.account.batch.direct.debit.data.type.select">

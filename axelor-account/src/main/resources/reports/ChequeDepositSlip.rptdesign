@@ -1,0 +1,1965 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
+    </list-property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">fixed layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="DBName" id="3673">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3674">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="3676">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3818">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="4003">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DepositSlipId" id="4348">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaUser">axelor</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="DepositDB" id="3420">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints"/>
+            <list-property name="filter"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">DepositNumber</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">DepositDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">ChqNbr</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">TotalAmount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">AccountNbr</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">BankName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">Email</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">Addressl2</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">Addressl3</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">Addressl4</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">Addressl5</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">Addressl6</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">City</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">CompanyName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">CompanyLogo</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">DepositNumber</property>
+                    <property name="nativeName">DepositNumber</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">DepositDate</property>
+                    <property name="nativeName">DepositDate</property>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">ChqNbr</property>
+                    <property name="nativeName">ChqNbr</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">TotalAmount</property>
+                    <property name="nativeName">TotalAmount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">AccountNbr</property>
+                    <property name="nativeName">AccountNbr</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">BankName</property>
+                    <property name="nativeName">BankName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">Email</property>
+                    <property name="nativeName">Email</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">Addressl2</property>
+                    <property name="nativeName">Addressl2</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">Addressl3</property>
+                    <property name="nativeName">Addressl3</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">Addressl4</property>
+                    <property name="nativeName">Addressl4</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">Addressl5</property>
+                    <property name="nativeName">Addressl5</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">Addressl6</property>
+                    <property name="nativeName">Addressl6</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">City</property>
+                    <property name="nativeName">City</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">CompanyName</property>
+                    <property name="nativeName">CompanyName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">CompanyLogo</property>
+                    <property name="nativeName">CompanyLogo</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	Deposit.deposit_number       AS "DepositNumber",
+	Deposit.deposit_date         AS "DepositDate",
+	Deposit.cheque_count         AS "ChqNbr",
+	Deposit.total_amount         AS "TotalAmount",
+	BankDetails.account_nbr      AS "AccountNbr",
+	Bank.bank_name               AS "BankName",
+	Email.address                AS "Email",
+	Address.addressl2            AS "Addressl2",
+	Address.addressl3            AS "Addressl3",
+	Address.addressl4            AS "Addressl4",
+	Address.addressl5            AS "Addressl5",
+	Address.addressl6            AS "Addressl6",
+	City.name                    AS "City",
+	Company.name                 AS "CompanyName",
+	MetaFile.file_path           AS "CompanyLogo"
+FROM account_deposit_slip AS Deposit
+	LEFT OUTER JOIN base_company AS Company ON (Deposit.company = Company.id)
+	LEFT OUTER JOIN base_partner AS CompanyPartner ON (Company.partner = CompanyPartner.id)
+	LEFT OUTER JOIN base_address AS Address ON (Company.address = Address.id)
+	LEFT OUTER JOIN message_email_address AS Email ON (CompanyPartner.email_address = Email.id)
+	LEFT OUTER JOIN base_city AS City ON (Address.city = City.id)
+	LEFT OUTER JOIN base_bank_details AS BankDetails ON (Deposit.company_bank_details = BankDetails.id)
+	LEFT OUTER JOIN base_bank AS Bank ON (BankDetails.bank = Bank.id)
+	LEFT OUTER JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
+WHERE Deposit.id = ?]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PaymentsDB" id="4393">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">Amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="heading">Amount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ChqNbr</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="heading">ChqNbr</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ChqBank</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="heading">ChqBank</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ChqDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="heading">ChqDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ChqPartnerName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="heading">ChqPartnerName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PaymentDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="heading">PaymentDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PartnerFullName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="heading">PartnerFullName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PartnerId</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="heading">PartnerId</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">Amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">ChqNbr</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">ChqBank</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">ChqDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">ChqPartnerName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">PaymentDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">PartnerFullName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">PartnerId</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">Amount</property>
+                    <property name="nativeName">Amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">ChqNbr</property>
+                    <property name="nativeName">ChqNbr</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">ChqBank</property>
+                    <property name="nativeName">ChqBank</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">ChqDate</property>
+                    <property name="nativeName">ChqDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">ChqPartnerName</property>
+                    <property name="nativeName">ChqPartnerName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">PaymentDate</property>
+                    <property name="nativeName">PaymentDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">PartnerFullName</property>
+                    <property name="nativeName">PartnerFullName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">PartnerId</property>
+                    <property name="nativeName">PartnerId</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	PV.paid_amount      AS "Amount",
+	PV.cheque_number    AS "ChqNbr",
+	PV.cheque_bank      AS "ChqBank",
+	PV.cheque_date      AS "ChqDate",
+	PV.cheque_owner     AS "ChqPartnerName",
+	PV.payment_date     AS "PaymentDate",
+	Partner.full_name   AS "PartnerFullName",
+	Partner.id   AS "PartnerId"
+FROM account_payment_voucher AS PV
+	LEFT JOIN base_partner AS Partner ON (PV.partner = Partner.id)
+WHERE PV.deposit_slip = ?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>Amount</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>2</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>Amount</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>Amount</design:label>
+            <design:formattingHints>
+              <design:displaySize>21</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ChqNbr</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ChqNbr</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ChqNbr</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ChqBank</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ChqBank</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ChqBank</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ChqDate</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ChqDate</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ChqDate</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ChqPartnerName</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ChqPartnerName</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ChqPartnerName</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>PaymentDate</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>PaymentDate</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>PaymentDate</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>CourseName</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>CourseName</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>CourseName</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>PartnerFullName</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>PartnerFullName</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>PartnerFullName</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="4450">
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="dataType">string</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="dataType">string</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">11pt</property>
+            <property name="borderBottomColor">#666666</property>
+            <property name="borderLeftColor">#666666</property>
+            <property name="borderRightColor">#666666</property>
+            <property name="borderTopColor">#666666</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="orientation">portrait</property>
+            <property name="topMargin">0in</property>
+            <property name="bottomMargin">0.25in</property>
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">12px</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="4005">
+            <property name="width">7.875in</property>
+            <property name="dataSet">DepositDB</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">DepositNumber</property>
+                    <text-property name="displayName">DepositNumber</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DepositNumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">DepositDate</property>
+                    <text-property name="displayName">DepositDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DepositDate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">ChqNbr</property>
+                    <text-property name="displayName">ChqNbr</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ChqNbr"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">TotalAmount</property>
+                    <text-property name="displayName">TotalAmount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["TotalAmount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">AccountNbr</property>
+                    <text-property name="displayName">AccountNbr</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AccountNbr"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">BankName</property>
+                    <text-property name="displayName">BankName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["BankName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Email</property>
+                    <text-property name="displayName">Email</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Email"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Addressl2</property>
+                    <text-property name="displayName">Addressl2</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Addressl2"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Addressl3</property>
+                    <text-property name="displayName">Addressl3</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Addressl3"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Addressl4</property>
+                    <text-property name="displayName">Addressl4</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Addressl4"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Addressl5</property>
+                    <text-property name="displayName">Addressl5</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Addressl5"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Addressl6</property>
+                    <text-property name="displayName">Addressl6</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Addressl6"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">City</property>
+                    <text-property name="displayName">City</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["City"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CompanyName</property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CompanyLogo</property>
+                    <text-property name="displayName">CompanyLogo</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CompanyLogo"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="4006">
+                <property name="width">2in</property>
+            </column>
+            <column id="4007"/>
+            <column id="4008">
+                <property name="width">2.625in</property>
+            </column>
+            <row id="4009">
+                <cell id="4010">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">1</property>
+                    <image id="3419">
+                        <property name="marginLeft">0pt</property>
+                        <property name="display">inline</property>
+                        <property name="overflow">hidden</property>
+                        <property name="height">70px</property>
+                        <property name="width">240px</property>
+                        <structure name="toc"/>
+                        <method name="onCreate"><![CDATA[this.altText = ""]]></method>
+                        <property name="source">file</property>
+                        <property name="fitToContainer">false</property>
+                        <property name="proportionalScale">true</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"]+row["CompanyLogo"]</expression>
+                    </image>
+                </cell>
+                <cell id="4051">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <grid id="4043">
+                        <property name="marginLeft">0pt</property>
+                        <property name="display">block</property>
+                        <column id="4044"/>
+                        <row id="4045">
+                            <cell id="4046"/>
+                        </row>
+                        <row id="4053">
+                            <cell id="4054"/>
+                        </row>
+                        <row id="4047">
+                            <cell id="4048">
+                                <text id="4040">
+                                    <property name="fontSize">18pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="color">#C5C6C8</property>
+                                    <property name="display">block</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'ChequeDepositSlip.title'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="4049">
+                            <cell id="4050">
+                                <text id="4041">
+                                    <property name="fontSize">10pt</property>
+                                    <property name="color">#C5C6C8</property>
+                                    <property name="display">block</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">"ChequeDepositSlip.title"</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">new Date()</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
+            </row>
+            <row id="4071">
+                <cell id="4072"/>
+                <cell id="4073"/>
+                <cell id="4074"/>
+            </row>
+            <row id="4075">
+                <cell id="4076">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontFamily">serif</property>
+                    <grid id="4079">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="marginTop">15pt</property>
+                        <property name="marginLeft">15pt</property>
+                        <property name="marginRight">15pt</property>
+                        <property name="width">7.385416666666667in</property>
+                        <column id="4080"/>
+                        <column id="4100"/>
+                        <row id="4082">
+                            <cell id="4083">
+                                <property name="colSpan">1</property>
+                                <property name="rowSpan">1</property>
+                                <property name="paddingTop">4pt</property>
+                                <property name="paddingLeft">4pt</property>
+                                <property name="paddingBottom">4pt</property>
+                                <grid id="4359">
+                                    <property name="width">3.6041666666666665in</property>
+                                    <column id="4360">
+                                        <property name="width">1.5in</property>
+                                    </column>
+                                    <column id="4361"/>
+                                    <row id="4362">
+                                        <cell id="4363">
+                                            <text id="4463">
+                                                <property name="fontWeight">bold</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">"ChequeDepositSlip.number"</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["translation"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                        <cell id="4364">
+                                            <text id="4384">
+                                                <property name="fontSize">11pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["DepositNumber"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                    <row id="4365">
+                                        <cell id="4366">
+                                            <data id="4452">
+                                                <property name="fontWeight">bold</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">"ChequeDepositSlip.chequeDate"</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">ChequeDate</property>
+                                                        <text-property name="displayName">ChequeDate</text-property>
+                                                        <expression name="expression" type="javascript">row["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                        <property name="allowExport">true</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="resultSetColumn">ChequeDate</property>
+                                            </data>
+                                        </cell>
+                                        <cell id="4367">
+                                            <text id="4389">
+                                                <property name="fontSize">11pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["DepositDate"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                    <row id="4368">
+                                        <cell id="4369">
+                                            <data id="4453">
+                                                <property name="fontWeight">bold</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">"ChequeDepositSlip.chequeNumbers"</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">ChequeNumbers</property>
+                                                        <text-property name="displayName">ChequeNumbers</text-property>
+                                                        <expression name="expression" type="javascript">row["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                        <property name="allowExport">true</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="resultSetColumn">ChequeNumbers</property>
+                                            </data>
+                                        </cell>
+                                        <cell id="4370">
+                                            <text id="4390">
+                                                <property name="fontSize">11pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["ChqNbr"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                    <row id="4371">
+                                        <cell id="4372">
+                                            <data id="4454">
+                                                <property name="fontWeight">bold</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">"ChequeDepositSlip.bank"</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">Bank</property>
+                                                        <text-property name="displayName">Bank</text-property>
+                                                        <expression name="expression" type="javascript">row["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                        <property name="allowExport">true</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="resultSetColumn">Bank</property>
+                                            </data>
+                                        </cell>
+                                        <cell id="4373">
+                                            <text id="4391">
+                                                <property name="fontSize">11pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["BankName"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                    <row id="4374">
+                                        <cell id="4375">
+                                            <data id="4455">
+                                                <property name="fontWeight">bold</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">"ChequeDepositSlip.accountNumber"</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">AccountNumber</property>
+                                                        <text-property name="displayName">AccountNumber</text-property>
+                                                        <expression name="expression" type="javascript">row["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                        <property name="allowExport">true</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="resultSetColumn">AccountNumber</property>
+                                            </data>
+                                        </cell>
+                                        <cell id="4376">
+                                            <text id="4392">
+                                                <property name="fontSize">11pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["AccountNbr"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </grid>
+                            </cell>
+                            <cell id="4096">
+                                <property name="paddingTop">4pt</property>
+                                <property name="paddingRight">4pt</property>
+                                <text id="4114">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[&amp;nbsp;]]></text-property>
+                                </text>
+                                <text id="4382">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[&amp;nbsp;]]></text-property>
+                                </text>
+                                <text id="4380">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["CompanyName"]</VALUE-OF>]]></text-property>
+                                </text>
+                                <text id="4115">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["Addressl2"]</VALUE-OF>]]></text-property>
+                                </text>
+                                <text id="4118">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["Addressl3"]</VALUE-OF>]]></text-property>
+                                </text>
+                                <text id="4117">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["Addressl4"]</VALUE-OF>]]></text-property>
+                                </text>
+                                <text id="4116">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["Addressl5"]</VALUE-OF>]]></text-property>
+                                </text>
+                                <text id="4377">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["Addressl6"]</VALUE-OF>]]></text-property>
+                                </text>
+                                <text id="4378">
+                                    <property name="fontSize">11pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["Email"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
+                    <table id="4394">
+                        <property name="marginTop">15pt</property>
+                        <property name="marginLeft">15pt</property>
+                        <property name="marginRight">15pt</property>
+                        <property name="dataSet">PaymentsDB</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">Amount</property>
+                                <text-property name="displayName">Amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Amount"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ChqNbr</property>
+                                <text-property name="displayName">ChqNbr</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ChqNbr"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ChqBank</property>
+                                <text-property name="displayName">ChqBank</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ChqBank"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ChqDate</property>
+                                <text-property name="displayName">ChqDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ChqDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ChqPartnerName</property>
+                                <text-property name="displayName">ChqPartnerName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ChqPartnerName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">PaymentDate</property>
+                                <text-property name="displayName">PaymentDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["PaymentDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">PartnerFullName</property>
+                                <text-property name="displayName">PartnerFullName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["PartnerFullName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">PartnerId</property>
+                                <text-property name="displayName">PartnerId</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["PartnerId"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["PartnerId"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
+                        <column id="4438"/>
+                        <column id="4440"/>
+                        <column id="4441"/>
+                        <column id="4442"/>
+                        <column id="4443"/>
+                        <column id="4444"/>
+                        <column id="4445"/>
+                        <header>
+                            <row id="4395">
+                                <property name="fontWeight">bold</property>
+                                <cell id="4396">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4456">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.individual'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Individual</property>
+                                                <text-property name="displayName">Individual</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">Individual</property>
+                                    </data>
+                                </cell>
+                                <cell id="4400">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4457">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.issuer'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Issuer</property>
+                                                <text-property name="displayName">Issuer</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">Issuer</property>
+                                    </data>
+                                </cell>
+                                <cell id="4402">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4458">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.payer'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Payer</property>
+                                                <text-property name="displayName">Payer</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">Payer</property>
+                                    </data>
+                                </cell>
+                                <cell id="4404">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="4464">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.chequeNumber'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4406">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4460">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.paymentDate'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">PaymentDateLabel</property>
+                                                <text-property name="displayName">PaymentDateLabel</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">PaymentDateLabel</property>
+                                    </data>
+                                </cell>
+                                <cell id="4408">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4461">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.depositDate'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">DepositDate</property>
+                                                <text-property name="displayName">DepositDate</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">DepositDate</property>
+                                    </data>
+                                </cell>
+                                <cell id="4410">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4462">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.amount'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">AmountLabel</property>
+                                                <text-property name="displayName">AmountLabel</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">AmountLabel</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="4412">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">center</property>
+                                <cell id="4413">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4428">
+                                        <property name="resultSetColumn">PartnerFullName</property>
+                                    </data>
+                                </cell>
+                                <cell id="4417">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4422">
+                                        <property name="resultSetColumn">ChqPartnerName</property>
+                                    </data>
+                                </cell>
+                                <cell id="4419">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4418">
+                                        <property name="resultSetColumn">ChqBank</property>
+                                    </data>
+                                </cell>
+                                <cell id="4421">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4416">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">ChqNbr</property>
+                                    </data>
+                                </cell>
+                                <cell id="4423">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="4448">
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["PaymentDate"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4425">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="4447">
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/YYYY">row["ChqDate"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4427">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4414">
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">#,##0.00 €{RoundingMode=UP}</property>
+                                            <property name="locale">fr_FR</property>
+                                        </structure>
+                                        <property name="resultSetColumn">Amount</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </detail>
+                        <footer>
+                            <row id="4429">
+                                <cell id="4430"/>
+                                <cell id="4432"/>
+                                <cell id="4433"/>
+                                <cell id="4434"/>
+                                <cell id="4435">
+                                    <property name="colSpan">3</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="paddingTop">5pt</property>
+                                    <text id="4449">
+                                        <property name="fontSize">12pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[TOTAL: &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;<VALUE-OF format="#,##0.00 €{RoundingMode=HALF_UP}">row._outer["TotalAmount"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </footer>
+                    </table>
+                </cell>
+            </row>
+        </grid>
+    </body>
+    <list-property name="images">
+        <structure>
+            <property name="name">cheque.png</property>
+            <property name="type">image/png</property>
+            <property name="data">
+                iVBORw0KGgoAAAANSUhEUgAAAlgAAAJYCAYAAAC+ZpjcAAAABmJLR0QA/wD/AP+gvaeTAAAAB3RJTUUH
+                2AsGBSUvJet1egAAIABJREFUeJzt3Xm0nlV59/FvBgKEISiEMSAgM4RJZLbIIIoCFYu2gFS0CtIqFEoV
+                bX2dleIA1ooDKIgoKhUFUVFsKlMgTAqBMIV5JhASMkBCcvL+sXNKOJyc85zn3Pe+7uH7Weu38r7LFK48
+                z1nsK9fe975BkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiTVyYjoAiRJUqOs
+                AKwKrAasvMz/e3Q/v3cRMGeZXxcCM4H5WSotkQ2WJEnqxJrAhkuzMTABWBdYa2nWWfrrKgX8u14gNVrP
+                As8AjwAPLv31YeC+pf//ngL+XaWwwZIkSb3GAlsuzVZLs8XSFNE4FWk+cOfS3A5MAW4E5kUW1csGS5Kk
+                dloL2GlpdlyaLYBRkUUN0yLgDuBaYBLwR2B2RCE2WJIkNd9IYBtgz6XZg9RMNd0i4Abgd8DPgXtiy5Ek
+                SXU2ApgInARcBswClhhuAU4B1u/+o5UkSW2yHnAMcAHwBPHNTJWzEPgpaZonSZL0CtsApwLXA4uJb1zq
+                mCnAW4f6wUuSpGZ5A3A66TxRdHPSpEwCdh/C9yBJkmpuC+DTwF3ENyJNzmLgv0iXo0qSpAZ6DfBR4Cbi
+                G4+25QFgn8G/IkmSVBd7Az8kXaQZ3Wi0OQuB4wf5riRJUoWtBpwATCO+sTCvzH/hvaGSJNXK+sBpwHPE
+                NxJm+fn68r5ASZJUHZsC5wILiG8eTGf5RL/fpCRJCrce8C1srOqYRcBfvforlSRJUdYgbQXOI75RMN3n
+                AdJ5uUHV+Y3ZkiRV3Ujg/cAvSbeFrxBbjoZpDdL08croQiRJaqtdgeuIn7qYYvMMHVxEOnKw3yBJkoZk
+                HPAdUnPlq1eaZ03gyMF+kw2WJEnFORi4AzgO19gme3t0AZIktcF44MfEb1+ZPJkFjGYAdteSJA3PocDt
+                dLBtpMYYB2ww0G+wwZIkqTurAN8DLgHWDq5F+Q34nQ843pIkSf16I3ABsEV0IQqz1kD/oxMsSZI6NwL4
+                N2AyNldtN2ug/9EJliRJnVkT+CHwjuhCVAnPDPQ/jshVhSRJNbY78DNgo+hCVAmLSQfd5y3vN7hFKEnS
+                8o0ATgKuwuZKL/szAzRX4BahJEnLswrwfeBvowtR5Uwa7DfYYEmS9GobA78CdgiuQ9X0+8F+g2ewJEl6
+                pf1I560GfAxfrXUf6QnSnoF+k2ewJEl62Ymk6YTNlZbnewzSXEmSpGQ08G3i33Fnqp15dNh8ewZLktR2
+                44CfAwdGF6LK+wqD3H/VyzNYkqQ22xi4DNg2uA5V3xPA5gxyPUMvz2BJktpqV+A6bK7UmX+nw+ZKkqS2
+                Ooi0WEaf6TH1yO9x10+SpAEdBSwkftE29cgzwHpIkqTl+mfSI/bRi7apTw5DkiT1awTwReIXa1OfvER6
+                D6UkSerHKOBs4hdsU588DeyLJEnq10rAxcQv2KY+mQJMQJIk9Wt1YBLxC7apT74LrIgkSerXOsCfiV+w
+                TT3yAvABJEnScm0C3Ev8om3qkUeAXZAkScu1OWnBjF60TT1yHd5xJUnSgLYAHiV+0Tb1yPmkhyAkSdJy
+                bAk8RvyibaqfxcDHkCRJA9oKeJz4hdtUP88DByNJkga0NfAE8Qu3qX7uA7ZFkiQNyObKdJrrgLWRJEkD
+                2gZ4kviF21Q/FwErI0mSBrQt8BTxC7epfk4nvehbkiQNYCLpRbzRC7epdl4CjkOSJA1qB2yuzOB5Hngb
+                wRybSZLqYCvgKmB8dCGqtCdIzdVt0YXYYEmSqm5j4GpgQnAdqra7SM3VQ9GFAIyMLkCSpAGsD1yBzZUG
+                NgXYm4o0V5IkVdl40lZP9JkeU+1cBqyCJEka1DjSVCJ68TbVzrnAaCRJ0qDGAn8ifvE21c6X8Sy5JEkd
+                GQP8hvjF21Q3PcCJSJKkjowCfk78Am6qm0XAMUiSpI6MAH5A/AJuqpsXgcOQJEkdO5P4BdxUN3OBA5Ak
+                SR37HPELuKluZgK7I0mSOnY88Qu4qW6eALZHkiR17FDSoeXoRdxUMw8Cm1FT3h8hSYqwGzCJdOeV1Nf9
+                wH7U+NU3NliSpNwmAlcBa0QXokq6G9gfeCy6kOGwwZIk5TQBuA5f3qz+TSM1V09GFzJcI6MLkCS1xjjg
+                t9hcqX9/Ad5MA5orsMGSJOUxBriYtD0o9XUzaXI1I7oQSZLqYgRwAfFPpZlqZjJpuilJkobgy8Qv4qaa
+                uRabK0mShsyLRM3y4uRKkqQuHAUsJn4hN9XLddhcSZI0ZPsBC4hfyE31cj0taK68B0uSVLTNSBOKtaIL
+                UeXcCLwFmB1dSNlssCRJRVqL1FzV9h1yKk1rmivwHixJUnHGAD/D5kqvdhMtaq4kSSrSD4k/32Oql1uB
+                NZEkSUN2KvELualepgHjkSRJQ3Y40EP8Ym6qlXuBDWgpD7lLkoZjN2ASMDa6EFXKw8Cblv7aSjZYkqRu
+                TSAdXl4nuhBVymPAm4HpwXWE8ilCSVI3xgG/xeZKrzSD9LRgq5srsMGSJA3dKODHwMToQlQps4H9gTuj
+                C5EkqY7OIv4AtalW5gG7I0mSunI88Yu5qVYWAG9HkiR15UBgEfELuqlOeoCjkCRJXdkMeI74Bd1UK8cj
+                SZK6Mg64g/jF3FQrn0aSJHVlJHAp8Yu5qVa+hSRJ6toXiF/MTbVyAV5ULklS196N7xg0r8yvgTFoUHag
+                kqT+7ABMxncM6mWTSbe0z48upA5ssCRJfY0HbgReF12IKmMq6eXNs6MLqQtflSNJWtYY4CJsrvSy6cBb
+                sbkaEhssSdKyzgD2iS5ClfEEcNDSXyVJUhc+RPwhalOdzMIXekuSNCx7k94pF72om2pkHrAnkiSpaxOA
+                p4lf1E01sgg4FEmS1LWVgZuJX9RNdeL7BSVJGqYfEL+gm+rkq0iSpGE5jvgF3VQnlwCjUCG8aFSS2mk3
+                4Cp87YmSKcB+eEt7YWywJKl9xgO3kA63S9NJTwzOiC6kSbxoVJLaZRTwM2yulMwgXSRqc1UwGyxJapfT
+                gH2ji1AlzAcOIU2wJElSlw4Heog/TG3i411XkiQVYGvgeeIXdlONnIokSRqW1YA7iV/UTTVyFpIkaVhG
+                ABcRv6ibasS7riRJKsApxC/qphq5HhiLsvAeLElqrn2BK3BiIe+6ys4GS5KaaQLpMtHx0YUo3AxSc+V1
+                DBl5D5YkNc8Y0rkrmystBN6DzZUkScN2JvHnfUw18iEkSdKwvQsvEzUpZ6IwnsGSpObYlHTualx0IQp3
+                OXAwsDi6kLaywZKkZlgRmAzsHF2Iwt0J7AHMji6kzTzkLknNcAY2V4JnSe8YtLmSJGmYjiD+vI+JzwJg
+                PyRJ0rBtBcwhfnE38fkwkiRp2MYCU4lf2E18vokkSSrEucQv7CY+f8DXIUmSVIhjiF/YTXzuxms5Kslr
+                GiSpfrYDppC2CNVes4A34mtwKslrGiSpXlYlvWfQ5qrdFgF/g81VZdlgSVK9fJf05KDa7QRgUnQRkiQ1
+                wXHEn/kx8TkLVZ5nsCSpHiaSzl2tHF2IQk0C3kraIlSF2WBJUvWNBW4Cto4uRKHuJx1qnxldiAbnGSxJ
+                qr7/xOaq7eYD78LmSpKkQvieQbOE9HMgSZIK8HpgNvGLu4nN11HteAZLkqppDDAZeEN0IQr1J+AAYHFw
+                HRoiz2BJUjWdjs1V2z0CvAebK0mSCnEI0EP81pSJywvALkiSpEJMAJ4hfoE3sXk/kiSpEKOAK4lf3E1s
+                voUkSSrMZ4lf3E1sriE94KCa8ylCSaqGNwN/JE2x1E6Pk85dPRFdiIbPBkuS4q0F3AqsH12IwiwE9iVd
+                zaEG8JoGSYo1AjgPm6u2OxGbK0mSCnMS8ed+TGy+jxrHLUJJirMDMAVYMboQhbkReBOwILoQFcsGS5Ji
+                jCUtrttEF6IwM4CdgUejC1HxPIMlSTG+is1Vmy0C3o3NlSRJhTkUX4XT9nwMNZpbhJKU13qkKxnGRxei
+                MJcC7yQ1WmooGyxJymcE8HvgLdGFKMwDpHNXs6ILUbk8gyVJ+ZyEzVWbLSCdu7K5kiSpIDuSFtjosz8m
+                LscjSZIKMxaYRvwCb+LyYyRJUqHOIn6BN3GZBqyCJEkqzKHEL/AmLnPxvjNJkgq1HvAM8Yu8ictRSJKk
+                wowAriB+gTdx+Q6SJKlQ/0L8Am/icjO+xLvVvGhUkoq3IzAFGBNdiELMAt4A3B9diOJ40agkFWsl4AJs
+                rtpqCXAMNleSJBXqDOK3p0xcvoIkSSrU/kAP8Yu8icnVwGgkPIMlSUV5DXAbMCG6EIV4GtgJeDy6EFWD
+                Z7AkqRhnYXPVVotJ913ZXEmSVKAjid+eMnH5LFIfbhFK0vBsCNxK2iJU+1wF7EeaYkn/xy1CSereCOA8
+                bK7aaiZwNDZX6ocNliR17yTS9ELtswT4APBwdCGSJDXJdsALxJ//MTH5JtIAPIMlSUM3BrgB2CG6EIX4
+                M7AHsCC6EFWXW4SSNHSfx+aqreYCR2BzJUlSofYBFhG/RWVicjSSJKlQqwMPEL/Im5icjyRJKtx5xC/y
+                Jib3AKshSZIKdRjxi7yJyQJgZyRJUqHGA08Rv9CbmJyIJEkq3C+IX+RNTC7FK40kSSrcUcQv8iYmjwBr
+                InXBrlySlm8DYCq+a7CNFpNeg3RVdCGqJy8alaT+jQDOweaqrT6HzZUkSYU7lvgtKhOTK4FRSMPgFqEk
+                vdomwG3AqtGFKLtngR2BR6MLUb25RShJrzSSdKGozVU7fQibK0mSCncS8VtUJibnIBXELUJJetnWwM3A
+                ytGFKLt7Sbe1z40uRM3gFqEkJaNJW4M2V+3zEum+M5srFcYGS5KSTwC7RhehEJ8FbowuQs3iFqEkpafG
+                pgBjogtRdtcAbyZdLCoVxgZLUtutSJpeTIwuRNk9D+wAPBhchxrILUJJbfdpbK7a6nhsriRJKtyuwCLi
+                rwcw+fNjpBK5RSiprVYkXcmwbXQhyu4h0rm7WdGFqLncIpTUVp/B5qqNFgPvw+ZKkqTCuTXY3nwZKQO3
+                CCW1jVuD7XUjsBfpYlGpVG4RSmqbz2Fz1UbzgPdicyVJUuHcGmxvjkWSJBVuJeAO4hd6kz+XIEmSSvEf
+                xC/0Jn8eB8YjSZIK59ZgO9MDHIgkSSrcSsA04hd7kz/fRJIklcKtwXbmHmAVpCDegyWpyXYDrgVGRRei
+                rBYDewPXRxei9vIeLElNtRJwHjZXbXQ6NleSJJXCrcF25lZgDFIwtwglNdGuwGScXrXNQuCNwG3RhUhu
+                EUpqmjHAD7C5aqNPY3MlSVIpPkv8NpXJn+uwqVaFuEUoqUm2B24CVoguRFnNA3YC7o0uROrlFqGkphhN
+                2hq0uWqfj2NzJUlSKT5O/DaVyZ8rcDdGFeQPpaQm2Ar4M+nuK7XHLNK28CPRhUh9uUUoqe5GAmdjc9VG
+                J2JzJUlSKU4gfpvK5M/FSBXmFqGkOtuEdO/RqtGFKKungYlLf5UqyS1CSXU1grQ1aHPVPsdhcyVJUin+
+                gfhtKpM/5yHVgFuEkupoA+AOYFx0IcrqEdJTg7OiC5EG4xahpDr6NjZXbbME+AA2V5IkleJI4repTP58
+                B6lG3CKUVCfjgWnAWtGFKKuHge2AOdGFSJ1yi1BSnZyJzVXbLAE+hM2VJEmleDvx21Qmf85BqiG3CCXV
+                waqkpwY3ii5EWT1CulB0dnQh0lC5RSipDr6EzVXbLAE+iM2VJEml2ANYTPxWlXFrUOqYW4SSqmwMcAuw
+                bXQhyupR0lODTq9UW24RSqqyT2Bz1UbHYnMlSVIptgFeJH6ryuTNuUgN4BahpCoaCVwN7BldiLJ6nLQ1
+                +Fx0IdJwuUUoqYqOx+aqjT6MzZUkSaWYADxP/FaVyZsfITWIW4SSqubXwMHRRSirJ0kPM8yMLkQqiluE
+                kqrkb7G5aqNjsbmSJKkUrwWeIn6ryrg1KElSY5xH/GJv8uYJUmMtSZJKsD/QQ/yCb/LmMCRJUilWAu4l
+                frE3eXMhkiSpNF8kfrE3eTMDWBtJklSK7YCFxC/4Jm+ORpIklWIkcC3xi73Jm8uRJEmlOZ74xd7kzRxg
+                YyRJUinWA2YRv+CbvDkBSZJUmp8Rv9ibvLkOGIUkSSrFO4hf7E3eLCA90CC1hu8ilJTTqsC3ootQdqcB
+                t0cXIUlSU32N+GmKyZs7gBWRWmZEdAGSWmNn4AY8h9MmPcCbgMnRhUi5uUUoKYdRwNnYXLXNWdhcSZJU
+                mpOJ36oyefMQ6cyd1EpuEUoq24bANFxs2+YdwG+ji5CiuEUoqWzfwuaqbX6CzZVazgmWpDK9E/hldBHK
+                6hlg66W/Sq3lBEtSWVYFvhFdhLL7Z2yuJEkqzenEH7Q2efM7JAFuEUoqx3bALcAK0YUom7mk7/2h6EKk
+                KnCLUFLRRgDfxuaqbT6JzZUkSaV5P/FbVSZvpuBf2KVXcItQUpHWBO4C1oouRNksAnYBbo0uRKoS/8Yh
+                qUhfxuaqbc7E5kp6FSdYkoqyJ3AN/nelTR4CtgXmRRciVY0TLElFGE16sa/NVbv8EzZXUr9ssCQV4QRg
+                h+gilNV/A7+JLkKqKv+2KWm4JgB34vsG2+R50utwHo8uRKoqJ1iShutMbK7a5pPYXEmSVJqDiL+DyXjn
+                lVQ5bhFK6tZKwB3AptGFKBvvvJI65N9CJHXr37G5ahvvvJI65ARLUje2JC20K0YXomy880oaAidYkrpx
+                FjZXbeOdV5IklehI4g9am7y5CElD4hahpKFYg3Tn1brRhSgb77ySuuAWoaSh+AI2V23jnVdSF5xgSerU
+                LsD1wKjoQpTNDcAeQE90IVLd2GBJ6sQoUnO1S3QhysY7r6RhcItQUic+jM1V23jnlTQMTrAkDWZd0sH2
+                NaILUTYPA9vgtQxS15xgSRrM17C5apsTsbmSJKk0+xN/B5PJm8uQNGxuEUpanhVJZ3C2jC5E2bxIeh3O
+                /dGFSHXnFqGk5TkFm6u2+RI2V1IhnGBJ6s8mwDRgpehClM29wERgQXQhUhM4wZLUn69jc9U2H8XmSpKk
+                0hxE/EFrkze+zFkqmFuEkpa1IjAV2Dy6EGUzF9gKeCy6EKlJ3CKUtKyTsLlqm89icyUVzgmWpF4bAHcB
+                q0YXomxuB3YGXoouRGoaJ1iSep2OzVWbLAH+CZsrSZJKsy/QQ/xha5MvP0RSadwilDQa+DOwXXQhymYW
+                6RLZp6MLkZrKLUJJ/4jNVdv8GzZXUqmcYEntNh64B1gjuhBlczOwG7A4uhCpyZxgSe32JWyu2qQHOB6b
+                K0mSSrM7HmxvW76NpCzcIpTaaSQwBdgluhBlM4N0Y/vM6EKkNnCLUGqnD2Bz1TYfx+ZKysYJltQ+a5AO
+                to+PLkTZXA/sSdomlJSBEyypfT6PzVWbLAY+is2VJEml2RFYRPxha5MvZyEpO7cIpfYYAVwJvCm6EGXz
+                LOnG9mejC5Haxi1CqT2OwOaqbT6FzZUUwgmW1A6rAncBG0QXomz+QnpS1EtFpQBOsKR2+BQ2V22yBDgB
+                mytJkkqzFbCQ+MPWJl/OR1Iotwil5vs9cGB0EcrmedLB9iejC5HazC1Cqdneic1V23wOmyspnBMsqblW
+                AqYBm0QXomzuArYHXoouRGo7J1hSc30Cm6u2ORGbK6kSnGBJzbQJaXq1UnQhyuZXwGHRRUhKbLCkZvol
+                6fyV2mE+sDXwcHQhkhK3CKXm2R+bq7Y5DZsrqVKcYEnNMop0g/d20YUomweAbYAXowuR9DInWFKzHIvN
+                VducjM2VVDlOsKTmWAO4BxgfXYiy+QPw1ugiJL2aEyypOT6FzVWbLCC9b1CSJJVkC3zfYNtyGpIqyy1C
+                qRkuBQ6JLkLZPEl63+Dz0YVI6p9bhFL9HYjNVdt8EpsrqdKcYEn1Nhr4Mz452CY3AbsBPdGFSFo+J1j1
+                tRqwY3QRCue1DO2yBDgJmytJKsX+pMsF7wNWDK5FcdYAniH+sLXJlwuRJBVuNeDbpL+99v4H92OhFSnS
+                GcQv+CZf5gEbIUkqVO/Uqu9/dGcDawfWpRhb4bUMbctnkCQVpr+pVd98P6w6RbmM+AXf5MtDwFgkSYVY
+                3tSqb3qAvYJqVH4HEr/gm7w5EknSsHUyteqbW0mP7KvZRgN3EL/gm3y5Fq/UkaRh63Rq1V/+JaBe5fUR
+                4hd8ky+LgV2QJHWtm6lV38wBJuQuXNm8Fq9laFvORZLUteFMrfrmvzPXrny+QfyCb/LleWBdJElDVsTU
+                qr8clPMPoSy2Al4iftE3+XIqkqQhK3Jq1Tf3ASvl+6Mog98Sv+CbfLkf39IgSUNS1tSqbz6f6w+k0h1E
+                /IJv8uadSJI6VubUqm9eBLbI88dSiUYDdxK/4Jt8mYQkqSO5plZ9czUwMsOfT+U5gfgF3+TLImAikqRB
+                5Zxa9ZcTy/8jqiRrAs8Sv+ibfDkLSdKAoqZWfTMXeH3Jf1aV4z+JX/BNvjwHjEeStFzRU6u++RO+aqNu
+                tsBrGdqWU5Ak9asqU6v+8k8l/rlVvF8Q/zNj8uU+vJZBkvpVtalV38wBXlfan15F2ov4nxeTN4cjSXqF
+                Kk+t+mYSPlVYdSOA64j/WTH5cg1u4UvSKxwAPEj8f6CHkn8t44NQYd5N/M+IyZceYFckSUCaWn2Hekyt
+                +mYBsH3xH4kKsAJwL/E/IyZffowkCajn1KpvpuK7CqvIS0XblReAjZCklqvz1Kq/nFHsx6NhGgfMIP7n
+                wuTLl5GklmvC1KpvekhPPqoaTiP+Z8Lky1PA6khSSzVtatU3jwKvLezTUrc2Im0XRf88mHw5DklqqSZO
+                rfrLr/AR8WjnEf9zYPLldmA0ktQyTZ9a9ZeTC/nk1I0dgcXE/wyYfHkbktQybZla9c0CYLfhf3zqwhXE
+                f/8mXy5HklqkjVOrvnkQz2Pl9jbiv3eTL4uA7ZCklmjr1Kq/XILnsXIZCdxG/Hdu8uW7SFILOLXqP6cM
+                50NVx95P/Hdt8mU2sA6S1HBOrZafBcAeXX+y6sRY4BHiv2uTL59EkhrMqVVneQQY3+VnrMH9G/HfscmX
+                h/DVVJIazKnV0HI1MKabD1oDWpu0XRT9/Zp8ORJJaiCnVt3n7C4+bw3sv4j/Xk2+3IgPjkhqIKdWw89H
+                hvqha7m2ABYS/52afNkXSWoQp1bFZSGw39A+fi3HL4j/Pk2+/AZJahCnVsXnaWDTIXwHerW9iP8eTb54
+                qaikxnBqVW5uA1bp+NtQX1cT/x2afPk+ktQATq3y5JfAqM6+Ei3DV+K0K/OACUhSjTm1yp+zOvpm1GsE
+                cAvx35vJly8hSTXm1Coupw7+9Wipw4n/vky+zABWR5JqyKlVfHqAowf7osRo4E7ivy+TLycgSTXk1Ko6
+                WQQcOuC3pWOI/55MvkzHtx9IqhmnVtXMPGC3Ab63NhuDfxloW96DJNWIU6tq52lgs+V9eS32EeK/G5Mv
+                U/CVOJJqwqlVffIIPpa+rFWAJ4n/Xky+7IMk1YBTq/rlDmB8P99lG51K/Pdh8uXXSFLFObWqd6Zik7UG
+                MJP478LkySJgGySpj5HRBSzjANICfRyeZair7YArgDWjCwl0CvCa6CKUzbnAtOgiJKk/Tq2al1toZ5O1
+                DjCX+M/f5Mk8YH0kqR/REyynVs20E3AlsG50IZl9Al+I3SZfBx6PLkKSluXUqh25B3gd7bAR8CLxn7nJ
+                k6fwlTiSKsYnBNuVh4DNab5ziP+sTb58FEmqCKdW7c1TwK4015bAS8R/ziZP7sdX4kiqCKdWZi5wCM30
+                U+I/X5Mv70WSgjm1MstmEfBhmmVH/PluU/5C/MNBklrOqZVZXr4GjKIZLiX+8zT58g4kKYhTK9NJ/gC8
+                lnrbGX/O25SrkaQgTq3MUDKddPt7XV1C/Gdo8mUvJCkzp1am28yhnoeGd8Kf9zblEiQpM6dWpoj8EFiV
+                +vgl8Z+ZyZPF1HvSKqlmnFqZonM36VxT1e2AP/dtyvlIUiZOrUxZWQD8P6p9keMviP+cTJ68SHte9yQp
+                kFMrkyu3AW+kerbHn/825UwkqWROrUzuvAR8hWqdzfoZ8Z+LyZPngbWRpJI4tTLReQr4R2A0sTYnHXiO
+                /jxMnnwGSSrJ2ji1MtXJHcBBxDl7OXWZ5uUp0l8uJakrg71T62ngwhyFSB3YBvgtcAPwTvK+E2594O8z
+                /vsU60ukO9okqTQjgAuI/xulMX1zB/A+YGXK99WAP5+JyYPAikjSMIzo8PeNAX4H7FdiLVK3ZpMOn58H
+                XFfCP/81wMNU67C9ynMM6eJbSepapw0WwDjSy04nllSLVIS7gUtJL5O+hnSP0XB9CvhcAf8cVd/tvHyR
+                rCR1bSgNFsAE0oRgQgm1SEWbD1wJ3AJMBaaRGrCFg/zfvYZ0o/yOwBuAg/HAc1v8NalBl6RhGWqDBWmC
+                dTVpoiXVzUvAc6Q7jmYDs4BRpKZqjaW/rh5WnSJNAXaPLkJSM3TTYAEcQnrZ7agCa5GkSAcCV0QXIakZ
+                un3M/dfAR4ssRJICXYnNlaQCDWcCdROwErB3QbVIUpT3Ao9EFyGpObrdIlz2//7HwBEF1CJJES4n9g0B
+                khpouA0WwFhgErBbAf8sScppCfBG4OboQiQ1SxGvGplPOvQ+vYB/liTl9EtsriSVoIgJVq/NgMnA+AL/
+                mZJUlh5ge9IrlySpUEW+LHc66ZK+wS5xlKQquBCbK0klKfoeq0eBB4DDKHY6JklFWgS8G5gZXYikZirj
+                otCpwALggBL+2ZJUhO/jC50llaism9ivAdYhPZ0jSVWyADic9LokSSpFkWew+voo3owsqXq+h5eKSipZ
+                2eekxpFeDD2x5H+PJHViPrAp8FR0IZKarcwJFsBs4O2kw++SFO2b2FxJyiDXk34TSeeyVs/075OkvmaT
+                plc+OSipdGVPsHpNBY4GFmf690lSX2dgcyUpk7KeIuzP3cAsfKmqpPyeJb2UfkF0IZKlX6mGAAAM/ElE
+                QVTaIWeDBTAFr2+QlN9nSS+ll6QsIm5bHwX8DnhLwL9bUvs8TTp7NS+6EEntkesM1rIWk15RMTXg3y2p
+                fb6CzZWkzCLfF7gJactwfGANkprtKdL0an50IZLaJWKC1esB4BDghcAaJDXb6dhcSQoQOcHqdRTwI6pR
+                i6TmeJI0vfIvcZKyy/0UYX+mAj3AvtGFSGqUfyddcCxJ2VVlajSCNMU6KroQSY3wOLAZTq8kBYk8g7Ws
+                JcAHgOuiC5HUCKdhcyUpUFUmWL3GA5NJf/OUpG48RvpvyIvRhUhqr6pMsHrNAP6a9FJWSerGl7G5khSs
+                ahOsXvsBlwMrRBciqVYeBjYHFkYXIqndqvAUYX8eAJ4B3hFdiKRa+ThwQ3QRklTVBgvgJmA1YM/oQiTV
+                woPAP5BexyVJoap2BquvjwOXRhchqRa+hFuDkiqiqmewljWW9GThDtGFSKqsB4AtgZeiC5EkqP4EC9J7
+                xA4GHo0uRFJlfRGbK0kVUocJVq9dgCtJEy1J6nU/aXq1KLoQSepVhwlWr5uAI0jvLZSkXp/H5kpSxVT5
+                KcL+3E06xHpAdCGSKuF+4Fj8i5ekiqlbgwVwDbAhsHN0IZLCfYw03ZakSqnTGaxljQH+AOwTXYikMA8B
+                W+DVDJIqqE5nsJa1EHg3MD26EElh/gObK0kVVdcJVq+JwNXAuOhCJGX1GPB6YEF0IZLUn7pOsHpNBd6L
+                r8aQ2uZ0bK4kVVgdD7n3dQ8wDzgwuhBJWTwJvA+vZpBUYU1osACuAzYCdoouRFLpPgNcFV2EJA2k7mew
+                ljUG+CPwpuhCJJVmBrAJaWotSZVV9zNYy1oI/A3p4kFJzfR1bK4k1UCTJli9fLJQaqaZwMbAnOA6JGlQ
+                TZpg9ZoKHI1PFkpNcyY2V5JqoimH3Pu6B3gBeEt0IZIKMQs4EngxuhBJ6kRTGyyAyaTthB2D65A0fF8B
+                fhddhCR1qolnsJY1BvgfYO/oQiR1bQ7pL0szg+uQpI418QzWshYC7wIeiS5EUte+hc2VpJpp+gSr147A
+                tcDY6EIkDck80r1XM6ILkaShaPoEq9dfgGOAJcF1SBqa72FzJamGmnzIva9ppD/vPtGFSOrIi8DfAnOj
+                C5GkoWrLBKvXp4FfRRchqSPnAU9EFyFJ3WjLGaxlrUY6jzUxuhBJy7UI2AJ4ILoQSepG2yZYkB75PgzP
+                dUhV9lNsriTVWBsnWL32Ay4HVoguRNIrLCFNmO+ILkSSutXGCVavScBJ0UVIepVLsLmSVHNteoqwPzcC
+                6wNviC5E0v/5e+Dx6CIkaTjavEXYawxwBfBX0YVI4o/4knZJDWCDlYwHbgI2ii5Earn9Sdv3klRrNlgv
+                2wGYjK/TkaJMAXaPLkKSitDmQ+593Qq8D1+nI0X5YnQBklSUth9y78vX6UgxpgInRxchSUWxwXq1K4Fd
+                SLdIS8rjZFKTJUmN4Bms/o0DbsAmS8rhPmAr0utxJKkRPIPVv9nAO5f+KqlcX8HmSlLDOMEa2KHAr/Bz
+                ksryOLAJsDC6EEkqkmewBnb30l/fHFmE1GCfAa6JLkKSiuZkZnAjgItJW4aSivMssDEwN7gOSSqcZ7AG
+                twQ4BrgzuA6pac7C5kpSQznB6twWpCcLx0UXIjXAC6RXUz0TXYgklcEJVufuAY4CeqILkRrgB9hcSWow
+                D7kPzb2kLcN9owuRamwRcDQwM7oQSSqLE6yh+wLp0Luk7lwMTI8uQpLK5Bms7qwGTAa2iy5EqqFdgJuj
+                i5CkMjnB6s4c4DBgVnQhUs1MwuZKUgvYYHVvOnAEsDi6EKlGTo8uQJJy8JD78EwnPVW4X3QhUg38BfhY
+                dBGSlIMN1vBdDewEbBldiFRx/wrcFl2EJOXgIfdijANuBDaPLkSqqIeB15OuaJCkxvMMVjFmA+8C5kcX
+                IlXU17G5ktQiTrCK9XfAhdFFSBUzE3gdvndQUot4BqtYtwNrALtHFyJVyNeA30cXIUk5OcEq3grA/wBv
+                ii5EqoAXgI2Bp4PrkKSsPINVvJeA9wCPRxciVcD52FxJaiEnWOXZi3Rr9ZjoQqQgPaTrS3zvoKTWcYJV
+                nmuBU6KLkAL9GpsrSS3lIfdy3QBsBmwfXYgU4B+AR6KLkKQIbhGWbywwGdghuhApo+uBPaKLkKQobhGW
+                bz7wN8Cs6EKkjM6ILkCSIjnByucdpDMpfuZqOl+LI6n1PIOVz72kieE+0YVIJfsCcE10EZIUyWlKXqOA
+                3wBvjS5EKslcYEPcEpfUcp7BymsxcDQ+WaXmOhebK0lyghVkL+B/Sa/VkZpiEbAVcF90IZIUzQlWjGuB
+                U6OLkAp2MTZXkgR4yD3S9aS7sbaKLkQqyAeBR6OLkKQqcIsw1jjgFmDT6EKkYfJiUUlahluEsWYD7wYW
+                RBciDZMXi0rSMtwijPcEMAM4OLoQqUsPA8cDPdGFSFJVOMGqhu8CP4kuQurSN/HWdkl6Bc9gVceqwA3A
+                1tGFSEMwB9gI776SpFdwglUdc4HDSS+HluriHGyuJOlVPINVLTNIt7wfFl2I1IEe4H3AzOhCJKlqnGBV
+                z4+As6OLkDpwGTA9ughJqiLPYFXTyqTb3neKLkQawNuA30cXIUlVZINVXZsBN5EuI5WqZhqwHbAkuhBJ
+                qiK3CKtrOvCh6CKk5TgLmytJWi4PuVfbNGBdYJfoQqRlzCIdbl8YXYgkVZUTrOo7GZgaXYS0jPNI14pI
+                kpbDM1j1sA1wIzA2uhC1Xg+wJT49KEkDcoJVD9OAk6KLkIDfYHMlSYPyDFZ93Ex6jc520YWo1U4E7osu
+                QpKqzi3CehkH/AXYOLgOtZNXM0hSh9wirJfZwBHAS9GFqJW+g82VJHXELcL6eZT0ePwB0YWoVWYBf49X
+                M0hSR5xg1dPpwB+ii1Cr/BCvZpCkjnkGq77WJZ3HWie6EDWeVzNI0hA5waqvJ0lbNp6JUdkux+ZKkobE
+                M1j1dh+wMrB3dCFqtJOBe6KLkKQ6cYuw/lYArgF2jS5EjfQQsClpm1CS1CG3COvvJeDvSFc4SEX7LjZX
+                kjRkTrCa4++AC6OLUKMsBDYCnoouRJLqxglWc/wU+El0EWqUi7G5kqSuOMFqltcAtwIbRheiRtgHuCq6
+                CEmqIydYzfIc8H68ukHDdwc2V5LUNRus5vkf4BvRRaj2vh1dgCTVmVuEzbQScBOwbXQhqqW5wAbA89GF
+                SFJdOcFqpheB9+KLedWdn2BzJUnD4k3uzfUksAg4ILoQ1c4HST8/kqQuuUXYbKOAP+GrdNS564A9o4uQ
+                pLpzi7DZFpNeCD0nuhDVhofbJakAbhE23yzSZZF/HV2IKu8Z0vbgouhCJKnunGC1ww+AX0UXoco7n/SA
+                hCRpmDyD1R7jgduAdaMLUWVtDdwVXYQkNYETrPaYAXwIb3lX/67B5kqSCmOD1S6XAedEF6FK+kF0AZLU
+                JG4Rts9qwO3ARtGFqDKeB9YH5kUXIklN4QSrfeYAH8CtQr3sQmyuJKlQXtPQTg8A6wG7RBeiSvhH4PHo
+                IiSpSdwibC+3CgXpydIdoouQpKZxi7C95uBThYKzowuQpCZyi7Dd7gM2BHaOLkQhXgTeD7wQXYgkNY0T
+                LP0L8Gh0EQpxMTAzughJaiIbLM0GPhJdhEJ4J5oklcRD7up1EXB4dBHK5j5gczyDJ0mlcIKlXicAs6KL
+                UDbfx+ZKkkrjIXf1mks6j3NIdCEq3WLgGNKTpJIkqWQjgCtJkw3T3PwOSVKp3CLUspYAx5Ie31dznR9d
+                gCQ1nVuE6utZ0s/FvtGFqBTPky6YfSm6EElqMidY6s/pwPToIlSKi4D50UVIUtPZYKk/L5KeKlTzuD0o
+                SVKwi4k/kG2Ky/14950kZeEESwP5Z9xOapILSI2WJKlkHnLXQGYDPcAB0YVo2JYAH8R3D0pSFm4XaDBj
+                gNuALaML0bBMBvaKLkKS2sItQg1mIfCv0UVo2DzcLkkZOcFSp67ArcK6WgCsBzwXXYgktYUTLHXqJNI7
+                7FQ/l2JzJUlZ2WCpU7cD50QXoa78KLoASWobtwg1FONJN7yvHl2IOjYTWBdfjSNJWTnB0lDMAL4YXYSG
+                5GJsriQpOydYGqqxpCnWetGFqCNvAf4YXYQktY0TLA3VfOAL0UWoI08B/xtdhCS1kQ2WunEO8EB0ERrU
+                L/DJT0kKYYOlbiwEPhNdhAb1s+gCJKmtPIOlbo0ivUJnm+hC1K/HgI1I75KUJGXmBEvdWoxnsarsImyu
+                JCmMEywNx2jgbmDT6EL0KrsDU6KLkKS2coKl4VgEfDW6CL3Kg8AN0UVIUpvZYGm4ziNdB6Dq+DmwJLoI
+                SWozGywN1wvAf0YXoVfw6UFJCuYZLBVhVdKZH8XrASZFFyFJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJ
+                kiRJkiRJkiRJkiRJkiRJkiRJdfL/ATjW1K3BdsxXAAAAAElFTkSuQmCC
+</property>
+        </structure>
+    </list-property>
+</report>

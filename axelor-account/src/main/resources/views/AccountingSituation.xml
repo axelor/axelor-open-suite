@@ -17,7 +17,7 @@
 
 	<form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation"
 		  onLoad="action-accounting-situation-group-form-onload"
-		  onNew="action-account-accounting-situation-default-set" width="large">
+		  onNew="action-accounting-situation-group-form-onnew" width="large">
 		<panel name="main">
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
 			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -30,6 +30,10 @@
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
 			<field name="balanceDueDebtRecoveryCustAccount"/>
+		</panel>
+		<panel title="Automatic mail">
+			<field name="invoiceAutomaticMail"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
 		<panel name="debtRecoveryProcess" title="Debt recovery process">
 			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
@@ -91,6 +95,11 @@
 		 <panel-dashlet action="action-accounting-situation-view-move-lines"/>
 	</form>
 
+	<action-group name="action-accounting-situation-group-form-onnew">
+		<action name="action-account-accounting-situation-default-set"/>
+        <action name="action-accounting-situation-method-set-default-mail"/>
+	</action-group>
+
 	<action-group name="action-accounting-situation-group-form-onload">
 		<action name="action-account-accounting-situation-method-update-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
@@ -129,6 +138,10 @@
 	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
+
+	<action-method name="action-accounting-situation-method-set-default-mail">
+		<call class="com.axelor.apps.account.web.AccountingSituationController" method="setDefaultMail"/>
+	</action-method>
 
 	<action-method name="action-account-accounting-situation-set-inbd-domain">
         <call class="com.axelor.apps.account.web.AccountingSituationController" method="createInBankDetailsDomain"/>

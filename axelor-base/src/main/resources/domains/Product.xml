@@ -120,10 +120,6 @@
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
 
-		<!-- -Json fields -->
-		<string name="productAttrs" title="Fields" json="true" />
-
-
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT

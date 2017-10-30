@@ -60,10 +60,12 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -249,13 +251,16 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Sequence sequence = getSequence(bankOrder);
 		setBankOrderSeq(bankOrder, sequence);
 
-		setSequenceOnBankOrderLines(bankOrder);
 
 		setNbOfLines(bankOrder);
 
 		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
 			generateFile(bankOrder);
+
+			setSequenceOnBankOrderLines(bankOrder);
 			bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+			makeEbicsUserFollow(bankOrder);
+
 			bankOrderRepo.save(bankOrder);
 		}
 		else {
@@ -284,6 +289,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
 		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
+			if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
+			}
 			sendBankOrderFile(bankOrder);
 		}
 		realizeBankOrder(bankOrder);
@@ -330,7 +338,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	protected void setSequenceOnBankOrderLines(BankOrder bankOrder) {
+	@Override
+	public void setSequenceOnBankOrderLines(BankOrder bankOrder) {
 
 		if (bankOrder.getBankOrderLineList() == null) {
 			return;
@@ -487,10 +496,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public File generateFile(BankOrder bankOrder)
 			throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 
-		if (bankOrder.getGeneratedMetaFile() != null) {
-			return MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-		}
-
 		if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
 			return null;
 		}
@@ -589,5 +594,17 @@ public class BankOrderServiceImpl implements BankOrderService {
 		}
 
 		throw new AxelorException(bankOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE), bankOrder.getSenderCompany().getName());
+	}
+
+	/**
+	 * The signatory ebics user will follow the bank order record
+	 * @param bankOrder
+	 */
+	protected void makeEbicsUserFollow(BankOrder bankOrder) {
+		EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
+		if (ebicsUser != null) {
+			User signatoryUser = ebicsUser.getAssociatedUser();
+			Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
+		}
 	}
 }

@@ -147,6 +147,10 @@
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
   	
   	<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+
+	<!-- Invoice mail -->
+      <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
+	  <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
   	
   	<finder-method name="findByCompany" using="company" />
   	

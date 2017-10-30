@@ -90,4 +90,6 @@ public interface SaleOrderLineService {
 	public SaleOrder getSaleOrder(Context context);
 	
 	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException;
+
+	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
 }
