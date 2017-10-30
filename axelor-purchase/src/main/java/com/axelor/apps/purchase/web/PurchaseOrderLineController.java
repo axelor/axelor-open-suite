@@ -163,6 +163,8 @@ public class PurchaseOrderLineController {
 		response.setValue("inTaxTotal", null);
 		response.setValue("companyInTaxTotal", null);
 		response.setValue("companyExTaxTotal", null);
+		response.setValue("productCode", null);
+		response.setAttr("minQtyNotRespectedLabel", "hidden", true);
 
 	}
 
