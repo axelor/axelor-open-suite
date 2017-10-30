@@ -297,6 +297,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
+		saleOrder.setDeliveryDate(deliveryDate);
 		saleOrder.setOrderDate(orderDate);
 
 		if(salemanUser == null)  {
@@ -307,22 +308,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		if(team == null)  {
 			team = salemanUser.getActiveTeam();
 		}
+		saleOrder.setTeam(team);
 
 		if(company == null)  {
 			company = salemanUser.getActiveCompany();
 		}
-
 		saleOrder.setCompany(company);
+
 		saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
 		saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
 
 		this.computeAddressStr(saleOrder);
 
-
 		if(priceList == null)  {
 			priceList = clientPartner.getSalePriceList();
 		}
-
 		saleOrder.setPriceList(priceList);
 
 		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());
