@@ -250,6 +250,8 @@
 		</panel-tabs>
 
         <panel sidebar="true" name="actions" title="Actions"  hideIf="partner == null">
+            <field name="amountRemaining" hidden="true"/>
+            <field name="hasPendingPayments" hidden="true"/>
             <button name="validate" title="Validate" onClick="save,action-invoice-method-validate"/>
             <button name="ventilate" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
             <button name="validateAndVentilate" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/> <!-- hidden with action-attrs -->
@@ -467,7 +469,8 @@
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
         	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-	        <field name="hasPendingPayments" hidden="true"/>
+            <field name="amountRemaining" hidden="true"/>
+            <field name="hasPendingPayments" hidden="true"/>
             <field name="statusSelect"/>
 	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form" canView="false"/>
 	    </panel>
@@ -629,6 +632,10 @@
     
     <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
 		<panel colSpan="6" colOffset="3">
+            <field name="contactPartnerToCheck" hidden="true" colOffset="12" />
+            <field name="priceListToCheck" hidden="true" colOffset="12" />
+            <field name="paymentModeToCheck" hidden="true" colOffset="12" />
+            <field name="paymentConditionToCheck" hidden="true" colOffset="12" />
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="$paymentMode" title="Payment Mode" type="many-to-one" target="com.axelor.apps.account.db.PaymentMode"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
