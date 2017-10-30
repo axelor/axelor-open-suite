@@ -53,6 +53,20 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	protected PartnerService partnerService;
 	protected int sequence = 1;
 	protected final int NB_CHAR_PER_LINE = 320;
+	
+	/**
+	 *  "Remises informatisées d'ordres de paiement international au format 320 caractères" révisée (code opération "PI")
+	 */
+	protected static final String OPERATION_CODE_PI = "PI";
+	/**
+	 * "Remises informatisées d'ordres de paiement déplacé au format 320 caractères" (code opération "RF")
+	 */
+	protected static final String OPERATION_CODE_RF = "RF";
+	/**
+	 * "Remises informatisées d'ordres de virement national France au format 320 caractères" (code opération "VF")
+	 */
+	protected static final String OPERATION_CODE_VF = "VF";
+
 
 	
 	@Inject
@@ -135,7 +149,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String senderRecord = cfonbToolService.createZone("1", "03", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			senderRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			senderRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel
 			senderRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -310,7 +324,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String detailRecord = cfonbToolService.createZone("1", "04", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 		
 			// Zone 2 : Code opération
-			detailRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			detailRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel
 			detailRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -434,7 +448,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String totalRecord = cfonbToolService.createZone("1", "05", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			totalRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
 			totalRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -498,7 +512,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String totalRecord = cfonbToolService.createZone("1", "07", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			totalRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
 			totalRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -607,7 +621,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String totalRecord = cfonbToolService.createZone("1", "08", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			totalRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
 			totalRecord += cfonbToolService.createZone("3", sequence, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
