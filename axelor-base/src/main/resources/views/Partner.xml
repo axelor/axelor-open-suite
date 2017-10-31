@@ -444,7 +444,8 @@
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="!picture" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
 			  	<address>
@@ -474,7 +475,8 @@
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="!picture" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
 			    <span>{{contactAddress.fullName}}<br/>
