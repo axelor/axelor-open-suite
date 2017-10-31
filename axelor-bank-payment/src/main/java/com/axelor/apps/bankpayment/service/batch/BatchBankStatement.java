@@ -36,6 +36,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -44,16 +45,16 @@ import com.google.inject.Inject;
 public class BatchBankStatement extends AbstractBatch {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private int bankStatementCount;
-    
+
     @Inject
-    protected EbicsPartnerRepository EbicsPartnerRepository;
-    
+    protected EbicsPartnerRepository ebicsPartnerRepository;
+
     @Inject
     protected EbicsPartnerService ebicsPartnerService;
-    
+
     @Inject
     protected BankStatementService bankStatementService;
-    
+
     @Inject
     protected BankStatementRepository bankStatementRepository;
 
@@ -70,23 +71,33 @@ public class BatchBankStatement extends AbstractBatch {
 
         for (EbicsPartner ebicsPartner : ebicsPartners) {
             try {
-                List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(EbicsPartnerRepository.find(ebicsPartner.getId()));
-                
+                List<BankStatement> bankStatementList = ebicsPartnerService
+                        .getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+
                 bankStatementCount += bankStatementList.size();
-                
-                for(BankStatement bankStatement : bankStatementList)  {
-                	
-                	bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()));
+
+                for (BankStatement bankStatement : bankStatementList) {
+
+                    bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()));
                 }
-                
+
                 incrementDone();
-                
-            } catch (AxelorException | IOException e) {
-                incrementAnomaly();
-                log.error(e.getMessage());
-                TraceBackService.trace(e);
+
+            } catch (AxelorException e) {
+                processError(e, e.getcategory(), ebicsPartner);
+            } catch (IOException e) {
+                processError(e, IException.CONFIGURATION_ERROR, ebicsPartner);
             }
         }
+    }
+
+    protected void processError(Exception cause, int category, EbicsPartner ebicsPartner) {
+        incrementAnomaly();
+        log.error(cause.getMessage());
+        String message = String.format(IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER, ebicsPartner.getPartnerId(),
+                cause.getMessage());
+        AxelorException exception = new AxelorException(message, cause, category);
+        TraceBackService.trace(exception, IException.BANK_STATEMENT, batch.getId());
     }
 
     @Override
@@ -96,6 +107,7 @@ public class BatchBankStatement extends AbstractBatch {
         sb.append(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
                 com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR, batch.getDone()),
                 batch.getDone()));
+        sb.append(" ");
         sb.append(String
                 .format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
                         com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
