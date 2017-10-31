@@ -41,8 +41,8 @@
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
-	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
-	    onSave="action-timesheet-validate-toDate" canCopy="false">
+	    onLoad="action-timesheet-group-onload" canNew="false"
+	    onSave="action-timesheet-group-onsave" canCopy="false">
 	    <toolbar>
 	    	<button name="printTimesheet" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-timesheet"/>
 	    </toolbar>
@@ -58,6 +58,10 @@
 	    	<button name="generateLinesButton" showIf="statusSelect == 1" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"/>
 	    </panel>
+		<panel sidebar="true" name="totals" title="Totals on period">
+			<field name="periodTotal" readonly="true"/>
+			<field name="$periodTotalConvert" readonly="true"/>
+		</panel>
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
@@ -94,11 +98,30 @@
 		<field name="$timesheetSelect" title="Select Timesheet" type="many-to-one" target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox" />
 		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
 	</form>
+
+	<action-group name="action-timesheet-group-onsave">
+		<action name="action-timesheet-validate-toDate"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
+	</action-group>
+
+	<action-group name="action-timesheet-group-onload">
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-attrs-set-visible-duration-title"/>
+		<action name="action-timesheet-method-set-visible-duration"/>
+		<action name="action-timesheet-attrs-title-project-task"/>
+		<action name="action-timesheet-attrs-from-date"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
+		<action name="save"/>
+	</action-group>
 	
 	<action-group name="action-timesheet-group-confirm">
 		<action name="save"/>
 		<action name="action-timesheet-method-confirm"/>
 		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 
@@ -106,6 +129,8 @@
         <action name="save"/>
         <action name="action-timesheet-method-continue"/>
         <action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
         <action name="save"/>
     </action-group>
 
@@ -113,12 +138,16 @@
 		<action name="save"/>
 		<action name="action-timesheet-method-confirm-continue"/>
 		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-timesheet-group-validate">
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -127,6 +156,8 @@
 		<action name="save"/>
 		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -137,7 +168,18 @@
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-attrs-title-project-task"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-set-duration-preference"/>
 	</action-group>
+
+	<action-method name="action-timesheet-method-timesheet-compute-period-total">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>
+	</action-method>
+
+	<action-attrs name="action-timesheet-attrs-set-duration-preference">
+		<attribute name="value" for="$periodTotalConvert" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? (periodTotal/__user__.employee?.dailyWorkHours) : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? (periodTotal*60) : periodTotal"/>
+		<attribute name="title" for="$periodTotalConvert" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+	</action-attrs>
 	
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>

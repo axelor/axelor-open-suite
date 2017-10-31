@@ -650,6 +650,19 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		}
 	}
+
+	@Override
+	public BigDecimal computePeriodTotal(Timesheet timesheet) {
+		BigDecimal periodTotal = BigDecimal.ZERO;
+
+		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+
+		for (TimesheetLine timesheetLine : timesheetLines) {
+			periodTotal = periodTotal.add(timesheetLine.getVisibleDuration());
+		}
+
+		return periodTotal;
+	}
 }
 
 

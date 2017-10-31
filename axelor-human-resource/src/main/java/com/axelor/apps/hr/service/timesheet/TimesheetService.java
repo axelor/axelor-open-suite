@@ -81,4 +81,5 @@ public interface TimesheetService {
 	public void insertTSLine(ActionRequest request, ActionResponse response);
 	public String computeFullName(Timesheet timesheet);
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
+	public BigDecimal computePeriodTotal(Timesheet timesheet);
 }
