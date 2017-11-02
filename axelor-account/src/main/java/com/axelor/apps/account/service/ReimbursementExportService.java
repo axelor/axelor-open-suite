@@ -524,7 +524,7 @@ public class ReimbursementExportService {
 		Partner partner = invoice.getPartner();
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		// récupération des trop-perçus du tiers
-		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' " +
 				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
 				MoveRepository.STATUS_VALIDATED , partner, MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 
