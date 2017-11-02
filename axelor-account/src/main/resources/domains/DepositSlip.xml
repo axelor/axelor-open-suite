@@ -8,6 +8,7 @@
         <!-- Input -->
         <integer name="paymentModeTypeSelect" title="Payment mode type" required="true" selection="iaccount.payment.mode.type.select" />
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
+        <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" />
         <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank account"
             required="true" />
         <date name="fromDate" title="Start date" />

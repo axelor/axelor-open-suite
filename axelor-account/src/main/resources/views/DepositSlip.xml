@@ -14,7 +14,7 @@
     </grid>
 
     <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip"
-        onNew="action-deposit-slip-company-bank-details-visibility,action-cheque-deposit-slip-defaults,action-deposit-slip-defaults,action-deposit-slip-company-bank-details"
+        onNew="action-group-deposit-slip-onnew"
         onLoad="action-deposit-slip-company-bank-details-visibility" width="large">
 
         <toolbar>
@@ -34,8 +34,9 @@
         </panel>
 
         <panel readonlyIf="publicationDate">
-            <field name="company" onChange="action-deposit-slip-company-bank-details" canEdit="false" />
-            <field name="depositDate" />
+            <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false" colSpan="4" />
+            <field name="currency" canEdit="false" colSpan="4" />
+            <field name="depositDate" colSpan="4" />
             <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
                 <field name="companyBankDetails" canEdit="false" canNew="false"
                     onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="6" />
@@ -61,6 +62,13 @@
 
     </form>
 
+	<action-group name="action-group-deposit-slip-onnew">
+		<action name="action-deposit-slip-company-bank-details-visibility" />
+		<action name="action-cheque-deposit-slip-defaults" />
+		<action name="action-deposit-slip-defaults" />
+		<action name="action-deposit-slip-company-onchange" />
+	</action-group>
+
     <action-record name="action-cheque-deposit-slip-defaults" model="com.axelor.apps.account.db.DepositSlip">
         <field name="paymentModeTypeSelect" expr="eval: __repo__(PaymentMode).TYPE_CHEQUE" />
     </action-record>
@@ -74,8 +82,9 @@
         <field name="depositDate" expr="eval: __config__.app.todayDate" />
     </action-record>
 
-    <action-record name="action-deposit-slip-company-bank-details" model="com.axelor.apps.account.db.DepositSlip">
+    <action-record name="action-deposit-slip-company-onchange" model="com.axelor.apps.account.db.DepositSlip">
         <field name="companyBankDetails" expr="eval: company?.defaultBankDetails" />
+        <field name="currency" expr="eval: company?.currency" />
     </action-record>
 
     <action-attrs name="action-deposit-slip-company-bank-details-domain" model="com.axelor.apps.account.db.DepositSlip">
@@ -102,6 +111,7 @@
         <field name="partner" />
         <field name="paymentDate" />
         <field name="paidAmount" />
+        <field name="currency" />
         <field name="chequeOwner" />
         <field name="chequeDate" />
     </grid>
@@ -111,6 +121,7 @@
             <field name="partner" />
             <field name="paymentDate" />
             <field name="paidAmount" />
+	        <field name="currency" />
         </panel>
         <panel title="Cheque" colSpan="12">
             <field name="chequeNumber" />
