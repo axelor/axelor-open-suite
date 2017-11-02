@@ -41,6 +41,24 @@
         <field name="statusSelect"/>
     </grid>
     
+    <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    	<toolbar>
+    		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    	</toolbar>
+		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
+		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
+        <field name="bankOrderSeq"/>
+        <field name="generatedMetaFile"/>
+        <field name="bankOrderDate"/>
+        <field name="confirmationDateTime"/>
+        <field name="senderCompany"/>
+        <field name="bankOrderTotalAmount"/>
+        <field name="bankOrderCurrency"/>
+        <field name="senderReference"/>
+        <field name="signatoryEbicsUser"/>
+        <field name="statusSelect"/>
+    </grid>
+    
 	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false"
 		  onNew="action-bank-order-group-onnew"
 		  onLoad="action-bank-order-group-on-load">
@@ -166,7 +184,9 @@
 	
 	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.bankpayment.db.BankOrder"
 	onNew="action-bank-order-group-onnew">
-
+		<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
+		</toolbar>
   		<panel name="main" colSpan="12">
 			<panel colSpan="12" readonlyIf="statusSelect &gt;= 2">
 				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>

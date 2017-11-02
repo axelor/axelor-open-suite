@@ -271,16 +271,16 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 		
 		switch (bankDetails.getBank().getBankDetailsTypeSelect()) {
 		case BankRepository.BANK_IDENTIFIER_TYPE_IBAN:
-			return StringTool.fillStringLeft(bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(bankDetails.getIban(), ' ', 34);
 		
 		case BankRepository.BANK_IDENTIFIER_TYPE_NATIONAL:
-			return StringTool.fillStringLeft(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
 			
 		case BankRepository.BANK_IDENTIFIER_TYPE_OTHER:
-			return StringTool.fillStringLeft(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
 		
 		default:
-			return StringTool.fillStringLeft(bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(bankDetails.getIban(), ' ', 34);
 		}
 		
 	}

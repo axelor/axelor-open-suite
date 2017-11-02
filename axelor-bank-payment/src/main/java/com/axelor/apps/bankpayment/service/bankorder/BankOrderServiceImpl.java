@@ -259,10 +259,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 
 		setNbOfLines(bankOrder);
+		
+		setSequenceOnBankOrderLines(bankOrder);
 
 		generateFile(bankOrder);
 
-		setSequenceOnBankOrderLines(bankOrder);
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 
