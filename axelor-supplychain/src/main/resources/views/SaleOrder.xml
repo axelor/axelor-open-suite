@@ -24,7 +24,7 @@
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
 		onLoad="action-group-sale-saleorder-onload">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>

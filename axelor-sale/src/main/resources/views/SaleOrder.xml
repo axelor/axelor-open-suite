@@ -365,7 +365,7 @@
 
 	<form name="sale-order-template-form-wizard" title="Template"
 		model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
 		onLoad="action-group-sale-saleorder-onload">
 
 		<panel-include view="sale-order-template-form" />
@@ -936,11 +936,6 @@
 	<action-method name="action-sale-order-method-generate-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController"
 			method="generateViewSaleOrder" />
-	</action-method>
-
-	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController"
-			method="createTemplate" />
 	</action-method>
 
 	<action-method name="action-sale-order-method-create-order">

@@ -185,14 +185,10 @@ public class SaleOrderController {
 
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createSaleOrder(origin);
-		response.setValues(copy);
-	}
-
-	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createTemplate(origin);
-		response.setValues(copy);
+		if (origin != null) {
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {
