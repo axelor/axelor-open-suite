@@ -341,6 +341,7 @@ public class PaymentVoucherLoadService {
         paymentVoucher.setOperationTypeSelect(invoice.getOperationTypeSelect());
         paymentVoucher.setPartner(invoice.getPartner());
         paymentVoucher.setPaymentMode(invoice.getPaymentMode());
+        paymentVoucher.setCurrency(invoice.getCurrency());
         paymentVoucher.clearPayVoucherDueElementList();
         paymentVoucher.clearPayVoucherElementToPayList();
         BankDetails companyBankDetails;
@@ -382,11 +383,12 @@ public class PaymentVoucherLoadService {
                 .hasNext();) {
             PayVoucherDueElement payVoucherDueElement = it.next();
 
-            if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
-                paymentVoucher.addPayVoucherElementToPayListItem(
-                        createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
-                it.remove();
-            }
+			if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
+					&& paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
+				paymentVoucher.addPayVoucherElementToPayListItem(
+						createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
+				it.remove();
+			}
         }
 
     }
