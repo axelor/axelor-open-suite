@@ -102,6 +102,7 @@
 	<action-group name="action-timesheet-group-onsave">
 		<action name="action-timesheet-validate-toDate"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 	</action-group>
 
@@ -112,6 +113,7 @@
 		<action name="action-timesheet-attrs-title-project-task"/>
 		<action name="action-timesheet-attrs-from-date"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
@@ -121,6 +123,7 @@
 		<action name="action-timesheet-method-confirm"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
@@ -130,6 +133,7 @@
         <action name="action-timesheet-method-continue"/>
         <action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
         <action name="save"/>
     </action-group>
@@ -139,6 +143,7 @@
 		<action name="action-timesheet-method-confirm-continue"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
@@ -147,6 +152,7 @@
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
@@ -157,6 +163,7 @@
 		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
@@ -169,6 +176,7 @@
 		<action name="action-timesheet-attrs-title-project-task"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-record-set-period-total-convert"/>
 		<action name="action-timesheet-attrs-set-duration-preference"/>
 	</action-group>
 
@@ -176,8 +184,11 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>
 	</action-method>
 
+	<action-record name="action-timesheet-record-set-period-total-convert" model="com.axelor.apps.hr.db.TimesheetLine">
+		<field name="$periodTotalConvert" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(periodTotal,user,true)"/>
+	</action-record>
+
 	<action-attrs name="action-timesheet-attrs-set-duration-preference">
-		<attribute name="value" for="$periodTotalConvert" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? (periodTotal/__user__.employee?.dailyWorkHours) : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? (periodTotal*60) : periodTotal"/>
 		<attribute name="title" for="$periodTotalConvert" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 	</action-attrs>
 	
