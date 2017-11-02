@@ -155,7 +155,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	 */
 	protected String getSenderC13Area()  {
 	
-		return this.bankOrderDate.toString("ddMMy");
+		int year = this.bankOrderDate.getYear();
+		
+		return this.bankOrderDate.toString("ddMM") + (String.valueOf(year).substring(3));
 	
 	}
 
@@ -204,7 +206,6 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), IException.MISSING_FIELD);
 		}
 		return bankOrderLine.getReceiverBankDetails().getBankAddress().getAddress();
-		
 	}
 	
 	protected String getDetailD2Area(BankOrderLine bankOrderLine)  {
