@@ -658,7 +658,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 
 		for (TimesheetLine timesheetLine : timesheetLines) {
-			periodTotal = periodTotal.add(timesheetLine.getVisibleDuration());
+			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
 		}
 
 		return periodTotal;
