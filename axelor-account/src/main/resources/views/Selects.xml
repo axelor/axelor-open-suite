@@ -303,7 +303,6 @@
 	</selection>
 
 	<selection name="iaccount.payment.schedule.type.select">
-		<option value="0"></option>
 		<option value="1">Payment terms</option>
 		<option value="2">Monthly payments</option>
 	</selection>

@@ -36,14 +36,14 @@
 				<field name="company" canEdit="false" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 				<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-company-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()" />
 			</panel>
-			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
+			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" readonlyIf="statusSelect != 1" />
 			<field name="currency" canEdit="false" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="inTaxAmount" readonlyIf="statusSelect != 1" />
+			<field name="inTaxAmount" readonlyIf="statusSelect != 1 || typeSelect == 1" />
 		</panel>
 		
 		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
 			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency"
-			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" hideIf="typeSelect == 3" />
+			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" hideIf="typeSelect == 2" canNew="false" />
 			
 		<panel-related title="Payment Schedule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 3" />
@@ -93,7 +93,7 @@
 
 	<action-record name="action-payment-schedule-record-partner"
 		model="com.axelor.apps.account.db.PaymentSchedule">
-		<field name="paymentMode" expr="eval:partner?.paymentMode" />
+		<field name="paymentMode" expr="eval:partner?.inPaymentMode" />
 		<field name="currency" expr="eval:partner?.currency" />
 	</action-record>
 
