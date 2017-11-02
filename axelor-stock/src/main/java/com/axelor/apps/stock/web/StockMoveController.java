@@ -180,7 +180,7 @@ public class StockMoveController {
 			return;
 		}
 		Integer splitQty = (Integer)request.getContext().get("splitQty");
-		if(splitQty < 1){
+		if(splitQty != null && splitQty < 1){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
 			return ;
 		}

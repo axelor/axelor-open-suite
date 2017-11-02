@@ -362,6 +362,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 		List<Product> productList = stockMove.getStockMoveLineList().stream().map(StockMoveLine::getProduct)
 				.collect(Collectors.toList());
 
+		if (productList.isEmpty()) {
+			return;
+		}
+
 		InventoryLineRepository inventoryLineRepo = Beans.get(InventoryLineRepository.class);
 
 		InventoryLine inventoryLine = inventoryLineRepo.all()

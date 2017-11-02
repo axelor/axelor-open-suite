@@ -320,7 +320,6 @@
 				<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
 					<field name="paymentDate"/>
 					<field name="amount"/>
-					<field name="currency.symbol" hidden="true"/>
 					<field name="currency"/>
 					<field name="paymentMode"/>
 				</editor>
@@ -355,7 +354,6 @@
                 <editor layout="table" x-show-titles="false"> <label title="Paid on"/>
                     <field name="paymentDate"/>
                     <field name="amount"/>
-                    <field name="currency.symbol" hidden="true"/>
                     <field name="currency"/>
                     <field name="paymentMode"/>
                 </editor>
@@ -527,7 +525,6 @@
 				<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
 					<field name="paymentDate"/>
 					<field name="amount"/>
-					<field name="currency.symbol" hidden="true"/>
 					<field name="currency"/>
 					<field name="paymentMode"/>
 				</editor>
@@ -562,7 +559,6 @@
                 <editor layout="table" x-show-titles="false"> <label title="Paid on"/>
                     <field name="paymentDate"/>
                     <field name="amount"/>
-                    <field name="currency.symbol" hidden="true"/>
                     <field name="currency"/>
                     <field name="paymentMode"/>
                 </editor>

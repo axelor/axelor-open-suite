@@ -339,7 +339,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		StockMove wasteStockMove = null;
 		Company company = manufOrder.getCompany();
 
-		if (manufOrder.getWasteProdProductList() == null || company == null) {
+		if (manufOrder.getWasteProdProductList() == null || company == null || manufOrder.getWasteProdProductList().isEmpty()) {
 			return wasteStockMove;
 		}
 

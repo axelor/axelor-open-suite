@@ -23,30 +23,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.axelor.i18n.I18n;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.inject.Beans;
+
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -239,9 +240,11 @@ public class SaleOrderController {
 	}
 
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createTemplate(origin);
-		response.setValues(copy);
+		if (request.getContext().get("_idCopy") != null) {
+			SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+			SaleOrder copy = saleOrderService.createTemplate(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {

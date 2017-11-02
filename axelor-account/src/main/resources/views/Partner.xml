@@ -22,7 +22,7 @@
 	    </panel>
 	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
-                <viewer depends="isDefault,fullName"><![CDATA[
+                <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
                     <dl>
                         <dd ng-if="!record.isDefault"> {{fullName}} </dd>
                         <dd ng-if="record.isDefault"> <b>{{fullName}}</b> </dd>
@@ -38,10 +38,6 @@
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
 					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
-					<field name="bankCode" hidden="true"/>
-					<field name="sortCode" hidden="true"/>
-					<field name="accountNbr" hidden="true"/>
-					<field name="bbanKey" hidden="true"/>
 			    </editor>
 			</field>
 	    </panel>

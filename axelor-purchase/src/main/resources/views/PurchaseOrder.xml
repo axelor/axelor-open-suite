@@ -187,8 +187,8 @@
 	   </panel>
 	   <panel name="financialTerms" title="Financial terms" sidebar="true" colSpan="12">
 			<field name="paymentMode" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6">
-				<viewer depends="paymentMode.name,paymentMode.code"><![CDATA[
-					{{paymentMode.name}} [{{paymentMode.code}}]
+				<viewer depends="name,code"><![CDATA[
+					{{name}} [{{code}}]
 				]]></viewer>	
 			</field>
 			<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>

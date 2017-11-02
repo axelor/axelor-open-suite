@@ -70,6 +70,7 @@
 					</viewer>
 				</field>
 			</panel>
+			
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -96,6 +97,7 @@
 			   	    <field name="comments" colSpan="6" height="2" />
 			   		<field name="untaxedAmount" hidden="true" />
 			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
+					<field name="toInvoice" hidden="true"/>
 				</editor>
 				</field>
 			</panel>

@@ -24,6 +24,7 @@
 
 		<boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
 		<boolean name="intercoFromSale" title="Interco from sale" default="false"/>
+		<boolean name="intercoFromInvoice" title="Interco from invoice" default="false"/>
 
 		<integer name="intercoPurchaseCreatingStatusSelect"
 				 title="Create sale counterpart on this status"
