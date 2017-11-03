@@ -7,6 +7,7 @@
 		<panel name="productionConfiguration" colSpan="12">
 			<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 			<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
+			<field name="enableConfigurator" widget="boolean-switch"/>
 			<panel name="billOfMaterial" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>

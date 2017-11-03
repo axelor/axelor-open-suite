@@ -8,6 +8,7 @@
 			<field name="manageSalesUnits" widget="boolean-switch"/>
 			<field name="manageSaleOrderVersion"  widget="boolean-switch"/>
 			<field name="productPackMgt" widget="boolean-switch"/>
+			<field name="enableConfigurator" widget="boolean-switch"/>
 		</panel>
 		<panel-dashlet action="admin.root.conf.sale.config" colSpan="12"/>
 	</form>

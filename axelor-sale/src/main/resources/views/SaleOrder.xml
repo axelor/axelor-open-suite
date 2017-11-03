@@ -289,7 +289,8 @@
         <field name="amountInvoiced" hidden="true" />
 		<button name="addLineFromConfigurator" title="Add Line from Configurator"
 				onClick="save,action-sale-order-view-generate-line"
-				showIf="statusSelect == 1"/>
+				showIf="statusSelect == 1"
+				if="__config__.app.getApp('sale').getEnableConfigurator()"/>
 	  </panel>
 	  
 	  <panel sidebar="true" name="info" title="Info."  hideIf="clientPartner == null">
