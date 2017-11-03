@@ -15,7 +15,7 @@
 		<panel title="General informations">
 			<field name="partnerId" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsBank" />
-			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
+			<field name="ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="testMode"/>
 			<field name="transportEbicsUser" colSpan="6" domain="self.ebicsPartner.id = :id AND self.userTypeSelect = 0" form-view="ebics-user-form" grid-view="ebics-user-grid"/>
 			<field name="defaultSignatoryEbicsUser" domain="self.ebicsPartner.id = :id AND self.userTypeSelect = 1"/>
