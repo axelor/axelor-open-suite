@@ -62,6 +62,18 @@ public class MoveValidateService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Move move) throws AxelorException  {
 
+	    completeMoveLines(move);
+
+		this.validateMove(move);
+		moveRepository.save(move);
+	}
+
+	/**
+	 * In move lines, fill the dates field and the partner if they are missing,
+	 * and fill the counter.
+	 * @param move
+	 */
+	public void completeMoveLines(Move move) {
 		LocalDate date = move.getDate();
 		Partner partner = move.getPartner();
 
@@ -70,7 +82,7 @@ public class MoveValidateService {
 			if (moveLine.getDate() == null) {
 				moveLine.setDate(date);
 			}
-						
+
 			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDueDate() == null)  {
 				moveLine.setDueDate(date);
 			}
@@ -80,9 +92,6 @@ public class MoveValidateService {
 			moveLine.setCounter(counter);
 			counter++;
 		}
-
-		this.validateMove(move);
-		moveRepository.save(move);
 	}
 
 
