@@ -100,7 +100,16 @@
 	    <panel-include view="incl-event-actions-partner-form" />
         <panel name="main" >
             <panel colSpan="3">
-                <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+				<field name="picture" showTitle="false" widget="Image" colSpan="12">
+					<viewer>
+					<![CDATA[
+					    <div>
+			    			<img width="50%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="50%" ng-show="!record.picture" src="img/company-default.jpg" />
+     					</div>
+					]]>
+					</viewer>
+				</field>
                 <panel colSpan="8" showIf="fullName != null">
                     <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
                     <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
@@ -350,7 +359,18 @@
 	    <panel-include view="incl-event-actions-partner-form" />
 	    <panel name="main" >
 	    	<panel colSpan="3">
-	    		<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
+	    		<field name="picture" widget="Image" showTitle="false" colSpan="12">
+                    <viewer>
+					<![CDATA[
+					    <div>
+			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
+          					<img width="80%" ng-show="!record.picture && record.titleSelect == 2" src="img/partner-w-default.png" />
+        					<img width="80%" ng-show="!record.picture && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
+     					</div>
+					]]>
+                    </viewer>
+				</field>
 	    		<panel colSpan="12">
 	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
@@ -444,7 +464,8 @@
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+                <img ng-show="!picture" src="img/company-default.jpg" />
 			  </div>
 			  <div class="span8">
 			  	<address>
@@ -470,11 +491,15 @@
 		<field name="emailAddress.address" />
 		<field name="partnerCategory" />
 		<field name="contactAddress" />
+		<field name="titleSelect" />
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+                <img ng-show="!picture && titleSelect == 1" src="img/partner-m-default.png" />
+                <img ng-show="!picture && titleSelect == 2" src="img/partner-w-default.png" />
+                <img ng-show="!picture && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
 			    <span>{{contactAddress.fullName}}<br/>

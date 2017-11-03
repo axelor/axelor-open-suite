@@ -16,7 +16,7 @@
 	   	<field name="salePrice" x-scale="2" />
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+	    </grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
@@ -51,7 +51,14 @@
     	  		</panel>
       		</panel>
     		<panel colSpan="2">
-      			<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
+      			<field name="picture" showTitle="false" colSpan="12" widget="Image">
+					<viewer>
+					<![CDATA[
+			    		<img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          				<img ng-show="!record.picture" src="img/product-default.png" />
+					]]>
+					</viewer>
+				</field>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
 				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
@@ -248,7 +255,8 @@
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="!picture" src="img/product-default.png" />
 			  </div>
 			  <div class="span8">
 			    <span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
