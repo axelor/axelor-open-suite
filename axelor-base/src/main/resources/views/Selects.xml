@@ -93,6 +93,7 @@
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
+		<option value="csv">CSV</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select">

@@ -28,6 +28,7 @@ public interface IAdministration {
 
 	static final String PDF = "pdf";
 	static final String XLS = "xls";
+	static final String CSV = "csv";
 
 	/**
 	 * Static select month
