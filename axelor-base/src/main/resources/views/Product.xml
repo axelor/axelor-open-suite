@@ -50,7 +50,14 @@
     	  		</panel>
       		</panel>
     		<panel colSpan="2">
-      			<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
+      			<field name="picture" showTitle="false" colSpan="12" widget="Image">
+					<viewer>
+					<![CDATA[
+			    		<img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          				<img ng-show="!record.picture" src="img/product-default.png" />
+					]]>
+					</viewer>
+				</field>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
 				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
