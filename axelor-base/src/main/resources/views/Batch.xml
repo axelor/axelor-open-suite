@@ -19,7 +19,7 @@
 		<panel name="main">
 		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		    <field name="duration"/>
-		    <field name="startDate" requirded="true"/>
+		    <field name="startDate" required="true"/>
 		    <field name="endDate"/>
 		    <field name="done"/>
 		    <field name="anomaly"/>

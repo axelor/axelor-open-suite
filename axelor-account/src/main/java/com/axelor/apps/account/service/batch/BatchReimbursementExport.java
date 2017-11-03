@@ -104,7 +104,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			break;
 			
 		default:
-			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()), IException.INCONSISTENCY));
+			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()), IException.INCONSISTENCY), IException.REIMBURSEMENT, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}

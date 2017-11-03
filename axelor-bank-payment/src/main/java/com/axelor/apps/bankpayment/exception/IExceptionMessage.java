@@ -141,6 +141,6 @@ public interface IExceptionMessage {
 	static final String BANK_STATEMENT_FILE_UNKNOWN_FORMAT = /*$$(*/ "Unknown format for file import process" /*)*/;
     static final String BANK_STATEMENT_MISSING_FILE = /*$$(*/ "Missing bank statement file" /*)*/;
     static final String BANK_STATEMENT_MISSING_FILE_FORMAT = /*$$(*/ "Missing bank statement file format" /*)*/;
+    static final String BANK_STATEMENT_EBICS_PARTNER = /*$$(*/ "Error with EBICS partner %s: %s" /*)*/;
 
-    
 }
