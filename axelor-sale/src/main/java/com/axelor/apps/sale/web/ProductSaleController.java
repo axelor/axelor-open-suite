@@ -40,7 +40,7 @@ public class ProductSaleController {
         Product product = request.getContext().asType(Product.class);
         Configurator configurator = configuratorService.getConfiguratorFromProduct(product);
         if (configurator == null) {
-            response.setAlert(IExceptionMessage.CONFIGURATOR_NOT_FOUND);
+            response.setAlert(I18n.get(IExceptionMessage.CONFIGURATOR_NOT_FOUND));
         }
         else {
             response.setView(ActionView
