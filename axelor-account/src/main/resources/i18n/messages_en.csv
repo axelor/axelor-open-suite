@@ -169,6 +169,7 @@
 "80",,,
 "<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>",,,
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,
+"A move cannot be empty",,,
 "A tax line is missing",,,
 "Acc. Clearance",,,
 "Account",,,

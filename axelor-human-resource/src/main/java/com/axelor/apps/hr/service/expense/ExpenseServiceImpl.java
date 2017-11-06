@@ -313,6 +313,20 @@ public class ExpenseServiceImpl implements ExpenseService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move ventilate(Expense expense) throws AxelorException {
 
+	    Move move = null;
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
+
+		if (expense.getInTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+			move = createAndSetMove(expense);
+		}
+		expense.setVentilated(true);
+		expenseRepository.save(expense);
+
+		return move;
+	}
+
+	protected Move createAndSetMove(Expense expense) throws AxelorException {
 		LocalDate moveDate = expense.getMoveDate();
 		if(moveDate == null){
 			moveDate = appAccountService.getTodayDate();
@@ -382,13 +396,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		moveService.getMoveValidateService().validateMove(move);
 
-		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
-
 		expense.setMove(move);
-		expense.setVentilated(true);
-		expenseRepository.save(expense);
-
 		return move;
 	}
 
