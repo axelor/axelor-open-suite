@@ -115,7 +115,6 @@ public class PaymentVoucherConfirmService  {
 		BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 
-		boolean scheduleToBePaid = false;
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
 
 		paymentVoucherControlService.checkPaymentVoucherField(paymentVoucher, company, paymentModeAccount, journal);
