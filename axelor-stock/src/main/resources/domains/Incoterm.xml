@@ -9,8 +9,9 @@
 		<string name="name" title="Incoterm Name"/>
 		<string name="code" title="Incoterm Code"/>
 		
-		<boolean name="exportCustomsDeclaration" title="Export customs declaration"/>
+		<boolean name="loadingInPlaceOfOrigin" title="Loading in place of origin"/>
 		<boolean name="carriageToPortOfExport" title="Carriage to port of export"/>
+		<boolean name="exportCustomsDeclaration" title="Export customs declaration"/>
 		<boolean name="unloadingOfTruckInPortOfExport" title="Unloading of truck in port of export"/>
 		<boolean name="carriageToPortOfImport" title="Carriage (Sea/Air) to port of import"/>
 		<boolean name="insurance" title="Insurance"/>
