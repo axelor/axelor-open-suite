@@ -673,6 +673,8 @@
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
         <action name="action-invoice-attrs-show-validate-button"/>
+		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-record-interco-supplychain"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -684,6 +686,7 @@
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
+		<action name="action-invoice-attrs-interco-supplychain"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -705,6 +708,8 @@
 		<action name="action-invoice-method-fill-company-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
 		<action name="action-invoice-method-set-default-mail"/>
+		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-record-interco-supplychain"/>
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -796,7 +801,7 @@
 	</action-record>
 
 	<action-record name="action-invoice-record-interco-supplychain"
-				   model="com.axelor.apps.account.db.Invoice">
+				   model="com.axelor.apps.account.db.Invoice" if-module="axelor-supplychain">
 		<field name="interco"
 			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
 	</action-record>
@@ -838,7 +843,7 @@
 		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
 	</action-attrs>
 
-	<action-attrs name="action-invoice-attrs-interco-supplychain">
+	<action-attrs name="action-invoice-attrs-interco-supplychain" if-module="axelor-supplychain">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
 		<attribute for="interco" name="value" expr="eval: false"
