@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="stock" package="com.axelor.apps.stock.db"/>
+
+	<entity name="Incoterm" lang="java">
+	
+		<string name="name" title="Incoterm Name"/>
+		<string name="code" title="Incoterm Code"/>
+		
+		<boolean name="exportCustomsDeclaration" title="Export customs declaration"/>
+		<boolean name="carriageToPortOfExport" title="Carriage to port of export"/>
+		<boolean name="unloadingOfTruckInPortOfExport" title="Unloading of truck in port of export"/>
+		<boolean name="carriageToPortOfImport" title="Carriage (Sea/Air) to port of import"/>
+		<boolean name="insurance" title="Insurance"/>
+		<boolean name="unloadingInPortOfImport" title="Unloading in port of import"/>
+		<boolean name="loadingOnTruckInPortOfImport" title="Loading on truck in port of import"/>
+		<boolean name="carriageToPlaceOfDestination" title="Carriage to place of destination"/>
+		<boolean name="importCustomsClearance" title="Import customs clearance"/>
+		<boolean name="importDutiesAndTaxes" title="Import duties and taxes"/>
+		
+	</entity>
+
+</domain-models>
