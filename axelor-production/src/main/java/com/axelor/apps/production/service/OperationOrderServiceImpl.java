@@ -19,7 +19,14 @@ package com.axelor.apps.production.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.stock.db.StockMoveLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,8 +147,46 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		}
 		
 	}
-	
-	
+
+	public OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException {
+		List<ProdProduct> toConsumeList = operationOrder.getToConsumeProdProductList();
+		List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
+		List<ProdProduct> diffConsumeList = new ArrayList<>();
+		BigDecimal consumedQty;
+		if (toConsumeList == null || consumedList == null) {
+			return operationOrder;
+		}
+		for (ProdProduct prodProduct : toConsumeList) {
+			Product product = prodProduct.getProduct();
+			Unit newUnit = prodProduct.getUnit();
+			Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
+					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
+					.findAny();
+			if (!stockMoveLineOpt.isPresent()) {
+				continue;
+			}
+			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
+			if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+				consumedQty = Beans.get(UnitConversionService.class)
+						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
+			} else {
+				consumedQty = stockMoveLine.getQty();
+			}
+			BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
+			if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
+				ProdProduct diffProdProduct = new ProdProduct();
+				diffProdProduct.setQty(diffQty);
+				diffProdProduct.setProduct(product);
+				diffProdProduct.setUnit(newUnit);
+				diffProdProduct.setDiffConsumeOperationOrder(operationOrder);
+				diffConsumeList.add(diffProdProduct);
+			}
+		}
+		operationOrder.setDiffConsumeProdProductList(diffConsumeList);
+		return operationOrder;
+	}
+
 	
 	
 //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
