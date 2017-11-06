@@ -207,9 +207,10 @@
 		title="Freight Carrier" action="stock.root.conf.freight.carrier"/>
 		
 	<action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
-		model="com.axelor.apps.stock.db.FreightCarrier">
-		<view type="grid" name="freight-carrier-grid"/>
-		<view type="form" name="freight-carrier-form"/>	
+		model="com.axelor.apps.base.db.Partner">
+		<view type="grid" name="partner-grid"/>
+		<view type="form" name="partner-form"/>
+		<domain>self.isCarrier = true</domain>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
