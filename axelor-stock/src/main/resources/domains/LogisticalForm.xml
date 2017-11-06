@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="stock" package="com.axelor.apps.stock.db" />
+
+    <entity name="LogisticalForm">
+        <string name="deliveryNumber" namecolumn="true" />
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
+        <many-to-one name="deliverToCustomer" ref="com.axelor.apps.base.db.Partner" required="true" />
+        <date name="collectionDate" required="true" />
+
+        <many-to-one name="carrier" ref="com.axelor.apps.base.db.Partner" />
+        <many-to-one name="freight" ref="com.axelor.apps.base.db.Partner" />
+        <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm" />
+        <string name="tracking" />
+        <decimal name="totalGrossWeight" />
+        <decimal name="totalNetWeight" />
+        <decimal name="totalVolume" />
+        <integer name="statusSelect" selection="logistical.form.status.select" />
+        <string name="internalDeliveryComment" large="true" />
+        <string name="externalDeliveryComment" large="true" />
+
+        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" />
+
+        <extra-code>
+		<![CDATA[
+			public static int STATUS_PROVISION = 1;
+			public static int STATUS_CARRIER_VALIDATED = 2;
+			public static int STATUS_COLLECTED = 3;
+		]]>
+		</extra-code>
+
+    </entity>
+
+</domain-models>
