@@ -183,11 +183,6 @@
 <!-- 		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" /> -->
 <!-- 	</input>  -->
 	
-	<input file="base_freightCarrier.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrier" search="self.importId = :importId"/>
-    
-    <input file="base_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
-    
-    <input file="base_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
 	

@@ -138,8 +138,9 @@
                     <field name="isCustomer" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
                     <field name="isSupplier" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
                     <field name="isFactor" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
+					<field name="isCarrier" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('stock')"/>
                     <field name="$viewerPartnerType" showTitle="false" hideIf="!$readonly()" colSpan="12">
-                        <viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor">
+                        <viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor,isCarrier">
                             <![CDATA[
                                 <h4 style="text-align: right;">
                                     <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
@@ -147,6 +148,7 @@
                                     <span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
                                     <span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
                                     <span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+                                    <span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
                                 </h4>
                             ]]>
                         </viewer>
@@ -267,12 +269,15 @@
 				<spacer/>
 				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
             </panel>
+			<panel name="carrier" title="Carrier" showIf="isCarrier">
+				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
+			</panel>
             <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
                 <field name="deliveryDelay" showIf="isSupplier"/>
                 <spacer/>
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-                <field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+                <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
             </panel>
         </panel-tabs>
         <panel>
