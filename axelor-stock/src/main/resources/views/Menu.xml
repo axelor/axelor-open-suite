@@ -277,5 +277,11 @@
 		<view type="dashboard" name="stock.dashboard.two" />	    
 	</action-view>
 	
-	
+    <menuitem title="Packaging lists" name="stock-root-logistical-forms" parent="stock-root" action="stock.root.logistical.forms"/>
+    
+    <action-view name="stock.root.logistical.forms" title="Packaging lists" model="com.axelor.apps.stock.db.LogisticalForm">
+		<view type="grid" name="logistical-form-grid"/>
+		<view type="form" name="logistical-form-form"/>
+    </action-view>
+
 </object-views>
