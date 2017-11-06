@@ -18,7 +18,7 @@
         <string name="depositNumber" readonly="true" copy="false" namecolumn="true" />
         <date name="publicationDate" readonly="true" copy="false" />
 
-        <one-to-many name="paymentVoucherList" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payments vouchers"
+        <one-to-many name="paymentVoucherList" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment vouchers"
             orphanRemoval="false" mappedBy="depositSlip" copy="false" />
 
         <decimal name="totalAmount" scale="2" precision="20" readonly="true" copy="false" />
