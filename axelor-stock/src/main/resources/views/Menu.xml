@@ -164,7 +164,16 @@
 		title="Reportings" order="45"/>
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50"/>
-		
+	
+	<menuitem name="stock-root-incoterm" parent="stock-root-conf"
+		title="Incoterms" action="stock.root.incoterm" />
+	
+	<action-view name="stock.root.incoterm" title="Incoterms"
+		model="com.axelor.apps.stock.db.Incoterm" >
+		<view type="grid" name="incoterm-grid"/>
+		<view type="form" name="incoterm-form"/>
+	</action-view>
+	
 	<menuitem name="stock-root-location" parent="stock-root-conf"
 		title="Stock Locations" action="stock.root.location" />
 	
