@@ -1,6 +1,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -48,7 +49,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 
-				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL
+						&& logisticalFormLine.getGrossWeight() != null) {
 					totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
 					totalVolume = totalVolume.add(evalBigDecimal(scriptHelper, logisticalFormLine.getDimensions()));
 				} else if (stockMoveLine != null) {
@@ -59,10 +61,10 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			}
 		}
 
+		totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 2, RoundingMode.HALF_UP);
 		logisticalForm.setTotalNetWeight(totalNetWeight);
 		logisticalForm.setTotalGrossWeight(totalGrossWeight);
 		logisticalForm.setTotalVolume(totalVolume);
-
 	}
 
 	protected BigDecimal evalBigDecimal(ScriptHelper scriptHelper, String script) {
@@ -70,13 +72,12 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			return BigDecimal.ZERO;
 		}
 
-		return (BigDecimal) scriptHelper.eval(script.replaceAll("x", "*"));
+		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
 	}
 
 	protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {
 		Context scriptContext = new Context(Mapper.toMap(logisticalForm), logisticalForm.getClass());
-		ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-		return scriptHelper;
+		return new GroovyScriptHelper(scriptContext);
 	}
 
 }
