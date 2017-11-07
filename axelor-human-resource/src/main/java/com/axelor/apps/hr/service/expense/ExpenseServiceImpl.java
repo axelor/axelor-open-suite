@@ -43,6 +43,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -350,7 +351,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		int moveLineId = 1;
 		int expenseLineId = 1;
-		Account employeeAccount = accountingSituationService.getAccountingSituation(expense.getUser().getPartner(), expense.getCompany()).getEmployeeAccount();
+		AccountingSituation accSituation =  accountingSituationService.getAccountingSituation(expense.getUser().getPartner(), expense.getCompany());
+		Account employeeAccount = null;
+		if (accSituation != null) {
+			employeeAccount = accSituation.getEmployeeAccount();
+		}
 		if (employeeAccount == null) {
 			employeeAccount = accountConfigService.getExpenseEmployeeAccount(accountConfig);
 		}

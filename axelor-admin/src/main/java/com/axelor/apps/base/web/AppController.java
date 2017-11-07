@@ -27,8 +27,10 @@ import java.util.Set;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
+import com.axelor.apps.base.exceptions.IAppExceptionMessages;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.schema.actions.ActionView;
@@ -51,8 +53,10 @@ public class AppController {
 	public void importDataDemo(ActionRequest request, ActionResponse response) {
 		
 		App app = request.getContext().asType(App.class);
-
+		app = appRepo.find(app.getId());
+		
 		response.setFlash(appService.importDataDemo(app));
+		
 		response.setReload(true);
 	}
 	
@@ -75,10 +79,10 @@ public class AppController {
 		String viewName = "app-" + code + "-config-form";
 		
 		if (metaViewRepo.findByName(viewName) == null) {
-			response.setFlash(I18n.get("No configuration required"));
+			response.setFlash(I18n.get(IAppExceptionMessages.NO_CONFIG_REQUIRED));
 		}
 		else {
-			response.setView(ActionView.define(I18n.get("Configure: ") + app.getName())
+			response.setView(ActionView.define(I18n.get("Configure") + ": " + app.getName())
 				.add("form", viewName)
 				.model("com.axelor.apps.base.db.App" + appName)
 				.context("_showRecord", app.getId())
@@ -89,24 +93,23 @@ public class AppController {
 	public void checkParent(ActionRequest request, ActionResponse response) {
 		
 		App app = request.getContext().asType(App.class);
+		app = appRepo.find(app.getId());
 		
 		List<App> depends = appService.getDepends(app, false);
 		if (!depends.isEmpty()) {
 			List<String> parents = appService.getNames(depends);
-			response.setAlert(String.format(I18n.get("Following apps will be installed %s"), parents));
+			response.setAlert(String.format(I18n.get(IAppExceptionMessages.CONFIRM_APPS), parents));
 		}
 	}
 	
-	public void checkChildren(ActionRequest request, ActionResponse response) {
+	public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		App app = request.getContext().asType(App.class);
+		app = appRepo.find(app.getId());
 		
-		List<App> children = appService.getChildren(app, true);
-		if (!children.isEmpty()) {
-			List<String> childrenNames = appService.getNames(children);
-			response.setFlash(String.format(I18n.get("This app is used by %s. Please deactivate them before continue."), childrenNames));
-			response.setValue("active", true);
-		}
+		appService.unInstallApp(app);
+		
+		response.setReload(true);
 	}
 	
 	public void bulkInstall(ActionRequest request, ActionResponse response) {
@@ -137,7 +140,7 @@ public class AppController {
 			app = appService.installApp(app, importDemo);
 		}
 		
-		response.setFlash(I18n.get("Apps installed successfully"));
+		response.setFlash(I18n.get(IAppExceptionMessages.BULK_INSTALL_SUCCESS));
 		response.setSignal("refresh-app", true);
 	}
 	
@@ -145,10 +148,10 @@ public class AppController {
 		 
 		try {
 			appService.refreshApp();
-			response.setNotify(I18n.get("Apps refreshed successfully"));
+			response.setNotify(I18n.get(IAppExceptionMessages.REFRESH_APP_SUCCESS));
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-			response.setNotify(I18n.get("Error in refreshing app"));
+			response.setNotify(I18n.get(IAppExceptionMessages.REFRESH_APP_ERROR));
 		}
  
     }
