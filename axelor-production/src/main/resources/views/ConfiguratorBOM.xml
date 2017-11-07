@@ -9,7 +9,8 @@
     </form>
 
     <form name="configurator-bom-line-form" title="Configurator BOM"
-          model="com.axelor.apps.production.db.ConfiguratorBOM">
+    		onNew="action-configurator-bom-method-set-parent"
+    		model="com.axelor.apps.production.db.ConfiguratorBOM">
         <panel>
             <field name="company"/>
             <panel title="Label">
@@ -27,6 +28,7 @@
                 <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
                 <field name="product" colSpan="12"
                        showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+                       onSelect="action-configurator-bom-attrs-product-domain"
                        form-view="product-view" grid-view="product-grid"/>
                 <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                        x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
@@ -51,7 +53,8 @@
                        showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
                 <field name="configuratorProdProcess" colSpan="12" showIf="defProdProcessAsConfigurator"/>
             </panel>
-            <field name="configuratorBomList" colSpan="12"/>
+            <field name="product.productSubTypeSelect" hidden="true"/>
+            <field name="configuratorBomList" colSpan="12" showIf="[1, 2].indexOf(product.productSubTypeSelect) >= 0"/>
         </panel>
 
     </form>
@@ -75,6 +78,14 @@
     	<view type="form" name="configurator-bom-form"/>
      	<context name="confBomId" expr="eval: id"/>
     </action-view>
+    
+    <action-record name="action-configurator-bom-method-set-parent" model="com.axelor.apps.production.db.ConfiguratorBOM">
+    	<field name="parentConfiguratorBOM" expr="eval: __parent__"/>
+    </action-record>
+    
+    <action-attrs name="action-configurator-bom-attrs-product-domain">
+    	<attribute name="domain" for="product" expr="eval: &quot; self.product.productSubTypeSelect != 3 &quot;" if="parentConfiguratorBOM == null"/>
+    </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">
 
