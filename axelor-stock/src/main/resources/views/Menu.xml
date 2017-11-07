@@ -164,7 +164,16 @@
 		title="Reportings" order="45"/>
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50"/>
-		
+	
+	<menuitem name="stock-root-incoterm" parent="stock-root-conf"
+		title="Incoterms" action="stock.root.incoterm" />
+	
+	<action-view name="stock.root.incoterm" title="Incoterms"
+		model="com.axelor.apps.stock.db.Incoterm" >
+		<view type="grid" name="incoterm-grid"/>
+		<view type="form" name="incoterm-form"/>
+	</action-view>
+	
 	<menuitem name="stock-root-location" parent="stock-root-conf"
 		title="Stock Locations" action="stock.root.location" />
 	
@@ -198,9 +207,10 @@
 		title="Freight Carrier" action="stock.root.conf.freight.carrier"/>
 		
 	<action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
-		model="com.axelor.apps.stock.db.FreightCarrier">
-		<view type="grid" name="freight-carrier-grid"/>
-		<view type="form" name="freight-carrier-form"/>	
+		model="com.axelor.apps.base.db.Partner">
+		<view type="grid" name="partner-grid"/>
+		<view type="form" name="partner-form"/>
+		<domain>self.isCarrier = true</domain>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
@@ -267,5 +277,11 @@
 		<view type="dashboard" name="stock.dashboard.two" />	    
 	</action-view>
 	
-	
+    <menuitem title="Packaging lists" name="stock-root-logistical-forms" parent="stock-root" action="stock.root.logistical.forms"/>
+    
+    <action-view name="stock.root.logistical.forms" title="Packaging lists" model="com.axelor.apps.stock.db.LogisticalForm">
+		<view type="grid" name="logistical-form-grid"/>
+		<view type="form" name="logistical-form-form"/>
+    </action-view>
+
 </object-views>

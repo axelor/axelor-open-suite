@@ -169,6 +169,7 @@
 "80",,,
 "<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>","<span class='label label-important'>Le paramètre de saisies paiements sur facture est désactivé.</span>",,
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,
+"A move cannot be empty","Une écriture ne peut pas être vide",,
 "A tax line is missing","Il manque une ligne de taxe",,
 "Acc. Clearance","Apurage comptes",,
 "Account","Compte comptable",,

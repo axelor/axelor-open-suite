@@ -5,27 +5,27 @@
     
     <grid name="freight-carrier-mode-grid" title="Freight Carrier Mode grid" model="com.axelor.apps.stock.db.FreightCarrierMode">
     	<field name="name"/>
-    	<field name="freightCarrier" form-view="freight-carrier-form" grid-view="freight-carrier-freight-carrier-mode-grid"/>
+    	<field name="freightCarrier" domain="self.isCarrier = true" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-freight-carrier-mode-grid"/>
     </grid>
     
     <form name="freight-carrier-mode-form" model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
     	<panel>
     		<field name="name" required="true"/>
-    		<field name="freightCarrier" form-view="freight-carrier-form" grid-view="freight-carrier-freight-carrier-mode-grid" onChange="action-freight-carrier-mode-record-empty-shipment-mode"/>
+    		<field name="freightCarrier" domain="self.isCarrier = true" form-view="partner-form" grid-view="partner-grid" onChange="action-freight-carrier-mode-record-empty-shipment-mode"/>
     		<field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-freight-carrier-mode-grid"/>
     	</panel>
     </form>
     
     <grid name="freight-carrier-mode-shipment-mode-grid" model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode grid">
     	<field name="name"/>
-    	<field name="freightCarrier" form-view="freight-carrier-form" grid-view="freight-carrier-grid"/>
+    	<field name="freightCarrier" domain="self.isCarrier = true" form-view="partner-form" grid-view="partner-grid"/>
     </grid>
     
     <form name="freight-carrier-mode-shipment-mode-form" model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
     	<panel>
     		<field name="name" required="true"/>
-    		<field name="freightCarrier" form-view="freight-carrier-form" grid-view="freight-carrier-grid"/>
+    		<field name="freightCarrier" domain="self.isCarrier = true" form-view="partner-form" grid-view="partner-grid"/>
     	</panel>
     </form>
     

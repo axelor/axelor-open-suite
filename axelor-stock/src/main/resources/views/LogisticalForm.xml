@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms" name="logistical-form-grid">
+        <field name="deliveryNumber" />
+        <field name="company" />
+        <field name="deliverToCustomer" />
+        <field name="collectionDate" />
+    </grid>
+
+    <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form" name="logistical-form-form"
+        width="large" onNew="action-logistical-form-new">
+        <panel>
+            <field name="deliveryNumber" />
+            <field name="company" />
+            <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet" />
+            <field name="collectionDate" />
+        </panel>
+        <panel-tabs>
+            <panel title="Overview">
+                <field name="statusSelect" colSpan="12" widget="NavSelect" />
+                <field name="carrier" domain="self.isCarrier = TRUE" />
+                <field name="freight" />
+                <field name="incoterm" />
+                <field name="tracking" />
+                <field name="totalGrossWeight" />
+                <field name="totalNetWeight" />
+                <field name="internalDeliveryComment" />
+                <field name="externalDeliveryComment" />
+            </panel>
+            <panel title="Lines">
+                <panel colSpan="12">
+                    <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
+                        target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
+                        colSpan="10" />
+                    <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move,save"
+                        colSpan="2" />
+                </panel>
+                <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
+                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
+                    onChange="save,action-logistical-form-lines-change,save" canRemove="true" />
+            </panel>
+        </panel-tabs>
+    </form>
+
+    <action-record name="action-logistical-form-new" model="com.axelor.apps.stock.db.LogisticalForm">
+        <field name="company" expr="eval: __user__.activeCompany" />
+        <field name="collectionDate" expr="eval: __date__" />
+    </action-record>
+
+    <action-method name="action-logistical-form-add-stock-move">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addStockMove" />
+    </action-method>
+
+    <action-method name="action-logistical-form-lines-change">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="compute" />
+    </action-method>
+
+</object-views>

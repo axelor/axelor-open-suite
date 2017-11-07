@@ -9,28 +9,30 @@
 		<field name="demoDataLoaded" />
 	</grid>
 	
-	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" 
-		onSave="action-app-method-check-parent,save,action-app-method-install-app"
-		onLoad="action-app-on-load-attrs">
+	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large">
 		<panel>
 			<field name="image" widget="Image" colSpan="2"/>
-			<panel colSpan="5">
+			<panel colSpan="6">
 				<field name="name" readonly="true" colSpan="12" />
-				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="3"/>
-				<field name="languageSelect" colSpan="4" />
-				<field name="demoDataLoaded" readonly="true" colSpan="4"/>
-				<spacer colSpan="12"/>
-				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="6" />
-				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="6" />
+				<field name="languageSelect" />
+				<field name="demoDataLoaded" readonly="true"/>
 			</panel>
-			<panel-related colSpan="5" field="dependsOnSet" readonly="true" canSelect="false" canView="false" >
-				<field name="name" />
-				<field name="active"/>
-			</panel-related>
 			<field name="description" colSpan="12" readonly="true"/>
 			<field name="initDataLoaded" hidden="true" />
 			<field name="code" hidden="true" />
+			<field name="active" hidden="true" />
+			<field name="demoDataLoaded" hidden="true"/>
 		</panel>
+		<panel itemSpan="12" sidebar="true">
+				<button name="install" title="Install"  onClick="action-app-method-check-parent,save,action-app-method-install-app"  showIf="!active" />
+				<button name="uninstall" title="Uninstall" onClick="action-app-method-uninstall-app" showIf="active" />
+				<button name="configure" title="Configure" showIf="active" onClick="com.axelor.apps.base.web.AppController:configure" />
+				<button name="importDataDemo" showIf="active &amp;&amp; !demoDataLoaded" onClick="save,action-method-app-import-data-demo" title="Import demo data" />
+		</panel>
+		<panel-related field="dependsOnSet" readonly="true" canSelect="false" canView="false" >
+			<field name="name" />
+			<field name="active"/>
+		</panel-related>
 	</form> 
 	
 	<form model="com.axelor.apps.base.db.App" title="Bulk install" name="bulk-install-app-form">
@@ -60,12 +62,13 @@
 			    <img ng-src="{{$image('image', 'content')}}" />
 			  </div>
 			  <div class="span8">
-					  <span><strong>{{name}}</strong></span>
-		  			<br/>
-		        <br/>
-		 		  	<label class="iswitch form-item"><input type="checkbox" ng-model="active"/><span class="box"/></label>
-		      	<a class="btn btn-small btn-success pull-right" href="" ng-show="active" ui-action-click="com.axelor.apps.base.web.AppController:configure" x-translate>Configure</a>
-		 		</div>
+				 <strong>{{name}}</strong>
+			  </div>
+			  <div class="span12">
+				<a class="btn btn-small btn-info pull-right" href="" ng-show="!active" ui-action-click="action-app-method-check-parent,action-app-method-install-app" x-translate>Install</a>
+				<a class="btn btn-small btn-success pull-right" href="" ng-show="active" ui-action-click="com.axelor.apps.base.web.AppController:configure" x-translate>Configure</a>
+				<a class="btn btn-small btn-danger pull-right" href="" ng-show="active" ui-action-click="action-app-method-uninstall-app" x-translate>Uninstall</a>
+			  </div>
 			</div>
 		]]>
 		</template>
@@ -80,15 +83,15 @@
 	</action-method>
 	
 	 <action-method name="action-app-method-check-parent">
-	    <call class="com.axelor.apps.base.web.AppController" method="checkParent"  if="__this__.active &amp;&amp; __this__.active != __self__.active"/>
+	    <call class="com.axelor.apps.base.web.AppController" method="checkParent" />
 	 </action-method>
 	 
 	 <action-method name="action-app-method-install-app">
-	    <call class="com.axelor.apps.base.web.AppController" method="installApp" if="__this__.active" />
+	    <call class="com.axelor.apps.base.web.AppController" method="installApp"  />
 	 </action-method>
 	 
-	 <action-method name="action-app-method-check-children">
-	    <call class="com.axelor.apps.base.web.AppController" method="checkChildren" if="!active"/>
+	 <action-method name="action-app-method-uninstall-app">
+	    <call class="com.axelor.apps.base.web.AppController" method="uninstallApp" />
 	 </action-method>
 	 
 	 <action-method name="action-app-method-bulk-install" >

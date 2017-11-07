@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,7 +222,7 @@ public class ManufOrderController {
 	public void updateQty(ActionRequest request, ActionResponse response) {
 		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 		manufOrder = manufOrderRepo.find(manufOrder.getId());
-		ManufOrder newManufOrder = manufOrderService.updateQty(manufOrder);
+		manufOrderService.updateQty(manufOrder);
 		response.setReload(true);
 		response.setCanClose(true);
 	}
@@ -230,7 +231,7 @@ public class ManufOrderController {
 		
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 		String prodProcessId = manufOrder.getProdProcess().getId().toString();
-		String prodProcessLable = manufOrder.getProdProcess().getName().toString();
+		String prodProcessLable = manufOrder.getProdProcess().getName();
 		
 		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable+"-${date}")
 				.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
@@ -259,6 +260,16 @@ public class ManufOrderController {
 				response.setValue("plannedStartDateT", manufOrder.getPlannedStartDateT());
 			}
 
+		}
+	}
+
+	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		try {
+			manufOrderService.updateDiffProdProductList(manufOrder);
+			response.setValue("diffConsumeProdProductList", manufOrder.getDiffConsumeProdProductList());
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
