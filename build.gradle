@@ -30,7 +30,7 @@ allprojects {
 }
 
 def modules = []
-new File("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it ->
+file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it ->
 	if(new File(it, "build.gradle").exists()) { modules.add(it) }
 }
 
