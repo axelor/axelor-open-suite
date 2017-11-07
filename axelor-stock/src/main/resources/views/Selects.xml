@@ -76,4 +76,16 @@
 		<option value="3">Buyer/Seller</option>
 	</selection>
 
+    <selection name="logistical.form.status.select">
+        <option value="1">Provision</option>
+        <option value="2">Carrier validated</option>
+        <option value="3">Collected</option>
+    </selection>
+
+    <selection name="logistical.form.line.type.select">
+        <option value="1">Pallet</option>
+        <option value="2">Parcel</option>
+        <option value="3">Detail</option>
+    </selection>
+
 </object-views>

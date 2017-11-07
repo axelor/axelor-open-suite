@@ -76,7 +76,7 @@ public class UserHrServiceImpl implements UserHrService {
 	@Override
 	public Product getTimesheetProduct(User user) {
 		
-		if (user == null || user.getId() == null) {
+		if (user == null || user.getId() == null || user.getActiveCompany() == null) {
 			return null;
 		}
 		

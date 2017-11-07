@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid"
+        editable="true">
+        <hilite strong="true" if="[1, 2].indexOf(typeSelect) >= 0" />
+        <field name="typeSelect" readonlyIf="typeSelect == 3" selection-in="[1, 2]"/>
+        <field name="stockMoveLine" readonly="true" />
+        <field name="stockMoveLine.product.code" title="Product code" />
+        <field name="stockMoveLine.product.description" title="Product description" />
+        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" />
+        <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain" />
+        <field name="stockMoveLine.netWeight" title="Unit net weight" />
+        <field name="qty" readonlyIf="typeSelect != 3" />
+        <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
+        <field name="grossWeight" readonlyIf="typeSelect == 3" />
+        <field name="dimensions" readonlyIf="typeSelect == 3" />
+    </grid>
+
+    <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging line" name="logistical-form-line-form"
+        width="large" canCopy="true">
+        <panel>
+            <field name="typeSelect" />
+            <panel-related field="stockMoveLine">
+                <field name="product.code" />
+                <field name="product.description" />
+                <field name="stockMove.saleOrder.saleOrderSeq" if-module="axelor-supplychain" />
+                <field name="stockMove.saleOrder.externalReference" if-module="axelor-supplychain" />
+                <field name="netWeight" />
+            </panel-related>
+            <field name="qty" readonlyIf="typeSelect != 3" />
+            <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
+            <field name="grossWeight" readonlyIf="typeSelect == 3" />
+            <field name="dimensions" readonlyIf="typeSelect == 3" />
+        </panel>
+    </form>
+
+</object-views>

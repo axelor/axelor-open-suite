@@ -138,6 +138,18 @@ public class MoveValidateService {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_5), journal.getName());
 		}
 
+		if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+		}
+
+		if (move.getMoveLineList().stream()
+				.allMatch(moveLine ->
+						moveLine.getDebit().add(moveLine.getCredit())
+								.compareTo(BigDecimal.ZERO) == 0
+				)) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+		}
+
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
 
 		if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {

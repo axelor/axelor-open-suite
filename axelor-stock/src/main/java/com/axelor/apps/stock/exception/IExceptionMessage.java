@@ -106,4 +106,9 @@ public interface IExceptionMessage {
 	 */
 	String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
 
+	/*
+	 * Logistical form
+	 */
+	String MISSING_LOGISTICAL_FORM_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
+
 }

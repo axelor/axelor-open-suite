@@ -28,7 +28,7 @@
     
     <many-to-one name="productModel" ref="com.axelor.apps.base.db.Product" title="Product model"/>
     
-    <string name="productName" title="Title" required="true"/>
+    <string name="productName" title="Title" required="true" namecolumn="true" />
     <string name="description" title="Description" large="true"/>
     
     <decimal name="unitPriceUntaxed" precision="20" scale="10" title="Unit price"/>

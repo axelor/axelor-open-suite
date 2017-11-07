@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.axelor.apps.base.db.App;
+import com.axelor.exception.AxelorException;
 
 public interface AppService {
 	
@@ -38,6 +39,8 @@ public interface AppService {
 	public List<App> getChildren(App app, Boolean active);
 	
 	public App installApp(App app, Boolean importDemo);
+	
+	public App unInstallApp(App app) throws AxelorException;
 	
 	public List<App> sortApps(Collection<App> apps);
 
