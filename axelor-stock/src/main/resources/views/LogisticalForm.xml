@@ -11,21 +11,32 @@
 
     <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form" name="logistical-form-form"
         width="large" onNew="action-logistical-form-new">
-        <panel>
+        <toolbar>
+            <button name="provisionBtn" title="Provision" showIf="!statusSelect" readonlyIf="!logisticalFormLineList.length"
+                onClick="action-logistical-form-change-status" />
+            <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
+                onClick="action-logistical-form-change-status" />
+            <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
+                onClick="action-logistical-form-change-status" />
+            <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
+                onClick="action-logistical-form-print-packaging-list" icon="fa-print" if-module="axelor-supplychain" />
+        </toolbar>
+        <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />
             <field name="company" />
             <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet" />
             <field name="collectionDate" />
         </panel>
-        <panel-tabs>
-            <panel title="Overview">
+        <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
+            <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
                 <field name="carrier" domain="self.isCarrier = TRUE" />
-                <field name="freight" />
+                <field name="forwarder" />
                 <field name="incoterm" />
                 <field name="tracking" />
-                <field name="totalGrossWeight" />
-                <field name="totalNetWeight" />
+                <field name="totalGrossWeight" colSpan="4" />
+                <field name="totalNetWeight" colSpan="4" />
+                <field name="totalVolume" colSpan="4" />
                 <field name="internalDeliveryComment" />
                 <field name="externalDeliveryComment" />
             </panel>
@@ -33,13 +44,13 @@
                 <panel colSpan="12">
                     <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" />
-                    <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move,save"
-                        colSpan="2" />
+                        colSpan="10" domain="self.partner = :deliverToCustomer AND self.typeSelect = 2" />
+                    <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
+                        colSpan="2" readonlyIf="!stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
                     form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
-                    onChange="save,action-logistical-form-lines-change,save" canRemove="true" />
+                    onChange="action-logistical-form-lines-change" />
             </panel>
         </panel-tabs>
     </form>
@@ -49,11 +60,36 @@
         <field name="collectionDate" expr="eval: __date__" />
     </action-record>
 
-    <action-method name="action-logistical-form-add-stock-move">
+    <action-group name="action-logistical-form-change-status">
+        <action name="save" />
+        <action name="action-logistical-form-record-change-status" />
+        <action name="save" />
+    </action-group>
+
+    <action-record name="action-logistical-form-record-change-status" model="com.axelor.apps.stock.db.LogisticalForm">
+        <field name="statusSelect" expr="eval: ++statusSelect" />
+    </action-record>
+
+    <action-method name="action-logistical-form-method-generate-delivery-number">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="generateDeliveryNumber" />
+    </action-method>
+
+    <action-group name="action-logistical-form-add-stock-move">
+        <action name="action-logistical-form-method-add-stock-move" />
+        <action name="action-logistical-form-lines-change" />
+    </action-group>
+
+    <action-method name="action-logistical-form-method-add-stock-move">
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addStockMove" />
     </action-method>
 
-    <action-method name="action-logistical-form-lines-change">
+    <action-group name="action-logistical-form-lines-change">
+        <action name="save" />
+        <action name="action-logistical-form-method-lines-change" />
+        <action name="save" />
+    </action-group>
+
+    <action-method name="action-logistical-form-method-lines-change">
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="compute" />
     </action-method>
 

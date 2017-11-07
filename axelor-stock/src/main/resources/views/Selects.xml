@@ -78,7 +78,7 @@
 
     <selection name="logistical.form.line.type.select">
         <option value="1">Pallet</option>
-        <option value="2">Package</option>
+        <option value="2">Parcel</option>
         <option value="3">Detail</option>
     </selection>
 
