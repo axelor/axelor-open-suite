@@ -49,7 +49,7 @@
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
-                    form-view="logistical-form-line-form" colSpan="12" canMove="true" canNew="false" orderBy="sequence"
+                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence"
                     editable="true" onChange="action-logistical-form-lines-change" />
                 <panel colSpan="12" hideIf="$readonly()">
                     <button name="addPalletBtn" title="Add pallet" onClick="action-logistical-form-add-pallet"

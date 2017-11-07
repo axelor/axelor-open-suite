@@ -4,8 +4,10 @@
 
     <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid">
         <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
-        <field name="typeSelect" readonlyIf="typeSelect == 3" selection-in="[1, 2]" />
-        <field name="stockMoveLine" readonly="true" />
+        <field name="typeSelect" onChange="action-logisitcal-form-line-type-change" />
+        <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
+            readonlyIf="typeSelect != 3" />
+        <field name="stockMoveLine.stockMove" />
         <field name="stockMoveLine.product.code" title="Product code" />
         <field name="stockMoveLine.product.description" title="Product description" />
         <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" />
@@ -15,24 +17,48 @@
         <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
         <field name="grossWeight" readonlyIf="typeSelect == 3" />
         <field name="dimensions" readonlyIf="typeSelect == 3" />
+        <field name="logisticalForm.deliverToCustomer" hidden="true" />
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging line" name="logistical-form-line-form"
         width="large" canCopy="true">
         <panel>
-            <field name="typeSelect" />
-            <panel-related field="stockMoveLine">
-                <field name="product.code" />
-                <field name="product.description" />
-                <field name="stockMove.saleOrder.saleOrderSeq" if-module="axelor-supplychain" />
-                <field name="stockMove.saleOrder.externalReference" if-module="axelor-supplychain" />
-                <field name="netWeight" />
-            </panel-related>
-            <field name="qty" readonlyIf="typeSelect != 3" />
-            <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
-            <field name="grossWeight" readonlyIf="typeSelect == 3" />
-            <field name="dimensions" readonlyIf="typeSelect == 3" />
+            <field name="typeSelect" onChange="action-logisitcal-form-line-type-change" />
+            <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
+                hideIf="typeSelect != 3" />
+            <field name="qty" hideIf="typeSelect != 3" />
+            <field name="parcelPalletNumber" hideIf="typeSelect == 3" />
+            <field name="grossWeight" hideIf="typeSelect == 3" />
+            <field name="dimensions" hideIf="typeSelect == 3" />
+            <field name="logisticalForm.deliverToCustomer" hidden="true" />
         </panel>
     </form>
+
+    <action-record name="action-logisitcal-form-line-type-change" model="com.axelor.apps.stock.db.LogisticalFormLine">
+        <field name="stockMoveLine" expr="eval: null" />
+        <field name="qty" expr="eval: null" />
+        <field name="parcelPalletNumber" expr="eval: null" />
+        <field name="grossWeight" expr="eval: null" />
+        <field name="dimensions" expr="eval: null" />
+    </action-record>
+
+    <action-record name="action-logistical-form-line-stock-move-line-change" model="com.axelor.apps.stock.db.LogisticalFormLine">
+        <field name="qty" expr="eval: stockMoveLine?.realQty" />
+    </action-record>
+
+    <action-group name="action-logistical-form-line-stock-move-line-domain">
+        <action name="action-logistical-form-line-attrs-stock-move-line-domain" />
+        <action name="action-logistical-form-line-validate-partner" />
+    </action-group>
+
+    <action-validate name="action-logistical-form-line-validate-partner">
+        <notify message="Please save the logistical form first." if="!logisticalForm?.deliverToCustomer" />
+    </action-validate>
+
+    <action-attrs name="action-logistical-form-line-attrs-stock-move-line-domain">
+        <attribute name="domain" for="stockMoveLine"
+            expr="eval: &quot;self.stockMove.partner.id = ${logisticalForm.deliverToCustomer.id}&quot;" if="logisticalForm?.deliverToCustomer" />
+        <attribute name="domain" for="stockMoveLine" expr="eval: &quot;self IS NULL&quot;" if="!logisticalForm?.deliverToCustomer" />
+    </action-attrs>
 
 </object-views>
