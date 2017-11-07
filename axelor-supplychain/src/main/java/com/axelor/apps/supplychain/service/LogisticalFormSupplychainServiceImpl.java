@@ -19,7 +19,7 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 					continue;
 				}
 
-				LogisticalFormLine logisticalFormLine = createLine(stockMoveLine);
+				LogisticalFormLine logisticalFormLine = createDetailLine(stockMoveLine);
 				logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
 			}
 		}

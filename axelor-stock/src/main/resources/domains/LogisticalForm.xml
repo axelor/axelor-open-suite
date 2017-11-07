@@ -14,9 +14,9 @@
         <many-to-one name="forwarder" ref="com.axelor.apps.base.db.Partner" />
         <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm" />
         <string name="tracking" />
-        <decimal name="totalGrossWeight" />
-        <decimal name="totalNetWeight" />
-        <decimal name="totalVolume" title="Total volume (m³)" />
+        <decimal name="totalGrossWeight" readonly="true"/>
+        <decimal name="totalNetWeight" readonly="true" />
+        <decimal name="totalVolume" title="Total volume (m³)" readonly="true" precision="19" scale="3" />
         <integer name="statusSelect" selection="logistical.form.status.select" title="Status" default="1" />
         <string name="internalDeliveryComment" large="true" />
         <string name="externalDeliveryComment" large="true" />
