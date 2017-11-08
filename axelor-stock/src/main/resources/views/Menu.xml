@@ -208,9 +208,15 @@
 		
 	<action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
 		model="com.axelor.apps.base.db.Partner">
+		<view type="cards" name="partner-cards" />
 		<view type="grid" name="partner-grid"/>
 		<view type="form" name="partner-form"/>
+		<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isCarrier = true</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="searchFields" expr="name;firstName"/>
+		<context name="_isCarrier" expr="true"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
