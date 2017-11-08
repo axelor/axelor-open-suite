@@ -11,7 +11,7 @@ import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl implements LogisticalFormSupplychainService {
 
 	@Override
-	public void addLines(LogisticalForm logisticalForm, StockMove stockMove) {
+	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
 		if (stockMove.getStockMoveLineList() != null) {
 			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 				SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();

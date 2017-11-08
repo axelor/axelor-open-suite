@@ -110,5 +110,6 @@ public interface IExceptionMessage {
 	 * Logistical form
 	 */
 	String MISSING_LOGISTICAL_FORM_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
+	String INVALID_DIMENSIONS = /*$$(*/ "Invalid dimensions on packaging line No. %d" /*)*/;
 
 }

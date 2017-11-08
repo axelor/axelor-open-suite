@@ -25,7 +25,7 @@ public class LogisticalFormController {
 
 				if (stockMove.getStockMoveLineList() != null) {
 					LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-					Beans.get(LogisticalFormService.class).addLines(logisticalForm, stockMove);
+					Beans.get(LogisticalFormService.class).addDetailLines(logisticalForm, stockMove);
 					response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
 					response.setValue("stockMove", null);
 				}

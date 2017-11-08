@@ -2,6 +2,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.exception.AxelorException;
 
 public interface LogisticalFormService {
 
@@ -11,7 +12,7 @@ public interface LogisticalFormService {
 	 * @param logisticalForm
 	 * @param stockMove
 	 */
-	void addLines(LogisticalForm logisticalForm, StockMove stockMove);
+	void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove);
 
 	/**
 	 * Add parcel or pallet line.
@@ -25,7 +26,8 @@ public interface LogisticalFormService {
 	 * Compute totals.
 	 * 
 	 * @param logisticalForm
+	 * @throws AxelorException
 	 */
-	void compute(LogisticalForm logisticalForm);
+	void compute(LogisticalForm logisticalForm) throws AxelorException;
 
 }
