@@ -1,6 +1,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -8,12 +9,10 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Strings;
-import com.google.inject.persist.Transactional;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
@@ -21,19 +20,47 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	public void addLines(LogisticalForm logisticalForm, StockMove stockMove) {
 		if (stockMove.getStockMoveLineList() != null) {
 			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-				LogisticalFormLine logisticalFormLine = createLine(stockMoveLine);
+				LogisticalFormLine logisticalFormLine = createDetailLine(stockMoveLine);
 				logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
 			}
 		}
 	}
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected LogisticalFormLine createLine(StockMoveLine stockMoveLine) {
+	@Override
+	public void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
+		LogisticalFormLine logisticalFormLine = createParcelPalletLine(logisticalForm, typeSelect);
+		logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+	}
+
+	protected LogisticalFormLine createDetailLine(StockMoveLine stockMoveLine) {
 		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
 		logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
 		logisticalFormLine.setStockMoveLine(stockMoveLine);
 		logisticalFormLine.setQty(stockMoveLine.getRealQty());
 		return logisticalFormLine;
+	}
+
+	protected LogisticalFormLine createParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
+		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
+		logisticalFormLine.setTypeSelect(typeSelect);
+		logisticalFormLine.setParcelPalletNumber(findHighestParcelPalletNumber(logisticalForm, typeSelect) + 1);
+		return logisticalFormLine;
+	}
+
+	protected int findHighestParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
+		int highest = 0;
+
+		if (logisticalForm.getLogisticalFormLineList() != null) {
+			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+				if (logisticalFormLine.getTypeSelect() == typeSelect
+						&& logisticalFormLine.getParcelPalletNumber() != null
+						&& logisticalFormLine.getParcelPalletNumber() > highest) {
+					highest = logisticalFormLine.getParcelPalletNumber();
+				}
+			}
+		}
+
+		return highest;
 	}
 
 	@Override
@@ -48,7 +75,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 
-				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL
+						&& logisticalFormLine.getGrossWeight() != null) {
 					totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
 					totalVolume = totalVolume.add(evalBigDecimal(scriptHelper, logisticalFormLine.getDimensions()));
 				} else if (stockMoveLine != null) {
@@ -59,10 +87,10 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			}
 		}
 
+		totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 2, RoundingMode.HALF_UP);
 		logisticalForm.setTotalNetWeight(totalNetWeight);
 		logisticalForm.setTotalGrossWeight(totalGrossWeight);
 		logisticalForm.setTotalVolume(totalVolume);
-
 	}
 
 	protected BigDecimal evalBigDecimal(ScriptHelper scriptHelper, String script) {
@@ -70,13 +98,12 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			return BigDecimal.ZERO;
 		}
 
-		return (BigDecimal) scriptHelper.eval(script.replaceAll("x", "*"));
+		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
 	}
 
 	protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {
 		Context scriptContext = new Context(Mapper.toMap(logisticalForm), logisticalForm.getClass());
-		ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-		return scriptHelper;
+		return new GroovyScriptHelper(scriptContext);
 	}
 
 }
