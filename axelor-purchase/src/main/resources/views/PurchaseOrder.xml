@@ -103,7 +103,7 @@
 			<field name="versionNumber"
 				if="__config__.general.getManagePurchaseOrderVersion()" />
 			<field name="companyBankDetails" widget="SuggestBox"
-				onSelect="action-invoice-attrs-domain-company-bank-details"
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
 				form-view="bank-details-form" grid-view="bank-details-grid"
 				if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management" />
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati" />
@@ -535,6 +535,10 @@
 		<attribute for="companyBankDetails" name="hidden"
 			expr="eval: !__config__.general.getManageMultiBanks()" />
 	</action-attrs>
+
+	<action-method name="action-purchase-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
 
 	<search-filters name="purchase-order-filters"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">

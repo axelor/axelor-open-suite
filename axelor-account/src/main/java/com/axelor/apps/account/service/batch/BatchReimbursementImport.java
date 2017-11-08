@@ -236,10 +236,10 @@ public class BatchReimbursementImport extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_8);
+		comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_8) + "\n";
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_9)+"\n", batch.getDone());
 		comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

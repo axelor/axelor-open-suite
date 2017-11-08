@@ -44,7 +44,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	
 	public Account getInternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
 
-		if(accountConfig.getExternalBankToBankAccount() == null)   {
+		if(accountConfig.getInternalBankToBankAccount() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
 					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -93,7 +93,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	
 	public Sequence getNatTreasuryTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getNatTreasuryTransSequence() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9), 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10),
 					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
@@ -102,7 +102,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	
 	public Sequence getIntTreasuryTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if(accountConfig.getIntTreasuryTransSequence() == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10), 
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9),
 					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 

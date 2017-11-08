@@ -14,23 +14,16 @@
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BBAN/IBAN to use"/>
     
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-    
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+  	<date name="dueDate" />
+  	<boolean name="includeOtherBankAccounts" />
+
     <!-- REIMBURSEMENT -->
     <integer name="reimbursementTypeSelect" title="Reimbursement batch type" selection="ireimbursement.batch.type.select"/>
     <integer name="reimbursementExportTypeSelect" title="Treatment/Operation type" selection="ireimbursement.batch.export.type.select"/>
     
     <!-- REMINDER -->
     <integer name="reminderTypeSelect" title="Reminder batch type" selection="ireminder.batch.type.select"/>
-    
-    
-    <!--  DIRECT DEBIT -->
-    <integer name="directDebitTypeSelect" title="Direct Debit batch type" selection="iaccount.account.schedule.type.select"/>
-    <integer name="directDebitExportTypeSelect" title="Datatype" selection="iaccount.account.schedule.export.type.select"/>
-    <date name="debitDate" title="Reference Due Date"/>
-	<boolean name="isSepaDirectDebit" title="SEPA ?" default="false"/>
-	<boolean name="hasToReExportCfbonb" title="Re-export the bank file"/>
-	<many-to-one name="batchToReExport" ref="com.axelor.apps.base.db.Batch" title="Batch to re-export"/>
-	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     
     <!--  INTERBANK PAYMENT ORDER -->
     <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
@@ -52,8 +45,6 @@
     <!-- CREDIT TRANSFER -->
   	<integer name="creditTransferTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
   	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
-  	<date name="dueDate" />
-  	<boolean name="includeOtherBankAccounts" />
 	<integer name="customerReimbursementTypeSelect" title="Customer reimbursement type"
 		default="1" required="true"
 		selection="iaccount.account.batch.transfer.customer.reimbursement.type.select" />
@@ -62,7 +53,6 @@
 	
 	   	// ACTION TYPE
 		public static final int ACTION_REIMBURSEMENT = 11;
-		public static final int ACTION_DIRECT_DEBIT = 12;
 		public static final int ACTION_REMINDER = 14;
 		public static final int ACTION_INTERBANK_PAYMENT_ORDER = 15;
 		public static final int ACTION_DOUBTFUL_CUSTOMER = 16;
@@ -77,15 +67,7 @@
 		// REIMBURSEMENT EXPORT TYPE
 		public static final int REIMBURSEMENT_EXPORT_TYPE_GENERATE = 1;
 		public static final int REIMBURSEMNT_EXPORT_TYPE_EXPORT = 2;
-	
-		// DIRECT DEBIT TYPE
-		public static final int DIRECT_DEBIT_TYPE_EXPORT = 1;
-		public static final int DIRECT_DEBIT_TYPE_IMPORT = 2;
-		
-		// DIRECT DEBIT EXPORT TYPE
-		public static final int DIRECT_DEBIT_EXPORT_TYPE_MONTHLY = 0;
-		public static final int DIRECT_DEBIT_EXPORT_TYPE_INVOICE = 1;
-		
+
 		// INTERBANK PAYMENT ORDER TYPE
 		public static final int INTERBANK_PAYMENT_ORDER_TYPE_IMPORT = 1;
 		public static final int INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT = 2;

@@ -152,33 +152,4 @@ public class AccountingSituationService	{
 		return domain;
 	}
 
-	/**
-	 * Find a default bank details.
-	 * @param company
-	 * @param paymentMode
-	 * @param partner
-	 * @return  the default bank details in accounting situation if it is active
-	 *          and allowed by the payment mode.
-	 */
-	public BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner) {
-		AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
-		if (accountingSituation == null) { return null;}
-		BankDetails candidateBankDetails = null;
-		if (paymentMode.getInOutSelect() == PaymentModeRepository.IN) {
-			candidateBankDetails = accountingSituation.getCompanyInBankDetails();
-		}
-		else if (paymentMode.getInOutSelect() == PaymentModeRepository.OUT) {
-			candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
-		}
-		List<BankDetails>authorizedBankDetails = Beans.get(PaymentModeService.class).
-				getCompatibleBankDetailsList(paymentMode, company);
-		if (authorizedBankDetails.contains(candidateBankDetails) &&
-				candidateBankDetails.getActive()) {
-			return candidateBankDetails;
-		}
-		else {
-			return null;
-		}
-	}
-	
 }

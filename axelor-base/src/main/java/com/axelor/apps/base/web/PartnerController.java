@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.base.service.BankDetailsService;
 import org.eclipse.birt.core.exception.BirtException;
+import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.iban4j.InvalidCheckDigitException;
@@ -285,7 +287,7 @@ public class PartnerController {
 				if(bankDetails.getIban() != null) {
 					LOG.debug("checking iban code : {}", bankDetails.getIban());
 					try {
-						IbanUtil.validate(bankDetails.getIban());
+						Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
 					} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
 						ibanInError.add(bankDetails.getIban());
 					}

@@ -29,7 +29,6 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
     @Inject
@@ -41,7 +40,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
     }
 
     @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
     public void realize(BankOrder bankOrder) throws AxelorException {
         super.realize(bankOrder);
 

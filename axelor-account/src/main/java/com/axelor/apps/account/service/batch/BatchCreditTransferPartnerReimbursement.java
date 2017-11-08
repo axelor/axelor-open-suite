@@ -20,6 +20,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -61,7 +62,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 				}
 			} catch (Exception ex) {
 				incrementAnomaly();
-				TraceBackService.trace(ex);
+				TraceBackService.trace(ex, IException.CREDIT_TRANSFER, batch.getId());
 				ex.printStackTrace();
 				log.error(String.format(
 						"Credit transfer batch for partner credit balance reimbursement: anomaly for partner %s",
@@ -74,14 +75,14 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
 	@Override
 	protected void stop() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
+		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
 		sb.append(String.format(
 				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL, batch.getDone()),
+						IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL, batch.getDone()) + " ",
 				batch.getDone()));
 		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL, batch.getAnomaly()),
+				I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+				        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL, batch.getAnomaly()),
 				batch.getAnomaly()));
 		addComment(sb.toString());
 		super.stop();

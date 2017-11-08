@@ -33,6 +33,8 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
+	<unique-constraint columns="ref,company"/>
+    
     <extra-code><![CDATA[
 	
 	   	// TYPE SELECT

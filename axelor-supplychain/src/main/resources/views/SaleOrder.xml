@@ -51,14 +51,6 @@
 		<action name="save"/>
 	</action-group>
 
-	<action-group name="action-so-group-domain-company-bank-details" id="supplychain-so-action-group-bank-details-domain">
-		<action name="action-invoice-attrs-domain-company-bank-details"/>
-	</action-group>
-
-	<action-method name="action-sale-order-method-fill-company-bank-details">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillCompanyBankDetails"/>
-	</action-method>
-	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>

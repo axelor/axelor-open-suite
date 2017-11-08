@@ -14,11 +14,12 @@
 	<many-to-one name="bankStatementFile" ref="com.axelor.meta.db.MetaFile" title="File" />
 	<datetime name="getDateTime" title="Get date"/>
 
+
 	<extra-code><![CDATA[
 	
 	   	// Status select
 		public static final int STATUS_RECEIVED = 1;
-		public static final int STATUS_CHECKED = 2;
+		public static final int STATUS_IMPORTED = 2;
 	
 	]]></extra-code>
 

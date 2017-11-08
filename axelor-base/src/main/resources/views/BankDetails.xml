@@ -33,7 +33,8 @@
 			</panel>
 			<field name="bank" canNew="true" form-view="bank-form" onChange="action-group-bank-details-bank-onchange"/>
 			<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
-			canNew="true" form-view="bank-address-form"/>
+				   onSelect="action-attrs-account-bankdetails-bank-set-address-domain"
+				   canNew="true" form-view="bank-address-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
 		<panel name="bban" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">
@@ -50,7 +51,6 @@
 	</action-group>
 
 	<action-group name="action-group-bank-details-bank-onchange">
-		<action name="action-attrs-account-bankdetails-bank-set-address-domain"/>
 		<action name="action-attrs-account-bankdetails-bank-empty-address"/>
 	</action-group>
 
@@ -62,7 +62,6 @@
 
 	<action-group name="action-group-account-bank-details-form-onload">
 		<action name="action-method_bank-details-validate-iban"/>
-		<action name="action-attrs-account-bankdetails-bank-set-address-domain"/>
 	</action-group>
 
 	<action-method name="action-method_bank-details-validate-iban">
@@ -85,7 +84,7 @@
 
 	<action-validate name="action-validate-bank-details-bbanKey">
 		<error message="Incorrect BBAN Key"
-			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 ) ) != Long.parseLong( bbanKey )" />
+			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 )  != Long.parseLong( bbanKey ))" />
 	</action-validate>
 
 	<action-attrs name="action-attrs-account-bankdetails-bank-empty-address">
