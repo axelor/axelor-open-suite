@@ -95,7 +95,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			}
 		}
 
-		totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 2, RoundingMode.HALF_UP);
+		totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
 		logisticalForm.setTotalNetWeight(totalNetWeight);
 		logisticalForm.setTotalGrossWeight(totalGrossWeight);
 		logisticalForm.setTotalVolume(totalVolume);
