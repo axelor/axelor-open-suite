@@ -16,8 +16,8 @@
 
         <extra-code>
         <![CDATA[
-            public static int TYPE_PALLET = 1;
-            public static int TYPE_PARCEL = 2;
+            public static int TYPE_PARCEL = 1;
+            public static int TYPE_PALLET = 2;
             public static int TYPE_DETAIL = 3;
         ]]>
         </extra-code>

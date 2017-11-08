@@ -52,9 +52,9 @@
                     form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
                     onChange="action-logistical-form-lines-change" />
                 <panel colSpan="12" hideIf="$readonly()">
-                    <button name="addPalletBtn" title="Add pallet" onClick="action-logistical-form-add-pallet"
-                        colSpan="2" colOffset="8" />
                     <button name="addParcelBtn" title="Add parcel" onClick="action-logistical-form-add-parcel"
+                        colSpan="2" colOffset="8" />
+                    <button name="addPalletBtn" title="Add pallet" onClick="action-logistical-form-add-pallet"
                         colSpan="2" />
                 </panel>
             </panel>
@@ -99,12 +99,22 @@
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="compute" />
     </action-method>
 
-    <action-method name="action-logistical-form-add-pallet">
-        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addPallet" />
+    <action-group name="action-logistical-form-add-parcel">
+        <action name="action-logistical-form-method-add-parcel" />
+        <action name="save" />
+    </action-group>
+
+    <action-method name="action-logistical-form-method-add-parcel">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addParcel" />
     </action-method>
 
-    <action-method name="action-logistical-form-add-parcel">
-        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addParcel" />
+    <action-group name="action-logistical-form-add-pallet">
+        <action name="action-logistical-form-method-add-pallet" />
+        <action name="save" />
+    </action-group>
+
+    <action-method name="action-logistical-form-method-add-pallet">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addPallet" />
     </action-method>
 
 </object-views>
