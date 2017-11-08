@@ -40,8 +40,8 @@
 		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form" grid-view="configurator-formula-grid" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"/>
 
 		<panel title="Authorizations" hideIf="id == null">
-			<field name="authorizedUserSet" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
-            <field name="authorizedGroupSet" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
+			<field name="authorizedUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid" colSpan="12"/>
+            <field name="authorizedGroupSet" widget="TagSelect" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 
 		<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
