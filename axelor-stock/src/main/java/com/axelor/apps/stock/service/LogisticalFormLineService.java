@@ -15,10 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.stock.service;
 
-import com.axelor.apps.stock.service.LogisticalFormService;
+import java.math.BigDecimal;
 
-public interface LogisticalFormSupplychainService extends LogisticalFormService {
+import com.axelor.apps.stock.db.LogisticalFormLine;
+
+public interface LogisticalFormLineService {
+
+	/**
+	 * Get domain for stockMoveLine.
+	 * 
+	 * @param logisticalFormLine
+	 * @return
+	 */
+	String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine);
+
+	/**
+	 * Set remaining allocable quantity.
+	 * 
+	 * @param logisticalFormLine
+	 * @return
+	 */
+	BigDecimal getRemainingQty(LogisticalFormLine logisticalFormLine);
 
 }
