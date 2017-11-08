@@ -194,6 +194,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
+		saleOrder.setCompanyExTaxTotal(BigDecimal.ZERO);
 		saleOrder.setTaxTotal(BigDecimal.ZERO);
 		saleOrder.setInTaxTotal(BigDecimal.ZERO);
 		
