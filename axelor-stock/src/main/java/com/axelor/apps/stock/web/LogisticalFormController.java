@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.stock.web;
 
 import java.util.Map;
@@ -76,6 +93,16 @@ public class LogisticalFormController {
 			Beans.get(LogisticalFormService.class).checkLines(logisticalForm);
 		} catch (InconsistentLogisticalFormLines e) {
 			response.setAlert(e.getLocalizedMessage());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
+	public void setStockMoveDomain(ActionRequest request, ActionResponse response) {
+		try {
+			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+			String domain = Beans.get(LogisticalFormService.class).getStockMoveDomain(logisticalForm);
+			response.setAttr("stockMove", "domain", domain);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

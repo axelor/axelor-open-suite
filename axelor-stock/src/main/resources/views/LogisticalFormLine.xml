@@ -41,18 +41,13 @@
         <field name="grossWeight" expr="eval: null" />
         <field name="dimensions" expr="eval: null" />
     </action-record>
+    
+    <action-method name="action-logistical-form-line-stock-move-line-change">
+        <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setQty" />
+    </action-method>
 
-    <action-record name="action-logistical-form-line-stock-move-line-change" model="com.axelor.apps.stock.db.LogisticalFormLine">
-        <field name="qty" expr="eval: stockMoveLine?.realQty" />
-    </action-record>
-
-    <action-attrs name="action-logistical-form-line-stock-move-line-domain">
-        <attribute name="domain" for="stockMoveLine"
-            expr="eval: &quot;self.stockMove.partner.id = ${logisticalForm.deliverToCustomer.id}&quot;" if="logisticalForm?.deliverToCustomer" />
-        <attribute name="domain" for="stockMoveLine"
-            expr="eval: &quot;self.stockMove.partner.id = ${__parent__.deliverToCustomer.id}&quot;" if="__parent__?.deliverToCustomer" />
-        <attribute name="domain" for="stockMoveLine" expr="eval: &quot;self IS NULL&quot;"
-            if="!logisticalForm?.deliverToCustomer &amp;&amp; !__parent__?.deliverToCustomer" />
-    </action-attrs>
+    <action-method name="action-logistical-form-line-stock-move-line-domain">
+        <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setStockMoveLineDomain" />
+    </action-method>
 
 </object-views>

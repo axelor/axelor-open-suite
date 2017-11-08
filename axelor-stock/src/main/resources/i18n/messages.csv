@@ -442,6 +442,7 @@
 "Total W.T.",,,
 "Total gross weight",,,
 "Total net weight",,,
+"Total quantity for %s: %s (expected: %s)",,,
 "Total volume (m³)",,,
 "Tracking",,,
 "Tracking Nbr",,,

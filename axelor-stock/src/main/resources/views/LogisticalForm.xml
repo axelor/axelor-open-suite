@@ -44,7 +44,7 @@
                 <panel colSpan="12">
                     <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" domain="self.partner = :deliverToCustomer AND self.typeSelect = 2" />
+                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
@@ -123,6 +123,10 @@
 
     <action-method name="action-logistical-form-check-lines">
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="checkLines" />
+    </action-method>
+
+    <action-method name="action-logistical-form-stock-move-domain">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setStockMoveDomain" />
     </action-method>
 
 </object-views>

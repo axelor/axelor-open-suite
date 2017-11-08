@@ -15,18 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.exception;
+package com.axelor.apps.stock.service;
 
-import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import java.math.BigDecimal;
 
-public class InconsistentLogisticalFormLines extends AxelorException {
+import com.axelor.apps.stock.db.LogisticalFormLine;
 
-	private static final long serialVersionUID = 7036277936135855411L;
+public interface LogisticalFormLineService {
 
-	public InconsistentLogisticalFormLines(LogisticalForm logisticalForm, String message, Object... messageArgs) {
-		super(logisticalForm, IException.INCONSISTENCY, message, messageArgs);
-	}
+	/**
+	 * Get domain for stockMoveLine.
+	 * 
+	 * @param logisticalFormLine
+	 * @return
+	 */
+	String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine);
+
+	/**
+	 * Set remaining allocable quantity.
+	 * 
+	 * @param logisticalFormLine
+	 * @return
+	 */
+	BigDecimal getRemainingQty(LogisticalFormLine logisticalFormLine);
 
 }
