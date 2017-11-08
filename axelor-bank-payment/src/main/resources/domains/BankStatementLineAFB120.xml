@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankStatementLineAFB120" lang="java" extends="BankStatementLine" persistable="true">
+  
+  	<integer name="unavailabilityIndexSelect" title="Unavailability index" selection="bankpayment.bank.statement.line.afb.120.unavailability.index.select"/>
+  	<integer name="commissionExemptionIndexSelect" title="Commission exemption index" selection="bankpayment.bank.statement.line.afb.120.commission.exemption.index.select"/>
+  	
+  	<integer name="lineTypeSelect" title="Line type" selection="bankpayment.bank.statement.line.afb.120.line.type.select"/>
+  
+	<extra-code><![CDATA[
+		public static final int LINE_TYPE_INITIAL_BALANCE = 1;
+		public static final int LINE_TYPE_MOVEMENT = 2;
+		public static final int LINE_TYPE_FINAL_BALANCE = 3;
+		
+		public static final int COMISSION_EXEMPTION_INDEX_NOT_EXEMPT = 0;
+		public static final int COMISSION_EXEMPTION_INDEX_EXEMPT = 1;
+		
+		public static final int UNAVAILABILITY_INDEX_AVAILABLE = 0;
+		public static final int UNAVAILABILITY_INDEX_UNAVAILABLE = 1;
+		
+	]]></extra-code>
+
+  </entity>
+  
+</domain-models>
+

@@ -224,7 +224,7 @@
 "The supplier is required and must be the same for all purchase orders","Le fournisseur est obligatoire et doit être identique pour toutes les cmdes d'achat",,
 "Timetable","Echéancier",,
 "Timetables","Echéanciers",,
-"To Date","à Date",,
+"To Date","Date de fin",,
 "Type",,,
 "Unit","Unité",,
 "Unit prices in A.T.I and in W.T. can't be mix","Il n'est pas possible de facturer des mouvements de stock dont les prix unitaires sont définis en HT et en TTC.",,

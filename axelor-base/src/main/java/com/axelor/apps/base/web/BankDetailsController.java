@@ -17,14 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.iban4j.InvalidCheckDigitException;
@@ -33,7 +37,7 @@ import org.iban4j.UnsupportedCountryException;
 public class BankDetailsController {
 
 	@Inject
-	private BankDetailsService bds;
+	private BankDetailsServiceImpl bds;
 	
 	public void validateIban(ActionRequest request,ActionResponse response) {
 		response.setAttr("invalidIbanText", "hidden", true);
@@ -43,16 +47,22 @@ public class BankDetailsController {
 		}
 	
 		BankDetails bankDetails = request.getContext().asType(BankDetails.class);
+		Bank bank = bankDetails.getBank();
 
-		if(bankDetails.getIban() != null && bankDetails.getBank().getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+		if(bankDetails.getIban() != null && bank != null
+				&& bank.getBankDetailsTypeSelect()
+				== BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
 			try {
-				IbanUtil.validate(bankDetails.getIban());
+				Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
 
 				bankDetails = bds.detailsIban(bankDetails);
-				response.setValue("bankCode", bankDetails.getBankCode());
-				response.setValue("sortCode", bankDetails.getSortCode());
-				response.setValue("accountNbr", bankDetails.getAccountNbr());
-				response.setValue("bbanKey", bankDetails.getBbanKey());
+				if (bank.getCountry() != null
+						&& bank.getCountry().getAlpha2Code().equals("FR")) {
+					response.setValue("bankCode", bankDetails.getBankCode());
+					response.setValue("sortCode", bankDetails.getSortCode());
+					response.setValue("accountNbr", bankDetails.getAccountNbr());
+					response.setValue("bbanKey", bankDetails.getBbanKey());
+				}
 			} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
 				if (request.getAction().endsWith("onchange")) {
 					response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));

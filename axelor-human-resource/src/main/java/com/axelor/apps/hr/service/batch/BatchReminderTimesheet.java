@@ -192,7 +192,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 	protected void stop() {
 
 		String comment = String.format("\t* %s Email(s) sent \n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

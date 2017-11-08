@@ -79,7 +79,7 @@ public class EbicsCertificateService {
 			 return cert.getCertificate();
 		 }
 		
-		 if (bank.getUrl() != null && type.equals("ssl")) {
+		 if (bank.getUrl() != null && type.equals(EbicsCertificateRepository.TYPE_SSL)) {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
@@ -190,7 +190,12 @@ public class EbicsCertificateService {
 	}
 	
 	
-	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert, boolean cleanPrivateKey) throws CertificateEncodingException, IOException {
+		
+		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		log.debug("sha256 HEX : {}", sha);
+		log.debug("certificat : {}", new String(certificate.getEncoded()));
+		log.debug("certificat size : {}", certificate.getEncoded().length);
 		
 		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
 		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
@@ -202,8 +207,11 @@ public class EbicsCertificateService {
 		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
-		cert.setPrivateKey(null);
-		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		
+		if (cleanPrivateKey) {
+			cert.setPrivateKey(null);
+		}
+		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
 		computeFullName(cert);
@@ -223,7 +231,7 @@ public class EbicsCertificateService {
 			cert.setTypeSelect(type);
 		}
 		
-		cert =  updateCertificate(certificate, cert);
+		cert =  updateCertificate(certificate, cert, true);
 		
 		return certRepo.save(cert);
 	}

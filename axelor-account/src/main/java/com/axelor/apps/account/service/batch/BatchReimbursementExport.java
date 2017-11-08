@@ -104,7 +104,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			break;
 			
 		default:
-			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()), IException.INCONSISTENCY));
+			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()), IException.INCONSISTENCY), IException.REIMBURSEMENT, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -259,7 +259,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		}
 		
 		if(reimbursementToExport != null && reimbursementToExport.size() != 0)  {
-		
+		    /*
 			try {
 				
 				reimbursementExportService.exportSepa(companyRepo.find(company.getId()), batchRepo.find(batch.getId()).getStartDate(), reimbursementToExport, batchRepo.find(batch.getId()).getAccountingBatch().getBankDetails());
@@ -273,6 +273,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				log.error("Bug(Anomalie) généré(e)e dans l'export SEPA - Batch {}", batch.getId());
 				
 			}
+			*/
 			
 			try {
 				
@@ -302,7 +303,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		batch = batchRepo.find(batch.getId());
 		switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
 		case AccountingBatchRepository.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
-			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2);
+			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
 			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_3)+"\n", batch.getDone());
 			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
 
@@ -310,7 +311,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 		case AccountingBatchRepository.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
 			
-			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4);
+			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
 			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_5)+"\n", batch.getDone());
 			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
 

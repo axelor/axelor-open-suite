@@ -17,6 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,6 +142,26 @@ public class PaymentVoucherController {
 				.add("html", fileLink).map());
 		
 	}	
-	
-	
+
+    /**
+	 * Called on load and in partner, company or payment mode change.
+	 * Fill the bank details with a default value.
+ 	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+		Company company = paymentVoucher.getCompany();
+		Partner partner = paymentVoucher.getPartner();
+		if (company == null) {
+			return;
+		}
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
+    }
 }

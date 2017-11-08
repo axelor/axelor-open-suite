@@ -60,15 +60,6 @@ public class AccountingBatchService extends AbstractBatchService {
 			}
 			batch = null;
 			break;
-		case AccountingBatchRepository.ACTION_DIRECT_DEBIT:
-			if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_EXPORT)  {
-				batch = paymentScheduleExport(accountingBatch);
-			}
-			else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_IMPORT)  {
-				batch = paymentScheduleImport(accountingBatch);
-			}
-			batch = null;
-			break;
 		case AccountingBatchRepository.ACTION_REMINDER:
 			batch = reminder(accountingBatch);
 			break;
@@ -124,18 +115,6 @@ public class AccountingBatchService extends AbstractBatchService {
 		
 	}
 	
-	public Batch paymentScheduleExport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchPaymentScheduleExport.class).run(accountingBatch);
-		
-	}
-	
-	public Batch paymentScheduleImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchPaymentScheduleImport.class).run(accountingBatch);
-		
-	}
-	
 	public Batch interbankPaymentOrderImport(AccountingBatch accountingBatch) {
 		
 		return Beans.get(BatchInterbankPaymentOrderImport.class).run(accountingBatch);
@@ -188,6 +167,10 @@ public class AccountingBatchService extends AbstractBatchService {
 		}
 
 		return Beans.get(batchStrategyClass).run(accountingBatch);
+	}
+
+	public Batch directDebit(AccountingBatch accountingBatch) {
+		throw new UnsupportedOperationException(I18n.get("This batch requires the bank payment module."));
 	}
 
 }

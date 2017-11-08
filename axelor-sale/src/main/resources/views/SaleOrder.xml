@@ -138,7 +138,7 @@
 				grid-view="currency-grid" readonlyIf="statusSelect >= 3" />
 			<field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()" />
 			<field name="companyBankDetails" widget="SuggestBox"
-				onSelect="action-so-group-domain-company-bank-details" form-view="bank-details-form"
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form"
 				grid-view="bank-details-grid" />
 			<field name="inAti" onChange="action-sale-order-attrs-in-ati" />
 			<field name="subscription" if-module="axelor-supplychain"
@@ -194,8 +194,8 @@
 			</panel>
 
 
-			<!-- <panel-related field="saleOrderScheduleLineList" title="Schedules" 
-				showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" 
+			<!-- <panel-related field="saleOrderScheduleLineList" title="Schedules"
+				showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"
 				grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/> -->
 			<panel-dashlet action="action-view-show-invoices-from-sale-order"
 				title="Invoicing" if-module="axelor-supplychain" showIf="statusSelect >= 3"/>
@@ -432,7 +432,7 @@
 					<field name="paymentCondition" if-module="axelor-supplychain"
 						form-view="payment-condition-form" grid-view="payment-condition-grid" />
 				</panel>
-				<!-- <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12" 
+				<!-- <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12"
 					showIf="invoicingTypeSelect == 2"> -->
 				<!-- <field name="invoicingMomentSelect"/> -->
 				<!-- </panel> -->
@@ -446,8 +446,8 @@
 				</panel>
 			</panel>
 
-			<!-- <panel-related field="saleOrderScheduleLineList" title="Schedules" 
-				showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" 
+			<!-- <panel-related field="saleOrderScheduleLineList" title="Schedules"
+				showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain"
 				form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/> -->
 
 			<panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()"
@@ -634,6 +634,7 @@
 		<action name="action-sale-order-record-in-ati" />
 		<action name="action-sale-order-attrs-in-ati" />
 		<action name="action-sale-order-attrs-hidden-bank-details" />
+		<action name="action-sale-order-method-fill-company-bank-details"/>
 	</action-group>
 
 	<action-group name="action-group-sale-saleorder-onload">
@@ -650,10 +651,6 @@
 		<action name="action-supplychain-sale-order-validate-check-location" />
 		<action name="action-sale-order-method-confirm" />
 		<action name="action-sale-order-method-generate-project" if="eval: __config__.general.getAutomaticProject()" />
-	</action-group>
-
-	<action-group name="action-so-group-domain-company-bank-details">
-		<action name="action-so-attrs-domain-company-bank-details" />
 	</action-group>
 
 	<action-attrs name="action-sale-order-attrs-in-ati">
@@ -764,12 +761,6 @@
 	<action-record name="action-sale-order-record-company-configuration"
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration" />
-		<field name="companyBankDetails" expr="eval: null" />
-		<field name="companyBankDetails"
-			expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyInBankDetails"
-			if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active" />
-		<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-			if="!(clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active" />
 	</action-record>
 
 	<action-record name="action-sale-order-record-partner"
@@ -866,15 +857,6 @@
 			expr="eval: !__config__.general.getManageMultiBanks()" />
 	</action-attrs>
 
-	<action-attrs name="action-so-attrs-domain-company-bank-details">
-		<attribute name="domain"
-			expr="eval: &quot;self.id IN (${company.bankDetailsSet.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
-			for="companyBankDetails" if="!company.bankDetailsSet.isEmpty()" />
-		<attribute name="domain"
-			expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active=true&quot;"
-			for="companyBankDetails" if="company.bankDetailsSet.isEmpty()" />
-	</action-attrs>
-
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder"
 		title="Sales Order filters">
 		<field name="saleOrderLineList.product.name" title="Product Name" />
@@ -956,14 +938,13 @@
 			method="generateViewSaleOrder" />
 	</action-method>
 
-	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController"
-			method="createTemplate" />
-	</action-method>
-
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController"
 			method="createSaleOrder" />
 	</action-method>
 
+	<action-method name="action-sale-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
+    
 </object-views>

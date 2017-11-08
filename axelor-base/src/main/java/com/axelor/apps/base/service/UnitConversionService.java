@@ -74,13 +74,17 @@ public class UnitConversionService {
 		/* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
 		for (UnitConversion unitConversion : unitConversionList){
 
-			if (unitConversion.getStartUnit().equals(startUnit) && unitConversion.getEndUnit().equals(endUnit)) { return unitConversion.getCoef(); }
+			if (unitConversion.getStartUnit().equals(startUnit) && unitConversion.getEndUnit().equals(endUnit)) {
+				return unitConversion.getCoef();
+			}
 
 		}
 		/* The endUnit become the start unit and the startUnit become the end unit */
 		for (UnitConversion unitConversion : unitConversionList){
 
-			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit) && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) { return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN); }
+			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit) && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) {
+				return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+			}
 
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
