@@ -703,6 +703,7 @@
     	<field name="languageSelect" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
     	<field name="isCustomer" expr="true" if="_isCustomer"/>
   		<field name="isSupplier" expr="true" if="_isSupplier"/>
+		<field name="isCarrier" expr="true" if="_isCarrier"/>
     	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
     	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
     </action-record>
