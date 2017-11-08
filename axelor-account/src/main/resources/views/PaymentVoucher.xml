@@ -27,7 +27,7 @@
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
-			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
+			 <field name="autoImputation" colSpan="4" hidden="true"/>
 		</panel>
 		
 		<panel sidebar="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 2">
