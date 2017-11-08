@@ -21,7 +21,7 @@ public class LogisticalFormManagementRepository extends LogisticalFormRepository
 						logisticalForm.getCompany());
 				if (Strings.isNullOrEmpty(sequenceNumber)) {
 					throw new AxelorException(Sequence.class, IException.NO_VALUE,
-							IExceptionMessage.MISSING_LOGISTICAL_FORM_SEQUENCE, logisticalForm.getCompany().getName());
+							IExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE, logisticalForm.getCompany().getName());
 				}
 				logisticalForm.setDeliveryNumber(sequenceNumber);
 			}

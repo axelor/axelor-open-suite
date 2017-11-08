@@ -6,6 +6,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
@@ -64,6 +65,17 @@ public class LogisticalFormController {
 			Beans.get(LogisticalFormService.class).addParcelPalletLine(logisticalForm,
 					LogisticalFormLineRepository.TYPE_PARCEL);
 			response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	public void checkLines(ActionRequest request, ActionResponse response) {
+		try {
+			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+			Beans.get(LogisticalFormService.class).checkLines(logisticalForm);
+		} catch (InconsistentLogisticalFormLines e) {
+			response.setAlert(e.getLocalizedMessage());
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

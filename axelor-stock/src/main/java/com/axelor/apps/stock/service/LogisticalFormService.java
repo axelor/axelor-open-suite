@@ -2,6 +2,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
 import com.axelor.exception.AxelorException;
 
 public interface LogisticalFormService {
@@ -29,5 +30,13 @@ public interface LogisticalFormService {
 	 * @throws AxelorException
 	 */
 	void compute(LogisticalForm logisticalForm) throws AxelorException;
+
+	/**
+	 * Check lines.
+	 * 
+	 * @param logisticalForm
+	 * @throws InconsistentLogisticalFormLines
+	 */
+	void checkLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines;
 
 }
