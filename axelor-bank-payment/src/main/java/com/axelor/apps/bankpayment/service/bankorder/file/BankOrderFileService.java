@@ -21,13 +21,14 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,6 @@ public class BankOrderFileService {
 	protected String bankOrderSeq;
 	protected boolean isMultiDates;
 	protected boolean isMultiCurrencies;
-	protected int orderDebitTypeSelect;
 	
 	protected List<BankOrderLine> bankOrderLineList;
 	protected Object fileToCreate;
@@ -92,7 +92,6 @@ public class BankOrderFileService {
 		this.bankOrderLineList = bankOrder.getBankOrderLineList();
 		this.isMultiDates = bankOrder.getIsMultiDate();
 		this.isMultiCurrencies = bankOrder.getIsMultiCurrency();
-		this.orderDebitTypeSelect = bankOrder.getOrderDebitTypeSelect();
 	}
 	
 	
