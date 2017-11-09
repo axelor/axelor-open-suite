@@ -11,7 +11,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 
-public class LogisticalFormManagementRepository extends LogisticalFormRepository {
+public class LogisticalFormStockRepository extends LogisticalFormRepository {
 
 	@Override
 	public LogisticalForm save(LogisticalForm logisticalForm) {

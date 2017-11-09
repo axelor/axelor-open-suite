@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.LogisticalFormManagementRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
@@ -65,8 +65,8 @@ public class StockModule extends AxelorModule {
         bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
         bind(LogisticalFormService.class).to(LogisticalFormServiceImpl.class);
         bind(LogisticalFormLineService.class).to(LogisticalFormLineServiceImpl.class);
-        bind(LogisticalFormRepository.class).to(LogisticalFormManagementRepository.class);
-        bind(AppStockService.class).to(AppStockServiceImpl.class);
+		bind(LogisticalFormRepository.class).to(LogisticalFormStockRepository.class);
+		bind(AppStockService.class).to(AppStockServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }
 }
