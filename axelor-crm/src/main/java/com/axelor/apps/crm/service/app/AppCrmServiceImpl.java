@@ -1,4 +1,4 @@
-/*
+/**
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,49 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.app;
+package com.axelor.apps.crm.service.app;
 
 import java.util.List;
 
-import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppSaleRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.apps.sale.db.SaleConfig;
-import com.axelor.apps.sale.db.repo.SaleConfigRepository;
+import com.axelor.apps.crm.db.CrmConfig;
+import com.axelor.apps.crm.db.repo.CrmConfigRepository;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
-@Singleton
-public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleService {
-	
-	@Inject
-	private AppSaleRepository appSaleRepo;
+public class AppCrmServiceImpl implements AppCrmService {
 	
 	@Inject
 	private CompanyRepository companyRepo;
 	
 	@Inject
-	private SaleConfigRepository saleConfigRepo;
+	private CrmConfigRepository crmConfigRepo;
 	
-	@Override
-	public AppSale getAppSale() {
-		return appSaleRepo.all().fetchOne();
-	}
-
 	@Override
 	@Transactional
-	public void generateSaleConfigurations() {
+	public void generateCrmConfigurations() {
 		
-		List<Company> companies = companyRepo.all().filter("self.saleConfig is null").fetch();
+		List<Company> companies = companyRepo.all().filter("self.crmConfig is null").fetch();
 		
 		for (Company company : companies) {
-			SaleConfig  saleConfig = new SaleConfig();
-			saleConfig.setCompany(company);
-			saleConfigRepo.save(saleConfig);
+			CrmConfig crmConfig = new CrmConfig();
+			crmConfig.setCompany(company);
+			crmConfigRepo.save(crmConfig);
 		}
 	}
-	
+
 }

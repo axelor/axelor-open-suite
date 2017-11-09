@@ -15,38 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.web;
+package com.axelor.apps.sale.web;
 
-
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
-public class AppAccountController {
-
-	private Injector injector;
+public class AppSaleController {
 	
 	@Inject
-	private AppAccountService appAccountService;
-
-	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
-
-		try  {
-			PayerQualityService pqs = injector.getInstance(PayerQualityService.class);
-			pqs.payerQualityProcess();
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+	private AppSaleService appSaleService;
 	
-	public void generateAccountConfigurations(ActionRequest request, ActionResponse response)  {
+	public void generateSaleConfigurations(ActionRequest request, ActionResponse response) {
 		
-		appAccountService.generateAccountConfigurations();
+		appSaleService.generateSaleConfigurations();
 		
 		response.setReload(true);
-		
 	}
 }
