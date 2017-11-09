@@ -22,14 +22,6 @@
            value="validate" makes no changes to the database -->
       <property name="hibernate.hbm2ddl.auto" value="update" />
 
-      <!-- connection pooling -->
-      <property name="hibernate.connection.provider_class"
-        value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
-
-      <property name="hibernate.hikari.minimumIdle" value="2" />
-      <property name="hibernate.hikari.maximumPoolSize" value="20" />
-      <property name="hibernate.hikari.idleTimeout" value="30000" />
-
     </properties>
   </persistence-unit>
 </persistence>
