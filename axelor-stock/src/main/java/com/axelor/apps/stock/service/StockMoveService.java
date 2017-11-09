@@ -45,25 +45,22 @@ public interface StockMoveService {
 	 */
 	public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
 
+	
 	/**
 	 * Méthode générique permettant de créer un StockMove.
-	 * @param fromAddress l'adresse destination
-	 * @param toAddress l'adresse destination
-	 * @param company la société
-	 * @param clientPartner le tier client
-	 * @return l'objet StockMove
-	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
-	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
-
-	/**
-	 * Méthode générique permettant de créer un StockMove.
-	 * @param toAddress l'adresse destination
-	 * @param company la société
-	 * @param clientPartner le tier client
-	 * @param refSequence la séquence du StockMove
-	 * @return l'objet StockMove
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param clientPartner
+	 * @param fromLocation
+	 * @param toLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @param shipmentMode
+	 * @param freightCarrierMode
+	 * @return
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,

@@ -23,4 +23,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 public interface AppSaleService extends AppBaseService {
 	
 	public AppSale getAppSale();
+	
+	public void generateSaleConfigurations();
 }

@@ -17,15 +17,22 @@
  */
 package com.axelor.apps.account.service.app;
 
+import java.util.List;
+
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.db.AppAccount;
 import com.axelor.apps.base.db.AppBudget;
 import com.axelor.apps.base.db.AppInvoice;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.db.repo.AppInvoiceRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAccountService {
@@ -38,6 +45,12 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 	
 	@Inject
 	private AppInvoiceRepository appInvoiceRepo;
+	
+	@Inject
+	private AccountConfigRepository accountConfigRepo;
+	
+	@Inject
+	private CompanyRepository companyRepo;
 	
 	@Override
 	public AppAccount getAppAccount() {
@@ -52,6 +65,20 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 	@Override
 	public AppInvoice getAppInvoice() {
 		return appInvoiceRepo.all().fetchOne();
+	}
+	
+	@Transactional
+	@Override
+	public void generateAccountConfigurations() {
+		
+		List<Company> companies = companyRepo.all().filter("self.accountConfig is null").fetch();
+		
+		for (Company company : companies) {
+			AccountConfig config = new AccountConfig();
+			config.setCompany(company);
+			accountConfigRepo.save(config);
+		}
+		
 	}
 
 

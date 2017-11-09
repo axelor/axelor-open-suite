@@ -228,6 +228,7 @@
 	      	</panel>
 	    </panel>  
       	<panel name="deliveryInformation" title="Delivery information" colSpan="12">
+      		<field name="specificPackage" colSpan="12"/>
   		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />   
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
@@ -273,8 +274,10 @@
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateCustomerStockMove" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCustStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
-	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
+	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3"
+	    	if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCustStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getCustomerStockMoveGenerationAuto()"
+	    	if-module="axelor-supplychain" onClick="save, action-supplychain-sale-order-create-stock-move"/>
+	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
 	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
@@ -606,7 +609,7 @@
 					<div class="span4 pull-right">
 						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
 						<span ng-show="record.statusSelect == 1" x-translate>Draft</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Finalize</span>
+						<span ng-show="record.statusSelect == 2" x-translate>Finalized</span>
 						<span ng-show="record.statusSelect == 3" x-translate>Order confirmed</span>
 						<span ng-show="record.statusSelect == 4" x-translate>Finished</span>
 						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>

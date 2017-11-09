@@ -96,19 +96,9 @@ public class OperationOrderStockMoveService {
 			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 		}
 
-		StockMove stockMove = stockMoveService.createStockMove(
-				null,
-				null,
-				company,
-				null,
-				fromLocation,
-				virtualLocation,
-				operationOrder.getPlannedStartDateT().toLocalDate(),
-				null,
-				null,
-				null);
+		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,
+				null, operationOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
-		return stockMove;
 	}
 
 

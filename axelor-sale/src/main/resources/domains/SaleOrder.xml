@@ -90,6 +90,7 @@
     
 	<date name="deliveryDate" title="Delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
+	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
 	
