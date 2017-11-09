@@ -32,11 +32,11 @@ public interface LogisticalFormLineService {
 	String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine);
 
 	/**
-	 * Set remaining allocable quantity.
+	 * Get unspread quantity.
 	 * 
 	 * @param logisticalFormLine
 	 * @return
 	 */
-	BigDecimal getRemainingQty(LogisticalFormLine logisticalFormLine);
+	BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine);
 
 }

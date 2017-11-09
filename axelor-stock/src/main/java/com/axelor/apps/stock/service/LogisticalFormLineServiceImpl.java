@@ -33,7 +33,7 @@ import com.axelor.inject.Beans;
 public class LogisticalFormLineServiceImpl implements LogisticalFormLineService {
 
 	@Override
-	public BigDecimal getRemainingQty(LogisticalFormLine logisticalFormLine) {
+	public BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine) {
 		LogisticalForm logisticalForm = logisticalFormLine.getLogisticalForm();
 		StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 
