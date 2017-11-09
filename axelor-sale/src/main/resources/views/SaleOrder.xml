@@ -938,11 +938,6 @@
 			method="generateViewSaleOrder" />
 	</action-method>
 
-	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController"
-			method="createTemplate" />
-	</action-method>
-
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController"
 			method="createSaleOrder" />
