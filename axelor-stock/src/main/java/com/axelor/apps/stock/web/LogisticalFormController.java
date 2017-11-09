@@ -21,7 +21,6 @@ import java.util.Map;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
 import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
@@ -63,28 +62,6 @@ public class LogisticalFormController {
 			response.setValue("totalVolume", logisticalForm.getTotalVolume());
 		} catch (InvalidLogisticalFormLineDimensions e) {
 			response.setError(e.getLocalizedMessage());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-
-	public void addPallet(ActionRequest request, ActionResponse response) {
-		try {
-			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-			Beans.get(LogisticalFormService.class).addParcelPalletLine(logisticalForm,
-					LogisticalFormLineRepository.TYPE_PALLET);
-			response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-
-	public void addParcel(ActionRequest request, ActionResponse response) {
-		try {
-			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-			Beans.get(LogisticalFormService.class).addParcelPalletLine(logisticalForm,
-					LogisticalFormLineRepository.TYPE_PARCEL);
-			response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
