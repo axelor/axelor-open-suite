@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -51,7 +50,7 @@ import com.google.common.base.Strings;
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
 	private static final Pattern DIMENSIONS_PATTERN = Pattern
-			.compile("\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?");
+			.compile("\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*");
 
 	@Override
 	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
@@ -211,9 +210,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 
-				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL
-						&& logisticalFormLine.getGrossWeight() != null) {
-					totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
+				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+					if (logisticalFormLine.getGrossWeight() != null) {
+						totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
+					}
+
 					totalVolume = totalVolume.add(evalVolume(logisticalFormLine, scriptHelper));
 				} else if (stockMoveLine != null) {
 					totalNetWeight = totalNetWeight
@@ -237,9 +238,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 			return BigDecimal.ZERO;
 		}
 
-		Matcher matcher = DIMENSIONS_PATTERN.matcher(script);
-
-		if (!matcher.matches()) {
+		if (!DIMENSIONS_PATTERN.matcher(script).matches()) {
 			throw new AxelorException(logisticalFormLine, IException.CONFIGURATION_ERROR,
 					IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS, logisticalFormLine.getSequence() + 1);
 		}
